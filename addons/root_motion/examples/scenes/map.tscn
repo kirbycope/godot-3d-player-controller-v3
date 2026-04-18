@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://bsmyohyvifilc"]
+[gd_scene format=3 uid="uid://bsmyohyvifilc"]
 
 [ext_resource type="Material" uid="uid://em1ht2we55w7" path="res://addons/root_motion/examples/materials/MaterialGrid.tres" id="1_6dkw0"]
 [ext_resource type="PackedScene" uid="uid://bd38vvlh2w5ve" path="res://addons/root_motion/examples/scenes/player.tscn" id="1_rp73i"]
@@ -22,25 +22,24 @@ size = Vector3(100, 0.1, 100)
 [sub_resource type="BoxMesh" id="BoxMesh_io606"]
 size = Vector3(100, 0.1, 100)
 
-[node name="Map" type="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+[node name="Map" type="Node3D" unique_id=756339903]
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=414634756]
 environment = SubResource("Environment_1d6rj")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1977176628]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0)
 shadow_enabled = true
 
-[node name="StaticBody3D" type="StaticBody3D" parent="."]
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=181478218]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=1512296298]
 shape = SubResource("BoxShape3D_lylmc")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D/CollisionShape3D"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D/CollisionShape3D" unique_id=1075069405]
 material_override = ExtResource("1_6dkw0")
 mesh = SubResource("BoxMesh_io606")
 skeleton = NodePath("../../..")
 
-[node name="Player" parent="." instance=ExtResource("1_rp73i")]
+[node name="Player" parent="." unique_id=2016015656 instance=ExtResource("1_rp73i")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)

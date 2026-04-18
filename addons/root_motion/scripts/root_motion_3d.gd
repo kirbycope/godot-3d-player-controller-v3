@@ -1,4 +1,4 @@
-@icon("res://icons/Skeleton3D.svg")
+@icon("res://addons/root_motion/icons/root_motion_3d.svg")
 class_name RootMotion
 extends Node3D
 
@@ -50,9 +50,8 @@ func fix_model():
 	# Create a temp node to resize model
 	var skeleton_owner = skeleton.owner
 	var new_skeleton = Skeleton3D.new()
-	new_skeleton.name = "Skeleton3D"
+	new_skeleton.name = skeleton.name
 	add_child(new_skeleton)
-	new_skeleton.owner = skeleton_owner
 
 	# Copy bones from original skeleton and resize pose
 	skeleton.reset_bone_poses()
@@ -83,7 +82,6 @@ func fix_model():
 	for skeleton_child in skeleton.get_children():
 		var new_skeleton_child = skeleton_child.duplicate()
 		new_skeleton.add_child(new_skeleton_child)
-		new_skeleton_child.owner = skeleton.owner
 
 		if (armature.scale != Vector3.ONE):
 			if new_skeleton_child is MeshInstance3D:
@@ -125,9 +123,10 @@ func fix_model():
 	armature.remove_child(skeleton)
 	skeleton.owner = null
 	new_skeleton.reparent(armature, false)
-	new_skeleton.owner = skeleton_owner
-	for new_skeleton_child in new_skeleton.get_children():
-		new_skeleton_child.owner = skeleton_owner
+	if skeleton_owner != null and skeleton_owner.is_ancestor_of(new_skeleton):
+		new_skeleton.owner = skeleton_owner
+		for new_skeleton_child in new_skeleton.get_children():
+			new_skeleton_child.owner = skeleton_owner
 	
 	# Reset the armature rotation and scale
 	if (armature.rotation != Vector3.ZERO):

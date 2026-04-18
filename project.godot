@@ -15,7 +15,7 @@ warnings/check_invalid_track_paths=false
 [application]
 
 config/name="Godot 3D Player Controller v3"
-run/main_scene="uid://b7u0beuudulq6"
+run/main_scene="uid://bsmyohyvifilc"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
