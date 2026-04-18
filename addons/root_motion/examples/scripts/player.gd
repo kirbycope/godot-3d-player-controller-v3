@@ -30,4 +30,4 @@ func _physics_process(delta):
 
 	move_and_slide()
 
-	print("root_motion_position: ", animation_tree.get_root_motion_position())
+	#print("root_motion_position: ", animation_tree.get_root_motion_position()) # DEBUGGING

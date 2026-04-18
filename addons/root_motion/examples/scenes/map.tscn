@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bsmyohyvifilc"]
 
 [ext_resource type="Material" uid="uid://em1ht2we55w7" path="res://addons/root_motion/examples/materials/MaterialGrid.tres" id="1_6dkw0"]
-[ext_resource type="PackedScene" uid="uid://bd38vvlh2w5ve" path="res://addons/root_motion/examples/scenes/player.tscn" id="1_rp73i"]
+[ext_resource type="PackedScene" uid="uid://c6ljiqy5borq" path="res://addons/root_motion/examples/scenes/player.tscn" id="1_rp73i"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_choub"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -41,5 +41,5 @@ material_override = ExtResource("1_6dkw0")
 mesh = SubResource("BoxMesh_io606")
 skeleton = NodePath("../../..")
 
-[node name="Player" parent="." unique_id=2016015656 instance=ExtResource("1_rp73i")]
+[node name="Player" parent="." unique_id=1777433872 instance=ExtResource("1_rp73i")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
