@@ -12,61 +12,37 @@ var skeleton: Skeleton3D;
 var animation_player: AnimationPlayer;
 
 func _ready():
-	_debug("_ready called", {"active": active, "editor_hint": Engine.is_editor_hint()})
 	if not Engine.is_editor_hint():
 		if (active):
-			_debug("Root motion is active, starting setup")
+			_debug("Root motion starting")
 			add_root_motion()
-		else:
-			_debug("Root motion is inactive, skipping setup")
 	pass
 
 func add_root_motion():
-	_debug("Discovering model hierarchy")
 	model = get_first_child(get_children()) as Node3D
 	if model == null:
-		_debug("No model child found, aborting root motion setup")
 		return
-	_debug("Model found", {"node": model.name})
 
 	skeleton = _find_skeleton(model)
 	if skeleton == null:
-		_debug("No skeleton found under model", {"model": model.name})
 		return
-	_debug("Skeleton found", {"node": skeleton.name, "bones": skeleton.get_bone_count()})
 
 	armature = skeleton.get_parent() as Node3D
 	if armature == null:
-		_debug("Skeleton parent is not a Node3D", {"skeleton": skeleton.name})
 		return
-	_debug("Skeleton container found", {
-		"node": armature.name,
-		"rotation": armature.rotation,
-		"scale": armature.scale,
-		"layout": _detect_layout_name(model, armature, skeleton)
-	})
 
 	animation_player = get_first_child(model.find_children("*", "AnimationPlayer", false)) as AnimationPlayer
 	if animation_player == null:
-		_debug("No AnimationPlayer found under model", {"model": model.name})
 		return
-	_debug("Animation player found", {"node": animation_player.name, "animations": animation_player.get_animation_list().size()})
 
 	var new_skeleton = skeleton
 	if armature.rotation != Vector3.ZERO or armature.scale != Vector3.ONE:
-		_debug("Armature transform needs normalization", {"rotation": armature.rotation, "scale": armature.scale})
 		fix_model()
 		new_skeleton = get_first_child(armature.find_children("*", "Skeleton3D", false)) as Skeleton3D
 		if new_skeleton == null:
-			_debug("Failed to rebuild skeleton after normalization")
 			return
-		_debug("Skeleton rebuilt", {"node": new_skeleton.name, "bones": new_skeleton.get_bone_count()})
-	
-	if !_has_root_bone(new_skeleton):
-		_debug("Root bone missing, adding one")
-		add_root_bone()
-	else:
-		_debug("Root bone already present", {"bone_index": _get_root_bone_index(new_skeleton)})
+
+	add_root_bone()
 
 	if _has_root_bone(new_skeleton):
 		var base_track_path = model.get_path_to(new_skeleton)
@@ -75,9 +51,6 @@ func add_root_motion():
 		animation_player.root_motion_track = root_bone_path
 		if animation_tree != null:
 			animation_tree.root_motion_track = root_bone_path
-		_debug("Root motion track assigned", {"track": root_bone_path, "animation_tree_assigned": animation_tree != null})
-	else:
-		_debug("Root bone still missing after setup")
 
 	_debug("Root motion setup complete")
 	pass
@@ -120,7 +93,7 @@ func _debug(message: String, data: Dictionary = {}) -> void:
 	print("[RootMotion] ", message, " | ", JSON.stringify(data))
 
 func fix_model():
-	_debug("Normalizing skeleton and animations", {"skeleton": skeleton.name, "animation_count": animation_player.get_animation_list().size()})
+	#_debug("Normalizing skeleton and animations", {"skeleton": skeleton.name, "animation_count": animation_player.get_animation_list().size()})
 	# Create a temp node to resize model
 	var skeleton_owner = skeleton.owner
 	var new_skeleton = Skeleton3D.new()
@@ -149,7 +122,7 @@ func fix_model():
 
 		var bone_transform = Transform3D(bone_rotation, bone_position)
 		new_skeleton.set_bone_rest(bone_idx, bone_transform)
-	_debug("Copied bone rests to rebuilt skeleton", {"bone_count": new_skeleton.get_bone_count()})
+	#_debug("Copied bone rests to rebuilt skeleton", {"bone_count": new_skeleton.get_bone_count()})
 
 	new_skeleton.reset_bone_poses()
 
@@ -167,17 +140,17 @@ func fix_model():
 					var bind_pose = skin.get_bind_pose(bind_idx)
 					skin.set_bind_pose(bind_idx, bind_pose * 0.01)
 				new_skeleton_child.skin = skin
-	_debug("Duplicated skeleton child nodes", {"children": duplicated_child_count})
+	#_debug("Duplicated skeleton child nodes", {"children": duplicated_child_count})
 
 	# Reparent bones in the new skeleton
 	_reparent_bones(new_skeleton, 0)
-	_debug("Bone hierarchy rebuilt")
+	#_debug("Bone hierarchy rebuilt")
 
 	# Resize and rotate all animations keyframes
 	for animation_name in animation_player.get_animation_list():
 		new_skeleton.reset_bone_poses()
 		var animation: Animation = animation_player.get_animation(animation_name)
-		_debug("Processing animation", {"animation": animation_name, "tracks": animation.get_track_count()})
+		#_debug("Processing animation", {"animation": animation_name, "tracks": animation.get_track_count()})
 		for track_path_idx in range(animation.get_track_count()):
 			var track_type = animation.track_get_type(track_path_idx)
 			var track_path = animation.track_get_path(track_path_idx)
@@ -215,36 +188,27 @@ func fix_model():
 	if (armature.scale != Vector3.ONE):
 		armature.scale = Vector3.ONE
 
-	_debug("Model normalization complete", {"armature_rotation": armature.rotation, "armature_scale": armature.scale})
+	#_debug("Model normalization complete", {"armature_rotation": armature.rotation, "armature_scale": armature.scale})
 	pass
 
 func add_root_bone():
 	var new_skeleton = get_first_child(armature.find_children("*", "Skeleton3D", false)) as Skeleton3D
 	if new_skeleton == null:
-		_debug("Cannot add root bone because skeleton lookup failed")
-		return
-	_debug("Adding root bone", {"skeleton": new_skeleton.name})
-		
-	# Add root bone
-	var root_bone_idx = -1
-	var hip_bone_idx = _get_hip_bone_index(new_skeleton)
-	if hip_bone_idx == -1:
-		_debug("Cannot add root bone because no hips bone was found", {"skeleton": new_skeleton.name})
-		return
-	var hip_bone_name = new_skeleton.get_bone_name(hip_bone_idx)
-	
-	if (_has_root_bone(new_skeleton)):
-		_debug("Root bone already exists in skeleton")
 		return
 
-	new_skeleton.add_bone("mixamorig_Root")
-	root_bone_idx = new_skeleton.get_bone_count() - 1
-	new_skeleton.set_bone_parent(hip_bone_idx, root_bone_idx)
-	_debug("Root bone created", {
-		"root_bone_index": root_bone_idx,
-		"hip_bone_parented": hip_bone_idx,
-		"hip_bone_name": hip_bone_name
-	})
+	var hip_bone_idx = _get_hip_bone_index(new_skeleton)
+	if hip_bone_idx == -1:
+		return
+	var hip_bone_name = new_skeleton.get_bone_name(hip_bone_idx)
+
+	var root_bone_idx = _get_root_bone_index(new_skeleton)
+	if root_bone_idx == -1:
+		new_skeleton.add_bone("mixamorig_Root")
+		root_bone_idx = new_skeleton.get_bone_count() - 1
+		new_skeleton.set_bone_parent(hip_bone_idx, root_bone_idx)
+		#_debug("Root bone created", {"root_bone_index": root_bone_idx, "hip_bone_parented": hip_bone_idx, "hip_bone_name": hip_bone_name})
+	#else:
+		#_debug("Root bone already present, updating animation tracks", {"root_bone_index": root_bone_idx})
 
 	var hip_bone_rest = new_skeleton.get_bone_rest(hip_bone_idx)
 
@@ -258,8 +222,8 @@ func add_root_bone():
 
 		# Check if animation contains the root bone track
 		if _has_root_bone_track(new_skeleton, animation):
-			_debug("Animation already has a root bone track", {"animation": animation_name})
-			return
+			#_debug("Animation already has a root bone track", {"animation": animation_name})
+			continue
 		
 		# Define the root and hips track path name
 		var hip_bone_path = str(base_track_path, ":", hip_bone_name)
@@ -270,22 +234,15 @@ func add_root_bone():
 		if root_bone_position_track_index == - 1:
 			root_bone_position_track_index = animation.add_track(Animation.TYPE_POSITION_3D, 0)
 		animation.track_set_path(root_bone_position_track_index, root_bone_path)
-		_debug("Preparing animation root track", {"animation": animation_name, "root_track_index": root_bone_position_track_index})
+		#_debug("Preparing animation root track", {"animation": animation_name, "root_track_index": root_bone_position_track_index})
 			
 		# Set the X and Z axis to root bone and set Y axis only to hips bone
 		var hip_bone_position_track_index = _find_bone_position_track_index(animation, hip_bone_name)
 		if hip_bone_position_track_index == - 1:
-			_debug("Hip position track missing, likely in-place clip. Skipping root conversion for this animation", {
-				"animation": animation_name,
-				"expected_hip_track": hip_bone_path,
-				"hip_bone_name": hip_bone_name
-			})
+			#_debug("Hip position track missing, likely in-place clip.", {"animation": animation_name})
 			continue
-		var detected_hip_track = animation.track_get_path(hip_bone_position_track_index)
-		_debug("Hip track detected", {
-			"animation": animation_name,
-			"hip_track": str(detected_hip_track.get_concatenated_names(), ":", detected_hip_track.get_concatenated_subnames())
-		})
+		#var detected_hip_track = animation.track_get_path(hip_bone_position_track_index)
+		#_debug("Hip track detected", {"animation": animation_name, "hip_track": str(detected_hip_track.get_concatenated_names(), ":", detected_hip_track.get_concatenated_subnames())})
 
 		var inserted_key_count = 0
 		for hip_position_key_index in range(0, animation.track_get_key_count(hip_bone_position_track_index), 1):
@@ -301,7 +258,7 @@ func add_root_bone():
 			animation.track_insert_key(root_bone_position_track_index, animation.track_get_key_time(hip_bone_position_track_index, hip_position_key_index), root_bone_position_value)
 			animation.track_set_key_value(hip_bone_position_track_index, hip_position_key_index, hip_bone_position_value)
 			inserted_key_count += 1
-		_debug("Animation root track updated", {"animation": animation_name, "keys": inserted_key_count})
+		#_debug("Animation root track updated", {"animation": animation_name, "keys": inserted_key_count})
 	pass
 
 func _has_root_bone_track(sk: Skeleton3D, animation) -> bool:
