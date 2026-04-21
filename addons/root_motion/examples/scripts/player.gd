@@ -9,6 +9,7 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 @onready var pivot: Node3D = $Pivot;
 @onready var animation_tree: AnimationTree = $AnimationTree;
 
+
 func _physics_process(delta):
 	# Get the input direction and handle the movement/deceleration.
 	# As good practice, you should replace UI actions with custom gameplay actions.
