@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://b7u0beuudulq6"]
 
 [ext_resource type="PackedScene" uid="uid://di6qlg0hil88k" path="res://addons/3d_player_controller/player.tscn" id="1_0xm2m"]
+[ext_resource type="Script" uid="uid://3vug6pdg0u0" path="res://main.gd" id="1_h2yge"]
 [ext_resource type="Material" uid="uid://smkievpeajs3" path="res://assets/ambientcg_com/grass_001/Grass001_1K-JPG.tres" id="2_h2yge"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0xm2m"]
@@ -22,6 +23,7 @@ polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1)]
 cell_height = 0.1
 
 [node name="Main" type="Node3D" unique_id=1958218024]
+script = ExtResource("1_h2yge")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1598100976]
 environment = SubResource("Environment_1bvp3")
