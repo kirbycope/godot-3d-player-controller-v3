@@ -1,12 +1,15 @@
 {
     "godotTools.editorPath.godot4": "c:\\Godot\\godotengine\\Godot_v4.7-beta1_win64.exe",
     "cSpell.words": [
+        "deadzone",
         "elif",
         "Joypad",
         "lerp",
+        "mixamo",
         "onready",
         "orthonormalized",
         "reparent",
-        "stylebox"
+        "stylebox",
+        "styleboxes"
     ]
 }
