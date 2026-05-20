@@ -7,21 +7,27 @@
 [ext_resource type="AnimationLibrary" uid="uid://yu6fxjmurb56" path="res://addons/3d_player_controller/assets/mixamo/animations/locomotion_pack/backflip.fbx" id="4_q6nkd"]
 [ext_resource type="AnimationLibrary" uid="uid://b42lpfljtpbkp" path="res://addons/3d_player_controller/assets/mixamo/animations/locomotion_pack/falling idle.fbx" id="4_yqsj4"]
 [ext_resource type="AnimationLibrary" uid="uid://moha51xk18m2" path="res://addons/3d_player_controller/assets/mixamo/animations/locomotion_pack/falling to landing.fbx" id="5_hxj2c"]
+[ext_resource type="PackedScene" uid="uid://28w5vav5xicg" path="res://addons/3d_player_controller/assets/quaternius/paraglider/Paraglider.glb" id="5_kwisa"]
 [ext_resource type="AnimationLibrary" uid="uid://bds43crfeg8eu" path="res://addons/3d_player_controller/assets/mixamo/animations/locomotion_pack/idle.fbx" id="5_oyon5"]
 [ext_resource type="AnimationLibrary" uid="uid://mmubopd7770m" path="res://addons/3d_player_controller/assets/mixamo/animations/locomotion_pack/crouched sneaking left.fbx" id="6_2dxso"]
 [ext_resource type="AnimationLibrary" uid="uid://cjerj2vtr0s25" path="res://addons/3d_player_controller/assets/mixamo/animations/locomotion_pack/crouched walking.fbx" id="6_kaeqx"]
 [ext_resource type="AnimationLibrary" uid="uid://vvy2p5o6jmj0" path="res://addons/3d_player_controller/assets/mixamo/animations/locomotion_pack/jump.fbx" id="6_llea5"]
+[ext_resource type="Script" uid="uid://bbtrlr2iw4qic" path="res://addons/3d_player_controller/assets/quaternius/paraglider/paraglider.gd" id="6_q7kt0"]
+[ext_resource type="Script" uid="uid://8gsyqt385owa" path="res://addons/3d_player_controller/assets/le_lu/contrail.gd" id="7_ladmy"]
 [ext_resource type="AnimationLibrary" uid="uid://dvtl0lgi7ldid" path="res://addons/3d_player_controller/assets/mixamo/animations/locomotion_pack/crouching idle.fbx" id="7_njchi"]
 [ext_resource type="AnimationLibrary" uid="uid://dhblc2su80gcd" path="res://addons/3d_player_controller/assets/mixamo/animations/locomotion_pack/left strafe.fbx" id="7_ro8tf"]
 [ext_resource type="AnimationLibrary" uid="uid://cavaf8ou8x2ke" path="res://addons/3d_player_controller/assets/mixamo/animations/locomotion_pack/crouched sneaking right.fbx" id="7_vxfhe"]
 [ext_resource type="AnimationLibrary" uid="uid://gtyq1kbvygi1" path="res://addons/3d_player_controller/assets/mixamo/animations/locomotion_pack/left strafe walking.fbx" id="8_07327"]
+[ext_resource type="AudioStream" uid="uid://b6p3jfykr2tns" path="res://addons/3d_player_controller/assets/freesound/72853__benboncan__parachute.wav" id="8_aisa3"]
 [ext_resource type="AnimationLibrary" uid="uid://cu0u2728awrej" path="res://addons/3d_player_controller/assets/mixamo/animations/locomotion_pack/crouched to standing.fbx" id="8_v0rb4"]
 [ext_resource type="AnimationLibrary" uid="uid://fkmhh7tbyc5e" path="res://addons/3d_player_controller/assets/mixamo/animations/locomotion_pack/jump backward.fbx" id="8_y12aw"]
+[ext_resource type="AudioStream" uid="uid://cu12hhqie3sjn" path="res://addons/3d_player_controller/assets/freesound/570701__robinhood76__10136-flag-flicking-on-strong-wind-isolated.wav" id="9_4pi5w"]
 [ext_resource type="AnimationLibrary" uid="uid://bob28n7p5wh2e" path="res://addons/3d_player_controller/assets/mixamo/animations/locomotion_pack/jump start.fbx" id="9_sjxju"]
 [ext_resource type="AnimationLibrary" uid="uid://cusgy506u42sr" path="res://addons/3d_player_controller/assets/mixamo/animations/locomotion_pack/left turn.fbx" id="9_t7djy"]
 [ext_resource type="AnimationLibrary" uid="uid://bi3iepp8d1ndg" path="res://addons/3d_player_controller/assets/mixamo/animations/locomotion_pack/left turn 90.fbx" id="10_yqsj4"]
 [ext_resource type="AnimationLibrary" uid="uid://cnxyojaaximed" path="res://addons/3d_player_controller/assets/mixamo/animations/locomotion_pack/right strafe.fbx" id="11_hxj2c"]
 [ext_resource type="AnimationLibrary" uid="uid://xq18vwa2gjaq" path="res://addons/3d_player_controller/assets/mixamo/animations/locomotion_pack/right strafe walking.fbx" id="12_y12aw"]
+[ext_resource type="AnimationLibrary" uid="uid://bmeub1r1malqs" path="res://addons/3d_player_controller/assets/mixamo/animations/locomotion_pack/hanging idle.fbx" id="13_rs4nb"]
 [ext_resource type="AnimationLibrary" uid="uid://l5qk3oh88wd8" path="res://addons/3d_player_controller/assets/mixamo/animations/locomotion_pack/right turn.fbx" id="13_sjxju"]
 [ext_resource type="AnimationLibrary" uid="uid://bwui8coc2k12y" path="res://addons/3d_player_controller/assets/mixamo/animations/locomotion_pack/right turn 90.fbx" id="14_b226b"]
 [ext_resource type="AnimationLibrary" uid="uid://cv6ocqygomyos" path="res://addons/3d_player_controller/assets/mixamo/animations/locomotion_pack/running backward.fbx" id="15_llea5"]
@@ -33,44 +39,78 @@
 [ext_resource type="AnimationLibrary" uid="uid://o0w3i5j834cc" path="res://addons/3d_player_controller/assets/mixamo/animations/locomotion_pack/running slide.fbx" id="25_fminn"]
 [ext_resource type="AnimationLibrary" uid="uid://dgpeah8ae3job" path="res://addons/3d_player_controller/assets/mixamo/animations/locomotion_pack/running left turn.fbx" id="26_h6wsa"]
 [ext_resource type="Script" uid="uid://c7sgvm3s5tfny" path="res://addons/3d_player_controller/camera.gd" id="26_osckp"]
+[ext_resource type="AnimationLibrary" uid="uid://dbspqvswn0uhq" path="res://addons/3d_player_controller/assets/mixamo/animations/locomotion_pack/orc idle.fbx" id="27_aisa3"]
 [ext_resource type="AnimationLibrary" uid="uid://771u0ymwwpx5" path="res://addons/3d_player_controller/assets/mixamo/animations/locomotion_pack/running right turn.fbx" id="27_md63x"]
 [ext_resource type="AnimationLibrary" uid="uid://fhrxrqcqrcgu" path="res://addons/3d_player_controller/assets/mixamo/animations/locomotion_pack/sprinting forward roll.fbx" id="27_qu57g"]
 [ext_resource type="AnimationLibrary" uid="uid://yp1exdfcd7j5" path="res://addons/3d_player_controller/assets/mixamo/animations/locomotion_pack/sprint.fbx" id="27_u7c7f"]
 [ext_resource type="AnimationLibrary" uid="uid://dckk3xdcrcm1t" path="res://addons/3d_player_controller/assets/mixamo/animations/locomotion_pack/standing to crouched.fbx" id="37_cxirm"]
+[ext_resource type="Script" uid="uid://bnjeahxlhwfvb" path="res://addons/3d_player_controller/audio.gd" id="42_1y44o"]
+[ext_resource type="AudioStream" uid="uid://x8vf48mojsb8" path="res://addons/3d_player_controller/assets/epicstockmedia/human_male_a/voice_male_effort_grunt_01.wav" id="42_4dtsf"]
 [ext_resource type="Texture2D" uid="uid://dba2rvntnnfdh" path="res://addons/3d_player_controller/assets/kenney_nl/2D assets/Crosshair Pack/Vector/crosshairs_vector_white.svg" id="42_cxirm"]
 [ext_resource type="Texture2D" uid="uid://bwakie8y4nx58" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Xbox Series/Vector/xbox_dpad_none.svg" id="43_6b7s3"]
 [ext_resource type="Script" uid="uid://bkanfpbod6cqc" path="res://addons/3d_player_controller/debug.gd" id="43_cxirm"]
+[ext_resource type="AudioStream" uid="uid://bvq2eaa4b3gpv" path="res://addons/3d_player_controller/assets/epicstockmedia/human_male_a/voice_male_effort_grunt_02.wav" id="43_dmht5"]
 [ext_resource type="Texture2D" uid="uid://csiyxsrpxy1x8" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Xbox Series/Vector/xbox_button_outline.svg" id="43_ladmy"]
 [ext_resource type="Texture2D" uid="uid://bn5f4wvar6tor" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Xbox Series/Vector/xbox_button_a_outline.svg" id="43_oaa2s"]
+[ext_resource type="AudioStream" uid="uid://cunvf0ntpfkl" path="res://addons/3d_player_controller/assets/epicstockmedia/human_male_a/voice_male_effort_grunt_03.wav" id="44_i6d3u"]
 [ext_resource type="Texture2D" uid="uid://corxgxm4mi0l8" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Xbox Series/Vector/xbox_button_a.svg" id="44_tkxeg"]
 [ext_resource type="Texture2D" uid="uid://cmsulqu82gpu5" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Xbox Series/Vector/xbox_dpad_up_outline.svg" id="44_yx0mh"]
 [ext_resource type="Texture2D" uid="uid://dpc825bf8ua8i" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Xbox Series/Vector/xbox_button_b_outline.svg" id="45_1hnrs"]
+[ext_resource type="AudioStream" uid="uid://bn0ewqpp6tlic" path="res://addons/3d_player_controller/assets/epicstockmedia/human_male_a/voice_male_effort_grunt_04.wav" id="45_v5tdj"]
 [ext_resource type="Texture2D" uid="uid://bumejmnr3to5g" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Xbox Series/Vector/xbox_button_b.svg" id="46_ahqpo"]
 [ext_resource type="Texture2D" uid="uid://w7di1j7to3hb" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Xbox Series/Vector/xbox_dpad_down_outline.svg" id="46_qrmb0"]
+[ext_resource type="AudioStream" uid="uid://bkgwgsv6lr4u0" path="res://addons/3d_player_controller/assets/epicstockmedia/human_male_a/voice_male_effort_grunt_05.wav" id="46_rsuuk"]
+[ext_resource type="AudioStream" uid="uid://5ytv8ufmvph7" path="res://addons/3d_player_controller/assets/epicstockmedia/human_male_a/voice_male_effort_grunt_06.wav" id="47_1y44o"]
 [ext_resource type="Texture2D" uid="uid://bojfftndyi7ux" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Xbox Series/Vector/xbox_button_x_outline.svg" id="47_sd0ff"]
 [ext_resource type="Texture2D" uid="uid://cm5rvc87h5ajy" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Xbox Series/Vector/xbox_dpad_left_outline.svg" id="47_xf6l6"]
 [ext_resource type="Texture2D" uid="uid://uhxr6ne3h322" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Xbox Series/Vector/xbox_button_x.svg" id="48_1520m"]
+[ext_resource type="AudioStream" uid="uid://dingxsisx6r0x" path="res://addons/3d_player_controller/assets/epicstockmedia/human_male_a/voice_male_breathing_mask_loop_jog_01.wav" id="48_i6d3u"]
 [ext_resource type="Texture2D" uid="uid://ciq2qdvx0khbj" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Xbox Series/Vector/xbox_dpad_right_outline.svg" id="48_xf6l6"]
+[ext_resource type="AudioStream" uid="uid://ugboana1cokx" path="res://addons/3d_player_controller/assets/epicstockmedia/human_male_a/voice_male_breathing_mask_loop_jog_02.wav" id="49_v5tdj"]
 [ext_resource type="Texture2D" uid="uid://f71afsg8l76k" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Xbox Series/Vector/xbox_button_y_outline.svg" id="49_xrkl1"]
 [ext_resource type="Texture2D" uid="uid://na0ycwh1x0k8" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Xbox Series/Vector/xbox_button_y.svg" id="50_7pm0t"]
+[ext_resource type="AudioStream" uid="uid://c3ob6lq734rrm" path="res://addons/3d_player_controller/assets/epicstockmedia/human_male_a/voice_male_breathing_mask_loop_run_01.wav" id="50_rsuuk"]
+[ext_resource type="AudioStream" uid="uid://dfyrppj1ss272" path="res://addons/3d_player_controller/assets/epicstockmedia/human_male_a/voice_male_breathing_mask_loop_run_02.wav" id="51_1y44o"]
 [ext_resource type="Texture2D" uid="uid://dv0iqqk34c7ve" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Xbox Series/Vector/xbox_lb_outline.svg" id="51_ufkdo"]
 [ext_resource type="Texture2D" uid="uid://bji81b6l8eid0" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Xbox Series/Vector/xbox_lb.svg" id="52_jo435"]
 [ext_resource type="Texture2D" uid="uid://c1n1m3jo7bisj" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Xbox Series/Vector/xbox_lt_outline.svg" id="53_6b7s3"]
+[ext_resource type="AudioStream" uid="uid://c3c43v547awki" path="res://addons/3d_player_controller/assets/epicstockmedia/human_male_a/voice_male_grunt_pain_01.wav" id="53_8sny1"]
+[ext_resource type="AudioStream" uid="uid://jpxav25ocmal" path="res://addons/3d_player_controller/assets/epicstockmedia/human_male_a/voice_male_grunt_pain_02.wav" id="54_k2txm"]
 [ext_resource type="Texture2D" uid="uid://3uks54sktwjm" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Xbox Series/Vector/xbox_lt.svg" id="54_yx0mh"]
+[ext_resource type="AudioStream" uid="uid://cmsbwghorp448" path="res://addons/3d_player_controller/assets/epicstockmedia/human_male_a/voice_male_grunt_pain_12.wav" id="55_jmy3t"]
 [ext_resource type="Texture2D" uid="uid://ci86323vtaa6m" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Xbox Series/Vector/xbox_button_view_outline.svg" id="55_wwnia"]
+[ext_resource type="AudioStream" uid="uid://bfgye3po1s3aq" path="res://addons/3d_player_controller/assets/epicstockmedia/human_male_a/voice_male_grunt_pain_13.wav" id="56_4pi5w"]
 [ext_resource type="Texture2D" uid="uid://b3issnm7j2by5" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Xbox Series/Vector/xbox_button_view.svg" id="56_qrmb0"]
+[ext_resource type="AudioStream" uid="uid://dmklk2evgcaan" path="res://addons/3d_player_controller/assets/epicstockmedia/human_male_a/voice_male_grunt_pain_03.wav" id="57_sbq7t"]
 [ext_resource type="Texture2D" uid="uid://cj7q5injyl13i" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Xbox Series/Vector/xbox_button_share_outline.svg" id="57_xf6l6"]
+[ext_resource type="AudioStream" uid="uid://b8csq8cptgtwr" path="res://addons/3d_player_controller/assets/epicstockmedia/human_male_a/voice_male_grunt_pain_04.wav" id="58_35mdr"]
 [ext_resource type="Texture2D" uid="uid://boy5is2mgxje5" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Xbox Series/Vector/xbox_button_share.svg" id="58_rs4nb"]
 [ext_resource type="Texture2D" uid="uid://cxqt76lu3fyed" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Xbox Series/Vector/xbox_ls_outline.svg" id="59_eljlq"]
 [ext_resource type="Texture2D" uid="uid://df2ggww1swume" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Xbox Series/Vector/xbox_button_menu_outline.svg" id="59_kwisa"]
+[ext_resource type="AudioStream" uid="uid://nwhl2gic03mj" path="res://addons/3d_player_controller/assets/epicstockmedia/human_male_a/voice_male_grunt_pain_05.wav" id="59_ohxis"]
+[ext_resource type="AudioStream" uid="uid://2msv8i768v3p" path="res://addons/3d_player_controller/assets/epicstockmedia/human_male_a/voice_male_grunt_pain_07.wav" id="60_aisa3"]
 [ext_resource type="Texture2D" uid="uid://bpspmyqfy4ke2" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Xbox Series/Vector/xbox_button_menu.svg" id="60_q7kt0"]
 [ext_resource type="Texture2D" uid="uid://7eg1mh64qwip" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Xbox Series/Vector/xbox_ls.svg" id="60_qcvw7"]
 [ext_resource type="Texture2D" uid="uid://bfvw48aix1fw2" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Xbox Series/Vector/xbox_rb_outline.svg" id="61_ladmy"]
+[ext_resource type="AudioStream" uid="uid://dkwdj211nwxav" path="res://addons/3d_player_controller/assets/epicstockmedia/human_male_a/voice_male_grunt_pain_08.wav" id="61_w678r"]
 [ext_resource type="Texture2D" uid="uid://ci5djbpqh6int" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Xbox Series/Vector/xbox_rb.svg" id="62_eljlq"]
+[ext_resource type="AudioStream" uid="uid://ddav856qyp0xw" path="res://addons/3d_player_controller/assets/epicstockmedia/human_male_a/voice_male_grunt_pain_09.wav" id="62_vn1rt"]
 [ext_resource type="Texture2D" uid="uid://yhfs0k0sb43n" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Xbox Series/Vector/xbox_rt_outline.svg" id="63_qcvw7"]
+[ext_resource type="AudioStream" uid="uid://dpcgpnusemy5c" path="res://addons/3d_player_controller/assets/epicstockmedia/human_male_a/voice_male_grunt_pain_10.wav" id="63_rlekb"]
 [ext_resource type="Texture2D" uid="uid://bbcey1dfwnf15" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Xbox Series/Vector/xbox_rt.svg" id="64_ni3ff"]
+[ext_resource type="AudioStream" uid="uid://dr0jnp76m2j56" path="res://addons/3d_player_controller/assets/epicstockmedia/human_male_a/voice_male_grunt_pain_11.wav" id="64_skqw1"]
+[ext_resource type="AudioStream" uid="uid://bbi1rwdesnbwl" path="res://addons/3d_player_controller/assets/epicstockmedia/human_male_a/voice_male_grunt_pain_06.wav" id="65_gfpdn"]
+[ext_resource type="AudioStream" uid="uid://d18tdilsth662" path="res://addons/3d_player_controller/assets/epicstockmedia/human_male_a/voice_male_grunt_pain_14.wav" id="66_w3427"]
+[ext_resource type="AudioStream" uid="uid://6340yfwev2rl" path="res://addons/3d_player_controller/assets/epicstockmedia/human_male_a/voice_male_grunt_pain_15.wav" id="67_1xr2m"]
+[ext_resource type="AudioStream" uid="uid://cuxqq5ya3svcj" path="res://addons/3d_player_controller/assets/epicstockmedia/human_male_a/voice_male_grunt_pain_16.wav" id="68_2pyf1"]
+[ext_resource type="AudioStream" uid="uid://donfa23x37qme" path="res://addons/3d_player_controller/assets/epicstockmedia/human_male_a/voice_male_grunt_pain_17.wav" id="69_t7ta7"]
+[ext_resource type="AudioStream" uid="uid://c5uxna67ute7x" path="res://addons/3d_player_controller/assets/epicstockmedia/human_male_a/voice_male_grunt_pain_18.wav" id="70_si0et"]
 [ext_resource type="Texture2D" uid="uid://cdjddgf556kjt" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Xbox Series/Vector/xbox_rs_outline.svg" id="71_ni3ff"]
 [ext_resource type="Texture2D" uid="uid://o15ln4wybn4a" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Xbox Series/Vector/xbox_rs.svg" id="72_goiqs"]
+[ext_resource type="AudioStream" uid="uid://c8srkyfimu0co" path="res://addons/3d_player_controller/assets/epicstockmedia/human_male_a/voice_male_breathing_mask_loop_walk_jog_01.wav" id="73_ohxis"]
+[ext_resource type="AudioStream" uid="uid://byoj8sikowwxb" path="res://addons/3d_player_controller/assets/epicstockmedia/human_male_a/voice_male_breathing_mask_loop_walk_jog_02.wav" id="74_aisa3"]
+[ext_resource type="Texture2D" uid="uid://ckmfjtaa1iw2p" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/PlayStation Series/Vector/playstation_button_circle_filled.svg" id="107_4pi5w"]
+[ext_resource type="Script" uid="uid://ck08322tms20v" path="res://addons/3d_player_controller/stamina.gd" id="108_sbq7t"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fminn"]
 resource_name = "Alpha_Body_MAT"
@@ -93,6 +133,61 @@ emission_enabled = true
 clearcoat_enabled = true
 clearcoat = 0.5
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ladmy"]
+transparency = 1
+blend_mode = 1
+cull_mode = 2
+shading_mode = 0
+vertex_color_use_as_albedo = true
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_4dtsf"]
+streams_count = 6
+stream_0/stream = ExtResource("42_4dtsf")
+stream_1/stream = ExtResource("43_dmht5")
+stream_2/stream = ExtResource("44_i6d3u")
+stream_3/stream = ExtResource("45_v5tdj")
+stream_4/stream = ExtResource("46_rsuuk")
+stream_5/stream = ExtResource("47_1y44o")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_rsuuk"]
+streams_count = 2
+stream_0/stream = ExtResource("48_i6d3u")
+stream_1/stream = ExtResource("49_v5tdj")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_uo0sf"]
+streams_count = 2
+stream_0/stream = ExtResource("50_rsuuk")
+stream_1/stream = ExtResource("51_1y44o")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_w678r"]
+streams_count = 2
+stream_0/stream = ExtResource("73_ohxis")
+stream_1/stream = ExtResource("74_aisa3")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_7oe5o"]
+streams_count = 13
+stream_0/stream = ExtResource("53_8sny1")
+stream_1/stream = ExtResource("54_k2txm")
+stream_2/stream = ExtResource("57_sbq7t")
+stream_3/stream = ExtResource("58_35mdr")
+stream_4/stream = ExtResource("59_ohxis")
+stream_5/stream = ExtResource("60_aisa3")
+stream_6/stream = ExtResource("61_w678r")
+stream_7/stream = ExtResource("62_vn1rt")
+stream_8/stream = ExtResource("63_rlekb")
+stream_9/stream = ExtResource("64_skqw1")
+stream_10/stream = ExtResource("55_jmy3t")
+stream_11/stream = ExtResource("56_4pi5w")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_u0uda"]
+streams_count = 6
+stream_0/stream = ExtResource("65_gfpdn")
+stream_1/stream = ExtResource("66_w3427")
+stream_2/stream = ExtResource("67_1xr2m")
+stream_3/stream = ExtResource("68_2pyf1")
+stream_4/stream = ExtResource("69_t7ta7")
+stream_5/stream = ExtResource("70_si0et")
+
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_lbjl4"]
 radius = 0.24999999
 height = 1.8
@@ -101,7 +196,8 @@ height = 1.8
 atlas = ExtResource("42_cxirm")
 region = Rect2(-2, 68, 64, 64)
 
-[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_1c1ip"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_xf6l6"]
+animation = &"backflip/mixamo_com"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_osckp"]
 animation = &"falling idle/mixamo_com"
@@ -116,9 +212,6 @@ timeline_length = 0.766
 stretch_time_scale = true
 start_offset = 0.29999999999999716
 loop_mode = 0
-
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_mv4yd"]
-animation = &"crouched to standing/mixamo_com"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_2dxso"]
 animation = &"crouching idle/mixamo_com"
@@ -152,6 +245,9 @@ blend_point_3/name = &"3"
 blend_point_4/node = SubResource("AnimationNodeAnimation_wwmmk")
 blend_point_4/pos = Vector2(1, 0)
 blend_point_4/name = &"4"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_mv4yd"]
+animation = &"crouched to standing/mixamo_com"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_fwd_idle"]
 animation = &"idle/mixamo_com"
@@ -299,6 +395,9 @@ nodes/LocomotionSwitch/node = SubResource("AnimationNodeBlend2_loco_switch")
 nodes/LocomotionSwitch/position = Vector2(20, 0)
 node_connections = [&"output", 0, &"LocomotionSwitch", &"LocomotionSwitch", 0, &"ForwardBlend", &"LocomotionSwitch", 1, &"StrafeBlend"]
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_w678r"]
+animation = &"orc idle/mixamo_com"
+
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_2axys"]
 animation = &"standing to crouched/mixamo_com"
 
@@ -317,19 +416,27 @@ advance_mode = 2
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_jfrfv"]
 xfade_time = 0.3
 
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_vn1rt"]
+xfade_time = 0.3
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_rlekb"]
+xfade_time = 0.3
+
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_stance"]
-states/CrouchedToStanding/node = SubResource("AnimationNodeAnimation_mv4yd")
-states/CrouchedToStanding/position = Vector2(176.66669, 173.7284)
 states/Crouching/node = SubResource("AnimationNodeBlendSpace2D_xf1pq")
-states/Crouching/position = Vector2(383.99997, 272)
+states/Crouching/position = Vector2(385.11108, -144)
+states/CrouchingToStanding/node = SubResource("AnimationNodeAnimation_mv4yd")
+states/CrouchingToStanding/position = Vector2(206.00002, -30.80658)
 states/End/position = Vector2(1000, 194.88889)
 states/Standing/node = SubResource("AnimationNodeBlendTree_standing")
 states/Standing/position = Vector2(384, 66.66667)
-states/StandingToCrouched/node = SubResource("AnimationNodeAnimation_2axys")
-states/StandingToCrouched/position = Vector2(585.4074, 173.92593)
+states/StandingPanting/node = SubResource("AnimationNodeAnimation_w678r")
+states/StandingPanting/position = Vector2(384.8518, 214.00002)
+states/StandingToCrouching/node = SubResource("AnimationNodeAnimation_2axys")
+states/StandingToCrouching/position = Vector2(572.0741, -30.074066)
 states/Start/position = Vector2(122.66667, 68.22223)
-transitions = ["Start", "Standing", SubResource("AnimationNodeStateMachineTransition_9v1m8"), "Standing", "StandingToCrouched", SubResource("AnimationNodeStateMachineTransition_5y4ng"), "StandingToCrouched", "Crouching", SubResource("AnimationNodeStateMachineTransition_3qlwy"), "Crouching", "CrouchedToStanding", SubResource("AnimationNodeStateMachineTransition_jfrfv"), "CrouchedToStanding", "Standing", SubResource("AnimationNodeStateMachineTransition_3qlwy")]
-graph_offset = Vector2(-108.66666, -399.66666)
+transitions = ["Start", "Standing", SubResource("AnimationNodeStateMachineTransition_9v1m8"), "Standing", "StandingToCrouching", SubResource("AnimationNodeStateMachineTransition_5y4ng"), "StandingToCrouching", "Crouching", SubResource("AnimationNodeStateMachineTransition_3qlwy"), "Crouching", "CrouchingToStanding", SubResource("AnimationNodeStateMachineTransition_jfrfv"), "CrouchingToStanding", "Standing", SubResource("AnimationNodeStateMachineTransition_3qlwy"), "Standing", "StandingPanting", SubResource("AnimationNodeStateMachineTransition_vn1rt"), "StandingPanting", "Standing", SubResource("AnimationNodeStateMachineTransition_rlekb")]
+graph_offset = Vector2(-375.66666, -258.66666)
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_loco"]
 graph_offset = Vector2(-449.35507, -214.34973)
@@ -337,6 +444,9 @@ nodes/output/position = Vector2(400, 0)
 nodes/StanceStateMachine/node = SubResource("AnimationNodeStateMachine_stance")
 nodes/StanceStateMachine/position = Vector2(99.333336, -7.3333335)
 node_connections = [&"output", 0, &"StanceStateMachine"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_kwisa"]
+animation = &"hanging idle/mixamo_com"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_u6ny4"]
 animation = &"running_jump/mixamo_com"
@@ -358,7 +468,7 @@ advance_mode = 2
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_u6ny4"]
 xfade_time = 0.3
 advance_mode = 2
-advance_expression = "is_on_floor() and velocity.length() < 0.05 and not skip_landing_once"
+advance_expression = "is_on_floor() and velocity.length() < 0.05"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_gblby"]
 xfade_time = 0.3
@@ -384,13 +494,31 @@ advance_mode = 2
 advance_expression = "is_on_floor() and (velocity.length() >= 0.05 or skip_landing_once)"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_qu57g"]
+xfade_time = 0.3
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_h6wsa"]
+xfade_time = 0.3
 switch_mode = 2
 advance_mode = 2
 
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_rs4nb"]
+xfade_time = 0.3
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_kwisa"]
+xfade_time = 0.3
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_q7kt0"]
+xfade_time = 0.1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ladmy"]
+xfade_time = 0.3
+
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_b226b"]
-states/End/position = Vector2(410.07404, -6.886154)
+states/Backflip/node = SubResource("AnimationNodeAnimation_xf6l6")
+states/Backflip/position = Vector2(410.02167, -19.999996)
+states/End/position = Vector2(930.07404, 92.096535)
 states/Falling/node = SubResource("AnimationNodeAnimation_osckp")
 states/Falling/position = Vector2(415.7595, 301.92044)
 states/Jumping/node = SubResource("AnimationNodeAnimation_07327")
@@ -399,13 +527,15 @@ states/Landing/node = SubResource("AnimationNodeAnimation_ithc2")
 states/Landing/position = Vector2(291.75946, 200.51671)
 states/Locomotion/node = SubResource("AnimationNodeBlendTree_loco")
 states/Locomotion/position = Vector2(410.3333, 92.08641)
+states/Paragliding/node = SubResource("AnimationNodeAnimation_kwisa")
+states/Paragliding/position = Vector2(714.3057, -19.777775)
 states/RunningJump/node = SubResource("AnimationNodeAnimation_u6ny4")
 states/RunningJump/position = Vector2(715.0927, 199.22446)
 states/RunningSlide/node = SubResource("AnimationNodeAnimation_fminn")
 states/RunningSlide/position = Vector2(715.4168, 91.94864)
 states/Start/position = Vector2(206.66666, 92.576126)
-transitions = ["Start", "Locomotion", SubResource("AnimationNodeStateMachineTransition_t7djy"), "Locomotion", "Jumping", SubResource("AnimationNodeStateMachineTransition_yqsj4"), "Jumping", "Falling", SubResource("AnimationNodeStateMachineTransition_45pxl"), "Falling", "Landing", SubResource("AnimationNodeStateMachineTransition_u6ny4"), "Landing", "Locomotion", SubResource("AnimationNodeStateMachineTransition_gblby"), "Locomotion", "Falling", SubResource("AnimationNodeStateMachineTransition_50bk4"), "Locomotion", "RunningJump", SubResource("AnimationNodeStateMachineTransition_q6nkd"), "RunningJump", "Falling", SubResource("AnimationNodeStateMachineTransition_u7c7f"), "Falling", "Locomotion", SubResource("AnimationNodeStateMachineTransition_fminn"), "Locomotion", "RunningSlide", SubResource("AnimationNodeStateMachineTransition_qu57g"), "RunningSlide", "Locomotion", SubResource("AnimationNodeStateMachineTransition_h6wsa")]
-graph_offset = Vector2(-328.2683, -160)
+transitions = ["Start", "Locomotion", SubResource("AnimationNodeStateMachineTransition_t7djy"), "Locomotion", "Jumping", SubResource("AnimationNodeStateMachineTransition_yqsj4"), "Jumping", "Falling", SubResource("AnimationNodeStateMachineTransition_45pxl"), "Falling", "Landing", SubResource("AnimationNodeStateMachineTransition_u6ny4"), "Landing", "Locomotion", SubResource("AnimationNodeStateMachineTransition_gblby"), "Locomotion", "Falling", SubResource("AnimationNodeStateMachineTransition_50bk4"), "Locomotion", "RunningJump", SubResource("AnimationNodeStateMachineTransition_q6nkd"), "RunningJump", "Falling", SubResource("AnimationNodeStateMachineTransition_u7c7f"), "Falling", "Locomotion", SubResource("AnimationNodeStateMachineTransition_fminn"), "Locomotion", "RunningSlide", SubResource("AnimationNodeStateMachineTransition_qu57g"), "RunningSlide", "Locomotion", SubResource("AnimationNodeStateMachineTransition_h6wsa"), "Locomotion", "Backflip", SubResource("AnimationNodeStateMachineTransition_rs4nb"), "Backflip", "Locomotion", SubResource("AnimationNodeStateMachineTransition_kwisa"), "Locomotion", "Paragliding", SubResource("AnimationNodeStateMachineTransition_q7kt0"), "Paragliding", "Locomotion", SubResource("AnimationNodeStateMachineTransition_ladmy")]
+graph_offset = Vector2(-417.2683, -162)
 
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_osckp"]
 
@@ -441,7 +571,6 @@ transitions = ["Start", "UAL1_Idle", SubResource("AnimationNodeStateMachineTrans
 graph_offset = Vector2(-254.89345, 0)
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_5cw3m"]
-graph_offset = Vector2(-569.6667, 323.33334)
 nodes/output/position = Vector2(560, 426.66666)
 nodes/LocomotionStateMachine/node = SubResource("AnimationNodeStateMachine_b226b")
 nodes/LocomotionStateMachine/position = Vector2(-319.33334, 300)
@@ -508,10 +637,9 @@ radius = 24.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_q7kt0"]
 radius = 24.0
 
-[node name="Player" type="CharacterBody3D" unique_id=1919664999 node_paths=PackedStringArray("animation_tree", "camera")]
+[node name="Player" type="CharacterBody3D" unique_id=1919664999 node_paths=PackedStringArray("animation_tree")]
 script = ExtResource("1_ikfak")
 animation_tree = NodePath("AnimationTree")
-camera = NodePath("CameraBase/CameraRot/SpringArm3D/Camera3D")
 
 [node name="Pivot" type="Node3D" parent="." unique_id=313524536]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
@@ -525,18 +653,18 @@ metadata/_custom_type_script = "uid://dn4se40svqtym"
 
 [node name="PlayerModel" parent="Pivot/RootMotion" unique_id=1513730412 instance=ExtResource("3_45pxl")]
 
-[node name="GeneralSkeleton" parent="Pivot/RootMotion/PlayerModel" index="0" unique_id=124629806]
-bones/0/position = Vector3(0.0032627517, 0.99012876, -0.0026145068)
-bones/0/rotation = Quaternion(-0.033535697, -0.047806174, -0.02767677, 0.9979098)
-bones/1/rotation = Quaternion(0.030221438, 0.013264247, 0.022815231, 0.99919486)
-bones/2/rotation = Quaternion(0.010482872, 0.0030420877, 0.013886433, 0.999844)
-bones/3/rotation = Quaternion(0.010259451, 0.0032391907, 0.013912334, 0.9998454)
-bones/4/rotation = Quaternion(0.04903462, -0.0012268331, 0.0044588256, 0.99878645)
-bones/5/rotation = Quaternion(-0.067173555, 0.011312899, -0.0012715451, 0.9976764)
-bones/7/rotation = Quaternion(0.4568163, 0.5006786, 0.63177586, -0.37616375)
-bones/8/rotation = Quaternion(0.123940356, 0.8026695, -0.5696748, -0.12582178)
-bones/9/rotation = Quaternion(0.009222902, -0.7070466, 0.0092229545, 0.7070466)
-bones/10/rotation = Quaternion(0.054065283, 0.4750961, -0.015451269, 0.87813556)
+[node name="GeneralSkeleton" parent="Pivot/RootMotion/PlayerModel" index="0" unique_id=1428933500]
+bones/0/position = Vector3(-0.0044964617, 0.9893213, 0.006492185)
+bones/0/rotation = Quaternion(-0.036457267, -0.044979658, -0.025553187, 0.99799544)
+bones/1/rotation = Quaternion(0.037576713, 0.017836455, 0.026098033, 0.9987937)
+bones/2/rotation = Quaternion(0.01224987, 0.004887007, 0.014864985, 0.9998026)
+bones/3/rotation = Quaternion(0.011979088, 0.0050439932, 0.014852791, 0.9998053)
+bones/4/rotation = Quaternion(0.054805066, -0.0019016152, 0.0027006473, 0.99849164)
+bones/5/rotation = Quaternion(-0.07630119, 0.007960566, -0.00062383816, 0.9970529)
+bones/7/rotation = Quaternion(0.45647055, 0.49965823, 0.6364327, -0.3700402)
+bones/8/rotation = Quaternion(0.13007508, 0.80580574, -0.56521976, -0.11951682)
+bones/9/rotation = Quaternion(0.0106170755, -0.70702714, 0.0106172785, 0.707027)
+bones/10/rotation = Quaternion(0.053198367, 0.46968162, -0.003957358, 0.8812227)
 bones/11/rotation = Quaternion(-0.23049821, 0.682892, 0.17169991, 0.67160124)
 bones/12/rotation = Quaternion(0.2014946, 0.20389192, -0.059591476, 0.9561783)
 bones/13/rotation = Quaternion(0.04001291, -0.0528761, -0.1285876, 0.9894788)
@@ -553,10 +681,10 @@ bones/25/rotation = Quaternion(0.15521277, -1.4901161e-07, -0.01590553, 0.987753
 bones/27/rotation = Quaternion(0.23386712, -0.0035056775, -0.049008526, 0.97102636)
 bones/28/rotation = Quaternion(0.15125789, -1.1920929e-07, -0.015500367, 0.98837286)
 bones/29/rotation = Quaternion(0.14349762, -8.940698e-08, -0.014705034, 0.9895415)
-bones/31/rotation = Quaternion(0.47515267, -0.48011094, -0.6349489, -0.37491778)
-bones/32/rotation = Quaternion(-0.15183556, 0.82723016, -0.49750185, 0.21243395)
-bones/33/rotation = Quaternion(0.041257553, 0.7059021, -0.04125773, 0.7059021)
-bones/34/rotation = Quaternion(0.043174006, -0.57128555, 0.03590354, 0.8188283)
+bones/31/rotation = Quaternion(0.47262457, -0.481669, -0.6387372, -0.36964297)
+bones/32/rotation = Quaternion(-0.14582069, 0.82943594, -0.49659753, 0.21015072)
+bones/33/rotation = Quaternion(0.041257095, 0.7059021, -0.04125722, 0.7059022)
+bones/34/rotation = Quaternion(0.040229082, -0.5676936, 0.03199392, 0.82163376)
 bones/35/rotation = Quaternion(-0.24051939, -0.6719299, -0.18474646, 0.6756696)
 bones/36/rotation = Quaternion(0.23822677, -0.20985533, 0.051183645, 0.94688386)
 bones/37/rotation = Quaternion(0.045545384, 0.046079352, 0.16169313, 0.984712)
@@ -573,24 +701,53 @@ bones/49/rotation = Quaternion(0.15551054, 5.9604645e-08, 0.012668192, 0.9877530
 bones/51/rotation = Quaternion(0.22849345, 0.003403008, 0.04298061, 0.9725903)
 bones/52/rotation = Quaternion(0.15154804, 8.940697e-08, 0.012345463, 0.98837286)
 bones/53/rotation = Quaternion(0.14377284, 1.7881393e-07, 0.011711955, 0.9895414)
-bones/55/rotation = Quaternion(0.13478856, 0.08065747, 0.98478967, -0.07426831)
-bones/56/rotation = Quaternion(-0.038743697, 0.9930037, -0.11046019, 0.015533078)
-bones/57/rotation = Quaternion(-0.041020587, 0.71223295, -0.69907236, 0.048367884)
+bones/55/rotation = Quaternion(0.13970515, 0.07580399, 0.98430717, -0.07665231)
+bones/56/rotation = Quaternion(-0.03859114, 0.99271464, -0.113957815, 0.0064935223)
+bones/57/rotation = Quaternion(-0.042404275, 0.7089501, -0.70217913, 0.05036079)
 bones/58/rotation = Quaternion(-1.04873216e-07, 0.9990753, 0.042996258, -1.8274612e-08)
-bones/60/rotation = Quaternion(-0.09139145, -0.009780285, 0.9953935, -0.027270988)
-bones/61/rotation = Quaternion(0.033328418, 0.9942439, -0.058712997, -0.08319257)
-bones/62/rotation = Quaternion(0.011226419, 0.6850793, -0.7278612, -0.02754062)
-bones/63/rotation = Quaternion(-9.285782e-08, 0.99801886, 0.0629154, -8.951767e-09)
+bones/60/rotation = Quaternion(-0.092982806, -0.014583967, 0.99517524, -0.027711203)
+bones/61/rotation = Quaternion(0.034675114, 0.9935978, -0.068161026, -0.08315828)
+bones/62/rotation = Quaternion(0.010330645, 0.6763326, -0.73598695, -0.028122019)
+bones/63/rotation = Quaternion(-5.0996928e-08, 0.99805605, 0.062323317, 6.54395e-09)
 
-[node name="Alpha_Surface" parent="Pivot/RootMotion/PlayerModel/GeneralSkeleton" index="0" unique_id=1596646119]
+[node name="Alpha_Surface" parent="Pivot/RootMotion/PlayerModel/GeneralSkeleton" index="0" unique_id=820442918]
 surface_material_override/0 = SubResource("StandardMaterial3D_fminn")
 
-[node name="Alpha_Joints" parent="Pivot/RootMotion/PlayerModel/GeneralSkeleton" index="1" unique_id=640877636]
+[node name="Alpha_Joints" parent="Pivot/RootMotion/PlayerModel/GeneralSkeleton" index="1" unique_id=1291233321]
 surface_material_override/0 = SubResource("StandardMaterial3D_qu57g")
 
 [node name="PhysicalBoneSimulator3D" parent="Pivot/RootMotion/PlayerModel/GeneralSkeleton" index="2" unique_id=1972762954 instance=ExtResource("4_fminn")]
 
-[node name="AnimationPlayer" parent="Pivot/RootMotion/PlayerModel" index="1" unique_id=1798787493]
+[node name="BoneAttachementRightHand" type="BoneAttachment3D" parent="Pivot/RootMotion/PlayerModel/GeneralSkeleton" index="3" unique_id=627030226]
+transform = Transform3D(0.4090451, 0.031475276, 0.91197133, 0.06666733, -0.99776506, 0.004534059, 0.9100758, 0.05894406, -0.41022903, -0.24513616, 0.835423, 0.0075096656)
+bone_name = "RightHand"
+bone_idx = 34
+
+[node name="Paraglider" parent="Pivot/RootMotion/PlayerModel/GeneralSkeleton/BoneAttachementRightHand" unique_id=1128526808 node_paths=PackedStringArray("player") instance=ExtResource("5_kwisa")]
+transform = Transform3D(0.99440384, 0.07989986, 0.06912806, 0.046462893, 0.25692236, -0.9653157, -0.094888754, 0.96312505, 0.25177252, 0.25360978, 0.25682974, -0.32968664)
+visible = false
+script = ExtResource("6_q7kt0")
+player = NodePath("../../../../../..")
+
+[node name="LeftWing" type="MeshInstance3D" parent="Pivot/RootMotion/PlayerModel/GeneralSkeleton/BoneAttachementRightHand/Paraglider" unique_id=697872622]
+transform = Transform3D(0.99998474, 0.0058340007, -0.00015314759, -0.005832863, 0.9999817, 0.0015958846, 0.0001621265, -0.0015946999, 0.9999979, 0.76150715, 0.20429432, 0.15938568)
+visible = false
+material_override = SubResource("StandardMaterial3D_ladmy")
+script = ExtResource("7_ladmy")
+
+[node name="RightWing" type="MeshInstance3D" parent="Pivot/RootMotion/PlayerModel/GeneralSkeleton/BoneAttachementRightHand/Paraglider" unique_id=1000055305]
+transform = Transform3D(0.9999486, 0.0065035727, 0.008018531, -0.0065188883, 0.9999771, 0.0019620508, -0.00800591, -0.0020134673, 0.9999652, -0.77458596, 0.20793492, 0.1549604)
+visible = false
+material_override = SubResource("StandardMaterial3D_ladmy")
+script = ExtResource("7_ladmy")
+
+[node name="Opening" type="AudioStreamPlayer3D" parent="Pivot/RootMotion/PlayerModel/GeneralSkeleton/BoneAttachementRightHand/Paraglider" unique_id=753691448]
+stream = ExtResource("8_aisa3")
+
+[node name="ClothRuffling" type="AudioStreamPlayer3D" parent="Pivot/RootMotion/PlayerModel/GeneralSkeleton/BoneAttachementRightHand/Paraglider" unique_id=1616590058]
+stream = ExtResource("9_4pi5w")
+
+[node name="AnimationPlayer" parent="Pivot/RootMotion/PlayerModel" index="1" unique_id=1299284529]
 deterministic = true
 libraries/backflip = ExtResource("4_q6nkd")
 "libraries/crouched sneaking left" = ExtResource("6_2dxso")
@@ -600,6 +757,7 @@ libraries/backflip = ExtResource("4_q6nkd")
 "libraries/crouching idle" = ExtResource("7_njchi")
 "libraries/falling idle" = ExtResource("4_yqsj4")
 "libraries/falling to landing" = ExtResource("5_hxj2c")
+"libraries/hanging idle" = ExtResource("13_rs4nb")
 libraries/idle = ExtResource("5_oyon5")
 libraries/jump = ExtResource("6_llea5")
 "libraries/jump backward" = ExtResource("8_y12aw")
@@ -608,6 +766,7 @@ libraries/jump = ExtResource("6_llea5")
 "libraries/left strafe walking" = ExtResource("8_07327")
 "libraries/left turn" = ExtResource("9_t7djy")
 "libraries/left turn 90" = ExtResource("10_yqsj4")
+"libraries/orc idle" = ExtResource("27_aisa3")
 "libraries/right strafe" = ExtResource("11_hxj2c")
 "libraries/right strafe walking" = ExtResource("12_y12aw")
 "libraries/right turn" = ExtResource("13_sjxju")
@@ -626,24 +785,65 @@ libraries/walking = ExtResource("16_ithc2")
 "libraries/walking backwards" = ExtResource("17_ro8tf")
 playback_default_blend_time = 0.2
 
+[node name="Top" type="RayCast3D" parent="Pivot" unique_id=78815568]
+transform = Transform3D(-0.9999999, 0, 8.742278e-08, 0, 1, 0, -8.742277e-08, 0, -1, -0.028, 1.773, 0.1)
+target_position = Vector3(0, 0, -1)
+
+[node name="Head" type="RayCast3D" parent="Pivot" unique_id=65042981]
+transform = Transform3D(-0.9999999, 0, 8.742278e-08, 0, 1, 0, -8.742277e-08, 0, -1, -0.015, 1.587, 0.1)
+target_position = Vector3(0, 0, -1)
+
+[node name="Chest" type="RayCast3D" parent="Pivot" unique_id=1884493885]
+transform = Transform3D(-0.99999994, 0, 8.742277e-08, 0, 0.99999994, 0, -8.742277e-08, 0, -0.99999994, 0.005, 1.205, 0.1)
+target_position = Vector3(0, 0, -1)
+
+[node name="BelowParaglide" type="RayCast3D" parent="Pivot" unique_id=1829523046]
+editor_description = "Detects if the player is high enough off the groud to paraglide."
+target_position = Vector3(0, -1.4, 0)
+
+[node name="BelowStep" type="RayCast3D" parent="Pivot" unique_id=1828799367]
+editor_description = "Detects if the player is close enough to the floor to step down and not fall."
+target_position = Vector3(0, -0.5, 0)
+
+[node name="CameraSpringArm" type="SpringArm3D" parent="." unique_id=1413210253]
+transform = Transform3D(1, -8.154395e-08, 2.2404018e-07, 0, 0.9396926, 0.34202012, -2.3841858e-07, -0.34202012, 0.9396926, 0, 1.8, 0)
+spring_length = 2.4
+
+[node name="Camera3D" type="Camera3D" parent="CameraSpringArm" unique_id=951512925]
+far = 300.0
+script = ExtResource("26_osckp")
+
 [node name="AudioListener3D" type="AudioListener3D" parent="." unique_id=1149122071]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
 
-[node name="CameraBase" type="Node3D" parent="." unique_id=90379993]
-transform = Transform3D(-1, 0, -1.509958e-07, 0, 1, 0, 1.509958e-07, 0, -1, 0, 1.6, 0)
+[node name="Audio" type="Node3D" parent="." unique_id=1207565496 node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, -0.1)
+script = ExtResource("42_1y44o")
+player = NodePath("..")
 
-[node name="CameraRot" type="Node3D" parent="CameraBase" unique_id=1894252665]
+[node name="Footsteps" type="AudioStreamPlayer3D" parent="Audio" unique_id=1839051130]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.6, 0.1)
 
-[node name="SpringArm3D" type="SpringArm3D" parent="CameraBase/CameraRot" unique_id=1413210253]
-transform = Transform3D(-1, 2.990035e-08, -8.2150535e-08, 0, 0.9396926, 0.34202012, 8.742278e-08, 0.34202012, -0.9396926, 0, 0, 0)
-spring_length = 2.4
+[node name="VoiceMaleEffortGrunt" type="AudioStreamPlayer3D" parent="Audio" unique_id=465453389]
+stream = SubResource("AudioStreamRandomizer_4dtsf")
 
-[node name="Camera3D" type="Camera3D" parent="CameraBase/CameraRot/SpringArm3D" unique_id=951512925 node_paths=PackedStringArray("camera_base", "player", "player_model")]
-far = 300.0
-script = ExtResource("26_osckp")
-camera_base = NodePath("../../..")
-player = NodePath("../../../..")
-player_model = NodePath("../../../../Pivot/RootMotion/PlayerModel")
+[node name="VoiceMaleBreathingJog" type="AudioStreamPlayer3D" parent="Audio" unique_id=1384476222]
+stream = SubResource("AudioStreamRandomizer_rsuuk")
+max_db = -6.0
+
+[node name="VoiceMaleBreathingRun" type="AudioStreamPlayer3D" parent="Audio" unique_id=1278762417]
+stream = SubResource("AudioStreamRandomizer_uo0sf")
+max_db = -6.0
+
+[node name="VoiceMaleBreathingWalk" type="AudioStreamPlayer3D" parent="Audio" unique_id=1702379649]
+stream = SubResource("AudioStreamRandomizer_w678r")
+max_db = -6.0
+
+[node name="VoiceMaleGruntPain" type="AudioStreamPlayer3D" parent="Audio" unique_id=2111089803]
+stream = SubResource("AudioStreamRandomizer_7oe5o")
+
+[node name="VoiceMaleGruntPainLong" type="AudioStreamPlayer3D" parent="Audio" unique_id=1996142450]
+stream = SubResource("AudioStreamRandomizer_u0uda")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=76698604]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
@@ -665,24 +865,7 @@ grow_vertical = 2
 texture = SubResource("AtlasTexture_wwmmk")
 expand_mode = 1
 
-[node name="Top" type="RayCast3D" parent="." unique_id=78815568]
-transform = Transform3D(0.9999999, 0, 0, 0, 1, 0, 0, 0, 1, 0.028196538, 1.7731725, -0.06682433)
-target_position = Vector3(0, 0, -1)
-
-[node name="Head" type="RayCast3D" parent="." unique_id=65042981]
-transform = Transform3D(0.9999999, 0, 0, 0, 1, 0, 0, 0, 1, 0.015217896, 1.5869975, -0.0059477515)
-target_position = Vector3(0, 0, -1)
-
-[node name="Chest" type="RayCast3D" parent="." unique_id=1884493885]
-transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, -0.0049136663, 1.2045066, 0.029601937)
-target_position = Vector3(0, 0, -1)
-
 [node name="RootMotionView" type="RootMotionView" parent="." unique_id=442301341]
-
-[node name="SoundEffects" type="Node" parent="." unique_id=992816973]
-
-[node name="Step" type="AudioStreamPlayer3D" parent="SoundEffects" unique_id=1866417418]
-stream = SubResource("AudioStreamRandomizer_1c1ip")
 
 [node name="AnimationTree" type="AnimationTree" parent="." unique_id=2142957693]
 root_node = NodePath("../Pivot/RootMotion/PlayerModel")
@@ -809,6 +992,7 @@ position = Vector2(0, 256)
 texture_normal = ExtResource("59_eljlq")
 texture_pressed = ExtResource("60_qcvw7")
 shape = SubResource("CircleShape2D_rs4nb")
+action = "crouch"
 
 [node name="Label" type="Label" parent="Controls/BottomLeft/LS" unique_id=1676386203]
 anchors_preset = 5
@@ -881,7 +1065,7 @@ texture_normal = ExtResource("43_oaa2s")
 texture_pressed = ExtResource("44_tkxeg")
 shape = SubResource("CircleShape2D_wwnia")
 passby_press = true
-action = "crouch"
+action = "action"
 
 [node name="Label" type="Label" parent="Controls/BottomRight/A" unique_id=29494163]
 anchors_preset = 5
@@ -919,7 +1103,7 @@ texture_normal = ExtResource("47_sd0ff")
 texture_pressed = ExtResource("48_1520m")
 shape = SubResource("CircleShape2D_wwnia")
 passby_press = true
-action = "use"
+action = "attack"
 
 [node name="Label" type="Label" parent="Controls/BottomRight/X" unique_id=8706738]
 anchors_preset = 5
@@ -956,6 +1140,7 @@ position = Vector2(256, 256)
 texture_normal = ExtResource("71_ni3ff")
 texture_pressed = ExtResource("72_goiqs")
 shape = SubResource("CircleShape2D_rs4nb")
+action = "scope"
 
 [node name="Label" type="Label" parent="Controls/BottomRight/RS" unique_id=1461901809]
 anchors_preset = 5
@@ -1017,6 +1202,7 @@ texture_normal = ExtResource("51_ufkdo")
 texture_pressed = ExtResource("52_jo435")
 shape = SubResource("CircleShape2D_rs4nb")
 passby_press = true
+action = "use"
 
 [node name="Label" type="Label" parent="Controls/TopLeft/LB" unique_id=666233577]
 anchors_preset = 6
@@ -1026,11 +1212,11 @@ anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = 2.0
 offset_top = -11.5
-offset_right = 88.0
+offset_right = 31.0
 offset_bottom = 11.5
 grow_horizontal = 0
 grow_vertical = 2
-text = "Use Seeker"
+text = "Use"
 
 [node name="LT" type="TouchScreenButton" parent="Controls/TopLeft" unique_id=1822657516]
 position = Vector2(0, 64)
@@ -1038,7 +1224,7 @@ texture_normal = ExtResource("53_6b7s3")
 texture_pressed = ExtResource("54_yx0mh")
 shape = SubResource("CircleShape2D_rs4nb")
 passby_press = true
-action = "aim"
+action = "focus"
 
 [node name="Label" type="Label" parent="Controls/TopLeft/LT" unique_id=1346835849]
 anchors_preset = 6
@@ -1136,17 +1322,18 @@ texture_normal = ExtResource("61_ladmy")
 texture_pressed = ExtResource("62_eljlq")
 shape = SubResource("CircleShape2D_rs4nb")
 passby_press = true
+action = "throw"
 
 [node name="Label" type="Label" parent="Controls/TopRight/RB" unique_id=1817881815]
 anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
-offset_left = -118.0
+offset_left = -50.0
 offset_top = -11.5
 offset_right = -1.0
 offset_bottom = 11.5
 grow_vertical = 2
-text = "Throw Weapon"
+text = "Throw"
 
 [node name="RT" type="TouchScreenButton" parent="Controls/TopRight" unique_id=46098103]
 position = Vector2(0, 64)
@@ -1160,12 +1347,12 @@ action = "shoot"
 anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
-offset_left = -64.0
+offset_left = -42.0
 offset_top = -11.5
 offset_right = 3.0
 offset_bottom = 11.5
 grow_vertical = 2
-text = "Use Bow"
+text = "Shoot"
 
 [node name="Debug" type="CanvasLayer" parent="." unique_id=2093937718 node_paths=PackedStringArray("player")]
 script = ExtResource("43_cxirm")
@@ -1252,6 +1439,22 @@ vertical_alignment = 1
 layout_mode = 2
 text = "is_crouching"
 
+[node name="is_exhausted" type="CheckBox" parent="Debug/States" unique_id=1785133337]
+layout_mode = 2
+text = "is_exhausted"
+
+[node name="is_falling" type="CheckBox" parent="Debug/States" unique_id=914115057]
+layout_mode = 2
+text = "is_falling"
+
+[node name="is_jumping" type="CheckBox" parent="Debug/States" unique_id=2063896986]
+layout_mode = 2
+text = "is_jumping"
+
+[node name="is_paragliding" type="CheckBox" parent="Debug/States" unique_id=1928600487]
+layout_mode = 2
+text = "is_paragliding"
+
 [node name="is_sliding" type="CheckBox" parent="Debug/States" unique_id=1034010354]
 layout_mode = 2
 text = "is_sliding"
@@ -1263,5 +1466,29 @@ text = "is_sprinting"
 [node name="is_strafing" type="CheckBox" parent="Debug/States" unique_id=219875565]
 layout_mode = 2
 text = "is_strafing"
+
+[node name="ProgressBarStamina" type="TextureProgressBar" parent="." unique_id=950633977 node_paths=PackedStringArray("player")]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -96.0
+offset_top = -64.0
+offset_right = -32.0
+grow_horizontal = 2
+grow_vertical = 2
+value = 100.0
+fill_mode = 4
+texture_progress = ExtResource("107_4pi5w")
+tint_progress = Color(0.29411766, 1, 0.29411766, 1)
+script = ExtResource("108_sbq7t")
+player = NodePath("..")
+
+[node name="Timer" type="Timer" parent="ProgressBarStamina" unique_id=1090460088]
+wait_time = 2.0
+one_shot = true
+
+[connection signal="timeout" from="ProgressBarStamina/Timer" to="ProgressBarStamina" method="_on_timer_timeout"]
 
 [editable path="Pivot/RootMotion/PlayerModel"]

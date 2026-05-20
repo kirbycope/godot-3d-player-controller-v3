@@ -1,11 +1,14 @@
 class_name Player
 extends CharacterBody3D
 
-# https://youtu.be/l4uWdObc4do?si=-nYMz-615jmEC9qs&t=402
-# https://www.youtube.com/watch?v=fBcKIxgJv-c&t=247s
+const JUMP_VELOCITY = 4.5
+const TURN_SPEED = 8.0
+const SPEED = 5.0
+const FALL_AIR_CONTROL_MULTIPLIER = 0.5
+const LANDING_SKIP_LATERAL_SPEED = 0.75
+
+@export_group("Animation Tree")
 @export var animation_tree: AnimationTree
-@export var camera: Camera3D
-@export var use_root_motion_movement: bool = true ## If true, use AnimationTree root motion delta for horizontal movement.
 @export var locomotion_forward_blend_path: String = "parameters/LocomotionStateMachine/Locomotion/StanceStateMachine/Standing/ForwardBlend/blend_position"
 @export var locomotion_strafe_blend_path: String = "parameters/LocomotionStateMachine/Locomotion/StanceStateMachine/Standing/StrafeBlend/blend_position"
 @export var locomotion_crouch_blend_path: String = "parameters/LocomotionStateMachine/Locomotion/StanceStateMachine/Crouching/blend_position"
@@ -13,66 +16,59 @@ extends CharacterBody3D
 @export var locomotion_stance_playback_path: String = "parameters/LocomotionStateMachine/Locomotion/StanceStateMachine/playback"
 @export var locomotion_state_playback_path: String = "parameters/LocomotionStateMachine/playback"
 
-@export var transition_speed: float = 12.0 ## Blend interpolation rate (higher = snappier)
-@export var turn_speed: float = 120.0
-@export var turn_in_place_blend_gain: float = 32.0 ## Scales yaw delta into blend-space X while standing still
-@export var turn_in_place_yaw_deadzone: float = 0.002 ## Minimum yaw delta (radians/frame) to trigger turn-in-place blend
-
-@export var crouch_speed: float = 2.5 ## The player's movement speed while crouching
-@export var crouch_exit_to_standing_speed_threshold: float = 0.1 ## If moving faster than this when un-crouching, skip transition clip
-@export var jump_velocity: float = 4.5 ## The initial velocity applied to the player when a jump is executed
-@export var speed: float = 5.0 ## The player's movement speed while standing/walking (not crouching or sprinting)
-@export var slide_collision_height: float = 0.5 ## The capsule height used during running slide
-
 @export_group("Animation State Names")
-@export var locomotion_state_name: String = "Locomotion"
-@export var jumping_state_name: String = "Jumping"
-@export var running_jump_state_name: String = "RunningJump"
-@export var running_slide_state_name: String = "RunningSlide"
-@export var standing_state_name: String = "Standing"
-@export var standing_to_crouched_state_name: String = "StandingToCrouched"
-@export var crouching_state_name: String = "Crouching"
-@export var crouched_to_standing_state_name: String = "CrouchedToStanding"
+@export var state_name_falling: String = "Falling"
+@export var state_name_locomotion: String = "Locomotion"
+@export var state_name_backflip: String = "Backflip"
+@export var state_name_paragliding: String = "Paragliding"
+@export var state_name_standing_jump: String = "Jumping"
+@export var state_name_running_jump: String = "RunningJump"
+@export var state_name_running_slide: String = "RunningSlide"
+@export var state_name_standing: String = "Standing"
+@export var state_name_standing_panting: String = "StandingPanting"
+@export var state_name_standing_to_crouching: String = "StandingToCrouching"
+@export var state_name_crouching: String = "Crouching"
+@export var state_name_crouching_to_standing: String = "CrouchingToStanding"
 
-@onready var physical_bone_simulator: PhysicalBoneSimulator3D = $Pivot/RootMotion/PlayerModel/GeneralSkeleton/PhysicalBoneSimulator3D
-@onready var pivot: Node3D = $Pivot
-
-var current_input_vector: Vector2 = Vector2.ZERO ## The smoothed [Input] vector used by animation blending
-var target_input_vector: Vector2 = Vector2.ZERO ## The raw [Input] vector target set by movement logic
-var current_velocity: Vector2 ## The current velocity of the player (no verticality)
-var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")#  * 1.5
+var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
+var input_vector: Vector2 = Vector2.ZERO ## The player's input vector (move_up, move_down, move_left, move_right)
 var is_crouching: bool = false ## Is the player "crouching"?
+var is_exhausted: bool = false ## Is the player "exhausted"?
+var is_falling: bool = false ## Is the player "falling"?
+var is_jumping: bool = false ## Is the player "jumping"?
+var is_paragliding: bool = false ## Is the player "paragliding"?
+var is_running: bool = false ## Is the player "running"?
 var is_sliding: bool = false ## Is the player "sliding"?
 var is_sprinting: bool = false ## Is the player "sprinting"?
 var is_strafing: bool = false ## Is the player "strafing"?
-var jump_queued: bool ## Is the "jump" state queued (was the button _just_ pressed)
-var skip_landing_once: bool = false ## One-shot flag: when true, bypass Landing after Falling and return directly to Locomotion
-var standing_collision_height: float ## The standing capsule height used to restore after slide
-var standing_collision_y: float ## The standing collision shape local Y position
-var playback: AnimationNodeStateMachinePlayback:
+var playback_locomotion: AnimationNodeStateMachinePlayback: # LocomotionStateMachine > playback
 	get:
 		return animation_tree.get(locomotion_state_playback_path) as AnimationNodeStateMachinePlayback
-var stance_playback: AnimationNodeStateMachinePlayback:
+var playback_locomotion_state: String:
+	get :
+		return animation_tree.get(locomotion_state_playback_path).get_current_node() as String
+var playback_stance: AnimationNodeStateMachinePlayback: # LocomotionStateMachine > StanceStateMachine > playback
 	get:
 		return animation_tree.get(locomotion_stance_playback_path) as AnimationNodeStateMachinePlayback
+var playback_stance_state: String:
+	get :
+		return animation_tree.get(locomotion_stance_playback_path).get_current_node() as String
+
+@onready var camera_spring_arm: SpringArm3D = $CameraSpringArm
+@onready var raycast_below_paraglide: RayCast3D = $Pivot/BelowParaglide ## Used to detect if the player is high enough off the groud to paraglide
+@onready var raycast_below_step: RayCast3D = $Pivot/BelowStep ## Used to detect if the player is close enough to the floor to step down and not fall.
+@onready var pivot: Node3D = $Pivot ## Used to rotate the character 180°, without affecting its parent [Player] node or being overwritten by its child [RootMotion] node
+@onready var physical_bone_simulator: PhysicalBoneSimulator3D = $Pivot/RootMotion/PlayerModel/GeneralSkeleton/PhysicalBoneSimulator3D
+@onready var progress_bar_stamina: TextureProgressBar = $ProgressBarStamina
+@onready var voice_male_effort_grunt: AudioStreamPlayer3D = $Audio/VoiceMaleEffortGrunt
 
 
 ## Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	# Ensure the [CameraSpringArm] doesn't collide with the player
+	camera_spring_arm.add_excluded_object(self.get_rid())
 	# Ensure the player's [PhysicalBone3D]s do not collide with the [CollisionShape3D] required by the [CharacterBody3D]
 	physical_bone_simulator.physical_bones_add_collision_exception(get_rid())
-
-	# Get the player's [CollisionShape3D]
-	var capsule_shape := $CollisionShape3D.shape as CapsuleShape3D
-	# If the player has a capsule collision shape...
-	if capsule_shape:
-		# Cache the standing collision height
-		standing_collision_height = capsule_shape.height
-	# There is no capsule collision shape, so use a default height value (magic number)
-	else:
-		standing_collision_height = 1.8
-	# Cache the standing collision Y-position
-	standing_collision_y = $CollisionShape3D.position.y
 
 
 ## Called when there is an input event.
@@ -80,22 +76,18 @@ func _input(event: InputEvent) -> void:
 	# Do nothing if not the authority
 	if not is_multiplayer_authority(): return
 
-	# Ignore input while in grounded standing jump state
-	if is_on_floor() and playback.get_current_node() == jumping_state_name:
-		return
-
-	# If the player is on the floor...
-	if is_on_floor():
-		# If the "jump" button was just pressed...
-		if Input.is_action_just_pressed("jump"):
-			# If the player has some velocity...
-			if velocity.length() > 0.1:
-				# Queue a "running jump"
-				begin_running_jump()
-			# The player must be standing still...
-			else:
-				# Queue a "standing jump"
-				begin_standing_jump()
+	# Toggle mouse capture
+	if event.is_action_pressed("start") or event.is_action_pressed("ui_cancel"):
+		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		else:
+			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	
+	# Check if the "focus" action was just pressed or released to toggle the "strafing" flag
+	if event.is_action_pressed("focus"):
+		is_strafing = true
+	elif event.is_action_released("focus"):
+		is_strafing = false
 
 
 ## Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -103,199 +95,225 @@ func _process(delta: float) -> void:
 	# Do nothing if not the authority
 	if not is_multiplayer_authority(): return
 
-	# Smooth target blend input with time-scaled lerp.
-	var blend_weight := clamp(transition_speed * delta, 0.0, 1.0)
-	current_input_vector = current_input_vector.lerp(target_input_vector, blend_weight)
+	# Play forward animation with lateral movement for leaning
+	var forward_vector := Vector2(0, input_vector.length())
 
-	# If the player is crouching...
+	# Route input to "locomotion > crouch" blend while crouching so stance locomotion can move
 	if is_crouching:
-		# Set the animation tree to crouch blend path and apply the current input vector to the crouch blend space
-		animation_tree.set(locomotion_crouch_blend_path, current_input_vector)
-		# Set the movement speed to the crouch speed
-		speed = crouch_speed
-	# Otherwise, if the player is strafing...
-	elif is_strafing:
-		# Set the animation tree to strafe blend mode by passing a value of 1.0 to the locomotion mode blend parameter
-		animation_tree.set(locomotion_mode_path, 1.0)
-		# If the player is also sprinting...
-		if is_sprinting:
-			# Set the animation tree 
-			animation_tree.set(locomotion_strafe_blend_path, current_input_vector * 1.5)
-			if current_input_vector.y < -0.01:
-				speed = 5.0
-			else:
-				speed = 7.5
-		else:
-			animation_tree.set(locomotion_strafe_blend_path, current_input_vector)
-			speed = 5.0
-	else:
 		animation_tree.set(locomotion_mode_path, 0.0)
-		if is_sprinting:
-			animation_tree.set(locomotion_forward_blend_path, current_input_vector * Vector2(1, 1.5))
-			if current_input_vector.y < -0.01:
-				speed = 5.0
-			else:
-				speed = 7.5
-		else:
-			animation_tree.set(locomotion_forward_blend_path, current_input_vector)
-			speed = 5.0
+		animation_tree.set(locomotion_crouch_blend_path, forward_vector)
+		animation_tree.set(locomotion_forward_blend_path, Vector2.ZERO)
+		return
+
+	# Route input to "locomotion > strafe" blend while strafing so locomotion can move
+	if is_strafing:
+		animation_tree.set(locomotion_mode_path, 1.0)
+		animation_tree.set(
+			locomotion_strafe_blend_path, 
+			Vector2(
+				clamp(input_vector.x, -1, 1),
+				-clamp(input_vector.y, -1, 1),
+			)
+		)
+		animation_tree.set(locomotion_forward_blend_path, Vector2.ZERO)
+		return
+
+	# Route input to "locomotion > forward" blend so locomotion can move
+	animation_tree.set(locomotion_mode_path, 0.0)
+	if is_sprinting:
+		animation_tree.set(locomotion_forward_blend_path, forward_vector * Vector2(1, 1.5))
+	else:
+		animation_tree.set(locomotion_forward_blend_path, forward_vector)
 
 
+## Called once on each physics tick, and allows Nodes to synchronize their logic with physics ticks.
 func _physics_process(delta: float) -> void:
 	# Do nothing if not the authority
 	if not is_multiplayer_authority(): return
 
-	# If the player is not on the floor...
-	if not is_on_floor():
-		# Apply gravity
-		velocity.y -= gravity * delta
-		# Set the "jump queue" flag to false
-		jump_queued = false
-
-	# If a jump is queued...
-	if jump_queued:
-		# Apply the jump velocity to the player
-		velocity.y += jump_velocity
-		# Reset the "jump queue" flag
-		jump_queued = false
-
-	# Get the vector from the player input
-	var input_vector := Input.get_vector("move_left", "move_right", "move_up", "move_down", 0.2)
-	var locomotion_state := playback.get_current_node()
-	var stance_state := stance_playback.get_current_node()
-	if skip_landing_once and is_on_floor() and locomotion_state == locomotion_state_name:
-		skip_landing_once = false
-
 	# Cache if the player is "crouching"
-	is_crouching = stance_state in [standing_to_crouched_state_name, crouching_state_name, crouched_to_standing_state_name]
-	var crouch_held := Input.is_action_pressed("crouch")
+	is_crouching = playback_stance_state in [state_name_standing_to_crouching, state_name_crouching, state_name_crouching_to_standing]
 
-	# Start crouch/slide on crouch press while grounded.
-	if is_on_floor() and Input.is_action_just_pressed("crouch") and not is_crouching:
-		if velocity.length() > 0.1 and Input.is_action_pressed("sprint"):
-			begin_running_slide()
-		else:
-			begin_crouch()
+	# Cache if the player is "jumping"
+	is_jumping = playback_locomotion_state in [state_name_running_jump, state_name_standing_jump]
 
-	# If crouch key is no longer held, exit crouch as soon as crouch state is active.
-	if is_on_floor() and not crouch_held and is_crouching and stance_state != crouched_to_standing_state_name:
-		end_crouch()
+	# Cache if the player is "paragliding"
+	#is_paragliding = playback_locomotion_state == state_name_paragliding
+
+	# Cache if the player is "running"
+	is_running = playback_locomotion_state == state_name_locomotion and input_vector.length() >= 0.99
 
 	# Cache if the player is "sliding"
-	is_sliding = locomotion_state == running_slide_state_name
+	is_sliding = playback_locomotion_state == state_name_running_slide
 
-	# Cache if the player is "sprinting"
-	is_sprinting = Input.is_action_pressed("sprint") and not is_crouching
-
-	# Cache if the player is "strafing"
-	is_strafing = Input.is_action_pressed("aim")
-
-	# Check if the player is "strafing" or "crouching"
-	if is_strafing \
-	or is_crouching:
-		# Strafe mode: full 2D blend, camera controls facing direction
-		var direction := (transform.basis * Vector3(input_vector.x, 0, input_vector.y)).normalized()
-		if direction:
-			velocity.x = direction.x * speed
-			velocity.z = direction.z * speed
-			var local_velocity_point := to_local(global_position + velocity)
-			target_input_vector = Vector2(local_velocity_point.x, -local_velocity_point.z).limit_length(1)
+	if Input.is_action_pressed("sprint")\
+	and is_on_floor() \
+	and (abs(velocity.x) > 0.2 or abs(velocity.z) > 0.2)\
+	and not is_crouching \
+	and not is_exhausted \
+	and not is_sliding \
+	and not is_strafing:
+		if progress_bar_stamina.value <= 0.0:
+			is_exhausted = true
 		else:
-			velocity.x = move_toward(velocity.x, 0, speed)
-			velocity.z = move_toward(velocity.z, 0, speed)
-			target_input_vector = Vector2.ZERO
+			is_sprinting = true
 	else:
-		# Free-move mode: A/D rotates player + turn animation, W/S = forward/backward
-		if input_vector.x != 0.0:
-			rotate(basis.y, deg_to_rad(-input_vector.x * turn_speed * delta))
-		var forward_input := input_vector.y
-		if abs(forward_input) > 0.01 or abs(input_vector.x) > 0.01:
-			var direction := (transform.basis * Vector3(0, 0, forward_input)).normalized()
-			velocity.x = direction.x * speed
-			velocity.z = direction.z * speed
-			target_input_vector = Vector2(input_vector.x, -input_vector.y).limit_length(1)
-		else:
-			velocity.x = move_toward(velocity.x, 0, speed)
-			velocity.z = move_toward(velocity.z, 0, speed)
-			target_input_vector = Vector2.ZERO
-		look_at(global_position - transform.basis.z, Vector3.UP)
+		is_sprinting = false
 
-	# Move the body based on `velocity`
-	var used_root_motion := _apply_root_motion_horizontal(delta)
-	if not used_root_motion and Vector2(velocity.x, velocity.z).length() > speed:
-		var clamped = Vector2(velocity.x, velocity.z).limit_length(speed)
-		velocity.x = clamped.x
-		velocity.z = clamped.y
+	if is_exhausted and velocity.length() < 0.2 and not is_crouching:
+		playback_stance.travel(state_name_standing_panting)
+	elif not is_exhausted and playback_stance_state == state_name_standing_panting:
+		playback_stance.travel(state_name_standing)
+
+	# Check if the player released the "crouch" action and is still flagged as "crouching"
+	if not Input.is_action_pressed("crouch") \
+	and is_crouching:
+		# Transition to the "crouching to standing" state in the animation tree
+		playback_stance.travel(state_name_crouching_to_standing)
+
+	# Check if the player is on a floor
+	if is_on_floor():
+		# Ignore landing animation when touching down from falling with enough lateral momentum.
+		var lateral_velocity := velocity - up_direction * velocity.dot(up_direction)
+		if playback_locomotion_state == state_name_falling and lateral_velocity.length() > LANDING_SKIP_LATERAL_SPEED:
+			playback_locomotion.travel(state_name_locomotion)
+		# [Re]set the "is_falling" flag
+		is_falling = false
+		if is_paragliding:
+			end_paragliding()
+			# Unflag the player as "paragliding"
+			is_paragliding = false
+		# Check if the action "crouch" was just pressed
+		if Input.is_action_pressed("crouch") \
+		and not is_crouching \
+		and not is_sliding:
+			# Check if the player has some velocity
+			if (abs(velocity.x) > 0.2 or abs(velocity.z) > 0.2) \
+			and is_sprinting:
+				# Transition to the "sliding" state in the animation tree
+				begin_running_slide()
+			# The player must be standing still
+			else:
+				# Transition to the "crouching" state in the animation tree
+				begin_crouching()
+		# Check if the action "jump" was just pressed
+		if Input.is_action_just_pressed("jump"):
+			# Backflip when strafing and backpedaling.
+			if is_strafing and input_vector.y > 0.2:
+				begin_backflip()
+			# Check if the player has some velocity
+			elif (abs(velocity.x) > 0.2 or abs(velocity.z) > 0.2):
+				# Transition to the "running jump" state in the animation tree
+				begin_running_jump()
+			# The player must be standing still
+			else:
+				# Transition to the "standing jump" state in the animation tree
+				begin_standing_jump()
+	# The player must not be on a floor
+	else:
+		# Check if the "below" raycast is not colliding and the player is not already flagged as "falling"
+		if not raycast_below_step.is_colliding() \
+		and not is_falling \
+		and not is_jumping \
+		and not is_paragliding:
+			# Travel to the "falling" state in the animation tree
+			playback_locomotion.travel(state_name_falling)
+			is_falling = true
+		# Check if "jump" if pressed while in the air
+		if Input.is_action_just_pressed("jump") \
+		and not raycast_below_paraglide.is_colliding() \
+		and not is_paragliding:
+			# Transition to the "paragliding" state in the animation tree
+			begin_paragliding()
+			# Flag the player as "paragliding"
+			is_paragliding = true
+
+	# Cache the player input vector
+	input_vector = Input.get_vector("move_left", "move_right", "move_up", "move_down", 0.2)
+
+	# Determine the movement direction in 3D space by multiplying the input vector with the [Camera3D]'s [SpringArm3D] global transform basis, while ignoring the y component and normalizing the result
+	var direction := camera_spring_arm.global_transform.basis * Vector3(input_vector.x, 0, input_vector.y)
+	# Zero out the y component of the direction to prevent vertical movement, and normalize the result to maintain consistent movement speed in all directions, including diagonally
+	direction.y = 0
+	# Normalize the direction vector to maintain consistent movement speed in all directions, including diagonally, and check if the resulting vector is not zero to prevent errors when applying movement
+	direction = direction.normalized()
+	# Check if there is movement input
+	if direction.length() > 0.01 and not is_strafing:
+		# Rotate the player to face the movement direction
+		#pivot.rotation.y = lerp_angle(pivot.rotation.y, atan2(direction.x, direction.z), TURN_SPEED * delta)
+		pivot.rotation.y = atan2(direction.x, direction.z)
+
+	# If airborne in fall/paraglide, use raw input direction for movement instead of root motion from the animation tree.
+	if is_paragliding or is_falling:
+		# Use raw input direction while airborne instead of animation root motion.
+		var paraglide_velocity := camera_spring_arm.global_transform.basis * Vector3(input_vector.x, 0, input_vector.y)
+		paraglide_velocity.y = 0
+		if paraglide_velocity.length() > 0.01:
+			var air_control_speed := SPEED if is_paragliding else SPEED * FALL_AIR_CONTROL_MULTIPLIER
+			paraglide_velocity = paraglide_velocity.normalized() * air_control_speed
+		velocity = Vector3(paraglide_velocity.x, velocity.y, paraglide_velocity.z)
+	# Use root motion from the animation tree while grounded or jumping.
+	else:
+		var current_rotation = pivot.transform.basis.get_rotation_quaternion()
+		var root_motion_velocity = current_rotation * animation_tree.get_root_motion_position() / delta;
+		velocity = Vector3(root_motion_velocity.x, velocity.y, root_motion_velocity.z);
+
+	# Check if the player is not on a floor
+	if not is_on_floor():
+		# Apply gravity, opposite to the player's up direction
+		velocity -= up_direction * gravity * delta
+
+	# Move the body based on velocity
 	move_and_slide()
 
 
-func _apply_root_motion_horizontal(delta: float) -> bool:
-	if not use_root_motion_movement:
-		return false
-	if animation_tree == null or animation_tree.root_motion_track == NodePath(""):
-		return false
-	if delta <= 0.0:
-		return false
+## Called when the "jump" (while strafing and backpedaling) action is first executed. Transitions to the [backflip_state_name] state in the animation tree.
+func begin_backflip():
+	# Transition to the "backflip" state in the animation tree
+	playback_locomotion.travel(state_name_backflip)
 
-	var root_motion_delta := animation_tree.get_root_motion_position()
-	if root_motion_delta == Vector3.ZERO:
-		return false
 
-	# Root motion comes from skeleton/pivot orientation, not body transform.
-	var pivot_rotation := pivot.global_transform.basis.get_rotation_quaternion()
-	var root_motion_velocity := pivot_rotation * (root_motion_delta / delta)
-	velocity.x = root_motion_velocity.x
-	velocity.z = root_motion_velocity.z
-	return true
+## Called when the "crouch" (while standing) action is first executed. Transitions to the [standing_to_crouched_state_name] state in the animation tree.
+func begin_crouching() -> void:
+	# Transition to the "standing to crouching" state in the animation tree
+	playback_stance.travel(state_name_standing_to_crouching)
+
+
+## Called when the "paraglide" (while in the air) action is first executed. Transitions to the [paragliding_state_name] state in the animation tree.
+func begin_paragliding() -> void:
+	# Transition to the "paragliding" state in the animation tree
+	playback_locomotion.travel(state_name_paragliding)
+	# Reduce gravity while paragliding for better control and longer airtime
+	gravity = ProjectSettings.get_setting("physics/3d/default_gravity") / 4
+
+
+func end_paragliding() -> void:
+	# Transition to the "locomotion" state in the animation tree
+	playback_locomotion.travel(state_name_locomotion)
+	# Reset gravity to the default value
+	gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
+
+## Called when the "jump" (while running) action is first executed. Transitions to the [running_jump_state_name] state in the animation tree.
+func begin_running_jump():
+	# Transition to the "running jump" state in the animation tree
+	playback_locomotion.travel(state_name_running_jump)
+
+
+## Called when the "slide" (while running) action is first executed. Transitions to the [running_slide_state_name] state in the animation tree.
+func begin_running_slide():
+	# Transition to the "running slide" state in the animation tree
+	playback_locomotion.travel(state_name_running_slide)
 
 
 ## Called when the "jump" (while standing) action is first executed. Transitions to the [jumping_state_name] state in the animation tree.
 func begin_standing_jump():
-	skip_landing_once = false
-	playback.travel(jumping_state_name)
-
-
-## Called when the "jump" (while running) action is first executed. Transitions to the [running_jump_state_name] state in the animation tree.
-func begin_running_jump():
-	skip_landing_once = true
-	playback.travel(running_jump_state_name)
-
-
-## Called when the "crouch" (while sprinting) action is first executed. Transitions to the [running_slide_state_name] state in the animation tree.
-func begin_running_slide():
-	playback.travel(running_slide_state_name)
-	var capsule_shape := $CollisionShape3D.shape as CapsuleShape3D
-	if not capsule_shape:
-		return
-	var slide_collision_y := standing_collision_y - ((standing_collision_height - slide_collision_height) * 0.5)
-	# Create a [Tween] to resize the player's collision shape
-	var tween_slide := create_tween()
-	# Make the collision shape shorter, over time
-	tween_slide.tween_property($CollisionShape3D.shape, "height", slide_collision_height, 0.4)
-	# At the same time, move the collision shape's position so it stays at the player's feet
-	tween_slide.parallel().tween_property($CollisionShape3D, "position:y", slide_collision_y, 0.4)
-	# Wait for 0.4 seconds before continuing
-	tween_slide.tween_interval(0.4)
-	# Make the collision shape bigger, over time
-	tween_slide.tween_property($CollisionShape3D.shape, "height", standing_collision_height, 0.4)
-	# At the same time, move the collision shape's position so it stays at the player's feet
-	tween_slide.parallel().tween_property($CollisionShape3D, "position:y", standing_collision_y, 0.4)
-
-
-## Called when the "crouch" (while standing) action is first executed. Transitions to the [standing_to_crouched_state_name] state in the animation tree.
-func begin_crouch() -> void:
-	stance_playback.travel(standing_to_crouched_state_name)
-
-
-## Called when the "end crouch" action is first executed. Transitions to the [crouched_to_standing_state_name] state in the animation tree.
-func end_crouch() -> void:
-	var horizontal_speed := Vector2(velocity.x, velocity.z).length()
-	if horizontal_speed > crouch_exit_to_standing_speed_threshold:
-		stance_playback.travel(standing_state_name)
-	else:
-		stance_playback.travel(crouched_to_standing_state_name)
+	# Transition to the "standing jump" state in the animation tree
+	playback_locomotion.travel(state_name_standing_jump)
 
 
 ## Called by the "jump start/mixamo_com" animation to execute the jump velocity at the correct time (0.5s) in the animation.
 func execute_jump_velocity():
-	jump_queued = true
+	# Apply jump velocity, opposite to the player's up direction
+	velocity += up_direction * JUMP_VELOCITY
+	# Play a random [short] effort grunt
+	voice_male_effort_grunt.play()
