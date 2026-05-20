@@ -7,4 +7,5 @@ func _ready() -> void:
 
 
 func _on_area_3d_body_entered(body: Node3D) -> void:
-	$Player.global_position = Vector3(0.0, 10.0, 4.0)
+	if body is Player:
+		$Player.global_position = Vector3(0.0, 10.0, 4.0)
