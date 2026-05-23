@@ -51,6 +51,7 @@ metadata/step_sound = "grass"
 transform = Transform3D(1, 0, 0, 0, 0.8660254, -0.5, 0, 0.5, 0.8660254, 0, -0.03106606, -2.4849088)
 use_collision = true
 size = Vector3(1, 1, 2)
+metadata/step_sound = "stone"
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="CSGBox3D" unique_id=1655741072]
 transform = Transform3D(1, 0, 0, 0, 0.8660254, 0.5, 0, -0.5, 0.8660254, 0, -0.1842314, -1.1812301)
@@ -60,12 +61,14 @@ use_collision = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, -7.8)
 use_collision = true
 size = Vector3(1, 1.5, 3)
+metadata/step_sound = "stone"
 
 [node name="CSGCylinder3D" type="CSGCylinder3D" parent="." unique_id=1305563856]
 transform = Transform3D(-4.371139e-08, -1, -4.371139e-08, 0, -4.371139e-08, 1, -1, 4.371139e-08, 1.9106855e-15, 0, 0, -5.2)
 use_collision = true
 radius = 1.0
 sides = 32
+metadata/step_sound = "stone"
 
 [node name="CSGCylinder3D" type="CSGCylinder3D" parent="CSGCylinder3D" unique_id=1348397816]
 operation = 2
