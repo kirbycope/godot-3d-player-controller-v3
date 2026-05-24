@@ -86,4 +86,23 @@ size = Vector3(1, 10, 1)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4)
 shape = SubResource("BoxShape3D_h2yge")
 
+[node name="CSGBox3D4" type="CSGBox3D" parent="." unique_id=1835866691]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, -13)
+use_collision = true
+size = Vector3(10, 10, 1)
+
+[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="." unique_id=14730656]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -4, 2, 0)
+use_collision = true
+radius = 0.1
+height = 4.0
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGCylinder3D2" unique_id=409704079]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0000001, 2, 0)
+size = Vector3(2, 0.25, 0.25)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGCylinder3D2" unique_id=779754259]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0000005, -2, 0)
+size = Vector3(2, 0.25, 0.25)
+
 [connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]
