@@ -31,12 +31,12 @@ uv1_triplanar = true
 [sub_resource type="BoxShape3D" id="BoxShape3D_h2yge"]
 size = Vector3(2.5, 1, 2.5)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_272bh"]
-albedo_texture = ExtResource("4_1bvp3")
-uv1_triplanar = true
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7mycd"]
 albedo_texture = ExtResource("5_lquwl")
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_272bh"]
+albedo_texture = ExtResource("4_1bvp3")
 uv1_triplanar = true
 
 [node name="Main" type="Node3D" unique_id=1958218024]
@@ -105,12 +105,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 shape = SubResource("BoxShape3D_h2yge")
 
-[node name="CSGBox3D4" type="CSGBox3D" parent="." unique_id=1835866691]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, -10)
-use_collision = true
-size = Vector3(10, 10, 1)
-material = SubResource("StandardMaterial3D_272bh")
-
 [node name="CSGCylinder3D2" type="CSGCylinder3D" parent="." unique_id=14730656]
 transform = Transform3D(1.9106855e-15, 4.371139e-08, 1, 1, -4.371139e-08, 0, 4.371139e-08, 1, -4.371139e-08, -7, 2, -6)
 use_collision = true
@@ -131,13 +125,42 @@ use_collision = true
 height = 10.0
 material = SubResource("StandardMaterial3D_7mycd")
 
-[node name="HowToStartClimbing" type="Label3D" parent="." unique_id=1915463307]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 1.6, -9.45)
+[node name="ClimbingWall" type="Node3D" parent="." unique_id=675166949]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="ClimbingWall" unique_id=1835866691]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
+use_collision = true
+size = Vector3(10, 10, 1)
+material = SubResource("StandardMaterial3D_272bh")
+
+[node name="HowToStartClimbing" type="Label3D" parent="ClimbingWall" unique_id=1915463307]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 1.6, 0.54999924)
 double_sided = false
 text = "How To Start Climbing:
 1. Face wall
 2. Press <jump> (while on floor)
 3. Press <jump> (while in air)"
+horizontal_alignment = 0
+
+[node name="HowToClimb" type="Label3D" parent="ClimbingWall" unique_id=1747445861]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 2.8, 0.54999924)
+double_sided = false
+text = "How To Climb:
+⠀⠀Move
+⠀⠀⠀ ↑
+⠀⠀←⠀→
+⠀⠀⠀ ↓
+Press <crouch> to drop
+Hold <sprint> to climb faster"
+horizontal_alignment = 0
+
+[node name="HowToMantle" type="Label3D" parent="ClimbingWall" unique_id=722271307]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 8.8, 0.54999924)
+double_sided = false
+text = "How To Mantle:
+1. Climb up to the ledge to start hanging
+2. Press <jump> to climb onto the ledge"
 horizontal_alignment = 0
 
 [connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]
