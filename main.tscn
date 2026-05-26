@@ -15,6 +15,7 @@
 [ext_resource type="Script" uid="uid://deo0gxkmk2ahd" path="res://addons/sky_3d/src/Sky3D.gd" id="13_ryguw"]
 [ext_resource type="Script" uid="uid://b4tkplvh7fq40" path="res://addons/sky_3d/src/SkyDome.gd" id="14_d13ii"]
 [ext_resource type="Script" uid="uid://cjmkcj8hwm7ts" path="res://addons/sky_3d/src/TimeOfDay.gd" id="15_1u8w0"]
+[ext_resource type="Script" uid="uid://bidbgdex0xeuf" path="res://pause.gd" id="16_2cqfq"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0odxb"]
 shader = ExtResource("6_vivmo")
@@ -69,8 +70,8 @@ shader_parameter/cirrus_absorption = 2.0
 shader_parameter/cirrus_sky_tint_fade = 0.5
 shader_parameter/cirrus_size = 1.0
 shader_parameter/cirrus_uv = Vector2(0.16, 0.11)
-shader_parameter/cirrus_position1 = Vector2(0.20170985, 0.20170985)
-shader_parameter/cirrus_position2 = Vector2(0.20170985, 0.20170985)
+shader_parameter/cirrus_position1 = Vector2(0.81799364, 0.81799364)
+shader_parameter/cirrus_position2 = Vector2(0.81799364, 0.81799364)
 shader_parameter/cirrus_texture = ExtResource("7_2cqfq")
 shader_parameter/cumulus_visible = true
 shader_parameter/cumulus_intensity = 0.6
@@ -80,7 +81,7 @@ shader_parameter/cumulus_absorption = 2.0
 shader_parameter/cumulus_noise_freq = 2.7
 shader_parameter/cumulus_sky_tint_fade = 0.0
 shader_parameter/cumulus_size = 0.5
-shader_parameter/cumulus_position = Vector2(1.0083774, 1.0083774)
+shader_parameter/cumulus_position = Vector2(4.090473, 4.090473)
 shader_parameter/cumulus_texture = ExtResource("8_yaehf")
 shader_parameter/cumulus_partial_mie_phase = Vector3(0.957564, 1.042436, 0.412)
 shader_parameter/cumulus_mie_intensity = 1.0
@@ -275,5 +276,36 @@ text = "How To Mantle:
 1. Climb up to the ledge to start hanging
 2. Press <jump> to climb onto the ledge"
 horizontal_alignment = 0
+
+[node name="Pause" type="ColorRect" parent="." unique_id=522886309]
+custom_minimum_size = Vector2(9000, 4000)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -4500.0
+offset_top = -2000.0
+offset_right = 4500.0
+offset_bottom = 2000.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+script = ExtResource("16_2cqfq")
+
+[node name="Label" type="Label" parent="Pause" unique_id=1589502805]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -89.5
+offset_top = -11.5
+offset_right = 89.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Click anywhere to Start"
 
 [connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]
