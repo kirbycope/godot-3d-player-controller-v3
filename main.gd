@@ -15,3 +15,7 @@ func _process(delta: float) -> void:
 func _on_area_3d_body_entered(body: Node3D) -> void:
 	if body is Player:
 		$Player.global_position = $"./CSGBox3D3/Marker3D".global_position#Vector3(0.0, 10.0, 4.0)
+
+
+func _on_area_3d_body_exited(body: Node3D) -> void:
+	pass # Replace with function body.

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://buhfwihyh15g4"
-path="res://.godot/imported/Grass001_1K-JPG_Displacement.jpg-95f4d73e18b23021f24c571501f51b61.ctex"
+uid="uid://dulti5gttwpdu"
+path="res://.godot/imported/Wood073_1K-JPG_AmbientOcclusion.jpg-c19cb928bb44c0b3eb4c73a52ad5ed3e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/ambientcg_com/grass_001/Grass001_1K-JPG_Displacement.jpg"
-dest_files=["res://.godot/imported/Grass001_1K-JPG_Displacement.jpg-95f4d73e18b23021f24c571501f51b61.ctex"]
+source_file="res://assets/ambientcg_com/wood_073/Wood073_1K-JPG_AmbientOcclusion.jpg"
+dest_files=["res://.godot/imported/Wood073_1K-JPG_AmbientOcclusion.jpg-c19cb928bb44c0b3eb4c73a52ad5ed3e.ctex"]
 
 [params]
 
@@ -25,8 +25,8 @@ compress/normal_map=0
 compress/channel_pack=0
 mipmaps/generate=true
 mipmaps/limit=-1
-roughness/mode=7
-roughness/src_normal="res://assets/ambientcg_com/grass_001/Grass001_1K-JPG_NormalGL.jpg"
+roughness/mode=8
+roughness/src_normal="res://assets/ambientcg_com/wood_073/Wood073_1K-JPG_NormalGL.jpg"
 process/channel_remap/red=0
 process/channel_remap/green=1
 process/channel_remap/blue=2

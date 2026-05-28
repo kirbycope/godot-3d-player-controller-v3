@@ -3,20 +3,19 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b1s4l8kq88sma"
-path.s3tc="res://.godot/imported/Grass001_1K-JPG_AmbientOcclusion.jpg-66a3aeb6287637cd6614dd0d8d07713f.s3tc.ctex"
+path="res://.godot/imported/Grass001_1K-JPG_AmbientOcclusion.jpg-66a3aeb6287637cd6614dd0d8d07713f.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 
 [deps]
 
 source_file="res://assets/ambientcg_com/grass_001/Grass001_1K-JPG_AmbientOcclusion.jpg"
-dest_files=["res://.godot/imported/Grass001_1K-JPG_AmbientOcclusion.jpg-66a3aeb6287637cd6614dd0d8d07713f.s3tc.ctex"]
+dest_files=["res://.godot/imported/Grass001_1K-JPG_AmbientOcclusion.jpg-66a3aeb6287637cd6614dd0d8d07713f.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=1
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
