@@ -1,0 +1,12 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://bom3nf6eycx3n"]
+
+[ext_resource type="Texture2D" uid="uid://buevt683d5a3t" path="res://assets/n_hance_studio/weapons/Textures/T_Staff_Newbie_01_Cl_D.png" id="1_vhfn0"]
+[ext_resource type="Texture2D" uid="uid://v0m8dyj4yqk8" path="res://assets/n_hance_studio/weapons/Textures/T_Staff_Newbie_01_MR.png" id="2_gubss"]
+[ext_resource type="Texture2D" uid="uid://dhg5d86m40cti" path="res://assets/n_hance_studio/weapons/Textures/T_Staff_Newbie_01_N.png" id="3_uw7qa"]
+
+[resource]
+albedo_texture = ExtResource("1_vhfn0")
+metallic = 1.0
+metallic_texture = ExtResource("2_gubss")
+normal_enabled = true
+normal_texture = ExtResource("3_uw7qa")

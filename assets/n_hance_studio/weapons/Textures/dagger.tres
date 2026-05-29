@@ -1,0 +1,12 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://crvdofbhxo3kq"]
+
+[ext_resource type="Texture2D" uid="uid://lo5rruiyejfn" path="res://assets/n_hance_studio/weapons/Textures/T_Dagger_Newbie_01_Cl_D.png" id="1_7vvup"]
+[ext_resource type="Texture2D" uid="uid://4bvyci4imedi" path="res://assets/n_hance_studio/weapons/Textures/T_Dagger_Newbie_01_MR.png" id="2_ikrhh"]
+[ext_resource type="Texture2D" uid="uid://dl0xd46do0t76" path="res://assets/n_hance_studio/weapons/Textures/T_Dagger_Newbie_01_N.png" id="3_lalc6"]
+
+[resource]
+albedo_texture = ExtResource("1_7vvup")
+metallic = 1.0
+metallic_texture = ExtResource("2_ikrhh")
+normal_enabled = true
+normal_texture = ExtResource("3_lalc6")
