@@ -73,8 +73,8 @@ shader_parameter/cirrus_absorption = 2.0
 shader_parameter/cirrus_sky_tint_fade = 0.5
 shader_parameter/cirrus_size = 1.0
 shader_parameter/cirrus_uv = Vector2(0.16, 0.11)
-shader_parameter/cirrus_position1 = Vector2(0.1817194, 0.1817194)
-shader_parameter/cirrus_position2 = Vector2(0.1817194, 0.1817194)
+shader_parameter/cirrus_position1 = Vector2(0.045702185, 0.045702185)
+shader_parameter/cirrus_position2 = Vector2(0.045702185, 0.045702185)
 shader_parameter/cirrus_texture = ExtResource("7_2cqfq")
 shader_parameter/cumulus_visible = true
 shader_parameter/cumulus_intensity = 0.6
@@ -84,7 +84,7 @@ shader_parameter/cumulus_absorption = 2.0
 shader_parameter/cumulus_noise_freq = 2.7
 shader_parameter/cumulus_sky_tint_fade = 0.0
 shader_parameter/cumulus_size = 0.5
-shader_parameter/cumulus_position = Vector2(0.9084462, 0.9084462)
+shader_parameter/cumulus_position = Vector2(0.22851601, 0.22851601)
 shader_parameter/cumulus_texture = ExtResource("8_yaehf")
 shader_parameter/cumulus_partial_mie_phase = Vector3(0.957564, 1.042436, 0.412)
 shader_parameter/cumulus_mie_intensity = 1.0
@@ -335,6 +335,14 @@ material = ExtResource("18_82xsv")
 
 [node name="Label3D" type="Label3D" parent="WoodenSign" unique_id=1578370728]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.026000023)
+shaded = true
+double_sided = false
+modulate = Color(0.8392157, 0.70980394, 0.53333336, 1)
+text = "README"
+outline_size = 0
+
+[node name="Label3D2" type="Label3D" parent="WoodenSign" unique_id=500107117]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 1, -0.027091503)
 shaded = true
 double_sided = false
 modulate = Color(0.8392157, 0.70980394, 0.53333336, 1)
