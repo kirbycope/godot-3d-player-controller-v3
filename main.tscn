@@ -16,9 +16,7 @@
 [ext_resource type="Script" uid="uid://b4tkplvh7fq40" path="res://addons/sky_3d/src/SkyDome.gd" id="14_d13ii"]
 [ext_resource type="Script" uid="uid://cjmkcj8hwm7ts" path="res://addons/sky_3d/src/TimeOfDay.gd" id="15_1u8w0"]
 [ext_resource type="Script" uid="uid://bidbgdex0xeuf" path="res://pause.gd" id="16_2cqfq"]
-[ext_resource type="Script" uid="uid://437d60vw50vx" path="res://wooden_sign.gd" id="17_82xsv"]
-[ext_resource type="Material" uid="uid://bgh0q813ao036" path="res://assets/ambientcg_com/planks_20/Planks020_1K-JPG.tres" id="17_cegan"]
-[ext_resource type="Material" uid="uid://da7xlxi1ot5r1" path="res://assets/ambientcg_com/wood_073/Wood073_1K-JPG.tres" id="18_82xsv"]
+[ext_resource type="PackedScene" uid="uid://b634fbd3saoxu" path="res://wooden_sign.tscn" id="17_yaehf"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0odxb"]
 shader = ExtResource("6_vivmo")
@@ -73,8 +71,8 @@ shader_parameter/cirrus_absorption = 2.0
 shader_parameter/cirrus_sky_tint_fade = 0.5
 shader_parameter/cirrus_size = 1.0
 shader_parameter/cirrus_uv = Vector2(0.16, 0.11)
-shader_parameter/cirrus_position1 = Vector2(0.045702185, 0.045702185)
-shader_parameter/cirrus_position2 = Vector2(0.045702185, 0.045702185)
+shader_parameter/cirrus_position1 = Vector2(0.095510624, 0.095510624)
+shader_parameter/cirrus_position2 = Vector2(0.095510624, 0.095510624)
 shader_parameter/cirrus_texture = ExtResource("7_2cqfq")
 shader_parameter/cumulus_visible = true
 shader_parameter/cumulus_intensity = 0.6
@@ -84,7 +82,7 @@ shader_parameter/cumulus_absorption = 2.0
 shader_parameter/cumulus_noise_freq = 2.7
 shader_parameter/cumulus_sky_tint_fade = 0.0
 shader_parameter/cumulus_size = 0.5
-shader_parameter/cumulus_position = Vector2(0.22851601, 0.22851601)
+shader_parameter/cumulus_position = Vector2(0.47751123, 0.47751123)
 shader_parameter/cumulus_texture = ExtResource("8_yaehf")
 shader_parameter/cumulus_partial_mie_phase = Vector3(0.957564, 1.042436, 0.412)
 shader_parameter/cumulus_mie_intensity = 1.0
@@ -129,10 +127,6 @@ uv1_triplanar = true
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_272bh"]
 albedo_texture = ExtResource("4_1bvp3")
 uv1_triplanar = true
-
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_senyo"]
-height = 1.0
-radius = 1.0
 
 [node name="Main" type="Node3D" unique_id=1958218024]
 script = ExtResource("1_h2yge")
@@ -316,48 +310,7 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "Click anywhere to Start"
 
-[node name="WoodenSign" type="Node3D" parent="." unique_id=1120110674]
+[node name="WoodenSign" parent="." unique_id=205783760 instance=ExtResource("17_yaehf")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15865001, -2)
-script = ExtResource("17_82xsv")
-
-[node name="CSGBox3D" type="CSGBox3D" parent="WoodenSign" unique_id=512433114]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-use_collision = true
-size = Vector3(0.667, 0.333, 0.05)
-material = ExtResource("17_cegan")
-
-[node name="CSGCylinder3D" type="CSGCylinder3D" parent="WoodenSign" unique_id=2058520049]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5029371, 0)
-use_collision = true
-radius = 0.025
-height = 0.69
-material = ExtResource("18_82xsv")
-
-[node name="Label3D" type="Label3D" parent="WoodenSign" unique_id=1578370728]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.026000023)
-shaded = true
-double_sided = false
-modulate = Color(0.8392157, 0.70980394, 0.53333336, 1)
-text = "README"
-outline_size = 0
-
-[node name="Label3D2" type="Label3D" parent="WoodenSign" unique_id=500107117]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 1, -0.027091503)
-shaded = true
-double_sided = false
-modulate = Color(0.8392157, 0.70980394, 0.53333336, 1)
-text = "README"
-outline_size = 0
-
-[node name="LookAtTarget" type="Marker3D" parent="WoodenSign" unique_id=2139881388]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-
-[node name="PlayerDetection" type="Area3D" parent="WoodenSign" unique_id=650784411]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WoodenSign/PlayerDetection" unique_id=2070344165]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6665, 0)
-shape = SubResource("CylinderShape3D_senyo")
 
 [connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]
-[connection signal="body_entered" from="WoodenSign/PlayerDetection" to="WoodenSign" method="_on_player_detection_body_entered"]
-[connection signal="body_exited" from="WoodenSign/PlayerDetection" to="WoodenSign" method="_on_player_detection_body_exited"]
