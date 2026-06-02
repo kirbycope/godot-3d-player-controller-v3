@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dtnxqy114fjc1"]
 
 [ext_resource type="Material" uid="uid://smkievpeajs3" path="res://assets/ambientcg_com/grass_001/Grass001_1K-JPG.tres" id="1_fj7yv"]
-[ext_resource type="PackedScene" uid="uid://ct7n8imyllhbo" path="res://addons/3d_player_controller/player_2.tscn" id="2_tlwt5"]
+[ext_resource type="PackedScene" uid="uid://ct7n8imyllhbo" path="res://addons/3d_player_controller/player.tscn" id="2_tlwt5"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -31,7 +31,3 @@ size = Vector3(100, 1, 100)
 material = ExtResource("1_fj7yv")
 
 [node name="Player" parent="." unique_id=994458497 instance=ExtResource("2_tlwt5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-
-[node name="Camera3D" type="Camera3D" parent="Player" unique_id=871973395]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
