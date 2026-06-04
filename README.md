@@ -22,10 +22,7 @@ Godot 3D Player Controller v3
 1. Change the "Skin" to "Without Skin" and then select the "DOWNLOAD" button
 1. Move the downloaded file from your Downloads to [/addons/3d_player_controller/assets/mixamo/animations/source/](/addons/3d_player_controller/assets/mixamo/animations/source/)
 1. Open the project using Terminal
-1. Run the following command:
-    ```
-    blender --background --python tools/bake_root_motion.py
-    ```
+1. Run the following command:`blender --background --python tools/bake_root_motion.py`
     - This runs the [bake_root_motion](/tools/bake_root_motion.py) Blender/Python script to add a "root" bone and reparent the "hips" to it. The positional data is moved from "hips" to "root".
     - Once complete, the processed files are located in [/addons/3d_player_controller/assets/mixamo/animations/root_motion/](/addons/3d_player_controller/assets/mixamo/animations/root_motion/)
     - As an added benefit the `.glb` files seem to be much smaller than the `.fbx` files!
