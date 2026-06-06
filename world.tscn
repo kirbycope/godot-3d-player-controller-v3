@@ -245,8 +245,8 @@ visible = false
 transform = Transform3D(-1, 8.742278e-08, 3.821371e-15, 0, -4.371139e-08, 1, 8.742278e-08, 1, 4.371139e-08, 0, 1, -0.5)
 script = ExtResource("8_hiqwa")
 bone_attachment_bone_name = "LeftLowerArm"
-position_offset = Vector3(0, 0.1, 0)
-rotation_offset_degrees = Vector3(0, 90, 190)
+position_offset = Vector3(-0.035, 0.1, 0)
+rotation_offset_degrees = Vector3(0, 180, 180)
 
 [node name="Area3D" type="Area3D" parent="N_Hance_Studio/SK_Shield_Newbie_01" unique_id=376316930]
 
