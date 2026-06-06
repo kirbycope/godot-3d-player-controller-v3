@@ -286,7 +286,7 @@ script = ExtResource("8_hiqwa")
 bone_attachment_bone_name = "RightHand"
 equipment_type = 5
 position_offset = Vector3(0, 0.1, 0.025)
-rotation_offset_degrees = Vector3(0, 90, 0)
+rotation_offset_degrees = Vector3(0, 90, 180)
 
 [node name="Area3D" type="Area3D" parent="N_Hance_Studio/SK_Sword_1H_Newbie_01" unique_id=1871370711]
 
