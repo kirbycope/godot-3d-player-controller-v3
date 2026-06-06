@@ -341,8 +341,8 @@ transform = Transform3D(-8.742278e-08, -4.3711395e-08, 1, 1, -4.371139e-08, 8.74
 script = ExtResource("8_hiqwa")
 bone_attachment_bone_name = "RightHand"
 equipment_type = 4
-position_offset = Vector3(0, 0.1, 0.025)
-rotation_offset_degrees = Vector3(0, 90, 0)
+position_offset = Vector3(0.025, 0.125, 0.025)
+rotation_offset_degrees = Vector3(0, 180, 65)
 
 [node name="Area3D" type="Area3D" parent="JustCreate3D/Weapon_02" unique_id=1390449809]
 
