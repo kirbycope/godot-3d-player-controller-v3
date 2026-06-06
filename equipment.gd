@@ -5,6 +5,7 @@ enum EquipmentType {
 	AXE_2H,
 	BOW,
 	DAGGER,
+	RIFLE,
 	STAFF,
 	SWORD_1H,
 	SWORD_2H,
@@ -94,6 +95,8 @@ func equip(player: Player) -> void:
 		player.equipped_bow = true
 	elif equipment_type == EquipmentType.DAGGER:
 		player.equipped_dagger = true
+	elif equipment_type == EquipmentType.RIFLE:
+		player.equipped_rifle = true
 	elif equipment_type == EquipmentType.STAFF:
 		player.equipped_staff = true
 	elif equipment_type == EquipmentType.SWORD_AND_SHIELD:

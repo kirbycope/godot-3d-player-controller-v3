@@ -16,6 +16,8 @@
 [ext_resource type="PackedScene" uid="uid://br0tu61de4o65" path="res://assets/n_hance_studio/weapons/SK_Sword_1H_Newbie_01.fbx" id="12_26xuy"]
 [ext_resource type="PackedScene" uid="uid://bk3gv5c0w00gi" path="res://assets/n_hance_studio/weapons/SK_Sword_2H_Newbie_01.fbx" id="13_bc84e"]
 [ext_resource type="Texture2D" uid="uid://cw7nfaedba0m5" path="res://assets/n_hance_studio/weapons/n_hance_studio_newbie_weapons.png" id="14_wukud"]
+[ext_resource type="Texture2D" uid="uid://bq274xxscinqm" path="res://assets/justcreate3d/weapons_lite/justcreate3d_weapons_lite.png" id="17_ikiii"]
+[ext_resource type="PackedScene" uid="uid://dl71nqjm2psik" path="res://assets/justcreate3d/weapons_lite/Weapon_02.fbx" id="18_cbp6q"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -102,6 +104,17 @@ height = 1.45
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_0y3lt"]
 radius = 0.2
 height = 2.1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5pyta"]
+cull_mode = 2
+albedo_texture = ExtResource("17_ikiii")
+
+[sub_resource type="QuadMesh" id="QuadMesh_fk680"]
+material = SubResource("StandardMaterial3D_5pyta")
+size = Vector2(4.8, 2.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_senyo"]
+size = Vector3(1, 0.4, 0.2)
 
 [node name="World" type="Node3D" unique_id=336392758]
 script = ExtResource("1_aqk2v")
@@ -248,7 +261,7 @@ visible = false
 transform = Transform3D(-1, 8.742278e-08, 3.821371e-15, 0, -4.371139e-08, 1, 8.742278e-08, 1, 4.371139e-08, 0, 1, -0.5)
 script = ExtResource("8_hiqwa")
 bone_attachment_bone_name = "LeftLowerArm"
-equipment_type = 7
+equipment_type = 8
 position_offset = Vector3(-0.035, 0.1, 0)
 rotation_offset_degrees = Vector3(0, 180, 180)
 
@@ -266,7 +279,7 @@ visible = false
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1.1, -1.5)
 script = ExtResource("8_hiqwa")
 bone_attachment_bone_name = "RightHand"
-equipment_type = 4
+equipment_type = 5
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(0, 90, 0)
 
@@ -284,7 +297,7 @@ visible = false
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0.3, -2.5)
 script = ExtResource("8_hiqwa")
 bone_attachment_bone_name = "RightHand"
-equipment_type = 5
+equipment_type = 8
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(0, 90, 180)
 
@@ -302,7 +315,7 @@ visible = false
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0.5, -3.5)
 script = ExtResource("8_hiqwa")
 bone_attachment_bone_name = "RightHand"
-equipment_type = 6
+equipment_type = 7
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(0, 90, 0)
 
@@ -317,4 +330,26 @@ transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.55
 visible = false
 
 [node name="JustCreate3D" type="Node3D" parent="." unique_id=647333121]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 5, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="JustCreate3D" unique_id=12665981]
+transform = Transform3D(-4.371138e-08, 0, 1, 0, 1, 0, -1, 0, -4.371138e-08, 0, 1.3500001, 0)
+mesh = SubResource("QuadMesh_fk680")
+
+[node name="Weapon_02" parent="JustCreate3D" unique_id=1867527010 instance=ExtResource("18_cbp6q")]
+transform = Transform3D(-8.742278e-08, -4.3711395e-08, 1, 1, -4.371139e-08, 8.742278e-08, 4.3711385e-08, 1, 4.3711395e-08, 0.5999999, 0.32214674, 5.24538e-08)
+script = ExtResource("8_hiqwa")
+bone_attachment_bone_name = "RightHand"
+equipment_type = 4
+position_offset = Vector3(0, 0.1, 0.025)
+rotation_offset_degrees = Vector3(0, 90, 0)
+
+[node name="Area3D" type="Area3D" parent="JustCreate3D/Weapon_02" unique_id=1390449809]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="JustCreate3D/Weapon_02/Area3D" unique_id=1525970693]
+transform = Transform3D(1, 0, -1.9106853e-15, 0, 1, 0, -1.9106853e-15, 0, 1, 0.17785323, 1.5869063e-08, 0)
+shape = SubResource("BoxShape3D_senyo")
+
+[node name="ActionPrompt" parent="JustCreate3D/Weapon_02" unique_id=308729938 instance=ExtResource("9_2u3nc")]
+transform = Transform3D(3.5527137e-15, 1.3733708e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.910685e-15, 0.19999999, -4.3711452e-09, 0.099999905)
+visible = false
