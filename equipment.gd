@@ -1,6 +1,18 @@
 extends Node3D
 
+enum EquipmentType {
+	AXE_1H,
+	AXE_2H,
+	BOW,
+	DAGGER,
+	STAFF,
+	SWORD_1H,
+	SWORD_2H,
+	SWORD_AND_SHIELD,
+}
+
 @export var bone_attachment_bone_name: String
+@export var equipment_type: EquipmentType
 @export var position_offset: Vector3:
 	set(val):
 		position_offset = val
@@ -72,6 +84,24 @@ func equip(player: Player) -> void:
 	new_attachment.add_child(equipment_instance)
 	_disable_collisions(equipment_instance)
 	_update_attachment_offsets()
+
+	# 5. Flag the player as having equipped the item
+	if equipment_type == EquipmentType.AXE_1H:
+		player.equipped_axe_1h = true
+	elif equipment_type == EquipmentType.AXE_2H:
+		player.equipped_axe_2h = true
+	elif equipment_type == EquipmentType.BOW:
+		player.equipped_bow = true
+	elif equipment_type == EquipmentType.DAGGER:
+		player.equipped_dagger = true
+	elif equipment_type == EquipmentType.STAFF:
+		player.equipped_staff = true
+	elif equipment_type == EquipmentType.SWORD_AND_SHIELD:
+		player.equipped_shield = true
+	elif equipment_type == EquipmentType.SWORD_1H:
+		player.equipped_sword_1h = true
+	elif equipment_type == EquipmentType.SWORD_2H:
+		player.equipped_sword_2h = true
 
 
 func _disable_collisions(node: Node) -> void:

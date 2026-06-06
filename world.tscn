@@ -190,6 +190,7 @@ visible = false
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 2.5)
 script = ExtResource("8_hiqwa")
 bone_attachment_bone_name = "RightHand"
+equipment_type = 1
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(0, 90, 0)
 
@@ -211,6 +212,7 @@ visible = false
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 1.5)
 script = ExtResource("8_hiqwa")
 bone_attachment_bone_name = "LeftHand"
+equipment_type = 2
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(180, 90, 0)
 
@@ -228,6 +230,7 @@ visible = false
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 0.5)
 script = ExtResource("8_hiqwa")
 bone_attachment_bone_name = "RightHand"
+equipment_type = 3
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(0, 90, 0)
 
@@ -245,6 +248,7 @@ visible = false
 transform = Transform3D(-1, 8.742278e-08, 3.821371e-15, 0, -4.371139e-08, 1, 8.742278e-08, 1, 4.371139e-08, 0, 1, -0.5)
 script = ExtResource("8_hiqwa")
 bone_attachment_bone_name = "LeftLowerArm"
+equipment_type = 7
 position_offset = Vector3(-0.035, 0.1, 0)
 rotation_offset_degrees = Vector3(0, 180, 180)
 
@@ -262,6 +266,7 @@ visible = false
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1.1, -1.5)
 script = ExtResource("8_hiqwa")
 bone_attachment_bone_name = "RightHand"
+equipment_type = 4
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(0, 90, 0)
 
@@ -279,6 +284,7 @@ visible = false
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0.3, -2.5)
 script = ExtResource("8_hiqwa")
 bone_attachment_bone_name = "RightHand"
+equipment_type = 5
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(0, 90, 0)
 
@@ -296,6 +302,7 @@ visible = false
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0.5, -3.5)
 script = ExtResource("8_hiqwa")
 bone_attachment_bone_name = "RightHand"
+equipment_type = 6
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(0, 90, 0)
 
