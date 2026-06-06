@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://dokp6v1sufknx"]
+
+[node name="ActionPrompt" type="Node3D" unique_id=1664152999]
+
+[node name="KeyboardMouse" type="Label3D" parent="." unique_id=45750300]
+billboard = 1
+text = "Press [E] to equip"
+
+[node name="Microsoft" type="Label3D" parent="." unique_id=701469260]
+visible = false
+billboard = 1
+text = "Press (A) to equip"
+
+[node name="Nintendo" type="Label3D" parent="." unique_id=36575937]
+visible = false
+billboard = 1
+text = "Press (B) to equip"
+
+[node name="Sony" type="Label3D" parent="." unique_id=1328443395]
+visible = false
+billboard = 1
+text = "Press (X) to equip"

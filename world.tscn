@@ -1,8 +1,21 @@
 [gd_scene format=3 uid="uid://dtnxqy114fjc1"]
 
+[ext_resource type="Script" uid="uid://bbwlgibrls8fb" path="res://world.gd" id="1_aqk2v"]
 [ext_resource type="Material" uid="uid://smkievpeajs3" path="res://assets/ambientcg_com/grass_001/Grass001_1K-JPG.tres" id="1_fj7yv"]
 [ext_resource type="PackedScene" uid="uid://ct7n8imyllhbo" path="res://addons/3d_player_controller/player.tscn" id="2_tlwt5"]
 [ext_resource type="Texture2D" uid="uid://bx5wuwx7autid" path="res://addons/3d_player_controller/assets/kenney_nl/Prototype Textures/Vector/texture_12.svg" id="3_tlwt5"]
+[ext_resource type="Texture2D" uid="uid://ceiimv767w1ec" path="res://addons/3d_player_controller/assets/kenney_nl/Prototype Textures/Vector/texture_04.svg" id="5_036b0"]
+[ext_resource type="PackedScene" uid="uid://d2e1lgjtlptk8" path="res://assets/n_hance_studio/weapons/SK_Axe_1H_Newbie_01.fbx" id="6_70uel"]
+[ext_resource type="PackedScene" uid="uid://3fgjoqwcbivx" path="res://assets/n_hance_studio/weapons/SK_Axe_2HL_Newbie_01.fbx" id="7_hiqwa"]
+[ext_resource type="PackedScene" uid="uid://bsybqxf7immya" path="res://assets/n_hance_studio/weapons/SK_Bow_Newbie_01.fbx" id="8_2u3nc"]
+[ext_resource type="Script" uid="uid://d0u7oh1rirfy4" path="res://equipment.gd" id="8_hiqwa"]
+[ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://action_prompt.tscn" id="9_2u3nc"]
+[ext_resource type="PackedScene" uid="uid://blo6m8lpjri0d" path="res://assets/n_hance_studio/weapons/SK_Dagger_1H_Newbie_01.fbx" id="9_udxuc"]
+[ext_resource type="PackedScene" uid="uid://1eqwedxx6bid" path="res://assets/n_hance_studio/weapons/SK_Shield_Newbie_01.fbx" id="10_ikiii"]
+[ext_resource type="PackedScene" uid="uid://b68tmbfsyhl17" path="res://assets/n_hance_studio/weapons/SK_Staff_Newbie_01.fbx" id="11_cbp6q"]
+[ext_resource type="PackedScene" uid="uid://br0tu61de4o65" path="res://assets/n_hance_studio/weapons/SK_Sword_1H_Newbie_01.fbx" id="12_26xuy"]
+[ext_resource type="PackedScene" uid="uid://bk3gv5c0w00gi" path="res://assets/n_hance_studio/weapons/SK_Sword_2H_Newbie_01.fbx" id="13_bc84e"]
+[ext_resource type="Texture2D" uid="uid://cw7nfaedba0m5" path="res://assets/n_hance_studio/weapons/n_hance_studio_newbie_weapons.png" id="14_wukud"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -22,7 +35,76 @@ uv1_scale = Vector3(0.333, 0.333, 0.333)
 uv1_offset = Vector3(0.5, 0.5, 0.5)
 uv1_triplanar = true
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_senyo"]
+albedo_texture = ExtResource("5_036b0")
+uv1_triplanar = true
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_036b0"]
+load_path = "res://.godot/imported/texture_04.svg-ce8309479826f054be6c04ac4cbc43fc.s3tc.ctex"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dwbse"]
+albedo_texture = SubResource("CompressedTexture2D_036b0")
+uv1_scale = Vector3(1, 1.715, 1)
+uv1_offset = Vector3(0, 1.44, 0)
+uv1_triplanar = true
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_pkg7o"]
+load_path = "res://.godot/imported/texture_04.svg-ce8309479826f054be6c04ac4cbc43fc.s3tc.ctex"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gbfbk"]
+albedo_texture = SubResource("CompressedTexture2D_pkg7o")
+uv1_scale = Vector3(1, 1.72, 1)
+uv1_offset = Vector3(0, 1.445, 0)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fk680"]
+cull_mode = 2
+albedo_texture = ExtResource("14_wukud")
+
+[sub_resource type="QuadMesh" id="QuadMesh_senyo"]
+material = SubResource("StandardMaterial3D_fk680")
+size = Vector2(4.88, 3.25)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_fk680"]
+radius = 0.1
+height = 1.125
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fk680"]
+size = Vector3(0.2, 1, 0.4)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_senyo"]
+radius = 0.1
+height = 1.825
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_senyo"]
+height = 0.19999999
+radius = 0.4
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5pyta"]
+size = Vector3(0.2, 0.5, 1.4)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5pyta"]
+radius = 0.1
+height = 0.90000004
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_fk680"]
+height = 0.15
+radius = 0.4
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_hxkk4"]
+radius = 0.1
+height = 2.1750002
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_jnf5c"]
+radius = 0.1
+height = 1.45
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_0y3lt"]
+radius = 0.2
+height = 2.1
+
 [node name="World" type="Node3D" unique_id=336392758]
+script = ExtResource("1_aqk2v")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=358521112]
 environment = SubResource("Environment_aqk2v")
@@ -44,3 +126,132 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -7)
 use_collision = true
 size = Vector3(3, 3, 0.1)
 material = SubResource("StandardMaterial3D_aqk2v")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="DoorBlock" unique_id=1993667062]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.3194504e-05, -0.42814195, 0.001953125)
+operation = 2
+size = Vector3(1.2788575, 2.1437163, 0.10546875)
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="." unique_id=1354732821]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 2.5, 0.65, -7)
+use_collision = true
+radius = 1.0
+height = 1.0
+sides = 24
+material = SubResource("StandardMaterial3D_senyo")
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="CSGCylinder3D" unique_id=790622425]
+operation = 2
+radius = 0.9
+height = 1.0
+sides = 24
+material = SubResource("StandardMaterial3D_senyo")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=1753099771]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.25, 0.75, -7)
+use_collision = true
+size = Vector3(1.5, 1.5, 1)
+material = SubResource("StandardMaterial3D_dwbse")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGBox3D" unique_id=1120534201]
+transform = Transform3D(0.8660254, 0.5, 0, -0.5, 0.8660254, 0, 0, 0, 1, 2.1068726, -0.8996164, 0)
+size = Vector3(4, 1.5, 1)
+material = SubResource("StandardMaterial3D_gbfbk")
+
+[node name="N_Hance_Studio" type="Node3D" parent="." unique_id=1622472344]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 0)
+
+[node name="Preview" type="MeshInstance3D" parent="N_Hance_Studio" unique_id=1823423236]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -2, 1.625, 0)
+mesh = SubResource("QuadMesh_senyo")
+
+[node name="SK_Axe_1H_Newbie_01" parent="N_Hance_Studio" unique_id=1164308377 instance=ExtResource("6_70uel")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 3.5)
+script = ExtResource("8_hiqwa")
+bone_attachment_bone_name = "RightHand"
+position_offset = Vector3(0, 0.1, 0.025)
+rotation_offset_degrees = Vector3(0, 90, 0)
+
+[node name="ActionPrompt" parent="N_Hance_Studio/SK_Axe_1H_Newbie_01" unique_id=1664152999 instance=ExtResource("9_2u3nc")]
+transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0, 0, 0)
+visible = false
+
+[node name="Area3D" type="Area3D" parent="N_Hance_Studio/SK_Axe_1H_Newbie_01" unique_id=774331995]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio/SK_Axe_1H_Newbie_01/Area3D" unique_id=1909958052]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0.06250006)
+shape = SubResource("CapsuleShape3D_fk680")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="N_Hance_Studio/SK_Axe_1H_Newbie_01/Area3D" unique_id=728295275]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.40000015)
+shape = SubResource("BoxShape3D_fk680")
+
+[node name="SK_Axe_2HL_Newbie_01" parent="N_Hance_Studio" unique_id=1297848573 instance=ExtResource("7_hiqwa")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 2.5)
+
+[node name="Area3D" type="Area3D" parent="N_Hance_Studio/SK_Axe_2HL_Newbie_01" unique_id=1317302899]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio/SK_Axe_2HL_Newbie_01/Area3D" unique_id=117128859]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0.0124999285)
+shape = SubResource("CapsuleShape3D_senyo")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="N_Hance_Studio/SK_Axe_2HL_Newbie_01/Area3D" unique_id=726383303]
+transform = Transform3D(-4.371139e-08, -1, -4.371139e-08, 1, -4.3711385e-08, -4.371139e-08, 4.371139e-08, -4.371139e-08, 1, 0, 0, 0.75)
+shape = SubResource("CylinderShape3D_senyo")
+
+[node name="SK_Bow_Newbie_01" parent="N_Hance_Studio" unique_id=1222899704 instance=ExtResource("8_2u3nc")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 1.5)
+
+[node name="Area3D" type="Area3D" parent="N_Hance_Studio/SK_Bow_Newbie_01" unique_id=326004096]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio/SK_Bow_Newbie_01/Area3D" unique_id=711169504]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1500001, -4.7683716e-07)
+shape = SubResource("BoxShape3D_5pyta")
+
+[node name="SK_Dagger_1H_Newbie_01" parent="N_Hance_Studio" unique_id=2089465159 instance=ExtResource("9_udxuc")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 0.5)
+
+[node name="Area3D" type="Area3D" parent="N_Hance_Studio/SK_Dagger_1H_Newbie_01" unique_id=1675766781]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio/SK_Dagger_1H_Newbie_01/Area3D" unique_id=505536662]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -2.3841858e-07, 0.2500003)
+shape = SubResource("CapsuleShape3D_5pyta")
+
+[node name="SK_Shield_Newbie_01" parent="N_Hance_Studio" unique_id=2039608327 instance=ExtResource("10_ikiii")]
+transform = Transform3D(-1, 8.742278e-08, 3.821371e-15, 0, -4.371139e-08, 1, 8.742278e-08, 1, 4.371139e-08, 0, 1, -0.5)
+
+[node name="Area3D" type="Area3D" parent="N_Hance_Studio/SK_Shield_Newbie_01" unique_id=376316930]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio/SK_Shield_Newbie_01/Area3D" unique_id=461190870]
+transform = Transform3D(-4.371139e-08, 1, 4.371139e-08, -1, -4.37116e-08, -4.371139e-08, -4.371139e-08, -4.371117e-08, 1, -0.053, -0.05, 0)
+shape = SubResource("CylinderShape3D_fk680")
+
+[node name="SK_Staff_Newbie_01" parent="N_Hance_Studio" unique_id=906851320 instance=ExtResource("11_cbp6q")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 1.1, -1.5)
+
+[node name="Area3D" type="Area3D" parent="N_Hance_Studio/SK_Staff_Newbie_01" unique_id=604874034]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio/SK_Staff_Newbie_01/Area3D" unique_id=158341563]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0.012499809)
+shape = SubResource("CapsuleShape3D_hxkk4")
+
+[node name="SK_Sword_1H_Newbie_01" parent="N_Hance_Studio" unique_id=13927276 instance=ExtResource("12_26xuy")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0.3, -2.5)
+
+[node name="Area3D" type="Area3D" parent="N_Hance_Studio/SK_Sword_1H_Newbie_01" unique_id=1871370711]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio/SK_Sword_1H_Newbie_01/Area3D" unique_id=2089109079]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0.42499998)
+shape = SubResource("CapsuleShape3D_jnf5c")
+
+[node name="SK_Sword_2H_Newbie_01" parent="N_Hance_Studio" unique_id=674997095 instance=ExtResource("13_bc84e")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0.5, -3.5)
+
+[node name="Area3D" type="Area3D" parent="N_Hance_Studio/SK_Sword_2H_Newbie_01" unique_id=1329213807]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio/SK_Sword_2H_Newbie_01/Area3D" unique_id=2090209578]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0.65)
+shape = SubResource("CapsuleShape3D_0y3lt")
+
+[node name="JustCreate3D" type="Node3D" parent="." unique_id=647333121]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
