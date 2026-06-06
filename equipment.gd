@@ -9,6 +9,10 @@ extends Node3D
 	set(val):
 		rotation_offset_degrees = val
 		_update_attachment_offsets()
+@export var scale_offset: Vector3 = Vector3.ONE:
+	set(val):
+		scale_offset = val
+		_update_attachment_offsets()
 
 var equipment_instance: Node3D
 var menu_displayed: bool = false
@@ -31,6 +35,7 @@ func _update_attachment_offsets() -> void:
 			deg_to_rad(rotation_offset_degrees.y),
 			deg_to_rad(rotation_offset_degrees.z)
 		)
+		equipment_instance.scale = scale_offset
 
 
 func display_menu(_player: Player) -> void:
@@ -65,16 +70,15 @@ func equip(player: Player) -> void:
 	# 4. Duplicate this weapon and add it to the attachment
 	equipment_instance = duplicate()
 	new_attachment.add_child(equipment_instance)
-	_change_collision_layers(equipment_instance)
+	_disable_collisions(equipment_instance)
 	_update_attachment_offsets()
 
 
-func _change_collision_layers(node: Node) -> void:
-	if node is CollisionObject3D:
-		if node.collision_layer == 1:
-			node.collision_layer = 2
+func _disable_collisions(node: Node) -> void:
+	if node is CollisionShape3D:
+		node.disabled = true
 	for child in node.get_children():
-		_change_collision_layers(child)
+		_disable_collisions(child)
 
 
 func hide_menu() -> void:
