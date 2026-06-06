@@ -190,6 +190,7 @@ visible = false
 [node name="SK_Axe_2HL_Newbie_01" parent="N_Hance_Studio" unique_id=1297848573 instance=ExtResource("7_hiqwa")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 2.5)
 script = ExtResource("8_hiqwa")
+bone_attachment_bone_name = "RightHand"
 
 [node name="Area3D" type="Area3D" parent="N_Hance_Studio/SK_Axe_2HL_Newbie_01" unique_id=1317302899]
 
@@ -208,6 +209,7 @@ visible = false
 [node name="SK_Bow_Newbie_01" parent="N_Hance_Studio" unique_id=1222899704 instance=ExtResource("8_2u3nc")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 1.5)
 script = ExtResource("8_hiqwa")
+bone_attachment_bone_name = "LeftHand"
 
 [node name="Area3D" type="Area3D" parent="N_Hance_Studio/SK_Bow_Newbie_01" unique_id=326004096]
 
@@ -222,6 +224,7 @@ visible = false
 [node name="SK_Dagger_1H_Newbie_01" parent="N_Hance_Studio" unique_id=2089465159 instance=ExtResource("9_udxuc")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 0.5)
 script = ExtResource("8_hiqwa")
+bone_attachment_bone_name = "RightHand"
 
 [node name="Area3D" type="Area3D" parent="N_Hance_Studio/SK_Dagger_1H_Newbie_01" unique_id=1675766781]
 
@@ -236,6 +239,7 @@ visible = false
 [node name="SK_Shield_Newbie_01" parent="N_Hance_Studio" unique_id=2039608327 instance=ExtResource("10_ikiii")]
 transform = Transform3D(-1, 8.742278e-08, 3.821371e-15, 0, -4.371139e-08, 1, 8.742278e-08, 1, 4.371139e-08, 0, 1, -0.5)
 script = ExtResource("8_hiqwa")
+bone_attachment_bone_name = "LeftHand"
 
 [node name="Area3D" type="Area3D" parent="N_Hance_Studio/SK_Shield_Newbie_01" unique_id=376316930]
 
@@ -250,6 +254,7 @@ visible = false
 [node name="SK_Staff_Newbie_01" parent="N_Hance_Studio" unique_id=906851320 instance=ExtResource("11_cbp6q")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 1.1, -1.5)
 script = ExtResource("8_hiqwa")
+bone_attachment_bone_name = "RightHand"
 
 [node name="Area3D" type="Area3D" parent="N_Hance_Studio/SK_Staff_Newbie_01" unique_id=604874034]
 
@@ -264,6 +269,7 @@ visible = false
 [node name="SK_Sword_1H_Newbie_01" parent="N_Hance_Studio" unique_id=13927276 instance=ExtResource("12_26xuy")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0.3, -2.5)
 script = ExtResource("8_hiqwa")
+bone_attachment_bone_name = "RightHand"
 
 [node name="Area3D" type="Area3D" parent="N_Hance_Studio/SK_Sword_1H_Newbie_01" unique_id=1871370711]
 
@@ -278,6 +284,7 @@ visible = false
 [node name="SK_Sword_2H_Newbie_01" parent="N_Hance_Studio" unique_id=674997095 instance=ExtResource("13_bc84e")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0.5, -3.5)
 script = ExtResource("8_hiqwa")
+bone_attachment_bone_name = "RightHand"
 
 [node name="Area3D" type="Area3D" parent="N_Hance_Studio/SK_Sword_2H_Newbie_01" unique_id=1329213807]
 
