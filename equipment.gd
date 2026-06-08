@@ -14,7 +14,10 @@ enum EquipmentType {
 }
 
 @export var bone_attachment_bone_name: String
+@export var can_shoot: bool = false
 @export var equipment_type: EquipmentType
+@export var is_exclusive: bool = false
+@export var is_throwable: bool = false
 @export var position_offset: Vector3:
 	set(val):
 		position_offset = val
@@ -70,11 +73,26 @@ func equip(player: Player) -> void:
 		push_error("Skeleton3D not found on player!")
 		return
 
-	# 2. Look for and remove any existing attachment on this specific bone
+	# 2. Handle existing and conflicting attachments
 	for child in skeleton.get_children():
-		if child is BoneAttachment3D and child.bone_name == bone_attachment_bone_name:
-			skeleton.remove_child(child)
-			child.queue_free() # Clean it up from memory
+		if child is BoneAttachment3D:
+			var is_exclusive_attachment := false
+			for sub_child in child.get_children():
+				if "is_exclusive" in sub_child and sub_child.is_exclusive:
+					is_exclusive_attachment = true
+					break
+
+			# Remove any existing attachment on this specific bone,
+			# OR unequip all other equipment types if equipping an exclusive/two-handed weapon,
+			# OR unequip exclusive/two-handed weapons if equipping any new item.
+			if child.bone_name == bone_attachment_bone_name or is_exclusive or is_exclusive_attachment:
+				for sub_child in child.get_children():
+					if "equipment_type" in sub_child:
+						_set_equipped_flag(player, sub_child.equipment_type, false)
+						if player.equipment.has(sub_child):
+							player.equipment.erase(sub_child)
+				skeleton.remove_child(child)
+				child.queue_free() # Clean it up from memory
 
 	# 3. Create a new BoneAttachment3D and configure it
 	var new_attachment = BoneAttachment3D.new()
@@ -88,26 +106,32 @@ func equip(player: Player) -> void:
 	_update_attachment_offsets()
 
 	# 5. Flag the player as having equipped the item
-	if equipment_type == EquipmentType.AXE_1H:
-		player.equipped_axe_1h = true
-	elif equipment_type == EquipmentType.AXE_2H:
-		player.equipped_axe_2h = true
-	elif equipment_type == EquipmentType.BOW:
-		player.equipped_bow = true
-	elif equipment_type == EquipmentType.DAGGER:
-		player.equipped_dagger = true
-	elif equipment_type == EquipmentType.PISTOL:
-		player.equipped_pistol = true
-	elif equipment_type == EquipmentType.RIFLE:
-		player.equipped_rifle = true
-	elif equipment_type == EquipmentType.STAFF:
-		player.equipped_staff = true
-	elif equipment_type == EquipmentType.SWORD_AND_SHIELD:
-		player.equipped_shield = true
-	elif equipment_type == EquipmentType.SWORD_1H:
-		player.equipped_sword_1h = true
-	elif equipment_type == EquipmentType.SWORD_2H:
-		player.equipped_sword_2h = true
+	_set_equipped_flag(player, equipment_type, true)
+	if not player.equipment.has(equipment_instance):
+		player.equipment.append(equipment_instance)
+
+
+func _set_equipped_flag(player: Player, type: EquipmentType, state: bool) -> void:
+	if type == EquipmentType.AXE_1H:
+		player.equipped_axe_1h = state
+	elif type == EquipmentType.AXE_2H:
+		player.equipped_axe_2h = state
+	elif type == EquipmentType.BOW:
+		player.equipped_bow = state
+	elif type == EquipmentType.DAGGER:
+		player.equipped_dagger = state
+	elif type == EquipmentType.PISTOL:
+		player.equipped_pistol = state
+	elif type == EquipmentType.RIFLE:
+		player.equipped_rifle = state
+	elif type == EquipmentType.STAFF:
+		player.equipped_staff = state
+	elif type == EquipmentType.SWORD_AND_SHIELD:
+		player.equipped_shield = state
+	elif type == EquipmentType.SWORD_1H:
+		player.equipped_sword_1h = state
+	elif type == EquipmentType.SWORD_2H:
+		player.equipped_sword_2h = state
 
 
 func _disable_collisions(node: Node) -> void:
