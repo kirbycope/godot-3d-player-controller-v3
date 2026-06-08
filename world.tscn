@@ -264,6 +264,24 @@ shape = SubResource("CapsuleShape3D_5pyta")
 transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0, 0, 0.29999995)
 visible = false
 
+[node name="SK_Dagger_1H_Newbie_02" parent="N_Hance_Studio" unique_id=1026972564 instance=ExtResource("9_udxuc")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -0.5, 1, 0.5)
+script = ExtResource("8_hiqwa")
+bone_attachment_bone_name = "LeftHand"
+equipment_type = 3
+position_offset = Vector3(0, 0.1, 0.025)
+rotation_offset_degrees = Vector3(0, 90, 0)
+
+[node name="Area3D" type="Area3D" parent="N_Hance_Studio/SK_Dagger_1H_Newbie_02" unique_id=737885465]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio/SK_Dagger_1H_Newbie_02/Area3D" unique_id=1628504248]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -2.3841858e-07, 0.2500003)
+shape = SubResource("CapsuleShape3D_5pyta")
+
+[node name="ActionPrompt" parent="N_Hance_Studio/SK_Dagger_1H_Newbie_02" unique_id=1743477583 instance=ExtResource("9_2u3nc")]
+transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0, 0, 0.29999995)
+visible = false
+
 [node name="SK_Shield_Newbie_01" parent="N_Hance_Studio" unique_id=2039608327 instance=ExtResource("10_ikiii")]
 transform = Transform3D(-1, 8.742278e-08, 3.821371e-15, 0, -4.371139e-08, 1, 8.742278e-08, 1, 4.371139e-08, 0, 1, -0.5)
 script = ExtResource("8_hiqwa")
