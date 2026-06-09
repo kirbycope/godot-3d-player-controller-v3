@@ -1,0 +1,48 @@
+[gd_scene format=3 uid="uid://b6jp43n1e1u6i"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_senyo"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fk680"]
+albedo_color = Color(1, 0, 0, 0.87058824)
+metallic = 0.2
+roughness = 0.2
+clearcoat_enabled = true
+clearcoat = 0.5
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_senyo"]
+material = SubResource("StandardMaterial3D_fk680")
+top_radius = 0.4
+bottom_radius = 0.001000002
+height = 0.425
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_senyo"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_senyo"]
+billboard_mode = 2
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_pk3py"]
+material = SubResource("StandardMaterial3D_senyo")
+size = Vector2(0.02, 2)
+orientation = 2
+
+[node name="RedBallon" type="RigidBody3D" unique_id=71966468]
+freeze = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1439917208]
+mesh = SubResource("SphereMesh_senyo")
+surface_material_override/0 = SubResource("StandardMaterial3D_fk680")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D" unique_id=884740649]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5103012, 0)
+mesh = SubResource("CylinderMesh_senyo")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="MeshInstance3D" unique_id=128048423]
+transform = Transform3D(-0.1, -1.509958e-08, 0, 1.509958e-08, -0.1, 0, 0, 0, 0.1, 0, -0.71030116, 0)
+mesh = SubResource("CylinderMesh_senyo")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1182705747]
+shape = SubResource("SphereShape3D_senyo")
+
+[node name="String" type="MeshInstance3D" parent="." unique_id=1372729191]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.7, 0)
+mesh = SubResource("PlaneMesh_pk3py")

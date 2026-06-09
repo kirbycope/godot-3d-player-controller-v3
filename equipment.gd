@@ -18,6 +18,7 @@ enum EquipmentType {
 @export var equipment_type: EquipmentType
 @export var is_exclusive: bool = false
 @export var is_throwable: bool = false
+@export var projectile_speed: float = 50.0 ## meters/second (Arrows, Bullets, etc.)
 @export var position_offset: Vector3:
 	set(val):
 		position_offset = val
@@ -107,6 +108,8 @@ func equip(player: Player) -> void:
 
 	# 5. Flag the player as having equipped the item
 	_set_equipped_flag(player, equipment_type, true)
+
+	# 6. Add a reference to this equipment to the player
 	if not player.equipment.has(equipment_instance):
 		player.equipment.append(equipment_instance)
 

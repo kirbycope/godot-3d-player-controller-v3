@@ -19,6 +19,7 @@
 [ext_resource type="Texture2D" uid="uid://bq274xxscinqm" path="res://assets/justcreate3d/weapons_lite/justcreate3d_weapons_lite.png" id="17_ikiii"]
 [ext_resource type="PackedScene" uid="uid://dl71nqjm2psik" path="res://assets/justcreate3d/weapons_lite/Weapon_02.fbx" id="18_cbp6q"]
 [ext_resource type="PackedScene" uid="uid://b3tb2j1pwgw3u" path="res://assets/justcreate3d/weapons_lite/Weapon_01.fbx" id="19_cbp6q"]
+[ext_resource type="PackedScene" uid="uid://b6jp43n1e1u6i" path="res://red_ballon.tscn" id="20_26xuy"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -85,6 +86,15 @@ radius = 0.4
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_5pyta"]
 size = Vector3(0.2, 0.5, 1.4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_skopi"]
+albedo_color = Color(0.5882353, 0.29411766, 0, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_senyo"]
+material = SubResource("StandardMaterial3D_skopi")
+top_radius = 0.01
+bottom_radius = 0.01
+height = 0.667
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5pyta"]
 radius = 0.1
@@ -234,7 +244,7 @@ can_shoot = true
 equipment_type = 2
 is_exclusive = true
 position_offset = Vector3(0, 0.1, 0.025)
-rotation_offset_degrees = Vector3(180, 90, 0)
+rotation_offset_degrees = Vector3(180, 90, 15)
 
 [node name="Area3D" type="Area3D" parent="N_Hance_Studio/SK_Bow_Newbie_01" unique_id=326004096]
 
@@ -245,6 +255,13 @@ shape = SubResource("BoxShape3D_5pyta")
 [node name="ActionPrompt" parent="N_Hance_Studio/SK_Bow_Newbie_01" unique_id=932364194 instance=ExtResource("9_2u3nc")]
 transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0, 0, 0)
 visible = false
+
+[node name="Arrow" type="Node3D" parent="N_Hance_Studio/SK_Bow_Newbie_01" unique_id=1889023628]
+visible = false
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="N_Hance_Studio/SK_Bow_Newbie_01/Arrow" unique_id=1399478126]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.20000005, 0.10000008)
+mesh = SubResource("CylinderMesh_senyo")
 
 [node name="SK_Dagger_1H_Newbie_01" parent="N_Hance_Studio" unique_id=2089465159 instance=ExtResource("9_udxuc")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 0.5)
@@ -400,3 +417,12 @@ shape = SubResource("BoxShape3D_k78ss")
 [node name="ActionPrompt" parent="JustCreate3D/Weapon_01" unique_id=1216637783 instance=ExtResource("9_2u3nc")]
 transform = Transform3D(3.5527137e-15, 1.3733708e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.910685e-15, 0.19999999, -4.3711452e-09, 0.099999905)
 visible = false
+
+[node name="RedBallon" parent="." unique_id=71966468 instance=ExtResource("20_26xuy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 4.2, -7)
+
+[node name="RedBallon2" parent="." unique_id=924568543 instance=ExtResource("20_26xuy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 4.2, -7)
+
+[node name="RedBallon3" parent="." unique_id=1477495641 instance=ExtResource("20_26xuy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.7, -7)
