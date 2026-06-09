@@ -1,5 +1,10 @@
 [gd_scene format=3 uid="uid://b6jp43n1e1u6i"]
 
+[ext_resource type="Script" uid="uid://djev6ylgoh2b0" path="res://red_ballon.gd" id="1_t8k3v"]
+[ext_resource type="AudioStream" uid="uid://0ove6lahesha" path="res://addons/3d_player_controller/assets/freesound/850645__sadiquecat__ir-caravan-ballon-pop-1.wav" id="2_t8bqt"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_senyo"]
+
 [sub_resource type="SphereMesh" id="SphereMesh_senyo"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fk680"]
@@ -15,8 +20,6 @@ top_radius = 0.4
 bottom_radius = 0.001000002
 height = 0.425
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_senyo"]
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_senyo"]
 billboard_mode = 2
 
@@ -25,24 +28,98 @@ material = SubResource("StandardMaterial3D_senyo")
 size = Vector2(0.02, 2)
 orientation = 2
 
-[node name="RedBallon" type="RigidBody3D" unique_id=71966468]
-freeze = true
+[sub_resource type="Animation" id="Animation_t8k3v"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visuals:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Visuals/String:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1439917208]
+[sub_resource type="Animation" id="Animation_t8bqt"]
+resource_name = "circle"
+length = 1.33
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visuals:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.6, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(-0.3, 0.3, 0), Vector3(0, 0.6, 0), Vector3(0.3, 0.3, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Visuals/String:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_4vnw8"]
+_data = {
+&"RESET": SubResource("Animation_t8k3v"),
+&"circle": SubResource("Animation_t8bqt")
+}
+
+[node name="RedBallon" type="Node3D" unique_id=1230963]
+script = ExtResource("1_t8k3v")
+
+[node name="Visuals" type="Node3D" parent="." unique_id=529709283]
+
+[node name="HitDetection" type="Area3D" parent="Visuals" unique_id=841928393]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Visuals/HitDetection" unique_id=1182705747]
+shape = SubResource("SphereShape3D_senyo")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Visuals" unique_id=1439917208]
 mesh = SubResource("SphereMesh_senyo")
 surface_material_override/0 = SubResource("StandardMaterial3D_fk680")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D" unique_id=884740649]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Visuals/MeshInstance3D" unique_id=884740649]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5103012, 0)
 mesh = SubResource("CylinderMesh_senyo")
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="MeshInstance3D" unique_id=128048423]
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Visuals/MeshInstance3D" unique_id=128048423]
 transform = Transform3D(-0.1, -1.509958e-08, 0, 1.509958e-08, -0.1, 0, 0, 0, 0.1, 0, -0.71030116, 0)
 mesh = SubResource("CylinderMesh_senyo")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1182705747]
-shape = SubResource("SphereShape3D_senyo")
-
-[node name="String" type="MeshInstance3D" parent="." unique_id=1372729191]
+[node name="String" type="MeshInstance3D" parent="Visuals" unique_id=1372729191]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.7, 0)
 mesh = SubResource("PlaneMesh_pk3py")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1426025464]
+libraries/ = SubResource("AnimationLibrary_4vnw8")
+
+[node name="Pop" type="AudioStreamPlayer3D" parent="." unique_id=1290456104]
+stream = ExtResource("2_t8bqt")
+
+[connection signal="body_entered" from="Visuals/HitDetection" to="." method="_on_hit_detection_body_entered"]
