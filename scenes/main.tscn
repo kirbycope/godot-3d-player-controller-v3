@@ -432,7 +432,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.40000015)
 shape = SubResource("BoxShape3D_fk680")
 
 [node name="ActionPrompt" parent="N_Hance_Studio/SK_Axe_1H_Newbie_01" unique_id=1664152999 instance=ExtResource("9_og1vs")]
-transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0, 0, 0)
+transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0.099999905, 0, 0)
 visible = false
 
 [node name="SK_Axe_2HL_Newbie_01" parent="N_Hance_Studio" unique_id=1297848573 instance=ExtResource("10_2wyq8")]
@@ -455,7 +455,7 @@ transform = Transform3D(-4.371139e-08, -1, -4.371139e-08, 1, -4.3711385e-08, -4.
 shape = SubResource("CylinderShape3D_senyo")
 
 [node name="ActionPrompt" parent="N_Hance_Studio/SK_Axe_2HL_Newbie_01" unique_id=843371138 instance=ExtResource("9_og1vs")]
-transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0, 0, 0)
+transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0.099999905, 0, 0)
 visible = false
 
 [node name="SK_Bow_Newbie_01" parent="N_Hance_Studio" unique_id=1222899704 instance=ExtResource("11_vxglm")]
@@ -475,7 +475,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1500001, -4.7683716e-07)
 shape = SubResource("BoxShape3D_5pyta")
 
 [node name="ActionPrompt" parent="N_Hance_Studio/SK_Bow_Newbie_01" unique_id=932364194 instance=ExtResource("9_og1vs")]
-transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0, 0, 0)
+transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0.099999905, 0, 0)
 visible = false
 
 [node name="Arrow" type="CharacterBody3D" parent="N_Hance_Studio/SK_Bow_Newbie_01" unique_id=1381140281]
@@ -528,7 +528,7 @@ transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -
 shape = SubResource("CapsuleShape3D_5pyta")
 
 [node name="ActionPrompt" parent="N_Hance_Studio/SK_Dagger_1H_Newbie_01" unique_id=755666406 instance=ExtResource("9_og1vs")]
-transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0, 0, 0.29999995)
+transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0.099999905, 0, 0.29999995)
 visible = false
 
 [node name="SK_Dagger_1H_Newbie_02" parent="N_Hance_Studio" unique_id=1026972564 instance=ExtResource("12_2f3dj")]
@@ -546,7 +546,7 @@ transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -
 shape = SubResource("CapsuleShape3D_5pyta")
 
 [node name="ActionPrompt" parent="N_Hance_Studio/SK_Dagger_1H_Newbie_02" unique_id=1743477583 instance=ExtResource("9_og1vs")]
-transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0, 0, 0.29999995)
+transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0.099999905, 0, 0.29999995)
 visible = false
 
 [node name="SK_Shield_Newbie_01" parent="N_Hance_Studio" unique_id=2039608327 instance=ExtResource("13_yq6so")]
@@ -583,7 +583,7 @@ transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0
 shape = SubResource("CapsuleShape3D_hxkk4")
 
 [node name="ActionPrompt" parent="N_Hance_Studio/SK_Staff_Newbie_01" unique_id=1329713778 instance=ExtResource("9_og1vs")]
-transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0, 0, 0)
+transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0.099999905, 0, 0)
 visible = false
 
 [node name="SK_Sword_1H_Newbie_01" parent="N_Hance_Studio" unique_id=13927276 instance=ExtResource("15_tel4y")]
@@ -601,7 +601,7 @@ transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0
 shape = SubResource("CapsuleShape3D_jnf5c")
 
 [node name="ActionPrompt" parent="N_Hance_Studio/SK_Sword_1H_Newbie_01" unique_id=2088748174 instance=ExtResource("9_og1vs")]
-transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0, 0, 0.5)
+transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0.099999905, 0, 0.5)
 visible = false
 
 [node name="SK_Sword_2H_Newbie_01" parent="N_Hance_Studio" unique_id=674997095 instance=ExtResource("16_qkpxi")]
@@ -620,7 +620,7 @@ transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0
 shape = SubResource("CapsuleShape3D_0y3lt")
 
 [node name="ActionPrompt" parent="N_Hance_Studio/SK_Sword_2H_Newbie_01" unique_id=1977469190 instance=ExtResource("9_og1vs")]
-transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0, 0, 0.99999994)
+transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0.099999905, 0, 0.99999994)
 visible = false
 
 [node name="JustCreate3D" type="Node3D" parent="." unique_id=647333121]
