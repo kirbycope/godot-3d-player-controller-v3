@@ -1,25 +1,26 @@
 [gd_scene format=3 uid="uid://dtnxqy114fjc1"]
 
-[ext_resource type="Script" uid="uid://bbwlgibrls8fb" path="res://world.gd" id="1_aqk2v"]
-[ext_resource type="Material" uid="uid://smkievpeajs3" path="res://assets/ambientcg_com/grass_001/Grass001_1K-JPG.tres" id="1_fj7yv"]
-[ext_resource type="PackedScene" uid="uid://ct7n8imyllhbo" path="res://addons/3d_player_controller/player.tscn" id="2_tlwt5"]
-[ext_resource type="Texture2D" uid="uid://bx5wuwx7autid" path="res://addons/3d_player_controller/assets/kenney_nl/Prototype Textures/Vector/texture_12.svg" id="3_tlwt5"]
-[ext_resource type="Texture2D" uid="uid://ceiimv767w1ec" path="res://addons/3d_player_controller/assets/kenney_nl/Prototype Textures/Vector/texture_04.svg" id="5_036b0"]
-[ext_resource type="PackedScene" uid="uid://d2e1lgjtlptk8" path="res://assets/n_hance_studio/weapons/SK_Axe_1H_Newbie_01.fbx" id="6_70uel"]
-[ext_resource type="PackedScene" uid="uid://3fgjoqwcbivx" path="res://assets/n_hance_studio/weapons/SK_Axe_2HL_Newbie_01.fbx" id="7_hiqwa"]
-[ext_resource type="PackedScene" uid="uid://bsybqxf7immya" path="res://assets/n_hance_studio/weapons/SK_Bow_Newbie_01.fbx" id="8_2u3nc"]
-[ext_resource type="Script" uid="uid://d0u7oh1rirfy4" path="res://equipment.gd" id="8_hiqwa"]
-[ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://action_prompt.tscn" id="9_2u3nc"]
-[ext_resource type="PackedScene" uid="uid://blo6m8lpjri0d" path="res://assets/n_hance_studio/weapons/SK_Dagger_1H_Newbie_01.fbx" id="9_udxuc"]
-[ext_resource type="PackedScene" uid="uid://1eqwedxx6bid" path="res://assets/n_hance_studio/weapons/SK_Shield_Newbie_01.fbx" id="10_ikiii"]
-[ext_resource type="PackedScene" uid="uid://b68tmbfsyhl17" path="res://assets/n_hance_studio/weapons/SK_Staff_Newbie_01.fbx" id="11_cbp6q"]
-[ext_resource type="PackedScene" uid="uid://br0tu61de4o65" path="res://assets/n_hance_studio/weapons/SK_Sword_1H_Newbie_01.fbx" id="12_26xuy"]
-[ext_resource type="PackedScene" uid="uid://bk3gv5c0w00gi" path="res://assets/n_hance_studio/weapons/SK_Sword_2H_Newbie_01.fbx" id="13_bc84e"]
-[ext_resource type="Texture2D" uid="uid://cw7nfaedba0m5" path="res://assets/n_hance_studio/weapons/n_hance_studio_newbie_weapons.png" id="14_wukud"]
-[ext_resource type="Texture2D" uid="uid://bq274xxscinqm" path="res://assets/justcreate3d/weapons_lite/justcreate3d_weapons_lite.png" id="17_ikiii"]
-[ext_resource type="PackedScene" uid="uid://dl71nqjm2psik" path="res://assets/justcreate3d/weapons_lite/Weapon_02.fbx" id="18_cbp6q"]
-[ext_resource type="PackedScene" uid="uid://b3tb2j1pwgw3u" path="res://assets/justcreate3d/weapons_lite/Weapon_01.fbx" id="19_cbp6q"]
-[ext_resource type="PackedScene" uid="uid://b6jp43n1e1u6i" path="res://red_ballon.tscn" id="20_26xuy"]
+[ext_resource type="PackedScene" uid="uid://ct7n8imyllhbo" path="res://addons/3d_player_controller/player.tscn" id="1_0xm2m"]
+[ext_resource type="Script" uid="uid://bbwlgibrls8fb" path="res://scenes/main.gd" id="1_h2yge"]
+[ext_resource type="Material" uid="uid://smkievpeajs3" path="res://assets/ambientcg_com/grass_001/Grass001_1K-JPG.tres" id="2_h2yge"]
+[ext_resource type="Texture2D" uid="uid://bx5wuwx7autid" path="res://addons/3d_player_controller/assets/kenney_nl/Prototype Textures/Vector/texture_12.svg" id="4_gqmmt"]
+[ext_resource type="Texture2D" uid="uid://ceiimv767w1ec" path="res://addons/3d_player_controller/assets/kenney_nl/Prototype Textures/Vector/texture_04.svg" id="5_yc10j"]
+[ext_resource type="Texture2D" uid="uid://cw7nfaedba0m5" path="res://assets/n_hance_studio/weapons/n_hance_studio_newbie_weapons.png" id="6_jscy8"]
+[ext_resource type="PackedScene" uid="uid://d2e1lgjtlptk8" path="res://assets/n_hance_studio/weapons/SK_Axe_1H_Newbie_01.fbx" id="7_pm3ni"]
+[ext_resource type="Script" uid="uid://d0u7oh1rirfy4" path="res://addons/3d_player_controller/equipment.gd" id="8_gqmmt"]
+[ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://scenes/action_prompt.tscn" id="9_og1vs"]
+[ext_resource type="PackedScene" uid="uid://3fgjoqwcbivx" path="res://assets/n_hance_studio/weapons/SK_Axe_2HL_Newbie_01.fbx" id="10_2wyq8"]
+[ext_resource type="PackedScene" uid="uid://bsybqxf7immya" path="res://assets/n_hance_studio/weapons/SK_Bow_Newbie_01.fbx" id="11_vxglm"]
+[ext_resource type="PackedScene" uid="uid://blo6m8lpjri0d" path="res://assets/n_hance_studio/weapons/SK_Dagger_1H_Newbie_01.fbx" id="12_2f3dj"]
+[ext_resource type="PackedScene" uid="uid://1eqwedxx6bid" path="res://assets/n_hance_studio/weapons/SK_Shield_Newbie_01.fbx" id="13_yq6so"]
+[ext_resource type="PackedScene" uid="uid://b68tmbfsyhl17" path="res://assets/n_hance_studio/weapons/SK_Staff_Newbie_01.fbx" id="14_fv21b"]
+[ext_resource type="PackedScene" uid="uid://br0tu61de4o65" path="res://assets/n_hance_studio/weapons/SK_Sword_1H_Newbie_01.fbx" id="15_tel4y"]
+[ext_resource type="PackedScene" uid="uid://bk3gv5c0w00gi" path="res://assets/n_hance_studio/weapons/SK_Sword_2H_Newbie_01.fbx" id="16_qkpxi"]
+[ext_resource type="Texture2D" uid="uid://bq274xxscinqm" path="res://assets/justcreate3d/weapons_lite/justcreate3d_weapons_lite.png" id="17_5q0nq"]
+[ext_resource type="PackedScene" uid="uid://dl71nqjm2psik" path="res://assets/justcreate3d/weapons_lite/Weapon_02.fbx" id="18_dgi5k"]
+[ext_resource type="PackedScene" uid="uid://b3tb2j1pwgw3u" path="res://assets/justcreate3d/weapons_lite/Weapon_01.fbx" id="19_j8jky"]
+[ext_resource type="PackedScene" uid="uid://b6jp43n1e1u6i" path="res://scenes/red_ballon.tscn" id="20_kmb1v"]
+[ext_resource type="PackedScene" uid="uid://ti5skv3363ik" path="res://scenes/ballon_circle.tscn" id="21_yc10j"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -34,13 +35,13 @@ sky = SubResource("Sky_tlwt5")
 glow_enabled = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_aqk2v"]
-albedo_texture = ExtResource("3_tlwt5")
+albedo_texture = ExtResource("4_gqmmt")
 uv1_scale = Vector3(0.333, 0.333, 0.333)
 uv1_offset = Vector3(0.5, 0.5, 0.5)
 uv1_triplanar = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_senyo"]
-albedo_texture = ExtResource("5_036b0")
+albedo_texture = ExtResource("5_yc10j")
 uv1_triplanar = true
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_036b0"]
@@ -63,7 +64,7 @@ uv1_triplanar = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fk680"]
 cull_mode = 2
-albedo_texture = ExtResource("14_wukud")
+albedo_texture = ExtResource("6_jscy8")
 
 [sub_resource type="QuadMesh" id="QuadMesh_senyo"]
 material = SubResource("StandardMaterial3D_fk680")
@@ -311,7 +312,7 @@ states/Pull_Start/position = Vector2(558.6667, 22.666668)
 states/idle/node = SubResource("AnimationNodeAnimation_wjb0r")
 states/idle/position = Vector2(422, 101.11111)
 transitions = ["Start", "idle", SubResource("AnimationNodeStateMachineTransition_mc2jv"), "idle", "Pull_Start", SubResource("AnimationNodeStateMachineTransition_bo7i5"), "Pull_Start", "Pull", SubResource("AnimationNodeStateMachineTransition_4h6ng"), "Pull", "Pull_End", SubResource("AnimationNodeStateMachineTransition_o3ebs"), "Pull_End", "idle", SubResource("AnimationNodeStateMachineTransition_k83mh")]
-graph_offset = Vector2(-4, -235)
+graph_offset = Vector2(-129.74506, -29.367996)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5pyta"]
 radius = 0.1
@@ -335,7 +336,7 @@ height = 2.1
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5pyta"]
 cull_mode = 2
-albedo_texture = ExtResource("17_ikiii")
+albedo_texture = ExtResource("17_5q0nq")
 
 [sub_resource type="QuadMesh" id="QuadMesh_fk680"]
 material = SubResource("StandardMaterial3D_5pyta")
@@ -348,7 +349,7 @@ size = Vector3(1, 0.4, 0.2)
 size = Vector3(0.3, 0.2, 0.2)
 
 [node name="World" type="Node3D" unique_id=336392758]
-script = ExtResource("1_aqk2v")
+script = ExtResource("1_h2yge")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=358521112]
 environment = SubResource("Environment_aqk2v")
@@ -361,9 +362,9 @@ shadow_enabled = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 use_collision = true
 size = Vector3(100, 1, 100)
-material = ExtResource("1_fj7yv")
+material = ExtResource("2_h2yge")
 
-[node name="Player" parent="." unique_id=994458497 instance=ExtResource("2_tlwt5")]
+[node name="Player" parent="." unique_id=994458497 instance=ExtResource("1_0xm2m")]
 
 [node name="DoorBlock" type="CSGBox3D" parent="." unique_id=378177978]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -7)
@@ -409,9 +410,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 0)
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -2, 1.625, 0)
 mesh = SubResource("QuadMesh_senyo")
 
-[node name="SK_Axe_1H_Newbie_01" parent="N_Hance_Studio" unique_id=1164308377 instance=ExtResource("6_70uel")]
+[node name="SK_Axe_1H_Newbie_01" parent="N_Hance_Studio" unique_id=1164308377 instance=ExtResource("7_pm3ni")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 3.5)
-script = ExtResource("8_hiqwa")
+script = ExtResource("8_gqmmt")
 bone_attachment_bone_name = "RightHand"
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(0, 90, 0)
@@ -426,13 +427,13 @@ shape = SubResource("CapsuleShape3D_fk680")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.40000015)
 shape = SubResource("BoxShape3D_fk680")
 
-[node name="ActionPrompt" parent="N_Hance_Studio/SK_Axe_1H_Newbie_01" unique_id=1664152999 instance=ExtResource("9_2u3nc")]
+[node name="ActionPrompt" parent="N_Hance_Studio/SK_Axe_1H_Newbie_01" unique_id=1664152999 instance=ExtResource("9_og1vs")]
 transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0, 0, 0)
 visible = false
 
-[node name="SK_Axe_2HL_Newbie_01" parent="N_Hance_Studio" unique_id=1297848573 instance=ExtResource("7_hiqwa")]
+[node name="SK_Axe_2HL_Newbie_01" parent="N_Hance_Studio" unique_id=1297848573 instance=ExtResource("10_2wyq8")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 2.5)
-script = ExtResource("8_hiqwa")
+script = ExtResource("8_gqmmt")
 bone_attachment_bone_name = "RightHand"
 equipment_type = 1
 is_exclusive = true
@@ -449,13 +450,13 @@ shape = SubResource("CapsuleShape3D_senyo")
 transform = Transform3D(-4.371139e-08, -1, -4.371139e-08, 1, -4.3711385e-08, -4.371139e-08, 4.371139e-08, -4.371139e-08, 1, 0, 0, 0.75)
 shape = SubResource("CylinderShape3D_senyo")
 
-[node name="ActionPrompt" parent="N_Hance_Studio/SK_Axe_2HL_Newbie_01" unique_id=843371138 instance=ExtResource("9_2u3nc")]
+[node name="ActionPrompt" parent="N_Hance_Studio/SK_Axe_2HL_Newbie_01" unique_id=843371138 instance=ExtResource("9_og1vs")]
 transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0, 0, 0)
 visible = false
 
-[node name="SK_Bow_Newbie_01" parent="N_Hance_Studio" unique_id=1222899704 instance=ExtResource("8_2u3nc")]
+[node name="SK_Bow_Newbie_01" parent="N_Hance_Studio" unique_id=1222899704 instance=ExtResource("11_vxglm")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 1.5)
-script = ExtResource("8_hiqwa")
+script = ExtResource("8_gqmmt")
 bone_attachment_bone_name = "LeftHand"
 can_shoot = true
 equipment_type = 2
@@ -469,7 +470,7 @@ rotation_offset_degrees = Vector3(180, 90, 15)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1500001, -4.7683716e-07)
 shape = SubResource("BoxShape3D_5pyta")
 
-[node name="ActionPrompt" parent="N_Hance_Studio/SK_Bow_Newbie_01" unique_id=932364194 instance=ExtResource("9_2u3nc")]
+[node name="ActionPrompt" parent="N_Hance_Studio/SK_Bow_Newbie_01" unique_id=932364194 instance=ExtResource("9_og1vs")]
 transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0, 0, 0)
 visible = false
 
@@ -492,9 +493,9 @@ libraries/ = SubResource("AnimationLibrary_26xuy")
 tree_root = SubResource("AnimationNodeStateMachine_qktwf")
 anim_player = NodePath("../AnimationPlayer")
 
-[node name="SK_Dagger_1H_Newbie_01" parent="N_Hance_Studio" unique_id=2089465159 instance=ExtResource("9_udxuc")]
+[node name="SK_Dagger_1H_Newbie_01" parent="N_Hance_Studio" unique_id=2089465159 instance=ExtResource("12_2f3dj")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 0.5)
-script = ExtResource("8_hiqwa")
+script = ExtResource("8_gqmmt")
 bone_attachment_bone_name = "RightHand"
 equipment_type = 3
 position_offset = Vector3(0, 0.1, 0.025)
@@ -506,13 +507,13 @@ rotation_offset_degrees = Vector3(0, 90, 0)
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -2.3841858e-07, 0.2500003)
 shape = SubResource("CapsuleShape3D_5pyta")
 
-[node name="ActionPrompt" parent="N_Hance_Studio/SK_Dagger_1H_Newbie_01" unique_id=755666406 instance=ExtResource("9_2u3nc")]
+[node name="ActionPrompt" parent="N_Hance_Studio/SK_Dagger_1H_Newbie_01" unique_id=755666406 instance=ExtResource("9_og1vs")]
 transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0, 0, 0.29999995)
 visible = false
 
-[node name="SK_Dagger_1H_Newbie_02" parent="N_Hance_Studio" unique_id=1026972564 instance=ExtResource("9_udxuc")]
+[node name="SK_Dagger_1H_Newbie_02" parent="N_Hance_Studio" unique_id=1026972564 instance=ExtResource("12_2f3dj")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -0.5, 1, 0.5)
-script = ExtResource("8_hiqwa")
+script = ExtResource("8_gqmmt")
 bone_attachment_bone_name = "LeftHand"
 equipment_type = 3
 position_offset = Vector3(0, 0.1, 0.025)
@@ -524,13 +525,13 @@ rotation_offset_degrees = Vector3(0, 90, 0)
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -2.3841858e-07, 0.2500003)
 shape = SubResource("CapsuleShape3D_5pyta")
 
-[node name="ActionPrompt" parent="N_Hance_Studio/SK_Dagger_1H_Newbie_02" unique_id=1743477583 instance=ExtResource("9_2u3nc")]
+[node name="ActionPrompt" parent="N_Hance_Studio/SK_Dagger_1H_Newbie_02" unique_id=1743477583 instance=ExtResource("9_og1vs")]
 transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0, 0, 0.29999995)
 visible = false
 
-[node name="SK_Shield_Newbie_01" parent="N_Hance_Studio" unique_id=2039608327 instance=ExtResource("10_ikiii")]
+[node name="SK_Shield_Newbie_01" parent="N_Hance_Studio" unique_id=2039608327 instance=ExtResource("13_yq6so")]
 transform = Transform3D(-1, 8.742278e-08, 3.821371e-15, 0, -4.371139e-08, 1, 8.742278e-08, 1, 4.371139e-08, 0, 1, -0.5)
-script = ExtResource("8_hiqwa")
+script = ExtResource("8_gqmmt")
 bone_attachment_bone_name = "LeftLowerArm"
 equipment_type = 9
 position_offset = Vector3(-0.035, 0.1, 0)
@@ -542,13 +543,13 @@ rotation_offset_degrees = Vector3(0, 180, 180)
 transform = Transform3D(-4.371139e-08, 1, 4.371139e-08, -1, -4.37116e-08, -4.371139e-08, -4.371139e-08, -4.371117e-08, 1, -0.053, -0.05, 0)
 shape = SubResource("CylinderShape3D_fk680")
 
-[node name="ActionPrompt" parent="N_Hance_Studio/SK_Shield_Newbie_01" unique_id=875530410 instance=ExtResource("9_2u3nc")]
+[node name="ActionPrompt" parent="N_Hance_Studio/SK_Shield_Newbie_01" unique_id=875530410 instance=ExtResource("9_og1vs")]
 transform = Transform3D(8.742278e-08, -7.374084e-15, -1, -1, 0, -8.742278e-08, 0, 1, -3.821371e-15, -0.125, 0, 0)
 visible = false
 
-[node name="SK_Staff_Newbie_01" parent="N_Hance_Studio" unique_id=906851320 instance=ExtResource("11_cbp6q")]
+[node name="SK_Staff_Newbie_01" parent="N_Hance_Studio" unique_id=906851320 instance=ExtResource("14_fv21b")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1.1, -1.5)
-script = ExtResource("8_hiqwa")
+script = ExtResource("8_gqmmt")
 bone_attachment_bone_name = "RightHand"
 equipment_type = 6
 is_exclusive = true
@@ -561,13 +562,13 @@ rotation_offset_degrees = Vector3(0, 90, 0)
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0.012499809)
 shape = SubResource("CapsuleShape3D_hxkk4")
 
-[node name="ActionPrompt" parent="N_Hance_Studio/SK_Staff_Newbie_01" unique_id=1329713778 instance=ExtResource("9_2u3nc")]
+[node name="ActionPrompt" parent="N_Hance_Studio/SK_Staff_Newbie_01" unique_id=1329713778 instance=ExtResource("9_og1vs")]
 transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0, 0, 0)
 visible = false
 
-[node name="SK_Sword_1H_Newbie_01" parent="N_Hance_Studio" unique_id=13927276 instance=ExtResource("12_26xuy")]
+[node name="SK_Sword_1H_Newbie_01" parent="N_Hance_Studio" unique_id=13927276 instance=ExtResource("15_tel4y")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0.3, -2.5)
-script = ExtResource("8_hiqwa")
+script = ExtResource("8_gqmmt")
 bone_attachment_bone_name = "RightHand"
 equipment_type = 7
 position_offset = Vector3(0, 0.1, 0.025)
@@ -579,13 +580,13 @@ rotation_offset_degrees = Vector3(0, 90, 180)
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0.42499998)
 shape = SubResource("CapsuleShape3D_jnf5c")
 
-[node name="ActionPrompt" parent="N_Hance_Studio/SK_Sword_1H_Newbie_01" unique_id=2088748174 instance=ExtResource("9_2u3nc")]
+[node name="ActionPrompt" parent="N_Hance_Studio/SK_Sword_1H_Newbie_01" unique_id=2088748174 instance=ExtResource("9_og1vs")]
 transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0, 0, 0.5)
 visible = false
 
-[node name="SK_Sword_2H_Newbie_01" parent="N_Hance_Studio" unique_id=674997095 instance=ExtResource("13_bc84e")]
+[node name="SK_Sword_2H_Newbie_01" parent="N_Hance_Studio" unique_id=674997095 instance=ExtResource("16_qkpxi")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0.5, -3.5)
-script = ExtResource("8_hiqwa")
+script = ExtResource("8_gqmmt")
 bone_attachment_bone_name = "RightHand"
 equipment_type = 8
 is_exclusive = true
@@ -598,7 +599,7 @@ rotation_offset_degrees = Vector3(0, 90, 0)
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0.65)
 shape = SubResource("CapsuleShape3D_0y3lt")
 
-[node name="ActionPrompt" parent="N_Hance_Studio/SK_Sword_2H_Newbie_01" unique_id=1977469190 instance=ExtResource("9_2u3nc")]
+[node name="ActionPrompt" parent="N_Hance_Studio/SK_Sword_2H_Newbie_01" unique_id=1977469190 instance=ExtResource("9_og1vs")]
 transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0, 0, 0.99999994)
 visible = false
 
@@ -609,9 +610,9 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 5, 0
 transform = Transform3D(-4.371138e-08, 0, 1, 0, 1, 0, -1, 0, -4.371138e-08, 0, 1.3500001, 0)
 mesh = SubResource("QuadMesh_fk680")
 
-[node name="Weapon_02" parent="JustCreate3D" unique_id=1867527010 instance=ExtResource("18_cbp6q")]
+[node name="Weapon_02" parent="JustCreate3D" unique_id=1867527010 instance=ExtResource("18_dgi5k")]
 transform = Transform3D(-8.742278e-08, -4.3711395e-08, 1, 1, -4.371139e-08, 8.742278e-08, 4.3711385e-08, 1, 4.3711395e-08, 0.5, 0.322, 0.5)
-script = ExtResource("8_hiqwa")
+script = ExtResource("8_gqmmt")
 bone_attachment_bone_name = "RightHand"
 can_shoot = true
 equipment_type = 5
@@ -624,13 +625,13 @@ rotation_offset_degrees = Vector3(-10, 180, 80)
 transform = Transform3D(1, 0, -1.9106853e-15, 0, 1, 0, -1.9106853e-15, 0, 1, 0.17785323, 1.5869063e-08, 0)
 shape = SubResource("BoxShape3D_senyo")
 
-[node name="ActionPrompt" parent="JustCreate3D/Weapon_02" unique_id=308729938 instance=ExtResource("9_2u3nc")]
+[node name="ActionPrompt" parent="JustCreate3D/Weapon_02" unique_id=308729938 instance=ExtResource("9_og1vs")]
 transform = Transform3D(3.5527137e-15, 1.3733708e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.910685e-15, 0.19999999, -4.3711452e-09, 0.099999905)
 visible = false
 
-[node name="Weapon_01" parent="JustCreate3D" unique_id=1674455333 instance=ExtResource("19_cbp6q")]
+[node name="Weapon_01" parent="JustCreate3D" unique_id=1674455333 instance=ExtResource("19_j8jky")]
 transform = Transform3D(1.9106855e-15, 4.371139e-08, 1, 1, -4.371139e-08, 0, 4.371139e-08, 1, -4.371139e-08, 0.5, 0.5, -0.5)
-script = ExtResource("8_hiqwa")
+script = ExtResource("8_gqmmt")
 bone_attachment_bone_name = "RightHand"
 can_shoot = true
 equipment_type = 4
@@ -643,15 +644,18 @@ rotation_offset_degrees = Vector3(-10, 180, 80)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.027853012, 0.019995153, 2.9802322e-07)
 shape = SubResource("BoxShape3D_k78ss")
 
-[node name="ActionPrompt" parent="JustCreate3D/Weapon_01" unique_id=1216637783 instance=ExtResource("9_2u3nc")]
+[node name="ActionPrompt" parent="JustCreate3D/Weapon_01" unique_id=1216637783 instance=ExtResource("9_og1vs")]
 transform = Transform3D(3.5527137e-15, 1.3733708e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.910685e-15, 0.19999999, -4.3711452e-09, 0.099999905)
 visible = false
 
-[node name="RedBallon" parent="." unique_id=71966468 instance=ExtResource("20_26xuy")]
+[node name="RedBallon" parent="." unique_id=71966468 instance=ExtResource("20_kmb1v")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 4.2, -7)
 
-[node name="RedBallon2" parent="." unique_id=924568543 instance=ExtResource("20_26xuy")]
+[node name="RedBallon2" parent="." unique_id=924568543 instance=ExtResource("20_kmb1v")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 4.2, -7)
 
-[node name="RedBallon3" parent="." unique_id=1477495641 instance=ExtResource("20_26xuy")]
+[node name="RedBallon3" parent="." unique_id=1477495641 instance=ExtResource("20_kmb1v")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.7, -7)
+
+[node name="BallonCircle4" parent="." unique_id=1064612835 instance=ExtResource("21_yc10j")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -8, 3, 0)

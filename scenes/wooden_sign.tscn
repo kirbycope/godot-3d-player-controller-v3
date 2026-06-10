@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://b634fbd3saoxu"]
 
-[ext_resource type="Script" uid="uid://437d60vw50vx" path="res://wooden_sign.gd" id="1_f5els"]
+[ext_resource type="Script" uid="uid://437d60vw50vx" path="res://scenes/wooden_sign.gd" id="1_f5els"]
 [ext_resource type="Material" uid="uid://bgh0q813ao036" path="res://assets/ambientcg_com/planks_20/Planks020_1K-JPG.tres" id="2_87gjy"]
 [ext_resource type="Material" uid="uid://da7xlxi1ot5r1" path="res://assets/ambientcg_com/wood_073/Wood073_1K-JPG.tres" id="3_2cs4t"]
 [ext_resource type="Texture2D" uid="uid://e12w3jhdbgbs" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Nintendo Switch/Vector/switch_up_arrow.svg" id="4_87gjy"]

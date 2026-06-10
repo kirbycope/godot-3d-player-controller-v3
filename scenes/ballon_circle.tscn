@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://ti5skv3363ik"]
+
+[ext_resource type="PackedScene" uid="uid://b6jp43n1e1u6i" path="res://scenes/red_ballon.tscn" id="1_jbvwr"]
+[ext_resource type="Script" uid="uid://ebvklsqls38e" path="res://scenes/ballon_circle.gd" id="1_m4jgv"]
+
+[node name="BallonCircle" type="Node3D" unique_id=1064612835]
+script = ExtResource("1_m4jgv")
+orbit_radius = 2.0
+show_balloon_string = false
+
+[node name="RedBallon" parent="." unique_id=1230963 instance=ExtResource("1_jbvwr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6307229, 1.1579046, 0)
+
+[node name="RedBallon2" parent="." unique_id=2004981309 instance=ExtResource("1_jbvwr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1579046, 1.6307229, 0)
+
+[node name="RedBallon3" parent="." unique_id=296713869 instance=ExtResource("1_jbvwr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6307229, -1.1579046, 0)
+
+[node name="RedBallon4" parent="." unique_id=1360320078 instance=ExtResource("1_jbvwr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1579046, -1.6307229, 0)
