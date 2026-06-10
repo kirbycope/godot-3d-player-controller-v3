@@ -12,6 +12,10 @@
 [ext_resource type="PackedScene" uid="uid://3fgjoqwcbivx" path="res://assets/n_hance_studio/weapons/SK_Axe_2HL_Newbie_01.fbx" id="10_2wyq8"]
 [ext_resource type="PackedScene" uid="uid://bsybqxf7immya" path="res://assets/n_hance_studio/weapons/SK_Bow_Newbie_01.fbx" id="11_vxglm"]
 [ext_resource type="PackedScene" uid="uid://blo6m8lpjri0d" path="res://assets/n_hance_studio/weapons/SK_Dagger_1H_Newbie_01.fbx" id="12_2f3dj"]
+[ext_resource type="AudioStream" uid="uid://bo6duef7adfmo" path="res://addons/3d_player_controller/assets/pixabay/freesound_community-bow-loading-38752.mp3" id="12_jscy8"]
+[ext_resource type="AudioStream" uid="uid://bxuo1psaadb7n" path="res://addons/3d_player_controller/assets/pixabay/djartmusic-arrow-swish_03-306040.mp3" id="12_og1vs"]
+[ext_resource type="AudioStream" uid="uid://14v2pascfajw" path="res://addons/3d_player_controller/assets/pixabay/djartmusic-arrow-twang_01-306041.mp3" id="13_2wyq8"]
+[ext_resource type="AudioStream" uid="uid://diys7xvxwcdj" path="res://addons/3d_player_controller/assets/pixabay/freesound_community-bow-release-bow-and-arrow-4-101936.mp3" id="13_pm3ni"]
 [ext_resource type="PackedScene" uid="uid://1eqwedxx6bid" path="res://assets/n_hance_studio/weapons/SK_Shield_Newbie_01.fbx" id="13_yq6so"]
 [ext_resource type="PackedScene" uid="uid://b68tmbfsyhl17" path="res://assets/n_hance_studio/weapons/SK_Staff_Newbie_01.fbx" id="14_fv21b"]
 [ext_resource type="PackedScene" uid="uid://br0tu61de4o65" path="res://assets/n_hance_studio/weapons/SK_Sword_1H_Newbie_01.fbx" id="15_tel4y"]
@@ -292,7 +296,7 @@ advance_expression = "player.is_drawing_arrow"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_4h6ng"]
 advance_mode = 2
-advance_expression = "player.is_aiming_arrow"
+advance_expression = "player.is_aiming_bow"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_o3ebs"]
 advance_mode = 2
@@ -486,12 +490,28 @@ shape = SubResource("CylinderShape3D_5pyta")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.20000005, 0)
 mesh = SubResource("CylinderMesh_senyo")
 
+[node name="Swish" type="AudioStreamPlayer3D" parent="N_Hance_Studio/SK_Bow_Newbie_01/Arrow" unique_id=335887078]
+stream = ExtResource("12_og1vs")
+volume_db = -6.0
+max_db = -6.0
+
+[node name="Twang" type="AudioStreamPlayer3D" parent="N_Hance_Studio/SK_Bow_Newbie_01/Arrow" unique_id=1680174531]
+stream = ExtResource("13_2wyq8")
+volume_db = -6.0
+max_db = -6.0
+
 [node name="AnimationPlayer2" type="AnimationPlayer" parent="N_Hance_Studio/SK_Bow_Newbie_01" unique_id=2231464]
 libraries/ = SubResource("AnimationLibrary_26xuy")
 
 [node name="AnimationTree2" type="AnimationTree" parent="N_Hance_Studio/SK_Bow_Newbie_01" unique_id=339113822]
 tree_root = SubResource("AnimationNodeStateMachine_qktwf")
-anim_player = NodePath("../AnimationPlayer")
+anim_player = NodePath("../AnimationPlayer2")
+
+[node name="BowDrawArrow" type="AudioStreamPlayer3D" parent="N_Hance_Studio/SK_Bow_Newbie_01" unique_id=166312361]
+stream = ExtResource("12_jscy8")
+
+[node name="BowFireArrow" type="AudioStreamPlayer3D" parent="N_Hance_Studio/SK_Bow_Newbie_01" unique_id=215719619]
+stream = ExtResource("13_pm3ni")
 
 [node name="SK_Dagger_1H_Newbie_01" parent="N_Hance_Studio" unique_id=2089465159 instance=ExtResource("12_2f3dj")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 0.5)
@@ -659,3 +679,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.7, -7)
 
 [node name="BallonCircle4" parent="." unique_id=1064612835 instance=ExtResource("21_yc10j")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -8, 3, 0)
+play = true
+orbit_radius = 1.5
