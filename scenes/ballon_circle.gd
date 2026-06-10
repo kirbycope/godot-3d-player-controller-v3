@@ -80,7 +80,6 @@ func _cache_balloons() -> void:
 func _sort_balloons_by_name(a: Node3D, b: Node3D) -> bool:
 	return a.name.naturalnocasecmp_to(b.name) < 0
 
-
 func _has_invalid_balloons() -> bool:
 	for balloon in _balloons:
 		if not _is_balloon_valid(balloon):
@@ -89,7 +88,12 @@ func _has_invalid_balloons() -> bool:
 
 
 func _refresh_balloons_if_needed() -> void:
-	if _balloons.is_empty() or _has_invalid_balloons():
+	var should_refresh := _balloons.is_empty()
+	# In editor, always refresh if any balloon becomes invalid so level preview updates
+	if Engine.is_editor_hint() and _has_invalid_balloons():
+		should_refresh = true
+	
+	if should_refresh:
 		_cache_balloons()
 		_capture_initial_orbit()
 		_set_child_rigid_bodies_disabled(true)

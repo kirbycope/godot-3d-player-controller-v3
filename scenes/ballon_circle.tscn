@@ -6,7 +6,6 @@
 [node name="BallonCircle" type="Node3D" unique_id=1064612835]
 script = ExtResource("1_m4jgv")
 play = false
-orbit_radius = 2.0
 show_balloon_string = false
 
 [node name="RedBallon" parent="." unique_id=1230963 instance=ExtResource("1_jbvwr")]
