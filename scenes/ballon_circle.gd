@@ -8,6 +8,7 @@ extends Node3D
 		if not play:
 			_orbit_offset = 0.0
 			_restore_initial_positions()
+@export var pause_when_editor_unfocused: bool = true
 @export_range(0.0, 360.0, 0.1, "suffix:deg/s") var rotation_speed_deg: float = 60.0
 @export_range(0.1, 20.0, 0.1, "suffix:m") var orbit_radius: float = 1.5
 @export var balloon_group_name: StringName = &"balloon"
@@ -43,6 +44,8 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	_refresh_balloons_if_needed()
+	if pause_when_editor_unfocused and Engine.is_editor_hint() and not DisplayServer.window_is_focused():
+		return
 	if not play:
 		return
 
