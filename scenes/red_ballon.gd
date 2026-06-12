@@ -4,7 +4,7 @@ extends Node3D
 
 
 func _on_hit_detection_body_entered(body: Node3D) -> void:
-	if body.name == "Arrow":
+	if body.name.begins_with("Arrow") or body is Arrow:
 		var pop := $Pop
 		var scene_root := get_tree().current_scene if get_tree().current_scene != null else get_tree().root
 		godot_plush.reparent(scene_root)

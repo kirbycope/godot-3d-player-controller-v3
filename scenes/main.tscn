@@ -26,6 +26,7 @@
 [ext_resource type="PackedScene" uid="uid://b3tb2j1pwgw3u" path="res://assets/justcreate3d/weapons_lite/Weapon_01.fbx" id="19_j8jky"]
 [ext_resource type="PackedScene" uid="uid://ti5skv3363ik" path="res://scenes/ballon_circle.tscn" id="21_yc10j"]
 [ext_resource type="PackedScene" uid="uid://cecfpvhdonktw" path="res://scenes/pinwheel.tscn" id="25_og1vs"]
+[ext_resource type="Script" uid="uid://b03h8ijilon1x" path="res://addons/3d_player_controller/arrow.gd" id="26_arrow"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -496,6 +497,7 @@ visible = false
 
 [node name="Arrow" type="RigidBody3D" parent="N_Hance_Studio/SK_Bow_Newbie_01" unique_id=1811199221]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.099999964)
+script = ExtResource("26_arrow")
 visible = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio/SK_Bow_Newbie_01/Arrow" unique_id=1539438757]
