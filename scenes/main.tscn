@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://3fgjoqwcbivx" path="res://assets/n_hance_studio/weapons/SK_Axe_2HL_Newbie_01.fbx" id="10_2wyq8"]
 [ext_resource type="PackedScene" uid="uid://bsybqxf7immya" path="res://assets/n_hance_studio/weapons/SK_Bow_Newbie_01.fbx" id="11_vxglm"]
 [ext_resource type="PackedScene" uid="uid://blo6m8lpjri0d" path="res://assets/n_hance_studio/weapons/SK_Dagger_1H_Newbie_01.fbx" id="12_2f3dj"]
+[ext_resource type="Script" uid="uid://7r16fm6kmk1p" path="res://addons/3d_player_controller/bow.gd" id="12_2wyq8"]
 [ext_resource type="AudioStream" uid="uid://bo6duef7adfmo" path="res://addons/3d_player_controller/assets/pixabay/freesound_community-bow-loading-38752.mp3" id="12_jscy8"]
 [ext_resource type="AudioStream" uid="uid://bxuo1psaadb7n" path="res://addons/3d_player_controller/assets/pixabay/djartmusic-arrow-swish_03-306040.mp3" id="12_og1vs"]
 [ext_resource type="AudioStream" uid="uid://14v2pascfajw" path="res://addons/3d_player_controller/assets/pixabay/djartmusic-arrow-twang_01-306041.mp3" id="13_2wyq8"]
@@ -475,7 +476,7 @@ visible = false
 
 [node name="SK_Bow_Newbie_01" parent="N_Hance_Studio" unique_id=1222899704 instance=ExtResource("11_vxglm")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 1.5)
-script = ExtResource("8_gqmmt")
+script = ExtResource("12_2wyq8")
 bone_attachment_bone_name = "LeftHand"
 can_shoot = true
 equipment_type = 2
@@ -493,7 +494,7 @@ shape = SubResource("BoxShape3D_5pyta")
 transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0.099999905, 0, 0)
 visible = false
 
-[node name="Arrow" type="CharacterBody3D" parent="N_Hance_Studio/SK_Bow_Newbie_01" unique_id=1381140281]
+[node name="Arrow" type="RigidBody3D" parent="N_Hance_Studio/SK_Bow_Newbie_01" unique_id=1811199221]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.099999964)
 visible = false
 
