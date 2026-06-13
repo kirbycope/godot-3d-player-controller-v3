@@ -497,8 +497,8 @@ visible = false
 
 [node name="Arrow" type="RigidBody3D" parent="N_Hance_Studio/SK_Bow_Newbie_01" unique_id=1811199221]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.099999964)
-script = ExtResource("26_arrow")
 visible = false
+script = ExtResource("26_arrow")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio/SK_Bow_Newbie_01/Arrow" unique_id=1539438757]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.20000005, 4.7683716e-07)
@@ -664,7 +664,7 @@ transform = Transform3D(1, 0, -1.9106853e-15, 0, 1, 0, -1.9106853e-15, 0, 1, 0.1
 shape = SubResource("BoxShape3D_senyo")
 
 [node name="ActionPrompt" parent="JustCreate3D/Weapon_02" unique_id=308729938 instance=ExtResource("9_og1vs")]
-transform = Transform3D(3.5527137e-15, 1.3733708e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.910685e-15, 0.19999999, -4.3711452e-09, 0.099999905)
+transform = Transform3D(8.742278e-08, 1, -2.1855693e-07, -1, 8.742276e-08, -8.742276e-08, -8.742275e-08, 2.1855695e-07, 1, 0.1999999, 0, 0.099999905)
 visible = false
 
 [node name="Weapon_01" parent="JustCreate3D" unique_id=1674455333 instance=ExtResource("19_j8jky")]
@@ -683,7 +683,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.027853012, 0.019995153, 2.9
 shape = SubResource("BoxShape3D_k78ss")
 
 [node name="ActionPrompt" parent="JustCreate3D/Weapon_01" unique_id=1216637783 instance=ExtResource("9_og1vs")]
-transform = Transform3D(3.5527137e-15, 1.3733708e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.910685e-15, 0.19999999, -4.3711452e-09, 0.099999905)
+transform = Transform3D(1.7484552e-07, 1, -4.3711385e-08, -1, 1.7484552e-07, 0, 0, 4.371138e-08, 1, 0.20000008, 0, 0.099999905)
 visible = false
 
 [node name="BallonCircle4" parent="." unique_id=1064612835 instance=ExtResource("21_yc10j")]

@@ -45,11 +45,12 @@ def bake_root_motion(source_dir: Path, dest_dir: Path):
             action.name = "mixamo_com"
             fcurves = action.fcurves
             
-            # Identify Mixamo Hips Local Tracks: 0=X (Side), 2=Z (Forward/Back)
+            # Identify Mixamo Hips Local Tracks: 0=X (Side), 1=Y (Up/Down), 2=Z (Forward/Back)
             chips_loc = {fc.array_index: fc for fc in fcurves if fc.data_path == f'pose.bones["{hips_name}"].location'}
             
             # Create Target Root Tracks
             root_x_curve = fcurves.new(data_path='pose.bones["Root"].location', index=0) # Maps to Godot X
+            root_y_curve = fcurves.new(data_path='pose.bones["Root"].location', index=2) # Maps to Godot Y (Vertical)
             root_z_curve = fcurves.new(data_path='pose.bones["Root"].location', index=1) # Maps to Godot Z
             
             # --- Transfer Side-to-Side (X to X) ---
@@ -59,6 +60,17 @@ def bake_root_motion(source_dir: Path, dest_dir: Path):
                     kp.co.y = 0 
                 chips_loc[0].update()
             
+            # Determine if vertical extraction needed. Name filter standard pipeline practice.
+            # Math heuristics break on foot-bobs and crouches. Explicit tags safe.
+            is_vertical_anim = any(tag in file_path.name.lower() for tag in ["braced", "climb", "hang", "hop", "jump", "pull_up"])
+            
+            # --- Transfer Up/Down (Hips Local Y [1] to Root Local Z [2]) ---
+            if 1 in chips_loc and is_vertical_anim:
+                for kp in chips_loc[1].keyframe_points:
+                    root_y_curve.keyframe_points.insert(kp.co.x, -kp.co.y)
+                    kp.co.y = 0 
+                chips_loc[1].update()
+            
             # --- Transfer Forward/Backward (Hips Local Z [2] to Root Local Y [1]) ---
             if 2 in chips_loc:
                 for kp in chips_loc[2].keyframe_points:
@@ -67,6 +79,7 @@ def bake_root_motion(source_dir: Path, dest_dir: Path):
                 chips_loc[2].update()
                 
             root_x_curve.update()
+            root_y_curve.update()
             root_z_curve.update()
                     
         # 3. Export to Godot
