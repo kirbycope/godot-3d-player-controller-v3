@@ -40,8 +40,15 @@ def bake_root_motion(source_dir: Path, dest_dir: Path):
         bpy.ops.object.mode_set(mode='POSE')
         
         # 2. Correct Axis Mapping for Godot
-        if armature.animation_data and armature.animation_data.action:
-            action = armature.animation_data.action
+        action = armature.animation_data.action if armature.animation_data else None
+        if action is None and bpy.data.actions:
+            # Some imports do not bind the action to the armature automatically.
+            armature.animation_data_create()
+            action = bpy.data.actions[0]
+            armature.animation_data.action = action
+            print(f"  [Info] No active armature action; using fallback action: {action.name}")
+
+        if action:
             action.name = "mixamo_com"
             fcurves = action.fcurves
             
@@ -63,6 +70,7 @@ def bake_root_motion(source_dir: Path, dest_dir: Path):
             # Determine if vertical extraction needed. Name filter standard pipeline practice.
             # Math heuristics break on foot-bobs and crouches. Explicit tags safe.
             is_vertical_anim = any(tag in file_path.name.lower() for tag in ["braced", "climb", "hang", "hop", "jump", "pull_up"])
+            print(f"  [Info] vertical extraction: {'on' if is_vertical_anim else 'off'}")
             
             # --- Transfer Up/Down (Hips Local Y [1] to Root Local Z [2]) ---
             if 1 in chips_loc and is_vertical_anim:
@@ -81,6 +89,8 @@ def bake_root_motion(source_dir: Path, dest_dir: Path):
             root_x_curve.update()
             root_y_curve.update()
             root_z_curve.update()
+        else:
+            print("  [Warn] No animation action found; skipping root-motion extraction for this file.")
                     
         # 3. Export to Godot
         output_path = dest_dir / f"{file_path.stem}.glb"
