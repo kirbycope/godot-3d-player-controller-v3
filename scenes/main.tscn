@@ -25,6 +25,7 @@
 [ext_resource type="PackedScene" uid="uid://dl71nqjm2psik" path="res://assets/justcreate3d/weapons_lite/Weapon_02.fbx" id="18_dgi5k"]
 [ext_resource type="PackedScene" uid="uid://b3tb2j1pwgw3u" path="res://assets/justcreate3d/weapons_lite/Weapon_01.fbx" id="19_j8jky"]
 [ext_resource type="PackedScene" uid="uid://ti5skv3363ik" path="res://scenes/ballon_circle.tscn" id="21_yc10j"]
+[ext_resource type="Script" uid="uid://7e2gpht4wap6" path="res://addons/3d_player_controller/rifle.gd" id="25_2f3dj"]
 [ext_resource type="PackedScene" uid="uid://cecfpvhdonktw" path="res://scenes/pinwheel.tscn" id="25_og1vs"]
 [ext_resource type="Script" uid="uid://b03h8ijilon1x" path="res://addons/3d_player_controller/arrow.gd" id="26_arrow"]
 
@@ -657,11 +658,13 @@ mesh = SubResource("QuadMesh_fk680")
 
 [node name="Weapon_02" parent="JustCreate3D" unique_id=1867527010 instance=ExtResource("18_dgi5k")]
 transform = Transform3D(-8.742278e-08, -4.3711395e-08, 1, 1, -4.371139e-08, 8.742278e-08, 4.3711385e-08, 1, 4.3711395e-08, 0.5, 0.322, 0.5)
-script = ExtResource("8_gqmmt")
+script = ExtResource("25_2f3dj")
+shooting_body_yaw_offset_degrees = 0.7853981633974483
 bone_attachment_bone_name = "RightHand"
 can_attack = true
 can_shoot = true
 equipment_type = 5
+is_exclusive = true
 position_offset = Vector3(0, 0.09, 0.025)
 rotation_offset_degrees = Vector3(-5, 180, 80)
 
@@ -682,6 +685,7 @@ bone_attachment_bone_name = "RightHand"
 can_attack = true
 can_shoot = true
 equipment_type = 4
+is_exclusive = true
 position_offset = Vector3(0, 0.09, 0.025)
 rotation_offset_degrees = Vector3(-10, 180, 80)
 
