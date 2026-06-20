@@ -659,14 +659,13 @@ mesh = SubResource("QuadMesh_fk680")
 [node name="Weapon_02" parent="JustCreate3D" unique_id=1867527010 instance=ExtResource("18_dgi5k")]
 transform = Transform3D(-8.742278e-08, -4.3711395e-08, 1, 1, -4.371139e-08, 8.742278e-08, 4.3711385e-08, 1, 4.3711395e-08, 0.5, 0.322, 0.5)
 script = ExtResource("25_2f3dj")
-shooting_body_yaw_offset_degrees = 0.7853981633974483
 bone_attachment_bone_name = "RightHand"
 can_attack = true
 can_shoot = true
 equipment_type = 5
 is_exclusive = true
 position_offset = Vector3(0, 0.09, 0.025)
-rotation_offset_degrees = Vector3(-5, 180, 80)
+rotation_offset_degrees = Vector3(0, 180, 80)
 
 [node name="Area3D" type="Area3D" parent="JustCreate3D/Weapon_02" unique_id=1390449809]
 
