@@ -182,13 +182,13 @@ func _set_child_rigid_bodies_disabled_recursive(node, disabled: bool) -> void:
 		_set_child_rigid_bodies_disabled_recursive(child, disabled)
 
 
-func _set_balloons_string_visible(is_visible: bool) -> void:
+func _set_balloons_string_visible(p_visible: bool) -> void:
 	for balloon in _balloons:
 		if not _is_balloon_valid(balloon):
 			continue
 		var string_node := (balloon as Node).get_node_or_null("Visuals/String")
 		if string_node is Node3D:
-			(string_node as Node3D).visible = is_visible
+			(string_node as Node3D).visible = p_visible
 
 
 func _restore_initial_positions() -> void:
