@@ -14,9 +14,13 @@ func _input(event: InputEvent) -> void:
 
 	if player:
 		if event.is_action_pressed("action"):
-			print("Action pressed")
-			# Make the player rotate (horizontally) towards the mineable object
-			# travel to "Mine" state in the player's state machine
+			# Make the player_model rotate (horizontally) towards the mineable object
+			var target_dir := (global_position - player.global_position)
+			target_dir = target_dir - target_dir.project(player.up_direction)
+			if target_dir.length_squared() > 0.001:
+				target_dir = target_dir.normalized()
+				player.orientation.basis = Basis.looking_at(-target_dir, player.up_direction)
+			# Travel to "Mine" state in the player's state machine
 			player.locomotion_state.travel("Mining")
 
 
