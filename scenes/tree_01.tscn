@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://d3o4cq6mgg8ni"]
+
+[ext_resource type="Script" uid="uid://bm34tsmkx4rsr" path="res://scenes/choppable.gd" id="1_1a2o8"]
+[ext_resource type="PackedScene" uid="uid://bttr7p1xafvaw" path="res://assets/quaternius/logs/Tree_Bark_1.gltf" id="1_je8fs"]
+[ext_resource type="PackedScene" uid="uid://bmcjd7cwj2fb1" path="res://assets/quaternius/logs/Tree_Log_1.gltf" id="2_4cdo8"]
+[ext_resource type="PackedScene" uid="uid://62kmykdwxwds" path="res://assets/quaternius/nature/CommonTree_1.gltf" id="3_1a2o8"]
+[ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://scenes/action_prompt.tscn" id="4_4cdo8"]
+
+[node name="Tree01" type="Node3D" unique_id=38701300]
+script = ExtResource("1_1a2o8")
+
+[node name="Tree_Bark_12" parent="." unique_id=2006155973 instance=ExtResource("1_je8fs")]
+visible = false
+
+[node name="Tree_Log_12" parent="." unique_id=138702607 instance=ExtResource("2_4cdo8")]
+transform = Transform3D(0.14011975, -0.9873595, 0.07407709, -0.08715574, -0.08682413, -0.9924039, 0.9862911, 0.13259913, -0.098219834, 0.35261536, 1.4396726, 0.0923965)
+visible = false
+
+[node name="CommonTree_12" parent="." unique_id=390053289 instance=ExtResource("3_1a2o8")]
+
+[node name="ActionPrompt" parent="." unique_id=1664152999 instance=ExtResource("4_4cdo8")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 1.3000001, -0.19999999)
+visible = false
+message_end = " to cut tree"

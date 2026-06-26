@@ -31,6 +31,8 @@
 [ext_resource type="Texture2D" uid="uid://bxjtt45llikjf" path="res://assets/n_hance_studio/craft/preview.png" id="29_yq6so"]
 [ext_resource type="PackedScene" uid="uid://ck40pkrttk535" path="res://scenes/ore_small.tscn" id="30_fv21b"]
 [ext_resource type="PackedScene" uid="uid://yo68ojwutmqp" path="res://scenes/ore_large.tscn" id="31_tel4y"]
+[ext_resource type="Texture2D" uid="uid://b810kdta7g8wk" path="res://assets/quaternius/nature/preview.jpg" id="32_5q0nq"]
+[ext_resource type="PackedScene" uid="uid://d3o4cq6mgg8ni" path="res://scenes/tree_01.tscn" id="33_dgi5k"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -375,11 +377,20 @@ size = Vector3(1, 0.4, 0.2)
 size = Vector3(0.3, 0.2, 0.2)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fv21b"]
+cull_mode = 2
 albedo_texture = ExtResource("29_yq6so")
 
 [sub_resource type="QuadMesh" id="QuadMesh_tel4y"]
 material = SubResource("StandardMaterial3D_fv21b")
 size = Vector2(4.875, 3.25)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j8jky"]
+cull_mode = 2
+albedo_texture = ExtResource("32_5q0nq")
+
+[sub_resource type="QuadMesh" id="QuadMesh_5pyta"]
+material = SubResource("StandardMaterial3D_j8jky")
+size = Vector2(4.685, 2.635)
 
 [node name="World" type="Node3D" unique_id=336392758]
 script = ExtResource("1_h2yge")
@@ -726,7 +737,7 @@ play = true
 transform = Transform3D(0.033, 0, 0, 0, 0.03187555, -0.008541028, 0, 0.008541028, 0.03187555, -3.5, 10.3, -4.9)
 
 [node name="N_Hance_Studio_2" type="Node3D" parent="." unique_id=11654494]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 5)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -2.5, 0, 5)
 
 [node name="Preview" type="MeshInstance3D" parent="N_Hance_Studio_2" unique_id=1214709]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7484552e-07, 1.625, -2)
@@ -737,3 +748,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
 
 [node name="OreLarge" parent="N_Hance_Studio_2" unique_id=1334924530 instance=ExtResource("31_tel4y")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+
+[node name="Quaternius" type="Node3D" parent="." unique_id=795331221]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 2.5, 0, 7)
+
+[node name="Preview" type="MeshInstance3D" parent="Quaternius" unique_id=272895912]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3175001, 0)
+mesh = SubResource("QuadMesh_5pyta")
+
+[node name="Tree01" parent="Quaternius" unique_id=38701300 instance=ExtResource("33_dgi5k")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -4.7683716e-07, 0, 1)
