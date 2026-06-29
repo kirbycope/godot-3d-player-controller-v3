@@ -465,12 +465,12 @@
 		{
 			"mimeType":"image/png",
 			"name":"T_WoodTrim_Normal.png",
-			"uri":"T_WoodTrim_Normal.png.png"
+			"uri":"T_WoodTrim_Normal.png"
 		},
 		{
 			"mimeType":"image/png",
 			"name":"T_WoodTrim_BaseColor.png",
-			"uri":"T_WoodTrim_BaseColor.png.png"
+			"uri":"T_WoodTrim_BaseColor.png"
 		}
 	],
 	"accessors":[

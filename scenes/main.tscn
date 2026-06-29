@@ -62,20 +62,14 @@ uv1_scale = Vector3(0.333, 0.333, 0.333)
 uv1_offset = Vector3(0.5, 0.5, 0.5)
 uv1_triplanar = true
 
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_036b0"]
-load_path = "res://.godot/imported/texture_04.svg-ce8309479826f054be6c04ac4cbc43fc.s3tc.ctex"
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dwbse"]
-albedo_texture = SubResource("CompressedTexture2D_036b0")
+albedo_texture = ExtResource("5_yc10j")
 uv1_scale = Vector3(1, 1.715, 1)
 uv1_offset = Vector3(0, 1.44, 0)
 uv1_triplanar = true
 
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_pkg7o"]
-load_path = "res://.godot/imported/texture_04.svg-ce8309479826f054be6c04ac4cbc43fc.s3tc.ctex"
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gbfbk"]
-albedo_texture = SubResource("CompressedTexture2D_pkg7o")
+albedo_texture = ExtResource("5_yc10j")
 uv1_scale = Vector3(1, 1.72, 1)
 uv1_offset = Vector3(0, 1.445, 0)
 uv1_triplanar = true

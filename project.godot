@@ -32,7 +32,9 @@ enabled=PackedStringArray("res://addons/sky_3d/plugin.cfg")
 [importer_defaults]
 
 texture={
-&"compress/mode": 1
+&"compress/mode": 1,
+&"detect_3d/compress_to": 2,
+&"process/size_limit": 1024
 }
 
 [input]
@@ -79,3 +81,4 @@ pointing/emulate_mouse_from_touch=false
 [rendering]
 
 rendering_device/driver.windows="d3d12"
+textures/vram_compression/import_etc2_astc=true
