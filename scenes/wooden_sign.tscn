@@ -1,0 +1,186 @@
+[gd_scene format=3 uid="uid://b634fbd3saoxu"]
+
+[ext_resource type="Script" uid="uid://437d60vw50vx" path="res://scenes/wooden_sign.gd" id="1_f5els"]
+[ext_resource type="Material" uid="uid://bgh0q813ao036" path="res://assets/ambientcg_com/planks_20/Planks020_1K-JPG.tres" id="2_87gjy"]
+[ext_resource type="Material" uid="uid://da7xlxi1ot5r1" path="res://assets/ambientcg_com/wood_073/Wood073_1K-JPG.tres" id="3_2cs4t"]
+[ext_resource type="Texture2D" uid="uid://e12w3jhdbgbs" path="res://addons/3d_player_controller/assets/kenney_nl/Icons/Input Prompts/Nintendo Switch/Vector/switch_up_arrow.svg" id="4_87gjy"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_senyo"]
+height = 1.0
+radius = 1.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2cs4t"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.101960786, 0.101960786, 0.101960786, 0.78431374)
+corner_radius_top_left = 96
+corner_radius_top_right = 96
+corner_radius_bottom_right = 96
+corner_radius_bottom_left = 96
+
+[sub_resource type="Animation" id="Animation_04v6n"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Arrow:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(268, 168)]
+}
+
+[sub_resource type="Animation" id="Animation_x81mw"]
+resource_name = "arrow_bounce"
+length = 0.667
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Arrow:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(268, 184), Vector2(268, 136)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_cfpqr"]
+_data = {
+&"RESET": SubResource("Animation_04v6n"),
+&"arrow_bounce": SubResource("Animation_x81mw")
+}
+
+[node name="WoodenSign" type="Node3D" unique_id=205783760]
+script = ExtResource("1_f5els")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=820668266]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+use_collision = true
+size = Vector3(0.667, 0.333, 0.05)
+material = ExtResource("2_87gjy")
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="." unique_id=111291412]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5029371, 0)
+use_collision = true
+radius = 0.025
+height = 0.69
+material = ExtResource("3_2cs4t")
+
+[node name="Label3D" type="Label3D" parent="." unique_id=1327948703]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.026000023)
+shaded = true
+double_sided = false
+modulate = Color(0.8392157, 0.70980394, 0.53333336, 1)
+text = "README"
+outline_size = 0
+
+[node name="Label3D2" type="Label3D" parent="." unique_id=591634263]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 1, -0.027091503)
+shaded = true
+double_sided = false
+modulate = Color(0.8392157, 0.70980394, 0.53333336, 1)
+text = "README"
+outline_size = 0
+
+[node name="LookAtTarget" type="Marker3D" parent="." unique_id=1758837891]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="PlayerDetection" type="Area3D" parent="." unique_id=904875514]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PlayerDetection" unique_id=2139095233]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6665, 0)
+shape = SubResource("CylinderShape3D_senyo")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=831213497]
+visible = false
+
+[node name="Panel" type="Panel" parent="CanvasLayer" unique_id=1258717420]
+custom_minimum_size = Vector2(600, 200)
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -300.0
+offset_top = -248.0
+offset_right = 300.0
+offset_bottom = -48.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_2cs4t")
+
+[node name="Speaker" type="RichTextLabel" parent="CanvasLayer/Panel" unique_id=141656280]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -230.0
+offset_top = -32.0
+offset_right = 230.0
+offset_bottom = 34.0
+grow_horizontal = 2
+theme_override_font_sizes/normal_font_size = 32
+theme_override_font_sizes/bold_font_size = 32
+theme_override_font_sizes/bold_italics_font_size = 32
+theme_override_font_sizes/italics_font_size = 32
+theme_override_font_sizes/mono_font_size = 32
+bbcode_enabled = true
+text = "
+"
+scroll_active = false
+vertical_alignment = 1
+
+[node name="Text" type="RichTextLabel" parent="CanvasLayer/Panel" unique_id=1059179248]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -66.5
+offset_right = 200.0
+offset_bottom = 66.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/normal_font_size = 32
+theme_override_font_sizes/bold_font_size = 32
+theme_override_font_sizes/bold_italics_font_size = 32
+theme_override_font_sizes/italics_font_size = 32
+theme_override_font_sizes/mono_font_size = 32
+bbcode_enabled = true
+text = "Hello, World!"
+scroll_active = false
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Arrow" type="TextureRect" parent="CanvasLayer/Panel" unique_id=886634966]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -32.0
+offset_top = -32.0
+offset_right = 32.0
+offset_bottom = 32.0
+grow_horizontal = 2
+grow_vertical = 0
+texture = ExtResource("4_87gjy")
+flip_v = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="CanvasLayer/Panel" unique_id=1376800718]
+libraries/ = SubResource("AnimationLibrary_cfpqr")
+autoplay = &"arrow_bounce"
+
+[connection signal="body_entered" from="PlayerDetection" to="." method="_on_player_detection_body_entered"]
+[connection signal="body_exited" from="PlayerDetection" to="." method="_on_player_detection_body_exited"]

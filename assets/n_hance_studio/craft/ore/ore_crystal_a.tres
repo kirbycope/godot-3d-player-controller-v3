@@ -1,0 +1,19 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://1dsyg1lmyku7"]
+
+[ext_resource type="Texture2D" uid="uid://cuikee1h5hqqf" path="res://assets/n_hance_studio/craft/ore/Textures/T_G_OreCrystal_A_D.png" id="1_3cq7k"]
+[ext_resource type="Texture2D" uid="uid://csgc66rsd3frw" path="res://assets/n_hance_studio/craft/ore/Textures/T_G_OreCrystal_AO.png" id="2_yaf2h"]
+[ext_resource type="Texture2D" uid="uid://f2qokbhsg74l" path="res://assets/n_hance_studio/craft/ore/Textures/T_G_OreCrystal_E.png" id="3_yogey"]
+[ext_resource type="Texture2D" uid="uid://d2foet6k7wwbx" path="res://assets/n_hance_studio/craft/ore/Textures/T_G_OreCrystal_MR.png" id="4_5g4ck"]
+[ext_resource type="Texture2D" uid="uid://d31r7nbds07oe" path="res://assets/n_hance_studio/craft/ore/Textures/T_G_OreCrystal_N.png" id="5_xd6rh"]
+
+[resource]
+cull_mode = 2
+albedo_texture = ExtResource("1_3cq7k")
+metallic_texture = ExtResource("4_5g4ck")
+roughness_texture = ExtResource("4_5g4ck")
+emission_enabled = true
+emission_texture = ExtResource("3_yogey")
+normal_enabled = true
+normal_texture = ExtResource("5_xd6rh")
+ao_enabled = true
+ao_texture = ExtResource("2_yaf2h")

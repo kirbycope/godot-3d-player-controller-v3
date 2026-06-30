@@ -15,3 +15,9 @@ Auto-Clarity: drop caveman for security warnings, irreversible actions, user con
 Boundaries: code/commits/PRs written normal.
 
 Prefer: fewest lines of code and least amount of new varaibles, functions, and abstraction in general
+
+Prefer: Godot Editor changes (nodes and scenes) over code changes when possible. Editor changes are easier to maintain and less error-prone.
+
+Godot Executable: On Windows, the file path is "C:\Godot\godot.exe" and has been added to the PATH environment variable.
+
+Web Export: Saved to `docs/index.html`

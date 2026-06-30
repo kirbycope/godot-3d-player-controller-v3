@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://vxy8af7vle0d"]
+
+[ext_resource type="PackedScene" uid="uid://brc1errfocr3v" path="res://assets/quaternius/logs/Tree_Bark_2.gltf" id="1_oowod"]
+[ext_resource type="PackedScene" uid="uid://cr84aje5t8j5t" path="res://assets/quaternius/logs/Tree_Log_2.gltf" id="2_fidi7"]
+[ext_resource type="PackedScene" uid="uid://gwgy7yhx2f21" path="res://assets/quaternius/nature/CommonTree_5.gltf" id="3_f8uj6"]
+
+[node name="Tree02" type="Node3D" unique_id=437624714]
+
+[node name="Tree_Bark_22" parent="." unique_id=765987448 instance=ExtResource("1_oowod")]
+visible = false
+
+[node name="Tree_Log_22" parent="." unique_id=190312552 instance=ExtResource("2_fidi7")]
+transform = Transform3D(0.98721623, -0.12666085, -0.096753635, -0.10940049, -0.09701651, -0.9892519, 0.115912855, 0.98719054, -0.10963301, -0.23206043, 1.7484955, -0.21021771)
+visible = false
+
+[node name="CommonTree_52" parent="." unique_id=517511115 instance=ExtResource("3_f8uj6")]
+transform = Transform3D(0.9980889, 0, 0.061794817, 0, 1, 0, -0.061794817, 0, 0.9980889, 0, 0, 0)

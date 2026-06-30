@@ -1,136 +1,109 @@
 class_name Player
 extends CharacterBody3D
 
-const JUMP_VELOCITY = 4.5
-const TURN_SPEED = 8.0
-const SPEED = 5.0
-const FALL_AIR_CONTROL_MULTIPLIER = 0.5
-const LANDING_SKIP_LATERAL_SPEED = 0.75
+const EMOTE_STATE_PLAYBACK_PATH: String = "parameters/EmoteStateMachine/playback"
+const LOCOMOTION_STATE_PLAYBACK_PATH: String = "parameters/LocomotionStateMachine/playback"
+const ARCHERY_LOCOMOTION_BLEND_POSITION_PATH: String = "parameters/LocomotionStateMachine/ArcheryLocomotion/blend_position"
+const BOW_LOCOMOTION_BLEND_POSITION_PATH: String = "parameters/LocomotionStateMachine/BowLocomotion/blend_position"
+const BRACED_HANG_LOCOMOTION_BLEND_POSITION_PATH: String = "parameters/LocomotionStateMachine/BracedHangLocomotion/blend_position"
+const CLIMBING_LOCOMOTION_BLEND_POSITION_PATH: String = "parameters/LocomotionStateMachine/ClimbingLocomotion/blend_position"
+const CROUCHING_LOCOMOTION_BLEND_POSITION_PATH: String = "parameters/LocomotionStateMachine/CrouchingLocomotion/blend_position"
+const FREE_HANGING_LOCOMOTION_BLEND_POSITION_PATH: String = "parameters/LocomotionStateMachine/FreeHangingLocomotion/blend_position"
+const GREATSWORD_LOCOMOTION_BLEND_POSITION_PATH: String = "parameters/LocomotionStateMachine/GreatSwordLocomotion/blend_position"
+const PISTOL_LOCOMOTION_BLEND_POSITION_PATH: String = "parameters/LocomotionStateMachine/PistolLocomotion/blend_position"
+const RIFLE_LOCOMOTION_BLEND_POSITION_PATH: String = "parameters/LocomotionStateMachine/RifleLocomotion/blend_position"
+const SHIELD_LOCOMOTION_BLEND_POSITION_PATH: String = "parameters/LocomotionStateMachine/ShieldLocomotion/blend_position"
+const STANDING_LOCOMOTION_BLEND_POSITION_PATH: String = "parameters/LocomotionStateMachine/StandingLocomotion/blend_position"
 
-@export_group("Animation Tree")
 @export var animation_tree: AnimationTree
-@export var locomotion_forward_blend_path: String = "parameters/LocomotionStateMachine/Locomotion/StanceStateMachine/Standing/ForwardBlend/blend_position"
-@export var locomotion_strafe_blend_path: String = "parameters/LocomotionStateMachine/Locomotion/StanceStateMachine/Standing/StrafeBlend/blend_position"
-@export var locomotion_crouch_blend_path: String = "parameters/LocomotionStateMachine/Locomotion/StanceStateMachine/Crouching/blend_position"
-@export var locomotion_mode_path: String = "parameters/LocomotionStateMachine/Locomotion/StanceStateMachine/Standing/LocomotionSwitch/blend_amount"
-@export var locomotion_stance_playback_path: String = "parameters/LocomotionStateMachine/Locomotion/StanceStateMachine/playback"
-@export var locomotion_state_playback_path: String = "parameters/LocomotionStateMachine/playback"
-@export var climbing_move_blend_path: String = "parameters/LocomotionStateMachine/Climbing/blend_position"
-@export var climbing_time_scale_path: String = "parameters/LocomotionStateMachine/Climbing/TimeScale/scale"
-@export var hanging_free_move_blend_path: String = "parameters/LocomotionStateMachine/Hanging/FreeMove/blend_position"
-@export var hanging_braced_move_blend_path: String = "parameters/LocomotionStateMachine/Hanging/BracedMove/blend_position"
-@export var hanging_blend_path: String = "parameters/LocomotionStateMachine/Hanging/HangingSwitch/blend_amount"
-@export var bow_blend_path: String = "parameters/BowBlend/blend_amount"
-@export var bow_locomotion_forward_blend_path: String = "parameters/BowLocomotionStateMachine/Locomotion/StanceStateMachine/Standing/ForwardBlend/blend_position"
-@export var bow_locomotion_strafe_blend_path: String = "parameters/BowLocomotionStateMachine/Locomotion/StanceStateMachine/Standing/StrafeBlend/blend_position"
-@export var bow_locomotion_crouch_blend_path: String = "parameters/BowLocomotionStateMachine/Locomotion/StanceStateMachine/Crouching/blend_position"
-@export var bow_locomotion_mode_path: String = "parameters/BowLocomotionStateMachine/Locomotion/StanceStateMachine/Standing/LocomotionSwitch/blend_amount"
-@export var upper_body_blend_path: String = "parameters/UpperBodyBlend/blend_amount"
-@export var upper_body_state_playback_path: String = "parameters/UpperBodyStateMachine/playback"
+@export var current_animation: int
+@export var motion_interpolate_speed: float = 10.0
+@export var rotation_interpolate_speed: float = 10.0
 
-@export_group("Animation State Names")
-@export var state_name_climbing: String = "Climbing"
-@export var state_name_falling: String = "Falling"
-@export var state_name_locomotion: String = "Locomotion"
-@export var state_name_backflip: String = "Backflip"
-@export var state_name_hanging: String = "Hanging"
-@export var state_name_paragliding: String = "Paragliding"
-@export var state_name_standing_jump: String = "Jumping"
-@export var state_name_running_jump: String = "RunningJump"
-@export var state_name_running_slide: String = "RunningSlide"
-@export var state_name_standing: String = "Standing"
-@export var state_name_standing_panting: String = "StandingPanting"
-@export var state_name_standing_to_crouching: String = "StandingToCrouching"
-@export var state_name_crouching: String = "Crouching"
-@export var state_name_crouching_to_standing: String = "CrouchingToStanding"
-@export var state_name_idle: String = "Idle"
-@export var state_name_pushing: String = "Pushing"
-@export var state_name_bow_aim: String = "AimArrow"
-@export var state_name_bow_draw: String = "DrawArrow"
-@export var state_name_bow_shoot: String = "RecoilArrow"
-
-var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
-var input_vector: Vector2 = Vector2.ZERO ## The player's input vector (move_up, move_down, move_left, move_right)
-var climbing_surface_normal: Vector3 = Vector3.ZERO
-var has_bow_equipped: bool = false ## Does the player have the bow equipped?
-var initial_collision_shape: CollisionShape3D
-var initial_collision_shape_height: float = 0.0
-var initial_collision_shape_position_y: float = 0.0
-var is_aiming_bow: bool = false ## Is the player currently aiming with the bow?
-var is_climbing: bool = false ## Is the player "climbing"?
-var is_crouching: bool = false ## Is the player "crouching"?
-var is_drawing_arrow: bool = false ## Is the player currently drawing an arrow with the bow?
-var is_exhausted: bool = false ## Is the player "exhausted"?
-var is_falling: bool = false ## Is the player "falling"?
-var is_hanging: bool = false ## Is the player "hanging"?
-var is_jumping: bool = false ## Is the player "jumping"?
-var is_paragliding: bool = false ## Is the player "paragliding"?
-var is_pushing: bool = false ## Is the player "pushing" against a wall?
-var is_ragdolling: bool = false ## Is the player "ragdolling"?
-var is_running: bool = false ## Is the player "running"?
-var is_sliding: bool = false ## Is the player "sliding"?
-var is_shooting_bow: bool = false ## Is the player currently shooting with the bow?
-var is_sprinting: bool = false ## Is the player "sprinting"?
-var is_strafing: bool = false ## Is the player "strafing"?
-
-## Playback control for the [StateMachine], `LocomotionStateMachine`
-var playback_locomotion: AnimationNodeStateMachinePlayback:
+var current_state: int ## The current state of the Player (from the Node/Code [NodeStateMachine], not the AnimationTree NodeStateMachine).
+var locomotion_state: ## Gets the [NodeStateMachine] "LocomotionStateMachine"
 	get:
-		return animation_tree.get(locomotion_state_playback_path) as AnimationNodeStateMachinePlayback
+		return animation_tree.get(LOCOMOTION_STATE_PLAYBACK_PATH)
 
-## Current animation state of the `LocomotionStateMachine` playback control.
-var playback_locomotion_state: String:
-	get :
-		return animation_tree.get(locomotion_state_playback_path).get_current_node() as String
+# Equipment
+var equipment: Array = []
+var equipment_by_type: Dictionary = {}
+var can_player_attack: bool = false ## Does the currently equipped item allow the Player to attack?
+var can_player_shoot: bool = false ## Does the currently equipped item allow the Player to shoot?
 
-## Playback control for the [StateMachine], `LocomotionStateMachine > Locomotion > StanceStateMachine`
-var playback_stance: AnimationNodeStateMachinePlayback:
-	get:
-		return animation_tree.get(locomotion_stance_playback_path) as AnimationNodeStateMachinePlayback
+# Attack Sequence (while holding equipment)
+var attack_sequence: int = 0
+var is_attacking: bool = false
+var is_attacking_1: bool = false # Attack Sequence: 1 of n
+var is_attacking_2: bool = false # Attack Sequence: 2 of n
+var is_attacking_3: bool = false # Attack Sequence: 3 of n
+# Bow and Arrow
+var is_aiming_bow: bool = false
+var is_drawing_arrow: bool = false
+var is_firing_arrow: bool = false
+# Climbing
+var is_climbing: bool = false ## Is the Player currently climbing?
+var is_climbing_on: bool = false ## Is the Player currently climbing on to a ledge?
+var climbing_on_target: Vector3  ## The target position the Player is climbing on to (from ledge detection).
+var is_climbing_hopping_left: bool = false ## Is the Player currently hopping left while climbing?
+var is_climbing_hopping_right: bool = false ## Is the Player currently hopping right while climbing?
+var is_climbing_hopping_up: bool = false ## Is the Player currently hopping up while climbing?
+var is_hopping_from_climbing: bool = false ## Is the Player currently hopping while climbing?
+# Hanging
+var is_hanging_braced: bool = false ## Is the Player currently hanging (braced)?
+var is_hanging_free: bool = false ## Is the Player currently hanging (free)?
+var is_crouching: bool = false ## Is the Player currently crouching?
+var is_emoting: bool = false ## Is the Player currently emoting?
+var is_falling: bool = false
+var is_focusing: bool = false
+var is_jumping: bool = false
+var is_jump_queued: bool = false
+var is_mining: bool = false
+var is_logging: bool = false
+var is_paragliding: bool = false
+var is_shooting: bool = false
+var is_sliding: bool = false
+var is_sprinting: bool = false
 
-## Current animation state of the `LocomotionStateMachine > Locomotion > StanceStateMachine` playback control.
-var playback_stance_state: String:
-	get :
-		return animation_tree.get(locomotion_stance_playback_path).get_current_node() as String
+var orientation := Transform3D()
+var root_motion := Transform3D()
 
-## Playback control for the [StateMachine], `UpperBodyBlend > UpperBodyStateMachine`
-var playback_upper_body: AnimationNodeStateMachinePlayback: 
-	get:
-		return animation_tree.get(upper_body_state_playback_path) as AnimationNodeStateMachinePlayback
-
-## Current animation state of the `UpperBodyBlend > UpperBodyStateMachine` playback control.
-var playback_upper_body_state: String:
-	get :
-		return animation_tree.get(upper_body_state_playback_path).get_current_node() as String
-
-@onready var audio: Node3D = $Audio ## The audio controller
-@onready var crosshair: TextureRect = $Crosshair
-@onready var camera_spring_arm: SpringArm3D = $CameraSpringArm
-@onready var look_at_modifier: LookAtModifier3D = $Pivot/RootMotion/PlayerModel/GeneralSkeleton/LookAtModifier3D
-@onready var raycast_ledge: RayCast3D = $Pivot/Ledge
-@onready var raycast_mantle_target: RayCast3D = $Pivot/MantleTarget
-@onready var raycast_top: RayCast3D = $Pivot/Top
-@onready var raycast_head: RayCast3D = $Pivot/Head
-@onready var raycast_chest: RayCast3D = $Pivot/Chest
-@onready var raycast_below_paraglide: RayCast3D = $Pivot/BelowParaglide ## Used to detect if the player is high enough off the groud to paraglide
-@onready var raycast_below_step: RayCast3D = $Pivot/BelowStep ## Used to detect if the player is close enough to the floor to step down and not fall.
-@onready var skeleton: Skeleton3D = $Pivot/RootMotion/PlayerModel/GeneralSkeleton
-@onready var pivot: Node3D = $Pivot ## Used to rotate the character 180°, without affecting its parent [Player] node or being overwritten by its child [RootMotion] node
-@onready var physical_bone_simulator: PhysicalBoneSimulator3D = $Pivot/RootMotion/PlayerModel/GeneralSkeleton/PhysicalBoneSimulator3D
-@onready var progress_bar_stamina: TextureProgressBar = $ProgressBarStamina
-@onready var voice_male_effort_grunt: AudioStreamPlayer3D = $Audio/VoiceMaleEffortGrunt
+@onready var attack_sequence_timer: Timer = $AttackSequenceTimer
+@onready var controls: CanvasLayer = $Controls
+@onready var debug: CanvasLayer = $Debug
+@onready var initial_position: Vector3 = transform.origin
+@onready var hanging_braced_detection: RayCast3D = $PlayerModel/HangingBracedDetection
+@onready var ledge_detection_horizontal: RayCast3D = $PlayerModel/LedgeDetectionHorizontal
+@onready var ledge_detection_vertical: RayCast3D = $PlayerModel/LedgeDetectionHorizontal/LedgeDetectionVertical
+@onready var ledge_detection_marker: MeshInstance3D = $PlayerModel/LedgeDetectionHorizontal/LedgeDetectionVertical/LedgeDetectionMarker
+@onready var look_at_modifier = $PlayerModel/Armature/GeneralSkeleton/LookAtModifier3D
+@onready var look_at_target: Marker3D = $SpringArm3D/ProjectileRaycast/LookAtTarget
+@onready var player_input: InputSynchronizer = $InputSynchronizer
+@onready var player_model: Node3D = $PlayerModel
+@onready var paraglider_raycast: RayCast3D = $ParagliderRaycast
+@onready var projectile_raycast: RayCast3D = $SpringArm3D/ProjectileRaycast
+@onready var skeleton: Skeleton3D = $PlayerModel/Armature/GeneralSkeleton
+@onready var spring_arm: SpringArm3D = $SpringArm3D
+@onready var state_machine: NodeStateMachine = $NodeStateMachine
 
 
 ## Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	# Ensure the [CameraSpringArm] doesn't collide with the player
-	camera_spring_arm.add_excluded_object(self.get_rid())
-	# Ensure the player's [PhysicalBone3D]s do not collide with the [CollisionShape3D] required by the [CharacterBody3D]
-	physical_bone_simulator.physical_bones_add_collision_exception(get_rid())
-	# Store the collision shape data
-	initial_collision_shape = $CollisionShape3D
-	initial_collision_shape_height = initial_collision_shape.shape.height
-	initial_collision_shape_position_y = initial_collision_shape.position.y
+	# Do nothing if not the authority
+	if not is_multiplayer_authority(): return
+
+	# Pre-initialize orientation transform.
+	orientation = player_model.global_transform
+	orientation.origin = Vector3()
+
+	# Ensure the AnimationTree is active so that root motion is applied in the first frame.
+	animation_tree.active = true
+
+	# Keep animation sampling in physics domain to match root-motion consumption in _physics_process.
+	animation_tree.callback_mode_process = AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_PHYSICS
+
+	# Ensure the projectile RayCast3D doesn't collide with the 
+	projectile_raycast.add_exception(self)
 
 
 ## Called when there is an input event.
@@ -149,603 +122,475 @@ func _input(event: InputEvent) -> void:
 			# Set the mouse mode to captured to hide the mouse cursor
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
-	# Check if the "crouch" action was pressed (while climbing or hanging) to drop down to the floor
-	if event.is_action_pressed("crouch") \
-	and (is_climbing or is_hanging):
-		# If hanging, end hanging to falling, otherwise end climbing to falling
-		if is_hanging:
-			end_hanging_to_falling()
-		else:
-			end_climbing_to_falling()
 
-	# Check if the "focus" action was pressed
-	if event.is_action_pressed("focus"):
-		# Flag the player as "strafing"
-		is_strafing = true
-	# Check if the "focus" action was released
-	elif event.is_action_released("focus"):
-		# Flag the player as not "strafing"
-		is_strafing = false
-
-	# Check if the key [R] was pressed
-	if event is InputEventKey \
-	and event.is_pressed() \
-	and event.keycode == Key.KEY_R:
-		# Check if the player is ragdolling
-		if is_ragdolling:
-			# Disable the ragdoll simulation to return control to the player
-			skeleton.get_node("PhysicalBoneSimulator3D").physical_bones_stop_simulation()
-			# Set collision layer to 0
-			skeleton.find_children("Physical Bone *","PhysicalBone3D", false)
-			for physical_bone in skeleton.find_children("Physical Bone *","PhysicalBone3D", false):
-				physical_bone.collision_layer[0] = true
-				physical_bone.collision_layer[1] = false
-			is_ragdolling = false
-		# The player must not be ragdolling
-		else:
-			# Set collision layer to 1
-			skeleton.find_children("Physical Bone *","PhysicalBone3D", false)
-			for physical_bone in skeleton.find_children("Physical Bone *","PhysicalBone3D", false):
-				physical_bone.collision_layer[0] = false
-				physical_bone.collision_layer[1] = true
-			skeleton.get_node("PhysicalBoneSimulator3D").physical_bones_start_simulation()
-			is_ragdolling = true
-
-
-## Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	# Do nothing if not the authority
-	if not is_multiplayer_authority(): return
-
-	# Check if the player has a bow equipped
-	if has_bow_equipped:
-		# Check if the "shoot" action is pressed
-		if Input.is_action_pressed("shoot"):
-			# Check if the player is not already flagged as "drawing an arrow" or "aiming with the bow"
-			if not is_drawing_arrow \
-			and not is_aiming_bow:
-				print("Drawing an arrow...")
-				# Double check that the Crosshair is displayed
-				if not crosshair.visible:
-					crosshair.show()
-				# Perform bow draw animation using animation tree
-				playback_upper_body.travel(state_name_bow_draw)
-				# Flag the player as "drawing an arrow"
-				is_drawing_arrow = true
-			# Check if the player is still flagged as "drawing an arrow" but the animation state has advanced to "AimArrow" state
-			elif is_drawing_arrow \
-			and playback_upper_body_state == state_name_bow_aim:
-				print("Arrow drawn and aiming bow; ready to shoot!")
-				# Flag the player as not "drawing an arrow"
-				is_drawing_arrow = false
-				# Flag the player as "aiming with the bow"
-				is_aiming_bow = true
-		# Check if the player is flagged as "aiming with the bow" but has released the "shoot" action
-		elif (is_drawing_arrow or is_aiming_bow) \
-		and Input.is_action_just_released("shoot"):
-			print("Shoot button released; shooting an arrow!")
-			# Hide the Crosshair
-			crosshair.hide()
-			# Play bow shoot animation using animation tree
-			playback_upper_body.travel(state_name_bow_shoot)
-			# Flag the player as not "drawing an arrow"
-			is_drawing_arrow = false
-			# Flag the player as not "aiming with the bow"
-			is_aiming_bow = false
-			# Flag the player as "shooting with the bow"
-			is_shooting_bow = true
-		# Check if the player is flagged as "shooting with the bow" but the animation state has advanced to "Idle" state (after recoil finishes)
-		elif is_shooting_bow \
-		and playback_upper_body_state == state_name_idle:
-			# Flag the player as not "shooting with the bow"
-			is_shooting_bow = false
-
-	# Switch between LocomotionStateMachine (0.0) and BowLocomotionStateMachine (1.0)
-	animation_tree.set(bow_blend_path, 1.0 if has_bow_equipped else 0.0)
-
-	# Blend in upper body when drawing or aiming with bow
-	animation_tree.set(upper_body_blend_path, 1.0 if (is_drawing_arrow or is_aiming_bow or is_shooting_bow) else 0.0)
-
-	# Play forward animation with lateral movement for leaning
-	var forward_vector := Vector2(0, input_vector.length())
-
-	# Route input to "locomotion > crouch" blend while crouching so stance locomotion can move
-	if is_crouching:
-		animation_tree.set(locomotion_mode_path, 0.0)
-		animation_tree.set(locomotion_crouch_blend_path, forward_vector)
-		animation_tree.set(locomotion_forward_blend_path, Vector2.ZERO)
-		animation_tree.set(bow_locomotion_mode_path, 0.0)
-		animation_tree.set(bow_locomotion_crouch_blend_path, forward_vector)
-		animation_tree.set(bow_locomotion_forward_blend_path, Vector2.ZERO)
-		return
-
-	# Route input to "locomotion > strafe" blend while strafing or using the bow
-	if is_strafing or is_drawing_arrow or is_aiming_bow or is_shooting_bow:
-		var strafe_vector := Vector2(clamp(input_vector.x, -1, 1), -clamp(input_vector.y, -1, 1))
-		animation_tree.set(locomotion_mode_path, 1.0)
-		animation_tree.set(locomotion_strafe_blend_path, strafe_vector)
-		animation_tree.set(locomotion_forward_blend_path, Vector2.ZERO)
-		animation_tree.set(bow_locomotion_mode_path, 1.0)
-		animation_tree.set(bow_locomotion_strafe_blend_path, strafe_vector)
-		animation_tree.set(bow_locomotion_forward_blend_path, Vector2.ZERO)
-		return
-
-	# Route input to "locomotion > forward" blend so locomotion can move
-	var sprint_forward_vector := forward_vector * Vector2(1, 1.5) if is_sprinting else forward_vector
-	animation_tree.set(locomotion_mode_path, 0.0)
-	animation_tree.set(locomotion_forward_blend_path, sprint_forward_vector)
-	animation_tree.set(bow_locomotion_mode_path, 0.0)
-	animation_tree.set(bow_locomotion_forward_blend_path, sprint_forward_vector)
-
-	# Blend between hanging free (0.0) and hanging braced (1.0)
-	if is_hanging:
-		animation_tree.set(hanging_blend_path, 1.0 if raycast_chest.is_colliding() else 0.0)
-		var hanging_lateral_blend := clamp(input_vector.x, -1.0, 1.0)
-		animation_tree.set(hanging_free_move_blend_path, hanging_lateral_blend)
-		animation_tree.set(hanging_braced_move_blend_path, hanging_lateral_blend)
-	if is_climbing:
-		var climbing_sprint := Input.is_action_pressed("sprint") and not is_exhausted
-		animation_tree.set(climbing_move_blend_path, Vector2(clamp(input_vector.x, -1.0, 1.0), -clamp(input_vector.y, -1.0, 1.0)))
-		animation_tree.set(climbing_time_scale_path, 2.0 if climbing_sprint else 1.0)
-
-
-## Called once on each physics tick, and allows Nodes to synchronize their logic with physics ticks.
+# https://github.com/godotengine/tps-demo/blob/master/player/gd#L54
 func _physics_process(delta: float) -> void:
 	# Do nothing if not the authority
 	if not is_multiplayer_authority(): return
 
-	# Cache the player input vector (read first so all checks this frame use fresh input)
-	input_vector = Input.get_vector("move_left", "move_right", "move_up", "move_down", 0.2)
+	# Apply player input to control the character and update the animation state.
+	apply_input(delta)
 
-	# Cache if the player is "crouching" 
-	is_crouching = playback_stance_state in [state_name_standing_to_crouching, state_name_crouching, state_name_crouching_to_standing]
+	# If we're below -40, respawn (teleport to the initial position).
+	if transform.origin.y < -40.0:
+		transform.origin = initial_position
 
-	# Cache if the player is "running"
-	is_running = playback_locomotion_state == state_name_locomotion and input_vector.length() >= 0.99
+	# Track if the player is "falling"
+	is_falling = locomotion_state.get_current_node() == "Falling" and not is_paragliding
 
-	# 🫸 Cache if the player is "pushing"
-	var was_pushing := is_pushing
-	is_pushing = (is_pushing and raycast_chest.is_colliding() and input_vector.y < 0) \
-		and not is_climbing \
-		and not is_crouching \
-		and not is_falling \
-		and not is_hanging \
-		and not is_jumping \
-		and not is_exhausted \
-		and not is_strafing
-	if was_pushing and not is_pushing:
-		playback_locomotion.travel(state_name_locomotion)
+	# Player is jumping if jump is queued or animation is in a Jump state.
+	is_jumping = is_jump_queued or locomotion_state.get_current_node().contains("Jump")
 
-	# Start "pushing"
-	if not is_pushing \
-	and playback_locomotion_state != state_name_pushing \
-	and input_vector.y < 0 \
-	and raycast_chest.is_colliding() \
-	and is_on_floor() \
-	and not is_crouching \
-	and not is_jumping \
-	and not is_strafing:
-		playback_locomotion.travel(state_name_pushing)
-		is_pushing = true
-
-	# Cache if the player is "sliding"
+	# Stop "sliding" when the animation finishes.
 	var was_sliding := is_sliding
-	is_sliding = playback_locomotion_state == state_name_running_slide
+	is_sliding = locomotion_state.get_current_node() == "RunningSlide"
 	if was_sliding and not is_sliding:
-		$CollisionShape3D.shape.height = initial_collision_shape_height
-		$CollisionShape3D.position.y = initial_collision_shape_position_y
+		is_sliding = false
 
-	# ᯓ🏃🏻‍♀️‍➡️ [sprint]
-	if Input.is_action_pressed("sprint") \
-	and is_on_floor() \
-	and (abs(velocity.x) > 0.2 or abs(velocity.z) > 0.2) \
-	and not is_crouching \
-	and not is_exhausted \
-	and not is_sliding \
-	and not is_strafing:
-		if progress_bar_stamina.value <= 0.0:
-			is_exhausted = true
+	# Stop emote state when the animation finishes and reset the blend amount.
+	if is_emoting and animation_tree.get(EMOTE_STATE_PLAYBACK_PATH).get_current_node() == "Idle":
+		animation_tree.set("parameters/EmoteSpineBlend2/blend_amount", 0.0)
+		is_emoting = false
+
+	## DEBUG: Toggle emote state for testing purposes.
+	if Input.is_action_just_pressed("emote"):
+		var emote_state = animation_tree.get(EMOTE_STATE_PLAYBACK_PATH)
+		if emote_state.get_current_node() != "Waving":
+			animation_tree.set("parameters/EmoteSpineBlend2/blend_amount", 1.0)
+			emote_state.travel("Waving")
+			is_emoting = true
+
+	## DEBUG: Remove all equipment for testing purposes.
+	if Input.is_action_just_pressed("unequip"):
+		debug_unequip_all()
+
+
+func debug_unequip_all() -> void:
+	equipment.clear()
+	equipment_by_type.clear()
+	can_player_attack = false
+	can_player_shoot = false
+	for child in skeleton.get_children():
+		if child is BoneAttachment3D:
+			child.queue_free()
+	locomotion_state.travel("StandingLocomotion")
+
+
+func rebuild_equipment_cache() -> void:
+	equipment_by_type.clear()
+	can_player_attack = false
+	can_player_shoot = false
+	for item in equipment:
+		if item == null:
+			continue
+		if "equipment_type" in item:
+			equipment_by_type[item.equipment_type] = item
+		if "can_attack" in item and item.can_attack:
+			can_player_attack = true
+		if "can_shoot" in item and item.can_shoot:
+			can_player_shoot = true
+
+
+func get_equipment_by_type(type: int) -> Node3D:
+	return equipment_by_type.get(type, null)
+
+
+func has_equipment(type: int) -> bool:
+	return equipment_by_type.has(type)
+
+
+func has_any_equipment(types: Array) -> bool:
+	for type in types:
+		if equipment_by_type.has(type):
+			return true
+	return false
+
+
+func has_heavy_weapon_equipped() -> bool:
+	return has_any_equipment([
+		Equipment.EquipmentType.AXE_2H,
+		Equipment.EquipmentType.STAFF,
+		Equipment.EquipmentType.SWORD_2H,
+	])
+
+
+func has_one_handed_or_shield_equipped() -> bool:
+	return has_any_equipment([
+		Equipment.EquipmentType.AXE_1H,
+		Equipment.EquipmentType.DAGGER,
+		Equipment.EquipmentType.SWORD_1H,
+		Equipment.EquipmentType.SWORD_AND_SHIELD,
+	])
+
+
+# https://github.com/godotengine/tps-demo/blob/master/player/gd#L86
+func apply_input(delta: float) -> void:
+	# Get the target motion from the synchronized input.
+	var target_motion: Vector2 = player_input.motion
+
+	# Track if player is mining or logging.
+	is_mining = locomotion_state.get_current_node() == "Mining" or "Mining" in locomotion_state.get_travel_path()
+	is_logging = locomotion_state.get_current_node() == "Logging" or "Logging" in locomotion_state.get_travel_path()
+	if is_mining or is_logging:
+		target_motion = Vector2.ZERO
+
+	# Smoothly interpolate the target_motion for more gradual changes in animation blending and rotation.
+	target_motion = target_motion.lerp(target_motion, motion_interpolate_speed * delta)
+
+	# While paragliding, block regular locomotion transitions and drive movement directly.
+	if is_paragliding:
+		is_attacking = false
+		is_attacking_1 = false
+		is_attacking_2 = false
+		is_attacking_3 = false
+		is_shooting = false
+		is_crouching = false
+		is_focusing = false
+		is_sprinting = false
+		is_sliding = false
+		is_climbing = false
+		is_climbing_on = false
+		is_hanging_braced = false
+		is_hanging_free = false
+		is_climbing_hopping_left = false
+		is_climbing_hopping_right = false
+		is_climbing_hopping_up = false
+		is_hopping_from_climbing = false
+		is_falling = false
+		is_jumping = false
+		is_jump_queued = false
+
+		if is_on_floor():
+			is_paragliding = false
 		else:
-			is_sprinting = true
-	else:
+			if locomotion_state.get_current_node() != "Paragliding":
+				locomotion_state.travel("Paragliding")
+
+			var camera_basis := spring_arm.global_transform.basis
+			var target_dir := camera_basis * Vector3(target_motion.x, 0.0, -target_motion.y)
+			target_dir.y = 0.0
+			if target_dir.length_squared() > 0.001 and not is_firing_arrow:
+				target_dir = target_dir.normalized()
+				var q_from: Quaternion = orientation.basis.get_rotation_quaternion()
+				var q_to: Quaternion = Basis.looking_at(-target_dir).get_rotation_quaternion()
+				orientation.basis = Basis(q_from.slerp(q_to, delta * rotation_interpolate_speed))
+
+			var current_h_vel := Vector3(velocity.x, 0.0, velocity.z)
+			var glide_speed := max(current_h_vel.length(), 4.0)
+			if target_dir.length_squared() > 0.001:
+				current_h_vel = target_dir.normalized() * glide_speed
+
+			velocity.x = current_h_vel.x
+			velocity.z = current_h_vel.z
+			velocity.y = min(velocity.y, 0.0)
+			velocity += get_gravity() * 0.35 * delta
+			velocity.y = max(velocity.y, -4.0)
+			set_velocity(velocity)
+			set_up_direction(Vector3.UP)
+			move_and_slide()
+
+			orientation.origin = Vector3()
+			orientation = orientation.orthonormalized()
+			player_model.global_transform.basis = orientation.basis
+			return
+
+	# Attack { Microsoft: X, Nintendo: Y, Sony: Square, Keyboard: [Alt] }.
+	is_attacking = locomotion_state.get_current_node() in [
+		"ShieldDownwardSlash",
+		"ShieldCrossSlash",
+		"ShieldPowerSlash",
+		"GreatSwordDownwardSlash",
+		"GreatSwordLowSlash",
+		"GreatSwordPowerSlash",
+	] or (Input.is_action_pressed("attack") and can_player_attack)
+
+	# Attack { Microsoft: X, Nintendo: Y, Sony: Square, Keyboard: [Alt] }.
+	var attack_pressed := Input.is_action_just_pressed("attack") and can_player_attack
+	is_attacking_1 = attack_pressed and attack_sequence == 0
+	is_attacking_2 = attack_pressed and attack_sequence == 1
+	is_attacking_3 = attack_pressed and attack_sequence == 2
+
+	# Attack Sequence: Sword and Shield
+	if attack_pressed and has_one_handed_or_shield_equipped():
+		attack_sequence_timer.start()
+		if locomotion_state.get_current_node() == "ShieldDownwardSlash":
+			attack_sequence = 1
+		elif locomotion_state.get_current_node() == "ShieldCrossSlash":
+			attack_sequence = 2
+		elif locomotion_state.get_current_node() == "ShieldPowerSlash":
+			attack_sequence = 0
+			attack_sequence_timer.stop()
+	
+	# Attack Sequence: Greatsword
+	elif attack_pressed and has_heavy_weapon_equipped():
+		attack_sequence_timer.start()
+		if locomotion_state.get_current_node() == "GreatSwordDownwardSlash":
+			attack_sequence = 1
+		elif locomotion_state.get_current_node() == "GreatSwordLowSlash":
+			attack_sequence = 2
+		elif locomotion_state.get_current_node() == "GreatSwordPowerSlash":
+			attack_sequence = 0
+			attack_sequence_timer.stop()
+
+	# Shoot { Microsoft: 🅁T, Nintendo: 🅁L, Sony: 🅁2, Keyboard: [Left Mouse Button] } 
+	is_shooting = Input.is_action_pressed("shoot") and can_player_shoot
+
+	# Crouch { Console: Left ⬤, Keyboard: [Control] }.
+	is_crouching = Input.is_action_pressed("crouch") and is_on_floor() and not is_sliding and not is_sprinting
+
+	# Focus { Microsoft: 🄻T, Nintendo: Z🄻, Sony: 🄻2, Keyboard: [Right Mouse Button] }.
+	is_focusing = Input.is_action_pressed("focus")
+
+	# Update locomotion state based on equipped items if not in special states
+	if not is_climbing and not is_hanging_braced and not is_hanging_free and not is_falling and not is_jumping and not is_sliding and not is_mining and not is_logging:
+		var current_state = locomotion_state.get_current_node()
+		var target_state = "StandingLocomotion"
+		var is_shield_attack_state: bool = current_state == "ShieldDownwardSlash" or current_state == "ShieldCrossSlash" or current_state == "ShieldPowerSlash"
+
+		if is_crouching:
+			target_state = "CrouchingLocomotion"
+		elif has_heavy_weapon_equipped():
+			target_state = "GreatSwordLocomotion"
+		elif has_equipment(Equipment.EquipmentType.BOW):
+			target_state = "BowLocomotion" if not is_shooting else "ArcheryLocomotion"
+		elif has_one_handed_or_shield_equipped():
+			target_state = "ShieldLocomotion"
+		elif has_equipment(Equipment.EquipmentType.PISTOL):
+			target_state = "PistolLocomotion"
+		elif has_equipment(Equipment.EquipmentType.RIFLE):
+			target_state = "RifleLocomotion"
+
+		# Transition if target differs from current (skip Jump states but allow transition from any normal state)
+		if current_state != target_state:
+			if not current_state.contains("Jump") and not is_shield_attack_state and current_state != "Mining" and current_state != "Logging":
+				locomotion_state.travel(target_state)
+
+	# Jump { Microsoft: Ⓨ, Nintendo: Ⓧ, Sony: 🟕, Keyboard: [Space] }
+	if is_on_floor() \
+	and Input.is_action_just_pressed("jump") \
+	and not is_climbing \
+	and not is_hanging_braced \
+	and not is_hanging_free \
+	and not is_jump_queued:
+		if target_motion.length() > 0.0:
+			if has_heavy_weapon_equipped():
+				locomotion_state.travel("GreatSwordJumpForward")
+			elif has_equipment(Equipment.EquipmentType.BOW):
+				locomotion_state.travel("BowJumpForward")
+			elif has_one_handed_or_shield_equipped():
+				locomotion_state.travel("ShieldJumpForward")
+			elif has_equipment(Equipment.EquipmentType.PISTOL):
+				locomotion_state.travel("PistolJumpForward")
+			elif has_equipment(Equipment.EquipmentType.RIFLE):
+				locomotion_state.travel("RifleJumpForward")
+			else:
+				locomotion_state.travel("RunningJump")
+		else:
+			if has_heavy_weapon_equipped():
+				locomotion_state.travel("GreatSwordJump")
+			elif has_equipment(Equipment.EquipmentType.BOW):
+				locomotion_state.travel("BowJump")
+			elif has_one_handed_or_shield_equipped():
+				locomotion_state.travel("ShieldJump")
+			elif has_equipment(Equipment.EquipmentType.RIFLE):
+				locomotion_state.travel("RifleJumpUp")
+			elif has_equipment(Equipment.EquipmentType.PISTOL):
+				locomotion_state.travel("PistolJump")
+			else:
+				locomotion_state.travel("JumpingUp")
+		is_jump_queued = true
+
+	# Climbing, Start { Microsoft: Ⓨ, Nintendo: Ⓧ, Sony: 🟕, Keyboard: [Space] }
+	if not is_on_floor() \
+	and not is_climbing \
+	and not is_hanging_braced \
+	and not is_hanging_free \
+	and Input.is_action_just_pressed("jump") \
+	and ledge_detection_horizontal.is_colliding():
+		# Stop "falling"/"jumping"
+		is_falling = false
+		is_jumping = false
+		# Start "climbing"
+		state_machine.travel(NodeStateMachine.States.CLIMBING)
+
+	# Sprint { Microsoft: Ⓑ, Nintendo: Ⓐ, Sony: Ⓞ, Keyboard: [Shift] }.
+	if is_on_floor() \
+	and Input.is_action_pressed("sprint") \
+	and not is_crouching \
+	and not is_jump_queued \
+	and not is_jumping \
+	and not is_sliding \
+	and (target_motion.y > 0.0 if is_focusing else target_motion.length() > 0.0):
+		if is_focusing:
+			target_motion.y *= 1.5
+			target_motion.x *= 0.5 # reduce strafe blend by 50% when sprinting so the blend favors the forward direction
+		else:
+			target_motion *= 1.5
+		is_sprinting = true
+	elif not is_climbing:
 		is_sprinting = false
 
-	# 😮‍💨 [exhausted]
-	if is_exhausted and velocity.length() < 0.2 \
-	and not is_climbing \
-	and not is_crouching \
-	and not is_falling \
-	and not is_hanging \
-	and not is_paragliding \
-	and playback_stance_state != state_name_standing_panting:
-		playback_stance.travel(state_name_standing_panting)
-	elif not is_exhausted and playback_stance_state == state_name_standing_panting:
-		is_exhausted = false
-		playback_stance.travel(state_name_standing)
+	# Slide (Crouch while Sprinting)
+	if is_sprinting \
+	and Input.is_action_just_pressed("crouch") \
+	and not is_sliding:
+		locomotion_state.travel("RunningSlide")
+		is_sliding = true
 
-	# 🧎 [crouch]
-	if not Input.is_action_pressed("crouch") \
-	and is_crouching:
-		# Transition to the "crouching to standing" state in the animation tree
-		playback_stance.travel(state_name_crouching_to_standing)
+	# Handle movement is strafing
+	if is_shooting or is_focusing:
 
-	# Check if the player is on a floor
-	if is_on_floor():
-		# Ignore landing animation when touching down from falling with enough lateral momentum.
-		var lateral_velocity := velocity - up_direction * velocity.dot(up_direction)
-		if playback_locomotion_state == state_name_falling and lateral_velocity.length() > LANDING_SKIP_LATERAL_SPEED:
-			playback_locomotion.travel(state_name_locomotion)
-			# Play "landing" sound
-			play_footstep_sound()
-		# Flag the player as not "falling"
-		is_falling = false
-		# Flag the player as not "jumping" (if applicable)
-		is_jumping = playback_locomotion_state in [state_name_running_jump, state_name_standing_jump, state_name_backflip]
-		# Stop climbing if the player has landed while climbing
+		# Rotate to face the camera direction when focusing or shooting (unless is_focusing and not is_shooting)
+		if (is_shooting or not is_focusing) and not is_firing_arrow and not is_hanging_braced and not is_hanging_free and not is_climbing:
+			var camera_basis := spring_arm.global_transform.basis
+			var camera_forward := -camera_basis.z
+			camera_forward.y = 0.0
+			if camera_forward.length_squared() > 0.001:
+				camera_forward = camera_forward.normalized()
+				var q_from: Quaternion = orientation.basis.get_rotation_quaternion()
+				var q_to: Quaternion = Basis.looking_at(-camera_forward).get_rotation_quaternion()
+				orientation.basis = Basis(q_from.slerp(q_to, delta * rotation_interpolate_speed))
+		if is_crouching:
+			animation_tree.set(CROUCHING_LOCOMOTION_BLEND_POSITION_PATH, target_motion)
+		else:
+			if has_equipment(Equipment.EquipmentType.BOW):
+				if is_shooting:
+					animation_tree.set(ARCHERY_LOCOMOTION_BLEND_POSITION_PATH, target_motion)
+				else:
+					animation_tree.set(BOW_LOCOMOTION_BLEND_POSITION_PATH, target_motion)
+			elif has_any_equipment([
+				Equipment.EquipmentType.AXE_1H,
+				Equipment.EquipmentType.DAGGER,
+				Equipment.EquipmentType.SWORD_1H,
+			]):
+				animation_tree.set(SHIELD_LOCOMOTION_BLEND_POSITION_PATH, target_motion)
+			elif has_heavy_weapon_equipped():
+				animation_tree.set(GREATSWORD_LOCOMOTION_BLEND_POSITION_PATH, target_motion)
+			elif has_equipment(Equipment.EquipmentType.PISTOL):
+				animation_tree.set(PISTOL_LOCOMOTION_BLEND_POSITION_PATH, target_motion)
+			elif has_equipment(Equipment.EquipmentType.RIFLE):
+				animation_tree.set(RIFLE_LOCOMOTION_BLEND_POSITION_PATH, target_motion)
+			else:
+				animation_tree.set(STANDING_LOCOMOTION_BLEND_POSITION_PATH, target_motion)
+
+	# Handle movement when not strafing
+	else:
+		# Use camera-relative direction for target_motion direction
+		var camera_basis := spring_arm.global_transform.basis
+		var target_dir := camera_basis * Vector3(target_motion.x, 0.0, -target_motion.y)
+		target_dir.y = 0.0
+		if target_dir.length_squared() > 0.001 and not is_firing_arrow and not is_hanging_braced and not is_hanging_free and not is_climbing:
+			target_dir = target_dir.normalized()
+			var q_from: Quaternion = orientation.basis.get_rotation_quaternion()
+			var q_to: Quaternion = Basis.looking_at(-target_dir).get_rotation_quaternion()
+			orientation.basis = Basis(q_from.slerp(q_to, delta * rotation_interpolate_speed))
+		# While climbing or hanging keep (rotate towards) facing the wall surface from the LedgeDetectionHorizontal raycast
+		if is_climbing or is_hanging_braced or is_hanging_free:
+			if ledge_detection_horizontal and ledge_detection_horizontal.is_colliding():
+				var normal := ledge_detection_horizontal.get_collision_normal()
+				var wall_dir := -normal
+				wall_dir.y = 0.0
+				if wall_dir.length_squared() > 0.001:
+					wall_dir = wall_dir.normalized()
+					var q_from: Quaternion = orientation.basis.get_rotation_quaternion()
+					var q_to: Quaternion = Basis.looking_at(-wall_dir).get_rotation_quaternion()
+					orientation.basis = Basis(q_from.slerp(q_to, delta * rotation_interpolate_speed))
 		if is_climbing:
-			climbing_stop()
-		# Stop hanging if the player has landed while hanging
-		if is_hanging:
-			hanging_stop()
-		# Stop paragliding if the player has landed while paragliding
-		if is_paragliding:
-			paragliding_stop()
-
-		# 🧎 [crouch] was just pressed
-		if Input.is_action_pressed("crouch") \
-		and not is_crouching \
-		and not is_exhausted \
-		and not is_pushing \
-		and not is_strafing \
-		and not is_sliding:
-			# Check if the player has some velocity
-			if (abs(velocity.x) > 0.2 or abs(velocity.z) > 0.2) \
-			and is_sprinting:
-				# Transition to the "sliding" state in the animation tree
-				begin_running_slide()
-			# The player must be standing still
+			animation_tree.set(CLIMBING_LOCOMOTION_BLEND_POSITION_PATH, target_motion)
+		elif is_hanging_braced:
+			animation_tree.set(BRACED_HANG_LOCOMOTION_BLEND_POSITION_PATH, target_motion.x)
+		elif is_hanging_free:
+			animation_tree.set(FREE_HANGING_LOCOMOTION_BLEND_POSITION_PATH, target_motion.x)
+		else:
+			var anim_blend := Vector2(0.0, target_motion.length())
+			if is_crouching:
+				animation_tree.set(CROUCHING_LOCOMOTION_BLEND_POSITION_PATH, anim_blend)
+			if has_equipment(Equipment.EquipmentType.BOW):
+				if is_shooting:
+					animation_tree.set(ARCHERY_LOCOMOTION_BLEND_POSITION_PATH, anim_blend)
+				else:
+					animation_tree.set(BOW_LOCOMOTION_BLEND_POSITION_PATH, anim_blend)
+			elif has_one_handed_or_shield_equipped():
+				animation_tree.set(SHIELD_LOCOMOTION_BLEND_POSITION_PATH, anim_blend)
+			elif has_heavy_weapon_equipped():
+				animation_tree.set(GREATSWORD_LOCOMOTION_BLEND_POSITION_PATH, anim_blend)
+			elif has_equipment(Equipment.EquipmentType.PISTOL):
+				animation_tree.set(PISTOL_LOCOMOTION_BLEND_POSITION_PATH, anim_blend)
+			elif has_equipment(Equipment.EquipmentType.RIFLE):
+				animation_tree.set(RIFLE_LOCOMOTION_BLEND_POSITION_PATH, anim_blend)
 			else:
-				# Transition to the "crouching" state in the animation tree
-				crouching_start()
+				animation_tree.set(STANDING_LOCOMOTION_BLEND_POSITION_PATH, anim_blend)
 
-		# 🤾 [jump] was just pressed
-		if Input.is_action_just_pressed("jump") and not is_ragdolling:
-			# Backflip when strafing and backpedaling.
-			if is_strafing and input_vector.y > 0.2:
-				begin_backflip()
-			# Standing jump when strafing laterally/backward or moving backwards — velocity carries momentum.
-			elif (is_strafing and input_vector.y > -0.2) or input_vector.y > 0.2:
-				begin_standing_jump()
-			# Running jump when moving forward with velocity
-			elif (abs(velocity.x) > 0.2 or abs(velocity.z) > 0.2):
-				# Transition to the "running jump" state in the animation tree
-				begin_running_jump()
-			# The player must be standing still
-			else:
-				# Transition to the "standing jump" state in the animation tree
-				begin_standing_jump()
+	root_motion = Transform3D(animation_tree.get_root_motion_rotation(), animation_tree.get_root_motion_position())
 
-	# The player must not be on a floor
+	orientation *= root_motion
+
+	var h_velocity: Vector3 = orientation.origin / delta
+
+	# Influence of root motion is removed when in the air, and movement is instead based on the input direction to allow for more player control while jumping and falling.
+	if is_jumping or is_falling:
+		var camera_basis := spring_arm.global_transform.basis
+		var target_dir := camera_basis * Vector3(target_motion.x, 0.0, -target_motion.y)
+		target_dir.y = 0.0
+		
+		var current_h_vel := Vector3(velocity.x, 0.0, velocity.z)
+		var current_speed := current_h_vel.length()
+		var air_speed_cap := max(current_speed, 5.0)
+		var target_h_vel = target_dir * air_speed_cap
+		
+		# Slowly lerp to target air speed to preserve momentum
+		h_velocity = current_h_vel.lerp(target_h_vel, 3.0 * delta)
+
+	velocity.x = h_velocity.x
+	velocity.z = h_velocity.z
+	if is_climbing or is_climbing_on or is_climbing_hopping_left or is_climbing_hopping_right or is_climbing_hopping_up:
+		velocity.y = h_velocity.y
+	elif is_hanging_braced or is_hanging_free:
+		velocity.y = 0.0
 	else:
-		# Drop to falling if the ledge is lost while hanging
-		if is_hanging and not raycast_top.is_colliding():
-			end_hanging_to_falling()
-
-		# Drop to falling if the wall is lost while climbing
-		if is_climbing and not raycast_chest.is_colliding() and not raycast_head.is_colliding():
-			end_climbing_to_falling()
-
-		# Drop to falling if exhausted while climbing
-		if is_climbing and is_exhausted:
-			end_climbing_to_falling()
-
-		# Drop to falling if exhausted while paragliding
-		if is_paragliding and is_exhausted:
-			paragliding_stop()
-			playback_locomotion.travel(state_name_falling)
-			is_falling = true
-
-		# Travel to "hanging" state?
-		if not raycast_ledge.is_colliding() \
-		and raycast_top.is_colliding() \
-		and not Input.is_action_pressed("crouch") \
-		and not is_hanging:
-			# Flag the player as not "climbing"
-			is_climbing = false
-			# Flag the player as not "falling"
-			is_falling = false
-			# Flag the player as not "jumping"
-			is_jumping = false
-			# Flag the player as not "paragliding"
-			is_paragliding = false
-			# Transition to the "hanging" state in the animation tree
-			hanging_start()
-			# Flag the player as "hanging"
-			is_hanging = true
-
-		# 🤾 [jump] was just pressed
-		if Input.is_action_just_pressed("jump") \
-		and not is_ragdolling:
-			
-			if raycast_mantle_target.is_colliding():
-				if is_climbing:
-					climbing_stop()
-				if is_hanging:
-					hanging_stop()
-				# Move the player to the mantle target position and rotation for a seamless mantle transition.
-				var mantle_target_transform := raycast_mantle_target.get_global_transform()
-				global_transform.origin = mantle_target_transform.origin
-				var target_rotation := mantle_target_transform.basis.get_rotation_quaternion()
-				var current_rotation := pivot.global_transform.basis.get_rotation_quaternion()
-				var new_rotation := current_rotation.slerp(target_rotation, 1.0)
-				pivot.global_transform.basis = Basis(new_rotation)
-
-			# Travel to "climbing" state?
-			elif raycast_head.is_colliding() \
-			and raycast_chest.is_colliding() \
-			and not is_climbing \
-			and not is_hanging \
-			and not is_paragliding:
-				# Flag the player as not "falling"
-				is_falling = false
-				# Flag the player as not "jumping"
-				is_jumping = false
-				# Transition to the "climbing" state in the animation tree
-				climbing_start()
-
-			# Travel to "paragliding" state?
-			elif not raycast_below_paraglide.is_colliding() \
-			and not is_climbing \
-			and not is_hanging \
-			and not is_paragliding:
-				# Flag the player as not "falling"
-				is_falling = false
-				# Flag the player as not "jumping"
-				is_jumping = false
-				# Transition to the "paragliding" state in the animation tree
-				paragliding_start()
-
-		# Check if the "below" raycast is not colliding and the player is not already flagged as "falling"
-		if not raycast_below_step.is_colliding() \
-		and not is_falling \
-		and not is_jumping \
-		and not is_climbing \
-		and not is_hanging \
-		and not is_paragliding:
-			# Travel to the "falling" state in the animation tree
-			playback_locomotion.travel(state_name_falling)
-			is_falling = true
-
-		# Jump animation finished mid-air (transitioned to falling) — restore air control
-		if is_jumping and playback_locomotion_state == state_name_falling:
-			is_jumping = false
-			is_falling = true
-
-	# Determine the movement direction in 3D space by multiplying the input vector with the [Camera3D]'s [SpringArm3D] global transform basis, while ignoring the y component and normalizing the result
-	var direction := camera_spring_arm.global_transform.basis * Vector3(input_vector.x, 0, input_vector.y)
-	# Zero out the y component of the direction to prevent vertical movement, and normalize the result to maintain consistent movement speed in all directions, including diagonally
-	direction.y = 0
-	# Normalize the direction vector to maintain consistent movement speed in all directions, including diagonally, and check if the resulting vector is not zero to prevent errors when applying movement
-	direction = direction.normalized()
-	# Check if there is movement input
-	if direction.length() > 0.01 \
-	and not is_strafing \
-	and not (is_drawing_arrow or is_aiming_bow or is_shooting_bow) \
-	and not is_climbing \
-	and not is_hanging:
-		# Rotate the player to face the movement direction
-		#pivot.rotation.y = lerp_angle(pivot.rotation.y, atan2(direction.x, direction.z), TURN_SPEED * delta)
-		pivot.rotation.y = atan2(direction.x, direction.z)
-	# While climbing or hanging, keep facing the wall surface from the chest raycast
-	elif (is_climbing and raycast_chest.is_colliding()) \
-	or (is_hanging and raycast_top.is_colliding()):
-		var wall_normal := raycast_chest.get_collision_normal()
-		wall_normal.y = 0
-		if wall_normal.length() > 0.001:
-			wall_normal = wall_normal.normalized()
-			if climbing_surface_normal == Vector3.ZERO:
-				climbing_surface_normal = wall_normal
-			else:
-				# Smooth corner normal changes to avoid back-and-forth snapping.
-				climbing_surface_normal = climbing_surface_normal.lerp(wall_normal, clamp(delta * 12.0, 0.0, 1.0)).normalized()
-			var target_yaw := atan2(-climbing_surface_normal.x, -climbing_surface_normal.z)
-			pivot.rotation.y = lerp_angle(pivot.rotation.y, target_yaw, clamp(delta * 12.0, 0.0, 1.0))
-	# While using the bow, face the camera direction
-	elif is_drawing_arrow or is_aiming_bow or is_shooting_bow:
-		pivot.rotation.y = lerp_angle(pivot.rotation.y, camera_spring_arm.rotation.y + PI, TURN_SPEED * delta)
-	else:
-		climbing_surface_normal = Vector3.ZERO
-
-	# If airborne in fall/paraglide, use raw input direction for movement instead of root motion from the animation tree.
-	if is_ragdolling:
-		velocity = up_direction * velocity.dot(up_direction)
-	elif is_climbing:
-		var current_rotation = pivot.transform.basis.get_rotation_quaternion()
-		var sprint_multiplier := 2.0 if Input.is_action_pressed("sprint") and not is_exhausted else 1.0
-		velocity = current_rotation * animation_tree.get_root_motion_position() / delta * sprint_multiplier
-	elif is_hanging:
-		var current_rotation = pivot.transform.basis.get_rotation_quaternion()
-		var root_motion_velocity = current_rotation * animation_tree.get_root_motion_position() / delta
-		velocity = root_motion_velocity - up_direction * root_motion_velocity.dot(up_direction)
-	elif is_paragliding or is_falling or (playback_locomotion_state == state_name_backflip and not is_on_floor()):
-		# Use raw input direction while airborne instead of animation root motion.
-		var paraglide_velocity := camera_spring_arm.global_transform.basis * Vector3(input_vector.x, 0, input_vector.y)
-		paraglide_velocity.y = 0
-		if paraglide_velocity.length() > 0.01:
-			var air_control_speed := SPEED if is_paragliding else SPEED * FALL_AIR_CONTROL_MULTIPLIER
-			paraglide_velocity = paraglide_velocity.normalized() * air_control_speed
-		velocity = Vector3(paraglide_velocity.x, velocity.y, paraglide_velocity.z)
-	# Use root motion from the animation tree while grounded or jumping.
-	else:
-		var current_rotation = pivot.transform.basis.get_rotation_quaternion()
-		var root_motion_velocity = current_rotation * animation_tree.get_root_motion_position() / delta;
-		velocity = Vector3(root_motion_velocity.x, velocity.y, root_motion_velocity.z);
-
-	# Check if the player is not on a floor
-	if not is_on_floor() and not is_hanging and not is_climbing:
-		# Apply gravity, opposite to the player's up direction
-		velocity -= up_direction * gravity * delta
-
-	# Move the body based on velocity
+		velocity += get_gravity() * 1.5 * delta
+	set_velocity(velocity)
+	set_up_direction(Vector3.UP)
 	move_and_slide()
 
+	orientation.origin = Vector3() # Clear accumulated root motion displacement (was applied to speed).
+	orientation = orientation.orthonormalized() # Orthonormalize orientation.
 
-## Called when the "jump" (while strafing and backpedaling) action is first executed. Transitions to the [backflip_state_name] state in the animation tree.
-func begin_backflip():
-	# Transition to the "backflip" state in the animation tree
-	playback_locomotion.travel(state_name_backflip)
-	# Flag the player as "jumping"
+	player_model.global_transform.basis = orientation.basis
+
+
+## Detect if the player is in front of a ledge and can hang from it and/or climb on to it.
+func detect_ledge() -> bool:
+	# Ledge detection [Raycast]
+	var ledge_detected := false
+	if not is_on_floor() and ledge_detection_horizontal and ledge_detection_horizontal.is_colliding():
+		var forward_direction := -ledge_detection_horizontal.global_transform.basis.z.normalized()
+		ledge_detection_vertical.global_position = ledge_detection_horizontal.get_collision_point() + (forward_direction * 0.05) + up_direction
+		ledge_detection_vertical.force_raycast_update()
+		if ledge_detection_vertical.is_colliding():
+			ledge_detection_marker.global_position = ledge_detection_vertical.get_collision_point() + (ledge_detection_vertical.get_collision_normal() * 0.02)
+			ledge_detected = true
+
+	# Show/hide ledge detection gizmos.
+	if ledge_detected:
+		climbing_on_target = ledge_detection_marker.global_position
+		ledge_detection_horizontal.show()
+		ledge_detection_marker.show()
+	else:
+		ledge_detection_vertical.position = Vector3(0, 0, -1) # Reset to default
+		ledge_detection_horizontal.hide()
+		ledge_detection_marker.hide()
+
+	return ledge_detected
+
+
+## Called by the animation(s) using "Call Method Track" to execute the jump logic at the right time. 
+func execute_jump() -> void:
+	velocity.y = 5.0
+	is_jump_queued = false
 	is_jumping = true
 
 
-func climbing_start() -> void:
-	# Transition to the "climbing" state in the animation tree.
-	playback_locomotion.travel(state_name_climbing)
-	# Disable gravity while climbing
-	gravity = 0.0
-	# Zero out the player's velocity
-	velocity = Vector3.ZERO
-	# Snap towards the wall surface (0.4 units back for player collider)
-	if raycast_chest.is_colliding():
-		var snap := raycast_chest.get_collision_point() + raycast_chest.get_collision_normal() * 0.4
-		global_position = snap - up_direction * snap.dot(up_direction) + up_direction * global_position.dot(up_direction)
-	# Flag the player as "climbing"
-	is_climbing = true
-	# Flag the player as not crouching
-	is_crouching = false
-	# Flag the player as not pushing
-	is_pushing = false
-
-
-func climbing_stop() -> void:
-	# Transition to the "locomotion" state in the animation tree.
-	playback_locomotion.travel(state_name_locomotion)
-	# Reset gravity to the default value
-	gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
-	# Flag the player as not "climbing"
-	is_climbing = false
-
-
-func crouching_start() -> void:
-	# Transition to the "standing to crouching" state in the animation tree
-	playback_stance.travel(state_name_standing_to_crouching)
-	# Flag the player as "crouching"
-	is_crouching = true
-
-
-func crouching_stop() -> void:
-	# Transition to the "crouching to standing" state in the animation tree
-	playback_stance.travel(state_name_crouching_to_standing)
-	# Flag the player as not "crouching"
-	is_crouching = false
-
-
-func paragliding_start() -> void:
-	# Transition to the "paragliding" state in the animation tree
-	playback_locomotion.travel(state_name_paragliding)
-	# Reduce gravity while paragliding for better control and longer airtime
-	gravity = ProjectSettings.get_setting("physics/3d/default_gravity") / 4
-	# Flag the player as "paragliding"
-	is_paragliding = true
-
-
-func paragliding_stop() -> void:
-	# Transition to the "locomotion" state in the animation tree
-	playback_locomotion.travel(state_name_locomotion)
-	# Reset gravity to the default value
-	gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
-	# Flag the player as not "paragliding"
-	is_paragliding = false
-
-
-## {current_state} -> Hanging (free or braced).
-func hanging_start() -> void:
-	# Determine if the player should enter the "hanging braced" state based on if there is a wall to the player's front to brace against, by checking if the "head" or "chest" raycasts are colliding with a wall while the "top" raycast is colliding with a ceiling.
-	var hanging_braced := raycast_chest.is_colliding()
-	# Set the "hanging" blend parameter to 1.0 to transition to the hanging state in the animation tree, and set the "hanging braced move" blend parameter to 1.0 if the player should be hanging
-	playback_locomotion.set("parameters/hanging_blend", 1.0)
-	if hanging_braced:
-		playback_locomotion.set("parameters/hanging_braced_move", 1.0)
-	else:
-		playback_locomotion.set("parameters/hanging_braced_move", 0.0)
-	# Transition to the "hanging" state in the animation tree.
-	playback_locomotion.travel(state_name_hanging)
-	# Disable gravity while hanging
-	gravity = 0.0
-	velocity = Vector3.ZERO
-	# Snap towards the wall surface horizontally (0.4 units back for player collider), vertical unchanged
-	if raycast_top.is_colliding():
-		var snap := raycast_top.get_collision_point() + raycast_top.get_collision_normal() * 0.4
-		global_position = snap - up_direction * snap.dot(up_direction) + up_direction * global_position.dot(up_direction)
-	# Flag the player as "hanging"
-	is_hanging = true
-
-
-## [Hanging] -> Locomotion.
-func hanging_stop() -> void:
-	# Return to locomotion when grounded.
-	playback_locomotion.travel(state_name_locomotion)
-	# Reset gravity to the default value
-	gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
-	# Flag the player as not "hanging"
-	is_hanging = false
-
-
-func end_hanging_to_falling() -> void:
-	# Return to falling when ledge contact is lost.
-	playback_locomotion.travel(state_name_falling)
-	gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
-	# Flag the player as not "hanging"
-	is_hanging = false
-
-
-func end_climbing_to_hanging() -> void:
-	playback_locomotion.travel(state_name_hanging)
-	gravity = 0.0
-	velocity = Vector3.ZERO
-	# Flag the player as not "climbing"
-	is_climbing = false
-
-
-func end_climbing_to_falling() -> void:
-	playback_locomotion.travel(state_name_falling)
-	gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
-	# Flag the player as not "climbing"
-	is_climbing = false
-
-
-## Called when the "jump" (while running) action is first executed. Transitions to the [running_jump_state_name] state in the animation tree.
-func begin_running_jump():
-	# Transition to the "running jump" state in the animation tree
-	playback_locomotion.travel(state_name_running_jump)
-
-
-## Called when the "slide" (while running) action is first executed. Transitions to the [running_slide_state_name] state in the animation tree.
-func begin_running_slide():
-	# Transition to the "running slide" state in the animation tree
-	playback_locomotion.travel(state_name_running_slide)
-	# Reduce the player's collision shape height and adjust its position
-	$CollisionShape3D.shape.height = initial_collision_shape_height * 0.333
-	$CollisionShape3D.position.y = 0.3
-
-
-## Called when the "jump" (while standing) action is first executed. Transitions to the [jumping_state_name] state in the animation tree.
-func begin_standing_jump():
-	# Transition to the "standing jump" state in the animation tree
-	playback_locomotion.travel(state_name_standing_jump)
-
-
-## Called by the "jump start/mixamo_com" animation to execute the jump velocity at the correct time (0.5s) in the animation.
-func execute_jump_velocity():
-	if is_on_floor():
-		# Apply jump velocity, opposite to the player's up direction
-		velocity += up_direction * JUMP_VELOCITY
-		# Play a random [short] effort grunt
-		voice_male_effort_grunt.play()
-		# Flag the player as "jumping"
-		is_jumping = true
-
-
-## Called by an animation to play footstep sounds based on the meta-data of the object the player is stepping on.
-func play_footstep_sound():
-	$Audio.check_under_player()
+## Reset the attack sequence when the attack sequence timer times out.
+func _on_attack_sequence_timer_timeout() -> void:
+	attack_sequence = 0
