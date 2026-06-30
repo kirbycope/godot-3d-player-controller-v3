@@ -8,7 +8,8 @@ Click [here](https://timothycope.com/godot-3d-player-controller-v3/) to play!
 ## Documentation
 
 ### Getting Started
-1. Download a .zip of [this](https://github.com/kirbycope/godot-3d-player-controller-v3/archive/refs/heads/main.zip) repo
+1. Download the `3d_player_controller-v#.#.#.zip
+.zip` from the [Release](https://github.com/kirbycope/godot-3d-player-controller-v3/releases) page
 1. Copy the contents of the zip from `godot-3d-player-controller-v3/addons/3d_player_controller` to your project's `addons` folder.
 1. Drag-and-drop the `addons/3d_player_controller/player.tscn` scene from the FileTree into your scene.
 
@@ -19,7 +20,7 @@ When code is merged into `main`, the GitHub Action at `.github/workflows/release
 1. Build `3d_player_controller-vX.Y.Z.zip` from `addons/3d_player_controller`
 1. Publish a GitHub Release with the new tag and the zip as a downloadable asset
 
-The first automated release starts from `v0.0.1` if no previous `v*` tag exists.
+The first automated release starts from `v3.0.0` if no previous `v*` tag exists.
 
 ### Adding (and Preparing) New Animations
 1. Go to https://www.mixamo.com/#/ and login
