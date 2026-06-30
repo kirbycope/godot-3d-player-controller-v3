@@ -2,7 +2,7 @@
 
 # godot-3d-player-controller-v3
 Godot 3D Player Controller v3 uses the [CharacterBody3D](//docs.godotengine.org/en/stable/classes/class_characterbody3d.html) and [AnimationTree](https://docs.godotengine.org/en/stable/classes/class_animationtree.html)</br>
-Click [here](//timothycope.com/godot-3d-player-controller-v3/) to play!
+Click [here](https://timothycope.com/godot-3d-player-controller-v3/) to play!
 
 ---
 ## Documentation
