@@ -46,6 +46,9 @@ background_mode = 2
 sky = SubResource("Sky_tlwt5")
 glow_enabled = true
 
+[sub_resource type="LabelSettings" id="LabelSettings_k78ss"]
+font_size = 32
+
 [sub_resource type="NavigationMesh" id="NavigationMesh_senyo"]
 vertices = PackedVector3Array(-4.5, 0.10086465, -9.399998, -3.5, 0.10086465, -9.5, -3.5, 0.10086465, -49.5, -5.5, 0.10086465, -8.700001, -6, 0.10086465, -7.700001, -49.5, 0.10086465, -49.5, -49.5, 0.10086465, -7, -6, 0.10086465, -7, -0.29999924, 0.10086465, -7.5, -0.099998474, 0.10086465, -7, 0.10000229, 0.10086465, -7, 0.29999924, 0.10086465, -7.5, -1.7999992, 0.10086465, -9, 1.1000023, 0.10086465, -8.299999, 1.5, 0.10086465, -8.5, 1.5, 0.10086465, -49.5, -2.7999992, 0.10086465, -9.5, 1, 0.10086465, -7.5999985, -1.2999992, 0.10086465, -8.399998, -1.0999985, 0.10086465, -7.700001, 7.299999, 0.10086465, -8.5, 7.299999, 0.10086465, -49.5, 7.6000023, 0.10086465, -8.399998, 7.700001, 0.10086465, -8, 49.5, 0.10086465, -8, 49.5, 0.10086465, -49.5, -2.7000008, 10.100864, -5.5999985, -2.2999992, 10.100864, -5.8999977, -2, 10.100864, -6.5, -2.0999985, 10.100864, -7.799999, -2.3999977, 10.100864, -8.200001, -3, 10.100864, -8.5, -4.299999, 10.100864, -8.399998, -4.700001, 10.100864, -8.099998, -5, 10.100864, -7.5, -4.8999977, 10.100864, -6.200001, -4.299999, 10.100864, -5.5999985, -4.799999, 0.10086465, -6.299999, -4.5, 0.10086465, -5.8999977, -3.8999977, 0.10086465, -5.5999985, -2.7999992, 0.10086465, -5.700001, -2.3999977, 0.10086465, -6, -2.0999985, 0.10086465, -6.5999985, -2.2000008, 0.10086465, -7.700001, -2.5, 0.10086465, -8.099998, -3.0999985, 0.10086465, -8.399998, -4.200001, 0.10086465, -8.299999, -4.5999985, 0.10086465, -8, -4.8999977, 0.10086465, -7.3999977, 7.4000015, 0.30086458, -7.5, 4, 1.6008645, -7.5, 4, 1.6008645, -6.5, 7.4000015, 0.30086458, -6.5, 5.133335, 1.6008645, -7.5, 5.133335, 1.6008645, -6.5, 7.799999, 0.10086465, -5.8999977, 49.5, 0.10086465, -5.8999977, 7.700001, 0.10086465, -6.299999, 2.1000023, 1.7008647, -7.5, 2.1000023, 1.7008647, -6.5, 2.9000015, 1.7008647, -6.5, 2.9000015, 1.7008647, -7.5, -6, 0.10086465, -6.299999, -5.5, 0.10086465, -5.299999, -4.5, 0.10086465, -4.5999985, -3.5, 0.10086465, -4.5, -49.5, 0.10086465, 49.5, -3.5, 0.10086465, 49.5, 0.29999924, 0.10086465, -6.5, -0.29999924, 0.10086465, -6.5, 2, 0.10086465, -5.3999977, 1.2000008, 0.10086465, -5.5, -1.7999992, 0.10086465, -5, -2.7999992, 0.10086465, -4.5, 1.9000015, 0.10086465, 49.5, 1, 0.10086465, -5.799999, 1, 0.10086465, -6.3999977, -1.2999992, 0.10086465, -5.5999985, -1.0999985, 0.10086465, -6.299999, 7.4000015, 0.10086465, -5.3999977, 6.9000015, 0.10086465, 49.5, 49.5, 0.10086465, 49.5, 6.799999, 0.10086465, -5.3999977)
 polygons = [PackedInt32Array(2, 1, 0), PackedInt32Array(2, 0, 3), PackedInt32Array(3, 4, 2), PackedInt32Array(2, 4, 6), PackedInt32Array(2, 6, 5), PackedInt32Array(4, 7, 6), PackedInt32Array(10, 9, 11), PackedInt32Array(11, 9, 8), PackedInt32Array(13, 12, 14), PackedInt32Array(14, 12, 16), PackedInt32Array(14, 16, 15), PackedInt32Array(15, 16, 2), PackedInt32Array(17, 11, 13), PackedInt32Array(13, 11, 8), PackedInt32Array(13, 8, 18), PackedInt32Array(13, 18, 12), PackedInt32Array(8, 19, 18), PackedInt32Array(2, 16, 1), PackedInt32Array(15, 21, 14), PackedInt32Array(14, 21, 20), PackedInt32Array(22, 20, 21), PackedInt32Array(22, 21, 23), PackedInt32Array(23, 21, 24), PackedInt32Array(24, 21, 25), PackedInt32Array(27, 26, 28), PackedInt32Array(30, 29, 31), PackedInt32Array(33, 32, 34), PackedInt32Array(34, 32, 31), PackedInt32Array(36, 35, 34), PackedInt32Array(29, 28, 31), PackedInt32Array(31, 28, 26), PackedInt32Array(31, 26, 36), PackedInt32Array(31, 36, 34), PackedInt32Array(38, 37, 39), PackedInt32Array(42, 41, 40), PackedInt32Array(44, 43, 45), PackedInt32Array(45, 43, 42), PackedInt32Array(47, 46, 48), PackedInt32Array(48, 46, 45), PackedInt32Array(40, 39, 42), PackedInt32Array(42, 39, 37), PackedInt32Array(42, 37, 48), PackedInt32Array(42, 48, 45), PackedInt32Array(50, 53, 51), PackedInt32Array(51, 53, 54), PackedInt32Array(54, 53, 49), PackedInt32Array(54, 49, 52), PackedInt32Array(57, 23, 55), PackedInt32Array(55, 23, 56), PackedInt32Array(56, 23, 24), PackedInt32Array(52, 49, 57), PackedInt32Array(57, 49, 23), PackedInt32Array(61, 60, 58), PackedInt32Array(58, 60, 59), PackedInt32Array(6, 7, 62), PackedInt32Array(6, 62, 63), PackedInt32Array(6, 63, 64), PackedInt32Array(64, 65, 6), PackedInt32Array(6, 65, 67), PackedInt32Array(6, 67, 66), PackedInt32Array(10, 68, 9), PackedInt32Array(9, 68, 69), PackedInt32Array(71, 70, 72), PackedInt32Array(72, 70, 73), PackedInt32Array(73, 70, 74), PackedInt32Array(73, 74, 67), PackedInt32Array(68, 76, 75), PackedInt32Array(75, 71, 68), PackedInt32Array(68, 71, 69), PackedInt32Array(69, 71, 77), PackedInt32Array(77, 71, 72), PackedInt32Array(77, 78, 69), PackedInt32Array(67, 65, 73), PackedInt32Array(55, 56, 79), PackedInt32Array(79, 56, 81), PackedInt32Array(79, 81, 80), PackedInt32Array(79, 80, 82), PackedInt32Array(82, 80, 70), PackedInt32Array(70, 80, 74)]
@@ -395,6 +398,38 @@ environment = SubResource("Environment_aqk2v")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=752936558]
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
 shadow_enabled = true
+
+[node name="ClickToStart" type="CanvasLayer" parent="." unique_id=1468805665]
+visible = false
+
+[node name="ColorRect" type="ColorRect" parent="ClickToStart" unique_id=835106610]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -2048.0
+offset_top = -1080.0
+offset_right = 2048.0
+offset_bottom = 1080.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Label" type="Label" parent="ClickToStart" unique_id=1056419646]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -98.5
+offset_top = -22.5
+offset_right = 98.5
+offset_bottom = 22.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Click to Start"
+label_settings = SubResource("LabelSettings_k78ss")
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=1256611108]
 navigation_mesh = SubResource("NavigationMesh_senyo")
