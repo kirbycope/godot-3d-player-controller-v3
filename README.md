@@ -10,17 +10,9 @@ Click [here](https://timothycope.com/godot-3d-player-controller-v3/) to play!
 ### Getting Started
 1. Download the `3d_player_controller-v3.#.#.zip
 .zip` from the [Release](https://github.com/kirbycope/godot-3d-player-controller-v3/releases) page
-1. Copy the contents of the zip to your project's `addons` folder.
-1. Drag-and-drop the `addons/3d_player_controller/player.tscn` scene from the FileTree into your scene.
+1. Copy the contents of the zip (the `3d-player-controller` folder) to your project's `addons` folder.
+1. Drag-and-drop the `addons/3d_player_controller/player.tscn` file from the FileTree into your scene.
 
-### Releases
-When code is merged into `main`, the GitHub Action at `.github/workflows/release-addon.yml` will:
-1. Find the latest Git tag in the `vX.Y.Z` format
-1. Increment the patch version (`Z`) by 1
-1. Build `3d_player_controller-vX.Y.Z.zip` from `addons/3d_player_controller`
-1. Publish a GitHub Release with the new tag and the zip as a downloadable asset
-
-The first automated release starts from `v3.0.0` if no previous `v*` tag exists.
 
 ### Adding (and Preparing) New Animations
 1. Go to https://www.mixamo.com/#/ and login
@@ -59,3 +51,15 @@ The first automated release starts from `v3.0.0` if no previous `v*` tag exists.
 1. Select "Open"
 1. Select "OK"
     - Your animation is now avaiable to the AnimationPLayer and by extension, then AnimationTree.
+
+----
+## GitHUb Notes
+
+### Releases
+When code is merged into `main`, the GitHub Action at `.github/workflows/release-addon.yml` will:
+1. Find the latest Git tag in the `vX.Y.Z` format
+1. Increment the patch version (`Z`) by 1
+1. Build `3d_player_controller-vX.Y.Z.zip` from `addons/3d_player_controller`
+1. Publish a GitHub Release with the new tag and the zip as a downloadable asset
+
+The first automated release starts from `v3.0.0` if no previous `v*` tag exists.
