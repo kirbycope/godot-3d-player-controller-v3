@@ -8,9 +8,9 @@ Click [here](https://timothycope.com/godot-3d-player-controller-v3/) to play!
 ## Documentation
 
 ### Getting Started
-1. Download the `3d_player_controller-v#.#.#.zip
+1. Download the `3d_player_controller-v3.#.#.zip
 .zip` from the [Release](https://github.com/kirbycope/godot-3d-player-controller-v3/releases) page
-1. Copy the contents of the zip from `godot-3d-player-controller-v3/addons/3d_player_controller` to your project's `addons` folder.
+1. Copy the contents of the zip to your project's `addons` folder.
 1. Drag-and-drop the `addons/3d_player_controller/player.tscn` scene from the FileTree into your scene.
 
 ### Releases
