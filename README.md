@@ -1,7 +1,8 @@
 ![Preview](/godot-3d-player-controller-v3.png)
 
 # godot-3d-player-controller-v3
-Godot 3D Player Controller v3 uses [CharacterBody3D](//docs.godotengine.org/en/stable/classes/class_characterbody3d.html) and [AnimationTree](https://docs.godotengine.org/en/stable/classes/class_animationtree.html).<br />
+Godot 3D Player Controller v3 uses [CharacterBody3D](//docs.godotengine.org/en/stable/classes/class_characterbody3d.html) and [AnimationTree](https://docs.godotengine.org/en/stable/classes/class_animationtree.html).
+
 Click [here](https://timothycope.com/godot-3d-player-controller-v3/) to play!
 
 ---
@@ -11,7 +12,6 @@ Click [here](https://timothycope.com/godot-3d-player-controller-v3/) to play!
 1. Download `3d_player_controller-v3.#.#.zip` from the [Releases](https://github.com/kirbycope/godot-3d-player-controller-v3/releases) page
 1. Copy the contents of the zip (the `3d-player-controller` folder) to your project's `addons` folder.
 1. Drag-and-drop the `addons/3d_player_controller/player.tscn` file from the FileSystem dock into your scene.
-
 
 ### Adding (and Preparing) New Animations
 1. Go to https://www.mixamo.com/#/ and log in
