@@ -23,7 +23,7 @@ Click [here](https://timothycope.com/godot-3d-player-controller-v3/) to play!
     - For example, search `Idle` and select the 5th result
 1. Select the "DOWNLOAD" button
 1. Change the "Skin" to "Without Skin" and then select the "DOWNLOAD" button
-1. Move the downloaded file from your Downloads to [/addons/3d_player_controller/assets/mixamo/animations/source/](/addons/3d_player_controller/assets/mixamo/animations/source/)
+1. Move the downloaded file to `/addons/3d_player_controller/assets/mixamo/animations/source/`
 1. Open the project in a terminal
 1. Run the following command: `blender --background --python tools/bake_root_motion.py`
     - This runs the [bake_root_motion](/tools/bake_root_motion.py) Blender/Python script to add a "root" bone and reparent the "hips" to it. The positional data is moved from "hips" to "root".
