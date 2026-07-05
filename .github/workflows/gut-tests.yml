@@ -34,15 +34,21 @@ jobs:
           wget -O godot.zip "$url"
           unzip -q godot.zip
 
-          GODOT_BIN="Godot_v${GODOT_VERSION}-stable_linux.x86_64"
-          chmod +x "$GODOT_BIN"
-          echo "$PWD/$GODOT_BIN" >> "$GITHUB_PATH"
+          GODOT_BIN_PATH="$(find "$PWD" -maxdepth 1 -type f -name 'Godot_v*-stable_linux.x86_64' | head -n1)"
+          if [[ -z "$GODOT_BIN_PATH" ]]; then
+            echo "Could not find extracted Godot binary"
+            ls -la
+            exit 1
+          fi
+
+          chmod +x "$GODOT_BIN_PATH"
+          echo "GODOT_BIN_PATH=$GODOT_BIN_PATH" >> "$GITHUB_ENV"
 
       - name: Run GUT
         shell: bash
         run: |
           set -euo pipefail
-          Godot_v${GODOT_VERSION}-stable_linux.x86_64 \
+          "$GODOT_BIN_PATH" \
             --headless \
             -d \
             --path "$PWD" \
