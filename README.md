@@ -70,6 +70,10 @@ The first automated release starts from `v3.0.0` if no previous `v*` tag exists.
 ### Godot Editor Addon
 The [GUT](https://godotengine.org/asset-library/asset/1709) addon was downloaded from within the Godot editor. It has been enabled in _this_ repo's [Project settings](project.godot).
    - While using Godot, select the "GUT" tab (docked at the bottom, by default)
+   - Select the (GUT Settings) icon and scroll down to "Include Subdirs"
+      - Check the box to include subdirectories
+      - Select 0 > "..." and select `res://test/unit`
+      - Select 1 > "..." and select `res://test/integration`
    - Select one of the follow buttons (contextual, based on what script is open and where your cursor is positioned)
        - "Run All" (all `test_.gd` files)
        - Script (all tests in the file)
