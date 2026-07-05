@@ -50,6 +50,12 @@ jobs:
           set -euo pipefail
           "$GODOT_BIN_PATH" \
             --headless \
+            --import \
+            --path "$PWD" \
+            --quit
+
+          "$GODOT_BIN_PATH" \
+            --headless \
             -d \
             --path "$PWD" \
             -s addons/gut/gut_cmdln.gd \
