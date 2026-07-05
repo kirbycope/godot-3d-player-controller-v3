@@ -1,5 +1,6 @@
 extends Node3D
 
+@onready var player: Player = $Player
 @onready var project_rendering_method = ProjectSettings.get_setting("rendering/renderer/rendering_method")
 
 
@@ -22,3 +23,16 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton or event is InputEventScreenTouch:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 		$ClickToStart.visible = false
+
+
+## Called every frame. 'delta' is the elapsed time since the previous frame.
+func _physics_process(_delta: float) -> void:
+	if player:
+		# If we're below -40, respawn (teleport to the initial position).
+		if player.global_position.y < -40.0:
+			player.global_position = Vector3(0.0, 0.0, 0.0)
+
+
+func _on_warp_area_body_entered(body: Node3D) -> void:
+	if body is Player:
+		body.global_position = $WarpArea/WarpPointB.global_position

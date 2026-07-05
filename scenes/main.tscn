@@ -33,6 +33,7 @@
 [ext_resource type="PackedScene" uid="uid://yo68ojwutmqp" path="res://scenes/ore_large.tscn" id="31_tel4y"]
 [ext_resource type="Texture2D" uid="uid://b810kdta7g8wk" path="res://assets/quaternius/nature/preview.jpg" id="32_5q0nq"]
 [ext_resource type="PackedScene" uid="uid://d3o4cq6mgg8ni" path="res://scenes/tree_01.tscn" id="33_dgi5k"]
+[ext_resource type="PackedScene" uid="uid://brmnvx02xgur8" path="res://assets/BinbunVFX/magic_areas/effects/basic_area/basic_area_vfx_03.tscn" id="34_dgi5k"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -389,6 +390,10 @@ albedo_texture = ExtResource("32_5q0nq")
 material = SubResource("StandardMaterial3D_j8jky")
 size = Vector2(4.685, 2.635)
 
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_k78ss"]
+height = 0.75
+radius = 0.75
+
 [node name="World" type="Node3D" unique_id=336392758]
 script = ExtResource("1_h2yge")
 
@@ -434,13 +439,13 @@ label_settings = SubResource("LabelSettings_k78ss")
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=1256611108]
 navigation_mesh = SubResource("NavigationMesh_senyo")
 
-[node name="Ground" type="CSGBox3D" parent="NavigationRegion3D" unique_id=1307684196]
+[node name="Ground" type="CSGBox3D" parent="NavigationRegion3D" unique_id=1307684196 groups=["GRASS"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 use_collision = true
 size = Vector3(100, 1, 100)
 material = ExtResource("2_h2yge")
 
-[node name="Silo" type="CSGCylinder3D" parent="NavigationRegion3D" unique_id=1827711804]
+[node name="Silo" type="CSGCylinder3D" parent="NavigationRegion3D" unique_id=1827711804 groups=["WOOD"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 5, -7)
 use_collision = true
 radius = 2.0
@@ -448,7 +453,7 @@ height = 10.0
 sides = 24
 material = SubResource("StandardMaterial3D_senyo")
 
-[node name="DoorBlock" type="CSGBox3D" parent="NavigationRegion3D" unique_id=378177978]
+[node name="DoorBlock" type="CSGBox3D" parent="NavigationRegion3D" unique_id=378177978 groups=["WOOD"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -7)
 use_collision = true
 size = Vector3(3, 3, 0.1)
@@ -459,7 +464,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.3194504e-05, -0.42814195, 
 operation = 2
 size = Vector3(1.2788575, 2.1437163, 0.10546875)
 
-[node name="Tunnel" type="CSGCylinder3D" parent="NavigationRegion3D" unique_id=1354732821]
+[node name="Tunnel" type="CSGCylinder3D" parent="NavigationRegion3D" unique_id=1354732821 groups=["WOOD"]]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 2.5, 0.65, -7)
 use_collision = true
 radius = 1.0
@@ -472,7 +477,7 @@ radius = 0.9
 sides = 24
 material = SubResource("StandardMaterial3D_senyo")
 
-[node name="Ramp" type="CSGBox3D" parent="NavigationRegion3D" unique_id=1753099771]
+[node name="Ramp" type="CSGBox3D" parent="NavigationRegion3D" unique_id=1753099771 groups=["WOOD"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.25, 0.75, -7)
 use_collision = true
 size = Vector3(1.5, 1.5, 2)
@@ -787,3 +792,19 @@ mesh = SubResource("QuadMesh_5pyta")
 
 [node name="Tree01" parent="Quaternius" unique_id=38701300 instance=ExtResource("33_dgi5k")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -4.7683716e-07, 0, 1)
+
+[node name="WarpArea" type="Area3D" parent="." unique_id=1308192546]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 1, -10)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WarpArea" unique_id=115790568]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.375, 0)
+shape = SubResource("CylinderShape3D_k78ss")
+
+[node name="WarpPointA" parent="WarpArea" unique_id=2123776133 instance=ExtResource("34_dgi5k")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+light_enable = false
+
+[node name="WarpPointB" type="Marker3D" parent="WarpArea" unique_id=311705794]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9, 3)
+
+[connection signal="body_entered" from="WarpArea" to="." method="_on_warp_area_body_entered"]

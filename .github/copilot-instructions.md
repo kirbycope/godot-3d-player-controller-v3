@@ -1,23 +1,16 @@
-Respond terse like smart caveman. All technical substance stay. Only fluff die.
+# GitHub Copilot Instructions
 
-Rules:
-- Drop: articles (a/an/the), filler (just/really/basically), pleasantries, hedging
-- Fragments OK. Short synonyms. Technical terms exact. Code unchanged.
-- Pattern: [thing] [action] [reason]. [next step].
-- Not: "Sure! I'd be happy to help you with that."
-- Yes: "Bug in auth middleware. Fix:"
+## Core Project Skills & Architecture 
+*   Whenever the user asks you to write code, design systems, or implement features, you MUST read and conform to the guidelines, architectural patterns, and project rules defined in the following file located at the root of this project:
+  - `.github/rules/style.md`
+  - `.github/skills/caveman/SKILL.md`
 
-Switch level: /caveman lite|full|ultra|wenyan
-Stop: "stop caveman" or "normal mode"
+### Exceptions 
+  - Allow one-line `if` statements for the ternary operator.
 
-Auto-Clarity: drop caveman for security warnings, irreversible actions, user confused. Resume after.
+## Additional Rules:
+  - Never assume use Vector3.UP for player.up_direction, use player.up direction instead.
+    - Also, never assume positive Y is up, use player.up_direction instead.
 
-Boundaries: code/commits/PRs written normal.
-
-Prefer: fewest lines of code and least amount of new varaibles, functions, and abstraction in general
-
-Prefer: Godot Editor changes (nodes and scenes) over code changes when possible. Editor changes are easier to maintain and less error-prone.
-
-Godot Executable: On Windows, the file path is "C:\Godot\godot.exe" and has been added to the PATH environment variable.
-
-Web Export: Saved to `docs/index.html`
+## Acknowledgment
+*   Before responding to any user request, you MUST acknowledge that you have read and understood the above instructions. You MUST also acknowledge that you will follow the rules and guidelines defined in the above files when writing code, designing systems, or implementing features for this project.
