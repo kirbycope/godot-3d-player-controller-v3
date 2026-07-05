@@ -1,0 +1,66 @@
+name: GUT Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      godot_version:
+        description: Godot version to run tests with
+        required: true
+        default: "4.7"
+
+jobs:
+  gut:
+    runs-on: ubuntu-latest
+    env:
+      GODOT_VERSION: ${{ github.event.inputs.godot_version || '4.7' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Godot
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          sudo apt-get update
+          sudo apt-get install -y unzip wget
+
+          url="https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          wget -O godot.zip "$url"
+          unzip -q godot.zip
+
+          GODOT_BIN_PATH="$(find "$PWD" -maxdepth 1 -type f -name 'Godot_v*-stable_linux.x86_64' | head -n1)"
+          if [[ -z "$GODOT_BIN_PATH" ]]; then
+            echo "Could not find extracted Godot binary"
+            ls -la
+            exit 1
+          fi
+
+          chmod +x "$GODOT_BIN_PATH"
+          echo "GODOT_BIN_PATH=$GODOT_BIN_PATH" >> "$GITHUB_ENV"
+
+      - name: Run GUT
+        shell: bash
+        run: |
+          set -euo pipefail
+          "$GODOT_BIN_PATH" \
+            --headless \
+            -d \
+            --path "$PWD" \
+            -s addons/gut/gut_cmdln.gd \
+            -gconfig=res://.gutconfig.json \
+            -gjunit_xml_file=gut_results.xml \
+            -gexit
+
+      - name: Upload GUT XML
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gut-results
+          path: gut_results.xml
+          if-no-files-found: warn
