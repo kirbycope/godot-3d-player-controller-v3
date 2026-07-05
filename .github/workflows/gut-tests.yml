@@ -53,18 +53,20 @@ jobs:
 
           refs_raw="$(mktemp)"
           refs="$(mktemp)"
+          files_list="$(mktemp)"
+
+          if ! find . -type f -print0 > "$files_list"; then
+            echo "Resource preflight failed: unable to list project files."
+            exit 1
+          fi
 
           while IFS= read -r -d '' file; do
-            grep -hoE 'path="res://[^"]+"' "$file" >> "$refs_raw" || true
-          done < <(
-            find . -type f \(
-              -name "*.tscn" -o
-              -name "*.tres" -o
-              -name "*.material" -o
-              -name "*.res" -o
-              -name "*.tscn.remap"
-            \) -print0
-          )
+            case "$file" in
+              *.tscn|*.tres|*.material|*.res|*.tscn.remap)
+                grep -hoE 'path="res://[^"]+"' "$file" >> "$refs_raw" || true
+                ;;
+            esac
+          done < "$files_list"
 
           sort -u "$refs_raw" | sed -E 's/^path="res:\/\///; s/"$//' > "$refs"
 
