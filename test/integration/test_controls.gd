@@ -9,61 +9,78 @@ extends GutTest
 class ControlsTestBase:
 	extends GutTest
 
-	var MainScene = load("res://scenes/main.tscn")
+	var MainScene = load("res://test/integration/test_controls.tscn")
 	var main_instance = null
+	var player_debug = null
 
-	func after_each():
-		_cleanup_main_instance()
-
-	func _cleanup_main_instance() -> void:
-		if is_instance_valid(main_instance):
-			main_instance.free()
-
-	func _spawn_main_and_get_debug_node() -> CanvasLayer:
+	## Runs before each test is executed.
+	func before_each() -> void:
 		main_instance = MainScene.instantiate()
 		add_child_autofree(main_instance)
-		return main_instance.get_node("Player/Debug")
+		player_debug = main_instance.get_node("Player/Debug")
 
+	## Runs after each test is executed.
+	func after_each() -> void:
+		if is_instance_valid(main_instance):
+			main_instance.free()
+			main_instance = null
+			player_debug = null
 
-## Tests related to the function performed by action.
-class TestDebugAction:
-	extends ControlsTestBase
-
-	func test_pressing_debug_action_toggles_debug_node_visibility():
-		var debug_node := _spawn_main_and_get_debug_node()
-		assert_false(debug_node.visible, "Debug node should be hidden by default.")
-
-		# Send action events directly to the Debug node's _input handler.
-		var sender = InputSender.new(debug_node)
-		sender.action_down("debug").wait(0.1).action_up("debug")
+	## Performs a "down" and "up" sequence for the specified action.
+	func perform_action(action_name: String) -> void:
+		var sender = InputSender.new(Input)
+		sender.set_auto_flush_input(true)
+		sender.action_down(action_name).wait(0.1).action_up(action_name)
 		await sender.idle
 
-		assert_true(
-			debug_node.visible,
-			"Debug node should be visible after pressing the debug action.",
-		)
 
-
-class TestDebugKeybind:
-	extends ControlsTestBase
-
-	func test_pressing_f3_key_toggles_debug_node_visibility():
-		var debug_node := _spawn_main_and_get_debug_node()
-		assert_false(debug_node.visible, "Debug node should be hidden by default.")
-
-		# Send physical-key events through global Input for InputMap key binding coverage.
+	## Sends a key "press" and "release" sequence for the specified keycode.
+	func send_key(keycode: Key) -> void:
 		var sender = InputSender.new(Input)
 		sender.set_auto_flush_input(true)
 
 		var key_down_event := InputEventKey.new()
-		key_down_event.physical_keycode = KEY_F3
+		key_down_event.physical_keycode = keycode
 		key_down_event.pressed = true
 
 		var key_up_event := InputEventKey.new()
-		key_up_event.physical_keycode = KEY_F3
+		key_up_event.physical_keycode = keycode
 		key_up_event.pressed = false
 
 		sender.send_event(key_down_event).wait(0.1).send_event(key_up_event)
 		await sender.idle
 
-		assert_true(debug_node.visible, "Debug node should be visible after pressing F3.")
+
+## Tests related to the function performed by an action.
+class TestDebugAction:
+	extends ControlsTestBase
+
+	func test_pressing_debug_action_toggles_debug_node_visibility():
+		# Arrange: Ensure the "debug" node is hidden before performing the action.
+		assert_false(player_debug.visible, "Debug node should be hidden by default.")
+
+		# Act: Perform the "debug" action.
+		var sender = InputSender.new(player_debug)
+		sender.action_down("debug").wait(0.1).action_up("debug")
+		await sender.idle
+
+		# Assert: Ensure that the "debug" node is now visible.
+		assert_true(
+			player_debug.visible,
+			"Debug node should be visible after pressing the debug action.",
+		)
+
+
+## Tests related to the keybinding for an action.
+class TestDebugKeybind:
+	extends ControlsTestBase
+
+	func test_pressing_f3_key_toggles_debug_node_visibility():
+		# Arrange: Ensure the "debug" node is hidden before sending key events.
+		assert_false(player_debug.visible, "Debug node should be hidden by default.")
+
+		# Act: Perform the key press for [F3] to trigger the "debug" action.
+		await send_key(Key.KEY_F3)
+
+		# Assert: Ensure that the "debug" node is now visible.
+		assert_true(player_debug.visible, "Debug node should be visible after pressing F3.")
