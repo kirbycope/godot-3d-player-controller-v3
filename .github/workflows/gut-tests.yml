@@ -2,7 +2,7 @@ name: GUT Unit Tests
 on: push
 
 jobs:
-  test:
+  gut:
     runs-on: ubuntu-latest
 
     container:

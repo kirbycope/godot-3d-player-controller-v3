@@ -1,6 +1,5 @@
 {
     "dirs":[
-        "res://test/unit",
         "res://test/integration"
     ],
     "include_subdirs":true,
