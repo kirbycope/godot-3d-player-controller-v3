@@ -44,6 +44,12 @@ jobs:
           chmod +x "$GODOT_BIN_PATH"
           echo "GODOT_BIN_PATH=$GODOT_BIN_PATH" >> "$GITHUB_ENV"
 
+      - name: Import Assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          "$GODOT_BIN_PATH" --headless --editor --quit --path "$PWD"
+
       - name: Run GUT
         shell: bash
         run: |
