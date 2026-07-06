@@ -20,7 +20,7 @@ jobs:
           apt-get install -y --no-install-recommends blender libfontconfig1
 
       - name: Import project
-        run: godot --headless --path "$PWD" --import --quit
+        run: godot --headless --recovery-mode --path "$PWD" --import --quit
 
       - name: Validate Godot ext_resource paths (Linux case-sensitive)
         shell: bash
