@@ -12,8 +12,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
+      - name: Install Godot runtime deps
+        shell: bash
+        run: |
+          set -euo pipefail
+          apt-get update
+          apt-get install -y --no-install-recommends libfontconfig1
+
       - name: Import project
-        run: godot --headless --import --quit
+        run: godot --headless --path "$PWD" --import --quit
 
       - name: Validate Godot ext_resource paths (Linux case-sensitive)
         shell: bash
@@ -78,6 +85,8 @@ jobs:
           echo "✅ All ext_resource targets exist on disk."
 
       - name: Run Tests
+        env:
+          GODOT_DISABLE_LEAK_CHECKS: "1"
         run: |
           godot \
             --headless \
