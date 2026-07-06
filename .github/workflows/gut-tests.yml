@@ -17,8 +17,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-        with:
-          lfs: true
+
+      - name: Debug asset paths
+        run: |
+          echo "Checking exact files..."
+          ls -la scenes || true
+          ls -la assets/quaternius/logs || true
+          ls -la assets/quaternius/nature || true
+          ls -la "addons/3d_player_controller/assets/kenney_nl/Prototype Textures/Vector" || true
+          ls -la assets/BinbunVFX/shared/texture/flare || true
+
+          test -f scenes/action_prompt.tscn && echo "OK scenes/action_prompt.tscn" || echo "MISSING scenes/action_prompt.tscn"
+          test -f assets/quaternius/logs/Tree_Bark_1.gltf && echo "OK Tree_Bark_1.gltf" || echo "MISSING Tree_Bark_1.gltf"
+          test -f assets/quaternius/logs/Tree_Log_1.gltf && echo "OK Tree_Log_1.gltf" || echo "MISSING Tree_Log_1.gltf"
+          test -f assets/quaternius/nature/CommonTree_1.gltf && echo "OK CommonTree_1.gltf" || echo "MISSING CommonTree_1.gltf"
+          test -f "addons/3d_player_controller/assets/kenney_nl/Prototype Textures/Vector/texture_04.svg" && echo "OK texture_04.svg" || echo "MISSING texture_04.svg"
+          test -f assets/BinbunVFX/shared/texture/flare/flare_03.png && echo "OK flare_03.png" || echo "MISSING flare_03.png"
 
       - name: Import Assets
         run: godot --headless --import --quit --path "$PWD"
