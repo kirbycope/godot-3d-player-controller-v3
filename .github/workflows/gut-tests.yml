@@ -5,6 +5,11 @@ jobs:
   gut:
     runs-on: ubuntu-latest
 
+    env:
+      HOME: /tmp/godot-home
+      XDG_CONFIG_HOME: /tmp/godot-home/.config
+      XDG_CACHE_HOME: /tmp/godot-home/.cache
+
     container:
       image: "barichello/godot-ci:4.7"
 
@@ -17,14 +22,14 @@ jobs:
         run: |
           set -euo pipefail
           apt-get update
-          apt-get install -y --no-install-recommends blender libfontconfig1
+          apt-get install -y --no-install-recommends blender libfontconfig1 python3-numpy
 
       - name: Configure Blender path for headless import
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p "$HOME/.config/godot"
-          cat > "$HOME/.config/godot/editor_settings-4.7.tres" <<'EOF'
+          mkdir -p "$XDG_CONFIG_HOME/godot" "$XDG_CACHE_HOME"
+          cat > "$XDG_CONFIG_HOME/godot/editor_settings-4.7.tres" <<'EOF'
           [gd_resource type="EditorSettings" format=3]
 
           [resource]
