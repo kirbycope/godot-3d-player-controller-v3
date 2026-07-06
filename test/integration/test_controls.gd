@@ -9,7 +9,7 @@ extends GutTest
 class ControlsTestBase:
 	extends GutTest
 
-	var MainScene = load("res://scenes/main.tscn")
+	var MainScene = load("res://test/integration/test_controls.tscn")
 	var main_instance = null
 
 	func after_each():
