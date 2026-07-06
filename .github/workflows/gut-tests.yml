@@ -34,6 +34,18 @@ jobs:
           test -f "addons/3d_player_controller/assets/kenney_nl/Prototype Textures/Vector/texture_04.svg" && echo "OK texture_04.svg" || echo "MISSING texture_04.svg"
           test -f assets/BinbunVFX/shared/texture/flare/flare_03.png && echo "OK flare_03.png" || echo "MISSING flare_03.png"
 
+      - name: Check readable files
+        run: |
+          id
+          stat "assets/quaternius/nature/CommonTree_1.gltf" || true
+          stat "assets/quaternius/logs/Tree_Bark_1.gltf" || true
+          stat "assets/BinbunVFX/shared/texture/flare/flare_03.png" || true
+          stat "addons/3d_player_controller/assets/kenney_nl/Prototype Textures/Vector/texture_04.svg" || true
+          test -r "assets/quaternius/nature/CommonTree_1.gltf" && echo "READABLE CommonTree_1.gltf" || echo "NOT READABLE CommonTree_1.gltf"
+          test -r "assets/quaternius/logs/Tree_Bark_1.gltf" && echo "READABLE Tree_Bark_1.gltf" || echo "NOT READABLE Tree_Bark_1.gltf"
+          test -r "assets/BinbunVFX/shared/texture/flare/flare_03.png" && echo "READABLE flare_03.png" || echo "NOT READABLE flare_03.png"
+          test -r "addons/3d_player_controller/assets/kenney_nl/Prototype Textures/Vector/texture_04.svg" && echo "READABLE texture_04.svg" || echo "NOT READABLE texture_04.svg"
+
       - name: Import Assets
         run: godot --headless --import --quit --path "$PWD"
 
