@@ -1,41 +1,27 @@
 name: GUT Unit Tests
-
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-  workflow_dispatch:
+on: push
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     container:
-      image: barichello/godot-ci:4.7
+      image: "barichello/godot-ci:4.7"
 
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-        with:
-          lfs: true
 
-      - name: Clear Godot cache
-        run: rm -rf .godot
+      - name: Import project
+        run: godot --headless --import --quit
 
-      - name: Import Assets
-        run: godot --headless --editor --quit --path "$PWD"
-
-      - name: Inspect imported artifacts
-        run: |
-          find .godot/imported -maxdepth 2 -type f | sort | sed -n '1,200p' || true
-
-      - name: Run GUT
+      - name: Run Tests
         run: |
           godot \
             --headless \
+            -d \
             --path "$PWD" \
             -s addons/gut/gut_cmdln.gd \
-            -gconfig=res://.gutconfig.json \
+            -gconfig=.gutconfig.json \
             -gcompact_mode \
             -gexit
