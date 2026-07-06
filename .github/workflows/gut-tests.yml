@@ -44,6 +44,21 @@ jobs:
           chmod +x "$GODOT_BIN_PATH"
           echo "GODOT_BIN_PATH=$GODOT_BIN_PATH" >> "$GITHUB_ENV"
 
+          # Download and configure FBX2glTF for importing FBX models
+          fbx_url="https://github.com/godotengine/FBX2glTF/releases/download/v0.13.1/FBX2glTF-linux-x86_64.zip"
+          wget -O fbx2gltf.zip "$fbx_url"
+          unzip -q fbx2gltf.zip -d "$PWD"
+          FBX2GLTF_PATH="$PWD/FBX2glTF-linux-x86_64"
+          chmod +x "$FBX2GLTF_PATH"
+
+          mkdir -p ~/.config/godot
+          echo '[d_navigation]' > ~/.config/godot/editor_settings-4.tres
+          echo '' >> ~/.config/godot/editor_settings-4.tres
+          echo '[resource]' >> ~/.config/godot/editor_settings-4.tres
+          echo '' >> ~/.config/godot/editor_settings-4.tres
+          echo "filesystem/import/fbx/fbx2gltf_path = \"$FBX2GLTF_PATH\"" >> ~/.config/godot/editor_settings-4.tres
+          cp ~/.config/godot/editor_settings-4.tres ~/.config/godot/editor_settings-4.${GODOT_VERSION}.tres
+
       - name: Import Assets
         shell: bash
         run: |
