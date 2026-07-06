@@ -22,6 +22,8 @@ jobs:
 
           echo "Scanning .tscn/.tres for ext_resource path=\"res://...\" refs"
 
+          git config --global --add safe.directory "${GITHUB_WORKSPACE:-$PWD}"
+
           # Collect all ext_resource res:// paths from .tscn/.tres files.
           # Handles standard Godot lines like:
           # [ext_resource type="..." path="res://foo/bar.png" id="..."]
