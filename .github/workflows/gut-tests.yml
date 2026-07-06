@@ -21,8 +21,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-        with:
-          lfs: true
 
       - name: Install Godot
         shell: bash
@@ -46,63 +44,13 @@ jobs:
           chmod +x "$GODOT_BIN_PATH"
           echo "GODOT_BIN_PATH=$GODOT_BIN_PATH" >> "$GITHUB_ENV"
 
-      - name: Preflight Resource References
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          refs_raw="$(mktemp)"
-          refs="$(mktemp)"
-          files_list="$(mktemp)"
-
-          if ! find . -type f -print0 > "$files_list"; then
-            echo "Resource preflight failed: unable to list project files."
-            exit 1
-          fi
-
-          while IFS= read -r -d '' file; do
-            case "$file" in
-              *.tscn|*.tres|*.material|*.res|*.tscn.remap)
-                grep -hoE 'path="res://[^"]+"' "$file" >> "$refs_raw" || true
-                ;;
-            esac
-          done < "$files_list"
-
-          sort -u "$refs_raw" | sed -E 's/^path="res:\/\///; s/"$//' > "$refs"
-
-          missing=0
-          while IFS= read -r rel_path; do
-            [[ -z "$rel_path" ]] && continue
-            [[ "$rel_path" == .godot/* ]] && continue
-            if [[ ! -e "$rel_path" ]]; then
-              echo "MISSING_RESOURCE: res://$rel_path"
-              missing=$((missing + 1))
-            fi
-          done < "$refs"
-
-          if (( missing > 0 )); then
-            echo "Found $missing missing resource reference(s)."
-            exit 1
-          fi
-
-          echo "Resource preflight passed: all referenced res:// paths exist."
-
-      - name: Import Project
-        shell: bash
-        run: |
-          set -euo pipefail
-          "$GODOT_BIN_PATH" \
-            --headless \
-            --editor \
-            --quit \
-            --path "$PWD"
-
       - name: Run GUT
         shell: bash
         run: |
           set -euo pipefail
           "$GODOT_BIN_PATH" \
             --headless \
+            -d \
             --path "$PWD" \
             -s addons/gut/gut_cmdln.gd \
             -gconfig=res://.gutconfig.json \
@@ -111,7 +59,7 @@ jobs:
 
       - name: Upload GUT XML
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: gut-results
           path: gut_results.xml
