@@ -25,7 +25,6 @@ jobs:
         run: |
           godot \
             --headless \
-            -d \
             --path "$PWD" \
             -s addons/gut/gut_cmdln.gd \
             -gconfig=res://.gutconfig.json \
