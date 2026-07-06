@@ -5,9 +5,6 @@ jobs:
   gut:
     runs-on: ubuntu-latest
 
-    env:
-      XDG_CONFIG_HOME: /tmp/godot-ci-config
-
     container:
       image: "barichello/godot-ci:4.7"
 
@@ -22,27 +19,17 @@ jobs:
           apt-get update
           apt-get install -y --no-install-recommends blender libfontconfig1
 
-      - name: Seed Godot editor settings
+      - name: Configure Blender path for headless import
         shell: bash
         run: |
           set -euo pipefail
+          mkdir -p "$HOME/.config/godot"
+          cat > "$HOME/.config/godot/editor_settings-4.7.tres" <<'EOF'
+          [gd_resource type="EditorSettings" format=3]
 
-          blender_path="$(command -v blender)"
-          if [ -z "$blender_path" ]; then
-            echo "::error::blender not found on PATH"
-            exit 1
-          fi
-
-          config_dir="$XDG_CONFIG_HOME/godot"
-          mkdir -p "$config_dir"
-
-          cat > "$config_dir/editor_settings-4.7.tres" <<EOF
-[gd_resource type="EditorSettings" format=4]
-
-[resource]
-filesystem/import/blender/blender_path = "$blender_path"
-filesystem/import/blender/enabled = true
-EOF
+          [resource]
+          filesystem/import/blender/blender_path = "/usr/bin/blender"
+          EOF
 
       - name: Import project
         run: godot --headless --path "$PWD" --import --quit
