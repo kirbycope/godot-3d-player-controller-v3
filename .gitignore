@@ -1,7 +1,4 @@
 # Godot 4+ specific ignores
-.godot/*
-# But allow specific files needed for CI
-!.godot/
-!.godot/global_script_class_cache.cfg
+.godot
 /android/
 .DS_Store
