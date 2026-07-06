@@ -1,4 +1,4 @@
-name: GUT Tests
+name: GUT Unit Tests
 
 on:
   push:
@@ -6,82 +6,28 @@ on:
       - main
   pull_request:
   workflow_dispatch:
-    inputs:
-      godot_version:
-        description: Godot version to run tests with
-        required: true
-        default: "4.7"
 
 jobs:
-  gut:
+  test:
     runs-on: ubuntu-latest
-    env:
-      GODOT_VERSION: ${{ github.event.inputs.godot_version || '4.7' }}
+
+    container:
+      image: barichello/godot-ci:4.7
 
     steps:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Install Godot
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          sudo apt-get update
-          sudo apt-get install -y unzip wget
-
-          url="https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
-          wget -O godot.zip "$url"
-          unzip -q godot.zip
-
-          GODOT_BIN_PATH="$(find "$PWD" -maxdepth 1 -type f -name 'Godot_v*-stable_linux.x86_64' | head -n1)"
-          if [[ -z "$GODOT_BIN_PATH" ]]; then
-            echo "Could not find extracted Godot binary"
-            ls -la
-            exit 1
-          fi
-
-          chmod +x "$GODOT_BIN_PATH"
-          echo "GODOT_BIN_PATH=$GODOT_BIN_PATH" >> "$GITHUB_ENV"
-
-          # Download and configure FBX2glTF for importing FBX models
-          fbx_url="https://github.com/godotengine/FBX2glTF/releases/download/v0.13.1/FBX2glTF-linux-x86_64.zip"
-          wget -O fbx2gltf.zip "$fbx_url"
-          unzip -q fbx2gltf.zip -d "$PWD"
-          FBX2GLTF_PATH="$PWD/FBX2glTF-linux-x86_64"
-          chmod +x "$FBX2GLTF_PATH"
-
-          mkdir -p ~/.config/godot
-          echo '[d_navigation]' > ~/.config/godot/editor_settings-4.tres
-          echo '' >> ~/.config/godot/editor_settings-4.tres
-          echo '[resource]' >> ~/.config/godot/editor_settings-4.tres
-          echo '' >> ~/.config/godot/editor_settings-4.tres
-          echo "filesystem/import/fbx/fbx2gltf_path = \"$FBX2GLTF_PATH\"" >> ~/.config/godot/editor_settings-4.tres
-          cp ~/.config/godot/editor_settings-4.tres ~/.config/godot/editor_settings-4.${GODOT_VERSION}.tres
-
       - name: Import Assets
-        shell: bash
-        run: |
-          set -euo pipefail
-          "$GODOT_BIN_PATH" --headless --editor --quit --path "$PWD"
+        run: godot --headless --import --quit --path "$PWD"
 
       - name: Run GUT
-        shell: bash
         run: |
-          set -euo pipefail
-          "$GODOT_BIN_PATH" \
+          godot \
             --headless \
             -d \
             --path "$PWD" \
             -s addons/gut/gut_cmdln.gd \
             -gconfig=res://.gutconfig.json \
-            -gjunit_xml_file=gut_results.xml \
+            -gcompact_mode \
             -gexit
-
-      - name: Upload GUT XML
-        if: always()
-        uses: actions/upload-artifact@v5
-        with:
-          name: gut-results
-          path: gut_results.xml
-          if-no-files-found: warn
