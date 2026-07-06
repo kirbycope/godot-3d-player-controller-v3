@@ -17,37 +17,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          lfs: true
 
-      - name: Debug asset paths
-        run: |
-          echo "Checking exact files..."
-          ls -la scenes || true
-          ls -la assets/quaternius/logs || true
-          ls -la assets/quaternius/nature || true
-          ls -la "addons/3d_player_controller/assets/kenney_nl/Prototype Textures/Vector" || true
-          ls -la assets/BinbunVFX/shared/texture/flare || true
-
-          test -f scenes/action_prompt.tscn && echo "OK scenes/action_prompt.tscn" || echo "MISSING scenes/action_prompt.tscn"
-          test -f assets/quaternius/logs/Tree_Bark_1.gltf && echo "OK Tree_Bark_1.gltf" || echo "MISSING Tree_Bark_1.gltf"
-          test -f assets/quaternius/logs/Tree_Log_1.gltf && echo "OK Tree_Log_1.gltf" || echo "MISSING Tree_Log_1.gltf"
-          test -f assets/quaternius/nature/CommonTree_1.gltf && echo "OK CommonTree_1.gltf" || echo "MISSING CommonTree_1.gltf"
-          test -f "addons/3d_player_controller/assets/kenney_nl/Prototype Textures/Vector/texture_04.svg" && echo "OK texture_04.svg" || echo "MISSING texture_04.svg"
-          test -f assets/BinbunVFX/shared/texture/flare/flare_03.png && echo "OK flare_03.png" || echo "MISSING flare_03.png"
-
-      - name: Check readable files
-        run: |
-          id
-          stat "assets/quaternius/nature/CommonTree_1.gltf" || true
-          stat "assets/quaternius/logs/Tree_Bark_1.gltf" || true
-          stat "assets/BinbunVFX/shared/texture/flare/flare_03.png" || true
-          stat "addons/3d_player_controller/assets/kenney_nl/Prototype Textures/Vector/texture_04.svg" || true
-          test -r "assets/quaternius/nature/CommonTree_1.gltf" && echo "READABLE CommonTree_1.gltf" || echo "NOT READABLE CommonTree_1.gltf"
-          test -r "assets/quaternius/logs/Tree_Bark_1.gltf" && echo "READABLE Tree_Bark_1.gltf" || echo "NOT READABLE Tree_Bark_1.gltf"
-          test -r "assets/BinbunVFX/shared/texture/flare/flare_03.png" && echo "READABLE flare_03.png" || echo "NOT READABLE flare_03.png"
-          test -r "addons/3d_player_controller/assets/kenney_nl/Prototype Textures/Vector/texture_04.svg" && echo "READABLE texture_04.svg" || echo "NOT READABLE texture_04.svg"
+      - name: Clear Godot cache
+        run: rm -rf .godot
 
       - name: Import Assets
-        run: godot --headless --import --quit --path "$PWD"
+        run: godot --headless --editor --quit --path "$PWD"
+
+      - name: Inspect imported artifacts
+        run: |
+          find .godot/imported -maxdepth 2 -type f | sort | sed -n '1,200p' || true
 
       - name: Run GUT
         run: |
