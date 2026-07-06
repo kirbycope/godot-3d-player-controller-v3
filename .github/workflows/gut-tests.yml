@@ -17,7 +17,7 @@ jobs:
         run: |
           set -euo pipefail
           apt-get update
-          apt-get install -y --no-install-recommends libfontconfig1
+          apt-get install -y --no-install-recommends blender libfontconfig1
 
       - name: Import project
         run: godot --headless --path "$PWD" --import --quit
