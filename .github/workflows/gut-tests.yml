@@ -15,6 +15,66 @@ jobs:
       - name: Import project
         run: godot --headless --import --quit
 
+      - name: Validate Godot ext_resource paths (Linux case-sensitive)
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "Scanning .tscn/.tres for ext_resource path=\"res://...\" refs"
+
+          # Collect all ext_resource res:// paths from .tscn/.tres files.
+          # Handles standard Godot lines like:
+          # [ext_resource type="..." path="res://foo/bar.png" id="..."]
+          mapfile -t REFS < <(
+            git ls-files '*.tscn' '*.tres' \
+            | while IFS= read -r f; do
+                # print: file<TAB>line<TAB>res://path
+                awk -v file="$f" '
+                  {
+                    if ($0 ~ /\[ext_resource/ && $0 ~ /path="res:\/\//) {
+                      line=$0
+                      sub(/^.*path="res:\/\//, "", line)
+                      sub(/".*$/, "", line)
+                      printf("%s\t%d\tres://%s\n", file, NR, line)
+                    }
+                  }
+                ' "$f"
+              done
+          )
+
+          if [ "${#REFS[@]}" -eq 0 ]; then
+            echo "No ext_resource res:// refs found."
+            exit 0
+          fi
+
+          echo "Found ${#REFS[@]} ext_resource refs. Validating..."
+
+          missing=0
+
+          for row in "${REFS[@]}"; do
+            src_file="$(printf '%s' "$row" | cut -f1)"
+            src_line="$(printf '%s' "$row" | cut -f2)"
+            res_path="$(printf '%s' "$row" | cut -f3)"
+
+            # Convert res://path -> repo-relative path
+            rel_path="${res_path#res://}"
+
+            # Exact existence check (Linux is case-sensitive)
+            if [ ! -e "$rel_path" ]; then
+              echo "::error file=${src_file},line=${src_line}::Missing ext_resource target: ${res_path} (expected '${rel_path}' in repo)"
+              missing=$((missing + 1))
+            fi
+          done
+
+          if [ "$missing" -gt 0 ]; then
+            echo ""
+            echo "❌ Found ${missing} missing ext_resource target(s)."
+            echo "This is commonly a case mismatch that passes on macOS/Windows and fails on Linux."
+            exit 1
+          fi
+
+          echo "✅ All ext_resource targets exist on disk."
+
       - name: Run Tests
         run: |
           godot \
