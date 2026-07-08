@@ -36,3 +36,14 @@ func _physics_process(_delta: float) -> void:
 func _on_warp_area_body_entered(body: Node3D) -> void:
 	if body is Player:
 		body.global_position = $WarpArea/WarpPointB.global_position
+
+
+## Called when a body enters the "Pool"
+func _on_player_detection_body_entered(body: Node3D) -> void:
+	if body is Player:
+		player.is_swimming = true
+
+
+## Called when a body exits the "Pool"
+func _on_player_detection_body_exited(body: Node3D) -> void:
+		player.is_swimming = false
