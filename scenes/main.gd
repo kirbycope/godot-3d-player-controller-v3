@@ -41,9 +41,14 @@ func _on_warp_area_body_entered(body: Node3D) -> void:
 ## Called when a body enters the "Pool"
 func _on_player_detection_body_entered(body: Node3D) -> void:
 	if body is Player:
-		player.is_swimming = true
+		# Start swimming (if not already swimming)
+		if not body.is_swimming:
+			body.state_machine.travel(NodeStateMachine.States.SWIMMING)
 
 
 ## Called when a body exits the "Pool"
 func _on_player_detection_body_exited(body: Node3D) -> void:
-		player.is_swimming = false
+	if body is Player:
+		# Stop swimming (if currently swimming)
+		if body.is_swimming:
+			body.is_swimming = false # This will trigger the `stop()` in `swimming.gd`
