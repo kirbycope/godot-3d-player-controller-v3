@@ -13,7 +13,7 @@ func _ready() -> void:
 	else:
 		# Show the Click to Start button
 		$ClickToStart.visible = true
-	player.is_skateboarding = true
+	#player.is_skateboarding = true
 
 
 ## Called when there is an input event.
