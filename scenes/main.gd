@@ -44,7 +44,7 @@ func _on_player_detection_body_entered(body: Node3D) -> void:
 	if body is Player:
 		# Start swimming (if not already swimming)
 		if not body.is_swimming:
-			body.state_machine.travel(NodeStateMachine.States.SWIMMING)
+			body.state_machine.travel(player.current_state, NodeStateMachine.States.SWIMMING)
 
 
 ## Called when a body exits the "Pool"
