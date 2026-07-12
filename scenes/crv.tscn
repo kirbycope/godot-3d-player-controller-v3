@@ -1,0 +1,172 @@
+[gd_scene format=3 uid="uid://bwngmjoqsrtcx"]
+
+[ext_resource type="PackedScene" uid="uid://chns82fl7xumh" path="res://assets/cgtrader/honda_crv/Honda CRV 2023.fbx" id="1_kw0ot"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kw0ot"]
+resource_name = "black plastic"
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.16618572, 0.16618572, 0.16618572, 0.023529412)
+roughness = 0.0
+emission_enabled = true
+emission = Color(0, 0, 0, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lv70o"]
+resource_name = "glass"
+transparency = 1
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.735357, 0.735357, 0.735357, 0.5)
+roughness = 0.0
+emission_enabled = true
+emission = Color(0, 0, 0, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yjpfv"]
+resource_name = "glass"
+transparency = 1
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.735357, 0.735357, 0.735357, 0.5)
+roughness = 0.0
+emission_enabled = true
+emission = Color(0, 0, 0, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ndljn"]
+resource_name = "sheet metal"
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.7529412, 0.7529412, 0.7529412, 1)
+metallic = 1.0
+roughness = 0.5
+emission_enabled = true
+emission = Color(0, 0, 0, 0)
+clearcoat_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0r7jk"]
+resource_name = "glass"
+transparency = 1
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.735357, 0.735357, 0.735357, 0.5)
+roughness = 0.0
+emission_enabled = true
+emission = Color(0, 0, 0, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w3dl6"]
+resource_name = "sheet metal"
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.7529412, 0.7529412, 0.7529412, 1)
+metallic = 1.0
+roughness = 0.5
+emission_enabled = true
+emission = Color(0, 0, 0, 0)
+clearcoat_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ipdoc"]
+resource_name = "sheet metal"
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.7529412, 0.7529412, 0.7529412, 1)
+metallic = 1.0
+roughness = 0.5
+emission_enabled = true
+emission = Color(0, 0, 0, 0)
+clearcoat_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m20il"]
+resource_name = "glass"
+transparency = 1
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.735357, 0.735357, 0.735357, 0.5)
+roughness = 0.0
+emission_enabled = true
+emission = Color(0, 0, 0, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wcpr6"]
+resource_name = "sheet metal"
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.7529412, 0.7529412, 0.7529412, 1)
+metallic = 1.0
+roughness = 0.5
+emission_enabled = true
+emission = Color(0, 0, 0, 0)
+clearcoat_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ndq4s"]
+resource_name = "glass"
+transparency = 1
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.735357, 0.735357, 0.735357, 0.5)
+roughness = 0.0
+emission_enabled = true
+emission = Color(0, 0, 0, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mlpxp"]
+resource_name = "sheet metal"
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.7529412, 0.7529412, 0.7529412, 1)
+metallic = 1.0
+roughness = 0.5
+emission_enabled = true
+emission = Color(0, 0, 0, 0)
+clearcoat_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ntir3"]
+resource_name = "sheet metal"
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.7529412, 0.7529412, 0.7529412, 1)
+metallic = 1.0
+roughness = 0.5
+emission_enabled = true
+emission = Color(0, 0, 0, 0)
+clearcoat_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0hic1"]
+resource_name = "glass"
+transparency = 1
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.735357, 0.735357, 0.735357, 0.5)
+roughness = 0.0
+emission_enabled = true
+emission = Color(0, 0, 0, 0)
+
+[node name="CRV" type="Node3D" unique_id=751190287]
+
+[node name="Honda CRV 2023" parent="." unique_id=76790143 instance=ExtResource("1_kw0ot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.1, -0.7, 0)
+
+[node name="Interior screen " parent="Honda CRV 2023" index="22" unique_id=1536208888]
+surface_material_override/0 = SubResource("StandardMaterial3D_kw0ot")
+
+[node name="Exterior glass " parent="Honda CRV 2023" index="40" unique_id=2080501461]
+surface_material_override/0 = SubResource("StandardMaterial3D_lv70o")
+
+[node name="Exterior trunk door\nExterior trunk door 04" parent="Honda CRV 2023" index="56" unique_id=1692154142]
+surface_material_override/0 = SubResource("StandardMaterial3D_yjpfv")
+
+[node name="Exterior trunk door\nExterior trunk door 18" parent="Honda CRV 2023" index="58" unique_id=1214116690]
+surface_material_override/0 = SubResource("StandardMaterial3D_ndljn")
+
+[node name="Exterior rear left door 09" parent="Honda CRV 2023" index="71" unique_id=963220601]
+surface_material_override/0 = SubResource("StandardMaterial3D_0r7jk")
+
+[node name="Exterior rear left door 10" parent="Honda CRV 2023" index="81" unique_id=180295292]
+surface_material_override/0 = SubResource("StandardMaterial3D_w3dl6")
+
+[node name="Exterior front left door 11" parent="Honda CRV 2023" index="82" unique_id=237514586]
+surface_material_override/0 = SubResource("StandardMaterial3D_ipdoc")
+
+[node name="Exterior front left door 09" parent="Honda CRV 2023" index="83" unique_id=1479421584]
+surface_material_override/0 = SubResource("StandardMaterial3D_m20il")
+
+[node name="Exterior body 00" parent="Honda CRV 2023" index="98" unique_id=667697743]
+transform = Transform3D(0.6207, 0, 0, 0, -0.6207, -1.0112486e-07, 0, 1.0112486e-07, -0.6207, -3.1048222, 1.6265312, 0.58976465)
+surface_material_override/0 = SubResource("StandardMaterial3D_wcpr6")
+
+[node name="Exterior front right door 4" parent="Honda CRV 2023" index="132" unique_id=367779971]
+surface_material_override/0 = SubResource("StandardMaterial3D_ndq4s")
+
+[node name="Exterior front right door 5" parent="Honda CRV 2023" index="133" unique_id=639071751]
+surface_material_override/0 = SubResource("StandardMaterial3D_mlpxp")
+
+[node name="Exterior rear right door 10" parent="Honda CRV 2023" index="144" unique_id=779617920]
+surface_material_override/0 = SubResource("StandardMaterial3D_ntir3")
+
+[node name="Exterior rear right door 07" parent="Honda CRV 2023" index="145" unique_id=2004340416]
+surface_material_override/0 = SubResource("StandardMaterial3D_0hic1")
+
+[editable path="Honda CRV 2023"]
