@@ -10,13 +10,13 @@ points = PackedVector3Array(3.4506707, 1.9248472, -1.2018315, -2.6793032, -0.078
 
 [node name="Car" type="Node3D" unique_id=1051294918]
 
-[node name="Sketchfab_Scene" parent="." unique_id=1764969273 instance=ExtResource("1_c35m8")]
+[node name="Kiri_86" parent="." unique_id=1764969273 instance=ExtResource("1_c35m8")]
 transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 0, 0, 0)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Sketchfab_Scene" unique_id=1204105961]
-transform = Transform3D(-0.389638, -9.632945e-15, -5.8833702e-08, -5.860265e-11, 0.38963783, 0.00038804402, 5.8833674e-08, 0.00038804402, -0.38963783, 0.5086952, 0.5595757, -0.8059211)
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1204105961]
+transform = Transform3D(-0.46756563, -1.1559534e-14, -7.060044e-08, -7.0323185e-11, 0.46756542, 0.00046565285, 7.0600414e-08, 0.00046565285, -0.46756542, 0.61043423, 0.67149085, -0.9671053)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Sketchfab_Scene/StaticBody3D" unique_id=828647893]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=828647893]
 shape = SubResource("ConvexPolygonShape3D_c35m8")
 
 [node name="DriverSeat" type="Marker3D" parent="." unique_id=1856888524]

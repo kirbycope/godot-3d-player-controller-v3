@@ -35,7 +35,6 @@
 [ext_resource type="Texture2D" uid="uid://b810kdta7g8wk" path="res://assets/quaternius/nature/preview.jpg" id="32_5q0nq"]
 [ext_resource type="PackedScene" uid="uid://d3o4cq6mgg8ni" path="res://scenes/tree_01.tscn" id="33_dgi5k"]
 [ext_resource type="PackedScene" uid="uid://brmnvx02xgur8" path="res://assets/BinbunVFX/magic_areas/effects/basic_area/basic_area_vfx_03.tscn" id="34_dgi5k"]
-[ext_resource type="PackedScene" uid="uid://couqdtvf7hr6b" path="res://scenes/car.tscn" id="36_kmb1v"]
 [ext_resource type="PackedScene" uid="uid://bwngmjoqsrtcx" path="res://scenes/crv.tscn" id="37_fuf3a"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
@@ -870,11 +869,8 @@ light_enable = false
 [node name="WarpPointB" type="Marker3D" parent="WarpArea" unique_id=311705794]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9, 3)
 
-[node name="Car" parent="." unique_id=1051294918 instance=ExtResource("36_kmb1v")]
-transform = Transform3D(0.49999997, 0, 0.8660254, 0, 1, 0, -0.8660254, 0, 0.49999997, 2, 0, 1)
-
 [node name="CRV" parent="." unique_id=751190287 instance=ExtResource("37_fuf3a")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, -0.005180657, -1)
 
 [connection signal="body_entered" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_entered"]
 [connection signal="body_exited" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_exited"]

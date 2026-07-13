@@ -1,172 +1,195 @@
 [gd_scene format=3 uid="uid://bwngmjoqsrtcx"]
 
 [ext_resource type="PackedScene" uid="uid://chns82fl7xumh" path="res://assets/cgtrader/honda_crv/Honda CRV 2023.fbx" id="1_kw0ot"]
+[ext_resource type="PackedScene" uid="uid://bnuhx6pjxygby" path="res://addons/3d_player_controller/assets/mixamo/characters/y_bot_root.glb" id="2_0r7jk"]
+[ext_resource type="PackedScene" uid="uid://bc4bacqrjokgp" path="res://scenes/wheel.tscn" id="2_m20il"]
+[ext_resource type="AnimationLibrary" uid="uid://dnsos1fdevv0t" path="res://addons/3d_player_controller/assets/mixamo/animations/root_motion/Driving.glb" id="3_m20il"]
+[ext_resource type="AnimationLibrary" uid="uid://hfmvc78vy0pd" path="res://addons/3d_player_controller/assets/mixamo/animations/root_motion/Entering Car.glb" id="4_ndq4s"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kw0ot"]
-resource_name = "black plastic"
-vertex_color_use_as_albedo = true
-albedo_color = Color(0.16618572, 0.16618572, 0.16618572, 0.023529412)
-roughness = 0.0
-emission_enabled = true
-emission = Color(0, 0, 0, 0)
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_lv70o"]
+points = PackedVector3Array(1.5927143, 0.6675866, 3.1609297, 1.4754472, 1.2534525, 1.4047761, -1.5682383, 0.7848079, 3.1609297, -0.7065927, -1.026907, 2.8761892, 1.0073068, -1.0883262, -0.3499103, 1.5927143, 1.0190098, -3.044293, -1.4724079, 0.9586757, -2.9692702, -0.9828308, -1.0883262, -0.3499103, 1.0764372, -0.48028046, 3.3612459, -1.4509711, 1.2534525, -1.4047761, 1.4754472, 0.08220209, -3.1609297, -1.4509711, -0.15151845, 3.5123072, -1.3340135, -0.15151845, -3.1609297, 1.5927143, -0.15151845, 2.1067975, 1.2412224, 0.6675866, 3.7470477, -0.8655637, 0.9017886, -3.7470477, -1.4509711, 1.2534525, 1.4047761, 0.53885716, -0.15151845, -3.3956704, 0.91862005, -0.989193, 2.6660569, -1.5682383, -0.15151845, 2.1067975, 1.1242646, 1.0190098, -3.6296773, 1.4754472, 1.2534525, -1.4047761, -1.4509711, 0.7848079, 3.5123072, -1.0997885, 1.0190098, -3.6296773, 1.0073068, 0.19918272, -3.6296773, -0.9828308, 0.19918272, -3.6296773, -0.88325304, -1.08251, 1.686038, 1.3584895, -0.2687398, -2.6929154, -1.2167463, 0.6675866, 3.7470477, 0.7966987, -1.0748086, 1.8827711, -1.4508018, 0.18616232, -2.8180883, -0.63164824, -0.15151845, -3.3956704)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lv70o"]
-resource_name = "glass"
-transparency = 1
-vertex_color_use_as_albedo = true
-albedo_color = Color(0.735357, 0.735357, 0.735357, 0.5)
-roughness = 0.0
-emission_enabled = true
-emission = Color(0, 0, 0, 0)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yjpfv"]
-resource_name = "glass"
-transparency = 1
-vertex_color_use_as_albedo = true
-albedo_color = Color(0.735357, 0.735357, 0.735357, 0.5)
-roughness = 0.0
-emission_enabled = true
-emission = Color(0, 0, 0, 0)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ndljn"]
-resource_name = "sheet metal"
-vertex_color_use_as_albedo = true
-albedo_color = Color(0.7529412, 0.7529412, 0.7529412, 1)
-metallic = 1.0
-roughness = 0.5
-emission_enabled = true
-emission = Color(0, 0, 0, 0)
-clearcoat_enabled = true
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0r7jk"]
-resource_name = "glass"
-transparency = 1
-vertex_color_use_as_albedo = true
-albedo_color = Color(0.735357, 0.735357, 0.735357, 0.5)
-roughness = 0.0
-emission_enabled = true
-emission = Color(0, 0, 0, 0)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w3dl6"]
-resource_name = "sheet metal"
-vertex_color_use_as_albedo = true
-albedo_color = Color(0.7529412, 0.7529412, 0.7529412, 1)
-metallic = 1.0
-roughness = 0.5
-emission_enabled = true
-emission = Color(0, 0, 0, 0)
-clearcoat_enabled = true
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ipdoc"]
-resource_name = "sheet metal"
-vertex_color_use_as_albedo = true
-albedo_color = Color(0.7529412, 0.7529412, 0.7529412, 1)
-metallic = 1.0
-roughness = 0.5
-emission_enabled = true
-emission = Color(0, 0, 0, 0)
-clearcoat_enabled = true
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_5pyta"]
+height = 0.3
+radius = 0.35
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m20il"]
-resource_name = "glass"
-transparency = 1
+resource_name = "black paint"
 vertex_color_use_as_albedo = true
-albedo_color = Color(0.735357, 0.735357, 0.735357, 0.5)
+albedo_color = Color(0.0498401, 0.0498401, 0.0498401, 0.003921569)
 roughness = 0.0
 emission_enabled = true
 emission = Color(0, 0, 0, 0)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wcpr6"]
-resource_name = "sheet metal"
-vertex_color_use_as_albedo = true
-albedo_color = Color(0.7529412, 0.7529412, 0.7529412, 1)
-metallic = 1.0
-roughness = 0.5
-emission_enabled = true
-emission = Color(0, 0, 0, 0)
-clearcoat_enabled = true
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ndq4s"]
-resource_name = "glass"
-transparency = 1
-vertex_color_use_as_albedo = true
-albedo_color = Color(0.735357, 0.735357, 0.735357, 0.5)
-roughness = 0.0
-emission_enabled = true
-emission = Color(0, 0, 0, 0)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mlpxp"]
-resource_name = "sheet metal"
-vertex_color_use_as_albedo = true
-albedo_color = Color(0.7529412, 0.7529412, 0.7529412, 1)
-metallic = 1.0
-roughness = 0.5
-emission_enabled = true
-emission = Color(0, 0, 0, 0)
-clearcoat_enabled = true
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ntir3"]
-resource_name = "sheet metal"
-vertex_color_use_as_albedo = true
-albedo_color = Color(0.7529412, 0.7529412, 0.7529412, 1)
-metallic = 1.0
-roughness = 0.5
-emission_enabled = true
-emission = Color(0, 0, 0, 0)
-clearcoat_enabled = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0hic1"]
-resource_name = "glass"
-transparency = 1
-vertex_color_use_as_albedo = true
-albedo_color = Color(0.735357, 0.735357, 0.735357, 0.5)
+transparency = 4
+cull_mode = 2
+depth_draw_mode = 1
+albedo_color = Color(0.23137255, 0.23137255, 0.23137255, 0.7294118)
 roughness = 0.0
-emission_enabled = true
-emission = Color(0, 0, 0, 0)
 
-[node name="CRV" type="Node3D" unique_id=751190287]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ndq4s"]
+albedo_color = Color(0.66656893, 0.66656864, 0.6665687, 1)
+metallic = 1.0
+roughness = 0.33
+clearcoat_enabled = true
 
-[node name="Honda CRV 2023" parent="." unique_id=76790143 instance=ExtResource("1_kw0ot")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.1, -0.7, 0)
+[node name="CRV" type="VehicleBody3D" unique_id=782070933]
+mass = 1800.0
 
-[node name="Interior screen " parent="Honda CRV 2023" index="22" unique_id=1536208888]
-surface_material_override/0 = SubResource("StandardMaterial3D_kw0ot")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1062841993]
+transform = Transform3D(0.6207, 0, 0, 0, -0.6207, -1.0112487e-07, 0, 1.0112487e-07, -0.6207, -0.0048220158, 0.95953125, 0.58976465)
+shape = SubResource("ConvexPolygonShape3D_lv70o")
 
-[node name="Exterior glass " parent="Honda CRV 2023" index="40" unique_id=2080501461]
-surface_material_override/0 = SubResource("StandardMaterial3D_lv70o")
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="." unique_id=47296419]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0.78153324, 0.3481807, 1.9197016)
+shape = SubResource("CylinderShape3D_5pyta")
 
-[node name="Exterior trunk door\nExterior trunk door 04" parent="Honda CRV 2023" index="56" unique_id=1692154142]
-surface_material_override/0 = SubResource("StandardMaterial3D_yjpfv")
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="." unique_id=1173209748]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0.78153324, 0.3481807, -0.7855551)
+shape = SubResource("CylinderShape3D_5pyta")
 
-[node name="Exterior trunk door\nExterior trunk door 18" parent="Honda CRV 2023" index="58" unique_id=1214116690]
-surface_material_override/0 = SubResource("StandardMaterial3D_ndljn")
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="." unique_id=1563198752]
+transform = Transform3D(4.3711307e-08, 1, 2.2651086e-07, 0.99999994, -4.3711385e-08, 3.5762787e-07, -3.5762787e-07, -1.3496467e-07, 0.99999994, -0.8091178, 0.3481807, 1.9197016)
+shape = SubResource("CylinderShape3D_5pyta")
 
-[node name="Exterior rear left door 09" parent="Honda CRV 2023" index="71" unique_id=963220601]
-surface_material_override/0 = SubResource("StandardMaterial3D_0r7jk")
+[node name="CollisionShape3D5" type="CollisionShape3D" parent="." unique_id=1844551869]
+transform = Transform3D(4.3711307e-08, 1, 2.2651086e-07, 0.99999994, -4.3711385e-08, 3.5762787e-07, -3.5762787e-07, -1.3496467e-07, 0.99999994, -0.8091178, 0.3481807, -0.7855551)
+shape = SubResource("CylinderShape3D_5pyta")
 
-[node name="Exterior rear left door 10" parent="Honda CRV 2023" index="81" unique_id=180295292]
-surface_material_override/0 = SubResource("StandardMaterial3D_w3dl6")
+[node name="Honda CRV 2023" parent="." unique_id=726734700 instance=ExtResource("1_kw0ot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.1000001, -0.667, 0)
 
-[node name="Exterior front left door 11" parent="Honda CRV 2023" index="82" unique_id=237514586]
-surface_material_override/0 = SubResource("StandardMaterial3D_ipdoc")
-
-[node name="Exterior front left door 09" parent="Honda CRV 2023" index="83" unique_id=1479421584]
+[node name="Interior screen " parent="Honda CRV 2023" index="22" unique_id=1178811725]
 surface_material_override/0 = SubResource("StandardMaterial3D_m20il")
 
-[node name="Exterior body 00" parent="Honda CRV 2023" index="98" unique_id=667697743]
-transform = Transform3D(0.6207, 0, 0, 0, -0.6207, -1.0112486e-07, 0, 1.0112486e-07, -0.6207, -3.1048222, 1.6265312, 0.58976465)
-surface_material_override/0 = SubResource("StandardMaterial3D_wcpr6")
+[node name="Exterior glass " parent="Honda CRV 2023" index="40" unique_id=1997933503]
+surface_material_override/0 = SubResource("StandardMaterial3D_0hic1")
 
-[node name="Exterior front right door 4" parent="Honda CRV 2023" index="132" unique_id=367779971]
+[node name="Exterior trunk door\nExterior trunk door 00" parent="Honda CRV 2023" index="52" unique_id=1214740821]
+visible = false
+
+[node name="Exterior trunk door\nExterior trunk door 04" parent="Honda CRV 2023" index="56" unique_id=1635230606]
+surface_material_override/0 = SubResource("StandardMaterial3D_0hic1")
+
+[node name="Exterior trunk door\nExterior trunk door 18" parent="Honda CRV 2023" index="58" unique_id=1341419139]
 surface_material_override/0 = SubResource("StandardMaterial3D_ndq4s")
 
-[node name="Exterior front right door 5" parent="Honda CRV 2023" index="133" unique_id=639071751]
-surface_material_override/0 = SubResource("StandardMaterial3D_mlpxp")
-
-[node name="Exterior rear right door 10" parent="Honda CRV 2023" index="144" unique_id=779617920]
-surface_material_override/0 = SubResource("StandardMaterial3D_ntir3")
-
-[node name="Exterior rear right door 07" parent="Honda CRV 2023" index="145" unique_id=2004340416]
+[node name="Exterior rear left door 09" parent="Honda CRV 2023" index="71" unique_id=1152032469]
 surface_material_override/0 = SubResource("StandardMaterial3D_0hic1")
+
+[node name="Exterior rear left door 10" parent="Honda CRV 2023" index="81" unique_id=1243724505]
+surface_material_override/0 = SubResource("StandardMaterial3D_ndq4s")
+
+[node name="Exterior front left door 11" parent="Honda CRV 2023" index="82" unique_id=711940058]
+surface_material_override/0 = SubResource("StandardMaterial3D_ndq4s")
+
+[node name="Exterior front left door 09" parent="Honda CRV 2023" index="83" unique_id=608645528]
+surface_material_override/0 = SubResource("StandardMaterial3D_0hic1")
+
+[node name="Exterior body 00" parent="Honda CRV 2023" index="98" unique_id=1430081457]
+surface_material_override/0 = SubResource("StandardMaterial3D_ndq4s")
+
+[node name="Exterior rims 2-04" parent="Honda CRV 2023" index="100" unique_id=1446309422]
+visible = false
+
+[node name="Exterior rims 2-03" parent="Honda CRV 2023" index="101" unique_id=412758939]
+visible = false
+
+[node name="Exterior rims 2-05" parent="Honda CRV 2023" index="103" unique_id=194962613]
+visible = false
+
+[node name="Exterior Tires 00" parent="Honda CRV 2023" index="104" unique_id=572770779]
+visible = false
+
+[node name="Exterior rims 2-08" parent="Honda CRV 2023" index="108" unique_id=42756574]
+visible = false
+
+[node name="Exterior Tires 02" parent="Honda CRV 2023" index="110" unique_id=117256523]
+visible = false
+
+[node name="Exterior rims 2-07" parent="Honda CRV 2023" index="111" unique_id=1979157304]
+visible = false
+
+[node name="Exterior rims 2-06" parent="Honda CRV 2023" index="113" unique_id=1174115226]
+visible = false
+
+[node name="Exterior Tires 01" parent="Honda CRV 2023" index="120" unique_id=1434331827]
+visible = false
+
+[node name="Exterior Tires 03" parent="Honda CRV 2023" index="121" unique_id=1545211519]
+visible = false
+
+[node name="Exterior rims 2-09" parent="Honda CRV 2023" index="124" unique_id=1278461547]
+visible = false
+
+[node name="Exterior rims 2-01" parent="Honda CRV 2023" index="126" unique_id=26007627]
+visible = false
+
+[node name="Exterior rims 2-10" parent="Honda CRV 2023" index="127" unique_id=510920857]
+visible = false
+
+[node name="Exterior front right door 4" parent="Honda CRV 2023" index="132" unique_id=1201466667]
+surface_material_override/0 = SubResource("StandardMaterial3D_0hic1")
+
+[node name="Exterior front right door 5" parent="Honda CRV 2023" index="133" unique_id=81361797]
+surface_material_override/0 = SubResource("StandardMaterial3D_ndq4s")
+
+[node name="Exterior rear right door 10" parent="Honda CRV 2023" index="144" unique_id=843132135]
+surface_material_override/0 = SubResource("StandardMaterial3D_ndq4s")
+
+[node name="Exterior rear right door 07" parent="Honda CRV 2023" index="145" unique_id=73416350]
+surface_material_override/0 = SubResource("StandardMaterial3D_0hic1")
+
+[node name="VehicleWheel3D" type="VehicleWheel3D" parent="." unique_id=1019656121]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.78153324, 0.3481807, 1.9197016)
+use_as_traction = true
+use_as_steering = true
+wheel_radius = 0.35
+
+[node name="Wheel" parent="VehicleWheel3D" unique_id=644236510 instance=ExtResource("2_m20il")]
+
+[node name="VehicleWheel3D2" type="VehicleWheel3D" parent="." unique_id=731199951]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.78153324, 0.3481807, -0.7855551)
+use_as_traction = true
+wheel_radius = 0.35
+
+[node name="Wheel2" parent="VehicleWheel3D2" unique_id=526074727 instance=ExtResource("2_m20il")]
+
+[node name="VehicleWheel3D3" type="VehicleWheel3D" parent="." unique_id=583914633]
+transform = Transform3D(-1, -8.1006606e-14, 2.2651086e-07, -3.3881318e-21, 0.99999994, 3.5762787e-07, 1.3496468e-07, -3.5762787e-07, 0.99999994, -0.8091178, 0.3481807, 1.9197016)
+use_as_traction = true
+use_as_steering = true
+wheel_radius = 0.35
+
+[node name="Wheel3" parent="VehicleWheel3D3" unique_id=2126871419 instance=ExtResource("2_m20il")]
+transform = Transform3D(1, 6.7762636e-21, 0, -3.3881318e-21, 0.99999994, -2.842171e-14, 0, 2.842171e-14, 0.99999994, 0, 0, 0)
+
+[node name="VehicleWheel3D4" type="VehicleWheel3D" parent="." unique_id=1548428860]
+transform = Transform3D(-1, -8.1006606e-14, 2.2651086e-07, -3.3881318e-21, 0.99999994, 3.5762787e-07, 1.3496468e-07, -3.5762787e-07, 0.99999994, -0.8091178, 0.3481807, -0.7855551)
+use_as_traction = true
+wheel_radius = 0.35
+
+[node name="Wheel4" parent="VehicleWheel3D4" unique_id=371635061 instance=ExtResource("2_m20il")]
+transform = Transform3D(1, 6.7762636e-21, 0, -3.3881318e-21, 0.99999994, -2.842171e-14, 0, 2.842171e-14, 0.99999994, 0, 0, 0)
+
+[node name="DriverSeat" type="Marker3D" parent="." unique_id=1951315047]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4625001, 0.050000004, 0.6374999)
+
+[node name="y_bot_root" parent="DriverSeat" unique_id=982613326 instance=ExtResource("2_0r7jk")]
+transform = Transform3D(1, 0, -3.5527137e-15, 0, 1, 1.1647053e-22, 0, 0, 1, 0, 0, 0)
+
+[node name="AnimationPlayer2" type="AnimationPlayer" parent="DriverSeat/y_bot_root" unique_id=522729675]
+libraries/Driving = ExtResource("3_m20il")
+autoplay = &"Driving/mixamo_com"
+
+[node name="EnterCar" type="Marker3D" parent="." unique_id=1941856147]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 2.2375002, 7.450581e-09, 0.63750005)
+
+[node name="y_bot_root" parent="EnterCar" unique_id=1864618496 instance=ExtResource("2_0r7jk")]
+
+[node name="AnimationPlayer2" type="AnimationPlayer" parent="EnterCar/y_bot_root" unique_id=1068515422]
+"libraries/Entering Car" = ExtResource("4_ndq4s")
+autoplay = &"Entering Car/mixamo_com"
 
 [editable path="Honda CRV 2023"]
