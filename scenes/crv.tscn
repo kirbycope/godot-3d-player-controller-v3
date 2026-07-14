@@ -34,6 +34,526 @@ metallic = 1.0
 roughness = 0.33
 clearcoat_enabled = true
 
+[sub_resource type="Animation" id="Animation_m20il"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Honda CRV 2023/Exterior front left door 11:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(1.5707964, 3.1415923, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Honda CRV 2023/Exterior front left door 09:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(1.5707964, 3.1415923, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Honda CRV 2023/Exterior front left door 03:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(1.5707964, 3.1415923, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Honda CRV 2023/Exterior front left door 04:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(1.5707964, 3.1415923, 0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Honda CRV 2023/Exterior front left door 05:rotation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(1.5707964, 3.1415923, 0)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Honda CRV 2023/Exterior front left door 06:rotation")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(1.5707964, 3.1415923, 0)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Honda CRV 2023/Exterior front left door 12:rotation")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(1.5707964, 3.1415923, 0)]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Honda CRV 2023/Exterior front left door 13:rotation")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(1.5707964, 3.1415923, 0)]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("Honda CRV 2023/Exterior front left door 08:rotation")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(1.5707964, 3.1415923, 0)]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("Honda CRV 2023/Exterior front left door 02:rotation")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(1.5707964, 3.1415923, 0)]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("Honda CRV 2023/Exterior front left door 10:rotation")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(1.5707964, 3.1415923, 0)]
+}
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("Honda CRV 2023/Exterior front left door 01:rotation")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(1.5707964, 3.1415923, 0)]
+}
+tracks/12/type = "value"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("Honda CRV 2023/Exterior front left door 07:rotation")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(1.5707964, 3.1415923, 0)]
+}
+tracks/13/type = "value"
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/path = NodePath("Honda CRV 2023/Exterior front left door 14:rotation")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(-1.5620754, -1.5707603, 1.57081)]
+}
+
+[sub_resource type="Animation" id="Animation_0hic1"]
+resource_name = "close"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Honda CRV 2023/Exterior front left door 14:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(-1.5620754, -2.6179578, 1.57081), Vector3(-1.5620754, -1.5707603, 1.57081)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Honda CRV 2023/Exterior front left door 11:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(1.5707964, 2.0943947, 0), Vector3(1.5707964, 3.1415923, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Honda CRV 2023/Exterior front left door 09:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(1.5707964, 2.0943947, 0), Vector3(1.5707964, 3.1415923, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Honda CRV 2023/Exterior front left door 03:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(1.5707964, 2.0943947, 0), Vector3(1.5707964, 3.1415923, 0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Honda CRV 2023/Exterior front left door 04:rotation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(1.5707964, 2.0943947, 0), Vector3(1.5707964, 3.1415923, 0)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Honda CRV 2023/Exterior front left door 05:rotation")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(1.5707964, 2.0943947, 0), Vector3(1.5707964, 3.1415923, 0)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Honda CRV 2023/Exterior front left door 06:rotation")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(1.5707964, 2.0943947, 0), Vector3(1.5707964, 3.1415923, 0)]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Honda CRV 2023/Exterior front left door 12:rotation")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(1.5707964, 2.0943947, 0), Vector3(1.5707964, 3.1415923, 0)]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("Honda CRV 2023/Exterior front left door 13:rotation")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(1.5707964, 2.0943947, 0), Vector3(1.5707964, 3.1415923, 0)]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("Honda CRV 2023/Exterior front left door 08:rotation")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(1.5707964, 2.0943947, 0), Vector3(1.5707964, 3.1415923, 0)]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("Honda CRV 2023/Exterior front left door 02:rotation")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(1.5707964, 2.0943947, 0), Vector3(1.5707964, 3.1415923, 0)]
+}
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("Honda CRV 2023/Exterior front left door 10:rotation")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(1.5707964, 2.0943947, 0), Vector3(1.5707964, 3.1415923, 0)]
+}
+tracks/12/type = "value"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("Honda CRV 2023/Exterior front left door 01:rotation")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(1.5707964, 2.0943947, 0), Vector3(1.5707964, 3.1415923, 0)]
+}
+tracks/13/type = "value"
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/path = NodePath("Honda CRV 2023/Exterior front left door 07:rotation")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(1.5707964, 2.0943947, 0), Vector3(1.5707964, 3.1415923, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_ndq4s"]
+resource_name = "open"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Honda CRV 2023/Exterior front left door 11:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(1.5707964, 3.1415923, 0), Vector3(1.5707964, 2.0943947, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Honda CRV 2023/Exterior front left door 09:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(1.5707964, 3.1415923, 0), Vector3(1.5707964, 2.0943947, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Honda CRV 2023/Exterior front left door 03:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(1.5707964, 3.1415923, 0), Vector3(1.5707964, 2.0943947, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Honda CRV 2023/Exterior front left door 04:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(1.5707964, 3.1415923, 0), Vector3(1.5707964, 2.0943947, 0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Honda CRV 2023/Exterior front left door 05:rotation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(1.5707964, 3.1415923, 0), Vector3(1.5707964, 2.0943947, 0)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Honda CRV 2023/Exterior front left door 06:rotation")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(1.5707964, 3.1415923, 0), Vector3(1.5707964, 2.0943947, 0)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Honda CRV 2023/Exterior front left door 12:rotation")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(1.5707964, 3.1415923, 0), Vector3(1.5707964, 2.0943947, 0)]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Honda CRV 2023/Exterior front left door 13:rotation")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(1.5707964, 3.1415923, 0), Vector3(1.5707964, 2.0943947, 0)]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("Honda CRV 2023/Exterior front left door 08:rotation")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(1.5707964, 3.1415923, 0), Vector3(1.5707964, 2.0943947, 0)]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("Honda CRV 2023/Exterior front left door 02:rotation")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(1.5707964, 3.1415923, 0), Vector3(1.5707964, 2.0943947, 0)]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("Honda CRV 2023/Exterior front left door 10:rotation")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(1.5707964, 3.1415923, 0), Vector3(1.5707964, 2.0943947, 0)]
+}
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("Honda CRV 2023/Exterior front left door 01:rotation")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(1.5707964, 3.1415923, 0), Vector3(1.5707964, 2.0943947, 0)]
+}
+tracks/12/type = "value"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("Honda CRV 2023/Exterior front left door 07:rotation")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(1.5707964, 3.1415923, 0), Vector3(1.5707964, 2.0943947, 0)]
+}
+tracks/13/type = "value"
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/path = NodePath("Honda CRV 2023/Exterior front left door 14:rotation")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(-1.5620754, -1.5707603, 1.57081), Vector3(-1.5620754, -2.6179578, 1.5708101)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_0hic1"]
+_data = {
+&"RESET": SubResource("Animation_m20il"),
+&"close": SubResource("Animation_0hic1"),
+&"open": SubResource("Animation_ndq4s")
+}
+
 [node name="CRV" type="VehicleBody3D" unique_id=782070933]
 mass = 1800.0
 
@@ -82,10 +602,48 @@ surface_material_override/0 = SubResource("StandardMaterial3D_0hic1")
 surface_material_override/0 = SubResource("StandardMaterial3D_ndq4s")
 
 [node name="Exterior front left door 11" parent="Honda CRV 2023" index="82" unique_id=711940058]
+transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
 surface_material_override/0 = SubResource("StandardMaterial3D_ndq4s")
 
 [node name="Exterior front left door 09" parent="Honda CRV 2023" index="83" unique_id=608645528]
+transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
 surface_material_override/0 = SubResource("StandardMaterial3D_0hic1")
+
+[node name="Exterior front left door 03" parent="Honda CRV 2023" index="84" unique_id=1164817085]
+transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
+
+[node name="Exterior front left door 04" parent="Honda CRV 2023" index="85" unique_id=572861021]
+transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
+
+[node name="Exterior front left door 05" parent="Honda CRV 2023" index="86" unique_id=1614726935]
+transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
+
+[node name="Exterior front left door 06" parent="Honda CRV 2023" index="87" unique_id=262935329]
+transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
+
+[node name="Exterior front left door 12" parent="Honda CRV 2023" index="88" unique_id=825404856]
+transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
+
+[node name="Exterior front left door 13" parent="Honda CRV 2023" index="89" unique_id=381596006]
+transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
+
+[node name="Exterior front left door 08" parent="Honda CRV 2023" index="90" unique_id=282543746]
+transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
+
+[node name="Exterior front left door 02" parent="Honda CRV 2023" index="91" unique_id=1051485761]
+transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627593, 1.4001321)
+
+[node name="Exterior front left door 10" parent="Honda CRV 2023" index="92" unique_id=598383480]
+transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
+
+[node name="Exterior front left door 01" parent="Honda CRV 2023" index="93" unique_id=1260411441]
+transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
+
+[node name="Exterior front left door 07" parent="Honda CRV 2023" index="94" unique_id=2104101474]
+transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
+
+[node name="Exterior front left door 14" parent="Honda CRV 2023" index="95" unique_id=1335500466]
+transform = Transform3D(-100.073555, 0.004974824, 0.8727589, -0.8727586, 1.1898822e-05, -100.07359, 0.004974736, 100.077415, -3.1486266e-05, -2.209314, 1.4627593, 1.4001317)
 
 [node name="Exterior body 00" parent="Honda CRV 2023" index="98" unique_id=1430081457]
 surface_material_override/0 = SubResource("StandardMaterial3D_ndq4s")
@@ -191,5 +749,8 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 2.23
 [node name="AnimationPlayer2" type="AnimationPlayer" parent="EnterCar/y_bot_root" unique_id=1068515422]
 "libraries/Entering Car" = ExtResource("4_ndq4s")
 autoplay = &"Entering Car/mixamo_com"
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=522645306]
+libraries/ = SubResource("AnimationLibrary_0hic1")
 
 [editable path="Honda CRV 2023"]
