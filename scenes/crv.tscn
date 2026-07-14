@@ -1,10 +1,12 @@
 [gd_scene format=3 uid="uid://bwngmjoqsrtcx"]
 
 [ext_resource type="PackedScene" uid="uid://chns82fl7xumh" path="res://assets/cgtrader/honda_crv/Honda CRV 2023.fbx" id="1_kw0ot"]
+[ext_resource type="Script" uid="uid://ppx5neyn7vl3" path="res://scenes/crv.gd" id="1_ndq4s"]
 [ext_resource type="PackedScene" uid="uid://bnuhx6pjxygby" path="res://addons/3d_player_controller/assets/mixamo/characters/y_bot_root.glb" id="2_0r7jk"]
 [ext_resource type="PackedScene" uid="uid://bc4bacqrjokgp" path="res://scenes/wheel.tscn" id="2_m20il"]
 [ext_resource type="AnimationLibrary" uid="uid://dnsos1fdevv0t" path="res://addons/3d_player_controller/assets/mixamo/animations/root_motion/Driving.glb" id="3_m20il"]
 [ext_resource type="AnimationLibrary" uid="uid://hfmvc78vy0pd" path="res://addons/3d_player_controller/assets/mixamo/animations/root_motion/Entering Car.glb" id="4_ndq4s"]
+[ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://scenes/action_prompt.tscn" id="7_0hic1"]
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_lv70o"]
 points = PackedVector3Array(1.5927143, 0.6675866, 3.1609297, 1.4754472, 1.2534525, 1.4047761, -1.5682383, 0.7848079, 3.1609297, -0.7065927, -1.026907, 2.8761892, 1.0073068, -1.0883262, -0.3499103, 1.5927143, 1.0190098, -3.044293, -1.4724079, 0.9586757, -2.9692702, -0.9828308, -1.0883262, -0.3499103, 1.0764372, -0.48028046, 3.3612459, -1.4509711, 1.2534525, -1.4047761, 1.4754472, 0.08220209, -3.1609297, -1.4509711, -0.15151845, 3.5123072, -1.3340135, -0.15151845, -3.1609297, 1.5927143, -0.15151845, 2.1067975, 1.2412224, 0.6675866, 3.7470477, -0.8655637, 0.9017886, -3.7470477, -1.4509711, 1.2534525, 1.4047761, 0.53885716, -0.15151845, -3.3956704, 0.91862005, -0.989193, 2.6660569, -1.5682383, -0.15151845, 2.1067975, 1.1242646, 1.0190098, -3.6296773, 1.4754472, 1.2534525, -1.4047761, -1.4509711, 0.7848079, 3.5123072, -1.0997885, 1.0190098, -3.6296773, 1.0073068, 0.19918272, -3.6296773, -0.9828308, 0.19918272, -3.6296773, -0.88325304, -1.08251, 1.686038, 1.3584895, -0.2687398, -2.6929154, -1.2167463, 0.6675866, 3.7470477, 0.7966987, -1.0748086, 1.8827711, -1.4508018, 0.18616232, -2.8180883, -0.63164824, -0.15151845, -3.3956704)
@@ -556,6 +558,7 @@ _data = {
 
 [node name="CRV" type="VehicleBody3D" unique_id=782070933]
 mass = 1800.0
+script = ExtResource("1_ndq4s")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1062841993]
 transform = Transform3D(0.6207, 0, 0, 0, -0.6207, -1.0112487e-07, 0, 1.0112487e-07, -0.6207, -0.0048220158, 0.95953125, 0.58976465)
@@ -752,5 +755,10 @@ autoplay = &"Entering Car/mixamo_com"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=522645306]
 libraries/ = SubResource("AnimationLibrary_0hic1")
+
+[node name="ActionPrompt" parent="." unique_id=1664152999 instance=ExtResource("7_0hic1")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 1.8000001, 0)
+visible = false
+message_end = " to drive car"
 
 [editable path="Honda CRV 2023"]
