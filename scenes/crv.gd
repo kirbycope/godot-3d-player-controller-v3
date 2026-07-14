@@ -13,8 +13,10 @@ func _input(event: InputEvent) -> void:
 
 	if player:
 		if event.is_action_pressed("action"):
-			if menu_displayed:
-				print("Start driving")
+			if menu_displayed \
+			and not player.is_driving:
+				player.is_driving_in = self
+				player.state_machine.travel(player.current_state, NodeStateMachine.States.DRIVING)
 
 
 func display_menu(_player: Player) -> void:
@@ -40,5 +42,7 @@ func display_menu(_player: Player) -> void:
 func hide_menu() -> void:
 	if action_prompt:
 		action_prompt.hide()
+	if player:
+		player.is_driving_in = null
+		player = null
 	menu_displayed = false
-	player = null
