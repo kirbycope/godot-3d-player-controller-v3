@@ -735,7 +735,7 @@ wheel_radius = 0.35
 transform = Transform3D(1, 6.7762636e-21, 0, -3.3881318e-21, 0.99999994, -2.842171e-14, 0, 2.842171e-14, 0.99999994, 0, 0, 0)
 
 [node name="DriverSeat" type="Marker3D" parent="." unique_id=1951315047]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4625001, 0.050000004, 0.6374999)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.465, 0.05, 0.65)
 
 [node name="y_bot_root" parent="DriverSeat" unique_id=982613326 instance=ExtResource("2_0r7jk")]
 process_mode = 4

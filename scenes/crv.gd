@@ -16,16 +16,12 @@ func _input(event: InputEvent) -> void:
 			if menu_displayed \
 			and not player.is_driving:
 				player.is_driving_in = self
-				player.global_transform = $EnterCar.global_transform
-				player.player_model.global_transform = $EnterCar.global_transform
-
-				# Sync root-motion frame of reference to current player model basis.
-				player.orientation = player.player_model.global_transform
-				player.orientation.origin = Vector3.ZERO
-				player.root_motion = Transform3D.IDENTITY
-				player.velocity = Vector3.ZERO
-				player.set_velocity(player.velocity)
-
+				var enter_car = $EnterCar
+				if enter_car:
+					player.global_position = enter_car.global_position
+					player.orientation = enter_car.global_transform
+					player.orientation.origin = Vector3.ZERO
+					player.player_model.global_transform = enter_car.global_transform
 				player.state_machine.travel(player.current_state, NodeStateMachine.States.DRIVING)
 
 
