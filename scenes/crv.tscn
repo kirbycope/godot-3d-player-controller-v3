@@ -738,6 +738,7 @@ transform = Transform3D(1, 6.7762636e-21, 0, -3.3881318e-21, 0.99999994, -2.8421
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4625001, 0.050000004, 0.6374999)
 
 [node name="y_bot_root" parent="DriverSeat" unique_id=982613326 instance=ExtResource("2_0r7jk")]
+process_mode = 4
 transform = Transform3D(1, 0, -3.5527137e-15, 0, 1, 1.1647053e-22, 0, 0, 1, 0, 0, 0)
 visible = false
 
@@ -749,6 +750,7 @@ autoplay = &"Driving/mixamo_com"
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 2.2375002, 7.450581e-09, 0.63750005)
 
 [node name="y_bot_root" parent="EnterCar" unique_id=1864618496 instance=ExtResource("2_0r7jk")]
+process_mode = 4
 visible = false
 
 [node name="AnimationPlayer2" type="AnimationPlayer" parent="EnterCar/y_bot_root" unique_id=1068515422]

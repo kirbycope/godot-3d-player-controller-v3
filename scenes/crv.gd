@@ -16,6 +16,16 @@ func _input(event: InputEvent) -> void:
 			if menu_displayed \
 			and not player.is_driving:
 				player.is_driving_in = self
+				player.global_transform = $EnterCar.global_transform
+				player.player_model.global_transform = $EnterCar.global_transform
+
+				# Sync root-motion frame of reference to current player model basis.
+				player.orientation = player.player_model.global_transform
+				player.orientation.origin = Vector3.ZERO
+				player.root_motion = Transform3D.IDENTITY
+				player.velocity = Vector3.ZERO
+				player.set_velocity(player.velocity)
+
 				player.state_machine.travel(player.current_state, NodeStateMachine.States.DRIVING)
 
 
@@ -43,6 +53,5 @@ func hide_menu() -> void:
 	if action_prompt:
 		action_prompt.hide()
 	if player:
-		player.is_driving_in = null
 		player = null
 	menu_displayed = false
