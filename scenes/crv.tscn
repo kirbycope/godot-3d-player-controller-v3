@@ -3,17 +3,13 @@
 [ext_resource type="PackedScene" uid="uid://chns82fl7xumh" path="res://assets/cgtrader/honda_crv/Honda CRV 2023.fbx" id="1_kw0ot"]
 [ext_resource type="Script" uid="uid://ppx5neyn7vl3" path="res://scenes/crv.gd" id="1_ndq4s"]
 [ext_resource type="PackedScene" uid="uid://bnuhx6pjxygby" path="res://addons/3d_player_controller/assets/mixamo/characters/y_bot_root.glb" id="2_0r7jk"]
-[ext_resource type="PackedScene" uid="uid://bc4bacqrjokgp" path="res://scenes/wheel.tscn" id="2_m20il"]
+[ext_resource type="PackedScene" uid="uid://bc4bacqrjokgp" path="res://assets/cgtrader/honda_crv/wheel.tscn" id="3_0hic1"]
 [ext_resource type="AnimationLibrary" uid="uid://dnsos1fdevv0t" path="res://addons/3d_player_controller/assets/mixamo/animations/root_motion/Driving.glb" id="3_m20il"]
 [ext_resource type="AnimationLibrary" uid="uid://hfmvc78vy0pd" path="res://addons/3d_player_controller/assets/mixamo/animations/root_motion/Entering Car.glb" id="4_ndq4s"]
 [ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://scenes/action_prompt.tscn" id="7_0hic1"]
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_lv70o"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_0hic1"]
 points = PackedVector3Array(1.5927143, 0.6675866, 3.1609297, 1.4754472, 1.2534525, 1.4047761, -1.5682383, 0.7848079, 3.1609297, -0.7065927, -1.026907, 2.8761892, 1.0073068, -1.0883262, -0.3499103, 1.5927143, 1.0190098, -3.044293, -1.4724079, 0.9586757, -2.9692702, -0.9828308, -1.0883262, -0.3499103, 1.0764372, -0.48028046, 3.3612459, -1.4509711, 1.2534525, -1.4047761, 1.4754472, 0.08220209, -3.1609297, -1.4509711, -0.15151845, 3.5123072, -1.3340135, -0.15151845, -3.1609297, 1.5927143, -0.15151845, 2.1067975, 1.2412224, 0.6675866, 3.7470477, -0.8655637, 0.9017886, -3.7470477, -1.4509711, 1.2534525, 1.4047761, 0.53885716, -0.15151845, -3.3956704, 0.91862005, -0.989193, 2.6660569, -1.5682383, -0.15151845, 2.1067975, 1.1242646, 1.0190098, -3.6296773, 1.4754472, 1.2534525, -1.4047761, -1.4509711, 0.7848079, 3.5123072, -1.0997885, 1.0190098, -3.6296773, 1.0073068, 0.19918272, -3.6296773, -0.9828308, 0.19918272, -3.6296773, -0.88325304, -1.08251, 1.686038, 1.3584895, -0.2687398, -2.6929154, -1.2167463, 0.6675866, 3.7470477, 0.7966987, -1.0748086, 1.8827711, -1.4508018, 0.18616232, -2.8180883, -0.63164824, -0.15151845, -3.3956704)
-
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_5pyta"]
-height = 0.3
-radius = 0.35
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m20il"]
 resource_name = "black paint"
@@ -557,28 +553,11 @@ _data = {
 }
 
 [node name="CRV" type="VehicleBody3D" unique_id=782070933]
-mass = 1800.0
 script = ExtResource("1_ndq4s")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1062841993]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1739860576]
 transform = Transform3D(0.6207, 0, 0, 0, -0.6207, -1.0112487e-07, 0, 1.0112487e-07, -0.6207, -0.0048220158, 0.95953125, 0.58976465)
-shape = SubResource("ConvexPolygonShape3D_lv70o")
-
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="." unique_id=47296419]
-transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0.78153324, 0.3481807, 1.9197016)
-shape = SubResource("CylinderShape3D_5pyta")
-
-[node name="CollisionShape3D3" type="CollisionShape3D" parent="." unique_id=1173209748]
-transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0.78153324, 0.3481807, -0.7855551)
-shape = SubResource("CylinderShape3D_5pyta")
-
-[node name="CollisionShape3D4" type="CollisionShape3D" parent="." unique_id=1563198752]
-transform = Transform3D(4.3711307e-08, 1, 2.2651086e-07, 0.99999994, -4.3711385e-08, 3.5762787e-07, -3.5762787e-07, -1.3496467e-07, 0.99999994, -0.8091178, 0.3481807, 1.9197016)
-shape = SubResource("CylinderShape3D_5pyta")
-
-[node name="CollisionShape3D5" type="CollisionShape3D" parent="." unique_id=1844551869]
-transform = Transform3D(4.3711307e-08, 1, 2.2651086e-07, 0.99999994, -4.3711385e-08, 3.5762787e-07, -3.5762787e-07, -1.3496467e-07, 0.99999994, -0.8091178, 0.3481807, -0.7855551)
-shape = SubResource("CylinderShape3D_5pyta")
+shape = SubResource("ConvexPolygonShape3D_0hic1")
 
 [node name="Honda CRV 2023" parent="." unique_id=726734700 instance=ExtResource("1_kw0ot")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.1000001, -0.667, 0)
@@ -657,13 +636,25 @@ visible = false
 [node name="Exterior rims 2-03" parent="Honda CRV 2023" index="101" unique_id=412758939]
 visible = false
 
+[node name="Exterior brake 00" parent="Honda CRV 2023" index="102" unique_id=2102428216]
+visible = false
+
 [node name="Exterior rims 2-05" parent="Honda CRV 2023" index="103" unique_id=194962613]
 visible = false
 
 [node name="Exterior Tires 00" parent="Honda CRV 2023" index="104" unique_id=572770779]
 visible = false
 
+[node name="Exterior brake disc 00" parent="Honda CRV 2023" index="105" unique_id=230759815]
+visible = false
+
+[node name="Exterior brake 02" parent="Honda CRV 2023" index="107" unique_id=130072635]
+visible = false
+
 [node name="Exterior rims 2-08" parent="Honda CRV 2023" index="108" unique_id=42756574]
+visible = false
+
+[node name="Exterior brake disc 02" parent="Honda CRV 2023" index="109" unique_id=1146864549]
 visible = false
 
 [node name="Exterior Tires 02" parent="Honda CRV 2023" index="110" unique_id=117256523]
@@ -672,13 +663,37 @@ visible = false
 [node name="Exterior rims 2-07" parent="Honda CRV 2023" index="111" unique_id=1979157304]
 visible = false
 
+[node name="Exterior suspension 02" parent="Honda CRV 2023" index="112" unique_id=2017593725]
+visible = false
+
 [node name="Exterior rims 2-06" parent="Honda CRV 2023" index="113" unique_id=1174115226]
+visible = false
+
+[node name="Exterior brake 01" parent="Honda CRV 2023" index="114" unique_id=296751308]
+visible = false
+
+[node name="Exterior rims 2-02" parent="Honda CRV 2023" index="115" unique_id=622741312]
+visible = false
+
+[node name="Exterior brake disc 01" parent="Honda CRV 2023" index="116" unique_id=1970073456]
+visible = false
+
+[node name="Exterior brake 03" parent="Honda CRV 2023" index="117" unique_id=955131836]
+visible = false
+
+[node name="Exterior rims 2-11" parent="Honda CRV 2023" index="118" unique_id=168663094]
+visible = false
+
+[node name="Exterior brake disc 03" parent="Honda CRV 2023" index="119" unique_id=1540145103]
 visible = false
 
 [node name="Exterior Tires 01" parent="Honda CRV 2023" index="120" unique_id=1434331827]
 visible = false
 
 [node name="Exterior Tires 03" parent="Honda CRV 2023" index="121" unique_id=1545211519]
+visible = false
+
+[node name="Exterior rims 2-00" parent="Honda CRV 2023" index="122" unique_id=2004606520]
 visible = false
 
 [node name="Exterior rims 2-09" parent="Honda CRV 2023" index="124" unique_id=1278461547]
@@ -702,37 +717,37 @@ surface_material_override/0 = SubResource("StandardMaterial3D_ndq4s")
 [node name="Exterior rear right door 07" parent="Honda CRV 2023" index="145" unique_id=73416350]
 surface_material_override/0 = SubResource("StandardMaterial3D_0hic1")
 
-[node name="VehicleWheel3D" type="VehicleWheel3D" parent="." unique_id=1019656121]
+[node name="VehicleWheel3D" type="VehicleWheel3D" parent="." unique_id=538873441]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.78153324, 0.3481807, 1.9197016)
 use_as_traction = true
 use_as_steering = true
 wheel_radius = 0.35
 
-[node name="Wheel" parent="VehicleWheel3D" unique_id=644236510 instance=ExtResource("2_m20il")]
+[node name="Wheel" parent="VehicleWheel3D" unique_id=644236510 instance=ExtResource("3_0hic1")]
 
-[node name="VehicleWheel3D2" type="VehicleWheel3D" parent="." unique_id=731199951]
+[node name="VehicleWheel3D2" type="VehicleWheel3D" parent="." unique_id=1043972108]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.78153324, 0.3481807, -0.7855551)
 use_as_traction = true
 wheel_radius = 0.35
 
-[node name="Wheel2" parent="VehicleWheel3D2" unique_id=526074727 instance=ExtResource("2_m20il")]
+[node name="Wheel2" parent="VehicleWheel3D2" unique_id=340380773 instance=ExtResource("3_0hic1")]
 
-[node name="VehicleWheel3D3" type="VehicleWheel3D" parent="." unique_id=583914633]
-transform = Transform3D(-1, -8.1006606e-14, 2.2651086e-07, -3.3881318e-21, 0.99999994, 3.5762787e-07, 1.3496468e-07, -3.5762787e-07, 0.99999994, -0.8091178, 0.3481807, 1.9197016)
+[node name="VehicleWheel3D3" type="VehicleWheel3D" parent="." unique_id=1262723628]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8091178, 0.3481807, 1.9197016)
 use_as_traction = true
 use_as_steering = true
 wheel_radius = 0.35
 
-[node name="Wheel3" parent="VehicleWheel3D3" unique_id=2126871419 instance=ExtResource("2_m20il")]
-transform = Transform3D(1, 6.7762636e-21, 0, -3.3881318e-21, 0.99999994, -2.842171e-14, 0, 2.842171e-14, 0.99999994, 0, 0, 0)
+[node name="Wheel3" parent="VehicleWheel3D3" unique_id=33971342 instance=ExtResource("3_0hic1")]
+transform = Transform3D(-1, 0, 1.509958e-07, 0, 1, 0, -1.509958e-07, 0, -1, 0, 0, 0)
 
-[node name="VehicleWheel3D4" type="VehicleWheel3D" parent="." unique_id=1548428860]
-transform = Transform3D(-1, -8.1006606e-14, 2.2651086e-07, -3.3881318e-21, 0.99999994, 3.5762787e-07, 1.3496468e-07, -3.5762787e-07, 0.99999994, -0.8091178, 0.3481807, -0.7855551)
+[node name="VehicleWheel3D4" type="VehicleWheel3D" parent="." unique_id=1509261224]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8091178, 0.3481807, -0.7855551)
 use_as_traction = true
 wheel_radius = 0.35
 
-[node name="Wheel4" parent="VehicleWheel3D4" unique_id=371635061 instance=ExtResource("2_m20il")]
-transform = Transform3D(1, 6.7762636e-21, 0, -3.3881318e-21, 0.99999994, -2.842171e-14, 0, 2.842171e-14, 0.99999994, 0, 0, 0)
+[node name="Wheel4" parent="VehicleWheel3D4" unique_id=2114370817 instance=ExtResource("3_0hic1")]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 0)
 
 [node name="DriverSeat" type="Marker3D" parent="." unique_id=1951315047]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.465, 0.05, 0.65)
