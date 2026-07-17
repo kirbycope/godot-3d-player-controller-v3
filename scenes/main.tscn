@@ -36,6 +36,7 @@
 [ext_resource type="PackedScene" uid="uid://d3o4cq6mgg8ni" path="res://scenes/tree_01.tscn" id="33_dgi5k"]
 [ext_resource type="PackedScene" uid="uid://brmnvx02xgur8" path="res://assets/BinbunVFX/magic_areas/effects/basic_area/basic_area_vfx_03.tscn" id="34_dgi5k"]
 [ext_resource type="PackedScene" uid="uid://bwngmjoqsrtcx" path="res://scenes/crv.tscn" id="37_fuf3a"]
+[ext_resource type="PackedScene" uid="uid://drmvyehu4dq43" path="res://addons/3d_player_controller/assets/sketchfab/skateboard/skateboard.tscn" id="37_pibwh"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -881,6 +882,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9, 3)
 
 [node name="CRV" parent="." unique_id=751190287 instance=ExtResource("37_fuf3a")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 3, 0, -1)
+
+[node name="Skateboard" parent="." unique_id=1958283666 instance=ExtResource("37_pibwh")]
+transform = Transform3D(-3.5806274e-08, 2.5071824e-08, 1, 0.57357645, 0.81915206, 0, -0.81915206, 0.57357645, -4.371139e-08, 3, 0.8999999, 3)
 
 [connection signal="body_entered" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_entered"]
 [connection signal="body_exited" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_exited"]
