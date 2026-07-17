@@ -16,16 +16,6 @@ func _ready() -> void:
 	#player.is_skateboarding = true
 
 
-## Called when there is an input event.
-func _input(event: InputEvent) -> void:
-	if not $ClickToStart.visible:
-		return
-
-	if event is InputEventMouseButton or event is InputEventScreenTouch:
-		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-		$ClickToStart.visible = false
-
-
 ## Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(_delta: float) -> void:
 	if player:
