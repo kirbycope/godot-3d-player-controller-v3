@@ -21,6 +21,7 @@ signal verbose_enabled
 func _debug_ready():
 	_verbose = true
 
+## Called when the node enters the scene tree for the first time.
 func _ready():
 	update_detector = GutUtils.UpdateDetector.new()
 	add_child(update_detector)
@@ -35,7 +36,11 @@ func _ready():
 		_debug_ready()
 
 
+## Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	# Do nothing if not the authority
+	if not is_multiplayer_authority(): return
+
 	if(_mouse_down_duration < _mouse_down_time_to_show_verbose and _mouse_down):
 		_mouse_down_duration += delta
 		if(_mouse_down_duration >= _mouse_down_time_to_show_verbose):

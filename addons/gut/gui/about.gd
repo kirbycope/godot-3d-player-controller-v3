@@ -35,6 +35,7 @@ var _donate_link = "https://buymeacoffee.com/bitwes"
 @onready var rtl = $HBox/VBoxContainer/Scroll/RichTextLabel
 @onready var check_for_update = $HBox/VBoxContainer/CheckForUpdate
 
+## Called when the node enters the scene tree for the first time.
 func _ready():
 	if(get_parent() is SubViewport):
 		return

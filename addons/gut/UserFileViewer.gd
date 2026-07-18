@@ -11,6 +11,7 @@ func _get_file_as_text(path):
 		to_return = str('ERROR:  Could not open file.  Error code ', FileAccess.get_open_error())
 	return to_return
 
+## Called when the node enters the scene tree for the first time.
 func _ready():
 	rtl.clear()
 

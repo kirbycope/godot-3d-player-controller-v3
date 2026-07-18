@@ -13,6 +13,7 @@ var gut = null :
 		_set_gut(val)
 
 
+## Called when the node enters the scene tree for the first time.
 func _ready():
 	_normal_gui.switch_modes.connect(use_compact_mode.bind(true))
 	_compact_gui.switch_modes.connect(use_compact_mode.bind(false))

@@ -11,6 +11,7 @@
 ## Additional Rules:
   - Never assume use Vector3.UP for player.up_direction, use player.up direction instead.
     - Also, never assume positive Y is up, use player.up_direction instead.
+  - When writing GDScript, prefer explicit local variable type annotations over `:=` for any generated or edited code, especially for expressions involving math operators, `clamp()`, `min()`, `max()`, `lerp()`, `move_toward()`, `dot()`, `slide()`, node/property access, enum values, or function return values. After editing GDScript, check diagnostics for inference errors such as `Cannot infer the type of ... variable because the value doesn't have a set type` and fix them before finishing.
 
 ## Acknowledgment
 *   Before responding to any user request, you MUST acknowledge that you have read and understood the above instructions. You MUST also acknowledge that you will follow the rules and guidelines defined in the above files when writing code, designing systems, or implementing features for this project.

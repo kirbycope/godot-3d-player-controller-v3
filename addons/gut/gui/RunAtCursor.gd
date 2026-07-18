@@ -43,6 +43,7 @@ var menu_manager = null :
 signal run_tests(what)
 
 
+## Called when the node enters the scene tree for the first time.
 func _ready():
 	_ctrls.lbl_none.visible = true
 	_ctrls.btn_script.visible = false

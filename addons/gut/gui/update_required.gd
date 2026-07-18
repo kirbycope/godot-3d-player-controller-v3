@@ -6,6 +6,7 @@ var _check_for_update_ctrl = null
 
 signal closed
 
+## Called when the node enters the scene tree for the first time.
 func _ready():
 	add_cancel_button("Cancel Loading GUT")
 

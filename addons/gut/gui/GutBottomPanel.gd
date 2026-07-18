@@ -68,6 +68,7 @@ var menu_manager = null :
 @onready var make_floating_btn = %MakeFloating
 
 
+## Called when the node enters the scene tree for the first time.
 func _ready():
 	if(get_parent() is SubViewport):
 		return
@@ -108,7 +109,11 @@ func _ready():
 	results_vert_layout()
 
 
+## Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
+	# Do nothing if not the authority
+	if not is_multiplayer_authority(): return
+
 	if(_is_running):
 		if(_ctrls.run_externally_dialog.should_run_externally()):
 			if(!is_instance_valid(_shell_out_panel)):

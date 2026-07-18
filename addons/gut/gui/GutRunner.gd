@@ -48,6 +48,7 @@ var _ran_from_editor = false
 @onready var _gui = $GutLayer/GutScene
 
 
+## Called when the node enters the scene tree for the first time.
 func _ready():
 	GutUtils.WarningsManager.apply_warnings_dictionary(
 		GutUtils.warnings_at_start)

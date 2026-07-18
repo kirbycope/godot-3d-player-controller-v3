@@ -20,6 +20,7 @@ var _output_control = null
 	}
 }
 
+## Called when the node enters the scene tree for the first time.
 func _ready():
 	if(get_parent() is SubViewport):
 		return

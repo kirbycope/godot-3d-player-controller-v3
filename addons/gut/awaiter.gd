@@ -53,6 +53,7 @@ var did_last_wait_timeout = false :
 
 
 
+## Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	get_tree().process_frame.connect(_on_tree_process_frame)
 	get_tree().physics_frame.connect(_on_tree_physics_frame)
@@ -78,7 +79,11 @@ func _on_tree_physics_frame():
 			_end_wait()
 
 
+## Called every physics frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
+	# Do nothing if not the authority
+	if not is_multiplayer_authority(): return
+
 	if(is_waiting()):
 		await_logger.waited(delta)
 

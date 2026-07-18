@@ -45,6 +45,7 @@ class Eyeball:
 		sprite.visible = false
 
 
+	## Called when the node enters the scene tree for the first time.
 	func _ready():
 		_laser_timer = Timer.new()
 		_laser_timer.wait_time = .1
@@ -53,7 +54,11 @@ class Eyeball:
 		_laser_timer.timeout.connect(func():  _should_draw_laser = false)
 
 
+	## Called every frame. 'delta' is the elapsed time since the previous frame.
 	func _process(_delta):
+		# Do nothing if not the authority
+		if not is_multiplayer_authority(): return
+
 		if(_should_draw_laser):
 			queue_redraw()
 
@@ -153,6 +158,7 @@ func _debug_ready():
 	active = true
 
 
+## Called when the node enters the scene tree for the first time.
 func _ready():
 	_is_in_edited_scene = GutEditorGlobals.is_being_edited_in_editor(self)
 
@@ -166,7 +172,11 @@ func _ready():
 	_face_button.modulate.a = 0.0
 
 
+## Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
+	# Do nothing if not the authority
+	if not is_multiplayer_authority(): return
+
 	if(active and !disabled and !_is_in_edited_scene):
 		left_eye.look_at_local_position(get_local_mouse_position())
 		right_eye.look_at_local_position(get_local_mouse_position())

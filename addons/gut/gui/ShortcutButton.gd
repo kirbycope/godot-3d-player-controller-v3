@@ -24,6 +24,7 @@ var _editing = false
 var _modifier_keys = [KEY_ALT, KEY_CTRL, KEY_META, KEY_SHIFT]
 
 # Called when the node enters the scene tree for the first time.
+## Called when the node enters the scene tree for the first time.
 func _ready():
 	set_process_unhandled_key_input(false)
 

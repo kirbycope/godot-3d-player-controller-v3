@@ -16,8 +16,11 @@ func _ready() -> void:
 	#player.is_skateboarding = true
 
 
-## Called every frame. 'delta' is the elapsed time since the previous frame.
+## Called every physics frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(_delta: float) -> void:
+	# Do nothing if not the authority
+	if not is_multiplayer_authority(): return
+
 	if player:
 		# If we're below -40, respawn (teleport to the initial position).
 		if player.global_position.y < -40.0:

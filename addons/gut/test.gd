@@ -119,6 +119,7 @@ func _do_ready_stuff():
 	_was_ready_called = true
 
 
+## Called when the node enters the scene tree for the first time.
 func _ready():
 	_do_ready_stuff()
 

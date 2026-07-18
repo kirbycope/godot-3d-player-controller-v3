@@ -32,6 +32,7 @@ func _enter_tree() -> void:
 
 
 # Called when the node enters the scene tree for the first time.
+## Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	_cache_balloons()
 	_capture_initial_orbit()
@@ -42,7 +43,11 @@ func _ready() -> void:
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
+## Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	# Do nothing if not the authority
+	if not is_multiplayer_authority(): return
+
 	_refresh_balloons_if_needed()
 	if pause_when_editor_unfocused and Engine.is_editor_hint() and not DisplayServer.window_is_focused():
 		return

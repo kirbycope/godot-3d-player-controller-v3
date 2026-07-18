@@ -59,6 +59,7 @@ func _debug_ready():
 	run_tests()
 
 
+## Called when the node enters the scene tree for the first time.
 func _ready():
 	_escape_regex.compile("\\x1b\\[[0-9;]*m")
 	btn_kill_it.visible = false
@@ -68,7 +69,11 @@ func _ready():
 	bg_color = bg_color
 
 
+## Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
+	# Do nothing if not the authority
+	if not is_multiplayer_authority(): return
+
 	if(_pipe_results != {}):
 		if(!OS.is_process_running(_pipe_results.pid)):
 			_end_non_blocking()

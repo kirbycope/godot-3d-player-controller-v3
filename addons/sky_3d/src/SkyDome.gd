@@ -49,6 +49,7 @@ func _update_ambient_color() -> void:
 	environment.ambient_light_color = col
 
 
+## Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	set_process(false)
 	set_physics_process(false)
@@ -100,11 +101,19 @@ func _build_scene() -> void:
 #####################
 
 
+## Called every physics frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:
+	# Do nothing if not the authority
+	if not is_multiplayer_authority(): return
+
 	process_tick(delta)
 
 
+## Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	# Do nothing if not the authority
+	if not is_multiplayer_authority(): return
+
 	process_tick(delta)
 
 

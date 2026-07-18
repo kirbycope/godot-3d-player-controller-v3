@@ -294,6 +294,7 @@ func update_loggers():
 # ------------------------------------------------------------------------------
 # Initialize controls
 # ------------------------------------------------------------------------------
+## Called when the node enters the scene tree for the first time.
 func _ready():
 	if(_should_print_versions):
 		_lgr.log('---  GUT  ---')

@@ -121,6 +121,7 @@ func _test_running_setup():
 	_ctrls.output.caret_changed.connect(_on_caret_changed)
 
 
+## Called when the node enters the scene tree for the first time.
 func _ready():
 	if(get_parent() is SubViewport):
 		return

@@ -271,6 +271,7 @@ class DirectoryControl:
 		enabled_button.disabled = is_empty
 
 
+	## Called when the node enters the scene tree for the first time.
 	func _ready():
 		if(Engine.is_editor_hint()):
 			dialog.size = Vector2(1000, 700)
@@ -328,6 +329,7 @@ class FileDialogSuperPlus:
 	var _btn_user = null
 	var _btn_os = null
 
+	## Called when the node enters the scene tree for the first time.
 	func _ready():
 		_init_controls()
 		_update_display()
@@ -409,6 +411,7 @@ class SaveLoadControl:
 		add_child(dlg_save)
 
 
+	## Called when the node enters the scene tree for the first time.
 	func _ready():
 		if(Engine.is_editor_hint()):
 			dlg_load.size = Vector2(1000, 700)

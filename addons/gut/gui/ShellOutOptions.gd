@@ -96,6 +96,7 @@ func _debug_ready():
 	get_tree().root.add_child(show_btn)
 
 
+## Called when the node enters the scene tree for the first time.
 func _ready():
 	opt_maker = GutUtils.OptionMaker.new(_main_container)
 	_add_controls()

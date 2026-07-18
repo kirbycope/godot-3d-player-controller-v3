@@ -3,6 +3,7 @@ extends ColorRect
 @onready var project_rendering_method = ProjectSettings.get_setting("rendering/renderer/rendering_method")
 
 
+## Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	if project_rendering_method == "forward_plus":
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -15,7 +16,11 @@ func _ready() -> void:
 		show()
 
 
+## Called when there is an input event.
 func _input(event: InputEvent) -> void:
+	# Do nothing if not the authority
+	if not is_multiplayer_authority(): return
+
 	if (event is InputEventMouseButton and event.pressed) \
 	or (event is InputEventScreenTouch and event.pressed):
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED

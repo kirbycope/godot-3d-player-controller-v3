@@ -29,6 +29,7 @@ func _init() -> void:
 	_update_celestial_coords()
 
 
+## Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	dome_path = dome_path
 	

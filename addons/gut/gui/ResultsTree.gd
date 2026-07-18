@@ -48,6 +48,7 @@ func _debug_ready():
 	load_json_file('user://gut_temp_directory/gut_editor.json')
 
 
+## Called when the node enters the scene tree for the first time.
 func _ready():
 	_root = create_item()
 	set_hide_root(true)

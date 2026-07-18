@@ -46,6 +46,7 @@ var script_suffix = ".gd"
 signal it_changed(change_data)
 
 
+## Called when the node enters the scene tree for the first time.
 func _ready():
 	# This will not change, and should not change, over the course of a session.
 	_current_script_editor = EditorInterface.get_script_editor()

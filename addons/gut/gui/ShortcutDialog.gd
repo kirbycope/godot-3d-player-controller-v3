@@ -35,6 +35,7 @@ func _debug_ready():
 	size_changed.connect(func(): title = str(size))
 
 
+## Called when the node enters the scene tree for the first time.
 func _ready():
 	for scbtn in all_buttons:
 		scbtn.connect('start_edit', _on_edit_start.bind(scbtn))

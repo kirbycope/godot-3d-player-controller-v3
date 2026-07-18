@@ -36,6 +36,7 @@ signal switch_modes()
 
 var _max_position = Vector2(100, 100)
 
+## Called when the node enters the scene tree for the first time.
 func _ready():
 	_populate_ctrls()
 
@@ -55,7 +56,11 @@ func _ready():
 	_max_position = get_display_size() - Vector2(30, _ctrls.title_bar.size.y)
 
 
+## Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
+	# Do nothing if not the authority
+	if not is_multiplayer_authority(): return
+
 	if(_gut != null and _gut.is_running()):
 		set_elapsed_time(_gut.get_elapsed_time())
 

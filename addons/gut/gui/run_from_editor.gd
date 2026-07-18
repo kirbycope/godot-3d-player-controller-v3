@@ -12,6 +12,7 @@ func _init() -> void:
 
 
 @warning_ignore("unsafe_method_access")
+## Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	_post_ready.call_deferred()
 

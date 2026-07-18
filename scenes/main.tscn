@@ -884,7 +884,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9, 3)
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 3, 0, -1)
 
 [node name="Skateboard" parent="." unique_id=1958283666 instance=ExtResource("37_pibwh")]
-transform = Transform3D(-3.5806274e-08, 2.5071824e-08, 1, 0.57357645, 0.81915206, 0, -0.81915206, 0.57357645, -4.371139e-08, 3, 0.9169763, 2.982221)
+transform = Transform3D(2.9802322e-08, -1, 0, 1, 2.9802322e-08, 0, 0, 0, 1, 4, 0.9169763, 3.982221)
 
 [connection signal="body_entered" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_entered"]
 [connection signal="body_exited" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_exited"]

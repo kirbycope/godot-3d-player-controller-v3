@@ -54,7 +54,11 @@ class InputQueueItem:
 
 	# TODO should this be done in _physics_process instead or should it be
 	# configurable?
+	## Called every physics frame. 'delta' is the elapsed time since the previous frame.
 	func _physics_process(delta):
+		# Do nothing if not the authority
+		if not is_multiplayer_authority(): return
+
 		if(frame_delay > 0 and _delay_started):
 			_waited_frames += 1
 			if(_waited_frames >= frame_delay):
