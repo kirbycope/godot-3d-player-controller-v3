@@ -6,22 +6,18 @@ extends Node3D
 @onready var cloth_ruffling: AudioStreamPlayer3D = $ClothRuffling
 
 
-## Called every frame. 'delta' is the elapsed time since the previous frame.
+## Called every physics frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:
+	# Do nothing if not the authority
+	if not is_multiplayer_authority(): return
+
 	if not visible:
 		if ((player.is_falling) or (player.is_jumping and not player.is_jump_queued)) \
 		and Input.is_action_just_pressed("jump") \
 		and not player.is_climbing \
 		and not player.paraglider_raycast.is_colliding():
-			# Stop "falling", start "paragliding"
-			if player.is_falling:
-				player.state_machine.travel(NodeStateMachine.States.PARAGLIDING, NodeStateMachine.States.FALLING)
-			# Stop "jumping", start "paragliding"
-			elif player.is_jumping:
-				player.state_machine.travel(NodeStateMachine.States.PARAGLIDING, NodeStateMachine.States.JUMPING)
-			# Start "paragliding" from any other state
-			else:
-				player.state_machine.travel(NodeStateMachine.States.PARAGLIDING)
+			# Start "paragliding"
+			player.state_machine.travel(player.current_state, NodeStateMachine.States.PARAGLIDING)
 			# Start "paragliding" audio and visuals
 			if not opening.playing:
 				opening.play()

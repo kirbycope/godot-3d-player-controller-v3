@@ -7,7 +7,11 @@ var is_read: bool = false ## Has the player read this sign?
 var player: Player ## Cached reference to the Player
 
 
+## Called when there is an input event.
 func _input(event: InputEvent) -> void:
+	# Do nothing if not the authority
+	if not is_multiplayer_authority(): return
+
 	# Show initial dialog
 	if player \
 	and event.is_action_pressed("action") \

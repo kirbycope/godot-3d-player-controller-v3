@@ -13,12 +13,15 @@ const GREATSWORD_LOCOMOTION_BLEND_POSITION_PATH: String = "parameters/Locomotion
 const PISTOL_LOCOMOTION_BLEND_POSITION_PATH: String = "parameters/LocomotionStateMachine/PistolLocomotion/blend_position"
 const RIFLE_LOCOMOTION_BLEND_POSITION_PATH: String = "parameters/LocomotionStateMachine/RifleLocomotion/blend_position"
 const SHIELD_LOCOMOTION_BLEND_POSITION_PATH: String = "parameters/LocomotionStateMachine/ShieldLocomotion/blend_position"
+const SKATEBOARDING_LOCOMOTION_BLEND_POSITION_PATH: String = "parameters/LocomotionStateMachine/SkateboardingLocomotion/blend_position"
 const STANDING_LOCOMOTION_BLEND_POSITION_PATH: String = "parameters/LocomotionStateMachine/StandingLocomotion/blend_position"
+const SWIMMING_LOCOMOTION_BLEND_POSITION_PATH: String = "parameters/LocomotionStateMachine/SwimmingLocomotion/blend_position"
 
 @export var animation_tree: AnimationTree
 @export var current_animation: int
 @export var motion_interpolate_speed: float = 10.0
 @export var rotation_interpolate_speed: float = 10.0
+@export var swimming_root_motion_multiplier: float = 2.0
 
 var current_state: int = -1 ## The current state of the Player (from the Node/Code [NodeStateMachine], not the AnimationTree NodeStateMachine).
 var locomotion_state: ## Gets the [NodeStateMachine] "LocomotionStateMachine"
@@ -49,6 +52,11 @@ var is_climbing_hopping_left: bool = false ## Is the Player currently hopping le
 var is_climbing_hopping_right: bool = false ## Is the Player currently hopping right while climbing?
 var is_climbing_hopping_up: bool = false ## Is the Player currently hopping up while climbing?
 var is_hopping_from_climbing: bool = false ## Is the Player currently hopping while climbing?
+# Driving
+var is_driving: bool = false ## Is the Player currently driving?
+var is_driving_in: Node3D = null ## The VehicleBody3D the Player is currently driving, if any.
+var is_entering_vehicle: bool = false ## Is the Player currently entering a vehicle?
+var is_exiting_vehicle: bool = false ## Is the Player currently exiting a vehicle?
 # Hanging
 var is_hanging_braced: bool = false ## Is the Player currently hanging (braced)?
 var is_hanging_free: bool = false ## Is the Player currently hanging (free)?
@@ -63,19 +71,26 @@ var is_jump_queued: bool = false ## Is the Player currently queued to jump?
 var is_mining: bool = false ## Is the Player currently mining?
 var is_logging: bool = false ## Is the Player currently logging?
 var is_paragliding: bool = false ## Is the Player currently paragliding?
+var is_paused: bool = false ## Is the Player currently paused?
 var is_shooting: bool = false ## Is the Player currently shooting?
+var is_skateboarding: bool = false ## Is the Player currently skateboarding?
 var is_sliding: bool = false ## Is the Player currently sliding?
 var is_sprinting: bool = false ## Is the Player currently sprinting?
-
+var is_standing: bool = false ## Is the Player currently standing?
+var is_swimming: bool = false ## Is the Player currently swimming?
 var initial_collision_shape_height: float
 var initial_collision_shape_position: Vector3
+var initial_parent: Node3D
 var orientation := Transform3D()
 var root_motion := Transform3D()
+var smoothed_motion: Vector2 = Vector2.ZERO
 
 @onready var attack_sequence_timer: Timer = $AttackSequenceTimer
 @onready var collision_shape: CollisionShape3D = $CollisionShape3D
 @onready var controls: CanvasLayer = $Controls
 @onready var debug: CanvasLayer = $Debug
+@onready var pause: CanvasLayer = $Pause
+@onready var settings: CanvasLayer = $Settings
 @onready var initial_position: Vector3 = transform.origin
 @onready var hanging_braced_detection: RayCast3D = $PlayerModel/HangingBracedDetection
 @onready var ledge_detection_horizontal: RayCast3D = $PlayerModel/LedgeDetectionHorizontal
@@ -87,8 +102,10 @@ var root_motion := Transform3D()
 @onready var player_model: Node3D = $PlayerModel
 @onready var paraglider_raycast: RayCast3D = $ParagliderRaycast
 @onready var projectile_raycast: RayCast3D = $SpringArm3D/ProjectileRaycast
+@onready var skateboard: StaticBody3D = $PlayerModel/Skateboard
 @onready var skeleton: Skeleton3D = $PlayerModel/Armature/GeneralSkeleton
 @onready var spring_arm: SpringArm3D = $SpringArm3D
+@onready var camera: Camera3D = $SpringArm3D/Camera3D
 @onready var state_machine: NodeStateMachine = $NodeStateMachine ## Enables/Disables the scripts that run when various States are entered/exited.
 @onready var sfx_footsteps_grass: AudioStreamPlayer3D = $SFX_Footsteps_Grass
 @onready var sfx_footsteps_slide: AudioStreamPlayer3D = $SFX_Footsteps_Slide
@@ -108,23 +125,29 @@ func _ready() -> void:
 	initial_collision_shape_height = collision_shape.shape.height
 	initial_collision_shape_position = collision_shape.position
 
+	# Record the initial parent for re-parenting after driving.
+	initial_parent = get_parent()
+
 	# Ensure the AnimationTree is active so that root motion is applied in the first frame.
 	animation_tree.active = true
 
-	# Keep animation sampling in physics domain to match root-motion consumption in _physics_process.
+	# Keep animation sampling in physics domainD to match root-motion consumption in _physics_process.
 	animation_tree.callback_mode_process = AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_PHYSICS
 
 	# Ensure the projectile RayCast3D doesn't collide with the player
 	projectile_raycast.add_exception(self)
 
+	# Set the Player's iniitial state
+	current_state = NodeStateMachine.States.STANDING
 
-## Called when there is an input event.
-func _input(event: InputEvent) -> void:
+
+## Called when there is an unhandled input event.
+func _unhandled_input(event: InputEvent) -> void:
 	# Do nothing if not the authority
 	if not is_multiplayer_authority(): return
 
 	# Toggle mouse capture
-	if event.is_action_pressed("ui_cancel"):
+	if event.is_action_pressed("ui_cancel") and not pause.visible and not settings.visible:
 		# Check if the mouse is currently captured
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			# Set the mouse mode to visible to show the mouse cursor
@@ -136,6 +159,7 @@ func _input(event: InputEvent) -> void:
 
 
 # https://github.com/godotengine/tps-demo/blob/master/player/gd#L54
+## Called every physics frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:
 	# Do nothing if not the authority
 	if not is_multiplayer_authority(): return
@@ -143,11 +167,14 @@ func _physics_process(delta: float) -> void:
 	# Start falling if the player is not on the floor and not already falling.
 	if not is_on_floor() and not is_falling \
 	and not is_climbing and not is_climbing_on \
+	and not is_driving \
 	and not is_hanging_braced and not is_hanging_free \
 	and not is_jumping and not is_jump_queued \
-	and not is_paragliding:
+	and not is_paragliding \
+	and not is_skateboarding \
+	and not is_swimming:
 		# Enable the "falling" state in the NodeStateMachine. The AnimationTree will automatically transition to the "Falling" animation state.
-		state_machine.travel(NodeStateMachine.States.FALLING)
+		state_machine.travel(current_state, NodeStateMachine.States.FALLING)
 
 	# Apply player input to control the character and update the animation state.
 	apply_input(delta)
@@ -244,53 +271,83 @@ func apply_input(delta: float) -> void:
 		target_motion = Vector2.ZERO
 
 	# Smoothly interpolate the target_motion for more gradual changes in animation blending and rotation.
-	target_motion = target_motion.lerp(target_motion, motion_interpolate_speed * delta)
+	var motion_weight: float = clampf(motion_interpolate_speed * delta, 0.0, 1.0)
+	smoothed_motion = smoothed_motion.lerp(target_motion, motion_weight)
+	target_motion = smoothed_motion
 
-	# While paragliding, block regular locomotion. Paragliding.gd will handle movement.
-	if is_paragliding:
+	# While driving, paragliding or skateboarding, block regular locomotion.
+	# Driving.gd / Paragliding.gd / Skateboarding.gd will handle movement.
+	if (is_driving and not is_entering_vehicle and not is_exiting_vehicle) or is_paragliding or is_skateboarding:
 		return
 
+	# While swimming, keep SwimmingLocomotion active and feed its BlendSpace1D.
+	if is_swimming and not is_driving:
+		var current_swimming_node = locomotion_state.get_current_node()
+		# Do not force SwimmingLocomotion while swimming to/at an edge or mantling out.
+		if not current_swimming_node in ["BracedHangClimbingOn", "SwimmingAtEdge", "SwimmingToEdge"] \
+		and current_swimming_node != "SwimmingLocomotion" \
+		and not is_climbing_on:
+			locomotion_state.travel("SwimmingLocomotion")
+		# Feed the BlendSpace1D only while in normal swimming locomotion.
+		if current_swimming_node == "SwimmingLocomotion":
+			if is_focusing: # or is_shooting:
+				animation_tree.set(SWIMMING_LOCOMOTION_BLEND_POSITION_PATH, target_motion.y)
+			else:
+				animation_tree.set(SWIMMING_LOCOMOTION_BLEND_POSITION_PATH, target_motion.length())
+
 	# Attack { Microsoft: Ⓧ, Nintendo: Ⓨ, Sony: 🟗, Keyboard: [Alt] }
-	if Input.is_action_just_pressed("attack") \
+	if not is_driving \
+	and Input.is_action_just_pressed("attack") \
 	and not is_attacking \
 	and can_player_attack:
 		# Enable the "attacking" state in the NodeStateMachine. The AnimationTree will automatically transition to the "Falling" animation state.
-		state_machine.travel(NodeStateMachine.States.ATTACKING)
+		state_machine.travel(current_state, NodeStateMachine.States.ATTACKING)
 
 	# Climbing, Start { Microsoft: Ⓨ, Nintendo: Ⓧ, Sony: 🟕, Keyboard: [Space] }
-	if not is_on_floor() \
+	if not is_driving \
+	and not is_on_floor() \
 	and not is_climbing \
 	and not is_hanging_braced \
 	and not is_hanging_free \
+	and not is_skateboarding \
+	and not is_swimming \
 	and Input.is_action_just_pressed("jump") \
 	and ledge_detection_horizontal.is_colliding():
 		# Stop "falling", start "climbing"
 		if is_falling:
-			state_machine.travel(NodeStateMachine.States.CLIMBING, NodeStateMachine.States.FALLING)
+			state_machine.travel(NodeStateMachine.States.FALLING, NodeStateMachine.States.CLIMBING)
+			return
 		# Stop "jumping", start "climbing"
 		elif is_jumping:
-			state_machine.travel(NodeStateMachine.States.CLIMBING, NodeStateMachine.States.JUMPING)
+			state_machine.travel(NodeStateMachine.States.JUMPING, NodeStateMachine.States.CLIMBING)
+			return
 		# Start "climbing" from any other state
 		else:
-			state_machine.travel(NodeStateMachine.States.CLIMBING)
+			state_machine.travel(current_state, NodeStateMachine.States.CLIMBING)
+			return
 
 	# Crouch { Console: Left ⬤, Keyboard: [Control] }.
-	if Input.is_action_pressed("crouch") \
+	if not is_driving \
+	and Input.is_action_pressed("crouch") \
 	and not is_crouching \
 	and is_on_floor() \
 	and not is_sliding \
 	and not is_sprinting:
-		# Enable the "crouching" state in the NodeStateMachine. The AnimationTree will automatically transition to the "Falling" animation state.
-		state_machine.travel(NodeStateMachine.States.CROUCHING)
+		# Start "crouching"
+		state_machine.travel(current_state, NodeStateMachine.States.CROUCHING)
+		return
 
 	# Focus { Microsoft: 🄻T, Nintendo: Z🄻, Sony: 🄻2, Keyboard: [Right Mouse Button] }.
-	is_focusing = Input.is_action_pressed("focus")
-
-	# Shoot { Microsoft: 🅁T, Nintendo: 🅁L, Sony: 🅁2, Keyboard: [Left Mouse Button] } 
-	is_shooting = Input.is_action_pressed("shoot") and can_player_shoot
+	# Shoot { Microsoft: 🅁T, Nintendo: 🅁L, Sony: 🅁2, Keyboard: [Left Mouse Button] }
+	if is_driving:
+		is_focusing = false
+		is_shooting = false
+	else:
+		is_focusing = Input.is_action_pressed("focus")
+		is_shooting = Input.is_action_pressed("shoot") and can_player_shoot
 
 	# Update locomotion state based on equipped items if not in special states
-	if not is_climbing and not is_hanging_braced and not is_hanging_free and not is_falling and not is_jumping and not is_sliding and not is_mining and not is_logging:
+	if not is_driving and not is_swimming and not is_climbing and not is_hanging_braced and not is_hanging_free and not is_falling and not is_jumping and not is_sliding and not is_mining and not is_logging:
 		var current_state = locomotion_state.get_current_node()
 		var target_state = "StandingLocomotion"
 		var is_shield_attack_state: bool = current_state == "ShieldDownwardSlash" or current_state == "ShieldCrossSlash" or current_state == "ShieldPowerSlash"
@@ -314,7 +371,8 @@ func apply_input(delta: float) -> void:
 				locomotion_state.travel(target_state)
 
 	# Jump { Microsoft: Ⓨ, Nintendo: Ⓧ, Sony: 🟕, Keyboard: [Space] }
-	if is_on_floor() \
+	if not is_driving \
+	and is_on_floor() \
 	and Input.is_action_just_pressed("jump") \
 	and not is_climbing \
 	and not is_hanging_braced \
@@ -323,10 +381,11 @@ func apply_input(delta: float) -> void:
 	and not is_paragliding \
 	and not is_sliding:
 		# Enable the "jumping" state in the NodeStateMachine. The AnimationTree will automatically transition to the "Falling" animation state.
-		state_machine.travel(NodeStateMachine.States.JUMPING)
+		state_machine.travel(current_state, NodeStateMachine.States.JUMPING)
 
 	# Sprint { Microsoft: Ⓑ, Nintendo: Ⓐ, Sony: Ⓞ, Keyboard: [Shift] }.
-	if is_on_floor() \
+	if not is_driving \
+	and is_on_floor() \
 	and Input.is_action_pressed("sprint") \
 	and not is_crouching \
 	and not is_jump_queued \
@@ -343,17 +402,19 @@ func apply_input(delta: float) -> void:
 		is_sprinting = false
 
 	# Slide (Crouch while Sprinting)
-	if is_sprinting \
+	if not is_driving \
+	and is_sprinting \
 	and Input.is_action_just_pressed("crouch") \
 	and not is_sliding:
 		# Enable the "sliding" state in the NodeStateMachine. The AnimationTree will automatically transition to the "Falling" animation state.
-		state_machine.travel(NodeStateMachine.States.SLIDING)
+		state_machine.travel(current_state, NodeStateMachine.States.SLIDING)
 
+	var is_first_person: bool = camera is Camera and (camera as Camera).perspective == Camera.Perspective.FIRST_PERSON
 	# Handle movement is strafing
-	if is_shooting or is_focusing:
+	if not is_driving and (is_shooting or is_focusing or is_first_person):
 
-		# Rotate to face the camera direction when focusing or shooting (unless is_focusing and not is_shooting)
-		if (is_shooting or not is_focusing) and not is_firing_arrow and not is_hanging_braced and not is_hanging_free and not is_climbing:
+		# Rotate to face the camera direction when focusing, shooting, or in first person
+		if (is_shooting or not is_focusing or is_first_person) and not is_firing_arrow and not is_hanging_braced and not is_hanging_free and not is_climbing:
 			var camera_basis := spring_arm.global_transform.basis
 			var camera_forward := -camera_basis.z
 			camera_forward = camera_forward.slide(up_direction)
@@ -386,7 +447,7 @@ func apply_input(delta: float) -> void:
 				animation_tree.set(STANDING_LOCOMOTION_BLEND_POSITION_PATH, target_motion)
 
 	# Handle movement when not strafing
-	else:
+	elif not is_driving:
 		# Use camera-relative direction for target_motion direction
 		var camera_basis := spring_arm.global_transform.basis
 		var target_dir := camera_basis * Vector3(target_motion.x, 0.0, -target_motion.y)
@@ -433,7 +494,11 @@ func apply_input(delta: float) -> void:
 			else:
 				animation_tree.set(STANDING_LOCOMOTION_BLEND_POSITION_PATH, anim_blend)
 
-	root_motion = Transform3D(animation_tree.get_root_motion_rotation(), animation_tree.get_root_motion_position())
+	var root_motion_position := animation_tree.get_root_motion_position()
+	if is_swimming and not is_climbing_on:
+		root_motion_position *= swimming_root_motion_multiplier
+
+	root_motion = Transform3D(animation_tree.get_root_motion_rotation(), root_motion_position)
 
 	orientation *= root_motion
 
@@ -458,6 +523,12 @@ func apply_input(delta: float) -> void:
 		vertical_speed = h_velocity.dot(up_direction)
 	elif is_hanging_braced or is_hanging_free:
 		vertical_speed = 0.0
+	elif is_driving:
+		# While driving, vertical movement is driven by root motion/input, not gravity.
+		vertical_speed = h_velocity.dot(up_direction)
+	elif is_swimming:
+		# While swimming, vertical movement is driven by root motion/input, not gravity.
+		vertical_speed = h_velocity.dot(up_direction)
 	else:
 		vertical_speed += get_gravity().dot(up_direction) * 1.5 * delta
 	velocity = h_velocity.slide(up_direction) + (up_direction * vertical_speed)
@@ -468,7 +539,9 @@ func apply_input(delta: float) -> void:
 	orientation.origin = Vector3() # Clear accumulated root motion displacement (was applied to speed).
 	orientation = orientation.orthonormalized() # Orthonormalize orientation.
 
-	player_model.global_transform.basis = orientation.basis
+	# Rotate the Player Model (unless entering/exiting a vehicle)
+	if not (is_driving and (is_entering_vehicle or is_exiting_vehicle)):
+		player_model.global_transform.basis = orientation.basis
 
 
 ## Detect if the player is in front of a ledge and can hang from it and/or climb on to it.
@@ -502,6 +575,14 @@ func execute_jump() -> void:
 	is_jump_queued = false
 	is_jumping = true
 
+
+## Gets the player's forward direction projected onto the movement plane.
+func get_facing_direction() -> Vector3:
+	var facing_direction := -player_model.global_transform.basis.z
+	facing_direction = facing_direction.slide(up_direction)
+	if facing_direction.length_squared() <= 0.001:
+		return Vector3.ZERO
+	return facing_direction.normalized()
 
 
 ## Called by the animation(s) using "Call Method Track" to play footstep sound effects at the right time.

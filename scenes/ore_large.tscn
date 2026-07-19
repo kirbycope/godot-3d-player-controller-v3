@@ -21,5 +21,4 @@ visible = false
 
 [node name="ActionPrompt" parent="." unique_id=1664152999 instance=ExtResource("3_itiyp")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3000001, 0)
-visible = false
 message_end = " to mine ore"

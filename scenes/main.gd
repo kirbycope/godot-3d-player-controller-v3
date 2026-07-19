@@ -13,20 +13,14 @@ func _ready() -> void:
 	else:
 		# Show the Click to Start button
 		$ClickToStart.visible = true
+	#player.is_skateboarding = true
 
 
-## Called when there is an input event.
-func _input(event: InputEvent) -> void:
-	if not $ClickToStart.visible:
-		return
-
-	if event is InputEventMouseButton or event is InputEventScreenTouch:
-		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-		$ClickToStart.visible = false
-
-
-## Called every frame. 'delta' is the elapsed time since the previous frame.
+## Called every physics frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(_delta: float) -> void:
+	# Do nothing if not the authority
+	if not is_multiplayer_authority(): return
+
 	if player:
 		# If we're below -40, respawn (teleport to the initial position).
 		if player.global_position.y < -40.0:
@@ -36,3 +30,19 @@ func _physics_process(_delta: float) -> void:
 func _on_warp_area_body_entered(body: Node3D) -> void:
 	if body is Player:
 		body.global_position = $WarpArea/WarpPointB.global_position
+
+
+## Called when a body enters the "Pool"
+func _on_player_detection_body_entered(body: Node3D) -> void:
+	if body is Player:
+		# Start swimming (if not already swimming)
+		if not body.is_swimming:
+			body.state_machine.travel(player.current_state, NodeStateMachine.States.SWIMMING)
+
+
+## Called when a body exits the "Pool"
+func _on_player_detection_body_exited(body: Node3D) -> void:
+	if body is Player:
+		# Stop swimming (if currently swimming)
+		if body.is_swimming:
+			body.is_swimming = false # This will trigger the `stop()` in `swimming.gd`

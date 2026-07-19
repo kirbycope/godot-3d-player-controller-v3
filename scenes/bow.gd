@@ -18,6 +18,9 @@ func _ready() -> void:
 
 ## Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
+	# Do nothing if not the authority
+	if not is_multiplayer_authority(): return
+
 	if player:
 		if player.is_drawing_arrow:
 			await get_tree().create_timer(0.2).timeout

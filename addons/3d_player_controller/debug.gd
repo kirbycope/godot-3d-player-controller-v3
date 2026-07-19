@@ -5,28 +5,42 @@ extends CanvasLayer
 
 ## Called when there is an input event.
 func _input(event: InputEvent) -> void:
+	# Do nothing if not the authority
+	if not is_multiplayer_authority(): return
+
 	if player:
 		if event.is_action_pressed("debug"):
 			visible = !visible
 
 
-## Called every frame. '_delta' is the elapsed time since the previous frame.
+## Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
+	# Do nothing if not the authority
+	if not is_multiplayer_authority(): return
+
 	if player:
+		$FPS.text = str(int(Engine.get_frames_per_second()))
+
+		$CurrentPerspective.text = "First-person" if player.camera.perspective == Camera.Perspective.FIRST_PERSON else "Third-person"
 		$CurrentState.text = NodeStateMachine.get_state_name(player.current_state)
 
 		$States/is_attacking.button_pressed = player.is_attacking
 		$States/is_climbing.button_pressed = player.is_climbing
 		$States/is_crouching.button_pressed = player.is_crouching
+		$States/is_driving.button_pressed = player.is_driving
 		$States/is_emoting.button_pressed = player.is_emoting
 		$States/is_hanging.button_pressed = (player.is_hanging_braced or player.is_hanging_free)
 		$States/is_falling.button_pressed = player.is_falling
 		$States/is_focusing.button_pressed = player.is_focusing
 		$States/is_jumping.button_pressed = (player.is_jump_queued or player.is_jumping)
 		$States/is_paragliding.button_pressed = player.is_paragliding
+		$States/is_paused.button_pressed = player.is_paused
 		$States/is_shooting.button_pressed = player.is_shooting
+		$States/is_skateboarding.button_pressed = player.is_skateboarding
 		$States/is_sliding.button_pressed = player.is_sliding
 		$States/is_sprinting.button_pressed = player.is_sprinting
+		$States/is_standing.button_pressed = player.is_standing
+		$States/is_swimming.button_pressed = player.is_swimming
 
 		$Equipment/equipped_axe_1h.button_pressed = player.has_equipment(Equipment.EquipmentType.AXE_1H)
 		$Equipment/equipped_axe_2h.button_pressed = player.has_equipment(Equipment.EquipmentType.AXE_2H)
@@ -53,6 +67,10 @@ func _process(_delta: float) -> void:
 		$Climbing/is_climbing_hopping_right.button_pressed = player.is_climbing_hopping_right
 		$Climbing/is_climbing_hopping_up.button_pressed = player.is_climbing_hopping_up
 		$Climbing/is_hopping_from_climbing.button_pressed = player.is_hopping_from_climbing
+
+		$Driving.visible = player.is_driving
+		$Driving/is_entering_vehicle.button_pressed = player.is_entering_vehicle
+		$Driving/is_exiting_vehicle.button_pressed = player.is_exiting_vehicle
 
 		$Hanging.visible = (player.is_hanging_braced or player.is_hanging_free)
 		$Hanging/is_climbing_on.button_pressed = player.is_climbing_on

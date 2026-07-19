@@ -110,9 +110,9 @@ anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = -580.0
-offset_top = -368.5
+offset_top = -365.5
 offset_right = -352.0
-offset_bottom = -239.5
+offset_bottom = -236.5
 grow_horizontal = 0
 grow_vertical = 2
 
@@ -146,9 +146,9 @@ anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = -580.0
-offset_top = -334.5
+offset_top = -331.5
 offset_right = -352.0
-offset_bottom = -135.5
+offset_bottom = -132.5
 grow_horizontal = 0
 grow_vertical = 2
 
@@ -183,7 +183,7 @@ text = "is_climbing_hopping_up"
 layout_mode = 2
 text = "is_hopping_from_climbing"
 
-[node name="Hanging" type="VBoxContainer" parent="." unique_id=2123646781]
+[node name="Driving" type="VBoxContainer" parent="." unique_id=130657088]
 anchors_preset = 6
 anchor_left = 1.0
 anchor_top = 0.5
@@ -192,7 +192,39 @@ anchor_bottom = 0.5
 offset_left = -580.0
 offset_top = -227.5
 offset_right = -352.0
-offset_bottom = -98.5
+offset_bottom = -133.5
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="Driving" unique_id=1331054806]
+custom_minimum_size = Vector2(160, 24)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Driving/Panel" unique_id=1582509661]
+layout_mode = 0
+offset_left = 4.0
+offset_right = 155.0
+offset_bottom = 23.0
+text = "DRIVING"
+
+[node name="is_entering_vehicle" type="CheckBox" parent="Driving" unique_id=1140580919]
+layout_mode = 2
+text = "is_entering_vehicle"
+
+[node name="is_exiting_vehicle" type="CheckBox" parent="Driving" unique_id=30727147]
+layout_mode = 2
+text = "is_exiting_vehicle"
+
+[node name="Hanging" type="VBoxContainer" parent="." unique_id=2123646781]
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -580.0
+offset_top = -192.5
+offset_right = -352.0
+offset_bottom = -63.5
 grow_horizontal = 0
 grow_vertical = 2
 
@@ -226,9 +258,9 @@ anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = -346.0
-offset_top = -399.5
+offset_top = -397.5
 offset_right = -176.0
-offset_bottom = 79.5
+offset_bottom = 221.5
 grow_horizontal = 0
 grow_vertical = 2
 
@@ -259,6 +291,10 @@ text = "is_crouching"
 layout_mode = 2
 text = "is_emoting"
 
+[node name="is_driving" type="CheckBox" parent="States" unique_id=737133500]
+layout_mode = 2
+text = "is_driving"
+
 [node name="is_hanging" type="CheckBox" parent="States" unique_id=819864313]
 layout_mode = 2
 text = "is_hanging"
@@ -279,9 +315,17 @@ text = "is_jumping"
 layout_mode = 2
 text = "is_paragliding"
 
+[node name="is_paused" type="CheckBox" parent="States" unique_id=225040834]
+layout_mode = 2
+text = "is_paused"
+
 [node name="is_shooting" type="CheckBox" parent="States" unique_id=467465081]
 layout_mode = 2
 text = "is_shooting"
+
+[node name="is_skateboarding" type="CheckBox" parent="States" unique_id=962007147]
+layout_mode = 2
+text = "is_skateboarding"
 
 [node name="is_sliding" type="CheckBox" parent="States" unique_id=1734099729]
 layout_mode = 2
@@ -291,16 +335,24 @@ text = "is_sliding"
 layout_mode = 2
 text = "is_sprinting"
 
-[node name="Label" type="Label" parent="." unique_id=794943457]
+[node name="is_standing" type="CheckBox" parent="States" unique_id=2071856880]
+layout_mode = 2
+text = "is_standing"
+
+[node name="is_swimming" type="CheckBox" parent="States" unique_id=3126982]
+layout_mode = 2
+text = "is_swimming"
+
+[node name="CurrentStateLabel" type="Label" parent="." unique_id=794943457]
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -102.5
-offset_top = -39.0
+offset_top = -47.0
 offset_right = 6.5
-offset_bottom = -16.0
+offset_bottom = -24.0
 grow_horizontal = 2
 grow_vertical = 0
 text = "Current State:"
@@ -313,10 +365,68 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = 24.0
-offset_top = -39.0
+offset_top = -47.0
 offset_right = 160.0
-offset_bottom = -16.0
+offset_bottom = -24.0
 grow_horizontal = 2
 grow_vertical = 0
 text = "<null>"
+label_settings = SubResource("LabelSettings_senyo")
+
+[node name="CurrentPerspectiveLabel" type="Label" parent="." unique_id=1083950622]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -151.0
+offset_top = -71.0
+offset_right = 7.0
+offset_bottom = -48.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Current Perspective:"
+label_settings = SubResource("LabelSettings_senyo")
+
+[node name="CurrentPerspective" type="Label" parent="." unique_id=1549973036]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -71.0
+offset_right = 160.0
+offset_bottom = -48.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "<null>"
+label_settings = SubResource("LabelSettings_senyo")
+
+[node name="FPSLabel" type="Label" parent="." unique_id=2038670292]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -25.0
+offset_top = -23.0
+offset_right = 15.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "FPS: "
+label_settings = SubResource("LabelSettings_senyo")
+
+[node name="FPS" type="Label" parent="." unique_id=1573381973]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -23.0
+offset_right = 64.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "###"
 label_settings = SubResource("LabelSettings_senyo")

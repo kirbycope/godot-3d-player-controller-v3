@@ -1,6 +1,8 @@
 class_name Attacking
 extends NodeStateMachine
 
+var _this_state := NodeStateMachine.States.ATTACKING
+
 
 ## Called when there is an input event.
 func _input(event: InputEvent) -> void:
@@ -67,12 +69,12 @@ func start() -> void:
 	# Enable _this_ state node
 	process_mode = Node.PROCESS_MODE_INHERIT
 	# Set the player's new state
-	player.current_state = NodeStateMachine.States.ATTACKING
+	player.current_state = _this_state
 	# Flag the player as "attacking"
 	player.is_attacking = true
 	# Start the attack sequence timer
 	player.attack_sequence_timer.start()
-	# Reset the state variables
+	# Reset the attack state variables
 	player.attack_sequence = 0
 	player.is_attacking_1 = false
 	player.is_attacking_2 = false
@@ -84,7 +86,7 @@ func stop() -> void:
 	# Disable _this_ state node
 	process_mode = Node.PROCESS_MODE_DISABLED
 	# Clear the player's state (if it is currently set to _this_ state)
-	if player.current_state == NodeStateMachine.States.ATTACKING:
+	if player.current_state == _this_state:
 		player.current_state = -1
 	# Flag the player as not "attacking"
 	player.is_attacking = false
