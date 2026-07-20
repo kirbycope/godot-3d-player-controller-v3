@@ -13,7 +13,12 @@ func _ready() -> void:
 	else:
 		# Show the Click to Start button
 		$ClickToStart.visible = true
-	#player.is_skateboarding = true
+
+
+func _input(event: InputEvent) -> void:
+	if $ClickToStart.visible:
+		if event is InputEventScreenTouch or event is InputEventMouseButton:
+			$ClickToStart.hide()
 
 
 ## Called every physics frame. 'delta' is the elapsed time since the previous frame.

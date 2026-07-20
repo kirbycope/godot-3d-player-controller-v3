@@ -434,6 +434,7 @@ transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545
 shadow_enabled = true
 
 [node name="ClickToStart" type="CanvasLayer" parent="." unique_id=1468805665]
+layer = 2
 visible = false
 
 [node name="ColorRect" type="ColorRect" parent="ClickToStart" unique_id=835106610]
