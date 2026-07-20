@@ -1,1 +1,0 @@
-"StandingLocomotion", "RifleLocomotion", SubResource("AnimationNodeStateMachineTransition_xe2mw"), "RifleLocomotion", "StandingLocomotion", SubResource("AnimationNodeStateMachineTransition_4dtsf"), "ShieldLocomotion", "ShieldJump"
