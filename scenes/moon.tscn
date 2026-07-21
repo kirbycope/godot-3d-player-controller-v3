@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://bea6xq7pi7e0a"]
+
+[ext_resource type="Script" uid="uid://by6t8hh2pp22d" path="res://scenes/moon.gd" id="1_fyi6v"]
+[ext_resource type="Texture2D" uid="uid://bip2wghrelx7t" path="res://assets/nasa/lroc_color_poles_512.jpg" id="1_rjvio"]
+[ext_resource type="Texture2D" uid="uid://bix447ke7gxxl" path="res://assets/nasa/NormalMap.png" id="2_7gw7d"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5poiv"]
+albedo_texture = ExtResource("1_rjvio")
+normal_scale = 0.33
+normal_texture = ExtResource("2_7gw7d")
+
+[sub_resource type="SphereMesh" id="SphereMesh_senyo"]
+material = SubResource("StandardMaterial3D_5poiv")
+radius = 9.0
+height = 18.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_jnf5c"]
+radius = 9.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_senyo"]
+radius = 12.0
+
+[node name="Moon" type="StaticBody3D" unique_id=774808875]
+transform = Transform3D(0.9999999, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0)
+script = ExtResource("1_fyi6v")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=220626790]
+transform = Transform3D(1, 0, -1.4901161e-08, -3.7252903e-09, 1, -1.4901161e-08, 0, -1.4901161e-08, 1, 0, 0, 0)
+mesh = SubResource("SphereMesh_senyo")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1207522286]
+shape = SubResource("SphereShape3D_jnf5c")
+
+[node name="PlayerDetection" type="Area3D" parent="." unique_id=1784995103]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PlayerDetection" unique_id=1257781334]
+shape = SubResource("SphereShape3D_senyo")
+
+[connection signal="body_entered" from="PlayerDetection" to="." method="_on_player_detection_body_entered"]
+[connection signal="body_exited" from="PlayerDetection" to="." method="_on_player_detection_body_exited"]
