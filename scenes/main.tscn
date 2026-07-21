@@ -562,6 +562,59 @@ shape = SubResource("BoxShape3D_hxkk4")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.5, 0)
 mesh = SubResource("QuadMesh_hxkk4")
 
+[node name="Stairs" type="Node3D" parent="NavigationRegion3D" unique_id=1061546804]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0, -2.5)
+
+[node name="Step" type="CSGBox3D" parent="NavigationRegion3D/Stairs" unique_id=1654224905]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49999985, 0.075, -0.18014407)
+use_collision = true
+size = Vector3(1, 0.15, 0.35)
+
+[node name="Step2" type="CSGBox3D" parent="NavigationRegion3D/Stairs" unique_id=974805911]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49999985, 0.22500001, -0.530144)
+use_collision = true
+size = Vector3(1, 0.15, 0.35)
+
+[node name="Step3" type="CSGBox3D" parent="NavigationRegion3D/Stairs" unique_id=740934328]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49999985, 0.375, -0.8801441)
+use_collision = true
+size = Vector3(1, 0.15, 0.35)
+
+[node name="Step4" type="CSGBox3D" parent="NavigationRegion3D/Stairs" unique_id=1293976723]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49999985, 0.52500004, -1.2301443)
+use_collision = true
+size = Vector3(1, 0.15, 0.35)
+
+[node name="Step5" type="CSGBox3D" parent="NavigationRegion3D/Stairs" unique_id=527660983]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49999985, 0.675, -1.5801439)
+use_collision = true
+size = Vector3(1, 0.15, 0.35)
+
+[node name="Step6" type="CSGBox3D" parent="NavigationRegion3D/Stairs" unique_id=1486196202]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49999985, 0.82500005, -1.9301438)
+use_collision = true
+size = Vector3(1, 0.15, 0.35)
+
+[node name="Step7" type="CSGBox3D" parent="NavigationRegion3D/Stairs" unique_id=2032304129]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49999985, 0.975, -2.2801442)
+use_collision = true
+size = Vector3(1, 0.15, 0.35)
+
+[node name="Step8" type="CSGBox3D" parent="NavigationRegion3D/Stairs" unique_id=1328243979]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49999985, 1.125, -2.6301436)
+use_collision = true
+size = Vector3(1, 0.15, 0.35)
+
+[node name="Step9" type="CSGBox3D" parent="NavigationRegion3D/Stairs" unique_id=427906979]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49999985, 1.2750001, -2.980144)
+use_collision = true
+size = Vector3(1, 0.15, 0.35)
+
+[node name="Step10" type="CSGBox3D" parent="NavigationRegion3D/Stairs" unique_id=2106758808]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49999985, 1.425, -3.330144)
+use_collision = true
+size = Vector3(1, 0.15, 0.35)
+
 [node name="Player" parent="." unique_id=994458497 instance=ExtResource("1_0xm2m")]
 
 [node name="N_Hance_Studio_1" type="Node3D" parent="." unique_id=1622472344]
@@ -882,7 +935,7 @@ light_enable = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9, 3)
 
 [node name="CRV" parent="." unique_id=751190287 instance=ExtResource("37_fuf3a")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 3, 0, -1)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 10, 0, 0)
 
 [node name="Skateboard" parent="." unique_id=1958283666 instance=ExtResource("37_pibwh")]
 transform = Transform3D(2.9802322e-08, -1, 0, 1, 2.9802322e-08, 0, 0, 0, 1, 4, 0.9169763, 3.982221)
