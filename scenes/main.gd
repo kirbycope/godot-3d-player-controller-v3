@@ -40,9 +40,9 @@ func _on_warp_area_body_entered(body: Node3D) -> void:
 ## Called when a body enters the "Pool"
 func _on_player_detection_body_entered(body: Node3D) -> void:
 	if body is Player:
-		# Start swimming (if not already swimming)
-		if not body.is_swimming:
-			body.state_machine.travel(player.current_state, NodeStateMachine.States.SWIMMING)
+		# Start swimming (if not already swimming and not in a car/vehicle)
+		if not body.is_swimming and not body.is_driving and body.is_driving_in == null and not body.is_entering_vehicle and not body.is_exiting_vehicle:
+			body.state_machine.travel(body.current_state, NodeStateMachine.States.SWIMMING)
 
 
 ## Called when a body exits the "Pool"

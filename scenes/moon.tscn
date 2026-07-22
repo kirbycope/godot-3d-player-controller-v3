@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://by6t8hh2pp22d" path="res://scenes/moon.gd" id="1_fyi6v"]
 [ext_resource type="Texture2D" uid="uid://bip2wghrelx7t" path="res://assets/nasa/lroc_color_poles_512.jpg" id="1_rjvio"]
 [ext_resource type="Texture2D" uid="uid://bix447ke7gxxl" path="res://assets/nasa/NormalMap.png" id="2_7gw7d"]
+[ext_resource type="PackedScene" uid="uid://brmnvx02xgur8" path="res://assets/BinbunVFX/magic_areas/effects/basic_area/basic_area_vfx_03.tscn" id="4_7l7dh"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5poiv"]
 albedo_texture = ExtResource("1_rjvio")
@@ -20,6 +21,10 @@ radius = 9.0
 [sub_resource type="SphereShape3D" id="SphereShape3D_senyo"]
 radius = 12.0
 
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_senyo"]
+height = 1.8
+radius = 0.8
+
 [node name="Moon" type="StaticBody3D" unique_id=774808875]
 transform = Transform3D(0.9999999, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0)
 script = ExtResource("1_fyi6v")
@@ -32,9 +37,23 @@ mesh = SubResource("SphereMesh_senyo")
 shape = SubResource("SphereShape3D_jnf5c")
 
 [node name="PlayerDetection" type="Area3D" parent="." unique_id=1784995103]
+gravity_space_override = 3
+gravity_point = true
+gravity_point_center = Vector3(0, 0, 0)
+gravity_direction = Vector3(0, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="PlayerDetection" unique_id=1257781334]
 shape = SubResource("SphereShape3D_senyo")
+
+[node name="PortalArea3D" type="Area3D" parent="." unique_id=103377014]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -8.899996, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PortalArea3D" unique_id=1925049487]
+transform = Transform3D(1, 0, 0, 0, 1, 7.1055205e-15, 0, -7.1055205e-15, 1, 0, -0.9000006, -4.2632564e-14)
+shape = SubResource("CylinderShape3D_senyo")
+
+[node name="BasicAreaVFX_03" parent="PortalArea3D" unique_id=825893378 instance=ExtResource("4_7l7dh")]
+transform = Transform3D(1, 0, 0, 0, -0.99999964, 8.742274e-08, 0, -8.742274e-08, -0.99999964, 0, 0, 0)
 
 [connection signal="body_entered" from="PlayerDetection" to="." method="_on_player_detection_body_entered"]
 [connection signal="body_exited" from="PlayerDetection" to="." method="_on_player_detection_body_exited"]
