@@ -32,11 +32,6 @@ func _physics_process(_delta: float) -> void:
 			player.global_position = Vector3(0.0, 0.0, 0.0)
 
 
-func _on_warp_area_body_entered(body: Node3D) -> void:
-	if body is Player:
-		body.global_position = $WarpArea/WarpPointB.global_position
-
-
 ## Called when a body enters the "Pool"
 func _on_player_detection_body_entered(body: Node3D) -> void:
 	if body is Player:
@@ -51,3 +46,18 @@ func _on_player_detection_body_exited(body: Node3D) -> void:
 		# Stop swimming (if currently swimming)
 		if body.is_swimming:
 			body.is_swimming = false # This will trigger the `stop()` in `swimming.gd`
+
+
+func _on_warp_zone_body_entered(body: Node3D) -> void:
+	if body is Player:
+		body.global_position = $WarpZone/Marker3D.global_position
+
+
+func _on_warp_zone_2_body_entered(body: Node3D) -> void:
+	if body is Player:
+		body.global_position = $WarpZone2/Marker3D.global_position
+
+
+func _on_warp_zone_3_body_entered(body: Node3D) -> void:
+	if body is Player:
+		body.global_position = $WarpZone3/Marker3D.global_position

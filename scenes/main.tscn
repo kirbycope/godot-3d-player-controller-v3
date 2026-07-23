@@ -34,7 +34,6 @@
 [ext_resource type="PackedScene" uid="uid://yo68ojwutmqp" path="res://scenes/ore_large.tscn" id="31_tel4y"]
 [ext_resource type="Texture2D" uid="uid://b810kdta7g8wk" path="res://assets/quaternius/nature/preview.jpg" id="32_5q0nq"]
 [ext_resource type="PackedScene" uid="uid://d3o4cq6mgg8ni" path="res://scenes/tree_01.tscn" id="33_dgi5k"]
-[ext_resource type="PackedScene" uid="uid://brmnvx02xgur8" path="res://assets/BinbunVFX/magic_areas/effects/basic_area/basic_area_vfx_03.tscn" id="34_dgi5k"]
 [ext_resource type="PackedScene" uid="uid://bwngmjoqsrtcx" path="res://scenes/crv.tscn" id="37_fuf3a"]
 [ext_resource type="PackedScene" uid="uid://drmvyehu4dq43" path="res://addons/3d_player_controller/assets/sketchfab/skateboard/skateboard.tscn" id="37_pibwh"]
 [ext_resource type="PackedScene" uid="uid://bea6xq7pi7e0a" path="res://scenes/moon.tscn" id="38_pibwh"]
@@ -420,9 +419,16 @@ albedo_texture = ExtResource("32_5q0nq")
 material = SubResource("StandardMaterial3D_j8jky")
 size = Vector2(4.685, 2.635)
 
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_k78ss"]
-height = 0.75
-radius = 0.75
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_hxkk4"]
+height = 1.8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fuf3a"]
+transparency = 1
+albedo_color = Color(0.34509805, 1, 1, 0.18039216)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_fk680"]
+material = SubResource("StandardMaterial3D_fuf3a")
+height = 1.8
 
 [node name="World" type="Node3D" unique_id=336392758]
 script = ExtResource("1_h2yge")
@@ -617,7 +623,6 @@ use_collision = true
 size = Vector3(1, 0.15, 0.35)
 
 [node name="Player" parent="." unique_id=994458497 instance=ExtResource("1_0xm2m")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 34, -42)
 
 [node name="N_Hance_Studio_1" type="Node3D" parent="." unique_id=1622472344]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 0)
@@ -922,20 +927,6 @@ mesh = SubResource("QuadMesh_5pyta")
 [node name="Tree01" parent="Quaternius" unique_id=38701300 instance=ExtResource("33_dgi5k")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -4.7683716e-07, 0, 1)
 
-[node name="WarpArea" type="Area3D" parent="." unique_id=1308192546]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 1, -10)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WarpArea" unique_id=115790568]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.375, 0)
-shape = SubResource("CylinderShape3D_k78ss")
-
-[node name="WarpPointA" parent="WarpArea" unique_id=2123776133 instance=ExtResource("34_dgi5k")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
-light_enable = false
-
-[node name="WarpPointB" type="Marker3D" parent="WarpArea" unique_id=311705794]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9, 3)
-
 [node name="CRV" parent="." unique_id=751190287 instance=ExtResource("37_fuf3a")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 10, 0, 0)
 
@@ -945,6 +936,67 @@ transform = Transform3D(2.9802322e-08, -1, 0, 1, 2.9802322e-08, 0, 0, 0, 1, 4, 0
 [node name="Moon" parent="." unique_id=774808875 instance=ExtResource("38_pibwh")]
 transform = Transform3D(-0.9659257, -0.08852131, -0.24321027, -0.044943463, 0.982784, -0.17920823, 0.2548869, -0.16217114, -0.95327485, 0, 21, -42)
 
+[node name="WarpZone" type="Area3D" parent="." unique_id=1098448126]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0, -9.5)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WarpZone" unique_id=1370132012]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CylinderShape3D_hxkk4")
+
+[node name="Label3D" type="Label3D" parent="WarpZone" unique_id=1684130993]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+billboard = 2
+text = "Tower"
+
+[node name="Marker3D" type="Marker3D" parent="WarpZone" unique_id=1823936913]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 10, -7)
+top_level = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WarpZone" unique_id=1282838880]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+mesh = SubResource("CylinderMesh_fk680")
+
+[node name="WarpZone2" type="Area3D" parent="." unique_id=1398560946]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -14)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WarpZone2" unique_id=1706037066]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CylinderShape3D_hxkk4")
+
+[node name="Label3D" type="Label3D" parent="WarpZone2" unique_id=1349145388]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+billboard = 2
+text = "Moon"
+
+[node name="Marker3D" type="Marker3D" parent="WarpZone2" unique_id=151519655]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 30, -42)
+top_level = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WarpZone2" unique_id=698623192]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+mesh = SubResource("CylinderMesh_fk680")
+
+[node name="WarpZone3" type="Area3D" parent="." unique_id=1217176424]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0, 12, -42)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WarpZone3" unique_id=741939963]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CylinderShape3D_hxkk4")
+
+[node name="Label3D" type="Label3D" parent="WarpZone3" unique_id=684013574]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+billboard = 2
+text = "Home"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WarpZone3" unique_id=1084531122]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+mesh = SubResource("CylinderMesh_fk680")
+
+[node name="Marker3D" type="Marker3D" parent="WarpZone3" unique_id=4043678]
+top_level = true
+
 [connection signal="body_entered" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_entered"]
 [connection signal="body_exited" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_exited"]
-[connection signal="body_entered" from="WarpArea" to="." method="_on_warp_area_body_entered"]
+[connection signal="body_entered" from="WarpZone" to="." method="_on_warp_zone_body_entered"]
+[connection signal="body_entered" from="WarpZone2" to="." method="_on_warp_zone_2_body_entered"]
+[connection signal="body_entered" from="WarpZone3" to="." method="_on_warp_zone_3_body_entered"]

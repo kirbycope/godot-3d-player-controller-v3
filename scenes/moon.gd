@@ -7,9 +7,7 @@ func _physics_process(_delta: float) -> void:
 	for i in range(players_in_range.size() - 1, -1, -1):
 		var player := players_in_range[i]
 		if is_instance_valid(player):
-			var surface_up := (player.global_position - global_position).normalized()
-			if surface_up.length_squared() > 0.001:
-				player.up_direction = surface_up
+			player.up_direction = global_position.direction_to(player.global_position)
 		else:
 			players_in_range.remove_at(i)
 
