@@ -32,4 +32,3 @@ func _on_player_detection_body_exited(body: Node3D) -> void:
 		players_in_range.erase(body)
 		if is_instance_valid(body):
 			body.up_direction = Vector3.UP
-
