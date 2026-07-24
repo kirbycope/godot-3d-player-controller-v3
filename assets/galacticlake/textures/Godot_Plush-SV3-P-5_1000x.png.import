@@ -3,16 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dcft6tk2dossq"
-valid=false
+path="res://.godot/imported/Godot_Plush-SV3-P-5_1000x.png-b8a882b79ff9dc36252981a757dc6b5f.ctex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
 source_file="res://assets/galacticlake/textures/Godot_Plush-SV3-P-5_1000x.png"
+dest_files=["res://.godot/imported/Godot_Plush-SV3-P-5_1000x.png-b8a882b79ff9dc36252981a757dc6b5f.ctex"]
 
 [params]
 
 compress/mode=1
 compress/high_quality=false
+compress/high_quality_mode=0
 compress/lossy_quality=0.7
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
