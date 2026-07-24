@@ -22,7 +22,7 @@ func _physics_process(delta: float) -> void:
 	if not player: return
 
 	# Check if the player is no longer on the floor
-	if not player.is_on_floor():
+	if not player.is_on_floor() and not player.falling_raycast.is_colliding():
 		# Start "falling"
 		player.state_machine.travel(_this_state, NodeStateMachine.States.FALLING)
 		return
@@ -36,8 +36,8 @@ func start() -> void:
 	player.current_state = _this_state
 	# Flag the player as "standing"
 	player.is_standing = true
-	# Transition the locomotion state to Standing
-	player.locomotion_state.travel("StandingLocomotion")
+	# Transition directly to the grounded locomotion that matches the equipped state.
+	player.locomotion_state.travel(String(player.get_grounded_locomotion_state()))
 
 
 ## Stop "standing".

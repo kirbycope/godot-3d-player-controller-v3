@@ -9,6 +9,7 @@ const BRACED_HANG_LOCOMOTION_BLEND_POSITION_PATH: String = "parameters/Locomotio
 const CLIMBING_LOCOMOTION_BLEND_POSITION_PATH: String = "parameters/LocomotionStateMachine/ClimbingLocomotion/blend_position"
 const CROUCHING_LOCOMOTION_BLEND_POSITION_PATH: String = "parameters/LocomotionStateMachine/CrouchingLocomotion/blend_position"
 const FREE_HANGING_LOCOMOTION_BLEND_POSITION_PATH: String = "parameters/LocomotionStateMachine/FreeHangingLocomotion/blend_position"
+const FLYING_LOCOMOTION_BLEND_POSITION_PATH: String = "parameters/LocomotionStateMachine/FlyingLocomotion/blend_position"
 const GREATSWORD_LOCOMOTION_BLEND_POSITION_PATH: String = "parameters/LocomotionStateMachine/GreatSwordLocomotion/blend_position"
 const PISTOL_LOCOMOTION_BLEND_POSITION_PATH: String = "parameters/LocomotionStateMachine/PistolLocomotion/blend_position"
 const RIFLE_LOCOMOTION_BLEND_POSITION_PATH: String = "parameters/LocomotionStateMachine/RifleLocomotion/blend_position"
@@ -19,6 +20,7 @@ const SWIMMING_LOCOMOTION_BLEND_POSITION_PATH: String = "parameters/LocomotionSt
 
 @export var animation_tree: AnimationTree
 @export var current_animation: int
+@export var enable_flying: bool = false
 @export var motion_interpolate_speed: float = 10.0
 @export var rotation_interpolate_speed: float = 10.0
 @export var swimming_root_motion_multiplier: float = 2.0
@@ -27,27 +29,99 @@ var current_state: int = -1 ## The current state of the Player (from the Node/Co
 var locomotion_state: ## Gets the [NodeStateMachine] "LocomotionStateMachine"
 	get:
 		return animation_tree.get(LOCOMOTION_STATE_PLAYBACK_PATH)
-
-# Equipment
-var equipment: Array = []
-var equipment_by_type: Dictionary = {}
-var can_player_attack: bool = false ## Does the currently equipped item allow the Player to attack?
-var can_player_shoot: bool = false ## Does the currently equipped item allow the Player to shoot?
+var equipped_axe_1h: bool:
+	get:
+		return inventory != null and inventory.has_equipment(Equipment.EquipmentType.AXE_1H)
+var equipped_axe_2h: bool:
+	get:
+		return inventory != null and inventory.has_equipment(Equipment.EquipmentType.AXE_2H)
+var equipped_bow: bool:
+	get:
+		return inventory != null and inventory.has_equipment(Equipment.EquipmentType.BOW)
+var equipped_dagger: bool:
+	get:
+		return inventory != null and inventory.has_equipment(Equipment.EquipmentType.DAGGER)
+var equipped_pistol: bool:
+	get:
+		return inventory != null and inventory.has_equipment(Equipment.EquipmentType.PISTOL)
+var equipped_rifle: bool:
+	get:
+		return inventory != null and inventory.has_equipment(Equipment.EquipmentType.RIFLE)
+var equipped_shield: bool:
+	get:
+		return inventory != null and inventory.has_equipment(Equipment.EquipmentType.SWORD_AND_SHIELD)
+var equipped_staff: bool:
+	get:
+		return inventory != null and inventory.has_equipment(Equipment.EquipmentType.STAFF)
+var equipped_sword_1h: bool:
+	get:
+		return inventory != null and inventory.has_equipment(Equipment.EquipmentType.SWORD_1H)
+var equipped_sword_2h: bool:
+	get:
+		return inventory != null and inventory.has_equipment(Equipment.EquipmentType.SWORD_2H)
+var has_move_input: bool:
+	get:
+		return player_input != null and player_input.motion.length_squared() > 0.0
+var uses_equipment_jump_variants: bool:
+	get:
+		return equipped_axe_1h \
+			or equipped_axe_2h \
+			or equipped_bow \
+			or equipped_dagger \
+			or equipped_pistol \
+			or equipped_rifle \
+			or equipped_shield \
+			or equipped_staff \
+			or equipped_sword_1h \
+			or equipped_sword_2h
+var is_hanging: bool:
+	get:
+		return is_hanging_braced or is_hanging_free
 
 # Attack Sequence (while holding equipment)
 var attack_sequence: int = 0
 var is_attacking: bool = false
-var is_attacking_1: bool = false # Attack Sequence: 1 of n
-var is_attacking_2: bool = false # Attack Sequence: 2 of n
-var is_attacking_3: bool = false # Attack Sequence: 3 of n
+var is_attacking_1: bool: # Attack Sequence: 1 of n
+	get:
+		if not is_multiplayer_authority() or animation_tree == null:
+			return false
+		var current_node: String = String(locomotion_state.get_current_node())
+		return current_node == "GreatSwordDownwardSlash" or current_node == "ShieldDownwardSlash"
+var is_attacking_2: bool: # Attack Sequence: 2 of n
+	get:
+		if not is_multiplayer_authority() or animation_tree == null:
+			return false
+		var current_node: String = String(locomotion_state.get_current_node())
+		return current_node == "GreatSwordLowSlash" or current_node == "ShieldCrossSlash"
+var is_attacking_3: bool: # Attack Sequence: 3 of n
+	get:
+		if not is_multiplayer_authority() or animation_tree == null:
+			return false
+		var current_node: String = String(locomotion_state.get_current_node())
+		return current_node == "GreatSwordPowerSlash" or current_node == "ShieldPowerSlash"
 # Bow and Arrow
-var is_aiming_bow: bool = false
-var is_drawing_arrow: bool = false
-var is_firing_arrow: bool = false
+var is_aiming_bow: bool:
+	get:
+		if not is_multiplayer_authority() or not equipped_bow:
+			return false
+		var current_node: String = String(locomotion_state.get_current_node())
+		return current_node == "ArcheryLocomotion"
+var is_drawing_arrow: bool:
+	get:
+		if not is_multiplayer_authority() or not equipped_bow:
+			return false
+		var current_node: String = String(locomotion_state.get_current_node())
+		return current_node == "BowDrawArrow"
+var is_firing_arrow: bool:
+	get:
+		if not is_multiplayer_authority() or not equipped_bow:
+			return false
+		var current_node: String = String(locomotion_state.get_current_node())
+		return current_node == "BowFireArrow"
 # Climbing
 var is_climbing: bool = false ## Is the Player currently climbing?
 var is_climbing_on: bool = false ## Is the Player currently climbing on to a ledge?
-var climbing_on_target: Vector3  ## The target position the Player is climbing on to (from ledge detection).
+var climbing_on_target: Vector3 ## The target position the Player is climbing on to (from ledge detection).
 var is_climbing_hopping_left: bool = false ## Is the Player currently hopping left while climbing?
 var is_climbing_hopping_right: bool = false ## Is the Player currently hopping right while climbing?
 var is_climbing_hopping_up: bool = false ## Is the Player currently hopping up while climbing?
@@ -65,14 +139,35 @@ var is_crouching: bool = false ## Is the Player currently crouching?
 var is_emoting: bool = false ## Is the Player currently emoting?
 var is_exhausted: bool = false ## Is the Player currently exhausted?
 var is_falling: bool = false ## Is the Player currently falling?
-var is_focusing: bool = false ## Is the Player currently focusing (forward or on a target)?
+var is_flying: bool = false ## Is the Player currently flying?
+var is_focusing: bool: ## Is the Player currently focusing (forward or on a target)?
+	get:
+		if not is_multiplayer_authority() or is_driving:
+			return false
+		return Input.is_action_pressed("focus")
 var is_jumping: bool = false ## Is the Player currently jumping?
 var is_jump_queued: bool = false ## Is the Player currently queued to jump?
-var is_mining: bool = false ## Is the Player currently mining?
-var is_logging: bool = false ## Is the Player currently logging?
+var is_mining: bool: ## Is the Player currently mining?
+	get:
+		if not is_multiplayer_authority() or animation_tree == null:
+			return false
+		var current_node: String = String(locomotion_state.get_current_node())
+		var travel_path: Variant = locomotion_state.get_travel_path()
+		return current_node == "Mining" or "Mining" in travel_path
+var is_logging: bool: ## Is the Player currently logging?
+	get:
+		if not is_multiplayer_authority() or animation_tree == null:
+			return false
+		var current_node: String = String(locomotion_state.get_current_node())
+		var travel_path: Variant = locomotion_state.get_travel_path()
+		return current_node == "Logging" or "Logging" in travel_path
 var is_paragliding: bool = false ## Is the Player currently paragliding?
 var is_paused: bool = false ## Is the Player currently paused?
-var is_shooting: bool = false ## Is the Player currently shooting?
+var is_shooting: bool: ## Is the Player currently shooting?
+	get:
+		if not is_multiplayer_authority() or is_driving or inventory == null:
+			return false
+		return Input.is_action_pressed("shoot") and inventory.can_player_shoot
 var is_skateboarding: bool = false ## Is the Player currently skateboarding?
 var is_sliding: bool = false ## Is the Player currently sliding?
 var is_sprinting: bool = false ## Is the Player currently sprinting?
@@ -89,9 +184,11 @@ var smoothed_motion: Vector2 = Vector2.ZERO
 @onready var collision_shape: CollisionShape3D = $CollisionShape3D
 @onready var controls: CanvasLayer = $Controls
 @onready var debug: CanvasLayer = $Debug
+@onready var inventory: Inventory = $Inventory
 @onready var pause: CanvasLayer = $Pause
 @onready var settings: CanvasLayer = $Settings
-@onready var initial_position: Vector3 = transform.origin
+@onready var initial_transform: Transform3D = global_transform
+@onready var falling_raycast: RayCast3D = $FallingRaycast
 @onready var hanging_braced_detection: RayCast3D = $PlayerModel/HangingBracedDetection
 @onready var ledge_detection_horizontal: RayCast3D = $PlayerModel/LedgeDetectionHorizontal
 @onready var ledge_detection_vertical: RayCast3D = $PlayerModel/LedgeDetectionHorizontal/LedgeDetectionVertical
@@ -146,6 +243,15 @@ func _input(event: InputEvent) -> void:
 	# Do nothing if not the authority
 	if not is_multiplayer_authority(): return
 
+	# Flying, Start { Microsoft: Ⓨ, Nintendo: Ⓧ, Sony: 🟕, Keyboard: [Space] }
+	if enable_flying \
+	and not is_driving \
+	and is_jumping \
+	and event.is_action_pressed("jump") \
+	and not event.is_echo():
+		state_machine.travel(current_state, NodeStateMachine.States.FLYING)
+		return
+
 	# Toggle mouse capture
 	if event.is_action_pressed("ui_cancel") and not pause.visible and not settings.visible:
 		# Check if the mouse is currently captured
@@ -166,8 +272,10 @@ func _physics_process(delta: float) -> void:
 
 	# Start falling if the player is not on the floor and not already falling.
 	if not is_on_floor() and not is_falling \
+	and not falling_raycast.is_colliding() \
 	and not is_climbing and not is_climbing_on \
 	and not is_driving \
+	and not is_flying \
 	and not is_hanging_braced and not is_hanging_free \
 	and not is_jumping and not is_jump_queued \
 	and not is_paragliding \
@@ -197,65 +305,7 @@ func _physics_process(delta: float) -> void:
 
 	## DEBUG: Remove all equipment for testing purposes.
 	if Input.is_action_just_pressed("unequip"):
-		debug_unequip_all()
-
-
-func debug_unequip_all() -> void:
-	equipment.clear()
-	equipment_by_type.clear()
-	can_player_attack = false
-	can_player_shoot = false
-	for child in skeleton.get_children():
-		if child is BoneAttachment3D:
-			child.queue_free()
-	locomotion_state.travel("StandingLocomotion")
-
-
-func rebuild_equipment_cache() -> void:
-	equipment_by_type.clear()
-	can_player_attack = false
-	can_player_shoot = false
-	for item in equipment:
-		if item == null:
-			continue
-		if "equipment_type" in item:
-			equipment_by_type[item.equipment_type] = item
-		if "can_attack" in item and item.can_attack:
-			can_player_attack = true
-		if "can_shoot" in item and item.can_shoot:
-			can_player_shoot = true
-
-
-func get_equipment_by_type(type: int) -> Node3D:
-	return equipment_by_type.get(type, null)
-
-
-func has_equipment(type: int) -> bool:
-	return equipment_by_type.has(type)
-
-
-func has_any_equipment(types: Array) -> bool:
-	for type in types:
-		if equipment_by_type.has(type):
-			return true
-	return false
-
-
-func has_heavy_weapon_equipped() -> bool:
-	return has_any_equipment([
-		Equipment.EquipmentType.AXE_2H,
-		Equipment.EquipmentType.STAFF,
-		Equipment.EquipmentType.SWORD_2H,
-	])
-
-
-func has_one_handed_or_shield_equipped() -> bool:
-	return has_any_equipment([
-		Equipment.EquipmentType.AXE_1H,
-		Equipment.EquipmentType.DAGGER,
-		Equipment.EquipmentType.SWORD_1H,
-		Equipment.EquipmentType.SWORD_AND_SHIELD,
-	])
+		inventory.debug_unequip_all()
 
 
 # https://github.com/godotengine/tps-demo/blob/master/player/gd#L86
@@ -263,9 +313,6 @@ func apply_input(delta: float) -> void:
 	# Get the target motion from the synchronized input.
 	var target_motion: Vector2 = player_input.motion
 
-	# Track if player is mining or logging.
-	is_mining = locomotion_state.get_current_node() == "Mining" or "Mining" in locomotion_state.get_travel_path()
-	is_logging = locomotion_state.get_current_node() == "Logging" or "Logging" in locomotion_state.get_travel_path()
 	# If the player is mining or logging, block regular locomotion transitions by setting the `target_motion` to zero.
 	if is_mining or is_logging:
 		target_motion = Vector2.ZERO
@@ -275,9 +322,9 @@ func apply_input(delta: float) -> void:
 	smoothed_motion = smoothed_motion.lerp(target_motion, motion_weight)
 	target_motion = smoothed_motion
 
-	# While driving, paragliding or skateboarding, block regular locomotion.
-	# Driving.gd / Paragliding.gd / Skateboarding.gd will handle movement.
-	if (is_driving and not is_entering_vehicle and not is_exiting_vehicle) or is_paragliding or is_skateboarding:
+	# While driving, paragliding, skateboarding, or flying, block regular locomotion.
+	# Driving.gd / Paragliding.gd / Skateboarding.gd / Flying.gd will handle movement.
+	if (is_driving and not is_entering_vehicle and not is_exiting_vehicle) or is_paragliding or is_skateboarding or is_flying:
 		return
 
 	# While swimming, keep SwimmingLocomotion active and feed its BlendSpace1D.
@@ -299,7 +346,7 @@ func apply_input(delta: float) -> void:
 	if not is_driving \
 	and Input.is_action_just_pressed("attack") \
 	and not is_attacking \
-	and can_player_attack:
+	and inventory.can_player_attack:
 		# Enable the "attacking" state in the NodeStateMachine. The AnimationTree will automatically transition to the "Falling" animation state.
 		state_machine.travel(current_state, NodeStateMachine.States.ATTACKING)
 
@@ -311,6 +358,7 @@ func apply_input(delta: float) -> void:
 	and not is_hanging_free \
 	and not is_skateboarding \
 	and not is_swimming \
+	and not is_flying \
 	and Input.is_action_just_pressed("jump") \
 	and ledge_detection_horizontal.is_colliding():
 		# Stop "falling", start "climbing"
@@ -326,6 +374,22 @@ func apply_input(delta: float) -> void:
 			state_machine.travel(current_state, NodeStateMachine.States.CLIMBING)
 			return
 
+	# Paragliding, Start { Microsoft: Ⓨ, Nintendo: Ⓧ, Sony: 🟕, Keyboard: [Space] }
+	if not is_driving \
+	and not is_on_floor() \
+	and Input.is_action_just_pressed("jump") \
+	and (is_falling or is_jumping) \
+	and not is_climbing \
+	and not is_hanging_braced \
+	and not is_hanging_free \
+	and not is_paragliding \
+	and not is_skateboarding \
+	and not is_swimming \
+	and not is_flying \
+	and not paraglider_raycast.is_colliding():
+		state_machine.travel(current_state, NodeStateMachine.States.PARAGLIDING)
+		return
+
 	# Crouch { Console: Left ⬤, Keyboard: [Control] }.
 	if not is_driving \
 	and Input.is_action_pressed("crouch") \
@@ -336,39 +400,6 @@ func apply_input(delta: float) -> void:
 		# Start "crouching"
 		state_machine.travel(current_state, NodeStateMachine.States.CROUCHING)
 		return
-
-	# Focus { Microsoft: 🄻T, Nintendo: Z🄻, Sony: 🄻2, Keyboard: [Right Mouse Button] }.
-	# Shoot { Microsoft: 🅁T, Nintendo: 🅁L, Sony: 🅁2, Keyboard: [Left Mouse Button] }
-	if is_driving:
-		is_focusing = false
-		is_shooting = false
-	else:
-		is_focusing = Input.is_action_pressed("focus")
-		is_shooting = Input.is_action_pressed("shoot") and can_player_shoot
-
-	# Update locomotion state based on equipped items if not in special states
-	if not is_driving and not is_swimming and not is_climbing and not is_hanging_braced and not is_hanging_free and not is_falling and not is_jumping and not is_sliding and not is_mining and not is_logging:
-		var current_state = locomotion_state.get_current_node()
-		var target_state = "StandingLocomotion"
-		var is_shield_attack_state: bool = current_state == "ShieldDownwardSlash" or current_state == "ShieldCrossSlash" or current_state == "ShieldPowerSlash"
-
-		if is_crouching:
-			target_state = "CrouchingLocomotion"
-		elif has_heavy_weapon_equipped():
-			target_state = "GreatSwordLocomotion"
-		elif has_equipment(Equipment.EquipmentType.BOW):
-			target_state = "BowLocomotion" if not is_shooting else "ArcheryLocomotion"
-		elif has_one_handed_or_shield_equipped():
-			target_state = "ShieldLocomotion"
-		elif has_equipment(Equipment.EquipmentType.PISTOL):
-			target_state = "PistolLocomotion"
-		elif has_equipment(Equipment.EquipmentType.RIFLE):
-			target_state = "RifleLocomotion"
-
-		# Transition if target differs from current (skip Jump states but allow transition from any normal state)
-		if current_state != target_state:
-			if not current_state.contains("Jump") and not is_shield_attack_state and current_state != "Mining" and current_state != "Logging":
-				locomotion_state.travel(target_state)
 
 	# Jump { Microsoft: Ⓨ, Nintendo: Ⓧ, Sony: 🟕, Keyboard: [Space] }
 	if not is_driving \
@@ -412,7 +443,6 @@ func apply_input(delta: float) -> void:
 	var is_first_person: bool = camera is Camera and (camera as Camera).perspective == Camera.Perspective.FIRST_PERSON
 	# Handle movement is strafing
 	if not is_driving and (is_shooting or is_focusing or is_first_person):
-
 		# Rotate to face the camera direction when focusing, shooting, or in first person
 		if (is_shooting or not is_focusing or is_first_person) and not is_firing_arrow and not is_hanging_braced and not is_hanging_free and not is_climbing:
 			var camera_basis := spring_arm.global_transform.basis
@@ -421,27 +451,27 @@ func apply_input(delta: float) -> void:
 			if camera_forward.length_squared() > 0.001:
 				camera_forward = camera_forward.normalized()
 				var q_from: Quaternion = orientation.basis.get_rotation_quaternion()
-				var q_to: Quaternion = Basis.looking_at(-camera_forward).get_rotation_quaternion()
+				var q_to: Quaternion = Basis.looking_at(-camera_forward, up_direction).get_rotation_quaternion()
 				orientation.basis = Basis(q_from.slerp(q_to, delta * rotation_interpolate_speed))
 		if is_crouching:
 			animation_tree.set(CROUCHING_LOCOMOTION_BLEND_POSITION_PATH, target_motion)
 		else:
-			if has_equipment(Equipment.EquipmentType.BOW):
+			if inventory.has_equipment(Equipment.EquipmentType.BOW):
 				if is_shooting:
 					animation_tree.set(ARCHERY_LOCOMOTION_BLEND_POSITION_PATH, target_motion)
 				else:
 					animation_tree.set(BOW_LOCOMOTION_BLEND_POSITION_PATH, target_motion)
-			elif has_any_equipment([
+			elif inventory.has_any_equipment([
 				Equipment.EquipmentType.AXE_1H,
 				Equipment.EquipmentType.DAGGER,
 				Equipment.EquipmentType.SWORD_1H,
 			]):
 				animation_tree.set(SHIELD_LOCOMOTION_BLEND_POSITION_PATH, target_motion)
-			elif has_heavy_weapon_equipped():
+			elif inventory.has_heavy_weapon_equipped():
 				animation_tree.set(GREATSWORD_LOCOMOTION_BLEND_POSITION_PATH, target_motion)
-			elif has_equipment(Equipment.EquipmentType.PISTOL):
+			elif inventory.has_equipment(Equipment.EquipmentType.PISTOL):
 				animation_tree.set(PISTOL_LOCOMOTION_BLEND_POSITION_PATH, target_motion)
-			elif has_equipment(Equipment.EquipmentType.RIFLE):
+			elif inventory.has_equipment(Equipment.EquipmentType.RIFLE):
 				animation_tree.set(RIFLE_LOCOMOTION_BLEND_POSITION_PATH, target_motion)
 			else:
 				animation_tree.set(STANDING_LOCOMOTION_BLEND_POSITION_PATH, target_motion)
@@ -455,7 +485,7 @@ func apply_input(delta: float) -> void:
 		if target_dir.length_squared() > 0.001 and not is_firing_arrow and not is_hanging_braced and not is_hanging_free and not is_climbing:
 			target_dir = target_dir.normalized()
 			var q_from: Quaternion = orientation.basis.get_rotation_quaternion()
-			var q_to: Quaternion = Basis.looking_at(-target_dir).get_rotation_quaternion()
+			var q_to: Quaternion = Basis.looking_at(-target_dir, up_direction).get_rotation_quaternion()
 			orientation.basis = Basis(q_from.slerp(q_to, delta * rotation_interpolate_speed))
 		# While climbing or hanging keep (rotate towards) facing the wall surface from the LedgeDetectionHorizontal raycast
 		if is_climbing or is_hanging_braced or is_hanging_free:
@@ -466,7 +496,7 @@ func apply_input(delta: float) -> void:
 				if wall_dir.length_squared() > 0.001:
 					wall_dir = wall_dir.normalized()
 					var q_from: Quaternion = orientation.basis.get_rotation_quaternion()
-					var q_to: Quaternion = Basis.looking_at(-wall_dir).get_rotation_quaternion()
+					var q_to: Quaternion = Basis.looking_at(-wall_dir, up_direction).get_rotation_quaternion()
 					orientation.basis = Basis(q_from.slerp(q_to, delta * rotation_interpolate_speed))
 		if is_climbing:
 			animation_tree.set(CLIMBING_LOCOMOTION_BLEND_POSITION_PATH, target_motion)
@@ -478,18 +508,18 @@ func apply_input(delta: float) -> void:
 			var anim_blend := Vector2(0.0, target_motion.length())
 			if is_crouching:
 				animation_tree.set(CROUCHING_LOCOMOTION_BLEND_POSITION_PATH, anim_blend)
-			if has_equipment(Equipment.EquipmentType.BOW):
+			if inventory.has_equipment(Equipment.EquipmentType.BOW):
 				if is_shooting:
 					animation_tree.set(ARCHERY_LOCOMOTION_BLEND_POSITION_PATH, anim_blend)
 				else:
 					animation_tree.set(BOW_LOCOMOTION_BLEND_POSITION_PATH, anim_blend)
-			elif has_one_handed_or_shield_equipped():
+			elif inventory.has_one_handed_or_shield_equipped():
 				animation_tree.set(SHIELD_LOCOMOTION_BLEND_POSITION_PATH, anim_blend)
-			elif has_heavy_weapon_equipped():
+			elif inventory.has_heavy_weapon_equipped():
 				animation_tree.set(GREATSWORD_LOCOMOTION_BLEND_POSITION_PATH, anim_blend)
-			elif has_equipment(Equipment.EquipmentType.PISTOL):
+			elif inventory.has_equipment(Equipment.EquipmentType.PISTOL):
 				animation_tree.set(PISTOL_LOCOMOTION_BLEND_POSITION_PATH, anim_blend)
-			elif has_equipment(Equipment.EquipmentType.RIFLE):
+			elif inventory.has_equipment(Equipment.EquipmentType.RIFLE):
 				animation_tree.set(RIFLE_LOCOMOTION_BLEND_POSITION_PATH, anim_blend)
 			else:
 				animation_tree.set(STANDING_LOCOMOTION_BLEND_POSITION_PATH, anim_blend)
@@ -532,16 +562,7 @@ func apply_input(delta: float) -> void:
 	else:
 		vertical_speed += get_gravity().dot(up_direction) * 1.5 * delta
 	velocity = h_velocity.slide(up_direction) + (up_direction * vertical_speed)
-	set_velocity(velocity)
-	set_up_direction(up_direction)
-	move_and_slide()
-
-	orientation.origin = Vector3() # Clear accumulated root motion displacement (was applied to speed).
-	orientation = orientation.orthonormalized() # Orthonormalize orientation.
-
-	# Rotate the Player Model (unless entering/exiting a vehicle)
-	if not (is_driving and (is_entering_vehicle or is_exiting_vehicle)):
-		player_model.global_transform.basis = orientation.basis
+	update_movement_and_rotation(delta)
 
 
 ## Detect if the player is in front of a ledge and can hang from it and/or climb on to it.
@@ -571,9 +592,29 @@ func detect_ledge() -> bool:
 
 ## Called by the animation(s) using "Call Method Track" to execute the jump logic at the right time. 
 func execute_jump() -> void:
+	if not is_jump_queued:
+		return
 	velocity = velocity.slide(up_direction) + (up_direction * 5.0)
 	is_jump_queued = false
 	is_jumping = true
+
+## Gets the grounded locomotion state that matches the current equipment and intent.
+func get_grounded_locomotion_state() -> StringName:
+	if is_crouching:
+		return &"CrouchingLocomotion"
+	if equipped_axe_2h or equipped_staff or equipped_sword_2h:
+		return &"GreatSwordLocomotion"
+	if equipped_bow:
+		if is_shooting:
+			return &"ArcheryLocomotion"
+		return &"BowLocomotion"
+	if equipped_axe_1h or equipped_dagger or equipped_shield or equipped_sword_1h:
+		return &"ShieldLocomotion"
+	if equipped_pistol:
+		return &"PistolLocomotion"
+	if equipped_rifle:
+		return &"RifleLocomotion"
+	return &"StandingLocomotion"
 
 
 ## Gets the player's forward direction projected onto the movement plane.
@@ -608,3 +649,30 @@ func sfx_footsteps_slide_play():
 ## Reset the attack sequence when the attack sequence timer times out.
 func _on_attack_sequence_timer_timeout() -> void:
 	attack_sequence = 0
+
+
+## Applies the current velocity, moves the player, and updates the orientation to match the up_direction.
+func update_movement_and_rotation(delta: float) -> void:
+	set_velocity(velocity)
+	set_up_direction(up_direction)
+	move_and_slide()
+
+	orientation.origin = Vector3() # Clear accumulated root motion displacement (was applied to speed).
+	orientation = orientation.orthonormalized() # Orthonormalize orientation.
+
+	# Smoothly align character body and model orientation Y-axis with up_direction
+	var current_up := orientation.basis.y
+	if not current_up.is_equal_approx(up_direction):
+		var next_up := current_up.slerp(up_direction, delta * 10.0).normalized()
+		var q_align := Quaternion(current_up, next_up)
+		orientation.basis = Basis(q_align) * orientation.basis
+
+	var current_body_up := global_basis.y
+	if not current_body_up.is_equal_approx(up_direction):
+		var next_body_up := current_body_up.slerp(up_direction, delta * 10.0).normalized()
+		var q_align_body := Quaternion(current_body_up, next_body_up)
+		global_basis = Basis(q_align_body) * global_basis
+
+	# Rotate the Player Model (unless entering/exiting a vehicle)
+	if not (is_driving and (is_entering_vehicle or is_exiting_vehicle)):
+		player_model.global_transform.basis = orientation.basis

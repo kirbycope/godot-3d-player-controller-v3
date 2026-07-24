@@ -34,9 +34,9 @@
 [ext_resource type="PackedScene" uid="uid://yo68ojwutmqp" path="res://scenes/ore_large.tscn" id="31_tel4y"]
 [ext_resource type="Texture2D" uid="uid://b810kdta7g8wk" path="res://assets/quaternius/nature/preview.jpg" id="32_5q0nq"]
 [ext_resource type="PackedScene" uid="uid://d3o4cq6mgg8ni" path="res://scenes/tree_01.tscn" id="33_dgi5k"]
-[ext_resource type="PackedScene" uid="uid://brmnvx02xgur8" path="res://assets/BinbunVFX/magic_areas/effects/basic_area/basic_area_vfx_03.tscn" id="34_dgi5k"]
 [ext_resource type="PackedScene" uid="uid://bwngmjoqsrtcx" path="res://scenes/crv.tscn" id="37_fuf3a"]
 [ext_resource type="PackedScene" uid="uid://drmvyehu4dq43" path="res://addons/3d_player_controller/assets/sketchfab/skateboard/skateboard.tscn" id="37_pibwh"]
+[ext_resource type="PackedScene" uid="uid://bea6xq7pi7e0a" path="res://scenes/moon.tscn" id="38_pibwh"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -419,9 +419,16 @@ albedo_texture = ExtResource("32_5q0nq")
 material = SubResource("StandardMaterial3D_j8jky")
 size = Vector2(4.685, 2.635)
 
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_k78ss"]
-height = 0.75
-radius = 0.75
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_hxkk4"]
+height = 1.8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fuf3a"]
+transparency = 1
+albedo_color = Color(0.34509805, 1, 1, 0.18039216)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_fk680"]
+material = SubResource("StandardMaterial3D_fuf3a")
+height = 1.8
 
 [node name="World" type="Node3D" unique_id=336392758]
 script = ExtResource("1_h2yge")
@@ -562,6 +569,69 @@ shape = SubResource("BoxShape3D_hxkk4")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.5, 0)
 mesh = SubResource("QuadMesh_hxkk4")
 
+[node name="Stairs" type="Node3D" parent="NavigationRegion3D" unique_id=1061546804]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0, -2.5)
+
+[node name="Step" type="CSGBox3D" parent="NavigationRegion3D/Stairs" unique_id=1654224905 groups=["WOOD"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49999985, 0.075, -0.18014407)
+use_collision = true
+size = Vector3(1, 0.15, 0.35)
+material = SubResource("StandardMaterial3D_dwbse")
+
+[node name="Step2" type="CSGBox3D" parent="NavigationRegion3D/Stairs" unique_id=974805911 groups=["WOOD"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49999985, 0.22500001, -0.530144)
+use_collision = true
+size = Vector3(1, 0.15, 0.35)
+material = SubResource("StandardMaterial3D_dwbse")
+
+[node name="Step3" type="CSGBox3D" parent="NavigationRegion3D/Stairs" unique_id=740934328 groups=["WOOD"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49999985, 0.375, -0.8801441)
+use_collision = true
+size = Vector3(1, 0.15, 0.35)
+material = SubResource("StandardMaterial3D_dwbse")
+
+[node name="Step4" type="CSGBox3D" parent="NavigationRegion3D/Stairs" unique_id=1293976723 groups=["WOOD"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49999985, 0.52500004, -1.2301443)
+use_collision = true
+size = Vector3(1, 0.15, 0.35)
+material = SubResource("StandardMaterial3D_dwbse")
+
+[node name="Step5" type="CSGBox3D" parent="NavigationRegion3D/Stairs" unique_id=527660983 groups=["WOOD"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49999985, 0.675, -1.5801439)
+use_collision = true
+size = Vector3(1, 0.15, 0.35)
+material = SubResource("StandardMaterial3D_dwbse")
+
+[node name="Step6" type="CSGBox3D" parent="NavigationRegion3D/Stairs" unique_id=1486196202 groups=["WOOD"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49999985, 0.82500005, -1.9301438)
+use_collision = true
+size = Vector3(1, 0.15, 0.35)
+material = SubResource("StandardMaterial3D_dwbse")
+
+[node name="Step7" type="CSGBox3D" parent="NavigationRegion3D/Stairs" unique_id=2032304129 groups=["WOOD"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49999985, 0.975, -2.2801442)
+use_collision = true
+size = Vector3(1, 0.15, 0.35)
+material = SubResource("StandardMaterial3D_dwbse")
+
+[node name="Step8" type="CSGBox3D" parent="NavigationRegion3D/Stairs" unique_id=1328243979 groups=["WOOD"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49999985, 1.125, -2.6301436)
+use_collision = true
+size = Vector3(1, 0.15, 0.35)
+material = SubResource("StandardMaterial3D_dwbse")
+
+[node name="Step9" type="CSGBox3D" parent="NavigationRegion3D/Stairs" unique_id=427906979 groups=["WOOD"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49999985, 1.2750001, -2.980144)
+use_collision = true
+size = Vector3(1, 0.15, 0.35)
+material = SubResource("StandardMaterial3D_dwbse")
+
+[node name="Step10" type="CSGBox3D" parent="NavigationRegion3D/Stairs" unique_id=2106758808 groups=["WOOD"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49999985, 1.425, -3.330144)
+use_collision = true
+size = Vector3(1, 0.15, 0.35)
+material = SubResource("StandardMaterial3D_dwbse")
+
 [node name="Player" parent="." unique_id=994458497 instance=ExtResource("1_0xm2m")]
 
 [node name="N_Hance_Studio_1" type="Node3D" parent="." unique_id=1622472344]
@@ -646,6 +716,7 @@ script = ExtResource("26_arrow")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Bow_Newbie_01/Arrow" unique_id=1539438757]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.20000005, 4.7683716e-07)
 shape = SubResource("CylinderShape3D_5pyta")
+disabled = true
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="N_Hance_Studio_1/SK_Bow_Newbie_01/Arrow" unique_id=1399478126]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.20000005, 0)
@@ -867,26 +938,76 @@ mesh = SubResource("QuadMesh_5pyta")
 [node name="Tree01" parent="Quaternius" unique_id=38701300 instance=ExtResource("33_dgi5k")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -4.7683716e-07, 0, 1)
 
-[node name="WarpArea" type="Area3D" parent="." unique_id=1308192546]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 1, -10)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WarpArea" unique_id=115790568]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.375, 0)
-shape = SubResource("CylinderShape3D_k78ss")
-
-[node name="WarpPointA" parent="WarpArea" unique_id=2123776133 instance=ExtResource("34_dgi5k")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
-light_enable = false
-
-[node name="WarpPointB" type="Marker3D" parent="WarpArea" unique_id=311705794]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9, 3)
-
 [node name="CRV" parent="." unique_id=751190287 instance=ExtResource("37_fuf3a")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 3, 0, -1)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 10, 0, 0)
 
 [node name="Skateboard" parent="." unique_id=1958283666 instance=ExtResource("37_pibwh")]
 transform = Transform3D(2.9802322e-08, -1, 0, 1, 2.9802322e-08, 0, 0, 0, 1, 4, 0.9169763, 3.982221)
 
+[node name="Moon" parent="." unique_id=774808875 instance=ExtResource("38_pibwh")]
+transform = Transform3D(-0.9659257, -0.08852131, -0.24321027, -0.044943463, 0.982784, -0.17920823, 0.2548869, -0.16217114, -0.95327485, 0, 21, -42)
+
+[node name="WarpZone" type="Area3D" parent="." unique_id=1098448126]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0, -9.5)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WarpZone" unique_id=1370132012]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CylinderShape3D_hxkk4")
+
+[node name="Label3D" type="Label3D" parent="WarpZone" unique_id=1684130993]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+billboard = 2
+text = "Tower"
+
+[node name="Marker3D" type="Marker3D" parent="WarpZone" unique_id=1823936913]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 10, -7)
+top_level = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WarpZone" unique_id=1282838880]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+mesh = SubResource("CylinderMesh_fk680")
+
+[node name="WarpZone2" type="Area3D" parent="." unique_id=1398560946]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -14)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WarpZone2" unique_id=1706037066]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CylinderShape3D_hxkk4")
+
+[node name="Label3D" type="Label3D" parent="WarpZone2" unique_id=1349145388]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+billboard = 2
+text = "Moon"
+
+[node name="Marker3D" type="Marker3D" parent="WarpZone2" unique_id=151519655]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 30, -42)
+top_level = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WarpZone2" unique_id=698623192]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+mesh = SubResource("CylinderMesh_fk680")
+
+[node name="WarpZone3" type="Area3D" parent="." unique_id=1217176424]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0, 12, -42)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WarpZone3" unique_id=741939963]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CylinderShape3D_hxkk4")
+
+[node name="Label3D" type="Label3D" parent="WarpZone3" unique_id=684013574]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+billboard = 2
+text = "Home"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WarpZone3" unique_id=1084531122]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+mesh = SubResource("CylinderMesh_fk680")
+
+[node name="Marker3D" type="Marker3D" parent="WarpZone3" unique_id=4043678]
+top_level = true
+
 [connection signal="body_entered" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_entered"]
 [connection signal="body_exited" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_exited"]
-[connection signal="body_entered" from="WarpArea" to="." method="_on_warp_area_body_entered"]
+[connection signal="body_entered" from="WarpZone" to="." method="_on_warp_zone_body_entered"]
+[connection signal="body_entered" from="WarpZone2" to="." method="_on_warp_zone_2_body_entered"]
+[connection signal="body_entered" from="WarpZone3" to="." method="_on_warp_zone_3_body_entered"]

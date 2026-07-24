@@ -77,6 +77,9 @@ func equip(player: Player) -> void:
 
 	if not bone_attachment_bone_name or not player:
 		return
+	if not player.inventory:
+		push_error("Inventory not found on player!")
+		return
 
 	# 1. Find the Skeleton3D on the player (adjust the node path if needed)
 	var skeleton: Skeleton3D = player.get_node_or_null("PlayerModel/Armature/GeneralSkeleton") 
@@ -87,19 +90,27 @@ func equip(player: Player) -> void:
 	# 2. Handle existing and conflicting attachments
 	for child in skeleton.get_children():
 		if child is BoneAttachment3D:
-			var is_exclusive_attachment := false
+			var is_equipment_attachment: bool = false
+			var is_exclusive_attachment: bool = false
 			for sub_child in child.get_children():
+				if "equipment_type" in sub_child:
+					is_equipment_attachment = true
 				if "is_exclusive" in sub_child and sub_child.is_exclusive:
 					is_exclusive_attachment = true
 					break
+
+			# Ignore built-in bone attachments (e.g. paraglider/camera anchors)
+			# that do not currently hold equipped items.
+			if not is_equipment_attachment:
+				continue
 
 			# Remove any existing attachment on this specific bone,
 			# OR unequip all other equipment types if equipping an exclusive/two-handed weapon,
 			# OR unequip exclusive/two-handed weapons if equipping any new item.
 			if child.bone_name == bone_attachment_bone_name or is_exclusive or is_exclusive_attachment:
 				for sub_child in child.get_children():
-					if "equipment_type" in sub_child and player.equipment.has(sub_child):
-						player.equipment.erase(sub_child)
+					if "equipment_type" in sub_child:
+						player.inventory.remove_equipment(sub_child)
 				skeleton.remove_child(child)
 				child.queue_free() # Clean it up from memory
 
@@ -117,11 +128,7 @@ func equip(player: Player) -> void:
 	_configure_animation_trees(equipment_instance, equipment_instance)
 
 	# 5. Add a reference to this equipment to the player
-	if not player.equipment.has(equipment_instance):
-		player.equipment.append(equipment_instance)
-
-	# 6. Rebuild quick lookup/cache so input logic does O(1) reads per frame.
-	player.rebuild_equipment_cache()
+	player.inventory.add_equipment(equipment_instance)
 
 
 func _disable_collisions(node: Node) -> void:
