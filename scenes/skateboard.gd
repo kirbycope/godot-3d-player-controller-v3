@@ -18,6 +18,7 @@ func _input(event: InputEvent) -> void:
 	and not event.is_echo():
 		# Stop skateboarding and start standing
 		player.state_machine.travel(player.current_state, _this_state)
+		return
 
 
 func display_menu(_player) -> void:
@@ -59,6 +60,7 @@ func equip(_player) -> void:
 		return
 	player.skateboard.show()
 	player.state_machine.travel(player.current_state, _this_state)
+	return
 
 
 func unequip(_player) -> void:
@@ -68,3 +70,4 @@ func unequip(_player) -> void:
 		return
 	player.skateboard.hide()
 	player.state_machine.travel(_this_state, NodeStateMachine.States.STANDING)
+	return

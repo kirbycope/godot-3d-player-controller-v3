@@ -31,35 +31,49 @@ func _physics_process(_delta: float) -> void:
 	if player:
 		# If we're below -40, respawn (teleport to the initial position).
 		if player.global_position.y < -40.0:
-			player.global_position = Vector3(0.0, 0.0, 0.0)
+			_warp(player, player.initial_transform)
 
 
 ## Called when a body enters the "Pool"
 func _on_player_detection_body_entered(body: Node3D) -> void:
 	if body is Player:
+		var swimming_player: Player = body as Player
 		# Start swimming (if not already swimming and not in a car/vehicle)
-		if not body.is_swimming and not body.is_driving and body.is_driving_in == null and not body.is_entering_vehicle and not body.is_exiting_vehicle:
-			body.state_machine.travel(body.current_state, NodeStateMachine.States.SWIMMING)
+		if not swimming_player.is_swimming and not swimming_player.is_driving and swimming_player.is_driving_in == null and not swimming_player.is_entering_vehicle and not swimming_player.is_exiting_vehicle:
+			swimming_player.state_machine.travel(swimming_player.current_state, NodeStateMachine.States.SWIMMING)
+			return
 
 
 ## Called when a body exits the "Pool"
 func _on_player_detection_body_exited(body: Node3D) -> void:
 	if body is Player:
+		var swimming_player: Player = body as Player
 		# Stop swimming (if currently swimming)
-		if body.is_swimming:
-			body.is_swimming = false # This will trigger the `stop()` in `swimming.gd`
+		if swimming_player.is_swimming:
+			swimming_player.is_swimming = false # This will trigger the `stop()` in `swimming.gd`
 
 
 func _on_warp_zone_body_entered(body: Node3D) -> void:
-	if body is Player:
-		body.global_position = $WarpZone/Marker3D.global_position
+	var target_marker: Marker3D = $WarpZone/Marker3D as Marker3D
+	_warp(body, target_marker.global_transform)
 
 
 func _on_warp_zone_2_body_entered(body: Node3D) -> void:
-	if body is Player:
-		body.global_position = $WarpZone2/Marker3D.global_position
+	var target_marker: Marker3D = $WarpZone2/Marker3D as Marker3D
+	_warp(body, target_marker.global_transform)
 
 
 func _on_warp_zone_3_body_entered(body: Node3D) -> void:
+	var target_marker: Marker3D = $WarpZone3/Marker3D as Marker3D
+	_warp(body, target_marker.global_transform)
+
+
+func _warp(body: Node3D, target_transform: Transform3D) -> void:
 	if body is Player:
-		body.global_position = $WarpZone3/Marker3D.global_position
+		var warp_player: Player = body as Player
+		warp_player.global_transform = target_transform
+		warp_player.velocity = Vector3.ZERO
+		warp_player.up_direction = target_transform.basis.y.normalized()
+		warp_player.orientation = Transform3D(warp_player.global_transform.basis, Vector3.ZERO)
+		warp_player.player_model.transform = warp_player.initial_player_model_transform
+		warp_player.collision_shape.transform = warp_player.initial_collision_shape_transform

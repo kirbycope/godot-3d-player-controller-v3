@@ -1004,6 +1004,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 mesh = SubResource("CylinderMesh_fk680")
 
 [node name="Marker3D" type="Marker3D" parent="WarpZone3" unique_id=4043678]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.001, 0)
 top_level = true
 
 [connection signal="body_entered" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_entered"]

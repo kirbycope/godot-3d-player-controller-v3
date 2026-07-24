@@ -24,6 +24,7 @@ func _input(event: InputEvent) -> void:
 					player.player_model.global_transform = enter_car.global_transform
 					player.velocity = Vector3.ZERO
 				player.state_machine.travel(player.current_state, NodeStateMachine.States.DRIVING)
+				return
 
 
 func display_menu(_player: Player) -> void:
