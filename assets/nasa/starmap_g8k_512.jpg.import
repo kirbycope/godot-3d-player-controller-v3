@@ -17,6 +17,7 @@ dest_files=["res://.godot/imported/starmap_g8k_512.jpg-efb3489ba14d369f2b1e8a69b
 
 compress/mode=1
 compress/high_quality=false
+compress/high_quality_mode=0
 compress/lossy_quality=0.7
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0

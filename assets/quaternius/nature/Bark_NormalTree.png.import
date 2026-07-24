@@ -17,6 +17,7 @@ dest_files=["res://.godot/imported/Bark_NormalTree.png-798ea1b3d9f3c4b385cf93d17
 
 compress/mode=1
 compress/high_quality=false
+compress/high_quality_mode=0
 compress/lossy_quality=0.7
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0

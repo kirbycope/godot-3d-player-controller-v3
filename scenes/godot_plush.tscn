@@ -15,7 +15,7 @@ freeze_mode = 1
 [node name="godou" parent="." unique_id=959586525 instance=ExtResource("1_dxr3v")]
 transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
 
-[node name="Skeleton3D" parent="godou/Armature" parent_id_path=PackedInt32Array(959586525, 1090651911) index="0" unique_id=122023951]
+[node name="Skeleton3D" parent="godou/Armature" parent_id_path=PackedInt32Array(959586525, 148172171) index="0" unique_id=1756979688]
 bones/2/position = Vector3(0.50086606, 1.1833242, 7.690962e-09)
 bones/2/rotation = Quaternion(6.8918034e-08, 3.0286177e-08, -0.22782151, 0.9737029)
 bones/3/position = Vector3(1.1233708, 0.6824583, -5.960485e-08)
@@ -145,7 +145,7 @@ settings/3/joints/2/bone = 17
 settings/3/enable_all_child_collisions = true
 settings/3/exclude_collision_count = 0
 
-[node name="AnimationPlayer" parent="godou" index="1" unique_id=258129904]
+[node name="AnimationPlayer" parent="godou" index="1" unique_id=244553030]
 autoplay = &"up"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1348440247]

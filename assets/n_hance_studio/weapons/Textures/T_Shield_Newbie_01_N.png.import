@@ -19,6 +19,7 @@ dest_files=["res://.godot/imported/T_Shield_Newbie_01_N.png-0e55626f125f1d9a286c
 
 compress/mode=2
 compress/high_quality=false
+compress/high_quality_mode=0
 compress/lossy_quality=0.7
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0

@@ -19,6 +19,7 @@ dest_files=["res://.godot/imported/T_Staff_Newbie_01_N.png-0c933e6bf24e1b099e915
 
 compress/mode=2
 compress/high_quality=false
+compress/high_quality_mode=0
 compress/lossy_quality=0.7
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
