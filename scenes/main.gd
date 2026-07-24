@@ -19,6 +19,8 @@ func _input(event: InputEvent) -> void:
 	if $ClickToStart.visible:
 		if event is InputEventScreenTouch or event is InputEventMouseButton:
 			$ClickToStart.hide()
+			# Set the mouse mode to captured to hide the mouse cursor
+			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 
 ## Called every physics frame. 'delta' is the elapsed time since the previous frame.
