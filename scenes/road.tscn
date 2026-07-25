@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://ceyrqy0cvueei"]
+
+[ext_resource type="Texture2D" uid="uid://t821uqbpu3u7" path="res://assets/kenney_nl/Road Textures/PNG/Retina/roadTexture_13.png" id="1_mv8x7"]
+
+[sub_resource type="Curve3D" id="Curve3D_7icjy"]
+closed = true
+_data = {
+"points": PackedVector3Array(0, 0, -20, 0, 0, 20, -40, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 20, 0, 0, -20, 40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -20),
+"tilts": PackedFloat32Array(0, 0, 0, 0)
+}
+point_count = 4
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mv8x7"]
+albedo_texture = ExtResource("1_mv8x7")
+uv1_scale = Vector3(0.5, 6, 1)
+
+[node name="Road" type="Node3D" unique_id=748822035]
+
+[node name="Path3D" type="Path3D" parent="." unique_id=796184765]
+curve = SubResource("Curve3D_7icjy")
+
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="Path3D" unique_id=1075232958]
+use_collision = true
+polygon = PackedVector2Array(0, 0, -2, 0, -2, 0.1, 0, 0.1, 2, 0.1, 2, 0)
+mode = 2
+path_node = NodePath("..")
+path_interval_type = 0
+path_interval = 1.0
+path_simplify_angle = 0.0
+path_rotation = 1
+path_rotation_accurate = true
+path_local = false
+path_continuous_u = true
+path_u_distance = 6.0
+path_joined = false
+material = SubResource("StandardMaterial3D_mv8x7")

@@ -553,6 +553,7 @@ _data = {
 }
 
 [node name="CRV" type="VehicleBody3D" unique_id=782070933]
+mass = 333.0
 script = ExtResource("1_ndq4s")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1739860576]
@@ -750,7 +751,7 @@ wheel_radius = 0.35
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 0)
 
 [node name="DriverSeat" type="Marker3D" parent="." unique_id=1951315047]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.465, 0.05, 0.65)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42, 0.05, 0.65)
 
 [node name="y_bot_root" parent="DriverSeat" unique_id=982613326 instance=ExtResource("2_0r7jk")]
 process_mode = 4
@@ -780,6 +781,6 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 1
 message_end = "to drive car"
 
 [node name="FirstPersonCamera" type="Camera3D" parent="." unique_id=1495609120]
-transform = Transform3D(-1, 0, 8.742277e-08, 0, 0.99999994, 0, -8.742278e-08, 0, -0.99999994, 0.3, 1.333, 0.7)
+transform = Transform3D(-1, 0, 8.742277e-08, 0, 0.99999994, 0, -8.742278e-08, 0, -0.99999994, 0.42, 1.333, 0.75)
 
 [editable path="Honda CRV 2023"]

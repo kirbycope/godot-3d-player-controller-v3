@@ -1,5 +1,9 @@
 extends VehicleBody3D
 
+@export var max_acceleration_force: float = 1000.0
+@export var max_brake_force: float = 500.0
+@export var max_reverse_force: float = -500.0
+
 var menu_displayed: bool = false
 var player: Player
 

@@ -3,9 +3,9 @@
 [ext_resource type="PackedScene" uid="uid://ct7n8imyllhbo" path="res://addons/3d_player_controller/player.tscn" id="1_0xm2m"]
 [ext_resource type="Script" uid="uid://bbwlgibrls8fb" path="res://scenes/main.gd" id="1_h2yge"]
 [ext_resource type="Material" uid="uid://smkievpeajs3" path="res://assets/ambientcg_com/grass_001/Grass001_1K-JPG.tres" id="2_h2yge"]
-[ext_resource type="Texture2D" uid="uid://bx5wuwx7autid" path="res://addons/3d_player_controller/assets/kenney_nl/Prototype Textures/Vector/texture_12.svg" id="4_gqmmt"]
+[ext_resource type="Texture2D" uid="uid://bx5wuwx7autid" path="res://assets/kenney_nl/Prototype Textures/Vector/texture_12.svg" id="4_gqmmt"]
 [ext_resource type="Shader" uid="uid://c5ati1mmy6d7m" path="res://assets/godotshaders/wind_waker_2d_water_shader.gdshader" id="5_j8jky"]
-[ext_resource type="Texture2D" uid="uid://ceiimv767w1ec" path="res://addons/3d_player_controller/assets/kenney_nl/Prototype Textures/Vector/texture_04.svg" id="5_yc10j"]
+[ext_resource type="Texture2D" uid="uid://ceiimv767w1ec" path="res://assets/kenney_nl/Prototype Textures/Vector/texture_04.svg" id="5_yc10j"]
 [ext_resource type="Texture2D" uid="uid://cw7nfaedba0m5" path="res://assets/n_hance_studio/weapons/n_hance_studio_newbie_weapons.png" id="6_jscy8"]
 [ext_resource type="PackedScene" uid="uid://d2e1lgjtlptk8" path="res://assets/n_hance_studio/weapons/SK_Axe_1H_Newbie_01.fbx" id="7_pm3ni"]
 [ext_resource type="Script" uid="uid://d0u7oh1rirfy4" path="res://addons/3d_player_controller/equipment.gd" id="8_gqmmt"]
@@ -36,6 +36,7 @@
 [ext_resource type="PackedScene" uid="uid://d3o4cq6mgg8ni" path="res://scenes/tree_01.tscn" id="33_dgi5k"]
 [ext_resource type="PackedScene" uid="uid://bwngmjoqsrtcx" path="res://scenes/crv.tscn" id="37_fuf3a"]
 [ext_resource type="PackedScene" uid="uid://drmvyehu4dq43" path="res://addons/3d_player_controller/assets/sketchfab/skateboard/skateboard.tscn" id="37_pibwh"]
+[ext_resource type="PackedScene" uid="uid://ceyrqy0cvueei" path="res://scenes/road.tscn" id="38_c6pm6"]
 [ext_resource type="PackedScene" uid="uid://bea6xq7pi7e0a" path="res://scenes/moon.tscn" id="38_pibwh"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
@@ -59,10 +60,10 @@ cell_height = 0.1
 
 [sub_resource type="BoxMesh" id="BoxMesh_senyo"]
 material = ExtResource("2_h2yge")
-size = Vector3(32, 1, 32)
+size = Vector3(96, 1, 48)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_jnf5c"]
-size = Vector3(32, 1, 32)
+size = Vector3(96, 1, 48)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_senyo"]
 albedo_texture = ExtResource("5_yc10j")
@@ -480,9 +481,11 @@ navigation_mesh = SubResource("NavigationMesh_senyo")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="NavigationRegion3D/Ground" unique_id=1565248837]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8)
 mesh = SubResource("BoxMesh_senyo")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/Ground" unique_id=753789842]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8)
 shape = SubResource("BoxShape3D_jnf5c")
 
 [node name="Silo" type="CSGCylinder3D" parent="NavigationRegion3D" unique_id=1827711804 groups=["WOOD"]]
@@ -939,7 +942,7 @@ mesh = SubResource("QuadMesh_5pyta")
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -4.7683716e-07, 0, 1)
 
 [node name="CRV" parent="." unique_id=751190287 instance=ExtResource("37_fuf3a")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 10, 0, 0)
+transform = Transform3D(-4.371138e-08, 0, -0.9999999, 0, 1, 0, 0.9999999, 0, -4.371138e-08, 0, 0.1, -11.9)
 
 [node name="Skateboard" parent="." unique_id=1958283666 instance=ExtResource("37_pibwh")]
 transform = Transform3D(2.9802322e-08, -1, 0, 1, 2.9802322e-08, 0, 0, 0, 1, 4, 0.9169763, 3.982221)
@@ -968,7 +971,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 mesh = SubResource("CylinderMesh_fk680")
 
 [node name="WarpZone2" type="Area3D" parent="." unique_id=1398560946]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -14)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -15)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WarpZone2" unique_id=1706037066]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
@@ -1006,6 +1009,9 @@ mesh = SubResource("CylinderMesh_fk680")
 [node name="Marker3D" type="Marker3D" parent="WarpZone3" unique_id=4043678]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.001, 0)
 top_level = true
+
+[node name="Road" parent="." unique_id=748822035 instance=ExtResource("38_c6pm6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4)
 
 [connection signal="body_entered" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_entered"]
 [connection signal="body_exited" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_exited"]

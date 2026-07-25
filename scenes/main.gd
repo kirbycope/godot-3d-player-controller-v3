@@ -28,10 +28,36 @@ func _physics_process(_delta: float) -> void:
 	# Do nothing if not the authority
 	if not is_multiplayer_authority(): return
 
-	if player:
-		# If we're below -40, respawn (teleport to the initial position).
+	# If we're below -40, respawn (teleport to the initial position).
+	if player and not player.is_driving and not player.is_flying:
 		if player.global_position.y < -40.0:
 			_warp(player, player.initial_transform)
+
+	# Check if the "CameraRayCast" is colliding with an object that has a "display_menu" method, and if so, call that method
+	if player.camera.camera_ray_cast.is_colliding():
+		var collider = player.camera.camera_ray_cast.get_collider()
+		if collider:
+			var target = null
+			var current_node = collider
+			while current_node:
+				if current_node.has_method("display_menu"):
+					target = current_node
+					break
+				current_node = current_node.get_parent()
+			
+			if target:
+				if player.camera.looking_at and player.camera.looking_at != target and player.camera.looking_at.has_method("hide_menu"):
+					player.camera.looking_at.hide_menu()
+				target.display_menu(player)
+				player.camera.looking_at = target
+			else:
+				if player.camera.looking_at and player.camera.looking_at.has_method("hide_menu"):
+					player.camera.looking_at.hide_menu()
+				player.camera.looking_at = null
+	else:
+		if player.camera.looking_at and player.camera.looking_at.has_method("hide_menu"):
+			player.camera.looking_at.hide_menu()
+		player.camera.looking_at = null
 
 
 ## Called when a body enters the "Pool"
