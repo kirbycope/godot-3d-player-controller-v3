@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://b6ol8kn5fp0mh"
+path="res://.godot/imported/Break_1.wav-21851640d470d2f64b850395b362ef24.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Car Sound Effects/Driving/Break_1.wav"
+dest_files=["res://.godot/imported/Break_1.wav-21851640d470d2f64b850395b362ef24.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

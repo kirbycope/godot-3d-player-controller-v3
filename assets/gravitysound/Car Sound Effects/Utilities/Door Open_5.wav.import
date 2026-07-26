@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://cs8plxwx01p6a"
+path="res://.godot/imported/Door Open_5.wav-8a439a944eb9910af8cfe8aa53b6d2be.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Car Sound Effects/Utilities/Door Open_5.wav"
+dest_files=["res://.godot/imported/Door Open_5.wav-8a439a944eb9910af8cfe8aa53b6d2be.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://cat0qj0e3qwy6"
+path="res://.godot/imported/Big Crash_10.wav-277cd1e0a1edf7cc432eecfb61d13b92.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Car Sound Effects/Crash/Big Crash_10.wav"
+dest_files=["res://.godot/imported/Big Crash_10.wav-277cd1e0a1edf7cc432eecfb61d13b92.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2
