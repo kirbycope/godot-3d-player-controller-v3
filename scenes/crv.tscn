@@ -8,6 +8,7 @@
 [ext_resource type="AnimationLibrary" uid="uid://hfmvc78vy0pd" path="res://addons/3d_player_controller/assets/mixamo/animations/root_motion/Entering Car.glb" id="4_ndq4s"]
 [ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://scenes/action_prompt.tscn" id="7_0hic1"]
 [ext_resource type="PackedScene" uid="uid://djvf0i62xd1l0" path="res://assets/BinbunVFX/fire_effects/effects/Fire/fire_05.tscn" id="8_ndljn"]
+[ext_resource type="PackedScene" uid="uid://chqijevfxuhpd" path="res://assets/BinbunVFX_Vol2/ExplosionFX/effects/ground/vfx_ground_explosion_01.tscn" id="9_w3dl6"]
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_0hic1"]
 points = PackedVector3Array(1.5927143, 0.6675866, 3.1609297, 1.4754472, 1.2534525, 1.4047761, -1.5682383, 0.7848079, 3.1609297, -0.7065927, -1.026907, 2.8761892, 1.0073068, -1.0883262, -0.3499103, 1.5927143, 1.0190098, -3.044293, -1.4724079, 0.9586757, -2.9692702, -0.9828308, -1.0883262, -0.3499103, 1.0764372, -0.48028046, 3.3612459, -1.4509711, 1.2534525, -1.4047761, 1.4754472, 0.08220209, -3.1609297, -1.4509711, -0.15151845, 3.5123072, -1.3340135, -0.15151845, -3.1609297, 1.5927143, -0.15151845, 2.1067975, 1.2412224, 0.6675866, 3.7470477, -0.8655637, 0.9017886, -3.7470477, -1.4509711, 1.2534525, 1.4047761, 0.53885716, -0.15151845, -3.3956704, 0.91862005, -0.989193, 2.6660569, -1.5682383, -0.15151845, 2.1067975, 1.1242646, 1.0190098, -3.6296773, 1.4754472, 1.2534525, -1.4047761, -1.4509711, 0.7848079, 3.5123072, -1.0997885, 1.0190098, -3.6296773, 1.0073068, 0.19918272, -3.6296773, -0.9828308, 0.19918272, -3.6296773, -0.88325304, -1.08251, 1.686038, 1.3584895, -0.2687398, -2.6929154, -1.2167463, 0.6675866, 3.7470477, 0.7966987, -1.0748086, 1.8827711, -1.4508018, 0.18616232, -2.8180883, -0.63164824, -0.15151845, -3.3956704)
@@ -553,6 +554,32 @@ _data = {
 &"open": SubResource("Animation_ndq4s")
 }
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_rsj67"]
+noise_type = 2
+fractal_octaves = 1
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ipdoc"]
+noise = SubResource("FastNoiseLite_rsj67")
+seamless = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_2cw0x"]
+frequency = 0.005
+fractal_type = 2
+fractal_octaves = 2
+fractal_weighted_strength = 1.0
+cellular_distance_function = 1
+domain_warp_type = 2
+domain_warp_amplitude = 10.0
+domain_warp_frequency = 0.01
+domain_warp_fractal_type = 2
+domain_warp_fractal_octaves = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_wcpr6"]
+noise = SubResource("FastNoiseLite_2cw0x")
+seamless = true
+invert = true
+seamless_blend_skirt = 0.2
+
 [node name="CRV" type="VehicleBody3D" unique_id=782070933]
 mass = 333.0
 center_of_mass_mode = 1
@@ -566,159 +593,159 @@ shape = SubResource("ConvexPolygonShape3D_0hic1")
 [node name="Honda CRV 2023" parent="." unique_id=726734700 instance=ExtResource("1_kw0ot")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.1000001, -0.667, -0.5)
 
-[node name="Interior screen " parent="Honda CRV 2023" index="22" unique_id=1494899910]
+[node name="Interior screen " parent="Honda CRV 2023" index="22" unique_id=500148200]
 surface_material_override/0 = SubResource("StandardMaterial3D_m20il")
 
-[node name="Exterior glass " parent="Honda CRV 2023" index="40" unique_id=2105372279]
+[node name="Exterior glass " parent="Honda CRV 2023" index="40" unique_id=1738837205]
 surface_material_override/0 = SubResource("StandardMaterial3D_0hic1")
 
-[node name="Exterior trunk door\nExterior trunk door 00" parent="Honda CRV 2023" index="52" unique_id=704189869]
+[node name="Exterior trunk door\nExterior trunk door 00" parent="Honda CRV 2023" index="52" unique_id=847080145]
 visible = false
 
-[node name="Exterior trunk door\nExterior trunk door 04" parent="Honda CRV 2023" index="56" unique_id=1292559825]
+[node name="Exterior trunk door\nExterior trunk door 04" parent="Honda CRV 2023" index="56" unique_id=511021351]
 surface_material_override/0 = SubResource("StandardMaterial3D_0hic1")
 
-[node name="Exterior trunk door\nExterior trunk door 18" parent="Honda CRV 2023" index="58" unique_id=1403851783]
+[node name="Exterior trunk door\nExterior trunk door 18" parent="Honda CRV 2023" index="58" unique_id=907495351]
 surface_material_override/0 = SubResource("StandardMaterial3D_ndq4s")
 
-[node name="Exterior rear left door 09" parent="Honda CRV 2023" index="71" unique_id=851282474]
+[node name="Exterior rear left door 09" parent="Honda CRV 2023" index="71" unique_id=56802599]
 surface_material_override/0 = SubResource("StandardMaterial3D_0hic1")
 
-[node name="Exterior rear left door 10" parent="Honda CRV 2023" index="81" unique_id=1197705472]
+[node name="Exterior rear left door 10" parent="Honda CRV 2023" index="81" unique_id=984304004]
 surface_material_override/0 = SubResource("StandardMaterial3D_ndq4s")
 
-[node name="Exterior front left door 11" parent="Honda CRV 2023" index="82" unique_id=1005690883]
+[node name="Exterior front left door 11" parent="Honda CRV 2023" index="82" unique_id=1098581203]
 transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
 surface_material_override/0 = SubResource("StandardMaterial3D_ndq4s")
 
-[node name="Exterior front left door 09" parent="Honda CRV 2023" index="83" unique_id=2132121471]
+[node name="Exterior front left door 09" parent="Honda CRV 2023" index="83" unique_id=1959569071]
 transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
 surface_material_override/0 = SubResource("StandardMaterial3D_0hic1")
 
-[node name="Exterior front left door 03" parent="Honda CRV 2023" index="84" unique_id=140830315]
+[node name="Exterior front left door 03" parent="Honda CRV 2023" index="84" unique_id=435917817]
 transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
 
-[node name="Exterior front left door 04" parent="Honda CRV 2023" index="85" unique_id=353119774]
+[node name="Exterior front left door 04" parent="Honda CRV 2023" index="85" unique_id=276219054]
 transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
 
-[node name="Exterior front left door 05" parent="Honda CRV 2023" index="86" unique_id=251348884]
+[node name="Exterior front left door 05" parent="Honda CRV 2023" index="86" unique_id=472036575]
 transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
 
-[node name="Exterior front left door 06" parent="Honda CRV 2023" index="87" unique_id=57442102]
+[node name="Exterior front left door 06" parent="Honda CRV 2023" index="87" unique_id=232343193]
 transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
 
-[node name="Exterior front left door 12" parent="Honda CRV 2023" index="88" unique_id=1493864164]
+[node name="Exterior front left door 12" parent="Honda CRV 2023" index="88" unique_id=626015143]
 transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
 
-[node name="Exterior front left door 13" parent="Honda CRV 2023" index="89" unique_id=516327066]
+[node name="Exterior front left door 13" parent="Honda CRV 2023" index="89" unique_id=860562572]
 transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
 
-[node name="Exterior front left door 08" parent="Honda CRV 2023" index="90" unique_id=327094807]
+[node name="Exterior front left door 08" parent="Honda CRV 2023" index="90" unique_id=765875637]
 transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
 
-[node name="Exterior front left door 02" parent="Honda CRV 2023" index="91" unique_id=1108931580]
+[node name="Exterior front left door 02" parent="Honda CRV 2023" index="91" unique_id=225555155]
 transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627593, 1.4001321)
 
-[node name="Exterior front left door 10" parent="Honda CRV 2023" index="92" unique_id=331663267]
+[node name="Exterior front left door 10" parent="Honda CRV 2023" index="92" unique_id=191348359]
 transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
 
-[node name="Exterior front left door 01" parent="Honda CRV 2023" index="93" unique_id=432483723]
+[node name="Exterior front left door 01" parent="Honda CRV 2023" index="93" unique_id=1305084878]
 transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
 
-[node name="Exterior front left door 07" parent="Honda CRV 2023" index="94" unique_id=1956480220]
+[node name="Exterior front left door 07" parent="Honda CRV 2023" index="94" unique_id=1601673085]
 transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
 
-[node name="Exterior front left door 14" parent="Honda CRV 2023" index="95" unique_id=1009681019]
+[node name="Exterior front left door 14" parent="Honda CRV 2023" index="95" unique_id=749296858]
 transform = Transform3D(-100.073555, 0.004974824, 0.8727589, -0.8727586, 1.1898822e-05, -100.07359, 0.004974736, 100.077415, -3.1486266e-05, -2.209314, 1.4627593, 1.4001317)
 
-[node name="Exterior body 00" parent="Honda CRV 2023" index="98" unique_id=1146633092]
+[node name="Exterior body 00" parent="Honda CRV 2023" index="98" unique_id=1269973701]
 surface_material_override/0 = SubResource("StandardMaterial3D_ndq4s")
 
-[node name="Exterior rims 2-04" parent="Honda CRV 2023" index="100" unique_id=1535458031]
+[node name="Exterior rims 2-04" parent="Honda CRV 2023" index="100" unique_id=871086361]
 visible = false
 
-[node name="Exterior rims 2-03" parent="Honda CRV 2023" index="101" unique_id=1386567793]
+[node name="Exterior rims 2-03" parent="Honda CRV 2023" index="101" unique_id=2070981028]
 visible = false
 
-[node name="Exterior brake 00" parent="Honda CRV 2023" index="102" unique_id=1356826892]
+[node name="Exterior brake 00" parent="Honda CRV 2023" index="102" unique_id=1126890228]
 visible = false
 
-[node name="Exterior rims 2-05" parent="Honda CRV 2023" index="103" unique_id=551324502]
+[node name="Exterior rims 2-05" parent="Honda CRV 2023" index="103" unique_id=1011378199]
 visible = false
 
-[node name="Exterior Tires 00" parent="Honda CRV 2023" index="104" unique_id=1055974994]
+[node name="Exterior Tires 00" parent="Honda CRV 2023" index="104" unique_id=528540577]
 visible = false
 
-[node name="Exterior brake disc 00" parent="Honda CRV 2023" index="105" unique_id=1223301359]
+[node name="Exterior brake disc 00" parent="Honda CRV 2023" index="105" unique_id=727030856]
 visible = false
 
-[node name="Exterior brake 02" parent="Honda CRV 2023" index="107" unique_id=1355056507]
+[node name="Exterior brake 02" parent="Honda CRV 2023" index="107" unique_id=468319592]
 visible = false
 
-[node name="Exterior rims 2-08" parent="Honda CRV 2023" index="108" unique_id=703619422]
+[node name="Exterior rims 2-08" parent="Honda CRV 2023" index="108" unique_id=715782741]
 visible = false
 
-[node name="Exterior brake disc 02" parent="Honda CRV 2023" index="109" unique_id=1626486693]
+[node name="Exterior brake disc 02" parent="Honda CRV 2023" index="109" unique_id=1039743899]
 visible = false
 
-[node name="Exterior Tires 02" parent="Honda CRV 2023" index="110" unique_id=541568681]
+[node name="Exterior Tires 02" parent="Honda CRV 2023" index="110" unique_id=182033553]
 visible = false
 
-[node name="Exterior rims 2-07" parent="Honda CRV 2023" index="111" unique_id=1987363268]
+[node name="Exterior rims 2-07" parent="Honda CRV 2023" index="111" unique_id=2138394002]
 visible = false
 
-[node name="Exterior suspension 02" parent="Honda CRV 2023" index="112" unique_id=991784047]
+[node name="Exterior suspension 02" parent="Honda CRV 2023" index="112" unique_id=243536162]
 visible = false
 
-[node name="Exterior rims 2-06" parent="Honda CRV 2023" index="113" unique_id=1949470774]
+[node name="Exterior rims 2-06" parent="Honda CRV 2023" index="113" unique_id=1090025426]
 visible = false
 
-[node name="Exterior brake 01" parent="Honda CRV 2023" index="114" unique_id=462280556]
+[node name="Exterior brake 01" parent="Honda CRV 2023" index="114" unique_id=1987082192]
 visible = false
 
-[node name="Exterior rims 2-02" parent="Honda CRV 2023" index="115" unique_id=379547063]
+[node name="Exterior rims 2-02" parent="Honda CRV 2023" index="115" unique_id=853254072]
 visible = false
 
-[node name="Exterior brake disc 01" parent="Honda CRV 2023" index="116" unique_id=1258081492]
+[node name="Exterior brake disc 01" parent="Honda CRV 2023" index="116" unique_id=975801990]
 visible = false
 
-[node name="Exterior brake 03" parent="Honda CRV 2023" index="117" unique_id=357439389]
+[node name="Exterior brake 03" parent="Honda CRV 2023" index="117" unique_id=748473717]
 visible = false
 
-[node name="Exterior rims 2-11" parent="Honda CRV 2023" index="118" unique_id=942737344]
+[node name="Exterior rims 2-11" parent="Honda CRV 2023" index="118" unique_id=841009760]
 visible = false
 
-[node name="Exterior brake disc 03" parent="Honda CRV 2023" index="119" unique_id=1553857487]
+[node name="Exterior brake disc 03" parent="Honda CRV 2023" index="119" unique_id=847121844]
 visible = false
 
-[node name="Exterior Tires 01" parent="Honda CRV 2023" index="120" unique_id=1987498325]
+[node name="Exterior Tires 01" parent="Honda CRV 2023" index="120" unique_id=301574270]
 visible = false
 
-[node name="Exterior Tires 03" parent="Honda CRV 2023" index="121" unique_id=697817932]
+[node name="Exterior Tires 03" parent="Honda CRV 2023" index="121" unique_id=1522545373]
 visible = false
 
-[node name="Exterior rims 2-00" parent="Honda CRV 2023" index="122" unique_id=5083757]
+[node name="Exterior rims 2-00" parent="Honda CRV 2023" index="122" unique_id=1798865078]
 visible = false
 
-[node name="Exterior rims 2-09" parent="Honda CRV 2023" index="124" unique_id=983905605]
+[node name="Exterior rims 2-09" parent="Honda CRV 2023" index="124" unique_id=1886190078]
 visible = false
 
-[node name="Exterior rims 2-01" parent="Honda CRV 2023" index="126" unique_id=594315488]
+[node name="Exterior rims 2-01" parent="Honda CRV 2023" index="126" unique_id=254242957]
 visible = false
 
-[node name="Exterior rims 2-10" parent="Honda CRV 2023" index="127" unique_id=389434432]
+[node name="Exterior rims 2-10" parent="Honda CRV 2023" index="127" unique_id=2099238986]
 visible = false
 
-[node name="Exterior front right door 4" parent="Honda CRV 2023" index="132" unique_id=1325007494]
+[node name="Exterior front right door 4" parent="Honda CRV 2023" index="132" unique_id=1177110386]
 surface_material_override/0 = SubResource("StandardMaterial3D_0hic1")
 
-[node name="Exterior front right door 5" parent="Honda CRV 2023" index="133" unique_id=1195377442]
+[node name="Exterior front right door 5" parent="Honda CRV 2023" index="133" unique_id=1533120705]
 surface_material_override/0 = SubResource("StandardMaterial3D_ndq4s")
 
-[node name="Exterior rear right door 10" parent="Honda CRV 2023" index="144" unique_id=1110999721]
+[node name="Exterior rear right door 10" parent="Honda CRV 2023" index="144" unique_id=838532070]
 surface_material_override/0 = SubResource("StandardMaterial3D_ndq4s")
 
-[node name="Exterior rear right door 07" parent="Honda CRV 2023" index="145" unique_id=1244438205]
+[node name="Exterior rear right door 07" parent="Honda CRV 2023" index="145" unique_id=754367052]
 surface_material_override/0 = SubResource("StandardMaterial3D_0hic1")
 
 [node name="VehicleWheel3D" type="VehicleWheel3D" parent="." unique_id=538873441]
@@ -789,5 +816,12 @@ transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0.42
 [node name="Fire_05" parent="." unique_id=791002157 instance=ExtResource("8_ndljn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 1.7)
 emitting = false
+
+[node name="VFXGroundExplosion_01" parent="." unique_id=1912371438 instance=ExtResource("9_w3dl6")]
+noise_texture = SubResource("NoiseTexture2D_ipdoc")
+smoke_texture = SubResource("NoiseTexture2D_wcpr6")
+smoke_amount = 64
+one_shot = true
+autoplay = false
 
 [editable path="Honda CRV 2023"]

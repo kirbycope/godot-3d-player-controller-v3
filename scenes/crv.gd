@@ -3,15 +3,19 @@ extends VehicleBody3D
 @export var max_acceleration_force: float = 1000.0
 @export var max_brake_force: float = 50.0
 @export var max_reverse_force: float = -750.0
+@export var explosion_impulse_force: float = 1500.0
 
 var menu_displayed: bool = false
 var player: Player
 var is_on_fire: bool = false
 var is_flipped: bool = false
 var flipped_timer: float = 0.0
+var fire_timer: float = 0.0
+var has_exploded: bool = false
 
 @onready var action_prompt: Node3D = $ActionPrompt
 @onready var fire: Node3D = $Fire_05
+@onready var explosion: Node3D = $VFXGroundExplosion_01
 @onready var first_person_camera: Camera3D = $FirstPersonCamera
 @onready var initial_camera_quat: Quaternion = first_person_camera.quaternion
 
@@ -24,6 +28,7 @@ const MAX_LOOK_PITCH: float = 1.0472 # 60 degrees in radians
 const FLIPPED_TIME_THRESHOLD: float = 2.0 # seconds on side or top before catching fire
 const FLIPPED_DOT_THRESHOLD: float = 0.5 # dot product <= 0.5 means tilted >= 60 degrees
 const FLIPPED_VELOCITY_THRESHOLD: float = 2.0 # max linear/angular velocity to be considered settled
+const FIRE_BURNTIME_THRESHOLD: float = 5.0 # seconds of burning before exploding
 
 
 ## Called when there is an input event.
@@ -34,7 +39,9 @@ func _input(event: InputEvent) -> void:
 	if player:
 		if event.is_action_pressed("action"):
 			if menu_displayed \
-			and not player.is_driving:
+			and not player.is_driving \
+			and not is_on_fire \
+			and not has_exploded:
 				player.is_driving_in = self
 				var enter_car = $EnterCar
 				if enter_car:
@@ -117,7 +124,9 @@ func _physics_process(delta: float) -> void:
 			flipped_timer += delta
 			if flipped_timer >= FLIPPED_TIME_THRESHOLD:
 				is_on_fire = true
-				fire.emitting = true
+				if fire:
+					fire.emitting = true
+				hide_menu()
 		else:
 			flipped_timer = 0.0
 	elif fire:
@@ -125,9 +134,26 @@ func _physics_process(delta: float) -> void:
 		if abs(fwd.dot(up_dir)) > 0.99:
 			fwd = global_transform.basis.x
 		fire.global_transform.basis = Basis.looking_at(fwd, up_dir)
+		
+		if not has_exploded:
+			fire_timer += delta
+			if fire_timer >= FIRE_BURNTIME_THRESHOLD:
+				has_exploded = true
+				if fire:
+					fire.emitting = false
+				if explosion:
+					if explosion.has_method("play"):
+						explosion.play()
+					else:
+						explosion.emitting = true
+				apply_impulse(up_dir * explosion_impulse_force)
+				hide_menu()
 
 
 func display_menu(_player: Player) -> void:
+	if is_on_fire or has_exploded:
+		hide_menu()
+		return
 	player = _player
 	if action_prompt:
 		action_prompt.show()
