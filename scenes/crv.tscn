@@ -7,6 +7,7 @@
 [ext_resource type="AnimationLibrary" uid="uid://dnsos1fdevv0t" path="res://addons/3d_player_controller/assets/mixamo/animations/root_motion/Driving.glb" id="3_m20il"]
 [ext_resource type="AnimationLibrary" uid="uid://hfmvc78vy0pd" path="res://addons/3d_player_controller/assets/mixamo/animations/root_motion/Entering Car.glb" id="4_ndq4s"]
 [ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://scenes/action_prompt.tscn" id="7_0hic1"]
+[ext_resource type="PackedScene" uid="uid://djvf0i62xd1l0" path="res://assets/BinbunVFX/fire_effects/effects/Fire/fire_05.tscn" id="8_ndljn"]
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_0hic1"]
 points = PackedVector3Array(1.5927143, 0.6675866, 3.1609297, 1.4754472, 1.2534525, 1.4047761, -1.5682383, 0.7848079, 3.1609297, -0.7065927, -1.026907, 2.8761892, 1.0073068, -1.0883262, -0.3499103, 1.5927143, 1.0190098, -3.044293, -1.4724079, 0.9586757, -2.9692702, -0.9828308, -1.0883262, -0.3499103, 1.0764372, -0.48028046, 3.3612459, -1.4509711, 1.2534525, -1.4047761, 1.4754472, 0.08220209, -3.1609297, -1.4509711, -0.15151845, 3.5123072, -1.3340135, -0.15151845, -3.1609297, 1.5927143, -0.15151845, 2.1067975, 1.2412224, 0.6675866, 3.7470477, -0.8655637, 0.9017886, -3.7470477, -1.4509711, 1.2534525, 1.4047761, 0.53885716, -0.15151845, -3.3956704, 0.91862005, -0.989193, 2.6660569, -1.5682383, -0.15151845, 2.1067975, 1.1242646, 1.0190098, -3.6296773, 1.4754472, 1.2534525, -1.4047761, -1.4509711, 0.7848079, 3.5123072, -1.0997885, 1.0190098, -3.6296773, 1.0073068, 0.19918272, -3.6296773, -0.9828308, 0.19918272, -3.6296773, -0.88325304, -1.08251, 1.686038, 1.3584895, -0.2687398, -2.6929154, -1.2167463, 0.6675866, 3.7470477, 0.7966987, -1.0748086, 1.8827711, -1.4508018, 0.18616232, -2.8180883, -0.63164824, -0.15151845, -3.3956704)
@@ -554,14 +555,16 @@ _data = {
 
 [node name="CRV" type="VehicleBody3D" unique_id=782070933]
 mass = 333.0
+center_of_mass_mode = 1
+center_of_mass = Vector3(0, 0.5, 0)
 script = ExtResource("1_ndq4s")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1739860576]
-transform = Transform3D(0.6207, 0, 0, 0, -0.6207, -1.0112487e-07, 0, 1.0112487e-07, -0.6207, -0.0048220158, 0.95953125, 0.58976465)
+transform = Transform3D(0.6207, 0, 0, 0, -0.6207, -1.0112487e-07, 0, 1.0112487e-07, -0.6207, -0.0048220158, 0.95953125, 0.089764655)
 shape = SubResource("ConvexPolygonShape3D_0hic1")
 
 [node name="Honda CRV 2023" parent="." unique_id=726734700 instance=ExtResource("1_kw0ot")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.1000001, -0.667, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.1000001, -0.667, -0.5)
 
 [node name="Interior screen " parent="Honda CRV 2023" index="22" unique_id=1494899910]
 surface_material_override/0 = SubResource("StandardMaterial3D_m20il")
@@ -719,7 +722,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_ndq4s")
 surface_material_override/0 = SubResource("StandardMaterial3D_0hic1")
 
 [node name="VehicleWheel3D" type="VehicleWheel3D" parent="." unique_id=538873441]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.78153324, 0.3481807, 1.9197016)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.78153324, 0.3481807, 1.4197016)
 use_as_traction = true
 use_as_steering = true
 wheel_radius = 0.35
@@ -727,14 +730,14 @@ wheel_radius = 0.35
 [node name="Wheel" parent="VehicleWheel3D" unique_id=644236510 instance=ExtResource("3_0hic1")]
 
 [node name="VehicleWheel3D2" type="VehicleWheel3D" parent="." unique_id=1043972108]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.78153324, 0.3481807, -0.7855551)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.78153324, 0.3481807, -1.2855551)
 use_as_traction = true
 wheel_radius = 0.35
 
 [node name="Wheel2" parent="VehicleWheel3D2" unique_id=340380773 instance=ExtResource("3_0hic1")]
 
 [node name="VehicleWheel3D3" type="VehicleWheel3D" parent="." unique_id=1262723628]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8091178, 0.3481807, 1.9197016)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8091178, 0.3481807, 1.4197016)
 use_as_traction = true
 use_as_steering = true
 wheel_radius = 0.35
@@ -743,7 +746,7 @@ wheel_radius = 0.35
 transform = Transform3D(-1, 0, 1.509958e-07, 0, 1, 0, -1.509958e-07, 0, -1, 0, 0, 0)
 
 [node name="VehicleWheel3D4" type="VehicleWheel3D" parent="." unique_id=1509261224]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8091178, 0.3481807, -0.7855551)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8091178, 0.3481807, -1.2855551)
 use_as_traction = true
 wheel_radius = 0.35
 
@@ -751,7 +754,7 @@ wheel_radius = 0.35
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 0)
 
 [node name="DriverSeat" type="Marker3D" parent="." unique_id=1951315047]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42, 0.05, 0.65)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42, 0.05, 0.14999998)
 
 [node name="y_bot_root" parent="DriverSeat" unique_id=982613326 instance=ExtResource("2_0r7jk")]
 process_mode = 4
@@ -763,7 +766,7 @@ libraries/Driving = ExtResource("3_m20il")
 autoplay = &"Driving/mixamo_com"
 
 [node name="EnterCar" type="Marker3D" parent="." unique_id=1941856147]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 2.2375002, 7.450581e-09, 0.63750005)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 2.2375002, 7.450581e-09, 0.13750005)
 
 [node name="y_bot_root" parent="EnterCar" unique_id=1864618496 instance=ExtResource("2_0r7jk")]
 process_mode = 4
@@ -777,10 +780,14 @@ autoplay = &"Entering Car/mixamo_com"
 libraries/ = SubResource("AnimationLibrary_0hic1")
 
 [node name="ActionPrompt" parent="." unique_id=1664152999 instance=ExtResource("7_0hic1")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 1.8000001, 0)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 1.8000001, -0.5)
 message_end = "to drive car"
 
 [node name="FirstPersonCamera" type="Camera3D" parent="." unique_id=1495609120]
-transform = Transform3D(-1, 0, 8.742277e-08, 0, 0.99999994, 0, -8.742278e-08, 0, -0.99999994, 0.42, 1.333, 0.75)
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0.42, 1.333, 0.25)
+
+[node name="Fire_05" parent="." unique_id=791002157 instance=ExtResource("8_ndljn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 1.7)
+emitting = false
 
 [editable path="Honda CRV 2023"]

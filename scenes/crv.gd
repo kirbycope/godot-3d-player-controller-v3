@@ -1,13 +1,17 @@
 extends VehicleBody3D
 
 @export var max_acceleration_force: float = 1000.0
-@export var max_brake_force: float = 500.0
-@export var max_reverse_force: float = -500.0
+@export var max_brake_force: float = 50.0
+@export var max_reverse_force: float = -750.0
 
 var menu_displayed: bool = false
 var player: Player
+var is_on_fire: bool = false
+var is_flipped: bool = false
+var flipped_timer: float = 0.0
 
 @onready var action_prompt: Node3D = $ActionPrompt
+@onready var fire: Node3D = $Fire_05
 @onready var first_person_camera: Camera3D = $FirstPersonCamera
 @onready var initial_camera_quat: Quaternion = first_person_camera.quaternion
 
@@ -17,6 +21,9 @@ var look_return_timer: float = 0.0
 const LOOK_RETURN_DELAY: float = 1.0 # time before returning to center
 const MAX_LOOK_YAW: float = 1.0472 # 60 degrees in radians
 const MAX_LOOK_PITCH: float = 1.0472 # 60 degrees in radians
+const FLIPPED_TIME_THRESHOLD: float = 2.0 # seconds on side or top before catching fire
+const FLIPPED_DOT_THRESHOLD: float = 0.5 # dot product <= 0.5 means tilted >= 60 degrees
+const FLIPPED_VELOCITY_THRESHOLD: float = 2.0 # max linear/angular velocity to be considered settled
 
 
 ## Called when there is an input event.
@@ -93,6 +100,32 @@ func _process(delta: float) -> void:
 			player = null
 			
 	was_driving = is_driving_this_car
+
+
+func _physics_process(delta: float) -> void:
+	if not is_multiplayer_authority(): return
+	
+	var up_dir: Vector3 = -get_gravity().normalized()
+	if up_dir == Vector3.ZERO:
+		up_dir = Vector3.UP
+	
+	if not is_on_fire:
+		var is_tilted: bool = global_transform.basis.y.dot(up_dir) <= FLIPPED_DOT_THRESHOLD
+		var is_settled: bool = linear_velocity.length() < FLIPPED_VELOCITY_THRESHOLD and angular_velocity.length() < FLIPPED_VELOCITY_THRESHOLD
+		is_flipped = is_tilted and is_settled
+		if is_flipped:
+			flipped_timer += delta
+			if flipped_timer >= FLIPPED_TIME_THRESHOLD:
+				is_on_fire = true
+				fire.emitting = true
+		else:
+			flipped_timer = 0.0
+	elif fire:
+		var fwd: Vector3 = global_transform.basis.z
+		if abs(fwd.dot(up_dir)) > 0.99:
+			fwd = global_transform.basis.x
+		fire.global_transform.basis = Basis.looking_at(fwd, up_dir)
+
 
 func display_menu(_player: Player) -> void:
 	player = _player
