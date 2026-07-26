@@ -285,8 +285,11 @@ func _update_engine_sfx() -> void:
 		if sfx_break_long and sfx_break_long.playing: sfx_break_long.stop()
 		return
 
-	var accelerate_pressed := Input.is_action_pressed("sprint")
-	var brake_pressed := Input.is_action_pressed("action")
+	var accelerate_pressed := false
+	var brake_pressed := false
+	if player:
+		accelerate_pressed = Input.is_action_pressed("shoot")
+		brake_pressed = Input.is_action_pressed("focus")
 
 	# If start SFX is still playing and player isn't providing inputs yet, let start SFX finish
 	if sfx_car_start and sfx_car_start.playing and not (accelerate_pressed or brake_pressed):
