@@ -38,6 +38,7 @@
 [ext_resource type="PackedScene" uid="uid://drmvyehu4dq43" path="res://addons/3d_player_controller/assets/sketchfab/skateboard/skateboard.tscn" id="37_pibwh"]
 [ext_resource type="PackedScene" uid="uid://ceyrqy0cvueei" path="res://scenes/road.tscn" id="38_c6pm6"]
 [ext_resource type="PackedScene" uid="uid://bea6xq7pi7e0a" path="res://scenes/moon.tscn" id="38_pibwh"]
+[ext_resource type="PackedScene" uid="uid://buun545xrv5hr" path="res://scenes/fishing_rod.tscn" id="39_c6pm6"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -789,7 +790,7 @@ visible = false
 transform = Transform3D(-1, 8.742278e-08, 3.821371e-15, 0, -4.371139e-08, 1, 8.742278e-08, 1, 4.371139e-08, 0, 1, -0.5)
 script = ExtResource("8_gqmmt")
 bone_attachment_bone_name = "LeftLowerArm"
-equipment_type = 9
+equipment_type = 10
 position_offset = Vector3(-0.035, 0.1, 0)
 rotation_offset_degrees = Vector3(0, 180, 180)
 
@@ -808,7 +809,7 @@ transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1
 script = ExtResource("8_gqmmt")
 bone_attachment_bone_name = "RightHand"
 can_attack = true
-equipment_type = 6
+equipment_type = 7
 is_exclusive = true
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(0, 90, 0)
@@ -828,7 +829,7 @@ transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0
 script = ExtResource("8_gqmmt")
 bone_attachment_bone_name = "RightHand"
 can_attack = true
-equipment_type = 7
+equipment_type = 8
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(0, 90, 180)
 
@@ -847,7 +848,7 @@ transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0
 script = ExtResource("8_gqmmt")
 bone_attachment_bone_name = "RightHand"
 can_attack = true
-equipment_type = 8
+equipment_type = 9
 is_exclusive = true
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(0, 90, 0)
@@ -875,7 +876,7 @@ script = ExtResource("25_2f3dj")
 bone_attachment_bone_name = "RightHand"
 can_attack = true
 can_shoot = true
-equipment_type = 5
+equipment_type = 6
 is_exclusive = true
 position_offset = Vector3(0, 0.09, 0.025)
 rotation_offset_degrees = Vector3(0, 180, 80)
@@ -896,7 +897,7 @@ script = ExtResource("8_gqmmt")
 bone_attachment_bone_name = "RightHand"
 can_attack = true
 can_shoot = true
-equipment_type = 4
+equipment_type = 5
 is_exclusive = true
 position_offset = Vector3(0, 0.09, 0.025)
 rotation_offset_degrees = Vector3(-10, 180, 80)
@@ -1012,6 +1013,9 @@ top_level = true
 
 [node name="Road" parent="." unique_id=748822035 instance=ExtResource("38_c6pm6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4)
+
+[node name="FishingRod" parent="." unique_id=2053350041 instance=ExtResource("39_c6pm6")]
+transform = Transform3D(0.34202015, 0.9396926, 0, -0.9396926, 0.34202015, 0, 0, 0, 1, -0.1, 0.10000001, -2)
 
 [connection signal="body_entered" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_entered"]
 [connection signal="body_exited" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_exited"]
