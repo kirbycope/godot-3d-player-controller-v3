@@ -1,0 +1,10 @@
+{
+	"mcpServers": {
+		"godot-docs": {
+			"command": "node",
+			"args": [
+				"../godot-docs/index.mjs"
+			]
+		}
+	}
+}
