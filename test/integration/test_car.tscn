@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://ytmc6rccjh7i"]
+
+[ext_resource type="Texture2D" uid="uid://ceiimv767w1ec" path="res://assets/kenney_nl/Prototype Textures/Vector/texture_04.svg" id="1_oubdj"]
+[ext_resource type="PackedScene" uid="uid://bwngmjoqsrtcx" path="res://scenes/crv.tscn" id="2_wgoyw"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_t6skd"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_l0ckq"]
+sky_material = SubResource("ProceduralSkyMaterial_t6skd")
+
+[sub_resource type="Environment" id="Environment_dxeo0"]
+background_mode = 2
+sky = SubResource("Sky_l0ckq")
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kxxiu"]
+albedo_texture = ExtResource("1_oubdj")
+uv1_triplanar = true
+
+[node name="TestCar" type="Node3D" unique_id=778279758]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1369555884]
+environment = SubResource("Environment_dxeo0")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=844282687]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Camera" type="Camera3D" parent="." unique_id=953744166]
+transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 3.5, 2, 3.5)
+
+[node name="Floor" type="CSGBox3D" parent="." unique_id=494757942]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+use_collision = true
+size = Vector3(64, 1, 64)
+material = SubResource("StandardMaterial3D_kxxiu")
+
+[node name="CRV" parent="." unique_id=782070933 instance=ExtResource("2_wgoyw")]

@@ -6,7 +6,6 @@
 [ext_resource type="Texture2D" uid="uid://bx5wuwx7autid" path="res://assets/kenney_nl/Prototype Textures/Vector/texture_12.svg" id="4_gqmmt"]
 [ext_resource type="Shader" uid="uid://c5ati1mmy6d7m" path="res://assets/godotshaders/wind_waker_2d_water_shader.gdshader" id="5_j8jky"]
 [ext_resource type="Texture2D" uid="uid://ceiimv767w1ec" path="res://assets/kenney_nl/Prototype Textures/Vector/texture_04.svg" id="5_yc10j"]
-[ext_resource type="Texture2D" uid="uid://cw7nfaedba0m5" path="res://assets/n_hance_studio/weapons/n_hance_studio_newbie_weapons.png" id="6_jscy8"]
 [ext_resource type="PackedScene" uid="uid://d2e1lgjtlptk8" path="res://assets/n_hance_studio/weapons/SK_Axe_1H_Newbie_01.fbx" id="7_pm3ni"]
 [ext_resource type="Script" uid="uid://d0u7oh1rirfy4" path="res://addons/3d_player_controller/equipment.gd" id="8_gqmmt"]
 [ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://scenes/action_prompt.tscn" id="9_og1vs"]
@@ -22,17 +21,14 @@
 [ext_resource type="PackedScene" uid="uid://b68tmbfsyhl17" path="res://assets/n_hance_studio/weapons/SK_Staff_Newbie_01.fbx" id="14_fv21b"]
 [ext_resource type="PackedScene" uid="uid://br0tu61de4o65" path="res://assets/n_hance_studio/weapons/SK_Sword_1H_Newbie_01.fbx" id="15_tel4y"]
 [ext_resource type="PackedScene" uid="uid://bk3gv5c0w00gi" path="res://assets/n_hance_studio/weapons/SK_Sword_2H_Newbie_01.fbx" id="16_qkpxi"]
-[ext_resource type="Texture2D" uid="uid://bq274xxscinqm" path="res://assets/justcreate3d/weapons_lite/justcreate3d_weapons_lite.png" id="17_5q0nq"]
 [ext_resource type="PackedScene" uid="uid://dl71nqjm2psik" path="res://assets/justcreate3d/weapons_lite/Weapon_02.fbx" id="18_dgi5k"]
 [ext_resource type="PackedScene" uid="uid://b3tb2j1pwgw3u" path="res://assets/justcreate3d/weapons_lite/Weapon_01.fbx" id="19_j8jky"]
 [ext_resource type="PackedScene" uid="uid://ti5skv3363ik" path="res://scenes/ballon_circle.tscn" id="21_yc10j"]
 [ext_resource type="Script" uid="uid://7e2gpht4wap6" path="res://addons/3d_player_controller/rifle.gd" id="25_2f3dj"]
 [ext_resource type="PackedScene" uid="uid://cecfpvhdonktw" path="res://scenes/pinwheel.tscn" id="25_og1vs"]
 [ext_resource type="Script" uid="uid://b03h8ijilon1x" path="res://addons/3d_player_controller/arrow.gd" id="26_arrow"]
-[ext_resource type="Texture2D" uid="uid://bxjtt45llikjf" path="res://assets/n_hance_studio/craft/preview.png" id="29_yq6so"]
 [ext_resource type="PackedScene" uid="uid://ck40pkrttk535" path="res://scenes/ore_small.tscn" id="30_fv21b"]
 [ext_resource type="PackedScene" uid="uid://yo68ojwutmqp" path="res://scenes/ore_large.tscn" id="31_tel4y"]
-[ext_resource type="Texture2D" uid="uid://b810kdta7g8wk" path="res://assets/quaternius/nature/preview.jpg" id="32_5q0nq"]
 [ext_resource type="PackedScene" uid="uid://d3o4cq6mgg8ni" path="res://scenes/tree_01.tscn" id="33_dgi5k"]
 [ext_resource type="PackedScene" uid="uid://bwngmjoqsrtcx" path="res://scenes/crv.tscn" id="37_fuf3a"]
 [ext_resource type="PackedScene" uid="uid://drmvyehu4dq43" path="res://addons/3d_player_controller/assets/sketchfab/skateboard/skateboard.tscn" id="37_pibwh"]
@@ -108,14 +104,6 @@ shader_parameter/wave_speed = 1.5
 material = SubResource("ShaderMaterial_1i6q1")
 size = Vector2(32, 16)
 orientation = 1
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fk680"]
-cull_mode = 2
-albedo_texture = ExtResource("6_jscy8")
-
-[sub_resource type="QuadMesh" id="QuadMesh_senyo"]
-material = SubResource("StandardMaterial3D_fk680")
-size = Vector2(4.88, 3.25)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_fk680"]
 radius = 0.1
@@ -391,35 +379,11 @@ height = 1.45
 radius = 0.2
 height = 2.1
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5pyta"]
-cull_mode = 2
-albedo_texture = ExtResource("17_5q0nq")
-
-[sub_resource type="QuadMesh" id="QuadMesh_fk680"]
-material = SubResource("StandardMaterial3D_5pyta")
-size = Vector2(4.8, 2.7)
-
 [sub_resource type="BoxShape3D" id="BoxShape3D_senyo"]
 size = Vector3(1, 0.4, 0.2)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_k78ss"]
 size = Vector3(0.3, 0.2, 0.2)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fv21b"]
-cull_mode = 2
-albedo_texture = ExtResource("29_yq6so")
-
-[sub_resource type="QuadMesh" id="QuadMesh_tel4y"]
-material = SubResource("StandardMaterial3D_fv21b")
-size = Vector2(4.875, 3.25)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j8jky"]
-cull_mode = 2
-albedo_texture = ExtResource("32_5q0nq")
-
-[sub_resource type="QuadMesh" id="QuadMesh_5pyta"]
-material = SubResource("StandardMaterial3D_j8jky")
-size = Vector2(4.685, 2.635)
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_hxkk4"]
 height = 1.8
@@ -640,10 +604,6 @@ material = SubResource("StandardMaterial3D_dwbse")
 
 [node name="N_Hance_Studio_1" type="Node3D" parent="." unique_id=1622472344]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 0)
-
-[node name="Preview" type="MeshInstance3D" parent="N_Hance_Studio_1" unique_id=1823423236]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -2, 1.625, 0)
-mesh = SubResource("QuadMesh_senyo")
 
 [node name="SK_Axe_1H_Newbie_01" parent="N_Hance_Studio_1" unique_id=1164308377 instance=ExtResource("7_pm3ni")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 3.5)
@@ -866,10 +826,6 @@ visible = false
 [node name="JustCreate3D" type="Node3D" parent="." unique_id=647333121]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 5, 0, 0)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="JustCreate3D" unique_id=12665981]
-transform = Transform3D(-4.371138e-08, 0, 1, 0, 1, 0, -1, 0, -4.371138e-08, 0, 1.3500001, 0)
-mesh = SubResource("QuadMesh_fk680")
-
 [node name="Weapon_02" parent="JustCreate3D" unique_id=1867527010 instance=ExtResource("18_dgi5k")]
 transform = Transform3D(-8.742278e-08, -4.3711395e-08, 1, 1, -4.371139e-08, 8.742278e-08, 4.3711385e-08, 1, 4.3711395e-08, 0.5, 0.322, 0.5)
 script = ExtResource("25_2f3dj")
@@ -913,7 +869,7 @@ transform = Transform3D(1.7484552e-07, 1, -4.3711385e-08, -1, 1.7484552e-07, 0, 
 visible = false
 
 [node name="BallonCircle4" parent="." unique_id=1064612835 instance=ExtResource("21_yc10j")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -8, 3, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -3.5, 12, 0)
 play = true
 
 [node name="Pinwheel" parent="." unique_id=1441062047 instance=ExtResource("25_og1vs")]
@@ -921,10 +877,6 @@ transform = Transform3D(0.033, 0, 0, 0, 0.03187555, -0.008541028, 0, 0.008541028
 
 [node name="N_Hance_Studio_2" type="Node3D" parent="." unique_id=11654494]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -2.5, 0, 5)
-
-[node name="Preview" type="MeshInstance3D" parent="N_Hance_Studio_2" unique_id=1214709]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7484552e-07, 1.625, -2)
-mesh = SubResource("QuadMesh_tel4y")
 
 [node name="OreSmall" parent="N_Hance_Studio_2" unique_id=834897928 instance=ExtResource("30_fv21b")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
@@ -935,10 +887,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
 [node name="Quaternius" type="Node3D" parent="." unique_id=795331221]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 2.5, 0, 7)
 
-[node name="Preview" type="MeshInstance3D" parent="Quaternius" unique_id=272895912]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3175001, 0)
-mesh = SubResource("QuadMesh_5pyta")
-
 [node name="Tree01" parent="Quaternius" unique_id=38701300 instance=ExtResource("33_dgi5k")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -4.7683716e-07, 0, 1)
 
@@ -946,13 +894,13 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -4.7
 transform = Transform3D(-4.371138e-08, 0, -0.9999999, 0, 1, 0, 0.9999999, 0, -4.371138e-08, 0, 0.1, -11.9)
 
 [node name="Skateboard" parent="." unique_id=1958283666 instance=ExtResource("37_pibwh")]
-transform = Transform3D(2.9802322e-08, -1, 0, 1, 2.9802322e-08, 0, 0, 0, 1, 4, 0.9169763, 3.982221)
+transform = Transform3D(2.9802322e-08, -1, 0, 1, 2.9802322e-08, 0, 0, 0, 1, 4.5, 0.9169763, 3.982221)
 
 [node name="Moon" parent="." unique_id=774808875 instance=ExtResource("38_pibwh")]
 transform = Transform3D(-0.9659257, -0.08852131, -0.24321027, -0.044943463, 0.982784, -0.17920823, 0.2548869, -0.16217114, -0.95327485, 0, 21, -42)
 
 [node name="WarpZone" type="Area3D" parent="." unique_id=1098448126]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0, -9.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, -7)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WarpZone" unique_id=1370132012]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
@@ -1015,7 +963,7 @@ top_level = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4)
 
 [node name="FishingRod" parent="." unique_id=2053350041 instance=ExtResource("39_c6pm6")]
-transform = Transform3D(0.34202015, 0.9396926, 0, -0.9396926, 0.34202015, 0, 0, 0, 1, -0.1, 0.10000001, -2)
+transform = Transform3D(-1.4950176e-08, -4.1075268e-08, -1, -0.9396926, 0.34202015, 0, 0.34202015, 0.9396926, -4.371139e-08, 4.4, 0.10000001, 2.5)
 
 [connection signal="body_entered" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_entered"]
 [connection signal="body_exited" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_exited"]

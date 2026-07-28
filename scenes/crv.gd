@@ -17,7 +17,14 @@ const FLIPPED_VELOCITY_THRESHOLD: float = 2.0 # max linear/angular velocity to b
 var fire_timer: float = 0.0
 var flipped_timer: float = 0.0
 var has_exploded: bool = false
-var is_on_fire: bool = false
+var is_on_fire: bool = false:
+	set(value):
+		if is_on_fire == value:
+			return
+		is_on_fire = value
+		if is_node_ready():
+			_update_fire_state()
+
 var is_flipped: bool = false
 var is_engine_started: bool = false
 var was_entering_vehicle: bool = false
@@ -136,6 +143,25 @@ func _process(delta: float) -> void:
 	_update_engine_sfx()
 
 
+func _ready() -> void:
+	if is_on_fire:
+		_update_fire_state()
+
+
+func _update_fire_state() -> void:
+	if is_on_fire:
+		if fire:
+			fire.emitting = true
+		if fire_sfx and not fire_sfx.playing:
+			fire_sfx.play()
+		hide_menu()
+	else:
+		if fire:
+			fire.emitting = false
+		if fire_sfx and fire_sfx.playing:
+			fire_sfx.stop()
+
+
 func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority(): return
 	
@@ -156,11 +182,6 @@ func _physics_process(delta: float) -> void:
 			flipped_timer += delta
 			if flipped_timer >= flipped_time_to_burn:
 				is_on_fire = true
-				if fire:
-					fire.emitting = true
-				if fire_sfx:
-					fire_sfx.play()
-				hide_menu()
 		else:
 			flipped_timer = 0.0
 	elif fire:
