@@ -38,6 +38,11 @@ class CarTestBase:
 		player_instance.state_machine.travel(player_instance.current_state, NodeStateMachine.States.DRIVING)
 		player_instance.is_entering_vehicle = false
 
+	## Helper getter to access the Driving state node on the player instance.
+	var driving_state: Driving:
+		get:
+			return player_instance.state_machine.get_node("Driving") as Driving if player_instance and player_instance.state_machine else null
+
 
 ## Tests related to the function performed by an action.
 class TestCarActions:
@@ -49,15 +54,16 @@ class TestCarActions:
 		setup_player_driving()
 		assert_eq(car_instance.engine_force, 0.0, "Car engine force should be 0.0 initially.")
 
-		# Act: Press the accelerate action ("shoot").
+		# Act: Press the accelerate action.
+		var action: StringName = driving_state.accelerate_action
 		var sender = InputSender.new(Input)
 		sender.set_auto_flush_input(true)
-		sender.action_down("shoot")
+		sender.action_down(action)
 		await wait_physics_frames(5)
 
 		# Assert: Confirm engine force is positive when accelerating.
 		assert_gt(car_instance.engine_force, 0.0, "Car engine force should be positive when accelerating forward.")
-		sender.action_up("shoot")
+		sender.action_up(action)
 
 	## Test Case: Testing the car reversing.
 	func test_car_reversing():
@@ -67,15 +73,16 @@ class TestCarActions:
 		car_instance.angular_velocity = Vector3.ZERO
 		assert_eq(car_instance.engine_force, 0.0, "Car engine force should be 0.0 initially.")
 
-		# Act: Press the brake/reverse action ("focus").
+		# Act: Press the brake/reverse action.
+		var action: StringName = driving_state.brake_action
 		var sender = InputSender.new(Input)
 		sender.set_auto_flush_input(true)
-		sender.action_down("focus")
+		sender.action_down(action)
 		await wait_physics_frames(5)
 
 		# Assert: Confirm engine force is negative when reversing while stopped.
 		assert_lt(car_instance.engine_force, 0.0, "Car engine force should be negative when reversing.")
-		sender.action_up("focus")
+		sender.action_up(action)
 
 	## Test Case: Testing the car braking.
 	func test_car_braking():
@@ -84,15 +91,16 @@ class TestCarActions:
 		car_instance.linear_velocity = Vector3(0.0, 0.0, 5.0)
 		assert_eq(car_instance.brake, 0.0, "Car brake should be 0.0 initially.")
 
-		# Act: Press the brake action ("focus") while moving forward.
+		# Act: Press the brake action while moving forward.
+		var action: StringName = driving_state.brake_action
 		var sender = InputSender.new(Input)
 		sender.set_auto_flush_input(true)
-		sender.action_down("focus")
+		sender.action_down(action)
 		await wait_physics_frames(5)
 
 		# Assert: Confirm brake force is positive when braking.
 		assert_gt(car_instance.brake, 0.0, "Car brake force should be positive when braking.")
-		sender.action_up("focus")
+		sender.action_up(action)
 
 	## Test Case: Testing the car steering left.
 	func test_car_steering_left():
