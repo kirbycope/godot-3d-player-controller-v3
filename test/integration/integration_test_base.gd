@@ -4,12 +4,6 @@ extends GutTest
 ## Purpose: Shared base class providing common input helper functions for GUT integration tests.
 
 
-## Waits for physics frames. Multiplies the frame count when running interactively in GUI/Editor mode (non-headless) to allow visual observation.
-func wait_physics_frames(frames: int = 1, msg: String = "") -> void:
-	var multiplier: int = 20 if DisplayServer.get_name() != "headless" else 1
-	await super.wait_physics_frames(frames * multiplier, msg)
-
-
 ## Performs a "down" and "up" sequence for the specified action.
 func perform_action(action_name: String) -> void:
 	var sender = InputSender.new(Input)
