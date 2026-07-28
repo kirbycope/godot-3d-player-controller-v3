@@ -33,6 +33,7 @@ class CarTestBase:
 			player_instance = PlayerScene.instantiate()
 			main_instance.add_child(player_instance)
 
+		player_instance.controls.current_input_type = 0
 		player_instance.is_driving_in = car_instance
 		car_instance.player = player_instance
 		player_instance.state_machine.travel(player_instance.current_state, NodeStateMachine.States.DRIVING)
@@ -55,7 +56,7 @@ class TestCarActions:
 		assert_eq(car_instance.engine_force, 0.0, "Car engine force should be 0.0 initially.")
 
 		# Act: Press the accelerate action.
-		var action: StringName = driving_state.accelerate_action
+		var action: StringName = driving_state.keyboard_accelerate_action
 		var sender = InputSender.new(Input)
 		sender.set_auto_flush_input(true)
 		sender.action_down(action)
@@ -74,7 +75,7 @@ class TestCarActions:
 		assert_eq(car_instance.engine_force, 0.0, "Car engine force should be 0.0 initially.")
 
 		# Act: Press the brake/reverse action.
-		var action: StringName = driving_state.brake_action
+		var action: StringName = driving_state.keyboard_brake_action
 		var sender = InputSender.new(Input)
 		sender.set_auto_flush_input(true)
 		sender.action_down(action)
@@ -92,7 +93,7 @@ class TestCarActions:
 		assert_eq(car_instance.brake, 0.0, "Car brake should be 0.0 initially.")
 
 		# Act: Press the brake action while moving forward.
-		var action: StringName = driving_state.brake_action
+		var action: StringName = driving_state.keyboard_brake_action
 		var sender = InputSender.new(Input)
 		sender.set_auto_flush_input(true)
 		sender.action_down(action)

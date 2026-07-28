@@ -58,3 +58,118 @@ class TestDebugKeybind:
 
 		# Assert: Ensure that the "debug" node is now visible.
 		assert_true(player_debug.visible, "Debug node should be visible after pressing F3.")
+
+
+## Tests related to Flying controls and contextual UI labels.
+class TestFlyingControls:
+	extends ControlsTestBase
+
+	func test_flying_contextual_controls_keyboard():
+		var player = main_instance.get_node("Player") as Player
+		player.controls.current_input_type = 0 # KEYBOARD_MOUSE
+		player.state_machine.travel(NodeStateMachine.States.STANDING, NodeStateMachine.States.FLYING)
+
+		assert_eq(player.controls.joypad_button_3_label.text, "Fly Up")
+		assert_eq(player.controls.joypad_button_0_label.text, "Fly Down")
+		assert_eq(player.controls.left_joystick_label.text, "Fly")
+
+	func test_flying_contextual_controls_controller():
+		var player = main_instance.get_node("Player") as Player
+		player.controls.current_input_type = 1 # MICROSOFT controller
+		player.state_machine.travel(NodeStateMachine.States.STANDING, NodeStateMachine.States.FLYING)
+
+		assert_eq(player.controls.joypad_button_3_label.text, "Fly Up")
+		assert_eq(player.controls.joypad_axis_4_plus_label.text, "Fly Down")
+		assert_eq(player.controls.left_joystick_label.text, "Fly")
+
+
+## Tests related to Paragliding controls and contextual UI labels.
+class TestParaglidingControls:
+	extends ControlsTestBase
+
+	func test_paragliding_contextual_controls_keyboard():
+		var player = main_instance.get_node("Player") as Player
+		player.controls.current_input_type = 0 # KEYBOARD_MOUSE
+		player.state_machine.travel(NodeStateMachine.States.STANDING, NodeStateMachine.States.PARAGLIDING)
+
+		assert_eq(player.controls.joypad_button_0_label.text, "Cancel")
+		assert_eq(player.controls.left_joystick_label.text, "Steer")
+
+	func test_paragliding_contextual_controls_controller():
+		var player = main_instance.get_node("Player") as Player
+		player.controls.current_input_type = 1 # MICROSOFT controller
+		player.state_machine.travel(NodeStateMachine.States.STANDING, NodeStateMachine.States.PARAGLIDING)
+
+		assert_eq(player.controls.joypad_button_3_label.text, "Cancel")
+		assert_eq(player.controls.left_joystick_label.text, "Steer")
+
+
+## Tests related to Climbing controls and contextual UI labels.
+class TestClimbingControls:
+	extends ControlsTestBase
+
+	func test_climbing_contextual_controls_keyboard():
+		var player = main_instance.get_node("Player") as Player
+		player.controls.current_input_type = 0 # KEYBOARD_MOUSE
+		player.state_machine.travel(NodeStateMachine.States.STANDING, NodeStateMachine.States.CLIMBING)
+
+		assert_eq(player.controls.joypad_button_3_label.text, "Hop")
+		assert_eq(player.controls.joypad_button_1_label.text, "Fast Climb")
+		assert_eq(player.controls.joypad_button_7_label.text, "Drop")
+		assert_eq(player.controls.left_joystick_label.text, "Climb")
+
+	func test_climbing_contextual_controls_controller():
+		var player = main_instance.get_node("Player") as Player
+		player.controls.current_input_type = 1 # MICROSOFT controller
+		player.state_machine.travel(NodeStateMachine.States.STANDING, NodeStateMachine.States.CLIMBING)
+
+		assert_eq(player.controls.joypad_button_3_label.text, "Hop")
+		assert_eq(player.controls.joypad_button_1_label.text, "Fast Climb")
+		assert_eq(player.controls.joypad_button_7_label.text, "Drop")
+		assert_eq(player.controls.left_joystick_label.text, "Climb")
+
+
+## Tests related to Hanging controls and contextual UI labels.
+class TestHangingControls:
+	extends ControlsTestBase
+
+	func test_hanging_contextual_controls_keyboard():
+		var player = main_instance.get_node("Player") as Player
+		player.controls.current_input_type = 0 # KEYBOARD_MOUSE
+		player.state_machine.travel(NodeStateMachine.States.STANDING, NodeStateMachine.States.HANGING)
+
+		assert_eq(player.controls.joypad_button_3_label.text, "Climb Up")
+		assert_eq(player.controls.joypad_button_7_label.text, "Drop")
+		assert_eq(player.controls.left_joystick_label.text, "Shimmy")
+
+	func test_hanging_contextual_controls_controller():
+		var player = main_instance.get_node("Player") as Player
+		player.controls.current_input_type = 1 # MICROSOFT controller
+		player.state_machine.travel(NodeStateMachine.States.STANDING, NodeStateMachine.States.HANGING)
+
+		assert_eq(player.controls.joypad_button_3_label.text, "Climb Up")
+		assert_eq(player.controls.joypad_button_7_label.text, "Drop")
+		assert_eq(player.controls.left_joystick_label.text, "Shimmy")
+
+
+## Tests related to Swimming controls and contextual UI labels.
+class TestSwimmingControls:
+	extends ControlsTestBase
+
+	func test_swimming_contextual_controls_keyboard():
+		var player = main_instance.get_node("Player") as Player
+		player.controls.current_input_type = 0 # KEYBOARD_MOUSE
+		player.state_machine.travel(NodeStateMachine.States.STANDING, NodeStateMachine.States.SWIMMING)
+
+		assert_eq(player.controls.joypad_button_3_label.text, "Climb Out")
+		assert_eq(player.controls.joypad_button_1_label.text, "Fast Swim")
+		assert_eq(player.controls.left_joystick_label.text, "Swim")
+
+	func test_swimming_contextual_controls_controller():
+		var player = main_instance.get_node("Player") as Player
+		player.controls.current_input_type = 1 # MICROSOFT controller
+		player.state_machine.travel(NodeStateMachine.States.STANDING, NodeStateMachine.States.SWIMMING)
+
+		assert_eq(player.controls.joypad_button_3_label.text, "Climb Out")
+		assert_eq(player.controls.joypad_button_1_label.text, "Fast Swim")
+		assert_eq(player.controls.left_joystick_label.text, "Swim")
