@@ -1,7 +1,5 @@
 extends GutTest
 
-const IntegrationTestBase = preload("res://test/integration/integration_test_base.gd")
-
 ## Purpose: To test the actions and events related to the car.
 
 
@@ -35,20 +33,10 @@ class CarTestBase:
 			player_instance = PlayerScene.instantiate()
 			main_instance.add_child(player_instance)
 
-		player_instance.is_driving = true
 		player_instance.is_driving_in = car_instance
-		player_instance.is_entering_vehicle = false
-		player_instance.is_exiting_vehicle = false
-		if player_instance.collision_shape:
-			player_instance.collision_shape.disabled = true
 		car_instance.player = player_instance
-
-		# Enable driving state processing
-		var driving_node = player_instance.get_node_or_null("NodeStateMachine/Driving")
-		if driving_node:
-			driving_node.process_mode = Node.PROCESS_MODE_INHERIT
-			driving_node.player = player_instance
-
+		player_instance.state_machine.travel(player_instance.current_state, NodeStateMachine.States.DRIVING)
+		player_instance.is_entering_vehicle = false
 
 
 ## Tests related to the function performed by an action.
@@ -138,7 +126,6 @@ class TestCarActions:
 		assert_lt(car_instance.steering, 0.0, "Car steering should be negative when steering right.")
 		sender.action_up("move_right")
  
-
 
 ## Tests related to the function performed by an event.
 class TestCarEvents:

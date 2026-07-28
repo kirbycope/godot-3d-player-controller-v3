@@ -1,10 +1,6 @@
 extends GutTest
 
-const IntegrationTestBase = preload("res://test/integration/integration_test_base.gd")
-
 ## Purpose: To test the actions and keybindings in `res://addons/3d_player_controller/controls.gd`.
-## Tests are atomic and focus on individual actions and keybindings.
-## As such, the scene is reset each test to ensure isolation.
 
 
 ## Shared base setup/teardown for test classes that inherit from _this_ one.
