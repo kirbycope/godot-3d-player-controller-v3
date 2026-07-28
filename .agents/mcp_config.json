@@ -7,7 +7,7 @@
                 "godot-mcp-runtime"
             ],
             "env": {
-                "GODOT_PATH": "/Applications/Godot.app"
+                "GODOT_PATH": "c:\\Godot\\godot.exe"
             }
         }
     }

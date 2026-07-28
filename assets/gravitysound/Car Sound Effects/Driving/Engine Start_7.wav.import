@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://bambbxhoxbjfj"
+path="res://.godot/imported/Engine Start_7.wav-a545797b26c8216461d1b11c1e1463f3.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Car Sound Effects/Driving/Engine Start_7.wav"
+dest_files=["res://.godot/imported/Engine Start_7.wav-a545797b26c8216461d1b11c1e1463f3.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2
