@@ -1,10 +1,14 @@
 {
-	"mcpServers": {
-		"godot-docs": {
-			"command": "node",
-			"args": [
-				"../godot-docs/index.mjs"
-			]
-		}
-	}
+    "mcpServers": {
+        "godot": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "godot-mcp-runtime"
+            ],
+            "env": {
+                "GODOT_PATH": "c:\\Godot\\godot.exe"
+            }
+        }
+    }
 }

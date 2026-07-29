@@ -7,6 +7,29 @@
 [ext_resource type="AnimationLibrary" uid="uid://dnsos1fdevv0t" path="res://addons/3d_player_controller/assets/mixamo/animations/root_motion/Driving.glb" id="3_m20il"]
 [ext_resource type="AnimationLibrary" uid="uid://hfmvc78vy0pd" path="res://addons/3d_player_controller/assets/mixamo/animations/root_motion/Entering Car.glb" id="4_ndq4s"]
 [ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://scenes/action_prompt.tscn" id="7_0hic1"]
+[ext_resource type="PackedScene" uid="uid://djvf0i62xd1l0" path="res://assets/BinbunVFX/fire_effects/effects/Fire/fire_05.tscn" id="8_ndljn"]
+[ext_resource type="PackedScene" uid="uid://chqijevfxuhpd" path="res://assets/BinbunVFX_Vol2/ExplosionFX/effects/ground/vfx_ground_explosion_01.tscn" id="9_w3dl6"]
+[ext_resource type="AudioStream" uid="uid://dd25upq5fxyfr" path="res://assets/tommusic/fantasy_sfx/OGG Files/SFX/Torch/Light Torch with Starting Loop 1.ogg" id="9_wcpr6"]
+[ext_resource type="AudioStream" uid="uid://con25r1kd8woc" path="res://assets/tommusic/fantasy_sfx/OGG Files/SFX/Torch/Light Torch with Starting Loop 2.ogg" id="10_mlpxp"]
+[ext_resource type="AudioStream" uid="uid://rdmbwdphbrtj" path="res://assets/pixelloops/explosion_sfx/pl_explosion_metal_02.mp3" id="12_ntir3"]
+[ext_resource type="AudioStream" uid="uid://cqq1egh4t5stf" path="res://assets/pixelloops/explosion_sfx/pl_explosion_metal_03.mp3" id="13_10ear"]
+[ext_resource type="AudioStream" uid="uid://bvbbqtc6noqn4" path="res://assets/gravitysound/Car Sound Effects/Driving/Engine Start_3.wav" id="14_lsn0k"]
+[ext_resource type="AudioStream" uid="uid://dhxulqo78a83t" path="res://assets/gravitysound/Car Sound Effects/Driving/Rev Engine_1.wav" id="15_m1305"]
+[ext_resource type="AudioStream" uid="uid://bequ5uugilsy2" path="res://assets/gravitysound/Car Sound Effects/Driving/Slow Down Inside Car_1.wav" id="16_e07is"]
+[ext_resource type="AudioStream" uid="uid://dllwi4h6rjuov" path="res://assets/gravitysound/Car Sound Effects/Driving/Slow Down_1.wav" id="17_tys8f"]
+[ext_resource type="AudioStream" uid="uid://cpatum6nedhab" path="res://assets/gravitysound/Car Sound Effects/Driving/Speed Up Inside Car_1.wav" id="18_bffkh"]
+[ext_resource type="AudioStream" uid="uid://d0gs6gv2pvlld" path="res://assets/gravitysound/Car Sound Effects/Driving/Speed Up_1.wav" id="19_oh0tk"]
+[ext_resource type="AudioStream" uid="uid://cv6lwsvnutqu" path="res://assets/gravitysound/Car Sound Effects/Driving/Engine Running Inside Car_1.wav" id="20_wkprh"]
+[ext_resource type="AudioStream" uid="uid://b0imhjvyjwohw" path="res://assets/gravitysound/Car Sound Effects/Driving/Engine Running_1.wav" id="21_had0t"]
+[ext_resource type="AudioStream" uid="uid://dow8kn4ly7huk" path="res://assets/gravitysound/Car Sound Effects/Driving/Break_2.wav" id="22_hfl3y"]
+[ext_resource type="AudioStream" uid="uid://bccw07sfxx4fp" path="res://assets/gravitysound/Car Sound Effects/Driving/Break_4.wav" id="23_3pp5x"]
+[ext_resource type="AudioStream" uid="uid://m8h8mabkf7t1" path="res://assets/gravitysound/Car Sound Effects/Driving/Break_6.wav" id="24_js4ob"]
+[ext_resource type="AudioStream" uid="uid://b6ol8kn5fp0mh" path="res://assets/gravitysound/Car Sound Effects/Driving/Break_1.wav" id="25_6rppd"]
+[ext_resource type="AudioStream" uid="uid://h7kqtqkr6qjf" path="res://assets/gravitysound/Car Sound Effects/Driving/Break_3.wav" id="26_pkmpd"]
+[ext_resource type="AudioStream" uid="uid://di87jus4b8vci" path="res://assets/gravitysound/Car Sound Effects/Driving/Break_5.wav" id="27_ky1qe"]
+[ext_resource type="AudioStream" uid="uid://bfxx3c247bt3b" path="res://assets/gravitysound/Car Sound Effects/Driving/Break_7.wav" id="28_jxd6f"]
+[ext_resource type="AudioStream" uid="uid://c08o7uglowp0n" path="res://assets/gravitysound/Car Sound Effects/Driving/Break_8.wav" id="29_8qu4k"]
+[ext_resource type="AudioStream" uid="uid://ba8bn8lxlnnmb" path="res://assets/gravitysound/Car Sound Effects/Driving/Break_9.wav" id="30_svfy7"]
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_0hic1"]
 points = PackedVector3Array(1.5927143, 0.6675866, 3.1609297, 1.4754472, 1.2534525, 1.4047761, -1.5682383, 0.7848079, 3.1609297, -0.7065927, -1.026907, 2.8761892, 1.0073068, -1.0883262, -0.3499103, 1.5927143, 1.0190098, -3.044293, -1.4724079, 0.9586757, -2.9692702, -0.9828308, -1.0883262, -0.3499103, 1.0764372, -0.48028046, 3.3612459, -1.4509711, 1.2534525, -1.4047761, 1.4754472, 0.08220209, -3.1609297, -1.4509711, -0.15151845, 3.5123072, -1.3340135, -0.15151845, -3.1609297, 1.5927143, -0.15151845, 2.1067975, 1.2412224, 0.6675866, 3.7470477, -0.8655637, 0.9017886, -3.7470477, -1.4509711, 1.2534525, 1.4047761, 0.53885716, -0.15151845, -3.3956704, 0.91862005, -0.989193, 2.6660569, -1.5682383, -0.15151845, 2.1067975, 1.1242646, 1.0190098, -3.6296773, 1.4754472, 1.2534525, -1.4047761, -1.4509711, 0.7848079, 3.5123072, -1.0997885, 1.0190098, -3.6296773, 1.0073068, 0.19918272, -3.6296773, -0.9828308, 0.19918272, -3.6296773, -0.88325304, -1.08251, 1.686038, 1.3584895, -0.2687398, -2.6929154, -1.2167463, 0.6675866, 3.7470477, 0.7966987, -1.0748086, 1.8827711, -1.4508018, 0.18616232, -2.8180883, -0.63164824, -0.15151845, -3.3956704)
@@ -552,173 +575,228 @@ _data = {
 &"open": SubResource("Animation_ndq4s")
 }
 
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_kxxiu"]
+streams_count = 2
+stream_0/stream = ExtResource("9_wcpr6")
+stream_1/stream = ExtResource("10_mlpxp")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_rsj67"]
+noise_type = 2
+fractal_octaves = 1
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ipdoc"]
+noise = SubResource("FastNoiseLite_rsj67")
+seamless = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_2cw0x"]
+frequency = 0.005
+fractal_type = 2
+fractal_octaves = 2
+fractal_weighted_strength = 1.0
+cellular_distance_function = 1
+domain_warp_type = 2
+domain_warp_amplitude = 10.0
+domain_warp_frequency = 0.01
+domain_warp_fractal_type = 2
+domain_warp_fractal_octaves = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_wcpr6"]
+noise = SubResource("FastNoiseLite_2cw0x")
+seamless = true
+invert = true
+seamless_blend_skirt = 0.2
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_explosion"]
+streams_count = 3
+stream_0/stream = ExtResource("12_ntir3")
+stream_1/stream = ExtResource("12_ntir3")
+stream_2/stream = ExtResource("13_10ear")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_4v6o2"]
+streams_count = 3
+stream_0/stream = ExtResource("22_hfl3y")
+stream_1/stream = ExtResource("23_3pp5x")
+stream_2/stream = ExtResource("24_js4ob")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_edn16"]
+streams_count = 6
+stream_0/stream = ExtResource("25_6rppd")
+stream_1/stream = ExtResource("26_pkmpd")
+stream_2/stream = ExtResource("27_ky1qe")
+stream_3/stream = ExtResource("28_jxd6f")
+stream_4/stream = ExtResource("29_8qu4k")
+stream_5/stream = ExtResource("30_svfy7")
+
 [node name="CRV" type="VehicleBody3D" unique_id=782070933]
+mass = 333.0
+center_of_mass_mode = 1
+center_of_mass = Vector3(0, 0.5, 0)
 script = ExtResource("1_ndq4s")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1739860576]
-transform = Transform3D(0.6207, 0, 0, 0, -0.6207, -1.0112487e-07, 0, 1.0112487e-07, -0.6207, -0.0048220158, 0.95953125, 0.58976465)
+transform = Transform3D(0.6207, 0, 0, 0, -0.6207, -1.0112487e-07, 0, 1.0112487e-07, -0.6207, -0.0048220158, 0.95953125, 0.089764655)
 shape = SubResource("ConvexPolygonShape3D_0hic1")
 
 [node name="Honda CRV 2023" parent="." unique_id=726734700 instance=ExtResource("1_kw0ot")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.1000001, -0.667, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.1000001, -0.667, -0.5)
 
-[node name="Interior screen " parent="Honda CRV 2023" index="22" unique_id=1494899910]
+[node name="Interior screen " parent="Honda CRV 2023" index="22" unique_id=500148200]
 surface_material_override/0 = SubResource("StandardMaterial3D_m20il")
 
-[node name="Exterior glass " parent="Honda CRV 2023" index="40" unique_id=2105372279]
+[node name="Exterior glass " parent="Honda CRV 2023" index="40" unique_id=1738837205]
 surface_material_override/0 = SubResource("StandardMaterial3D_0hic1")
 
-[node name="Exterior trunk door\nExterior trunk door 00" parent="Honda CRV 2023" index="52" unique_id=704189869]
+[node name="Exterior trunk door\nExterior trunk door 00" parent="Honda CRV 2023" index="52" unique_id=847080145]
 visible = false
 
-[node name="Exterior trunk door\nExterior trunk door 04" parent="Honda CRV 2023" index="56" unique_id=1292559825]
+[node name="Exterior trunk door\nExterior trunk door 04" parent="Honda CRV 2023" index="56" unique_id=511021351]
 surface_material_override/0 = SubResource("StandardMaterial3D_0hic1")
 
-[node name="Exterior trunk door\nExterior trunk door 18" parent="Honda CRV 2023" index="58" unique_id=1403851783]
+[node name="Exterior trunk door\nExterior trunk door 18" parent="Honda CRV 2023" index="58" unique_id=907495351]
 surface_material_override/0 = SubResource("StandardMaterial3D_ndq4s")
 
-[node name="Exterior rear left door 09" parent="Honda CRV 2023" index="71" unique_id=851282474]
+[node name="Exterior rear left door 09" parent="Honda CRV 2023" index="71" unique_id=56802599]
 surface_material_override/0 = SubResource("StandardMaterial3D_0hic1")
 
-[node name="Exterior rear left door 10" parent="Honda CRV 2023" index="81" unique_id=1197705472]
+[node name="Exterior rear left door 10" parent="Honda CRV 2023" index="81" unique_id=984304004]
 surface_material_override/0 = SubResource("StandardMaterial3D_ndq4s")
 
-[node name="Exterior front left door 11" parent="Honda CRV 2023" index="82" unique_id=1005690883]
+[node name="Exterior front left door 11" parent="Honda CRV 2023" index="82" unique_id=1098581203]
 transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
 surface_material_override/0 = SubResource("StandardMaterial3D_ndq4s")
 
-[node name="Exterior front left door 09" parent="Honda CRV 2023" index="83" unique_id=2132121471]
+[node name="Exterior front left door 09" parent="Honda CRV 2023" index="83" unique_id=1959569071]
 transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
 surface_material_override/0 = SubResource("StandardMaterial3D_0hic1")
 
-[node name="Exterior front left door 03" parent="Honda CRV 2023" index="84" unique_id=140830315]
+[node name="Exterior front left door 03" parent="Honda CRV 2023" index="84" unique_id=435917817]
 transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
 
-[node name="Exterior front left door 04" parent="Honda CRV 2023" index="85" unique_id=353119774]
+[node name="Exterior front left door 04" parent="Honda CRV 2023" index="85" unique_id=276219054]
 transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
 
-[node name="Exterior front left door 05" parent="Honda CRV 2023" index="86" unique_id=251348884]
+[node name="Exterior front left door 05" parent="Honda CRV 2023" index="86" unique_id=472036575]
 transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
 
-[node name="Exterior front left door 06" parent="Honda CRV 2023" index="87" unique_id=57442102]
+[node name="Exterior front left door 06" parent="Honda CRV 2023" index="87" unique_id=232343193]
 transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
 
-[node name="Exterior front left door 12" parent="Honda CRV 2023" index="88" unique_id=1493864164]
+[node name="Exterior front left door 12" parent="Honda CRV 2023" index="88" unique_id=626015143]
 transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
 
-[node name="Exterior front left door 13" parent="Honda CRV 2023" index="89" unique_id=516327066]
+[node name="Exterior front left door 13" parent="Honda CRV 2023" index="89" unique_id=860562572]
 transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
 
-[node name="Exterior front left door 08" parent="Honda CRV 2023" index="90" unique_id=327094807]
+[node name="Exterior front left door 08" parent="Honda CRV 2023" index="90" unique_id=765875637]
 transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
 
-[node name="Exterior front left door 02" parent="Honda CRV 2023" index="91" unique_id=1108931580]
+[node name="Exterior front left door 02" parent="Honda CRV 2023" index="91" unique_id=225555155]
 transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627593, 1.4001321)
 
-[node name="Exterior front left door 10" parent="Honda CRV 2023" index="92" unique_id=331663267]
+[node name="Exterior front left door 10" parent="Honda CRV 2023" index="92" unique_id=191348359]
 transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
 
-[node name="Exterior front left door 01" parent="Honda CRV 2023" index="93" unique_id=432483723]
+[node name="Exterior front left door 01" parent="Honda CRV 2023" index="93" unique_id=1305084878]
 transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
 
-[node name="Exterior front left door 07" parent="Honda CRV 2023" index="94" unique_id=1956480220]
+[node name="Exterior front left door 07" parent="Honda CRV 2023" index="94" unique_id=1601673085]
 transform = Transform3D(100.077446, -3.8971586e-05, 1.7035022e-12, 0, 4.374523e-06, 100.07743, 3.8971597e-05, 100.07742, -4.3745235e-06, -2.209649, 1.4627594, 1.4001321)
 
-[node name="Exterior front left door 14" parent="Honda CRV 2023" index="95" unique_id=1009681019]
+[node name="Exterior front left door 14" parent="Honda CRV 2023" index="95" unique_id=749296858]
 transform = Transform3D(-100.073555, 0.004974824, 0.8727589, -0.8727586, 1.1898822e-05, -100.07359, 0.004974736, 100.077415, -3.1486266e-05, -2.209314, 1.4627593, 1.4001317)
 
-[node name="Exterior body 00" parent="Honda CRV 2023" index="98" unique_id=1146633092]
+[node name="Exterior body 00" parent="Honda CRV 2023" index="98" unique_id=1269973701]
 surface_material_override/0 = SubResource("StandardMaterial3D_ndq4s")
 
-[node name="Exterior rims 2-04" parent="Honda CRV 2023" index="100" unique_id=1535458031]
+[node name="Exterior rims 2-04" parent="Honda CRV 2023" index="100" unique_id=871086361]
 visible = false
 
-[node name="Exterior rims 2-03" parent="Honda CRV 2023" index="101" unique_id=1386567793]
+[node name="Exterior rims 2-03" parent="Honda CRV 2023" index="101" unique_id=2070981028]
 visible = false
 
-[node name="Exterior brake 00" parent="Honda CRV 2023" index="102" unique_id=1356826892]
+[node name="Exterior brake 00" parent="Honda CRV 2023" index="102" unique_id=1126890228]
 visible = false
 
-[node name="Exterior rims 2-05" parent="Honda CRV 2023" index="103" unique_id=551324502]
+[node name="Exterior rims 2-05" parent="Honda CRV 2023" index="103" unique_id=1011378199]
 visible = false
 
-[node name="Exterior Tires 00" parent="Honda CRV 2023" index="104" unique_id=1055974994]
+[node name="Exterior Tires 00" parent="Honda CRV 2023" index="104" unique_id=528540577]
 visible = false
 
-[node name="Exterior brake disc 00" parent="Honda CRV 2023" index="105" unique_id=1223301359]
+[node name="Exterior brake disc 00" parent="Honda CRV 2023" index="105" unique_id=727030856]
 visible = false
 
-[node name="Exterior brake 02" parent="Honda CRV 2023" index="107" unique_id=1355056507]
+[node name="Exterior brake 02" parent="Honda CRV 2023" index="107" unique_id=468319592]
 visible = false
 
-[node name="Exterior rims 2-08" parent="Honda CRV 2023" index="108" unique_id=703619422]
+[node name="Exterior rims 2-08" parent="Honda CRV 2023" index="108" unique_id=715782741]
 visible = false
 
-[node name="Exterior brake disc 02" parent="Honda CRV 2023" index="109" unique_id=1626486693]
+[node name="Exterior brake disc 02" parent="Honda CRV 2023" index="109" unique_id=1039743899]
 visible = false
 
-[node name="Exterior Tires 02" parent="Honda CRV 2023" index="110" unique_id=541568681]
+[node name="Exterior Tires 02" parent="Honda CRV 2023" index="110" unique_id=182033553]
 visible = false
 
-[node name="Exterior rims 2-07" parent="Honda CRV 2023" index="111" unique_id=1987363268]
+[node name="Exterior rims 2-07" parent="Honda CRV 2023" index="111" unique_id=2138394002]
 visible = false
 
-[node name="Exterior suspension 02" parent="Honda CRV 2023" index="112" unique_id=991784047]
+[node name="Exterior suspension 02" parent="Honda CRV 2023" index="112" unique_id=243536162]
 visible = false
 
-[node name="Exterior rims 2-06" parent="Honda CRV 2023" index="113" unique_id=1949470774]
+[node name="Exterior rims 2-06" parent="Honda CRV 2023" index="113" unique_id=1090025426]
 visible = false
 
-[node name="Exterior brake 01" parent="Honda CRV 2023" index="114" unique_id=462280556]
+[node name="Exterior brake 01" parent="Honda CRV 2023" index="114" unique_id=1987082192]
 visible = false
 
-[node name="Exterior rims 2-02" parent="Honda CRV 2023" index="115" unique_id=379547063]
+[node name="Exterior rims 2-02" parent="Honda CRV 2023" index="115" unique_id=853254072]
 visible = false
 
-[node name="Exterior brake disc 01" parent="Honda CRV 2023" index="116" unique_id=1258081492]
+[node name="Exterior brake disc 01" parent="Honda CRV 2023" index="116" unique_id=975801990]
 visible = false
 
-[node name="Exterior brake 03" parent="Honda CRV 2023" index="117" unique_id=357439389]
+[node name="Exterior brake 03" parent="Honda CRV 2023" index="117" unique_id=748473717]
 visible = false
 
-[node name="Exterior rims 2-11" parent="Honda CRV 2023" index="118" unique_id=942737344]
+[node name="Exterior rims 2-11" parent="Honda CRV 2023" index="118" unique_id=841009760]
 visible = false
 
-[node name="Exterior brake disc 03" parent="Honda CRV 2023" index="119" unique_id=1553857487]
+[node name="Exterior brake disc 03" parent="Honda CRV 2023" index="119" unique_id=847121844]
 visible = false
 
-[node name="Exterior Tires 01" parent="Honda CRV 2023" index="120" unique_id=1987498325]
+[node name="Exterior Tires 01" parent="Honda CRV 2023" index="120" unique_id=301574270]
 visible = false
 
-[node name="Exterior Tires 03" parent="Honda CRV 2023" index="121" unique_id=697817932]
+[node name="Exterior Tires 03" parent="Honda CRV 2023" index="121" unique_id=1522545373]
 visible = false
 
-[node name="Exterior rims 2-00" parent="Honda CRV 2023" index="122" unique_id=5083757]
+[node name="Exterior rims 2-00" parent="Honda CRV 2023" index="122" unique_id=1798865078]
 visible = false
 
-[node name="Exterior rims 2-09" parent="Honda CRV 2023" index="124" unique_id=983905605]
+[node name="Exterior rims 2-09" parent="Honda CRV 2023" index="124" unique_id=1886190078]
 visible = false
 
-[node name="Exterior rims 2-01" parent="Honda CRV 2023" index="126" unique_id=594315488]
+[node name="Exterior rims 2-01" parent="Honda CRV 2023" index="126" unique_id=254242957]
 visible = false
 
-[node name="Exterior rims 2-10" parent="Honda CRV 2023" index="127" unique_id=389434432]
+[node name="Exterior rims 2-10" parent="Honda CRV 2023" index="127" unique_id=2099238986]
 visible = false
 
-[node name="Exterior front right door 4" parent="Honda CRV 2023" index="132" unique_id=1325007494]
+[node name="Exterior front right door 4" parent="Honda CRV 2023" index="132" unique_id=1177110386]
 surface_material_override/0 = SubResource("StandardMaterial3D_0hic1")
 
-[node name="Exterior front right door 5" parent="Honda CRV 2023" index="133" unique_id=1195377442]
+[node name="Exterior front right door 5" parent="Honda CRV 2023" index="133" unique_id=1533120705]
 surface_material_override/0 = SubResource("StandardMaterial3D_ndq4s")
 
-[node name="Exterior rear right door 10" parent="Honda CRV 2023" index="144" unique_id=1110999721]
+[node name="Exterior rear right door 10" parent="Honda CRV 2023" index="144" unique_id=838532070]
 surface_material_override/0 = SubResource("StandardMaterial3D_ndq4s")
 
-[node name="Exterior rear right door 07" parent="Honda CRV 2023" index="145" unique_id=1244438205]
+[node name="Exterior rear right door 07" parent="Honda CRV 2023" index="145" unique_id=754367052]
 surface_material_override/0 = SubResource("StandardMaterial3D_0hic1")
 
 [node name="VehicleWheel3D" type="VehicleWheel3D" parent="." unique_id=538873441]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.78153324, 0.3481807, 1.9197016)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.78153324, 0.3481807, 1.4197016)
 use_as_traction = true
 use_as_steering = true
 wheel_radius = 0.35
@@ -726,14 +804,14 @@ wheel_radius = 0.35
 [node name="Wheel" parent="VehicleWheel3D" unique_id=644236510 instance=ExtResource("3_0hic1")]
 
 [node name="VehicleWheel3D2" type="VehicleWheel3D" parent="." unique_id=1043972108]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.78153324, 0.3481807, -0.7855551)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.78153324, 0.3481807, -1.2855551)
 use_as_traction = true
 wheel_radius = 0.35
 
 [node name="Wheel2" parent="VehicleWheel3D2" unique_id=340380773 instance=ExtResource("3_0hic1")]
 
 [node name="VehicleWheel3D3" type="VehicleWheel3D" parent="." unique_id=1262723628]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8091178, 0.3481807, 1.9197016)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8091178, 0.3481807, 1.4197016)
 use_as_traction = true
 use_as_steering = true
 wheel_radius = 0.35
@@ -742,7 +820,7 @@ wheel_radius = 0.35
 transform = Transform3D(-1, 0, 1.509958e-07, 0, 1, 0, -1.509958e-07, 0, -1, 0, 0, 0)
 
 [node name="VehicleWheel3D4" type="VehicleWheel3D" parent="." unique_id=1509261224]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8091178, 0.3481807, -0.7855551)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8091178, 0.3481807, -1.2855551)
 use_as_traction = true
 wheel_radius = 0.35
 
@@ -750,7 +828,7 @@ wheel_radius = 0.35
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 0)
 
 [node name="DriverSeat" type="Marker3D" parent="." unique_id=1951315047]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.465, 0.05, 0.65)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42, 0.05, 0.14999998)
 
 [node name="y_bot_root" parent="DriverSeat" unique_id=982613326 instance=ExtResource("2_0r7jk")]
 process_mode = 4
@@ -762,7 +840,7 @@ libraries/Driving = ExtResource("3_m20il")
 autoplay = &"Driving/mixamo_com"
 
 [node name="EnterCar" type="Marker3D" parent="." unique_id=1941856147]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 2.2375002, 7.450581e-09, 0.63750005)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 2.2375002, 7.450581e-09, 0.13750005)
 
 [node name="y_bot_root" parent="EnterCar" unique_id=1864618496 instance=ExtResource("2_0r7jk")]
 process_mode = 4
@@ -776,7 +854,68 @@ autoplay = &"Entering Car/mixamo_com"
 libraries/ = SubResource("AnimationLibrary_0hic1")
 
 [node name="ActionPrompt" parent="." unique_id=1664152999 instance=ExtResource("7_0hic1")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 1.8000001, 0)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 1.8000001, -0.5)
 message_end = "to drive car"
+
+[node name="FirstPersonCamera" type="Camera3D" parent="." unique_id=1495609120]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0.42, 1.333, 0.25)
+
+[node name="Fire_05" parent="." unique_id=791002157 instance=ExtResource("8_ndljn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 1.7)
+emitting = false
+
+[node name="FireSFX" type="AudioStreamPlayer3D" parent="Fire_05" unique_id=1225745702]
+stream = SubResource("AudioStreamRandomizer_kxxiu")
+
+[node name="VFXGroundExplosion_01" parent="." unique_id=1912371438 instance=ExtResource("9_w3dl6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
+noise_texture = SubResource("NoiseTexture2D_ipdoc")
+smoke_texture = SubResource("NoiseTexture2D_wcpr6")
+smoke_amount = 64
+one_shot = true
+autoplay = false
+
+[node name="ExplosionSFX" type="AudioStreamPlayer3D" parent="VFXGroundExplosion_01" unique_id=2103724149]
+stream = SubResource("AudioStreamRandomizer_explosion")
+
+[node name="SFXCarStart" type="AudioStreamPlayer3D" parent="." unique_id=244179379]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 1.5)
+stream = ExtResource("14_lsn0k")
+
+[node name="SFXEngineRev" type="AudioStreamPlayer3D" parent="." unique_id=1212025114]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 1.5)
+stream = ExtResource("15_m1305")
+
+[node name="SFXEngineSlowDownInside" type="AudioStreamPlayer3D" parent="." unique_id=169217091]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.7)
+stream = ExtResource("16_e07is")
+
+[node name="SFXEngineSlowDownOutside" type="AudioStreamPlayer3D" parent="." unique_id=836829255]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 1.5)
+stream = ExtResource("17_tys8f")
+
+[node name="SFXEngineSpeedUpInside" type="AudioStreamPlayer3D" parent="." unique_id=410115346]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.7)
+stream = ExtResource("18_bffkh")
+
+[node name="SFXEngineSpeedUpOutside" type="AudioStreamPlayer3D" parent="." unique_id=189076117]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 1.5)
+stream = ExtResource("19_oh0tk")
+
+[node name="SFXEngineRunningInside" type="AudioStreamPlayer3D" parent="." unique_id=766167025]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.7)
+stream = ExtResource("20_wkprh")
+
+[node name="SFXEngineRunningOutside" type="AudioStreamPlayer3D" parent="." unique_id=737168550]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 1.5)
+stream = ExtResource("21_had0t")
+
+[node name="SFXBreakShort" type="AudioStreamPlayer3D" parent="." unique_id=677770578]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.5)
+stream = SubResource("AudioStreamRandomizer_4v6o2")
+
+[node name="SFXBreakLong" type="AudioStreamPlayer3D" parent="." unique_id=991328032]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.5)
+stream = SubResource("AudioStreamRandomizer_edn16")
 
 [editable path="Honda CRV 2023"]

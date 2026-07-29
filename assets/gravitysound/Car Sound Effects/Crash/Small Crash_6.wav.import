@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://dkt7gdjgoeylt"
+path="res://.godot/imported/Small Crash_6.wav-8445f58187f068812aea40edf49f7654.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Car Sound Effects/Crash/Small Crash_6.wav"
+dest_files=["res://.godot/imported/Small Crash_6.wav-8445f58187f068812aea40edf49f7654.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

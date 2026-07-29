@@ -12,10 +12,10 @@ func _ready() -> void:
 
 
 func _physics_process(_delta: float) -> void:
-	for i in range(players_in_range.size() - 1, -1, -1):
-		var player := players_in_range[i]
-		if is_instance_valid(player) and player.is_inside_tree():
-			var dir := global_position.direction_to(player.global_position)
+	for i: int in range(players_in_range.size() - 1, -1, -1):
+		var player: Player = players_in_range[i]
+		if is_instance_valid(player) and player.is_inside_tree() and player_detection.overlaps_body(player):
+			var dir: Vector3 = global_position.direction_to(player.global_position)
 			if dir.length_squared() > 0.0001:
 				player.up_direction = dir
 		else:

@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://cmv6hntsfrgyc"
+path="res://.godot/imported/Rev Engine_4.wav-f51606c35c310f1a9de35b2a537afd4d.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Car Sound Effects/Driving/Rev Engine_4.wav"
+dest_files=["res://.godot/imported/Rev Engine_4.wav-f51606c35c310f1a9de35b2a537afd4d.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2
