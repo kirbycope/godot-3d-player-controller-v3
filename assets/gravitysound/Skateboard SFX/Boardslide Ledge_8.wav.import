@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://cshg6btfu6a5r"
+path="res://.godot/imported/Boardslide Ledge_8.wav-61aa8ce79958ea7494d8d2d18ff9201b.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Skateboard SFX/Boardslide Ledge_8.wav"
+dest_files=["res://.godot/imported/Boardslide Ledge_8.wav-61aa8ce79958ea7494d8d2d18ff9201b.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://b6jp43n1e1u6i"]
 
 [ext_resource type="Script" uid="uid://djev6ylgoh2b0" path="res://scenes/red_ballon.gd" id="1_t8k3v"]
-[ext_resource type="AudioStream" uid="uid://0ove6lahesha" path="res://addons/3d_player_controller/assets/freesound/850645__sadiquecat__ir-caravan-ballon-pop-1.wav" id="2_t8bqt"]
+[ext_resource type="AudioStream" uid="uid://0ove6lahesha" path="res://assets/freesound/850645__sadiquecat__ir-caravan-ballon-pop-1.wav" id="2_t8bqt"]
 [ext_resource type="PackedScene" uid="uid://bwpnabad6xun7" path="res://scenes/godot_plush.tscn" id="3_4vnw8"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_senyo"]

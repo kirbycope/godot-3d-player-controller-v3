@@ -2,10 +2,10 @@
 
 [ext_resource type="PackedScene" uid="uid://cn8fbgb14w4mq" path="res://assets/n_hance_studio/weapons/SK_Bow_Newbie_02.fbx" id="1_2l2of"]
 [ext_resource type="Script" uid="uid://o1nn7bjjr76s" path="res://scenes/bow.gd" id="1_2of8d"]
-[ext_resource type="AudioStream" uid="uid://bo6duef7adfmo" path="res://addons/3d_player_controller/assets/pixabay/freesound_community-bow-loading-38752.mp3" id="3_60xqc"]
-[ext_resource type="AudioStream" uid="uid://diys7xvxwcdj" path="res://addons/3d_player_controller/assets/pixabay/freesound_community-bow-release-bow-and-arrow-4-101936.mp3" id="4_a60kk"]
-[ext_resource type="AudioStream" uid="uid://bxuo1psaadb7n" path="res://addons/3d_player_controller/assets/pixabay/djartmusic-arrow-swish_03-306040.mp3" id="5_p5kp7"]
-[ext_resource type="AudioStream" uid="uid://14v2pascfajw" path="res://addons/3d_player_controller/assets/pixabay/djartmusic-arrow-twang_01-306041.mp3" id="6_dvurc"]
+[ext_resource type="AudioStream" uid="uid://bo6duef7adfmo" path="res://assets/pixabay/freesound_community-bow-loading-38752.mp3" id="3_60xqc"]
+[ext_resource type="AudioStream" uid="uid://diys7xvxwcdj" path="res://assets/pixabay/freesound_community-bow-release-bow-and-arrow-4-101936.mp3" id="4_a60kk"]
+[ext_resource type="AudioStream" uid="uid://bxuo1psaadb7n" path="res://assets/pixabay/djartmusic-arrow-swish_03-306040.mp3" id="5_p5kp7"]
+[ext_resource type="AudioStream" uid="uid://14v2pascfajw" path="res://assets/pixabay/djartmusic-arrow-twang_01-306041.mp3" id="6_dvurc"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fk680"]
 albedo_color = Color(0.36408392, 0.36408395, 0.36408392, 1)

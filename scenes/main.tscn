@@ -13,10 +13,10 @@
 [ext_resource type="PackedScene" uid="uid://bsybqxf7immya" path="res://assets/n_hance_studio/weapons/SK_Bow_Newbie_01.fbx" id="11_vxglm"]
 [ext_resource type="PackedScene" uid="uid://blo6m8lpjri0d" path="res://assets/n_hance_studio/weapons/SK_Dagger_1H_Newbie_01.fbx" id="12_2f3dj"]
 [ext_resource type="Script" uid="uid://7r16fm6kmk1p" path="res://addons/3d_player_controller/bow.gd" id="12_2wyq8"]
-[ext_resource type="AudioStream" uid="uid://bo6duef7adfmo" path="res://addons/3d_player_controller/assets/pixabay/freesound_community-bow-loading-38752.mp3" id="12_jscy8"]
-[ext_resource type="AudioStream" uid="uid://bxuo1psaadb7n" path="res://addons/3d_player_controller/assets/pixabay/djartmusic-arrow-swish_03-306040.mp3" id="12_og1vs"]
-[ext_resource type="AudioStream" uid="uid://14v2pascfajw" path="res://addons/3d_player_controller/assets/pixabay/djartmusic-arrow-twang_01-306041.mp3" id="13_2wyq8"]
-[ext_resource type="AudioStream" uid="uid://diys7xvxwcdj" path="res://addons/3d_player_controller/assets/pixabay/freesound_community-bow-release-bow-and-arrow-4-101936.mp3" id="13_pm3ni"]
+[ext_resource type="AudioStream" uid="uid://bo6duef7adfmo" path="res://assets/pixabay/freesound_community-bow-loading-38752.mp3" id="12_jscy8"]
+[ext_resource type="AudioStream" uid="uid://bxuo1psaadb7n" path="res://assets/pixabay/djartmusic-arrow-swish_03-306040.mp3" id="12_og1vs"]
+[ext_resource type="AudioStream" uid="uid://14v2pascfajw" path="res://assets/pixabay/djartmusic-arrow-twang_01-306041.mp3" id="13_2wyq8"]
+[ext_resource type="AudioStream" uid="uid://diys7xvxwcdj" path="res://assets/pixabay/freesound_community-bow-release-bow-and-arrow-4-101936.mp3" id="13_pm3ni"]
 [ext_resource type="PackedScene" uid="uid://1eqwedxx6bid" path="res://assets/n_hance_studio/weapons/SK_Shield_Newbie_01.fbx" id="13_yq6so"]
 [ext_resource type="PackedScene" uid="uid://b68tmbfsyhl17" path="res://assets/n_hance_studio/weapons/SK_Staff_Newbie_01.fbx" id="14_fv21b"]
 [ext_resource type="PackedScene" uid="uid://br0tu61de4o65" path="res://assets/n_hance_studio/weapons/SK_Sword_1H_Newbie_01.fbx" id="15_tel4y"]
@@ -31,8 +31,9 @@
 [ext_resource type="PackedScene" uid="uid://yo68ojwutmqp" path="res://scenes/ore_large.tscn" id="31_tel4y"]
 [ext_resource type="PackedScene" uid="uid://d3o4cq6mgg8ni" path="res://scenes/tree_01.tscn" id="33_dgi5k"]
 [ext_resource type="PackedScene" uid="uid://bwngmjoqsrtcx" path="res://scenes/crv.tscn" id="37_fuf3a"]
-[ext_resource type="PackedScene" uid="uid://drmvyehu4dq43" path="res://addons/3d_player_controller/assets/sketchfab/skateboard/skateboard.tscn" id="37_pibwh"]
+[ext_resource type="PackedScene" uid="uid://drmvyehu4dq43" path="res://scenes/skateboard.tscn" id="37_pibwh"]
 [ext_resource type="PackedScene" uid="uid://ceyrqy0cvueei" path="res://scenes/road.tscn" id="38_c6pm6"]
+[ext_resource type="PackedScene" uid="uid://bra3khigbuanl" path="res://scenes/paraglider.tscn" id="38_paraglider"]
 [ext_resource type="PackedScene" uid="uid://bea6xq7pi7e0a" path="res://scenes/moon.tscn" id="38_pibwh"]
 [ext_resource type="PackedScene" uid="uid://buun545xrv5hr" path="res://scenes/fishing_rod.tscn" id="39_c6pm6"]
 
@@ -601,6 +602,8 @@ size = Vector3(1, 0.15, 0.35)
 material = SubResource("StandardMaterial3D_dwbse")
 
 [node name="Player" parent="." unique_id=994458497 instance=ExtResource("1_0xm2m")]
+paraglider_scene = ExtResource("38_paraglider")
+skateboard_scene = ExtResource("37_pibwh")
 
 [node name="N_Hance_Studio_1" type="Node3D" parent="." unique_id=1622472344]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 0)
@@ -894,7 +897,7 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -4.7
 transform = Transform3D(-4.371138e-08, 0, -0.9999999, 0, 1, 0, 0.9999999, 0, -4.371138e-08, 0, 0.1, -11.9)
 
 [node name="Skateboard" parent="." unique_id=1958283666 instance=ExtResource("37_pibwh")]
-transform = Transform3D(2.9802322e-08, -1, 0, 1, 2.9802322e-08, 0, 0, 0, 1, 4.2889647, 0.9169763, 3.982221)
+transform = Transform3D(2.9802322e-08, -1, 0, -4.371139e-08, -1.3027009e-15, 1, -1, -2.9802322e-08, -4.371139e-08, 4.3889647, 0.7169763, 3.982221)
 
 [node name="Moon" parent="." unique_id=774808875 instance=ExtResource("38_pibwh")]
 transform = Transform3D(-0.9659257, -0.08852131, -0.24321027, -0.044943463, 0.982784, -0.17920823, 0.2548869, -0.16217114, -0.95327485, 0, 21, -42)
@@ -960,10 +963,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.001, 0)
 top_level = true
 
 [node name="Road" parent="." unique_id=748822035 instance=ExtResource("38_c6pm6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.049, 4)
 
 [node name="FishingRod" parent="." unique_id=2053350041 instance=ExtResource("39_c6pm6")]
-transform = Transform3D(-1.4950176e-08, -4.1075268e-08, -1, -0.9396926, 0.34202015, 0, 0.34202015, 0.9396926, -4.371139e-08, 4.4, 0.10000001, 2.5)
+transform = Transform3D(-1.4950176e-08, -4.1075268e-08, -1, -0.9396926, 0.34202015, 0, 0.34202015, 0.9396926, -4.371139e-08, 4.4, 0.10000001, 1.8999999)
 
 [connection signal="body_entered" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_entered"]
 [connection signal="body_exited" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_exited"]

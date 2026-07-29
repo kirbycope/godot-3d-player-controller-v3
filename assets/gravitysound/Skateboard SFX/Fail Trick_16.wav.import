@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://cm3jbs3p1bbtl"
+path="res://.godot/imported/Fail Trick_16.wav-427157ecc958f3d07830784b05aa8ee6.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Skateboard SFX/Fail Trick_16.wav"
+dest_files=["res://.godot/imported/Fail Trick_16.wav-427157ecc958f3d07830784b05aa8ee6.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

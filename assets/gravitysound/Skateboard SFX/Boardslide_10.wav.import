@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://dglrxx2i2pktc"
+path="res://.godot/imported/Boardslide_10.wav-faa64e5a6e539fa95cd2dede59c530dc.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Skateboard SFX/Boardslide_10.wav"
+dest_files=["res://.godot/imported/Boardslide_10.wav-faa64e5a6e539fa95cd2dede59c530dc.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

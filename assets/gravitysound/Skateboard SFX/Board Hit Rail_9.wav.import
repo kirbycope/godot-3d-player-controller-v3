@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://cms4vyl8qc4xf"
+path="res://.godot/imported/Board Hit Rail_9.wav-7e29a79279773f066a8f59a83dc4324b.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Skateboard SFX/Board Hit Rail_9.wav"
+dest_files=["res://.godot/imported/Board Hit Rail_9.wav-7e29a79279773f066a8f59a83dc4324b.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2
