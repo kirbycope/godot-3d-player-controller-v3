@@ -894,7 +894,7 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -4.7
 transform = Transform3D(-4.371138e-08, 0, -0.9999999, 0, 1, 0, 0.9999999, 0, -4.371138e-08, 0, 0.1, -11.9)
 
 [node name="Skateboard" parent="." unique_id=1958283666 instance=ExtResource("37_pibwh")]
-transform = Transform3D(2.9802322e-08, -1, 0, 1, 2.9802322e-08, 0, 0, 0, 1, 4.5, 0.9169763, 3.982221)
+transform = Transform3D(2.9802322e-08, -1, 0, 1, 2.9802322e-08, 0, 0, 0, 1, 4.2889647, 0.9169763, 3.982221)
 
 [node name="Moon" parent="." unique_id=774808875 instance=ExtResource("38_pibwh")]
 transform = Transform3D(-0.9659257, -0.08852131, -0.24321027, -0.044943463, 0.982784, -0.17920823, 0.2548869, -0.16217114, -0.95327485, 0, 21, -42)

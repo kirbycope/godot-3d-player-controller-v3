@@ -70,7 +70,7 @@ class TestFlyingControls:
 		player.state_machine.travel(NodeStateMachine.States.STANDING, NodeStateMachine.States.FLYING)
 
 		assert_eq(player.controls.joypad_button_3_label.text, "Fly Up")
-		assert_eq(player.controls.joypad_button_0_label.text, "Fly Down")
+		assert_eq(player.controls.joypad_button_7_label.text, "Fly Down")
 		assert_eq(player.controls.left_joystick_label.text, "Fly")
 
 	func test_flying_contextual_controls_controller():
@@ -79,7 +79,7 @@ class TestFlyingControls:
 		player.state_machine.travel(NodeStateMachine.States.STANDING, NodeStateMachine.States.FLYING)
 
 		assert_eq(player.controls.joypad_button_3_label.text, "Fly Up")
-		assert_eq(player.controls.joypad_axis_4_plus_label.text, "Fly Down")
+		assert_eq(player.controls.joypad_button_0_label.text, "Fly Down")
 		assert_eq(player.controls.left_joystick_label.text, "Fly")
 
 
@@ -92,7 +92,7 @@ class TestParaglidingControls:
 		player.controls.current_input_type = 0 # KEYBOARD_MOUSE
 		player.state_machine.travel(NodeStateMachine.States.STANDING, NodeStateMachine.States.PARAGLIDING)
 
-		assert_eq(player.controls.joypad_button_0_label.text, "Cancel")
+		assert_eq(player.controls.joypad_button_7_label.text, "Cancel")
 		assert_eq(player.controls.left_joystick_label.text, "Steer")
 
 	func test_paragliding_contextual_controls_controller():
@@ -100,7 +100,7 @@ class TestParaglidingControls:
 		player.controls.current_input_type = 1 # MICROSOFT controller
 		player.state_machine.travel(NodeStateMachine.States.STANDING, NodeStateMachine.States.PARAGLIDING)
 
-		assert_eq(player.controls.joypad_button_3_label.text, "Cancel")
+		assert_eq(player.controls.joypad_button_0_label.text, "Cancel")
 		assert_eq(player.controls.left_joystick_label.text, "Steer")
 
 
