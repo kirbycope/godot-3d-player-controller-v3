@@ -3,9 +3,118 @@
 [ext_resource type="Script" uid="uid://dxwv0pq5fiqho" path="res://scenes/skateboard.gd" id="1_c6nw7"]
 [ext_resource type="PackedScene" uid="uid://dqmuukjxtalt4" path="res://assets/sketchfab/skateboard/scene.gltf" id="1_gnj44"]
 [ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://scenes/action_prompt.tscn" id="3_s43gb"]
+[ext_resource type="AudioStream" uid="uid://cu0kd43popwhj" path="res://assets/gravitysound/Skateboard SFX/Roll on Cobblestone_1.wav" id="4_ei60u"]
+[ext_resource type="AudioStream" uid="uid://c7jbke27plbbb" path="res://assets/gravitysound/Skateboard SFX/Roll on Cobblestone_2.wav" id="5_opmnh"]
+[ext_resource type="AudioStream" uid="uid://bkcphw0a6mdku" path="res://assets/gravitysound/Skateboard SFX/Roll on Cobblestone_3.wav" id="6_eavof"]
+[ext_resource type="AudioStream" uid="uid://cya0be6pyc0dd" path="res://assets/gravitysound/Skateboard SFX/Roll on Cobblestone_4.wav" id="7_k6214"]
+[ext_resource type="AudioStream" uid="uid://cln53k6wh6mof" path="res://assets/gravitysound/Skateboard SFX/Roll on Cobblestone_5.wav" id="8_mogmu"]
+[ext_resource type="AudioStream" uid="uid://biiyp68vuplvh" path="res://assets/gravitysound/Skateboard SFX/Roll on Cobblestone_6.wav" id="9_7mowt"]
+[ext_resource type="AudioStream" uid="uid://bg30ynkt5mbgw" path="res://assets/gravitysound/Skateboard SFX/Roll on Cobblestone_7.wav" id="10_3he8h"]
+[ext_resource type="AudioStream" uid="uid://duhyd6uhkg3bw" path="res://assets/gravitysound/Skateboard SFX/Roll on Cobblestone_8.wav" id="11_g8hak"]
+[ext_resource type="AudioStream" uid="uid://bl1qe27bmjr2v" path="res://assets/gravitysound/Skateboard SFX/Roll on Cobblestone_9.wav" id="12_ur70w"]
+[ext_resource type="AudioStream" uid="uid://c7oao6r1kt46j" path="res://assets/gravitysound/Skateboard SFX/Roll on Concrete_1.wav" id="13_6aa1p"]
+[ext_resource type="AudioStream" uid="uid://b3pop6fvj11ie" path="res://assets/gravitysound/Skateboard SFX/Roll on Concrete_2.wav" id="14_tojo1"]
+[ext_resource type="AudioStream" uid="uid://csyoav64orapa" path="res://assets/gravitysound/Skateboard SFX/Roll on Concrete_3.wav" id="15_53qyj"]
+[ext_resource type="AudioStream" uid="uid://bx4br8mrjoy50" path="res://assets/gravitysound/Skateboard SFX/Roll on Concrete_4.wav" id="16_2dm3b"]
+[ext_resource type="AudioStream" uid="uid://ckofoyaq8fs3f" path="res://assets/gravitysound/Skateboard SFX/Roll on Concrete_5.wav" id="17_qdjsp"]
+[ext_resource type="AudioStream" uid="uid://5rhvw1wi7bra" path="res://assets/gravitysound/Skateboard SFX/Roll on Concrete_6.wav" id="18_kxkqn"]
+[ext_resource type="AudioStream" uid="uid://h8ct5n72j8mp" path="res://assets/gravitysound/Skateboard SFX/Roll on Concrete_7.wav" id="19_23aqa"]
+[ext_resource type="AudioStream" uid="uid://bo6ojnhod615x" path="res://assets/gravitysound/Skateboard SFX/Roll on Concrete_8.wav" id="20_ybfmh"]
+[ext_resource type="AudioStream" uid="uid://qcdothrxv24q" path="res://assets/gravitysound/Skateboard SFX/Roll on Concrete_9.wav" id="21_q7pd2"]
+[ext_resource type="AudioStream" uid="uid://dley15cceb68b" path="res://assets/gravitysound/Skateboard SFX/Roll on Concrete_10.wav" id="22_1crj2"]
+[ext_resource type="AudioStream" uid="uid://dt57mrv4bofym" path="res://assets/gravitysound/Skateboard SFX/Roll on Wood_1.wav" id="23_8ahja"]
+[ext_resource type="AudioStream" uid="uid://cuclp0s828gjt" path="res://assets/gravitysound/Skateboard SFX/Roll on Wood_2.wav" id="24_812lc"]
+[ext_resource type="AudioStream" uid="uid://bbbi44iqf7lq" path="res://assets/gravitysound/Skateboard SFX/Roll on Wood_3.wav" id="25_jfyd8"]
+[ext_resource type="AudioStream" uid="uid://04t5tbwpidgr" path="res://assets/gravitysound/Skateboard SFX/Roll on Wood_4.wav" id="26_g3y7h"]
+[ext_resource type="AudioStream" uid="uid://wum2p4qsxba3" path="res://assets/gravitysound/Skateboard SFX/Roll on Wood_5.wav" id="27_ltplh"]
+[ext_resource type="AudioStream" uid="uid://bdyoj71xghouw" path="res://assets/gravitysound/Skateboard SFX/Roll on Wood_6.wav" id="28_dxlev"]
+[ext_resource type="AudioStream" uid="uid://hmv1rtb4gjed" path="res://assets/gravitysound/Skateboard SFX/Ollie_1.wav" id="29_1t371"]
+[ext_resource type="AudioStream" uid="uid://b5imc70um1v8u" path="res://assets/gravitysound/Skateboard SFX/Ollie_2.wav" id="30_o27pu"]
+[ext_resource type="AudioStream" uid="uid://dpfxbmgyhfsbr" path="res://assets/gravitysound/Skateboard SFX/Ollie_11.wav" id="31_83hau"]
+[ext_resource type="AudioStream" uid="uid://ckayoeotefyb4" path="res://assets/gravitysound/Skateboard SFX/Ollie_3.wav" id="32_qm01h"]
+[ext_resource type="AudioStream" uid="uid://bpe4pu40qmljg" path="res://assets/gravitysound/Skateboard SFX/Ollie_4.wav" id="33_i34pe"]
+[ext_resource type="AudioStream" uid="uid://be0bhjcxndgnl" path="res://assets/gravitysound/Skateboard SFX/Ollie_5.wav" id="34_v11b3"]
+[ext_resource type="AudioStream" uid="uid://b0uoeoc76nkbr" path="res://assets/gravitysound/Skateboard SFX/Ollie_6.wav" id="35_5i8yn"]
+[ext_resource type="AudioStream" uid="uid://dg6nvw1kjukep" path="res://assets/gravitysound/Skateboard SFX/Ollie_7.wav" id="36_udc8h"]
+[ext_resource type="AudioStream" uid="uid://di3t2ifm107ri" path="res://assets/gravitysound/Skateboard SFX/Ollie_8.wav" id="37_fg5qu"]
+[ext_resource type="AudioStream" uid="uid://b1ygrgvunds1l" path="res://assets/gravitysound/Skateboard SFX/Ollie_9.wav" id="38_8s482"]
+[ext_resource type="AudioStream" uid="uid://e4e1xseanrbf" path="res://assets/gravitysound/Skateboard SFX/Ollie_10.wav" id="39_fdqrb"]
+[ext_resource type="AudioStream" uid="uid://xwtlhuhmxfp" path="res://assets/gravitysound/Skateboard SFX/Land_1.wav" id="40_0021f"]
+[ext_resource type="AudioStream" uid="uid://ckfvg03q6vdbm" path="res://assets/gravitysound/Skateboard SFX/Land_2.wav" id="41_6y3ee"]
+[ext_resource type="AudioStream" uid="uid://bu6fenm00qvh" path="res://assets/gravitysound/Skateboard SFX/Land_11.wav" id="42_hm6gp"]
+[ext_resource type="AudioStream" uid="uid://cmgyqnu7swrel" path="res://assets/gravitysound/Skateboard SFX/Land_3.wav" id="43_dk380"]
+[ext_resource type="AudioStream" uid="uid://bstjqcfhma7oi" path="res://assets/gravitysound/Skateboard SFX/Land_4.wav" id="44_0w31g"]
+[ext_resource type="AudioStream" uid="uid://dgi4hsofkp3cy" path="res://assets/gravitysound/Skateboard SFX/Land_5.wav" id="45_kq3nu"]
+[ext_resource type="AudioStream" uid="uid://drqpe18hcywlp" path="res://assets/gravitysound/Skateboard SFX/Land_6.wav" id="46_yrol8"]
+[ext_resource type="AudioStream" uid="uid://7fmuuj3ookgm" path="res://assets/gravitysound/Skateboard SFX/Land_7.wav" id="47_07i1j"]
+[ext_resource type="AudioStream" uid="uid://b82cnaugj2r52" path="res://assets/gravitysound/Skateboard SFX/Land_8.wav" id="48_40q5f"]
+[ext_resource type="AudioStream" uid="uid://6v66k8p5vtkg" path="res://assets/gravitysound/Skateboard SFX/Land_9.wav" id="49_00cg4"]
+[ext_resource type="AudioStream" uid="uid://cx3v6o4pfkjdq" path="res://assets/gravitysound/Skateboard SFX/Land_10.wav" id="50_0pqn3"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_senyo"]
 size = Vector3(1.4, 0.4, 0.2)
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_5xw05"]
+streams_count = 9
+stream_0/stream = ExtResource("4_ei60u")
+stream_1/stream = ExtResource("5_opmnh")
+stream_2/stream = ExtResource("6_eavof")
+stream_3/stream = ExtResource("7_k6214")
+stream_4/stream = ExtResource("8_mogmu")
+stream_5/stream = ExtResource("9_7mowt")
+stream_6/stream = ExtResource("10_3he8h")
+stream_7/stream = ExtResource("11_g8hak")
+stream_8/stream = ExtResource("12_ur70w")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_cth4h"]
+streams_count = 10
+stream_0/stream = ExtResource("13_6aa1p")
+stream_1/stream = ExtResource("14_tojo1")
+stream_2/stream = ExtResource("15_53qyj")
+stream_3/stream = ExtResource("16_2dm3b")
+stream_4/stream = ExtResource("17_qdjsp")
+stream_5/stream = ExtResource("18_kxkqn")
+stream_6/stream = ExtResource("19_23aqa")
+stream_7/stream = ExtResource("20_ybfmh")
+stream_8/stream = ExtResource("21_q7pd2")
+stream_9/stream = ExtResource("22_1crj2")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_rgtcv"]
+streams_count = 6
+stream_0/stream = ExtResource("23_8ahja")
+stream_1/stream = ExtResource("24_812lc")
+stream_2/stream = ExtResource("25_jfyd8")
+stream_3/stream = ExtResource("26_g3y7h")
+stream_4/stream = ExtResource("27_ltplh")
+stream_5/stream = ExtResource("28_dxlev")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_lnyb0"]
+streams_count = 11
+stream_0/stream = ExtResource("29_1t371")
+stream_1/stream = ExtResource("30_o27pu")
+stream_2/stream = ExtResource("32_qm01h")
+stream_3/stream = ExtResource("33_i34pe")
+stream_4/stream = ExtResource("34_v11b3")
+stream_5/stream = ExtResource("35_5i8yn")
+stream_6/stream = ExtResource("36_udc8h")
+stream_7/stream = ExtResource("37_fg5qu")
+stream_8/stream = ExtResource("38_8s482")
+stream_9/stream = ExtResource("39_fdqrb")
+stream_10/stream = ExtResource("31_83hau")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_7xw21"]
+streams_count = 11
+stream_0/stream = ExtResource("40_0021f")
+stream_1/stream = ExtResource("41_6y3ee")
+stream_2/stream = ExtResource("43_dk380")
+stream_3/stream = ExtResource("44_0w31g")
+stream_4/stream = ExtResource("45_kq3nu")
+stream_5/stream = ExtResource("46_yrol8")
+stream_6/stream = ExtResource("47_07i1j")
+stream_7/stream = ExtResource("48_40q5f")
+stream_8/stream = ExtResource("49_00cg4")
+stream_9/stream = ExtResource("50_0pqn3")
+stream_10/stream = ExtResource("42_hm6gp")
 
 [node name="Skateboard" type="Node3D" unique_id=1423074470]
 script = ExtResource("1_c6nw7")
@@ -23,3 +132,18 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -0.0
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=1607489431]
 transform = Transform3D(0.80000013, 0, 0, 0, -3.4969116e-08, -0.7999998, 0, 0.8000001, -3.49691e-08, 0, 0, 0)
 shape = SubResource("BoxShape3D_senyo")
+
+[node name="SFX_Roll_on_Cobblestone" type="AudioStreamPlayer3D" parent="." unique_id=943357211]
+stream = SubResource("AudioStreamRandomizer_5xw05")
+
+[node name="SFX_Roll_on_Concrete" type="AudioStreamPlayer3D" parent="." unique_id=618418185]
+stream = SubResource("AudioStreamRandomizer_cth4h")
+
+[node name="SFX_Roll_on_Wood" type="AudioStreamPlayer3D" parent="." unique_id=443619668]
+stream = SubResource("AudioStreamRandomizer_rgtcv")
+
+[node name="SFX_Ollie" type="AudioStreamPlayer3D" parent="." unique_id=262259861]
+stream = SubResource("AudioStreamRandomizer_lnyb0")
+
+[node name="SFX_Land" type="AudioStreamPlayer3D" parent="." unique_id=1562025122]
+stream = SubResource("AudioStreamRandomizer_7xw21")

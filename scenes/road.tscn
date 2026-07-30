@@ -19,7 +19,7 @@ uv1_scale = Vector3(0.5, 6, 1)
 [node name="Path3D" type="Path3D" parent="." unique_id=796184765]
 curve = SubResource("Curve3D_7icjy")
 
-[node name="CSGPolygon3D" type="CSGPolygon3D" parent="Path3D" unique_id=1075232958 groups=["STONE"]]
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="Path3D" unique_id=1075232958 groups=["CONCRETE"]]
 use_collision = true
 polygon = PackedVector2Array(0, 0, -2, 0, -2, 0.1, 0, 0.1, 2, 0.1, 2, 0)
 mode = 2
