@@ -19,10 +19,11 @@ func _input(event: InputEvent) -> void:
 
 	# Unequip skateboard
 	if player \
+	and player.is_skateboarding \
 	and event.is_action_pressed("unequip") \
 	and not event.is_echo():
 		# Stop skateboarding and start standing
-		player.state_machine.travel(player.current_state, _this_state)
+		player.state_machine.travel(_this_state, NodeStateMachine.States.STANDING)
 		return
 
 
@@ -88,32 +89,23 @@ func _physics_process(_delta: float) -> void:
 	var is_on_floor: bool = player.is_on_floor()
 	var is_jumping: bool = player.is_jumping
 	var is_falling: bool = player.is_falling
+	var target_roll_sfx: AudioStreamPlayer3D = _get_target_roll_sfx()
 
 	# Jump / Ollie SFX
 	if is_jumping and not _was_jumping:
 		stop_all_roll_sounds()
-		if sfx_ollie and not sfx_ollie.playing:
+		if target_roll_sfx and sfx_ollie and not sfx_ollie.playing:
 			sfx_ollie.play()
 
 	# Landing SFX
 	if is_on_floor and _was_skateboarding and (not _was_on_floor or _was_jumping or _was_falling):
-		if sfx_land and not sfx_land.playing:
+		if target_roll_sfx and sfx_land and not sfx_land.playing:
 			sfx_land.play()
 
 	# Roll On SFX playing according to ground group seen by Raycast
 	if is_on_floor:
 		var h_speed: float = player.velocity.slide(player.up_direction).length()
 		if h_speed > 0.1:
-			var target_roll_sfx: AudioStreamPlayer3D = null
-			if player.paraglider_raycast and player.paraglider_raycast.is_colliding():
-				var collider := player.paraglider_raycast.get_collider() as Node3D
-				if collider:
-					if collider.is_in_group("WOOD"):
-						target_roll_sfx = sfx_roll_on_wood
-					elif collider.is_in_group("STONE") or collider.is_in_group("COBBLESTONE"):
-						target_roll_sfx = sfx_roll_on_cobblestone
-					elif collider.is_in_group("CONCRETE"):
-						target_roll_sfx = sfx_roll_on_concrete
 			_play_roll_sfx(target_roll_sfx)
 		else:
 			stop_all_roll_sounds()
@@ -124,6 +116,19 @@ func _physics_process(_delta: float) -> void:
 	_was_on_floor = is_on_floor
 	_was_jumping = is_jumping
 	_was_falling = is_falling
+
+
+func _get_target_roll_sfx() -> AudioStreamPlayer3D:
+	if player and player.paraglider_raycast and player.paraglider_raycast.is_colliding():
+		var collider := player.paraglider_raycast.get_collider() as Node3D
+		if collider:
+			if collider.is_in_group("WOOD"):
+				return sfx_roll_on_wood
+			elif collider.is_in_group("STONE") or collider.is_in_group("COBBLESTONE"):
+				return sfx_roll_on_cobblestone
+			elif collider.is_in_group("CONCRETE"):
+				return sfx_roll_on_concrete
+	return null
 
 
 func _play_roll_sfx(target_sfx: AudioStreamPlayer3D) -> void:
