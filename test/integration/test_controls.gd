@@ -60,6 +60,18 @@ class TestDebugKeybind:
 		assert_true(player_debug.visible, "Debug node should be visible after pressing F3.")
 
 
+## Tests related to Key I, J, K, L action bindings.
+class TestKeyIJKLActionBindings:
+	extends ControlsTestBase
+
+	func test_key_ijkl_actions_assigned():
+		var player = main_instance.get_node("Player") as Player
+		assert_eq(player.controls.key_i.action, "seeker")
+		assert_eq(player.controls.key_j.action, "last_weapon")
+		assert_eq(player.controls.key_k.action, "whistle")
+		assert_eq(player.controls.key_l.action, "next_weapon")
+
+
 ## Tests related to Flying controls and contextual UI labels.
 class TestFlyingControls:
 	extends ControlsTestBase
