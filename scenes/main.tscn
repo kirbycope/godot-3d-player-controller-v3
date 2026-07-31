@@ -21,16 +21,26 @@
 [ext_resource type="PackedScene" uid="uid://b68tmbfsyhl17" path="res://assets/n_hance_studio/weapons/SK_Staff_Newbie_01.fbx" id="14_fv21b"]
 [ext_resource type="PackedScene" uid="uid://br0tu61de4o65" path="res://assets/n_hance_studio/weapons/SK_Sword_1H_Newbie_01.fbx" id="15_tel4y"]
 [ext_resource type="PackedScene" uid="uid://bk3gv5c0w00gi" path="res://assets/n_hance_studio/weapons/SK_Sword_2H_Newbie_01.fbx" id="16_qkpxi"]
+[ext_resource type="Texture2D" uid="uid://detj70cxgb1i5" path="res://addons/3d_player_controller/assets/game_icons/war-pick.svg" id="17_txyw0"]
 [ext_resource type="PackedScene" uid="uid://dl71nqjm2psik" path="res://assets/justcreate3d/weapons_lite/Weapon_02.fbx" id="18_dgi5k"]
 [ext_resource type="PackedScene" uid="uid://b3tb2j1pwgw3u" path="res://assets/justcreate3d/weapons_lite/Weapon_01.fbx" id="19_j8jky"]
+[ext_resource type="Texture2D" uid="uid://pcypw62urbyw" path="res://addons/3d_player_controller/assets/game_icons/battle-axe.svg" id="19_vc5cj"]
 [ext_resource type="PackedScene" uid="uid://ti5skv3363ik" path="res://scenes/ballon_circle.tscn" id="21_yc10j"]
+[ext_resource type="Texture2D" uid="uid://dqhgd83i0432v" path="res://addons/3d_player_controller/assets/game_icons/bow-arrow.svg" id="22_nvyfr"]
 [ext_resource type="Script" uid="uid://7e2gpht4wap6" path="res://addons/3d_player_controller/rifle.gd" id="25_2f3dj"]
 [ext_resource type="PackedScene" uid="uid://cecfpvhdonktw" path="res://scenes/pinwheel.tscn" id="25_og1vs"]
 [ext_resource type="Script" uid="uid://b03h8ijilon1x" path="res://addons/3d_player_controller/arrow.gd" id="26_arrow"]
+[ext_resource type="Texture2D" uid="uid://dba30et81gi40" path="res://addons/3d_player_controller/assets/game_icons/mp5.svg" id="27_pibwh"]
+[ext_resource type="Texture2D" uid="uid://p600xet6ykq7" path="res://addons/3d_player_controller/assets/game_icons/pistol-gun.svg" id="29_c6pm6"]
+[ext_resource type="Texture2D" uid="uid://boo50abhv7hgk" path="res://addons/3d_player_controller/assets/game_icons/plain-dagger.svg" id="29_ty1g6"]
 [ext_resource type="PackedScene" uid="uid://ck40pkrttk535" path="res://scenes/ore_small.tscn" id="30_fv21b"]
+[ext_resource type="Texture2D" uid="uid://c4mtjnqxyv4f2" path="res://addons/3d_player_controller/assets/game_icons/shield.svg" id="31_j2jfr"]
 [ext_resource type="PackedScene" uid="uid://yo68ojwutmqp" path="res://scenes/ore_large.tscn" id="31_tel4y"]
+[ext_resource type="Texture2D" uid="uid://bna3q323ppr1g" path="res://addons/3d_player_controller/assets/game_icons/wizard-staff.svg" id="33_bjg73"]
 [ext_resource type="PackedScene" uid="uid://d3o4cq6mgg8ni" path="res://scenes/tree_01.tscn" id="33_dgi5k"]
+[ext_resource type="Texture2D" uid="uid://cpraenxuyh3ib" path="res://addons/3d_player_controller/assets/game_icons/gladius.svg" id="35_bu4jf"]
 [ext_resource type="PackedScene" uid="uid://bwngmjoqsrtcx" path="res://scenes/crv.tscn" id="37_fuf3a"]
+[ext_resource type="Texture2D" uid="uid://chilq6xmy6u1i" path="res://addons/3d_player_controller/assets/game_icons/two-handed-sword.svg" id="37_o7ddy"]
 [ext_resource type="PackedScene" uid="uid://drmvyehu4dq43" path="res://scenes/skateboard.tscn" id="37_pibwh"]
 [ext_resource type="PackedScene" uid="uid://ceyrqy0cvueei" path="res://scenes/road.tscn" id="38_c6pm6"]
 [ext_resource type="PackedScene" uid="uid://bra3khigbuanl" path="res://scenes/paraglider.tscn" id="38_paraglider"]
@@ -105,6 +115,12 @@ shader_parameter/wave_speed = 1.5
 material = SubResource("ShaderMaterial_1i6q1")
 size = Vector2(32, 16)
 orientation = 1
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_senyo"]
+size = Vector3(1, 0.4, 0.2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_k78ss"]
+size = Vector3(0.3, 0.2, 0.2)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_fk680"]
 radius = 0.1
@@ -380,12 +396,6 @@ height = 1.45
 radius = 0.2
 height = 2.1
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_senyo"]
-size = Vector3(1, 0.4, 0.2)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_k78ss"]
-size = Vector3(0.3, 0.2, 0.2)
-
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_hxkk4"]
 height = 1.8
 
@@ -605,6 +615,53 @@ material = SubResource("StandardMaterial3D_dwbse")
 paraglider_scene = ExtResource("38_paraglider")
 skateboard_scene = ExtResource("37_pibwh")
 
+[node name="JustCreate3D" type="Node3D" parent="." unique_id=647333121]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 5, 0, 0)
+
+[node name="Weapon_02" parent="JustCreate3D" unique_id=1867527010 instance=ExtResource("18_dgi5k")]
+transform = Transform3D(-8.742278e-08, -4.3711395e-08, 1, 1, -4.371139e-08, 8.742278e-08, 4.3711385e-08, 1, 4.3711395e-08, 0.5, 0.322, 0.5)
+script = ExtResource("25_2f3dj")
+bone_attachment_bone_name = "RightHand"
+can_attack = true
+can_shoot = true
+equipment_type = 6
+icon = ExtResource("27_pibwh")
+is_exclusive = true
+position_offset = Vector3(0, 0.09, 0.025)
+rotation_offset_degrees = Vector3(0, 180, 80)
+
+[node name="Area3D" type="Area3D" parent="JustCreate3D/Weapon_02" unique_id=1390449809]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="JustCreate3D/Weapon_02/Area3D" unique_id=1525970693]
+transform = Transform3D(1, 0, -1.9106853e-15, 0, 1, 0, -1.9106853e-15, 0, 1, 0.17785323, 1.5869063e-08, 0)
+shape = SubResource("BoxShape3D_senyo")
+
+[node name="ActionPrompt" parent="JustCreate3D/Weapon_02" unique_id=308729938 instance=ExtResource("9_og1vs")]
+transform = Transform3D(8.742278e-08, 1, -2.1855693e-07, -1, 8.742276e-08, -8.742276e-08, -8.742275e-08, 2.1855695e-07, 1, 0.1999999, 0, 0.099999905)
+visible = false
+
+[node name="Weapon_01" parent="JustCreate3D" unique_id=1674455333 instance=ExtResource("19_j8jky")]
+transform = Transform3D(1.9106855e-15, 4.371139e-08, 1, 1, -4.371139e-08, 0, 4.371139e-08, 1, -4.371139e-08, 0.5, 0.5, -0.5)
+script = ExtResource("8_gqmmt")
+bone_attachment_bone_name = "RightHand"
+can_attack = true
+can_shoot = true
+equipment_type = 5
+icon = ExtResource("29_c6pm6")
+is_exclusive = true
+position_offset = Vector3(0, 0.09, 0.025)
+rotation_offset_degrees = Vector3(-10, 180, 80)
+
+[node name="Area3D" type="Area3D" parent="JustCreate3D/Weapon_01" unique_id=1008708349]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="JustCreate3D/Weapon_01/Area3D" unique_id=1751054153]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.027853012, 0.019995153, 2.9802322e-07)
+shape = SubResource("BoxShape3D_k78ss")
+
+[node name="ActionPrompt" parent="JustCreate3D/Weapon_01" unique_id=1216637783 instance=ExtResource("9_og1vs")]
+transform = Transform3D(1.7484552e-07, 1, -4.3711385e-08, -1, 1.7484552e-07, 0, 0, 4.371138e-08, 1, 0.20000008, 0, 0.099999905)
+visible = false
+
 [node name="N_Hance_Studio_1" type="Node3D" parent="." unique_id=1622472344]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 0)
 
@@ -613,6 +670,7 @@ transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1
 script = ExtResource("8_gqmmt")
 bone_attachment_bone_name = "RightHand"
 can_attack = true
+icon = ExtResource("17_txyw0")
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(0, 90, 0)
 
@@ -636,6 +694,7 @@ script = ExtResource("8_gqmmt")
 bone_attachment_bone_name = "RightHand"
 can_attack = true
 equipment_type = 1
+icon = ExtResource("19_vc5cj")
 is_exclusive = true
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(0, 90, 0)
@@ -661,6 +720,7 @@ bone_attachment_bone_name = "LeftHand"
 can_attack = true
 can_shoot = true
 equipment_type = 2
+icon = ExtResource("22_nvyfr")
 is_exclusive = true
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(180, 90, 15)
@@ -717,7 +777,9 @@ transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1
 script = ExtResource("8_gqmmt")
 bone_attachment_bone_name = "RightHand"
 can_attack = true
+display_name = "Dagger (R)"
 equipment_type = 3
+icon = ExtResource("29_ty1g6")
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(0, 90, 0)
 
@@ -735,7 +797,9 @@ visible = false
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -0.5, 1, 0.5)
 script = ExtResource("8_gqmmt")
 bone_attachment_bone_name = "LeftHand"
+display_name = "Dagger (L)"
 equipment_type = 3
+icon = ExtResource("29_ty1g6")
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(0, 90, 0)
 
@@ -753,7 +817,9 @@ visible = false
 transform = Transform3D(-1, 8.742278e-08, 3.821371e-15, 0, -4.371139e-08, 1, 8.742278e-08, 1, 4.371139e-08, 0, 1, -0.5)
 script = ExtResource("8_gqmmt")
 bone_attachment_bone_name = "LeftLowerArm"
+display_name = "Shield"
 equipment_type = 10
+icon = ExtResource("31_j2jfr")
 position_offset = Vector3(-0.035, 0.1, 0)
 rotation_offset_degrees = Vector3(0, 180, 180)
 
@@ -773,6 +839,7 @@ script = ExtResource("8_gqmmt")
 bone_attachment_bone_name = "RightHand"
 can_attack = true
 equipment_type = 7
+icon = ExtResource("33_bjg73")
 is_exclusive = true
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(0, 90, 0)
@@ -793,6 +860,7 @@ script = ExtResource("8_gqmmt")
 bone_attachment_bone_name = "RightHand"
 can_attack = true
 equipment_type = 8
+icon = ExtResource("35_bu4jf")
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(0, 90, 180)
 
@@ -812,6 +880,7 @@ script = ExtResource("8_gqmmt")
 bone_attachment_bone_name = "RightHand"
 can_attack = true
 equipment_type = 9
+icon = ExtResource("37_o7ddy")
 is_exclusive = true
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(0, 90, 0)
@@ -824,51 +893,6 @@ shape = SubResource("CapsuleShape3D_0y3lt")
 
 [node name="ActionPrompt" parent="N_Hance_Studio_1/SK_Sword_2H_Newbie_01" unique_id=1977469190 instance=ExtResource("9_og1vs")]
 transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0.099999905, 0, 0.99999994)
-visible = false
-
-[node name="JustCreate3D" type="Node3D" parent="." unique_id=647333121]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 5, 0, 0)
-
-[node name="Weapon_02" parent="JustCreate3D" unique_id=1867527010 instance=ExtResource("18_dgi5k")]
-transform = Transform3D(-8.742278e-08, -4.3711395e-08, 1, 1, -4.371139e-08, 8.742278e-08, 4.3711385e-08, 1, 4.3711395e-08, 0.5, 0.322, 0.5)
-script = ExtResource("25_2f3dj")
-bone_attachment_bone_name = "RightHand"
-can_attack = true
-can_shoot = true
-equipment_type = 6
-is_exclusive = true
-position_offset = Vector3(0, 0.09, 0.025)
-rotation_offset_degrees = Vector3(0, 180, 80)
-
-[node name="Area3D" type="Area3D" parent="JustCreate3D/Weapon_02" unique_id=1390449809]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="JustCreate3D/Weapon_02/Area3D" unique_id=1525970693]
-transform = Transform3D(1, 0, -1.9106853e-15, 0, 1, 0, -1.9106853e-15, 0, 1, 0.17785323, 1.5869063e-08, 0)
-shape = SubResource("BoxShape3D_senyo")
-
-[node name="ActionPrompt" parent="JustCreate3D/Weapon_02" unique_id=308729938 instance=ExtResource("9_og1vs")]
-transform = Transform3D(8.742278e-08, 1, -2.1855693e-07, -1, 8.742276e-08, -8.742276e-08, -8.742275e-08, 2.1855695e-07, 1, 0.1999999, 0, 0.099999905)
-visible = false
-
-[node name="Weapon_01" parent="JustCreate3D" unique_id=1674455333 instance=ExtResource("19_j8jky")]
-transform = Transform3D(1.9106855e-15, 4.371139e-08, 1, 1, -4.371139e-08, 0, 4.371139e-08, 1, -4.371139e-08, 0.5, 0.5, -0.5)
-script = ExtResource("8_gqmmt")
-bone_attachment_bone_name = "RightHand"
-can_attack = true
-can_shoot = true
-equipment_type = 5
-is_exclusive = true
-position_offset = Vector3(0, 0.09, 0.025)
-rotation_offset_degrees = Vector3(-10, 180, 80)
-
-[node name="Area3D" type="Area3D" parent="JustCreate3D/Weapon_01" unique_id=1008708349]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="JustCreate3D/Weapon_01/Area3D" unique_id=1751054153]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.027853012, 0.019995153, 2.9802322e-07)
-shape = SubResource("BoxShape3D_k78ss")
-
-[node name="ActionPrompt" parent="JustCreate3D/Weapon_01" unique_id=1216637783 instance=ExtResource("9_og1vs")]
-transform = Transform3D(1.7484552e-07, 1, -4.3711385e-08, -1, 1.7484552e-07, 0, 0, 4.371138e-08, 1, 0.20000008, 0, 0.099999905)
 visible = false
 
 [node name="BallonCircle4" parent="." unique_id=1064612835 instance=ExtResource("21_yc10j")]
