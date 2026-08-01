@@ -1,4 +1,6 @@
 shader_type spatial;
+render_mode blend_mix;
+stencil_mode read, compare_not_equal, 1;
 
 uniform vec4 WATER_COL : source_color = vec4(0.04, 0.38, 0.88, 1.0);
 uniform vec4 WATER2_COL : source_color = vec4(0.04, 0.35, 0.78, 1.0);
@@ -124,6 +126,7 @@ vec3 water(vec2 uv, vec3 cdir, float iTime)
   return ret;
 }
 void fragment() {
-vec2 uv = UV;
-  ALBEDO.rgb = vec3(water(uv * tile, vec3(0,1,0), TIME * distortion_speed));
+    vec2 uv = UV;
+    ALBEDO.rgb = vec3(water(uv * tile, vec3(0,1,0), TIME * distortion_speed));
+    ALPHA = WATER_COL.a;
 }
