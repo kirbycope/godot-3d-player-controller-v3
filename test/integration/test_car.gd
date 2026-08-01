@@ -134,6 +134,73 @@ class TestCarActions:
 		# Assert: Confirm steering angle is negative when steering right.
 		assert_lt(car_instance.steering, 0.0, "Car steering should be negative when steering right.")
 		sender.action_up("move_right")
+
+	## Test Case: Testing the car acceleration SFX with keyboard input.
+	func test_car_accelerate_sfx_keyboard():
+		# Arrange: Setup player driving using keyboard/mouse (input_type = 0).
+		setup_player_driving()
+		player_instance.controls.current_input_type = 0
+
+		# Act: Press the keyboard accelerate action.
+		var action: StringName = driving_state.keyboard_accelerate_action
+		var sender = InputSender.new(Input)
+		sender.set_auto_flush_input(true)
+		sender.action_down(action)
+		await wait_physics_frames(5)
+
+		# Assert: Acceleration engine SFX should be playing.
+		var is_accel_sfx_playing: bool = car_instance.sfx_engine_speed_up_outside.playing or car_instance.sfx_engine_speed_up_inside.playing
+		assert_true(is_accel_sfx_playing, "Acceleration engine SFX should play when holding keyboard accelerate action.")
+		sender.action_up(action)
+
+	## Test Case: Testing the car acceleration SFX with pad input.
+	func test_car_accelerate_sfx_pad():
+		# Arrange: Setup player driving using pad (input_type = 1).
+		setup_player_driving()
+		player_instance.controls.current_input_type = 1
+
+		# Act: Press the pad accelerate action.
+		var action: StringName = driving_state.pad_accelerate_action
+		var sender = InputSender.new(Input)
+		sender.set_auto_flush_input(true)
+		sender.action_down(action)
+		await wait_physics_frames(5)
+
+		# Assert: Acceleration engine SFX should be playing.
+		var is_accel_sfx_playing: bool = car_instance.sfx_engine_speed_up_outside.playing or car_instance.sfx_engine_speed_up_inside.playing
+		assert_true(is_accel_sfx_playing, "Acceleration engine SFX should play when holding pad accelerate action.")
+		sender.action_up(action)
+
+	## Test Case: Testing that rev SFX plays once per acceleration press while holding brake.
+	func test_car_rev_sfx_once_per_accel_press():
+		# Arrange: Setup player driving while stopped.
+		setup_player_driving()
+		car_instance.linear_velocity = Vector3.ZERO
+
+		# Act: Hold brake action and press accelerate action.
+		var brake_action: StringName = driving_state.keyboard_brake_action
+		var accel_action: StringName = driving_state.keyboard_accelerate_action
+		var sender = InputSender.new(Input)
+		sender.set_auto_flush_input(true)
+		sender.action_down(brake_action)
+		sender.action_down(accel_action)
+		await wait_physics_frames(5)
+
+		# Assert: Rev SFX is registered for current acceleration press.
+		assert_true(car_instance._revved_current_accel, "Car should register rev state for current acceleration press.")
+
+		# Act: Simulate rev SFX finishing while continuing to hold brake and accelerate.
+		if car_instance.sfx_engine_rev and car_instance.sfx_engine_rev.playing:
+			car_instance.sfx_engine_rev.stop()
+		await wait_physics_frames(5)
+
+		# Assert: Rev SFX should NOT re-trigger; engine should revert to running SFX.
+		assert_false(car_instance.sfx_engine_rev.playing, "Rev SFX should not re-trigger after finishing.")
+		assert_true(car_instance.sfx_engine_running_outside.playing or car_instance.sfx_engine_running_inside.playing, "Engine should revert to running SFX after rev finishes.")
+
+		# Clean up inputs
+		sender.action_up(accel_action)
+		sender.action_up(brake_action)
  
 
 ## Tests related to the function performed by an event.

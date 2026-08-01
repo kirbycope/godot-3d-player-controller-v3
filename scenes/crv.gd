@@ -33,6 +33,7 @@ var look_return_timer: float = 0.0
 var menu_displayed: bool = false
 var player: Player
 var was_driving: bool = false
+var _revved_current_accel: bool = false
 
 @onready var action_prompt: Node3D = $ActionPrompt
 @onready var fire: Node3D = $Fire_05
@@ -304,13 +305,22 @@ func _update_engine_sfx() -> void:
 		_stop_all_engine_sfx()
 		if sfx_break_short and sfx_break_short.playing: sfx_break_short.stop()
 		if sfx_break_long and sfx_break_long.playing: sfx_break_long.stop()
+		_revved_current_accel = false
 		return
 
 	var accelerate_pressed := false
 	var brake_pressed := false
 	if player:
-		accelerate_pressed = Input.is_action_pressed("shoot")
-		brake_pressed = Input.is_action_pressed("focus")
+		var driving_state := player.state_machine.get_node_or_null("Driving") as Driving if player.state_machine else null
+		if driving_state:
+			accelerate_pressed = driving_state.is_accelerate_pressed()
+			brake_pressed = driving_state.is_brake_pressed()
+		else:
+			accelerate_pressed = Input.is_action_pressed("shoot")
+			brake_pressed = Input.is_action_pressed("focus")
+
+	if not accelerate_pressed:
+		_revved_current_accel = false
 
 	# If start SFX is still playing and player isn't providing inputs yet, let start SFX finish
 	if sfx_car_start and sfx_car_start.playing and not (accelerate_pressed or brake_pressed):
@@ -340,9 +350,15 @@ func _update_engine_sfx() -> void:
 	# 2. Determine target Engine SFX
 	var target_sfx: AudioStreamPlayer3D = null
 
-	# Rev: holding brake and presses accelerate
+	# Rev: holding brake and presses accelerate (only once per acceleration press)
 	if brake_pressed and accelerate_pressed:
-		target_sfx = sfx_engine_rev
+		if not _revved_current_accel:
+			_revved_current_accel = true
+			target_sfx = sfx_engine_rev
+		elif sfx_engine_rev and sfx_engine_rev.playing:
+			target_sfx = sfx_engine_rev
+		else:
+			target_sfx = sfx_engine_running_inside if is_first_person else sfx_engine_running_outside
 	# Reversing (braking & not accelerating while stopped/moving backward) OR Accelerating (accelerate & not brake)
 	elif accelerate_pressed or (brake_pressed and forward_speed <= 0.1):
 		target_sfx = sfx_engine_speed_up_inside if is_first_person else sfx_engine_speed_up_outside
