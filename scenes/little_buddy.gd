@@ -30,9 +30,9 @@ func _nav_setup() -> void:
 func _physics_process(delta: float) -> void:
 	# Apply gravity if enabled and not on floor
 	if apply_gravity and not is_on_floor():
-		velocity.y -= gravity * delta
+		velocity -= up_direction * gravity * delta
 	elif not apply_gravity:
-		velocity.y = 0 # Prevent falling if gravity is disabled
+		velocity = velocity.slide(up_direction) # Prevent falling along up_direction if gravity disabled
 		
 	if not nav_ready:
 		move_and_slide()
@@ -81,7 +81,7 @@ func _physics_process(delta: float) -> void:
 		target_pos = player.global_position
 		
 	var direction: Vector3 = current_agent_position.direction_to(target_pos)
-	direction.y = 0.0 # Ignore vertical difference for heading
+	direction = direction.slide(up_direction) # Ignore difference along up_direction for heading
 
 	if direction.length_squared() > 0.001:
 		direction = direction.normalized()
@@ -89,7 +89,7 @@ func _physics_process(delta: float) -> void:
 		# Look at the next path position
 		var look_target = global_position + direction
 		var current_transform = global_transform
-		var target_transform = current_transform.looking_at(look_target, Vector3.UP)
+		var target_transform = current_transform.looking_at(look_target, up_direction)
 		global_transform = current_transform.interpolate_with(target_transform, turn_speed * delta)
 		
 		# Compute horizontal velocity
@@ -100,8 +100,8 @@ func _physics_process(delta: float) -> void:
 			navigation_agent_3d.set_velocity(new_velocity)
 		else:
 			# Otherwise just move immediately
-			velocity.x = new_velocity.x
-			velocity.z = new_velocity.z
+			var up_vel = velocity.project(up_direction)
+			velocity = new_velocity + up_vel
 			move_and_slide()
 		
 		animation_tree.set("parameters/Locomotion/blend_position", 1.0)
@@ -113,16 +113,17 @@ func _stop_moving() -> void:
 	if navigation_agent_3d and navigation_agent_3d.avoidance_enabled:
 		navigation_agent_3d.set_velocity(Vector3.ZERO)
 	else:
-		velocity.x = 0
-		velocity.z = 0
+		velocity = velocity.project(up_direction)
 		move_and_slide()
 
 func _on_velocity_computed(safe_velocity: Vector3) -> void:
 	# This signal is triggered by set_velocity() in _physics_process
 	# We use it to apply the avoidance-adjusted velocity.
-	velocity.x = safe_velocity.x
-	velocity.z = safe_velocity.z
+	var up_vel = velocity.project(up_direction)
+	var safe_h_vel = safe_velocity.slide(up_direction)
+	velocity = safe_h_vel + up_vel
 	move_and_slide()
+
 
 func sfx_footsteps_play() -> void:
 	pass
