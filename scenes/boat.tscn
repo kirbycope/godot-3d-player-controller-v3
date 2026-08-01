@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://d0k2lyf87ux7p"]
+
+[ext_resource type="PackedScene" uid="uid://b8ivuxqtub5im" path="res://assets/justcreate3d/stylized_tropical_island/Props/SM_Props_Boat_01.fbx" id="1_0063d"]
+
+[node name="Boat" type="Node3D" unique_id=1834386809]
+
+[node name="SM_Props_Boat_01" parent="." unique_id=43722446 instance=ExtResource("1_0063d")]

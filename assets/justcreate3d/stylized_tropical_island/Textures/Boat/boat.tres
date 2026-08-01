@@ -1,0 +1,12 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://c2rmo0tewk8sh"]
+
+[ext_resource type="Texture2D" uid="uid://bvt8fq5up5gq4" path="res://assets/just_create/island/Props/Textures/Boat/Boat_lp_Boat_01_BaseMap.png" id="1_bu0tk"]
+[ext_resource type="Texture2D" uid="uid://1jmuoicdutyi" path="res://assets/just_create/island/Props/Textures/Boat/Boat_lp_Boat_01_MaskMap.png" id="2_35yvd"]
+[ext_resource type="Texture2D" uid="uid://vd7oogs482tr" path="res://assets/just_create/island/Props/Textures/Boat/Boat_lp_Boat_01_Normal.png" id="3_pfbki"]
+
+[resource]
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("1_bu0tk")
+normal_enabled = true
+normal_texture = ExtResource("3_pfbki")
+heightmap_texture = ExtResource("2_35yvd")
