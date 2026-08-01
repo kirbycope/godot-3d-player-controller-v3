@@ -1,11 +1,20 @@
 extends Node3D
 
+@export var little_buddy_count: int = 64
+@export var spawn_frame_interval: int = 4
+
 @onready var player: Player = $Player
+@onready var first_buddy: Node3D = get_node_or_null("LittleBuddy") as Node3D
 @onready var project_rendering_method = ProjectSettings.get_setting("rendering/renderer/rendering_method")
+var buddy_list: Array[Node3D] = []
+var frame_counter: int = 0
 
 
 ## Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	if first_buddy:
+		buddy_list.append(first_buddy)
+
 	# Get rendering settings from the project settings
 	if project_rendering_method in ["forward_plus", "mobile"]:
 		# Set the mouse mode to captured to hide the mouse cursor
@@ -27,6 +36,15 @@ func _input(event: InputEvent) -> void:
 func _physics_process(_delta: float) -> void:
 	# Do nothing if not the authority
 	if not is_multiplayer_authority(): return
+
+	# Spawn LittleBuddy at the specified frame interval until reaching target count.
+	if first_buddy and buddy_list.size() < little_buddy_count:
+		frame_counter += 1
+		if frame_counter >= spawn_frame_interval:
+			frame_counter = 0
+			var duplicate_buddy = first_buddy.duplicate() as Node3D
+			add_child(duplicate_buddy)
+			buddy_list.append(duplicate_buddy)
 
 	# If we're below -40, respawn (teleport to the initial position).
 	if player and not player.is_driving and not player.is_flying:
