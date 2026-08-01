@@ -994,7 +994,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.049, 4)
 transform = Transform3D(-1.4950176e-08, -4.1075268e-08, -1, -0.9396926, 0.34202015, 0, 0.34202015, 0.9396926, -4.371139e-08, 4.4, 0.10000001, 1.8999999)
 
 [node name="Boat" parent="." unique_id=1834386809 instance=ExtResource("47_vc5cj")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, -0.24735534, -18)
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, -18)
 
 [connection signal="body_entered" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_entered"]
 [connection signal="body_exited" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_exited"]

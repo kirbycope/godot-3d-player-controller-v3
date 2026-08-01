@@ -60,23 +60,12 @@ func _physics_process(_delta: float) -> void:
 		player.camera.looking_at = null
 
 
-## Called when a body enters the "Pool"
-func _on_player_detection_body_entered(body: Node3D) -> void:
-	if body is Player:
-		var swimming_player: Player = body as Player
-		# Start swimming (if not already swimming and not in a car/vehicle)
-		if not swimming_player.is_swimming and not swimming_player.is_driving and swimming_player.is_driving_in == null and not swimming_player.is_entering_vehicle and not swimming_player.is_exiting_vehicle:
-			swimming_player.state_machine.travel(swimming_player.current_state, NodeStateMachine.States.SWIMMING)
-			return
+func _on_player_detection_body_entered(_body: Node3D) -> void:
+	pass
 
 
-## Called when a body exits the "Pool"
-func _on_player_detection_body_exited(body: Node3D) -> void:
-	if body is Player:
-		var swimming_player: Player = body as Player
-		# Stop swimming (if currently swimming)
-		if swimming_player.is_swimming:
-			swimming_player.is_swimming = false # This will trigger the `stop()` in `swimming.gd`
+func _on_player_detection_body_exited(_body: Node3D) -> void:
+	pass
 
 
 func _on_warp_zone_body_entered(body: Node3D) -> void:
