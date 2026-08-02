@@ -1,0 +1,6 @@
+# 3D assets & models
+assets/**/*.gltf
+assets/**/*.glb
+
+# Godot Web export directory
+docs/

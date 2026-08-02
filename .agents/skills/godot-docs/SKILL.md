@@ -4,11 +4,13 @@ description: Godot Engine API Documentation
 ---
 
 # Godot Documentation Skill
+
 The official documentation of Godot Engine, the free and open source community-driven 2D and 3D game engine! Behind this mouthful, you will find a powerful yet user-friendly tool that you can use to develop any kind of game, for any platform and with no usage restriction whatsoever.
 
 ---
 
 ## About Godot Engine
+
 A game engine is a complex tool and difficult to present in a few words. Here's a quick synopsis, which you are free to reuse if you need a quick write-up about Godot Engine:
 
 Godot Engine is a feature-packed, cross-platform game engine to create 2D and 3D games from a unified interface. It provides a comprehensive set of common tools, so that users can focus on making games without having to reinvent the wheel. Games can be exported with one click to a number of platforms, including the major desktop platforms (Linux, macOS, Windows), mobile platforms (Android, iOS), as well as Web-based platforms and consoles.
@@ -18,6 +20,7 @@ Godot is completely free and open source under the permissive MIT license. No st
 ---
 
 ## Organization of the documentation
+
 This documentation is organized into several sections:
 
 About contains this introduction as well as information about the engine, its history, its licensing, authors, etc. It also contains the Frequently asked questions.
@@ -37,6 +40,7 @@ In addition to this documentation, you may also want to take a look at the vario
 ---
 
 ## About this documentation
+
 Members of the Godot Engine community continuously write, correct, edit, and improve this documentation. We are always looking for more help. You can also contribute by opening Github issues or translating the documentation into your language. If you are interested in helping, see How to contribute and Writing documentation, or get in touch with the Documentation team on Godot Contributors Chat.
 
 All documentation content is licensed under the permissive Creative Commons Attribution 3.0 (CC BY 3.0) license, with attribution to "Juan Linietsky, Ariel Manzur, and the Godot Engine community" unless otherwise noted.
