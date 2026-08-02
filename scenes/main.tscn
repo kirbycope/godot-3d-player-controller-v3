@@ -622,7 +622,7 @@ paraglider_scene = ExtResource("38_paraglider")
 skateboard_scene = ExtResource("37_pibwh")
 
 [node name="LittleBuddy" parent="." unique_id=174060025 instance=ExtResource("9_nvyfr")]
-transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, -2)
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0.3, -2)
 
 [node name="JustCreate3D" type="Node3D" parent="." unique_id=647333121]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 5, 0, 0)

@@ -189,12 +189,24 @@ func hide_menu() -> void:
 func _input(event: InputEvent) -> void:
 	if is_held:
 		if event.is_action_pressed("action") and not event.is_echo():
-			throw()
+			drop()
+			get_viewport().set_input_as_handled()
+		elif event.is_action_pressed("shoot") and not event.is_echo():
+			if player:
+				player.start_charging_throw()
+			else:
+				throw_with_direction(Vector3.ZERO, 0.25)
+			get_viewport().set_input_as_handled()
+		elif event.is_action_released("shoot") and not event.is_echo():
+			if player:
+				player.release_charging_throw()
+			get_viewport().set_input_as_handled()
 		return
 	
 	if menu_displayed and not is_held:
 		if event.is_action_pressed("action") and not event.is_echo():
 			pick_up()
+			get_viewport().set_input_as_handled()
 
 func pick_up() -> void:
 	if not player or not player.item_spring_arm:
@@ -207,40 +219,53 @@ func pick_up() -> void:
 	if animation_tree:
 		animation_tree.set("parameters/Locomotion/blend_position", 0.0)
 	
-	get_parent().remove_child(self)
+	if get_parent():
+		get_parent().remove_child(self)
 	player.item_spring_arm.add_child(self)
 	
 	transform = Transform3D()
 	position = Vector3.ZERO
-	# Little buddy typically faces -Z. The spring arm faces the camera direction.
 
-func throw() -> void:
+func drop() -> void:
+	is_held = false
+	is_thrown = false
+	
+	if collision_shape:
+		collision_shape.disabled = false
+		
+	var current_scene = get_tree().current_scene
+	var drop_pos = global_position
+	if get_parent():
+		get_parent().remove_child(self)
+	current_scene.add_child(self)
+	global_position = drop_pos
+	_collision_exception_added = false
+	velocity = Vector3.ZERO
+
+func throw(throw_dir: Vector3 = Vector3.ZERO, throw_power: float = 1.0) -> void:
+	throw_with_direction(throw_dir, throw_power)
+
+func throw_with_direction(throw_dir: Vector3 = Vector3.ZERO, throw_power: float = 1.0) -> void:
 	is_held = false
 	is_thrown = true
 	
 	if collision_shape:
 		collision_shape.disabled = false
 		
-	if player:
-		var emote_state = player.animation_tree.get(player.EMOTE_STATE_PLAYBACK_PATH)
-		player.animation_tree.set("parameters/EmoteSpineBlend2/blend_amount", 1.0)
-		emote_state.travel("Throw")
-		player.is_emoting = true
-		player.has_started_emoting = false
-		
-		var current_scene = get_tree().current_scene
-		var throw_pos = global_position
+	var current_scene = get_tree().current_scene
+	var throw_pos = global_position
+	if get_parent():
 		get_parent().remove_child(self)
-		current_scene.add_child(self)
-		global_position = throw_pos
-		_collision_exception_added = false
-		
-		var throw_dir: Vector3
-		if player.camera:
+	current_scene.add_child(self)
+	global_position = throw_pos
+	_collision_exception_added = false
+	
+	if throw_dir.length_squared() < 0.001:
+		if player and player.camera:
 			throw_dir = -player.camera.global_transform.basis.z.normalized()
-		else:
+		elif player:
 			throw_dir = player.get_facing_direction()
-			if throw_dir.length_squared() < 0.001:
-				throw_dir = - player.global_transform.basis.z.normalized()
+		if throw_dir.length_squared() < 0.001:
+			throw_dir = Vector3.FORWARD
 			
-		velocity = throw_dir * throw_force_horizontal + Vector3(0, throw_force_vertical, 0)
+	velocity = (throw_dir * throw_force_horizontal + Vector3(0, throw_force_vertical, 0)) * throw_power
