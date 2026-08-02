@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://b55kg5055u1k8"]
 
+[ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://scenes/action_prompt.tscn" id="1_actpr"]
 [ext_resource type="Script" uid="uid://chujawfkubv85" path="res://scenes/little_buddy.gd" id="1_llqmq"]
 [ext_resource type="PackedScene" uid="uid://bnuhx6pjxygby" path="res://addons/3d_player_controller/assets/mixamo/characters/y_bot_root.glb" id="1_xrax1"]
 [ext_resource type="AnimationLibrary" uid="uid://cqhv3e722j6b6" path="res://addons/3d_player_controller/assets/mixamo/animations/root_motion/Idle.glb" id="84_jtj55"]
@@ -38,6 +39,8 @@ height = 0.6
 
 [node name="LittleBuddy" type="CharacterBody3D" unique_id=1463126112]
 script = ExtResource("1_llqmq")
+throw_force_horizontal = 8.0
+throw_force_vertical = 2.0
 
 [node name="y_bot_root" parent="." unique_id=880863927 instance=ExtResource("1_xrax1")]
 transform = Transform3D(-0.33, 0, -2.8849517e-08, 0, 0.33, 0, 2.8849517e-08, 0, -0.33, 0, 0, 0)
@@ -45,16 +48,16 @@ transform = Transform3D(-0.33, 0, -2.8849517e-08, 0, 0.33, 0, 2.8849517e-08, 0, 
 [node name="GeneralSkeleton" parent="y_bot_root/Armature" parent_id_path=PackedInt32Array(880863927, 478129218) index="0" unique_id=2000426114]
 bones/0/position = Vector3(-0.0052761044, 0, 0.006822593)
 bones/1/position = Vector3(6.945423e-07, 0.9899598, -4.8260063e-11)
-bones/1/rotation = Quaternion(-0.034292653, -0.04639779, -0.026735049, 0.9979762)
-bones/2/rotation = Quaternion(0.03524125, 0.015058519, 0.024748124, 0.99895895)
-bones/3/rotation = Quaternion(0.01184831, 0.0037977393, 0.014504021, 0.9998174)
-bones/4/rotation = Quaternion(0.011632339, 0.003979852, 0.014525647, 0.9998189)
-bones/5/rotation = Quaternion(0.051306617, -0.0019181987, 0.0046190554, 0.99867046)
-bones/6/rotation = Quaternion(-0.07566965, 0.008514379, 0.00020240832, 0.99709666)
-bones/8/rotation = Quaternion(0.45520782, 0.50165486, 0.6340452, -0.37298122)
-bones/9/rotation = Quaternion(0.12759109, 0.8029899, -0.56874293, -0.12433541)
+bones/1/rotation = Quaternion(-0.035613686, -0.04319609, -0.02359761, 0.9981528)
+bones/2/rotation = Quaternion(0.027278483, 0.015069529, 0.024134614, 0.99922293)
+bones/3/rotation = Quaternion(0.00939468, 0.0038575875, 0.0143273845, 0.99984586)
+bones/4/rotation = Quaternion(0.009254851, 0.003989551, 0.014386924, 0.99984574)
+bones/5/rotation = Quaternion(0.04687844, -0.0022834328, 0.0057619517, 0.9988814)
+bones/6/rotation = Quaternion(-0.06787778, 0.008786247, -0.0012224595, 0.9976543)
+bones/8/rotation = Quaternion(0.45802823, 0.50057083, 0.62774104, -0.38154995)
+bones/9/rotation = Quaternion(0.12467749, 0.7981902, -0.57596093, -0.12496834)
 bones/10/rotation = Quaternion(0.009004968, -0.7070495, 0.009005011, 0.7070495)
-bones/11/rotation = Quaternion(0.05305617, 0.47113264, -0.009202167, 0.8804172)
+bones/11/rotation = Quaternion(0.055494227, 0.479409, -0.018079834, 0.8756486)
 bones/12/rotation = Quaternion(-0.23049825, 0.68289214, 0.17169982, 0.67160124)
 bones/13/rotation = Quaternion(0.20149457, 0.20389189, -0.059591617, 0.9561783)
 bones/14/rotation = Quaternion(0.04001307, -0.052876003, -0.12858759, 0.9894789)
@@ -71,10 +74,10 @@ bones/26/rotation = Quaternion(0.15521277, -1.9371507e-07, -0.015905587, 0.98775
 bones/28/rotation = Quaternion(0.23386711, -0.0035057068, -0.049008608, 0.97102636)
 bones/29/rotation = Quaternion(0.15125789, -1.3411045e-07, -0.015500367, 0.98837286)
 bones/30/rotation = Quaternion(0.14349763, -8.940697e-08, -0.014705032, 0.9895415)
-bones/32/rotation = Quaternion(0.47321546, -0.4813949, -0.6375831, -0.37123296)
-bones/33/rotation = Quaternion(-0.14750059, 0.8279629, -0.49815553, 0.21109755)
-bones/34/rotation = Quaternion(0.041217353, 0.70590454, -0.041217264, 0.7059044)
-bones/35/rotation = Quaternion(0.041837305, -0.5707994, 0.03421237, 0.81930894)
+bones/32/rotation = Quaternion(0.476103, -0.4790834, -0.63494945, -0.37502563)
+bones/33/rotation = Quaternion(-0.15020174, 0.8284419, -0.49519342, 0.21425925)
+bones/34/rotation = Quaternion(0.040505584, 0.7059458, -0.04050551, 0.70594555)
+bones/35/rotation = Quaternion(0.041456982, -0.5719954, 0.035371836, 0.8184446)
 bones/36/rotation = Quaternion(-0.24051937, -0.6719299, -0.18474628, 0.6756696)
 bones/37/rotation = Quaternion(0.2382267, -0.20985532, 0.051183697, 0.94688386)
 bones/38/rotation = Quaternion(0.045545463, 0.04607943, 0.16169317, 0.984712)
@@ -91,14 +94,14 @@ bones/50/rotation = Quaternion(0.15551049, 5.9604645e-08, 0.012668192, 0.9877530
 bones/52/rotation = Quaternion(0.2284934, 0.0034029484, 0.04298061, 0.9725903)
 bones/53/rotation = Quaternion(0.15154798, 7.4505806e-08, 0.012345433, 0.9883728)
 bones/54/rotation = Quaternion(0.14377289, 8.940697e-08, 0.011711985, 0.9895414)
-bones/56/rotation = Quaternion(0.13756709, 0.079697214, 0.9843559, -0.07594126)
-bones/57/rotation = Quaternion(-0.038838133, 0.99282134, -0.1126278, 0.010601893)
-bones/58/rotation = Quaternion(-0.0420389, 0.71077824, -0.7003958, 0.04972776)
+bones/56/rotation = Quaternion(0.13533789, 0.072001144, 0.9854702, -0.07313104)
+bones/57/rotation = Quaternion(-0.03877223, 0.9936856, -0.10476058, 0.010533805)
+bones/58/rotation = Quaternion(-0.04238575, 0.71303076, -0.69806415, 0.04997156)
 bones/59/rotation = Quaternion(-9.186695e-08, 0.9990753, 0.042996287, -1.6792885e-08)
-bones/61/rotation = Quaternion(-0.09189858, -0.009591361, 0.9953272, -0.028047247)
-bones/62/rotation = Quaternion(0.034352034, 0.9937352, -0.06645047, -0.08303464)
-bones/63/rotation = Quaternion(0.010203781, 0.6798231, -0.73277134, -0.027976088)
-bones/64/rotation = Quaternion(-1.1972827e-07, 0.9980229, 0.06285179, 1.0973704e-08)
+bones/61/rotation = Quaternion(-0.09317934, -0.015403525, 0.9951998, -0.025646338)
+bones/62/rotation = Quaternion(0.03405444, 0.9939128, -0.063544296, -0.08330528)
+bones/63/rotation = Quaternion(0.008473594, 0.6785452, -0.73391587, -0.029534025)
+bones/64/rotation = Quaternion(-2.4235158e-07, 0.998111, 0.06143708, -2.4064366e-08)
 
 [node name="AnimationPlayer" parent="y_bot_root" index="1" unique_id=1675377527]
 libraries/Idle = ExtResource("84_jtj55")
@@ -119,5 +122,10 @@ radius = 0.1
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2084593726]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
 shape = SubResource("CapsuleShape3D_5xw05")
+
+[node name="ActionPrompt" parent="." unique_id=77427297 instance=ExtResource("1_actpr")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0.7, 0)
+visible = false
+message_end = "to pick up  "
 
 [editable path="y_bot_root"]

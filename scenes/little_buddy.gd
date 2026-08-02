@@ -3,6 +3,8 @@ extends CharacterBody3D
 @export var move_speed: float = 3.0
 @export var turn_speed: float = 10.0
 @export var stopping_distance: float = 2.0
+@export var throw_force_horizontal: float = 16.0
+@export var throw_force_vertical: float = 3.5
 @export var apply_gravity: bool = true
 
 @onready var animation_tree: AnimationTree = $y_bot_root/AnimationTree
@@ -11,6 +13,13 @@ extends CharacterBody3D
 var player: Player
 var nav_ready := false
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
+
+var is_held: bool = false
+var is_thrown: bool = false
+var menu_displayed: bool = false
+var _collision_exception_added: bool = false
+@onready var action_prompt: Node3D = $ActionPrompt
+@onready var collision_shape: CollisionShape3D = $CollisionShape3D
 
 func _ready() -> void:
 	if animation_tree:
@@ -28,11 +37,20 @@ func _nav_setup() -> void:
 	nav_ready = true
 
 func _physics_process(delta: float) -> void:
+	if is_held:
+		return
+		
 	# Apply gravity if enabled and not on floor
 	if apply_gravity and not is_on_floor():
 		velocity -= up_direction * gravity * delta
 	elif not apply_gravity:
 		velocity = velocity.slide(up_direction) # Prevent falling along up_direction if gravity disabled
+		
+	if is_thrown:
+		move_and_slide()
+		if is_on_floor():
+			is_thrown = false
+		return
 		
 	if not nav_ready:
 		move_and_slide()
@@ -42,20 +60,23 @@ func _physics_process(delta: float) -> void:
 		var current_scene = get_tree().current_scene
 		if current_scene:
 			player = current_scene.find_child("Player", true, false) as Player
-			if player:
-				# Add a collision exception so they don't block the player
-				add_collision_exception_with(player)
 		if not player:
 			move_and_slide()
 			return
+			
+	if player and not _collision_exception_added:
+		add_collision_exception_with(player)
+		_collision_exception_added = true
 		
-	# Update the target position
+	# Update the target position (staggered to avoid massive CPU spikes with many agents)
 	if navigation_agent_3d:
-		navigation_agent_3d.target_position = player.global_position
+		if Engine.get_physics_frames() % 20 == get_instance_id() % 20:
+			if navigation_agent_3d.target_position.distance_squared_to(player.global_position) > 0.5:
+				navigation_agent_3d.target_position = player.global_position
 	
 	# Explicit distance check (prevents getting stuck spinning near target)
-	var distance_to_player = global_position.distance_to(player.global_position)
-	if distance_to_player <= stopping_distance:
+	var dist_sq_to_player = global_position.distance_squared_to(player.global_position)
+	if dist_sq_to_player <= stopping_distance * stopping_distance:
 		animation_tree.set("parameters/Locomotion/blend_position", 0.0)
 		_stop_moving()
 		return
@@ -109,6 +130,8 @@ func _physics_process(delta: float) -> void:
 		animation_tree.set("parameters/Locomotion/blend_position", 0.0)
 		_stop_moving()
 
+
+
 func _stop_moving() -> void:
 	if navigation_agent_3d and navigation_agent_3d.avoidance_enabled:
 		navigation_agent_3d.set_velocity(Vector3.ZERO)
@@ -119,6 +142,9 @@ func _stop_moving() -> void:
 func _on_velocity_computed(safe_velocity: Vector3) -> void:
 	# This signal is triggered by set_velocity() in _physics_process
 	# We use it to apply the avoidance-adjusted velocity.
+	if is_thrown or is_held:
+		return
+		
 	var up_vel = velocity.project(up_direction)
 	var safe_h_vel = safe_velocity.slide(up_direction)
 	velocity = safe_h_vel + up_vel
@@ -127,3 +153,94 @@ func _on_velocity_computed(safe_velocity: Vector3) -> void:
 
 func sfx_footsteps_play() -> void:
 	pass
+
+func display_menu(_player: Player) -> void:
+	if is_held:
+		return
+	player = _player
+	if not player:
+		push_warning("Player is not defined.")
+		return
+	if action_prompt:
+		action_prompt.message_end = "to pick up"
+		action_prompt.show()
+		action_prompt.update_text()
+		action_prompt.get_node("KeyboardMouse").hide()
+		action_prompt.get_node("Microsoft").hide()
+		action_prompt.get_node("Nintendo").hide()
+		action_prompt.get_node("Sony").hide()
+		if player.controls.current_input_type == player.controls.InputType.KEYBOARD_MOUSE:
+			action_prompt.get_node("KeyboardMouse").show()
+		elif player.controls.current_input_type == player.controls.InputType.MICROSOFT:
+			action_prompt.get_node("Microsoft").show()
+		elif player.controls.current_input_type == player.controls.InputType.NINTENDO:
+			action_prompt.get_node("Nintendo").show()
+		elif player.controls.current_input_type == player.controls.InputType.SONY:
+			action_prompt.get_node("Sony").show()
+		menu_displayed = true
+	else:
+		push_warning("Action prompt is not defined.")
+
+func hide_menu() -> void:
+	if action_prompt:
+		action_prompt.hide()
+		menu_displayed = false
+
+func _input(event: InputEvent) -> void:
+	if is_held:
+		if event.is_action_pressed("action") and not event.is_echo():
+			throw()
+		return
+	
+	if menu_displayed and not is_held:
+		if event.is_action_pressed("action") and not event.is_echo():
+			pick_up()
+
+func pick_up() -> void:
+	if not player or not player.item_spring_arm:
+		return
+	is_held = true
+	hide_menu()
+	
+	if collision_shape:
+		collision_shape.disabled = true
+	if animation_tree:
+		animation_tree.set("parameters/Locomotion/blend_position", 0.0)
+	
+	get_parent().remove_child(self)
+	player.item_spring_arm.add_child(self)
+	
+	transform = Transform3D()
+	position = Vector3.ZERO
+	# Little buddy typically faces -Z. The spring arm faces the camera direction.
+
+func throw() -> void:
+	is_held = false
+	is_thrown = true
+	
+	if collision_shape:
+		collision_shape.disabled = false
+		
+	if player:
+		var emote_state = player.animation_tree.get(player.EMOTE_STATE_PLAYBACK_PATH)
+		player.animation_tree.set("parameters/EmoteSpineBlend2/blend_amount", 1.0)
+		emote_state.travel("Throw")
+		player.is_emoting = true
+		player.has_started_emoting = false
+		
+		var current_scene = get_tree().current_scene
+		var throw_pos = global_position
+		get_parent().remove_child(self)
+		current_scene.add_child(self)
+		global_position = throw_pos
+		_collision_exception_added = false
+		
+		var throw_dir: Vector3
+		if player.camera:
+			throw_dir = -player.camera.global_transform.basis.z.normalized()
+		else:
+			throw_dir = player.get_facing_direction()
+			if throw_dir.length_squared() < 0.001:
+				throw_dir = - player.global_transform.basis.z.normalized()
+			
+		velocity = throw_dir * throw_force_horizontal + Vector3(0, throw_force_vertical, 0)
