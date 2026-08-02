@@ -7,6 +7,9 @@ Click [here](https://timothycope.com/godot-3d-player-controller-v3/) to play!
 
 ---
 ## Documentation
+The general idea of this addon is that the [NodeStateMachine](/addons/3d_player_controller/state.gd) handles transitions between primary **Locomotion states** (e.g., "standing", "jumping", "climbing", "swimming"). Think of locomotion as what your character does with their lower body; only one locomotion state can be active at a time. Upper-body actions (like shooting or boxing) layer on top as secondary actions/sub-states.
+
+The character's [AnimationTree](/addons/3d_player_controller/animation_tree.gd) controls the actual animation playback by reading boolean state flags on the Player (e.g., `is_sprinting`, `is_climbing`).
 
 ### Getting Started
 1. Download `3d_player_controller-v3.#.#.zip` from the [Releases](https://github.com/kirbycope/godot-3d-player-controller-v3/releases) page

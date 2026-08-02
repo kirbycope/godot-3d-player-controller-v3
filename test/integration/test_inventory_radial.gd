@@ -13,6 +13,8 @@ class TestRadialMenuHold:
 		add_child_autofree(main_instance)
 
 	func after_each() -> void:
+		Input.action_release("last_weapon")
+		Input.action_release("next_weapon")
 		if is_instance_valid(main_instance):
 			main_instance.free()
 			main_instance = null
@@ -23,23 +25,11 @@ class TestRadialMenuHold:
 		assert_not_null(radial_menu, "RadialMenu should exist on inventory")
 		
 		# Test last_weapon
-		var event_last = InputEventAction.new()
-		event_last.action = "last_weapon"
-		event_last.pressed = true
-		Input.parse_input_event(event_last)
+		Input.action_press("last_weapon")
 		assert_true(radial_menu.is_menu_held(), "is_menu_held should return true when last_weapon is pressed")
-
-		# Release last_weapon
-		event_last.pressed = false
-		Input.parse_input_event(event_last)
+		Input.action_release("last_weapon")
 
 		# Test next_weapon
-		var event_next = InputEventAction.new()
-		event_next.action = "next_weapon"
-		event_next.pressed = true
-		Input.parse_input_event(event_next)
+		Input.action_press("next_weapon")
 		assert_true(radial_menu.is_menu_held(), "is_menu_held should return true when next_weapon is pressed")
-
-		# Release next_weapon
-		event_next.pressed = false
-		Input.parse_input_event(event_next)
+		Input.action_release("next_weapon")

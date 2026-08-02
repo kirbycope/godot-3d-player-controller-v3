@@ -42,9 +42,9 @@ func _physics_process(_delta: float) -> void:
 		frame_counter += 1
 		if frame_counter >= spawn_frame_interval:
 			frame_counter = 0
-			var duplicate_buddy = first_buddy.duplicate() as Node3D
-			add_child(duplicate_buddy)
-			buddy_list.append(duplicate_buddy)
+			#var duplicate_buddy = first_buddy.duplicate() as Node3D
+			#add_child(duplicate_buddy)
+			#buddy_list.append(duplicate_buddy)
 
 	# If we're below -40, respawn (teleport to the initial position).
 	if player and not player.is_driving and not player.is_flying:

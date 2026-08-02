@@ -617,12 +617,12 @@ size = Vector3(1, 0.15, 0.35)
 material = SubResource("StandardMaterial3D_dwbse")
 
 [node name="Player" parent="." unique_id=994458497 instance=ExtResource("1_0xm2m")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 29.999964, -42)
+transform = Transform3D(1, 0, 1.7484555e-07, 0, 1, 0, -1.7484555e-07, 0, 1, 0, 0, 0)
 paraglider_scene = ExtResource("38_paraglider")
 skateboard_scene = ExtResource("37_pibwh")
 
 [node name="LittleBuddy" parent="." unique_id=174060025 instance=ExtResource("9_nvyfr")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 29.944273, -41)
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, -2)
 
 [node name="JustCreate3D" type="Node3D" parent="." unique_id=647333121]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 5, 0, 0)
