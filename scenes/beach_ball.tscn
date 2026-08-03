@@ -1,6 +1,7 @@
-[gd_scene format=3 uid="uid://c4b8e2a1h7qaq"]
+[gd_scene load_steps=7 format=3 uid="uid://c4b8e2a1h7qaq"]
 
 [ext_resource type="Shader" uid="uid://b3ub3skp1gt1d" path="res://scenes/beach_ball.gdshader" id="1_beach_shader"]
+[ext_resource type="Script" path="res://scenes/beach_ball.gd" id="1_script"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_beach"]
 friction = 0.3
@@ -37,6 +38,7 @@ material = SubResource("ShaderMaterial_beach")
 [node name="BeachBall" type="RigidBody3D" unique_id=1825606941]
 mass = 0.2
 physics_material_override = SubResource("PhysicsMaterial_beach")
+script = ExtResource("1_script")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1726347234]
 mesh = SubResource("SphereMesh_beach")
