@@ -48,8 +48,7 @@
 [ext_resource type="PackedScene" uid="uid://bea6xq7pi7e0a" path="res://scenes/moon.tscn" id="38_pibwh"]
 [ext_resource type="PackedScene" uid="uid://buun545xrv5hr" path="res://scenes/fishing_rod.tscn" id="39_c6pm6"]
 [ext_resource type="PackedScene" uid="uid://d0k2lyf87ux7p" path="res://scenes/boat.tscn" id="47_vc5cj"]
-[ext_resource type="PackedScene" uid="uid://c4b8e2a1h7p9q" path="res://scenes/beach_ball.tscn" id="51_beachball"]
-
+[ext_resource type="PackedScene" uid="uid://c4b8e2a1h7qaq" path="res://scenes/beach_ball.tscn" id="51_beachball"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -414,16 +413,10 @@ albedo_color = Color(0.34509805, 1, 1, 0.18039216)
 material = SubResource("StandardMaterial3D_fuf3a")
 height = 1.8
 
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_5xw05"]
-friction = 0.1
-bounce = 1.0
-
-[sub_resource type="SphereShape3D" id="SphereShape3D_rgtcv"]
-
-[sub_resource type="SphereMesh" id="SphereMesh_5xw05"]
-
 [node name="World" type="Node3D" unique_id=336392758]
 script = ExtResource("1_h2yge")
+little_buddy_count = 0
+spawn_frame_interval = 0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=358521112]
 environment = SubResource("Environment_aqk2v")
@@ -1016,7 +1009,6 @@ transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0
 
 [node name="BeachBall" parent="." unique_id=1694960044 instance=ExtResource("51_beachball")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -4)
-
 
 [connection signal="body_entered" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_entered"]
 [connection signal="body_exited" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_exited"]
