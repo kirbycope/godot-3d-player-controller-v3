@@ -5,6 +5,16 @@ extends RigidBody3D
 @export var fluid_angular_drag: float = 2.0
 
 @onready var collision_shape: CollisionShape3D = $CollisionShape3D
+@onready var audio_player: AudioStreamPlayer3D = $SFX_Impact
+
+func _ready() -> void:
+	contact_monitor = true
+	max_contacts_reported = 4
+	body_entered.connect(_on_body_entered)
+
+func _on_body_entered(_body: Node) -> void:
+	if linear_velocity.length_squared() > 0.2:
+		audio_player.play()
 
 func _physics_process(delta: float) -> void:
 	var water_surface_y := _get_water_surface_y()
@@ -74,4 +84,3 @@ func _get_water_surface_y() -> float:
 		return NAN
 		
 	return highest_surface_y
-

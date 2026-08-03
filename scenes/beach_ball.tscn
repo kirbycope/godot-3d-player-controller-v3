@@ -1,11 +1,12 @@
-[gd_scene load_steps=7 format=3 uid="uid://c4b8e2a1h7qaq"]
+[gd_scene format=3 uid="uid://c4b8e2a1h7qaq"]
 
 [ext_resource type="Shader" uid="uid://b3ub3skp1gt1d" path="res://scenes/beach_ball.gdshader" id="1_beach_shader"]
-[ext_resource type="Script" path="res://scenes/beach_ball.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://6s62lhtskj7w" path="res://scenes/beach_ball.gd" id="1_script"]
+[ext_resource type="AudioStream" uid="uid://bqylorbffg64t" path="res://assets/freesound/117111__blindmanonacid__fotballplast.wav" id="3_hupay"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_beach"]
 friction = 0.3
-bounce = 0.85
+bounce = 0.75
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_beach"]
 render_priority = 0
@@ -45,3 +46,7 @@ mesh = SubResource("SphereMesh_beach")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=983775779]
 shape = SubResource("SphereShape3D_beach")
+
+[node name="SFX_Impact" type="AudioStreamPlayer3D" parent="." unique_id=969627450]
+stream = ExtResource("3_hupay")
+max_distance = 5.0

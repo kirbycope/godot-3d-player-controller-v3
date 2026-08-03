@@ -947,7 +947,7 @@ shape = SubResource("CylinderShape3D_hxkk4")
 
 [node name="Label3D" type="Label3D" parent="WarpZone" unique_id=1684130993]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
-billboard = 2
+billboard = 1
 text = "Tower"
 
 [node name="Marker3D" type="Marker3D" parent="WarpZone" unique_id=1823936913]
@@ -967,7 +967,7 @@ shape = SubResource("CylinderShape3D_hxkk4")
 
 [node name="Label3D" type="Label3D" parent="WarpZone2" unique_id=1349145388]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
-billboard = 2
+billboard = 1
 text = "Moon"
 
 [node name="Marker3D" type="Marker3D" parent="WarpZone2" unique_id=151519655]
@@ -987,7 +987,7 @@ shape = SubResource("CylinderShape3D_hxkk4")
 
 [node name="Label3D" type="Label3D" parent="WarpZone3" unique_id=684013574]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
-billboard = 2
+billboard = 1
 text = "Home"
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="WarpZone3" unique_id=1084531122]
