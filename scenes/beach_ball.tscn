@@ -1,0 +1,45 @@
+[gd_scene format=3 uid="uid://c4b8e2a1h7qaq"]
+
+[ext_resource type="Shader" uid="uid://b3ub3skp1gt1d" path="res://scenes/beach_ball.gdshader" id="1_beach_shader"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_beach"]
+friction = 0.3
+bounce = 0.85
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_beach"]
+render_priority = 0
+shader = ExtResource("1_beach_shader")
+shader_parameter/color_1 = Color(0.92, 0.18, 0.15, 1)
+shader_parameter/color_2 = Color(0.08, 0.48, 0.88, 1)
+shader_parameter/color_3 = Color(0.96, 0.76, 0.12, 1)
+shader_parameter/color_white = Color(0.95, 0.95, 0.95, 1)
+shader_parameter/cap_color = Color(0.95, 0.95, 0.95, 1)
+shader_parameter/valve_color = Color(0.85, 0.85, 0.85, 1)
+shader_parameter/seam_color = Color(0.15, 0.15, 0.15, 0.4)
+shader_parameter/num_panels = 6
+shader_parameter/alternate_white = true
+shader_parameter/panel_offset = 0.0
+shader_parameter/cap_size = 0.08
+shader_parameter/valve_size = 0.010000000475
+shader_parameter/seam_width = 0.008
+shader_parameter/seam_depth = 0.02
+shader_parameter/roughness = 0.18
+shader_parameter/specular = 0.6
+shader_parameter/clearcoat = 0.3
+shader_parameter/clearcoat_roughness = 0.1
+shader_parameter/panel_bulge = 0.008
+
+[sub_resource type="SphereMesh" id="SphereMesh_beach"]
+material = SubResource("ShaderMaterial_beach")
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_beach"]
+
+[node name="BeachBall" type="RigidBody3D" unique_id=1825606941]
+mass = 0.2
+physics_material_override = SubResource("PhysicsMaterial_beach")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1726347234]
+mesh = SubResource("SphereMesh_beach")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=983775779]
+shape = SubResource("SphereShape3D_beach")
