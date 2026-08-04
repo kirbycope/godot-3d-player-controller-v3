@@ -48,6 +48,7 @@
 [ext_resource type="PackedScene" uid="uid://bea6xq7pi7e0a" path="res://scenes/moon.tscn" id="38_pibwh"]
 [ext_resource type="PackedScene" uid="uid://buun545xrv5hr" path="res://scenes/fishing_rod.tscn" id="39_c6pm6"]
 [ext_resource type="PackedScene" uid="uid://d0k2lyf87ux7p" path="res://scenes/boat.tscn" id="47_vc5cj"]
+[ext_resource type="PackedScene" uid="uid://bsuh86cuoff0k" path="res://scenes/guy_number_one.tscn" id="50_j2jfr"]
 [ext_resource type="PackedScene" uid="uid://c4b8e2a1h7qaq" path="res://scenes/beach_ball.tscn" id="51_beachball"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
@@ -625,7 +626,7 @@ paraglider_scene = ExtResource("38_paraglider")
 skateboard_scene = ExtResource("37_pibwh")
 
 [node name="LittleBuddy" parent="." unique_id=174060025 instance=ExtResource("9_nvyfr")]
-transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0.3, -2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 2)
 
 [node name="JustCreate3D" type="Node3D" parent="." unique_id=647333121]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 5, 0, 0)
@@ -1009,6 +1010,9 @@ transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0
 
 [node name="BeachBall" parent="." unique_id=1694960044 instance=ExtResource("51_beachball")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -4)
+
+[node name="GuyNumberOne" parent="." unique_id=1077715446 instance=ExtResource("50_j2jfr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3)
 
 [connection signal="body_entered" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_entered"]
 [connection signal="body_exited" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_exited"]
