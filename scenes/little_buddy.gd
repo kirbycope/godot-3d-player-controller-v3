@@ -1,6 +1,7 @@
-extends CharacterBody3D
+extends RigidBody3D
 
 @export var move_speed: float = 3.0
+var up_direction := Vector3.UP
 @export var turn_speed: float = 10.0
 @export var stopping_distance: float = 2.0
 @export var throw_force_horizontal: float = 16.0
@@ -22,6 +23,8 @@ var _collision_exception_added: bool = false
 @onready var collision_shape: CollisionShape3D = $CollisionShape3D
 
 func _ready() -> void:
+	axis_lock_angular_y = true # Prevent physics engine from spinning the NPC
+	
 	if animation_tree:
 		animation_tree.active = true
 		
@@ -40,20 +43,19 @@ func _physics_process(delta: float) -> void:
 	if is_held:
 		return
 		
-	# Apply gravity if enabled and not on floor
-	if apply_gravity and not is_on_floor():
-		velocity -= up_direction * gravity * delta
-	elif not apply_gravity:
-		velocity = velocity.slide(up_direction) # Prevent falling along up_direction if gravity disabled
+	if not apply_gravity:
+		gravity_scale = 0.0
+	else:
+		gravity_scale = 1.0
 		
 	if is_thrown:
-		move_and_slide()
-		if is_on_floor():
+		# Check if we hit the floor to stop being "thrown" (RigidBody handles movement naturally)
+		var bodies = get_colliding_bodies()
+		if bodies.size() > 0:
 			is_thrown = false
 		return
 		
 	if not nav_ready:
-		move_and_slide()
 		return
 		
 	if not player:
@@ -61,7 +63,6 @@ func _physics_process(delta: float) -> void:
 		if current_scene:
 			player = current_scene.find_child("Player", true, false) as Player
 		if not player:
-			move_and_slide()
 			return
 			
 	if player and not _collision_exception_added:
@@ -114,16 +115,17 @@ func _physics_process(delta: float) -> void:
 		global_transform = current_transform.interpolate_with(target_transform, turn_speed * delta)
 		
 		# Compute horizontal velocity
-		var new_velocity = direction * move_speed
+		var target_velocity = direction * move_speed
 		
 		if navigation_agent_3d and navigation_agent_3d.avoidance_enabled:
 			# If using avoidance, pass it to the agent so it can compute safe_velocity
-			navigation_agent_3d.set_velocity(new_velocity)
+			navigation_agent_3d.set_velocity(target_velocity)
 		else:
-			# Otherwise just move immediately
-			var up_vel = velocity.project(up_direction)
-			velocity = new_velocity + up_vel
-			move_and_slide()
+			# Otherwise apply forces to reach the target velocity
+			var current_h_vel = linear_velocity
+			current_h_vel.y = 0
+			var velocity_diff = target_velocity - current_h_vel
+			apply_central_force(velocity_diff * mass * 10.0)
 		
 		animation_tree.set("parameters/Locomotion/blend_position", 1.0)
 	else:
@@ -136,8 +138,9 @@ func _stop_moving() -> void:
 	if navigation_agent_3d and navigation_agent_3d.avoidance_enabled:
 		navigation_agent_3d.set_velocity(Vector3.ZERO)
 	else:
-		velocity = velocity.project(up_direction)
-		move_and_slide()
+		var current_h_vel = linear_velocity
+		current_h_vel.y = 0
+		apply_central_force(-current_h_vel * mass * 10.0)
 
 func _on_velocity_computed(safe_velocity: Vector3) -> void:
 	# This signal is triggered by set_velocity() in _physics_process
@@ -145,10 +148,11 @@ func _on_velocity_computed(safe_velocity: Vector3) -> void:
 	if is_thrown or is_held:
 		return
 		
-	var up_vel = velocity.project(up_direction)
-	var safe_h_vel = safe_velocity.slide(up_direction)
-	velocity = safe_h_vel + up_vel
-	move_and_slide()
+	var target_h_vel = safe_velocity.slide(up_direction)
+	var current_h_vel = linear_velocity
+	current_h_vel.y = 0
+	var velocity_diff = target_h_vel - current_h_vel
+	apply_central_force(velocity_diff * mass * 10.0)
 
 
 func sfx_footsteps_play() -> void:
@@ -214,6 +218,7 @@ func pick_up() -> void:
 	is_held = true
 	hide_menu()
 	
+	freeze = true
 	if collision_shape:
 		collision_shape.disabled = true
 	if animation_tree:
@@ -229,6 +234,7 @@ func pick_up() -> void:
 func drop() -> void:
 	is_held = false
 	is_thrown = false
+	freeze = false
 	
 	if collision_shape:
 		collision_shape.disabled = false
@@ -240,7 +246,7 @@ func drop() -> void:
 	current_scene.add_child(self)
 	global_position = drop_pos
 	_collision_exception_added = false
-	velocity = Vector3.ZERO
+	linear_velocity = Vector3.ZERO
 
 func throw(throw_dir: Vector3 = Vector3.ZERO, throw_power: float = 1.0) -> void:
 	throw_with_direction(throw_dir, throw_power)
@@ -248,6 +254,7 @@ func throw(throw_dir: Vector3 = Vector3.ZERO, throw_power: float = 1.0) -> void:
 func throw_with_direction(throw_dir: Vector3 = Vector3.ZERO, throw_power: float = 1.0) -> void:
 	is_held = false
 	is_thrown = true
+	freeze = false
 	
 	if collision_shape:
 		collision_shape.disabled = false
@@ -268,4 +275,5 @@ func throw_with_direction(throw_dir: Vector3 = Vector3.ZERO, throw_power: float 
 		if throw_dir.length_squared() < 0.001:
 			throw_dir = Vector3.FORWARD
 			
-	velocity = (throw_dir * throw_force_horizontal + Vector3(0, throw_force_vertical, 0)) * throw_power
+	var impulse = (throw_dir * throw_force_horizontal + Vector3(0, throw_force_vertical, 0)) * throw_power
+	apply_central_impulse(impulse * mass)
