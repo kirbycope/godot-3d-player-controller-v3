@@ -399,6 +399,9 @@ height = 2.1750002
 radius = 0.1
 height = 1.45
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_cth4h"]
+size = Vector3(0.040100098, 0.14707032, 0.90000004)
+
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_0y3lt"]
 radius = 0.2
 height = 2.1
@@ -878,6 +881,7 @@ position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(0, 90, 180)
 
 [node name="Area3D" type="Area3D" parent="N_Hance_Studio_1/SK_Sword_1H_Newbie_01" unique_id=1871370711]
+visible = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Sword_1H_Newbie_01/Area3D" unique_id=2089109079]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0.42499998)
@@ -886,6 +890,12 @@ shape = SubResource("CapsuleShape3D_jnf5c")
 [node name="ActionPrompt" parent="N_Hance_Studio_1/SK_Sword_1H_Newbie_01" unique_id=2088748174 instance=ExtResource("9_og1vs")]
 transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0.099999905, 0, 0.5)
 visible = false
+
+[node name="Hitbox" type="Area3D" parent="N_Hance_Studio_1/SK_Sword_1H_Newbie_01" unique_id=598454094]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Sword_1H_Newbie_01/Hitbox" unique_id=1886064473]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00039672852, -0.009277344, 0.65)
+shape = SubResource("BoxShape3D_cth4h")
 
 [node name="SK_Sword_2H_Newbie_01" parent="N_Hance_Studio_1" unique_id=674997095 instance=ExtResource("16_qkpxi")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0.5, -3.5)
@@ -1008,8 +1018,12 @@ transform = Transform3D(-1.4950176e-08, -4.1075268e-08, -1, -0.9396926, 0.342020
 [node name="Boat" parent="." unique_id=1834386809 instance=ExtResource("47_vc5cj")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, -18)
 
+[node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=1342249458]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -4)
+use_collision = true
+
 [node name="BeachBall" parent="." unique_id=1694960044 instance=ExtResource("51_beachball")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -4)
 
 [node name="GuyNumberOne" parent="." unique_id=1077715446 instance=ExtResource("50_j2jfr")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3)
