@@ -27,6 +27,11 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("whistle"):
+		if player and (player.is_paused or (player.pause and player.pause.visible)):
+			return
+		player.state_machine.travel(player.current_state, NodeStateMachine.States.RAGDOLLING)
+
 	if $ClickToStart.visible:
 		if event is InputEventScreenTouch or event is InputEventMouseButton:
 			$ClickToStart.hide()

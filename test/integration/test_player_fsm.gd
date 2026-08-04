@@ -204,3 +204,18 @@ class TestAttackingTransitions:
 		await wait_physics_frames(2)
 		
 		assert_eq(player.current_state, NodeStateMachine.States.STANDING, "Player should return to STANDING after attack timeout.")
+
+class TestPauseTransitions:
+	extends FsmTestBase
+	
+	func test_no_ragdoll_when_pause_visible():
+		assert_eq(player.current_state, NodeStateMachine.States.STANDING, "Player should start in STANDING state.")
+		player.pause.show_menu()
+		assert_true(player.is_paused, "Player should be paused.")
+		assert_true(player.pause.visible, "Pause CanvasLayer should be visible.")
+		
+		player.state_machine.travel(player.current_state, NodeStateMachine.States.RAGDOLLING)
+		await wait_physics_frames(2)
+		
+		assert_ne(player.current_state, NodeStateMachine.States.RAGDOLLING, "Player should not transition to RAGDOLLING when Pause CanvasLayer is visible.")
+

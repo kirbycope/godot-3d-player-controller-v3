@@ -5,14 +5,18 @@
     "clampf",
     "deadzone",
     "elif",
+    "GREATSWORD",
     "Joypad",
     "lerp",
     "mixamo",
     "onready",
     "orthonormalized",
+    "ragdolling",
     "reparent",
+    "rigidbody",
     "stylebox",
     "styleboxes",
-    "tscn"
+    "tscn",
+    "unequip"
   ]
 }
