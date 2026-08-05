@@ -6,10 +6,10 @@ const MAX_LOOK_PITCH: float = 1.0472 # 60 degrees in radians
 const FLIPPED_DOT_THRESHOLD: float = 0.5 # dot product <= 0.5 means tilted >= 60 degrees
 const FLIPPED_VELOCITY_THRESHOLD: float = 2.0 # max linear/angular velocity to be considered settled
 
-@export var max_acceleration_force: float = 1000.0
-@export var max_brake_force: float = 50.0
-@export var max_reverse_force: float = -750.0
-@export var explosion_impulse_force: float = 1500.0
+@export var max_acceleration_force: float = 4500.0
+@export var max_brake_force: float = 225.0
+@export var max_reverse_force: float = -3375.0
+@export var explosion_impulse_force: float = 6750.0
 @export var flipped_time_to_burn: float = 5.0 ## Seconds vehicle must be flipped before catching fire
 @export var time_to_explode: float = 10.0 ## Seconds vehicle burns before exploding
 @export var brake_velocity_threshold: float = 5.0 ## Velocity threshold to switch between sfx_break_short and sfx_break_long

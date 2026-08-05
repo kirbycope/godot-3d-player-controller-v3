@@ -628,7 +628,7 @@ stream_4/stream = ExtResource("29_8qu4k")
 stream_5/stream = ExtResource("30_svfy7")
 
 [node name="CRV" type="VehicleBody3D" unique_id=782070933]
-mass = 333.0
+mass = 1500.0
 center_of_mass_mode = 1
 center_of_mass = Vector3(0, 0.5, 0)
 script = ExtResource("1_ndq4s")

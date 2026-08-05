@@ -133,7 +133,6 @@ func _physics_process(delta: float) -> void:
 		_stop_moving()
 
 
-
 func _stop_moving() -> void:
 	if navigation_agent_3d and navigation_agent_3d.avoidance_enabled:
 		navigation_agent_3d.set_velocity(Vector3.ZERO)

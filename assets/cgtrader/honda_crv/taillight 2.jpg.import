@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/taillight 2.jpg-656d1a22d64e97163a33968a65626
 
 [params]
 
-compress/mode=1
+compress/mode=4
 compress/high_quality=false
 compress/high_quality_mode=0
 compress/lossy_quality=0.7
