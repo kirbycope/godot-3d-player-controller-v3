@@ -166,7 +166,7 @@ func _update_fire_state() -> void:
 func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority(): return
 	
-	if is_on_fire or has_exploded:
+	if player == null or is_on_fire or has_exploded:
 		steering = 0.0
 		engine_force = 0.0
 		brake = 0.0

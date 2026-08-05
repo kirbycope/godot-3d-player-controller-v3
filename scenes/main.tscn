@@ -52,6 +52,7 @@
 [ext_resource type="PackedScene" uid="uid://c4b8e2a1h7qaq" path="res://scenes/beach_ball.tscn" id="51_beachball"]
 [ext_resource type="PackedScene" uid="uid://dmpvo8k0r7c2s" path="res://assets/sketchfab/bowling_pin/scene.gltf" id="51_bjg73"]
 [ext_resource type="Texture2D" uid="uid://byprefppdk7bt" path="res://assets/sketchfab/bowling_pin/Dimensions-Sports-Bowling-Ten-Pin-Pin.svg" id="51_bu4jf"]
+[ext_resource type="PackedScene" uid="uid://clhihxvn4uh1b" path="res://scenes/bowling_pin.tscn" id="52_bwlpn"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -954,6 +955,7 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -4.7
 
 [node name="CRV" parent="." unique_id=751190287 instance=ExtResource("37_fuf3a")]
 transform = Transform3D(-4.371138e-08, 0, -0.9999999, 0, 1, 0, 0.9999999, 0, -4.371138e-08, 0, -0.17951298, -11.9)
+mass = 1500.0
 
 [node name="Skateboard" parent="." unique_id=1958283666 instance=ExtResource("37_pibwh")]
 transform = Transform3D(2.9802322e-08, -1, 0, -4.371139e-08, -1.3027009e-15, 1, -1, -2.9802322e-08, -4.371139e-08, 4.3889647, 0.7169763, 3.982221)
@@ -1048,135 +1050,35 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, 0)
 visible = false
 mesh = SubResource("PlaneMesh_5xw05")
 
-[node name="BowlingPin" type="RigidBody3D" parent="BowlingAlley" unique_id=474215791]
+[node name="BowlingPin" parent="BowlingAlley" instance=ExtResource("52_bwlpn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.65, 0, 3.35)
-mass = 40.0
-center_of_mass_mode = 1
-center_of_mass = Vector3(0, 1, 0)
 
-[node name="Sketchfab_Scene" parent="BowlingAlley/BowlingPin" unique_id=1304890715 instance=ExtResource("51_bjg73")]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="BowlingAlley/BowlingPin" unique_id=1127897137]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
-shape = SubResource("ConvexPolygonShape3D_bjg73")
-
-[node name="BowlingPin2" type="RigidBody3D" parent="BowlingAlley" unique_id=1686853858]
+[node name="BowlingPin2" parent="BowlingAlley" instance=ExtResource("52_bwlpn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.85, 0, 1.35)
-mass = 40.0
-center_of_mass_mode = 1
-center_of_mass = Vector3(0, 1, 0)
 
-[node name="Sketchfab_Scene" parent="BowlingAlley/BowlingPin2" unique_id=475043034 instance=ExtResource("51_bjg73")]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="BowlingAlley/BowlingPin2" unique_id=1846274548]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
-shape = SubResource("ConvexPolygonShape3D_bjg73")
-
-[node name="BowlingPin3" type="RigidBody3D" parent="BowlingAlley" unique_id=952923508]
+[node name="BowlingPin3" parent="BowlingAlley" instance=ExtResource("52_bwlpn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.4500008, 0, 1.3500004)
-mass = 40.0
-center_of_mass_mode = 1
-center_of_mass = Vector3(0, 1, 0)
 
-[node name="Sketchfab_Scene" parent="BowlingAlley/BowlingPin3" unique_id=2038369169 instance=ExtResource("51_bjg73")]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="BowlingAlley/BowlingPin3" unique_id=1253702689]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
-shape = SubResource("ConvexPolygonShape3D_bjg73")
-
-[node name="BowlingPin4" type="RigidBody3D" parent="BowlingAlley" unique_id=22075966]
+[node name="BowlingPin4" parent="BowlingAlley" instance=ExtResource("52_bwlpn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.049999, 0, -0.7499995)
-mass = 40.0
-center_of_mass_mode = 1
-center_of_mass = Vector3(0, 1, 0)
 
-[node name="Sketchfab_Scene" parent="BowlingAlley/BowlingPin4" unique_id=1425514387 instance=ExtResource("51_bjg73")]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="BowlingAlley/BowlingPin4" unique_id=1622982138]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
-shape = SubResource("ConvexPolygonShape3D_bjg73")
-
-[node name="BowlingPin5" type="RigidBody3D" parent="BowlingAlley" unique_id=1858106354]
+[node name="BowlingPin5" parent="BowlingAlley" instance=ExtResource("52_bwlpn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.6499996, 0, -0.7499995)
-mass = 40.0
-center_of_mass_mode = 1
-center_of_mass = Vector3(0, 1, 0)
 
-[node name="Sketchfab_Scene" parent="BowlingAlley/BowlingPin5" unique_id=331649307 instance=ExtResource("51_bjg73")]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="BowlingAlley/BowlingPin5" unique_id=715490900]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
-shape = SubResource("ConvexPolygonShape3D_bjg73")
-
-[node name="BowlingPin6" type="RigidBody3D" parent="BowlingAlley" unique_id=1560534374]
+[node name="BowlingPin6" parent="BowlingAlley" instance=ExtResource("52_bwlpn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.25, 0, -0.7499995)
-mass = 40.0
-center_of_mass_mode = 1
-center_of_mass = Vector3(0, 1, 0)
 
-[node name="Sketchfab_Scene" parent="BowlingAlley/BowlingPin6" unique_id=1582721870 instance=ExtResource("51_bjg73")]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="BowlingAlley/BowlingPin6" unique_id=1886196680]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
-shape = SubResource("ConvexPolygonShape3D_bjg73")
-
-[node name="BowlingPin7" type="RigidBody3D" parent="BowlingAlley" unique_id=1380615676]
+[node name="BowlingPin7" parent="BowlingAlley" instance=ExtResource("52_bwlpn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.2, 0, -2.8)
-mass = 40.0
-center_of_mass_mode = 1
-center_of_mass = Vector3(0, 1, 0)
 
-[node name="Sketchfab_Scene" parent="BowlingAlley/BowlingPin7" unique_id=138368698 instance=ExtResource("51_bjg73")]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="BowlingAlley/BowlingPin7" unique_id=46848834]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
-shape = SubResource("ConvexPolygonShape3D_bjg73")
-
-[node name="BowlingPin8" type="RigidBody3D" parent="BowlingAlley" unique_id=875700556]
+[node name="BowlingPin8" parent="BowlingAlley" instance=ExtResource("52_bwlpn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.825, 0, -2.8)
-mass = 40.0
-center_of_mass_mode = 1
-center_of_mass = Vector3(0, 1, 0)
 
-[node name="Sketchfab_Scene" parent="BowlingAlley/BowlingPin8" unique_id=327562372 instance=ExtResource("51_bjg73")]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="BowlingAlley/BowlingPin8" unique_id=396490274]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
-shape = SubResource("ConvexPolygonShape3D_bjg73")
-
-[node name="BowlingPin9" type="RigidBody3D" parent="BowlingAlley" unique_id=1885486616]
+[node name="BowlingPin9" parent="BowlingAlley" instance=ExtResource("52_bwlpn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.4250011, 0, -2.8000002)
-mass = 40.0
-center_of_mass_mode = 1
-center_of_mass = Vector3(0, 1, 0)
 
-[node name="Sketchfab_Scene" parent="BowlingAlley/BowlingPin9" unique_id=1430426885 instance=ExtResource("51_bjg73")]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="BowlingAlley/BowlingPin9" unique_id=1368199585]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
-shape = SubResource("ConvexPolygonShape3D_bjg73")
-
-[node name="BowlingPin10" type="RigidBody3D" parent="BowlingAlley" unique_id=1496515838]
+[node name="BowlingPin10" parent="BowlingAlley" instance=ExtResource("52_bwlpn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.05, 0, -2.8)
-mass = 40.0
-center_of_mass_mode = 1
-center_of_mass = Vector3(0, 1, 0)
-
-[node name="Sketchfab_Scene" parent="BowlingAlley/BowlingPin10" unique_id=1894168299 instance=ExtResource("51_bjg73")]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="BowlingAlley/BowlingPin10" unique_id=2147106042]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
-shape = SubResource("ConvexPolygonShape3D_bjg73")
 
 [connection signal="body_entered" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_entered"]
 [connection signal="body_exited" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_exited"]
