@@ -1,6 +1,6 @@
 [gd_scene format=4 uid="uid://bc4bacqrjokgp"]
 
-[ext_resource type="Texture2D" uid="uid://c84eypfwd25uf" path="res://assets/cgtrader/honda_crv/tires.png" id="1_ueerc"]
+[ext_resource type="Texture2D" uid="uid://d84ylipuig43" path="res://assets/cgtrader/honda_crv/tires.png" id="1_ueerc"]
 [ext_resource type="Texture2D" uid="uid://dn8npft588p2q" path="res://assets/cgtrader/honda_crv/brake.dds" id="2_hnv4u"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7he00"]

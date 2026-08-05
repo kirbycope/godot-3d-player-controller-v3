@@ -19,8 +19,8 @@ func _input(event: InputEvent) -> void:
 			if target_dir.length_squared() > 0.001:
 				target_dir = target_dir.normalized()
 				player.orientation.basis = Basis.looking_at(-target_dir, player.up_direction)
-			# Travel to "Logging" state in the player's state machine
-			player.locomotion_state.travel("Logging")
+			# Travel to "Logging" inside the Shield group of the player's locomotion state machine
+			player.travel_locomotion("Shield/Logging")
 
 
 func display_menu(_player: Player) -> void:
