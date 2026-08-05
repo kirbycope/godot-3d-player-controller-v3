@@ -5,8 +5,6 @@ extends CanvasLayer
 
 ## Called when there is an input event.
 func _input(event: InputEvent) -> void:
-	# Do nothing if not the authority
-	if not is_multiplayer_authority(): return
 
 	if player:
 		if event.is_action_pressed("debug"):
@@ -15,8 +13,6 @@ func _input(event: InputEvent) -> void:
 
 ## Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
-	# Do nothing if not the authority
-	if not is_multiplayer_authority(): return
 
 	if player:
 		$FPS.text = str(int(Engine.get_frames_per_second()))
@@ -36,7 +32,9 @@ func _process(_delta: float) -> void:
 		$States/is_jumping.button_pressed = (player.is_jump_queued or player.is_jumping)
 		$States/is_paragliding.button_pressed = player.is_paragliding
 		$States/is_paused.button_pressed = player.is_paused
+		$States/is_ragdolling.button_pressed = player.is_ragdolling
 		$States/is_shooting.button_pressed = player.is_shooting
+		$States/is_sitting.button_pressed = player.is_sitting
 		$States/is_skateboarding.button_pressed = player.is_skateboarding
 		$States/is_sliding.button_pressed = player.is_sliding
 		$States/is_sprinting.button_pressed = player.is_sprinting
@@ -57,7 +55,7 @@ func _process(_delta: float) -> void:
 		$Bow/is_drawing_arrow.button_pressed = player.is_drawing_arrow
 		$Bow/is_firing_arrow.button_pressed = player.is_firing_arrow
 
-		$Attacking.visible = player.inventory.can_player_attack
+		$Attacking.visible = player.inventory.can_player_attack and (player.is_attacking_1 or player.is_attacking_2 or player.is_attacking_3)
 		$Attacking/is_attacking_1.button_pressed = player.is_attacking_1
 		$Attacking/is_attacking_2.button_pressed = player.is_attacking_2
 		$Attacking/is_attacking_3.button_pressed = player.is_attacking_3

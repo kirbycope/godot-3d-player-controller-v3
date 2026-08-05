@@ -1,30 +1,44 @@
 class_name Falling
 extends NodeStateMachine
 
+@export var lethal_velocity: float = 15.0
+
 var _this_state := NodeStateMachine.States.FALLING
 
 
 ## Called when there is an input event.
 func _input(event: InputEvent) -> void:
-	# Do nothing if not the authority
-	if not is_multiplayer_authority(): return
 
 	# Do nothing if the player is not set
-	if not player: return
+	if not player or player.is_paused or player.is_ragdolling: return
+
+	# Jump action triggers while falling
+	if event.is_action_pressed("jump"):
+		if player.ledge_detection_horizontal.is_colliding():
+			player.state_machine.travel(_this_state, NodeStateMachine.States.CLIMBING)
+			return
+		elif player.paraglider_raycast.is_colliding():
+			player.state_machine.travel(_this_state, NodeStateMachine.States.FLYING)
+			return
+		elif not player.paraglider_raycast.is_colliding():
+			player.state_machine.travel(_this_state, NodeStateMachine.States.PARAGLIDING)
+			return
 
 
 ## Called every physics frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:
-	# Do nothing if not the authority
-	if not is_multiplayer_authority(): return
 
 	# Do nothing if the player is not set
 	if not player: return
 
 	# Check if the player has reached the floor
 	if player.is_on_floor():
-		# Start "standing"
-		player.state_machine.travel(_this_state, NodeStateMachine.States.STANDING)
+		if player.last_fall_speed >= lethal_velocity:
+			# Start "ragdolling" if falling at a lethal velocity
+			player.state_machine.travel(_this_state, NodeStateMachine.States.RAGDOLLING)
+		else:
+			# Start "standing"
+			player.state_machine.travel(_this_state, NodeStateMachine.States.STANDING)
 		return
 
 

@@ -6,17 +6,44 @@ var _this_state := NodeStateMachine.States.STANDING
 
 ## Called when there is an input event.
 func _input(event: InputEvent) -> void:
-	# Do nothing if not the authority
-	if not is_multiplayer_authority(): return
 
 	# Do nothing if the player is not set
-	if not player: return
+	if not player or player.is_paused or player.is_ragdolling: return
+
+	# Attack
+	if event.is_action_pressed("attack") and player.inventory.can_player_attack:
+		get_viewport().set_input_as_handled()
+		player.state_machine.travel(_this_state, NodeStateMachine.States.ATTACKING)
+		return
+
+	# Jump
+	if event.is_action_pressed("jump"):
+		if player.is_boxing:
+			player.is_boxing = false
+		# While focusing (strafing), jumping with forward/backward input performs a flip.
+		player.is_front_flipping = player.is_focusing and Input.is_action_pressed("move_up")
+		player.is_back_flipping = player.is_focusing \
+				and Input.is_action_pressed("move_down") \
+				and not player.is_front_flipping
+		get_viewport().set_input_as_handled()
+		player.state_machine.travel(_this_state, NodeStateMachine.States.JUMPING)
+		return
+
+	# Sprint
+	if event.is_action_pressed("sprint") and (player.smoothed_motion.y > 0.0 if player.is_focusing else player.smoothed_motion.length() > 0.0):
+		get_viewport().set_input_as_handled()
+		player.state_machine.travel(_this_state, NodeStateMachine.States.SPRINTING)
+		return
+
+	# Crouch
+	if event.is_action_pressed("crouch"):
+		get_viewport().set_input_as_handled()
+		player.state_machine.travel(_this_state, NodeStateMachine.States.CROUCHING)
+		return
 
 
 ## Called every physics frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:
-	# Do nothing if not the authority
-	if not is_multiplayer_authority(): return
 
 	# Do nothing if the player is not set
 	if not player: return
@@ -37,7 +64,7 @@ func start() -> void:
 	# Flag the player as "standing"
 	player.is_standing = true
 	# Transition directly to the grounded locomotion that matches the equipped state.
-	player.locomotion_state.travel(String(player.get_grounded_locomotion_state()))
+	player.travel_locomotion(String(player.get_grounded_locomotion_state()))
 
 
 ## Stop "standing".

@@ -2,7 +2,7 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b6m0nt1osn7uy"
+uid="uid://1iuu2pjexive"
 path="res://.godot/imported/stitches.png-c5e8baa870a8327257063108c1301950.ctex"
 metadata={
 "vram_texture": false
@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/stitches.png-c5e8baa870a8327257063108c1301950
 
 [params]
 
-compress/mode=1
+compress/mode=4
 compress/high_quality=false
 compress/high_quality_mode=0
 compress/lossy_quality=0.7

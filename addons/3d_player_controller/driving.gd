@@ -15,13 +15,33 @@ extends NodeStateMachine
 var _this_state := NodeStateMachine.States.DRIVING
 
 
+## Returns the accelerate action name based on the player's current input type.
+func get_current_accelerate_action() -> StringName:
+	var input_type: int = player.controls.current_input_type if player and player.controls else 0
+	return keyboard_accelerate_action if input_type == 0 else pad_accelerate_action
+
+
+## Returns the brake action name based on the player's current input type.
+func get_current_brake_action() -> StringName:
+	var input_type: int = player.controls.current_input_type if player and player.controls else 0
+	return keyboard_brake_action if input_type == 0 else pad_brake_action
+
+
+## Returns true if the accelerate action is currently pressed.
+func is_accelerate_pressed() -> bool:
+	return Input.is_action_pressed(get_current_accelerate_action())
+
+
+## Returns true if the brake action is currently pressed.
+func is_brake_pressed() -> bool:
+	return Input.is_action_pressed(get_current_brake_action())
+
+
 ## Called when there is an input event.
 func _input(event: InputEvent) -> void:
-	# Do nothing if not the authority
-	if not is_multiplayer_authority(): return
 
-	# Do nothing if the player is not set
-	if not player: return
+	# Do nothing if the player is not set or is paused/ragdolling
+	if not player or player.is_paused or player.is_ragdolling: return
 
 	var input_type = player.controls.current_input_type if player.controls else 0
 	var current_exit_action = keyboard_exit_action if input_type == 0 else pad_exit_action
@@ -29,23 +49,40 @@ func _input(event: InputEvent) -> void:
 	# Exit
 	if not player.is_entering_vehicle and not player.is_exiting_vehicle:
 		if Input.is_action_just_pressed(current_exit_action):
-			# Flag the Player as exiting the vehicle
-			player.is_exiting_vehicle = true
-			# Open (and then close) the driver's car door
-			await _open_and_close_drivers_door()
+			var speed := 0.0
+			if player.is_driving_in:
+				speed = player.is_driving_in.linear_velocity.length()
+			
+			if speed > 2.0:
+				var exit_marker = player.is_driving_in.get_node_or_null("ExitCar")
+				if not exit_marker:
+					exit_marker = player.is_driving_in.get_node_or_null("EnterCar")
+				
+				if exit_marker:
+					player.global_position = exit_marker.global_position
+				
+				var car_parent = player.is_driving_in.get_parent()
+				if car_parent and player.get_parent() != car_parent:
+					player.reparent(car_parent)
+				
+				if player.state_machine:
+					player.state_machine.travel(_this_state, NodeStateMachine.States.STANDING)
+			else:
+				# Flag the Player as exiting the vehicle
+				player.is_exiting_vehicle = true
+				# Open (and then close) the driver's car door
+				await _open_and_close_drivers_door()
 
 
 ## Called every physics frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:
-	# Do nothing if not the authority
-	if not is_multiplayer_authority(): return
 
 	# Do nothing if the player is not set
 	if not player: return
 
 	# Check if the "EnterCar" animation has finished
 	var was_entering_vehicle = player.is_entering_vehicle
-	if player.locomotion_state:
+	if player.locomotion_state and player.is_entering_vehicle:
 		player.is_entering_vehicle = player.locomotion_state.get_current_node() == "EnteringCar"
 	if was_entering_vehicle \
 	and not player.is_entering_vehicle:
@@ -88,17 +125,13 @@ func _physics_process(delta: float) -> void:
 	and not player.is_entering_vehicle \
 	and not player.is_exiting_vehicle:
 		var car = player.is_driving_in
-		var is_car_disabled: bool = car.get("is_on_fire") == true or car.get("has_exploded") == true
+		var is_car_disabled: bool = car.get("is_on_fire") == true or car.get("has_exploded") == true or player.is_paused or player.is_ragdolling
 		if is_car_disabled:
 			car.engine_force = 0.0
 			car.brake = 0.0
 		else:
-			var input_type = player.controls.current_input_type if player.controls else 0
-			var current_accelerate_action = keyboard_accelerate_action if input_type == 0 else pad_accelerate_action
-			var current_brake_action = keyboard_brake_action if input_type == 0 else pad_brake_action
-
-			var accelerate_pressed := Input.is_action_pressed(current_accelerate_action)
-			var brake_pressed := Input.is_action_pressed(current_brake_action)
+			var accelerate_pressed := is_accelerate_pressed()
+			var brake_pressed := is_brake_pressed()
 
 			# If braking/reversing is pressed
 			if brake_pressed:
@@ -127,7 +160,7 @@ func _physics_process(delta: float) -> void:
 	and not player.is_entering_vehicle \
 	and not player.is_exiting_vehicle:
 		var car = player.is_driving_in
-		var is_car_disabled: bool = car.get("is_on_fire") == true or car.get("has_exploded") == true
+		var is_car_disabled: bool = car.get("is_on_fire") == true or car.get("has_exploded") == true or player.is_paused or player.is_ragdolling
 		if is_car_disabled:
 			car.steering = 0.0
 		else:
@@ -145,6 +178,8 @@ func start() -> void:
 	player.is_driving = true
 	player.is_entering_vehicle = true
 	player.is_exiting_vehicle = false
+	if player.locomotion_state:
+		player.locomotion_state.start("EnteringCar")
 	# Disable player collision
 	player.collision_shape.disabled = true
 	# Disable crosshair
@@ -183,27 +218,20 @@ func _open_and_close_drivers_door() -> void:
 func get_contextual_controls(input_type: int) -> Dictionary:
 	if not player or not player.controls: return {}
 
+	var controls = {
+		player.controls.joypad_button_4_label: "Perspective",
+		player.controls.joypad_button_15_label: "Screenshot",
+		player.controls.joypad_button_6_label: "Pause Menu",
+		player.controls.left_joystick_label: "Steer",
+		player.controls.right_joystick_label: "Camera",
+	}
 	if input_type == 0: # KEYBOARD_MOUSE
-		return {
-			player.controls.joypad_button_4_label: "Perspective",
-			player.controls.joypad_button_15_label: "Screenshot",
-			player.controls.joypad_button_6_label: "Pause Menu",
-
-			player.controls.joypad_button_3_label: "Accelerate",
-			player.controls.joypad_button_1_label: "Brake",
-			player.controls.joypad_button_0_label: "Exit",
-			player.controls.left_joystick_label: "Steer",
-			player.controls.right_joystick_label: "Camera",
-		}
+		controls[player.controls.joypad_button_3_label] = "Accelerate"
+		controls[player.controls.joypad_button_1_label] = "Brake"
+		controls[player.controls.joypad_button_0_label] = "Exit"
 	else:
-		return {
-			player.controls.joypad_button_4_label: "Perspective",
-			player.controls.joypad_button_15_label: "Screenshot",
-			player.controls.joypad_button_6_label: "Pause Menu",
-
-			player.controls.joypad_axis_4_plus_label: "Brake",
-			player.controls.joypad_axis_5_plus_label: "Accelerate",
-			player.controls.joypad_button_3_label: "Exit",
-			player.controls.left_joystick_label: "Steer",
-			player.controls.right_joystick_label: "Camera",
-		}
+		controls[player.controls.joypad_axis_4_plus_label] = "Brake"
+		controls[player.controls.joypad_axis_5_plus_label] = "Accelerate"
+		controls[player.controls.joypad_button_3_label] = "Exit"
+	
+	return controls

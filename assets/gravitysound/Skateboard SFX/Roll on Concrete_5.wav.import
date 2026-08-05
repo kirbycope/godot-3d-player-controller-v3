@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://ckofoyaq8fs3f"
+path="res://.godot/imported/Roll on Concrete_5.wav-7d1864c74f57318b49cd9fa857482bac.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Skateboard SFX/Roll on Concrete_5.wav"
+dest_files=["res://.godot/imported/Roll on Concrete_5.wav-7d1864c74f57318b49cd9fa857482bac.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

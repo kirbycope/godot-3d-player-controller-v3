@@ -1,5 +1,5 @@
 @tool
-extends VFXController
+extends VFXFireController
 
 @export var radius: float = 1:
 	set(value):

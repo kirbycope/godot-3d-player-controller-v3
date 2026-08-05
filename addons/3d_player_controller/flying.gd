@@ -20,11 +20,9 @@ var _this_state := NodeStateMachine.States.FLYING
 
 ## Called when there is an input event.
 func _input(event: InputEvent) -> void:
-	# Do nothing if not the authority
-	if not is_multiplayer_authority(): return
 
-	# Do nothing if the player is not set
-	if not player: return
+	# Do nothing if the player is not set or is paused/ragdolling
+	if not player or player.is_paused or player.is_ragdolling: return
 
 	var input_type = player.controls.current_input_type if player.controls else 0
 	var current_stop_action = keyboard_stop_action if input_type == 0 else pad_stop_action
@@ -45,8 +43,6 @@ func _input(event: InputEvent) -> void:
 
 ## Called every physics frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:
-	# Do nothing if not the authority
-	if not is_multiplayer_authority(): return
 
 	# Do nothing if the player is not set
 	if not player: return
@@ -133,25 +129,17 @@ func stop() -> void:
 func get_contextual_controls(input_type: int) -> Dictionary:
 	if not player or not player.controls: return {}
 
+	var controls = {
+		player.controls.joypad_button_4_label: "Perspective",
+		player.controls.joypad_button_15_label: "Screenshot",
+		player.controls.joypad_button_6_label: "Pause Menu",
+		player.controls.joypad_button_3_label: "Fly Up",
+		player.controls.left_joystick_label: "Fly",
+		player.controls.right_joystick_label: "Camera",
+	}
 	if input_type == 0: # KEYBOARD_MOUSE
-		return {
-			player.controls.joypad_button_4_label: "Perspective",
-			player.controls.joypad_button_15_label: "Screenshot",
-			player.controls.joypad_button_6_label: "Pause Menu",
-
-			player.controls.joypad_button_3_label: "Fly Up",
-			player.controls.joypad_button_7_label: "Fly Down",
-			player.controls.left_joystick_label: "Fly",
-			player.controls.right_joystick_label: "Camera",
-		}
+		controls[player.controls.joypad_button_7_label] = "Fly Down"
 	else:
-		return {
-			player.controls.joypad_button_4_label: "Perspective",
-			player.controls.joypad_button_15_label: "Screenshot",
-			player.controls.joypad_button_6_label: "Pause Menu",
-
-			player.controls.joypad_button_3_label: "Fly Up",
-			player.controls.joypad_axis_4_plus_label: "Fly Down",
-			player.controls.left_joystick_label: "Fly",
-			player.controls.right_joystick_label: "Camera",
-		}
+		controls[player.controls.joypad_button_0_label] = "Fly Down"
+	
+	return controls

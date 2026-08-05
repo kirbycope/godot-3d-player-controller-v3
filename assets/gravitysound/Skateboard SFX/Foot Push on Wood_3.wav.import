@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://ct50c55kvpruh"
+path="res://.godot/imported/Foot Push on Wood_3.wav-1bb56cd112c57775899e6145265c559e.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Skateboard SFX/Foot Push on Wood_3.wav"
+dest_files=["res://.godot/imported/Foot Push on Wood_3.wav-1bb56cd112c57775899e6145265c559e.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

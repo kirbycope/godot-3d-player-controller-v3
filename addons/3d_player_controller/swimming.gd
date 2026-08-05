@@ -19,11 +19,9 @@ const WATER_SURFACE_SNAP_RATIO := 0.75
 
 ## Called when there is an input event.
 func _input(event: InputEvent) -> void:
-	# Do nothing if not the authority
-	if not is_multiplayer_authority(): return
 
-	# Do nothing if the player is not set
-	if not player: return
+	# Do nothing if the player is not set or is paused/ragdolling
+	if not player or player.is_paused or player.is_ragdolling: return
 
 	var input_type = player.controls.current_input_type if player.controls else 0
 	var current_climb_out_action = keyboard_climb_out_action if input_type == 0 else pad_climb_out_action
@@ -38,11 +36,23 @@ func _input(event: InputEvent) -> void:
 
 ## Called every physics frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:
-	# Do nothing if not the authority
-	if not is_multiplayer_authority(): return
 
 	# Do nothing if the player is not set
 	if not player: return
+
+	# Water depth check
+	var water_surface_along_up := get_water_surface_along_up()
+	if not is_nan(water_surface_along_up):
+		var current_position_along_up := player.up_direction.dot(player.global_position)
+		var swim_depth_threshold = current_position_along_up + (player.collision_shape.shape.height * 0.5)
+		if water_surface_along_up > swim_depth_threshold:
+			if not player.is_swimming and not player.is_driving and player.is_driving_in == null and not player.is_entering_vehicle and not player.is_exiting_vehicle:
+				player.state_machine.travel(player.current_state, NodeStateMachine.States.SWIMMING)
+		else:
+			if player.is_swimming:
+				player.is_swimming = false
+	elif player.is_swimming:
+		player.is_swimming = false
 
 	# Swimming, Climbing On [Status]
 	if player.is_climbing_on:
@@ -103,31 +113,77 @@ func _physics_process(delta: float) -> void:
 		player.swimming_root_motion_multiplier = 2
 		player.is_sprinting = false
 
-
-func _get_player_shoulder_offset() -> float:
-	if not player or not player.collision_shape:
-		return 0.0
-
-	var shape: Shape3D = player.collision_shape.shape
-	if not shape:
-		return 0.0
-
-	if shape is CapsuleShape3D:
-		var capsule_shape := shape as CapsuleShape3D
-		return capsule_shape.height * WATER_SURFACE_SNAP_RATIO
-
-	if shape is BoxShape3D:
-		var box_shape := shape as BoxShape3D
-		return box_shape.size.y * WATER_SURFACE_SNAP_RATIO
-
-	return 0.0
+	# While swimming, keep SwimmingLocomotion active and feed its BlendSpace1D.
+	var current_swimming_node = player.locomotion_state.get_current_node()
+	# Do not force SwimmingLocomotion while swimming to/at an edge or mantling out.
+	if not current_swimming_node in ["BracedHangClimbingOn", "SwimmingAtEdge", "SwimmingToEdge"] \
+	and current_swimming_node != "SwimmingLocomotion" \
+	and not player.is_climbing_on:
+		player.locomotion_state.travel("SwimmingLocomotion")
+	# Feed the BlendSpace1D only while in normal swimming locomotion.
+	if current_swimming_node == "SwimmingLocomotion":
+		if player.is_focusing: # or player.is_shooting:
+			player.animation_tree.set(player.SWIMMING_LOCOMOTION_BLEND_POSITION_PATH, player.smoothed_motion.y)
+		else:
+			player.animation_tree.set(player.SWIMMING_LOCOMOTION_BLEND_POSITION_PATH, player.smoothed_motion.length())
 
 
-func _get_water_surface_along_up(up_direction: Vector3) -> float:
-	if not is_inside_tree():
+## Start "swimming".
+func start() -> void:
+	# Enable _this_ state node
+	process_mode = Node.PROCESS_MODE_INHERIT
+	# Set the player's new state
+	player.current_state = _this_state
+	# Flag the player as "swimming"
+	player.is_swimming = true
+	# Unconditionally snap player to floating level upon starting swim state
+	var up_direction: Vector3 = player.up_direction.normalized()
+	var water_surface_along_up: float = get_water_surface_along_up()
+	if not is_nan(water_surface_along_up):
+		var shoulder_offset := 0.0
+		if player and player.collision_shape and player.collision_shape.shape:
+			var shape = player.collision_shape.shape
+			if shape is CapsuleShape3D:
+				shoulder_offset = (shape as CapsuleShape3D).height * WATER_SURFACE_SNAP_RATIO
+			elif shape is BoxShape3D:
+				shoulder_offset = (shape as BoxShape3D).size.y * WATER_SURFACE_SNAP_RATIO
+		var target_position_along_up := water_surface_along_up - shoulder_offset
+		var current_position_along_up := up_direction.dot(player.global_position)
+		player.global_position += up_direction * (target_position_along_up - current_position_along_up)
+
+
+## Stop "swimming".
+func stop() -> void:
+	# Disable _this_ state node
+	process_mode = Node.PROCESS_MODE_DISABLED
+	# Clear the player's state (if it is currently set to _this_ state)
+	if player.current_state == _this_state:
+		player.current_state = -1
+	# Flag the player as not "swimming"
+	player.is_swimming = false
+	player.is_sprinting = false
+
+
+func get_contextual_controls(input_type: int) -> Dictionary:
+	if not player or not player.controls: return {}
+
+	return {
+		player.controls.joypad_button_4_label: "Perspective",
+		player.controls.joypad_button_15_label: "Screenshot",
+		player.controls.joypad_button_6_label: "Pause Menu",
+
+		player.controls.joypad_button_3_label: "Climb Out",
+		player.controls.joypad_button_1_label: "Fast Swim",
+		player.controls.left_joystick_label: "Swim",
+		player.controls.right_joystick_label: "Camera",
+	}
+
+
+func get_water_surface_along_up() -> float:
+	if not player or not player.is_inside_tree():
 		return NAN
 
-	var tree := get_tree()
+	var tree := player.get_tree()
 	if not tree:
 		return NAN
 
@@ -154,7 +210,7 @@ func _get_water_surface_along_up(up_direction: Vector3) -> float:
 		if not box_shape:
 			continue
 
-		var up_in_local: Vector3 = collision_shape.global_basis.inverse() * up_direction
+		var up_in_local: Vector3 = collision_shape.global_basis.inverse() * player.up_direction
 		var half_size: Vector3 = box_shape.size * 0.5
 		var half_extent_along_up: float = abs(up_in_local.x) * half_size.x \
 			+ abs(up_in_local.y) * half_size.y \
@@ -162,7 +218,7 @@ func _get_water_surface_along_up(up_direction: Vector3) -> float:
 
 		var local_surface: Vector3 = up_in_local.normalized() * half_extent_along_up
 		var world_surface: Vector3 = collision_shape.to_global(local_surface)
-		var surface_along_up: float = up_direction.dot(world_surface)
+		var surface_along_up: float = player.up_direction.dot(world_surface)
 
 		if not has_surface or surface_along_up > highest_surface_along_up:
 			has_surface = true
@@ -173,69 +229,3 @@ func _get_water_surface_along_up(up_direction: Vector3) -> float:
 
 	return highest_surface_along_up
 
-
-## Start "swimming".
-func start() -> void:
-	# Do not start swimming if player is driving or in a vehicle
-	if player and (player.is_driving or player.is_driving_in != null or player.is_entering_vehicle or player.is_exiting_vehicle):
-		return
-
-	# Enable _this_ state node
-	process_mode = Node.PROCESS_MODE_INHERIT
-	
-	var up_direction: Vector3 = player.up_direction.normalized()
-	var water_surface_along_up: float = _get_water_surface_along_up(up_direction)
-	if not is_nan(water_surface_along_up):
-		var shoulder_offset := _get_player_shoulder_offset()
-		var target_position_along_up := water_surface_along_up - shoulder_offset
-		var current_position_along_up := up_direction.dot(player.global_position)
-		
-		# Unconditionally snap player to floating level upon starting swim state
-		player.global_position += up_direction * (target_position_along_up - current_position_along_up)
-			
-	# Set the player's new state
-	player.current_state = _this_state
-	# Flag the player as "swimming"
-	player.is_swimming = true
-	# Flag the player as not falling/jumping/flying
-	player.is_falling = false
-	player.is_jumping = false
-	player.is_flying = false
-
-
-## Stop "swimming".
-func stop() -> void:
-	# Disable _this_ state node
-	process_mode = Node.PROCESS_MODE_DISABLED
-	# Clear the player's state (if it is currently set to _this_ state)
-	if player.current_state == _this_state:
-		player.current_state = -1
-	# Flag the player as not "swimming"
-	player.is_swimming = false
-
-
-func get_contextual_controls(input_type: int) -> Dictionary:
-	if not player or not player.controls: return {}
-
-	if input_type == 0: # KEYBOARD_MOUSE
-		return {
-			player.controls.joypad_button_4_label: "Perspective",
-			player.controls.joypad_button_15_label: "Screenshot",
-			player.controls.joypad_button_6_label: "Pause Menu",
-
-			player.controls.joypad_button_3_label: "Climb Out",
-			player.controls.joypad_button_1_label: "Fast Swim",
-			player.controls.left_joystick_label: "Swim",
-			player.controls.right_joystick_label: "Camera",
-		}
-	else:
-		return {
-			player.controls.joypad_button_4_label: "Perspective",
-			player.controls.joypad_button_15_label: "Screenshot",
-			player.controls.joypad_button_6_label: "Pause Menu",
-
-			player.controls.joypad_button_3_label: "Climb Out",
-			player.controls.joypad_button_1_label: "Fast Swim",
-			player.controls.left_joystick_label: "Swim",
-			player.controls.right_joystick_label: "Camera",
-		}

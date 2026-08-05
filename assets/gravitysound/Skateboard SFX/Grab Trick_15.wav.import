@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://cdgx5ier3yoxm"
+path="res://.godot/imported/Grab Trick_15.wav-f178c7026172e49e70e9e432496e389d.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Skateboard SFX/Grab Trick_15.wav"
+dest_files=["res://.godot/imported/Grab Trick_15.wav-f178c7026172e49e70e9e432496e389d.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

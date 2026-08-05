@@ -15,14 +15,13 @@ var _this_state := NodeStateMachine.States.HANGING
 
 ## Called when there is an input event.
 func _input(event: InputEvent) -> void:
-	# Do nothing if not the authority
-	if not is_multiplayer_authority(): return
 
-	# Do nothing if the player is not set
-	if not player: return
+	# Do nothing if the player is not set or is paused/ragdolling
+	if not player or player.is_paused or player.is_ragdolling: return
 
 	var input_type = player.controls.current_input_type if player.controls else 0
 	var current_drop_action = keyboard_drop_action if input_type == 0 else pad_drop_action
+	var current_climb_up_action = keyboard_climb_up_action if input_type == 0 else pad_climb_up_action
 
 	# Drop / Let go
 	if event.is_action_pressed(current_drop_action):
@@ -30,11 +29,18 @@ func _input(event: InputEvent) -> void:
 		player.state_machine.travel(_this_state, NodeStateMachine.States.FALLING)
 		return
 
+	# Hanging, Climbing-On [Input]
+	if event.is_action_pressed(current_climb_up_action) and not event.is_echo():
+		if player.is_hanging_braced:
+			player.locomotion_state.travel("BracedHangClimbingOn")
+			player.is_climbing_on = true
+		elif player.is_hanging_free:
+			player.locomotion_state.travel("FreeHangingClimbingOn")
+			player.is_climbing_on = true
+
 
 ## Called every physics frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:
-	# Do nothing if not the authority
-	if not is_multiplayer_authority(): return
 
 	# Do nothing if the player is not set
 	if not player: return
@@ -71,16 +77,22 @@ func _physics_process(delta: float) -> void:
 			player.state_machine.travel(_this_state, NodeStateMachine.States.STANDING)
 			return
 
-	var input_type = player.controls.current_input_type if player.controls else 0
-	var current_climb_up_action = keyboard_climb_up_action if input_type == 0 else pad_climb_up_action
+	# Keep (rotate towards) facing the wall surface
+	if player.ledge_detection_horizontal and player.ledge_detection_horizontal.is_colliding():
+		var normal := player.ledge_detection_horizontal.get_collision_normal()
+		var wall_dir := -normal
+		wall_dir = wall_dir.slide(player.up_direction)
+		if wall_dir.length_squared() > 0.001:
+			wall_dir = wall_dir.normalized()
+			var q_from: Quaternion = player.orientation.basis.get_rotation_quaternion()
+			var q_to: Quaternion = Basis.looking_at(-wall_dir, player.up_direction).get_rotation_quaternion()
+			player.orientation.basis = Basis(q_from.slerp(q_to, delta * player.rotation_interpolate_speed))
 
-	# Hanging, Climbing-On [Input]
-	if Input.is_action_just_pressed(current_climb_up_action):
-		if player.is_hanging_braced:
-			player.locomotion_state.travel("BracedHangClimbingOn")
-		elif player.is_hanging_free:
-			player.locomotion_state.travel("FreeHangingClimbingOn")
-		player.is_climbing_on = true
+	if player.is_hanging_braced:
+		player.animation_tree.set(player.BRACED_HANG_LOCOMOTION_BLEND_POSITION_PATH, player.smoothed_motion.x)
+	elif player.is_hanging_free:
+		player.animation_tree.set(player.FREE_HANGING_LOCOMOTION_BLEND_POSITION_PATH, player.smoothed_motion.x)
+
 
 
 ## Start "hanging".
@@ -121,26 +133,14 @@ func stop() -> void:
 func get_contextual_controls(input_type: int) -> Dictionary:
 	if not player or not player.controls: return {}
 
-	if input_type == 0: # KEYBOARD_MOUSE
-		return {
-			player.controls.joypad_button_4_label: "Perspective",
-			player.controls.joypad_button_15_label: "Screenshot",
-			player.controls.joypad_button_6_label: "Pause Menu",
+	return {
+		player.controls.joypad_button_4_label: "Perspective",
+		player.controls.joypad_button_15_label: "Screenshot",
+		player.controls.joypad_button_6_label: "Pause Menu",
 
-			player.controls.joypad_button_3_label: "Climb Up",
-			player.controls.joypad_button_7_label: "Drop",
-			player.controls.left_joystick_label: "Shimmy",
-			player.controls.right_joystick_label: "Camera",
-		}
-	else:
-		return {
-			player.controls.joypad_button_4_label: "Perspective",
-			player.controls.joypad_button_15_label: "Screenshot",
-			player.controls.joypad_button_6_label: "Pause Menu",
-
-			player.controls.joypad_button_3_label: "Climb Up",
-			player.controls.joypad_button_7_label: "Drop",
-			player.controls.left_joystick_label: "Shimmy",
-			player.controls.right_joystick_label: "Camera",
-		}
+		player.controls.joypad_button_3_label: "Climb Up",
+		player.controls.joypad_button_7_label: "Drop",
+		player.controls.left_joystick_label: "Shimmy",
+		player.controls.right_joystick_label: "Camera",
+	}
 

@@ -60,6 +60,18 @@ class TestDebugKeybind:
 		assert_true(player_debug.visible, "Debug node should be visible after pressing F3.")
 
 
+## Tests related to Key I, J, K, L action bindings.
+class TestKeyIJKLActionBindings:
+	extends ControlsTestBase
+
+	func test_key_ijkl_actions_assigned():
+		var player = main_instance.get_node("Player") as Player
+		assert_eq(player.controls.key_i.action, "seeker")
+		assert_eq(player.controls.key_j.action, "last_weapon")
+		assert_eq(player.controls.key_k.action, "whistle")
+		assert_eq(player.controls.key_l.action, "next_weapon")
+
+
 ## Tests related to Flying controls and contextual UI labels.
 class TestFlyingControls:
 	extends ControlsTestBase
@@ -70,7 +82,7 @@ class TestFlyingControls:
 		player.state_machine.travel(NodeStateMachine.States.STANDING, NodeStateMachine.States.FLYING)
 
 		assert_eq(player.controls.joypad_button_3_label.text, "Fly Up")
-		assert_eq(player.controls.joypad_button_0_label.text, "Fly Down")
+		assert_eq(player.controls.joypad_button_7_label.text, "Fly Down")
 		assert_eq(player.controls.left_joystick_label.text, "Fly")
 
 	func test_flying_contextual_controls_controller():
@@ -79,7 +91,7 @@ class TestFlyingControls:
 		player.state_machine.travel(NodeStateMachine.States.STANDING, NodeStateMachine.States.FLYING)
 
 		assert_eq(player.controls.joypad_button_3_label.text, "Fly Up")
-		assert_eq(player.controls.joypad_axis_4_plus_label.text, "Fly Down")
+		assert_eq(player.controls.joypad_button_0_label.text, "Fly Down")
 		assert_eq(player.controls.left_joystick_label.text, "Fly")
 
 
@@ -92,7 +104,7 @@ class TestParaglidingControls:
 		player.controls.current_input_type = 0 # KEYBOARD_MOUSE
 		player.state_machine.travel(NodeStateMachine.States.STANDING, NodeStateMachine.States.PARAGLIDING)
 
-		assert_eq(player.controls.joypad_button_0_label.text, "Cancel")
+		assert_eq(player.controls.joypad_button_7_label.text, "Cancel")
 		assert_eq(player.controls.left_joystick_label.text, "Steer")
 
 	func test_paragliding_contextual_controls_controller():
@@ -100,7 +112,7 @@ class TestParaglidingControls:
 		player.controls.current_input_type = 1 # MICROSOFT controller
 		player.state_machine.travel(NodeStateMachine.States.STANDING, NodeStateMachine.States.PARAGLIDING)
 
-		assert_eq(player.controls.joypad_button_3_label.text, "Cancel")
+		assert_eq(player.controls.joypad_button_0_label.text, "Cancel")
 		assert_eq(player.controls.left_joystick_label.text, "Steer")
 
 

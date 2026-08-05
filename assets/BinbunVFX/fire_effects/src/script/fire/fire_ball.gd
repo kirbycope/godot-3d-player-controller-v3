@@ -1,1 +1,1 @@
-extends VFXController
+extends VFXFireController

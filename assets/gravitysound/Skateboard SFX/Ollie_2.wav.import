@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://b5imc70um1v8u"
+path="res://.godot/imported/Ollie_2.wav-d22d206d7ad27e54e9e4b158243de6b9.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Skateboard SFX/Ollie_2.wav"
+dest_files=["res://.godot/imported/Ollie_2.wav-d22d206d7ad27e54e9e4b158243de6b9.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

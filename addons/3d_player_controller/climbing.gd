@@ -17,14 +17,13 @@ var _this_state = NodeStateMachine.States.CLIMBING
 
 ## Called when there is an input event.
 func _input(event: InputEvent) -> void:
-	# Do nothing if not the authority
-	if not is_multiplayer_authority(): return
 
-	# Do nothing if the player is not set
-	if not player: return
+	# Do nothing if the player is not set or is paused/ragdolling
+	if not player or player.is_paused or player.is_ragdolling: return
 
 	var input_type = player.controls.current_input_type if player.controls else 0
 	var current_drop_action = keyboard_drop_action if input_type == 0 else pad_drop_action
+	var current_hop_action = keyboard_hop_action if input_type == 0 else pad_hop_action
 
 	# Drop / Let go
 	if event.is_action_pressed(current_drop_action):
@@ -32,11 +31,53 @@ func _input(event: InputEvent) -> void:
 		player.state_machine.travel(_this_state, NodeStateMachine.States.FALLING)
 		return
 
+	# Climbing, Hopping [Input]
+	if not player.is_on_floor() \
+	and event.is_action_pressed(current_hop_action) \
+	and not event.is_echo() \
+	and (player.locomotion_state.get_current_node() == "ClimbingLocomotion" or player.locomotion_state.get_current_node() == "BracedHangLocomotion"):
+		# Check: Left input past 0.1 deadzone, and |x| > |y| ensures horizontal input dominance (<45° angle to -X).
+		var hop_left = player.player_input.motion.x < -0.1 and abs(player.player_input.motion.x) > abs(player.player_input.motion.y)
+		# Check: Right input past 0.1 deadzone, and |x| > |y| ensures horizontal input dominance (<45° angle to +X).
+		var hop_right = player.player_input.motion.x > 0.1 and abs(player.player_input.motion.x) > abs(player.player_input.motion.y)
+		# Check: Up input past 0.1 deadzone, and |y| > |x| ensures vertical input dominance (<45° angle to +Y).
+		var hop_up = player.player_input.motion == Vector2.ZERO or (player.player_input.motion.y > 0.1 and abs(player.player_input.motion.y) > abs(player.player_input.motion.x))
+		# Determine which hop direction to take based on input
+		if hop_left:
+			player.locomotion_state.travel("BracedHangHopLeft")
+			player.is_hopping_from_climbing = player.is_climbing
+			player.is_climbing_hopping_left = true
+			player.is_climbing_hopping_right = false
+			player.is_climbing_hopping_up = false
+		elif hop_right:
+			player.locomotion_state.travel("BracedHangHopRight")
+			player.is_hopping_from_climbing = player.is_climbing
+			player.is_climbing_hopping_left = false
+			player.is_climbing_hopping_right = true
+			player.is_climbing_hopping_up = false
+		else:
+			# Check if the player can climb on to the ledge detection target
+			if player.is_hanging_braced and player.ledge_detection_vertical and player.ledge_detection_vertical.is_colliding():
+				player.climbing_on_target = player.ledge_detection_vertical.get_collision_point()
+				player.locomotion_state.travel("BracedHangClimbingOn")
+				player.is_climbing = false
+				player.is_climbing_on = true
+				player.is_hanging_braced = false
+				player.is_hanging_free = false
+				player.is_climbing_hopping_left = false
+				player.is_climbing_hopping_right = false
+				player.is_climbing_hopping_up = false
+			# If the ledge detection target is not valid, the player will hop up instead.
+			elif hop_up:
+				player.locomotion_state.travel("BracedHangHopUp")
+				player.is_hopping_from_climbing = player.is_climbing
+				player.is_climbing_hopping_left = false
+				player.is_climbing_hopping_right = false
+				player.is_climbing_hopping_up = true
+
 
 ## Called every physics frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:
-	# Do nothing if not the authority
-	if not is_multiplayer_authority(): return
 
 	# Do nothing if the player is not set
 	if not player: return
@@ -81,51 +122,8 @@ func _physics_process(delta: float) -> void:
 			player.is_climbing_on = false
 
 	var input_type = player.controls.current_input_type if player.controls else 0
-	var current_hop_action = keyboard_hop_action if input_type == 0 else pad_hop_action
 	var current_sprint_action = keyboard_sprint_action if input_type == 0 else pad_sprint_action
 
-	# Climbing, Hopping [Input]
-	if not player.is_on_floor() \
-	and Input.is_action_just_pressed(current_hop_action) \
-	and (player.locomotion_state.get_current_node() == "ClimbingLocomotion" or player.locomotion_state.get_current_node() == "BracedHangLocomotion"):
-		# Check: Left input past 0.1 deadzone, and |x| > |y| ensures horizontal input dominance (<45° angle to -X).
-		var hop_left = player.player_input.motion.x < -0.1 and abs(player.player_input.motion.x) > abs(player.player_input.motion.y)
-		# Check: Right input past 0.1 deadzone, and |x| > |y| ensures horizontal input dominance (<45° angle to +X).
-		var hop_right = player.player_input.motion.x > 0.1 and abs(player.player_input.motion.x) > abs(player.player_input.motion.y)
-		# Check: Up input past 0.1 deadzone, and |y| > |x| ensures vertical input dominance (<45° angle to +Y).
-		var hop_up = player.player_input.motion == Vector2.ZERO or (player.player_input.motion.y > 0.1 and abs(player.player_input.motion.y) > abs(player.player_input.motion.x))
-		# Determine which hop direction to take based on input
-		if hop_left:
-			player.locomotion_state.travel("BracedHangHopLeft")
-			player.is_hopping_from_climbing = player.is_climbing
-			player.is_climbing_hopping_left = true
-			player.is_climbing_hopping_right = false
-			player.is_climbing_hopping_up = false
-		elif hop_right:
-			player.locomotion_state.travel("BracedHangHopRight")
-			player.is_hopping_from_climbing = player.is_climbing
-			player.is_climbing_hopping_left = false
-			player.is_climbing_hopping_right = true
-			player.is_climbing_hopping_up = false
-		else:
-			# Check if the player can climb on to the ledge detection target
-			if player.is_hanging_braced and player.ledge_detection_vertical and player.ledge_detection_vertical.is_colliding():
-				player.climbing_on_target = player.ledge_detection_vertical.get_collision_point()
-				player.locomotion_state.travel("BracedHangClimbingOn")
-				player.is_climbing = false
-				player.is_climbing_on = true
-				player.is_hanging_braced = false
-				player.is_hanging_free = false
-				player.is_climbing_hopping_left = false
-				player.is_climbing_hopping_right = false
-				player.is_climbing_hopping_up = false
-			# If the ledge detection target is not valid, the player will hop up instead.
-			elif hop_up:
-				player.locomotion_state.travel("BracedHangHopUp")
-				player.is_hopping_from_climbing = player.is_climbing
-				player.is_climbing_hopping_left = false
-				player.is_climbing_hopping_right = false
-				player.is_climbing_hopping_up = true
 
 	# Climbing, Speed Up [Input]
 	if player.is_climbing \
@@ -135,6 +133,20 @@ func _physics_process(delta: float) -> void:
 	else:
 		player.animation_tree.set("parameters/LocomotionTimeScale/scale", 1.0)
 		player.is_sprinting = false
+
+	# Keep (rotate towards) facing the wall surface
+	if player.ledge_detection_horizontal and player.ledge_detection_horizontal.is_colliding():
+		var normal := player.ledge_detection_horizontal.get_collision_normal()
+		var wall_dir := -normal
+		wall_dir = wall_dir.slide(player.up_direction)
+		if wall_dir.length_squared() > 0.001:
+			wall_dir = wall_dir.normalized()
+			var q_from: Quaternion = player.orientation.basis.get_rotation_quaternion()
+			var q_to: Quaternion = Basis.looking_at(-wall_dir, player.up_direction).get_rotation_quaternion()
+			player.orientation.basis = Basis(q_from.slerp(q_to, delta * player.rotation_interpolate_speed))
+	
+	if player.is_climbing:
+		player.animation_tree.set(player.CLIMBING_LOCOMOTION_BLEND_POSITION_PATH, player.smoothed_motion)
 
 
 ## Start "climbing".
@@ -165,6 +177,7 @@ func stop() -> void:
 	player.is_climbing_on = false
 	# Reset timescale in case "sprint" action is still pressed
 	player.animation_tree.set("parameters/LocomotionTimeScale/scale", 1.0)
+	player.is_sprinting = false
 	player.is_hopping_from_climbing = false
 	# Clear ledge detection visuals
 	player.ledge_detection_vertical.position = Vector3(0, 0, -1) # Reset to default
@@ -175,27 +188,14 @@ func stop() -> void:
 func get_contextual_controls(input_type: int) -> Dictionary:
 	if not player or not player.controls: return {}
 
-	if input_type == 0: # KEYBOARD_MOUSE
-		return {
-			player.controls.joypad_button_4_label: "Perspective",
-			player.controls.joypad_button_15_label: "Screenshot",
-			player.controls.joypad_button_6_label: "Pause Menu",
+	return {
+		player.controls.joypad_button_4_label: "Perspective",
+		player.controls.joypad_button_15_label: "Screenshot",
+		player.controls.joypad_button_6_label: "Pause Menu",
 
-			player.controls.joypad_button_3_label: "Hop",
-			player.controls.joypad_button_1_label: "Fast Climb",
-			player.controls.joypad_button_7_label: "Drop",
-			player.controls.left_joystick_label: "Climb",
-			player.controls.right_joystick_label: "Camera",
-		}
-	else:
-		return {
-			player.controls.joypad_button_4_label: "Perspective",
-			player.controls.joypad_button_15_label: "Screenshot",
-			player.controls.joypad_button_6_label: "Pause Menu",
-
-			player.controls.joypad_button_3_label: "Hop",
-			player.controls.joypad_button_1_label: "Fast Climb",
-			player.controls.joypad_button_7_label: "Drop",
-			player.controls.left_joystick_label: "Climb",
-			player.controls.right_joystick_label: "Camera",
-		}
+		player.controls.joypad_button_3_label: "Hop",
+		player.controls.joypad_button_1_label: "Fast Climb",
+		player.controls.joypad_button_7_label: "Drop",
+		player.controls.left_joystick_label: "Climb",
+		player.controls.right_joystick_label: "Camera",
+	}

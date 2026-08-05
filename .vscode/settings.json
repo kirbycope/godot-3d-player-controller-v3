@@ -1,16 +1,23 @@
 {
-    "godotTools.editorPath.godot4": "c:\\Godot\\godot.exe",
-    "gut-extension.additionalOptions": "-d --headless",
-    "cSpell.words": [
-        "deadzone",
-        "elif",
-        "Joypad",
-        "lerp",
-        "mixamo",
-        "onready",
-        "orthonormalized",
-        "reparent",
-        "stylebox",
-        "styleboxes"
-    ]
+  "godotTools.editorPath.godot4": "c:\\Godot\\godot.exe",
+  "gut-extension.additionalOptions": "-d --headless",
+  "cSpell.words": [
+    "clampf",
+    "deadzone",
+    "elif",
+    "GREATSWORD",
+    "hitbox",
+    "Joypad",
+    "lerp",
+    "mixamo",
+    "onready",
+    "orthonormalized",
+    "ragdolling",
+    "reparent",
+    "rigidbody",
+    "stylebox",
+    "styleboxes",
+    "tscn",
+    "unequip"
+  ]
 }

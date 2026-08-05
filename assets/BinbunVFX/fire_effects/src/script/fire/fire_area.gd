@@ -1,5 +1,5 @@
 @tool
-extends VFXController
+extends VFXFireController
 class_name VFXAreaEffect
 
 ## Sets the resolution of the effect mesh. Lower values are better for performance

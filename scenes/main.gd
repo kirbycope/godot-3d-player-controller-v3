@@ -1,11 +1,22 @@
 extends Node3D
 
+@export var little_buddy_count: int = 64
+@export var spawn_frame_interval: int = 4
+
 @onready var player: Player = $Player
+@onready var first_buddy: Node3D = get_node_or_null("LittleBuddy") as Node3D
 @onready var project_rendering_method = ProjectSettings.get_setting("rendering/renderer/rendering_method")
+var buddy_list: Array[Node3D] = []
+var frame_counter: int = 0
 
 
 ## Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	if first_buddy:
+		if player:
+			first_buddy.set("player", player)
+		buddy_list.append(first_buddy)
+
 	# Get rendering settings from the project settings
 	if project_rendering_method in ["forward_plus", "mobile"]:
 		# Set the mouse mode to captured to hide the mouse cursor
@@ -16,6 +27,11 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("whistle"):
+		if player and (player.is_paused or (player.pause and player.pause.visible)):
+			return
+		player.state_machine.travel(player.current_state, NodeStateMachine.States.RAGDOLLING)
+
 	if $ClickToStart.visible:
 		if event is InputEventScreenTouch or event is InputEventMouseButton:
 			$ClickToStart.hide()
@@ -27,6 +43,17 @@ func _input(event: InputEvent) -> void:
 func _physics_process(_delta: float) -> void:
 	# Do nothing if not the authority
 	if not is_multiplayer_authority(): return
+
+	# Spawn LittleBuddy at the specified frame interval until reaching target count.
+	if first_buddy and buddy_list.size() < little_buddy_count:
+		frame_counter += 1
+		if frame_counter >= spawn_frame_interval:
+			frame_counter = 0
+			var duplicate_buddy = first_buddy.duplicate() as Node3D
+			if player:
+				duplicate_buddy.set("player", player)
+			add_child(duplicate_buddy)
+			buddy_list.append(duplicate_buddy)
 
 	# If we're below -40, respawn (teleport to the initial position).
 	if player and not player.is_driving and not player.is_flying:
@@ -60,23 +87,17 @@ func _physics_process(_delta: float) -> void:
 		player.camera.looking_at = null
 
 
-## Called when a body enters the "Pool"
 func _on_player_detection_body_entered(body: Node3D) -> void:
 	if body is Player:
-		var swimming_player: Player = body as Player
-		# Start swimming (if not already swimming and not in a car/vehicle)
-		if not swimming_player.is_swimming and not swimming_player.is_driving and swimming_player.is_driving_in == null and not swimming_player.is_entering_vehicle and not swimming_player.is_exiting_vehicle:
-			swimming_player.state_machine.travel(swimming_player.current_state, NodeStateMachine.States.SWIMMING)
-			return
+		var p: Player = body as Player
+		if p.state_machine and not p.is_driving and p.is_driving_in == null and not p.is_entering_vehicle and not p.is_exiting_vehicle:
+			p.state_machine.travel(p.current_state, NodeStateMachine.States.SWIMMING)
 
 
-## Called when a body exits the "Pool"
 func _on_player_detection_body_exited(body: Node3D) -> void:
 	if body is Player:
-		var swimming_player: Player = body as Player
-		# Stop swimming (if currently swimming)
-		if swimming_player.is_swimming:
-			swimming_player.is_swimming = false # This will trigger the `stop()` in `swimming.gd`
+		var p: Player = body as Player
+		p.is_swimming = false
 
 
 func _on_warp_zone_body_entered(body: Node3D) -> void:
