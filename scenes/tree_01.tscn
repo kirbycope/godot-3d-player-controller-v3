@@ -5,19 +5,63 @@
 [ext_resource type="PackedScene" uid="uid://bmcjd7cwj2fb1" path="res://assets/quaternius/logs/Tree_Log_1.gltf" id="2_4cdo8"]
 [ext_resource type="PackedScene" uid="uid://62kmykdwxwds" path="res://assets/quaternius/nature/CommonTree_1.gltf" id="3_1a2o8"]
 [ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://scenes/action_prompt.tscn" id="4_4cdo8"]
+[ext_resource type="PackedScene" uid="uid://dprg3ba60c1vw" path="res://scenes/progress_bar_3d.tscn" id="5_pb3d"]
 
-[node name="Tree01" type="Node3D" unique_id=38701300]
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_cth4h"]
+height = 2.15
+radius = 0.4
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_udj2q"]
+points = PackedVector3Array(1.1735238, -2.3327372, 1.5321662, 1.1488398, -0.41843903, 1.3880157, 0.7636832, -2.328026, 2.1374598, 1.1492847, -2.3290076, 0.8019269, 1.1301602, -0.4376763, 0.75703895, 0.1995132, -0.35130513, 2.120569, 0.7934817, -0.38546097, 1.908855, 0.0765388, -2.3162482, 2.3861947, -1.0982779, -2.2873924, 0.8762003, 0.70052826, -2.3180149, 0.22509338, 0.7445588, -0.43610597, 0.25702402, 0.13902676, -0.41392422, 0.079091795, -0.45471942, -0.37976837, 0.29103705, -0.79162025, -0.32735682, 1.4426217, -0.40579647, -0.3291235, 1.9426366, -0.6255048, -2.3021147, 2.1832733, -1.0742612, -2.291122, 1.6064397, -0.81029993, -0.3467903, 0.8118763, -0.6886598, -2.2921035, 0.2709069, -0.0015153885, -2.3038814, 0.022403376)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_cj257"]
+points = PackedVector3Array(0.19050527, -0.35128313, 2.1207623, -0.41494545, -0.3290794, 1.9427036, -0.80061585, -0.32746458, 1.4427003, 1.1398182, -0.4184998, 1.3879437, 0.7844491, -0.3853961, 1.9087305, 0.6764767, 1.6044602, 1.6994965, 0.18091619, 1.5539973, 1.8739581, -0.3207813, 1.4922305, 1.7224783, -0.63721895, 1.4427769, 1.3028113, -0.8192185, -0.34684238, 0.8118008, -0.46384946, -0.37994608, 0.29101396, 0.73554516, -0.43606094, 0.25704092, 1.1212155, -0.43767574, 0.75704426, 0.96644866, 1.606075, 0.73825914, 0.97661304, 1.6244435, 1.2656407, -0.6473833, 1.4246101, 0.77542967, -0.34724697, 1.4443917, 0.34157386, 0.14831352, 1.4948547, 0.16711226, 0.13009441, -0.41385722, 0.07918203, 0.65001106, 1.5566213, 0.31859207)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_yhurs"]
+points = PackedVector3Array(0.18100923, 1.5538889, 1.8739758, 0.65018725, 1.556662, 0.3186713, 0.67647374, 1.6043577, 1.6994097, 0.321607, 3.2664986, 1.4025598, -0.09793818, 3.1746197, 1.5511601, -0.32085395, 1.4923282, 1.7223928, -0.6373286, 1.4427837, 1.302908, -0.3473133, 1.4444475, 0.34165433, 0.14832413, 1.4949163, 0.16708831, -0.1145401, 3.121193, 0.081647456, 0.30829084, 3.2234244, 0.21358077, 0.9664891, 1.6062063, 0.7381561, 0.9766923, 1.6243234, 1.2657139, 0.5777267, 3.31327, 1.0300937, -0.52059615, 3.072573, 1.4190514, -0.78501683, 2.9991808, 1.056761, -0.647359, 1.4246668, 0.77535003, -0.790032, 2.9827275, 0.6027139, -0.5340853, 3.029314, 0.23024788, 0.57271147, 3.296632, 0.5758711)
+
+[node name="Tree01" type="StaticBody3D" unique_id=1863010419 node_paths=PackedStringArray("standing_node", "stump_node", "log_node", "log_body")]
 script = ExtResource("1_1a2o8")
+standing_node = NodePath("CommonTree_12")
+stump_node = NodePath("Tree_Bark_12")
+log_node = NodePath("RigidBody3D/Tree_Log_12")
+log_body = NodePath("RigidBody3D")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2026555875]
+transform = Transform3D(1, 0, 0, 0, 0.9848077, -0.17364818, 0, 0.17364818, 0.9848077, 0, 0.78905296, 0.07824225)
+shape = SubResource("CylinderShape3D_cth4h")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="." unique_id=2143376801]
+transform = Transform3D(-1, -1.5180811e-08, -8.609463e-08, -1.5180806e-08, 1, -4.4703484e-08, 8.609464e-08, -4.4703484e-08, -1, -2.2771227e-09, 2.9629135, 0.23917139)
+shape = SubResource("CylinderShape3D_cth4h")
 
 [node name="Tree_Bark_12" parent="." unique_id=2006155973 instance=ExtResource("1_je8fs")]
 visible = false
 
-[node name="Tree_Log_12" parent="." unique_id=138702607 instance=ExtResource("2_4cdo8")]
+[node name="RigidBody3D" type="RigidBody3D" parent="." unique_id=1681451210]
 transform = Transform3D(0.14011975, -0.9873595, 0.07407709, -0.08715574, -0.08682413, -0.9924039, 0.9862911, 0.13259913, -0.098219834, 0.35261536, 1.4396726, 0.0923965)
-visible = false
+freeze = true
+
+[node name="Tree_Log_12" parent="RigidBody3D" unique_id=138702607 instance=ExtResource("2_4cdo8")]
+transform = Transform3D(1, 1.4901161e-08, 0, 0, 1, 9.313226e-10, -7.450581e-09, -4.656613e-09, 1, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D" unique_id=1690518961]
+transform = Transform3D(0.35176885, 0, 0, 0, -0.0116847325, 0.35157478, 0, -0.35157478, -0.0116847325, 0, 0, 0)
+shape = SubResource("ConvexPolygonShape3D_udj2q")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="RigidBody3D" unique_id=205430853]
+transform = Transform3D(0.35176885, 0, 0, 0, -0.0116847325, 0.35157478, 0, -0.35157478, -0.0116847325, 0, 0, 0)
+shape = SubResource("ConvexPolygonShape3D_cj257")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="RigidBody3D" unique_id=1982975197]
+transform = Transform3D(0.35176885, 0, 0, 0, -0.0116847325, 0.35157478, 0, -0.35157478, -0.0116847325, 0, 0, 0)
+shape = SubResource("ConvexPolygonShape3D_yhurs")
 
 [node name="CommonTree_12" parent="." unique_id=390053289 instance=ExtResource("3_1a2o8")]
 
 [node name="ActionPrompt" parent="." unique_id=1664152999 instance=ExtResource("4_4cdo8")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 1.3000001, -0.19999999)
 message_end = "to cut tree"
+
+[node name="ProgressBar3D" parent="." unique_id=1111108943 instance=ExtResource("5_pb3d")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)

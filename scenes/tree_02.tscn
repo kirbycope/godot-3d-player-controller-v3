@@ -1,10 +1,17 @@
 [gd_scene format=3 uid="uid://vxy8af7vle0d"]
 
+[ext_resource type="Script" uid="uid://bm34tsmkx4rsr" path="res://scenes/choppable.gd" id="1_chop"]
 [ext_resource type="PackedScene" uid="uid://brc1errfocr3v" path="res://assets/quaternius/logs/Tree_Bark_2.gltf" id="1_oowod"]
 [ext_resource type="PackedScene" uid="uid://cr84aje5t8j5t" path="res://assets/quaternius/logs/Tree_Log_2.gltf" id="2_fidi7"]
 [ext_resource type="PackedScene" uid="uid://gwgy7yhx2f21" path="res://assets/quaternius/nature/CommonTree_5.gltf" id="3_f8uj6"]
+[ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://scenes/action_prompt.tscn" id="4_ap"]
+[ext_resource type="PackedScene" uid="uid://dprg3ba60c1vw" path="res://scenes/progress_bar_3d.tscn" id="5_pb3d"]
 
-[node name="Tree02" type="Node3D" unique_id=437624714]
+[node name="Tree02" type="Node3D" unique_id=437624714 node_paths=PackedStringArray("standing_node", "stump_node", "log_node")]
+script = ExtResource("1_chop")
+standing_node = NodePath("CommonTree_52")
+stump_node = NodePath("Tree_Bark_22")
+log_node = NodePath("Tree_Log_22")
 
 [node name="Tree_Bark_22" parent="." unique_id=765987448 instance=ExtResource("1_oowod")]
 visible = false
@@ -15,3 +22,10 @@ visible = false
 
 [node name="CommonTree_52" parent="." unique_id=517511115 instance=ExtResource("3_f8uj6")]
 transform = Transform3D(0.9980889, 0, 0.061794817, 0, 1, 0, -0.061794817, 0, 0.9980889, 0, 0, 0)
+
+[node name="ActionPrompt" parent="." instance=ExtResource("4_ap")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 1.3000001, -0.19999999)
+message_end = "to cut tree"
+
+[node name="ProgressBar3D" parent="." instance=ExtResource("5_pb3d")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)

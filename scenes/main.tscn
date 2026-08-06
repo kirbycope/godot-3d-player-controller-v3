@@ -404,6 +404,15 @@ height = 1.45
 [sub_resource type="BoxShape3D" id="BoxShape3D_cth4h"]
 size = Vector3(0.040100098, 0.14707032, 0.90000004)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_hbax1"]
+size = Vector3(0.25, 0.15, 0.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hbax2"]
+size = Vector3(0.35, 0.15, 0.8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hbsw2"]
+size = Vector3(0.06, 0.2, 1.3)
+
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_0y3lt"]
 radius = 0.2
 height = 2.1
@@ -695,6 +704,8 @@ transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1
 script = ExtResource("8_gqmmt")
 bone_attachment_bone_name = "RightHand"
 can_attack = true
+can_log = true
+can_mine = true
 icon = ExtResource("17_txyw0")
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(0, 90, 0)
@@ -713,11 +724,19 @@ shape = SubResource("BoxShape3D_fk680")
 transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0.099999905, 0, 0)
 visible = false
 
+[node name="Hitbox" type="Area3D" parent="N_Hance_Studio_1/SK_Axe_1H_Newbie_01"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Axe_1H_Newbie_01/Hitbox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.45)
+shape = SubResource("BoxShape3D_hbax1")
+
 [node name="SK_Axe_2HL_Newbie_01" parent="N_Hance_Studio_1" unique_id=1297848573 instance=ExtResource("10_2wyq8")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 2.5)
 script = ExtResource("8_gqmmt")
 bone_attachment_bone_name = "RightHand"
 can_attack = true
+can_log = true
+can_mine = true
 equipment_type = 1
 icon = ExtResource("19_vc5cj")
 is_exclusive = true
@@ -737,6 +756,12 @@ shape = SubResource("CylinderShape3D_senyo")
 [node name="ActionPrompt" parent="N_Hance_Studio_1/SK_Axe_2HL_Newbie_01" unique_id=843371138 instance=ExtResource("9_og1vs")]
 transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0.099999905, 0, 0)
 visible = false
+
+[node name="Hitbox" type="Area3D" parent="N_Hance_Studio_1/SK_Axe_2HL_Newbie_01"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Axe_2HL_Newbie_01/Hitbox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.75)
+shape = SubResource("BoxShape3D_hbax2")
 
 [node name="SK_Bow_Newbie_01" parent="N_Hance_Studio_1" unique_id=1222899704 instance=ExtResource("11_vxglm")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 1.5)
@@ -884,6 +909,7 @@ transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0
 script = ExtResource("8_gqmmt")
 bone_attachment_bone_name = "RightHand"
 can_attack = true
+can_log = true
 equipment_type = 8
 icon = ExtResource("35_bu4jf")
 position_offset = Vector3(0, 0.1, 0.025)
@@ -911,6 +937,7 @@ transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0
 script = ExtResource("8_gqmmt")
 bone_attachment_bone_name = "RightHand"
 can_attack = true
+can_log = true
 equipment_type = 9
 icon = ExtResource("37_o7ddy")
 is_exclusive = true
@@ -922,6 +949,12 @@ rotation_offset_degrees = Vector3(0, 90, 0)
 [node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Sword_2H_Newbie_01/Area3D" unique_id=2090209578]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0.65)
 shape = SubResource("CapsuleShape3D_0y3lt")
+
+[node name="Hitbox" type="Area3D" parent="N_Hance_Studio_1/SK_Sword_2H_Newbie_01"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Sword_2H_Newbie_01/Hitbox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.85)
+shape = SubResource("BoxShape3D_hbsw2")
 
 [node name="ActionPrompt" parent="N_Hance_Studio_1/SK_Sword_2H_Newbie_01" unique_id=1977469190 instance=ExtResource("9_og1vs")]
 transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0.099999905, 0, 0.99999994)
