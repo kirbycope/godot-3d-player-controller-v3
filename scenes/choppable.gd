@@ -78,11 +78,13 @@ func _fell() -> void:
 			child.disabled = true
 	if log_body:
 		log_body.show()
-		# The log spawns overlapping the stump; exceptions prevent a depenetration launch
+		# The log spawns overlapping the stump; temporary exceptions prevent a depenetration launch
 		log_body.add_collision_exception_with(self)
 		if stump_node:
 			for body in stump_node.find_children("*", "PhysicsBody3D", true, false):
 				log_body.add_collision_exception_with(body)
+		# Restores itself once the log tips clear of the stump
+		_restore_log_collisions()
 		# Only the body's own shapes; the model's imported static colliders stay disabled
 		for child in log_body.get_children():
 			if child is CollisionShape3D:
@@ -97,10 +99,48 @@ func _fell() -> void:
 		if away.length_squared() < 0.001:
 			away = -global_transform.basis.z
 		log_body.angular_velocity = up.cross(away.normalized()) * 2.0
+		# Action chops have no weapon knockback; nudge the log away from the player
+		if player:
+			var push: Vector3 = log_body.global_position - player.global_position
+			push = push - push.project(up)
+			if push.length_squared() > 0.001:
+				log_body.apply_central_impulse(push.normalized() * log_body.mass * 2.0)
 	elif log_node:
 		log_node.show()
 		_set_collision_shapes_disabled(log_node, false)
 	hide_menu()
+
+
+## Re-enables stump/log collision once the fallen log has tipped clear of the stump.
+func _restore_log_collisions() -> void:
+	if log_body == null or not is_instance_valid(log_body):
+		return
+	if _log_overlaps_stump():
+		# Still resting against the stump; retry so restoring doesn't shove the log out
+		get_tree().create_timer(0.5).timeout.connect(_restore_log_collisions)
+		return
+	log_body.remove_collision_exception_with(self)
+	if stump_node:
+		for body in stump_node.find_children("*", "PhysicsBody3D", true, false):
+			log_body.remove_collision_exception_with(body)
+
+
+func _log_overlaps_stump() -> bool:
+	var stump_bodies: Array = []
+	if stump_node:
+		stump_bodies = stump_node.find_children("*", "PhysicsBody3D", true, false)
+	var space_state: PhysicsDirectSpaceState3D = log_body.get_world_3d().direct_space_state
+	for child in log_body.get_children():
+		if child is CollisionShape3D and child.shape and not child.disabled:
+			var query := PhysicsShapeQueryParameters3D.new()
+			query.shape = child.shape
+			query.transform = child.global_transform
+			query.collision_mask = 0xFFFFFFFF
+			query.exclude = [log_body.get_rid()]
+			for result in space_state.intersect_shape(query):
+				if result.collider == self or result.collider in stump_bodies:
+					return true
+	return false
 
 
 func _set_collision_shapes_disabled(node: Node3D, disabled: bool) -> void:
