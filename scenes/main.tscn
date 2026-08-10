@@ -52,6 +52,7 @@
 [ext_resource type="PackedScene" uid="uid://c4b8e2a1h7qaq" path="res://scenes/beach_ball.tscn" id="51_beachball"]
 [ext_resource type="Texture2D" uid="uid://byprefppdk7bt" path="res://assets/sketchfab/bowling_pin/Dimensions-Sports-Bowling-Ten-Pin-Pin.svg" id="51_bu4jf"]
 [ext_resource type="PackedScene" uid="uid://clhihxvn4uh1b" path="res://scenes/bowling_pin.tscn" id="52_bwlpn"]
+[ext_resource type="Script" uid="uid://cw6owek74g7hc" path="res://scenes/push_buttton.gd" id="53_o7ddy"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -434,6 +435,57 @@ albedo_texture = ExtResource("51_bu4jf")
 [sub_resource type="PlaneMesh" id="PlaneMesh_5xw05"]
 material = SubResource("StandardMaterial3D_o7ddy")
 size = Vector2(20, 10)
+
+[sub_resource type="BoxMesh" id="BoxMesh_5xw05"]
+size = Vector3(0.2, 1.2, 0.2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rgtcv"]
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_cth4h"]
+material = SubResource("StandardMaterial3D_rgtcv")
+top_radius = 0.1
+bottom_radius = 0.1
+height = 0.1
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5xw05"]
+size = Vector3(0.2, 1.4, 0.2)
+
+[sub_resource type="Animation" id="Animation_bu4jf"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MeshInstance3D2:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0.85, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_o7ddy"]
+resource_name = "push"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MeshInstance3D2:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0.85, 0), Vector3(0, 0.8, 0), Vector3(0, 0.85, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_0loja"]
+_data = {
+&"RESET": SubResource("Animation_bu4jf"),
+&"push": SubResource("Animation_o7ddy")
+}
 
 [node name="World" type="Node3D" unique_id=336392758]
 script = ExtResource("1_h2yge")
@@ -1107,6 +1159,31 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.4250011, 0, -2.8000002)
 
 [node name="BowlingPin10" parent="BowlingAlley" unique_id=1034166867 instance=ExtResource("52_bwlpn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.05, 0, -2.8)
+
+[node name="PushButtton" type="StaticBody3D" parent="." unique_id=1589196424]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -2, 0.4, 2)
+script = ExtResource("53_o7ddy")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="PushButtton" unique_id=958608677]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.20000002, 0)
+mesh = SubResource("BoxMesh_5xw05")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="PushButtton" unique_id=44354960]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+mesh = SubResource("CylinderMesh_cth4h")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PushButtton" unique_id=1073553450]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.9802322e-08, 0.20000002, 0)
+shape = SubResource("BoxShape3D_5xw05")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="PushButtton" unique_id=652363871]
+libraries/ = SubResource("AnimationLibrary_0loja")
+
+[node name="ActionPrompt" parent="PushButtton" unique_id=2090560719 instance=ExtResource("9_og1vs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.1, 1.1, 0)
+
+[node name="IKTarget" type="Marker3D" parent="PushButtton" unique_id=1423986701]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92, 0)
 
 [connection signal="body_entered" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_entered"]
 [connection signal="body_exited" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_exited"]
