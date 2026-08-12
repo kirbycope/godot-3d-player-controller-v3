@@ -37,11 +37,7 @@ node_connections = [&"output", 0, &"Locomotion"]
 radius = 0.1
 height = 0.6
 
-[node name="LittleBuddy" type="RigidBody3D" unique_id=1463126112]
-axis_lock_angular_x = true
-axis_lock_angular_z = true
-contact_monitor = true
-max_contacts_reported = 1
+[node name="LittleBuddy" type="CharacterBody3D" unique_id=1463126112]
 script = ExtResource("1_llqmq")
 throw_force_horizontal = 8.0
 throw_force_vertical = 2.0

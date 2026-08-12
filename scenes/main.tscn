@@ -52,6 +52,8 @@
 [ext_resource type="PackedScene" uid="uid://c4b8e2a1h7qaq" path="res://scenes/beach_ball.tscn" id="51_beachball"]
 [ext_resource type="Texture2D" uid="uid://byprefppdk7bt" path="res://assets/sketchfab/bowling_pin/Dimensions-Sports-Bowling-Ten-Pin-Pin.svg" id="51_bu4jf"]
 [ext_resource type="PackedScene" uid="uid://clhihxvn4uh1b" path="res://scenes/bowling_pin.tscn" id="52_bwlpn"]
+[ext_resource type="Script" uid="uid://cw6owek74g7hc" path="res://scenes/push_buttton.gd" id="53_o7ddy"]
+[ext_resource type="PackedScene" path="res://scenes/duck.tscn" id="54_0loja"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -138,6 +140,9 @@ height = 1.125
 [sub_resource type="BoxShape3D" id="BoxShape3D_fk680"]
 size = Vector3(0.2, 1, 0.4)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_hbax1"]
+size = Vector3(0.25, 0.15, 0.6)
+
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_senyo"]
 radius = 0.1
 height = 1.825
@@ -145,6 +150,9 @@ height = 1.825
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_senyo"]
 height = 0.19999999
 radius = 0.4
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hbax2"]
+size = Vector3(0.35, 0.15, 0.8)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_5pyta"]
 size = Vector3(0.2, 0.5, 1.4)
@@ -408,6 +416,9 @@ size = Vector3(0.040100098, 0.14707032, 0.90000004)
 radius = 0.2
 height = 2.1
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_hbsw2"]
+size = Vector3(0.06, 0.2, 1.3)
+
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_hxkk4"]
 height = 1.8
 
@@ -425,6 +436,57 @@ albedo_texture = ExtResource("51_bu4jf")
 [sub_resource type="PlaneMesh" id="PlaneMesh_5xw05"]
 material = SubResource("StandardMaterial3D_o7ddy")
 size = Vector2(20, 10)
+
+[sub_resource type="BoxMesh" id="BoxMesh_5xw05"]
+size = Vector3(0.2, 1.2, 0.2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rgtcv"]
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_cth4h"]
+material = SubResource("StandardMaterial3D_rgtcv")
+top_radius = 0.1
+bottom_radius = 0.1
+height = 0.1
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5xw05"]
+size = Vector3(0.2, 1.4, 0.2)
+
+[sub_resource type="Animation" id="Animation_bu4jf"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MeshInstance3D2:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0.85, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_o7ddy"]
+resource_name = "push"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MeshInstance3D2:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0.85, 0), Vector3(0, 0.8, 0), Vector3(0, 0.85, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_0loja"]
+_data = {
+&"RESET": SubResource("Animation_bu4jf"),
+&"push": SubResource("Animation_o7ddy")
+}
 
 [node name="World" type="Node3D" unique_id=336392758]
 script = ExtResource("1_h2yge")
@@ -695,6 +757,8 @@ transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1
 script = ExtResource("8_gqmmt")
 bone_attachment_bone_name = "RightHand"
 can_attack = true
+can_log = true
+can_mine = true
 icon = ExtResource("17_txyw0")
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(0, 90, 0)
@@ -713,11 +777,19 @@ shape = SubResource("BoxShape3D_fk680")
 transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0.099999905, 0, 0)
 visible = false
 
+[node name="Hitbox" type="Area3D" parent="N_Hance_Studio_1/SK_Axe_1H_Newbie_01" unique_id=192042514]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Axe_1H_Newbie_01/Hitbox" unique_id=545755441]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.45)
+shape = SubResource("BoxShape3D_hbax1")
+
 [node name="SK_Axe_2HL_Newbie_01" parent="N_Hance_Studio_1" unique_id=1297848573 instance=ExtResource("10_2wyq8")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 2.5)
 script = ExtResource("8_gqmmt")
 bone_attachment_bone_name = "RightHand"
 can_attack = true
+can_log = true
+can_mine = true
 equipment_type = 1
 icon = ExtResource("19_vc5cj")
 is_exclusive = true
@@ -737,6 +809,12 @@ shape = SubResource("CylinderShape3D_senyo")
 [node name="ActionPrompt" parent="N_Hance_Studio_1/SK_Axe_2HL_Newbie_01" unique_id=843371138 instance=ExtResource("9_og1vs")]
 transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0.099999905, 0, 0)
 visible = false
+
+[node name="Hitbox" type="Area3D" parent="N_Hance_Studio_1/SK_Axe_2HL_Newbie_01" unique_id=94929940]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Axe_2HL_Newbie_01/Hitbox" unique_id=712214968]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.75)
+shape = SubResource("BoxShape3D_hbax2")
 
 [node name="SK_Bow_Newbie_01" parent="N_Hance_Studio_1" unique_id=1222899704 instance=ExtResource("11_vxglm")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 1.5)
@@ -884,6 +962,7 @@ transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0
 script = ExtResource("8_gqmmt")
 bone_attachment_bone_name = "RightHand"
 can_attack = true
+can_log = true
 equipment_type = 8
 icon = ExtResource("35_bu4jf")
 position_offset = Vector3(0, 0.1, 0.025)
@@ -911,6 +990,7 @@ transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0
 script = ExtResource("8_gqmmt")
 bone_attachment_bone_name = "RightHand"
 can_attack = true
+can_log = true
 equipment_type = 9
 icon = ExtResource("37_o7ddy")
 is_exclusive = true
@@ -922,6 +1002,12 @@ rotation_offset_degrees = Vector3(0, 90, 0)
 [node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Sword_2H_Newbie_01/Area3D" unique_id=2090209578]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0.65)
 shape = SubResource("CapsuleShape3D_0y3lt")
+
+[node name="Hitbox" type="Area3D" parent="N_Hance_Studio_1/SK_Sword_2H_Newbie_01" unique_id=1218326031]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Sword_2H_Newbie_01/Hitbox" unique_id=561940658]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.85)
+shape = SubResource("BoxShape3D_hbsw2")
 
 [node name="ActionPrompt" parent="N_Hance_Studio_1/SK_Sword_2H_Newbie_01" unique_id=1977469190 instance=ExtResource("9_og1vs")]
 transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0.099999905, 0, 0.99999994)
@@ -1074,6 +1160,34 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.4250011, 0, -2.8000002)
 
 [node name="BowlingPin10" parent="BowlingAlley" unique_id=1034166867 instance=ExtResource("52_bwlpn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.05, 0, -2.8)
+
+[node name="PushButtton" type="StaticBody3D" parent="." unique_id=1589196424]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -2, 0.4, 2)
+script = ExtResource("53_o7ddy")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="PushButtton" unique_id=958608677]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.20000002, 0)
+mesh = SubResource("BoxMesh_5xw05")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="PushButtton" unique_id=44354960]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+mesh = SubResource("CylinderMesh_cth4h")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PushButtton" unique_id=1073553450]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.9802322e-08, 0.20000002, 0)
+shape = SubResource("BoxShape3D_5xw05")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="PushButtton" unique_id=652363871]
+libraries/ = SubResource("AnimationLibrary_0loja")
+
+[node name="ActionPrompt" parent="PushButtton" unique_id=2090560719 instance=ExtResource("9_og1vs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.1, 1.1, 0)
+
+[node name="IKTarget" type="Marker3D" parent="PushButtton" unique_id=1423986701]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92, 0)
+
+[node name="Duck" parent="." unique_id=875613134 instance=ExtResource("54_0loja")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -10, 0, -11)
 
 [connection signal="body_entered" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_entered"]
 [connection signal="body_exited" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_exited"]

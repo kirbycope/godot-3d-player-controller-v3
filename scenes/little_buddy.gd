@@ -1,30 +1,29 @@
-extends RigidBody3D
+extends CharacterBody3D
 
 @export var move_speed: float = 3.0
-var up_direction := Vector3.UP
 @export var turn_speed: float = 10.0
 @export var stopping_distance: float = 2.0
 @export var throw_force_horizontal: float = 16.0
 @export var throw_force_vertical: float = 3.5
 @export var apply_gravity: bool = true
-
-@onready var animation_tree: AnimationTree = $y_bot_root/AnimationTree
-@onready var navigation_agent_3d: NavigationAgent3D = $NavigationAgent3D
-
-var player: Player
-var nav_ready := false
-var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
+@export var min_impact_speed: float = 2.0 ## Minimum collider speed that counts as an impact
+@export var impact_upward_boost: float = 2.0 ## Extra upward speed added on impact
+@export var knockback_damping: float = 6.0 ## How quickly knockback velocity decays
 
 var is_held: bool = false
 var is_thrown: bool = false
+var knockback_velocity: Vector3 = Vector3.ZERO
 var menu_displayed: bool = false
+var nav_ready: bool = false
+var player: Player
 var _collision_exception_added: bool = false
+
 @onready var action_prompt: Node3D = $ActionPrompt
+@onready var animation_tree: AnimationTree = $y_bot_root/AnimationTree
 @onready var collision_shape: CollisionShape3D = $CollisionShape3D
+@onready var navigation_agent_3d: NavigationAgent3D = $NavigationAgent3D
 
 func _ready() -> void:
-	axis_lock_angular_y = true # Prevent physics engine from spinning the NPC
-	
 	if animation_tree:
 		animation_tree.active = true
 		
@@ -43,31 +42,36 @@ func _physics_process(delta: float) -> void:
 	if is_held:
 		return
 		
-	if not apply_gravity:
-		gravity_scale = 0.0
-	else:
-		gravity_scale = 1.0
+	if apply_gravity and not is_on_floor():
+		velocity += get_gravity() * delta
+	knockback_velocity = knockback_velocity.move_toward(Vector3.ZERO, knockback_damping * delta)
 		
 	if is_thrown:
-		# Check if we hit the floor to stop being "thrown" (RigidBody handles movement naturally)
-		var bodies = get_colliding_bodies()
-		if bodies.size() > 0:
+		# Let the throw velocity and gravity carry the NPC until it lands
+		move_and_slide()
+		if is_on_floor():
 			is_thrown = false
 		return
 		
 	if not nav_ready:
+		_move_with_control(Vector3.ZERO)
 		return
 		
 	if not player:
-		var current_scene = get_tree().current_scene
+		var current_scene: Node = get_tree().current_scene
 		if current_scene:
 			player = current_scene.find_child("Player", true, false) as Player
 		if not player:
+			_move_with_control(Vector3.ZERO)
 			return
 			
 	if player and not _collision_exception_added:
 		add_collision_exception_with(player)
 		_collision_exception_added = true
+	if player.is_driving:
+		_stop_moving()
+		return
+	up_direction = player.up_direction
 		
 	# Update the target position (staggered to avoid massive CPU spikes with many agents)
 	if navigation_agent_3d:
@@ -76,15 +80,13 @@ func _physics_process(delta: float) -> void:
 				navigation_agent_3d.target_position = player.global_position
 	
 	# Explicit distance check (prevents getting stuck spinning near target)
-	var dist_sq_to_player = global_position.distance_squared_to(player.global_position)
+	var dist_sq_to_player: float = global_position.distance_squared_to(player.global_position)
 	if dist_sq_to_player <= stopping_distance * stopping_distance:
-		animation_tree.set("parameters/Locomotion/blend_position", 0.0)
 		_stop_moving()
 		return
 
 	# Stop if nav agent is perfectly finished
 	if navigation_agent_3d and navigation_agent_3d.is_navigation_finished():
-		animation_tree.set("parameters/Locomotion/blend_position", 0.0)
 		_stop_moving()
 		return
 
@@ -96,8 +98,8 @@ func _physics_process(delta: float) -> void:
 	if navigation_agent_3d and navigation_agent_3d.is_target_reachable():
 		target_pos = navigation_agent_3d.get_next_path_position()
 		# If the next path position is exactly above/below us (like stuck snapping), fallback
-		var horizontal_dist = Vector2(current_agent_position.x - target_pos.x, current_agent_position.z - target_pos.z).length()
-		if horizontal_dist < 0.1:
+		var horizontal_offset: Vector3 = (target_pos - current_agent_position).slide(up_direction)
+		if horizontal_offset.length() < 0.1:
 			target_pos = player.global_position
 	else:
 		target_pos = player.global_position
@@ -109,37 +111,54 @@ func _physics_process(delta: float) -> void:
 		direction = direction.normalized()
 		
 		# Look at the next path position
-		var look_target = global_position + direction
-		var current_transform = global_transform
-		var target_transform = current_transform.looking_at(look_target, up_direction)
+		var look_target: Vector3 = global_position + direction
+		var current_transform: Transform3D = global_transform
+		var target_transform: Transform3D = current_transform.looking_at(look_target, up_direction)
 		global_transform = current_transform.interpolate_with(target_transform, turn_speed * delta)
 		
-		# Compute horizontal velocity
-		var target_velocity = direction * move_speed
+		var target_velocity: Vector3 = direction * move_speed
+		animation_tree.set("parameters/Locomotion/blend_position", 1.0)
 		
 		if navigation_agent_3d and navigation_agent_3d.avoidance_enabled:
-			# If using avoidance, pass it to the agent so it can compute safe_velocity
+			# With avoidance, movement happens in _on_velocity_computed
 			navigation_agent_3d.set_velocity(target_velocity)
 		else:
-			# Otherwise apply forces to reach the target velocity
-			var current_h_vel = linear_velocity
-			current_h_vel.y = 0
-			var velocity_diff = target_velocity - current_h_vel
-			apply_central_force(velocity_diff * mass * 10.0)
-		
-		animation_tree.set("parameters/Locomotion/blend_position", 1.0)
+			_move_with_control(target_velocity)
 	else:
-		animation_tree.set("parameters/Locomotion/blend_position", 0.0)
 		_stop_moving()
 
 
+## Adds an instantaneous velocity change, e.g. when hit by a vehicle.
+func apply_impulse(impulse: Vector3, _position: Vector3 = Vector3.ZERO) -> void:
+	knockback_velocity += impulse.slide(up_direction)
+	velocity += impulse.project(up_direction)
+
+
+func _move_with_control(control_velocity: Vector3) -> void:
+	var vertical_velocity: Vector3 = velocity.project(up_direction)
+	velocity = control_velocity.slide(up_direction) + knockback_velocity + vertical_velocity
+	move_and_slide()
+	_check_impacts()
+
+
+func _check_impacts() -> void:
+	for i in range(get_slide_collision_count()):
+		var collision: KinematicCollision3D = get_slide_collision(i)
+		var collider: Object = collision.get_collider()
+		if collider is RigidBody3D:
+			var body: RigidBody3D = collider
+			var impact_velocity: Vector3 = body.linear_velocity
+			if impact_velocity.length() >= min_impact_speed \
+					and knockback_velocity.length() < min_impact_speed:
+				apply_impulse(impact_velocity + up_direction * impact_upward_boost)
+
+
 func _stop_moving() -> void:
+	animation_tree.set("parameters/Locomotion/blend_position", 0.0)
 	if navigation_agent_3d and navigation_agent_3d.avoidance_enabled:
 		navigation_agent_3d.set_velocity(Vector3.ZERO)
 	else:
-		var current_h_vel = linear_velocity
-		current_h_vel.y = 0
-		apply_central_force(-current_h_vel * mass * 10.0)
+		_move_with_control(Vector3.ZERO)
 
 func _on_velocity_computed(safe_velocity: Vector3) -> void:
 	# This signal is triggered by set_velocity() in _physics_process
@@ -147,11 +166,7 @@ func _on_velocity_computed(safe_velocity: Vector3) -> void:
 	if is_thrown or is_held:
 		return
 		
-	var target_h_vel = safe_velocity.slide(up_direction)
-	var current_h_vel = linear_velocity
-	current_h_vel.y = 0
-	var velocity_diff = target_h_vel - current_h_vel
-	apply_central_force(velocity_diff * mass * 10.0)
+	_move_with_control(safe_velocity)
 
 
 func sfx_footsteps_play() -> void:
@@ -217,7 +232,8 @@ func pick_up() -> void:
 	is_held = true
 	hide_menu()
 	
-	freeze = true
+	velocity = Vector3.ZERO
+	knockback_velocity = Vector3.ZERO
 	if collision_shape:
 		collision_shape.disabled = true
 	if animation_tree:
@@ -233,7 +249,6 @@ func pick_up() -> void:
 func drop() -> void:
 	is_held = false
 	is_thrown = false
-	freeze = false
 	
 	if collision_shape:
 		collision_shape.disabled = false
@@ -245,7 +260,7 @@ func drop() -> void:
 	current_scene.add_child(self)
 	global_position = drop_pos
 	_collision_exception_added = false
-	linear_velocity = Vector3.ZERO
+	velocity = Vector3.ZERO
 
 func throw(throw_dir: Vector3 = Vector3.ZERO, throw_power: float = 1.0) -> void:
 	throw_with_direction(throw_dir, throw_power)
@@ -253,7 +268,6 @@ func throw(throw_dir: Vector3 = Vector3.ZERO, throw_power: float = 1.0) -> void:
 func throw_with_direction(throw_dir: Vector3 = Vector3.ZERO, throw_power: float = 1.0) -> void:
 	is_held = false
 	is_thrown = true
-	freeze = false
 	
 	if collision_shape:
 		collision_shape.disabled = false
@@ -274,5 +288,7 @@ func throw_with_direction(throw_dir: Vector3 = Vector3.ZERO, throw_power: float 
 		if throw_dir.length_squared() < 0.001:
 			throw_dir = Vector3.FORWARD
 			
-	var impulse = (throw_dir * throw_force_horizontal + Vector3(0, throw_force_vertical, 0)) * throw_power
-	apply_central_impulse(impulse * mass)
+	var throw_up: Vector3 = player.up_direction if player else up_direction
+	var impulse: Vector3 = (throw_dir * throw_force_horizontal + throw_up * throw_force_vertical) * throw_power
+	velocity = impulse
+	knockback_velocity = Vector3.ZERO
