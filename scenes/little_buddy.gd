@@ -129,7 +129,7 @@ func _physics_process(delta: float) -> void:
 
 
 ## Adds an instantaneous velocity change, e.g. when hit by a vehicle.
-func apply_impulse(impulse: Vector3) -> void:
+func apply_impulse(impulse: Vector3, _position: Vector3 = Vector3.ZERO) -> void:
 	knockback_velocity += impulse.slide(up_direction)
 	velocity += impulse.project(up_direction)
 

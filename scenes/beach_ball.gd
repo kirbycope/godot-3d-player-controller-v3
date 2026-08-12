@@ -7,16 +7,31 @@ extends RigidBody3D
 @onready var collision_shape: CollisionShape3D = $CollisionShape3D
 @onready var audio_player: AudioStreamPlayer3D = $SFX_Impact
 
+var _last_velocity: Vector3 = Vector3.ZERO
+
 func _ready() -> void:
 	contact_monitor = true
 	max_contacts_reported = 4
 	body_entered.connect(_on_body_entered)
 
-func _on_body_entered(_body: Node) -> void:
-	if linear_velocity.length_squared() > 0.2:
+func _on_body_entered(body: Node) -> void:
+	var speed_sq := maxf(linear_velocity.length_squared(), _last_velocity.length_squared())
+	if speed_sq > 0.2:
 		audio_player.play()
+		
+	if speed_sq > 1.0:
+		var node: Node = body
+		while node:
+			if node.has_method("register_weapon_hit"):
+				node.call("register_weapon_hit", self, body)
+				break
+			elif node.has_method("register_hit"):
+				node.call("register_hit", body)
+				break
+			node = node.get_parent()
 
 func _physics_process(delta: float) -> void:
+	_last_velocity = linear_velocity
 	var water_surface_y := _get_water_surface_y()
 	if is_nan(water_surface_y):
 		return

@@ -50,8 +50,8 @@ func _input(event: InputEvent) -> void:
 
 
 ## Called by [HitDetection] when a melee weapon connects with this object.
-func register_weapon_hit(equipment: Equipment) -> void:
-	if equipment.can_log:
+func register_weapon_hit(equipment: Node = null, hit_node: Node = null) -> void:
+	if equipment and "can_log" in equipment and equipment.can_log:
 		register_chop()
 
 
