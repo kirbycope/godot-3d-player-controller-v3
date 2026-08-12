@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cidqwxk42n0xr"
-path="res://.godot/imported/needle.svg-98e1d8088a329e4cf930b07704aa47ea.ctex"
+path="res://.godot/imported/needle.svg-7868b40720def125411341177502b1a3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/godotshaders/needle.svg"
-dest_files=["res://.godot/imported/needle.svg-98e1d8088a329e4cf930b07704aa47ea.ctex"]
+source_file="res://addons/3d_player_controller/assets/needle.svg"
+dest_files=["res://.godot/imported/needle.svg-7868b40720def125411341177502b1a3.ctex"]
 
 [params]
 
