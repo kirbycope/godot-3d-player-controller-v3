@@ -5,6 +5,8 @@ const MAX_LOOK_YAW: float = 1.0472 # 60 degrees in radians
 const MAX_LOOK_PITCH: float = 1.0472 # 60 degrees in radians
 const FLIPPED_DOT_THRESHOLD: float = 0.5 # dot product <= 0.5 means tilted >= 60 degrees
 const FLIPPED_VELOCITY_THRESHOLD: float = 2.0 # max linear/angular velocity to be considered settled
+const DOOR_OPEN_TIME: float = 1.1333 # seconds into the "Entering Car" animation when the door opens
+const DOOR_CLOSE_TIME: float = 3.7333 # seconds into the "Entering Car" animation when the door closes
 
 @export var max_acceleration_force: float = 4500.0
 @export var max_brake_force: float = 225.0
@@ -36,6 +38,7 @@ var was_driving: bool = false
 var _revved_current_accel: bool = false
 
 @onready var action_prompt: Node3D = $ActionPrompt
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var fire: Node3D = $Fire_05
 @onready var fire_sfx: AudioStreamPlayer3D = $Fire_05/FireSFX
 @onready var explosion: Node3D = $VFXGroundExplosion_01
@@ -96,6 +99,8 @@ func _process(delta: float) -> void:
 	var is_entering: bool = player.is_entering_vehicle if is_in_car else false
 	
 	if is_in_car:
+		if is_entering and not was_entering_vehicle:
+			_play_door_sequence()
 		if was_entering_vehicle and not is_entering:
 			if not is_engine_started:
 				if sfx_car_start:
@@ -142,6 +147,20 @@ func _process(delta: float) -> void:
 			
 	was_driving = is_driving_this_car
 	_update_engine_sfx()
+
+
+## Opens then closes the driver door in sync with the player's "Entering Car" animation.
+func _play_door_sequence() -> void:
+	if animation_player == null:
+		return
+	await get_tree().create_timer(DOOR_OPEN_TIME).timeout
+	if not is_instance_valid(animation_player):
+		return
+	animation_player.play("open")
+	await get_tree().create_timer(DOOR_CLOSE_TIME - DOOR_OPEN_TIME).timeout
+	if not is_instance_valid(animation_player):
+		return
+	animation_player.play("close")
 
 
 func _ready() -> void:

@@ -6,8 +6,8 @@ extends Node3D
 @onready var cloth_ruffling: AudioStreamPlayer3D = $ClothRuffling
 
 
-## Called every physics frame. 'delta' is the elapsed time since the previous frame.
-func _physics_process(delta: float) -> void:
+## Called every physics frame. '_delta' is the elapsed time since the previous frame.
+func _physics_process(_delta: float) -> void:
 	# Do nothing if not the authority
 	if not is_multiplayer_authority(): return
 
