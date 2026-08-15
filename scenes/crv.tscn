@@ -34,27 +34,6 @@
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_0hic1"]
 points = PackedVector3Array(1.5927143, 0.6675866, 3.1609297, 1.4754472, 1.2534525, 1.4047761, -1.5682383, 0.7848079, 3.1609297, -0.7065927, -1.026907, 2.8761892, 1.0073068, -1.0883262, -0.3499103, 1.5927143, 1.0190098, -3.044293, -1.4724079, 0.9586757, -2.9692702, -0.9828308, -1.0883262, -0.3499103, 1.0764372, -0.48028046, 3.3612459, -1.4509711, 1.2534525, -1.4047761, 1.4754472, 0.08220209, -3.1609297, -1.4509711, -0.15151845, 3.5123072, -1.3340135, -0.15151845, -3.1609297, 1.5927143, -0.15151845, 2.1067975, 1.2412224, 0.6675866, 3.7470477, -0.8655637, 0.9017886, -3.7470477, -1.4509711, 1.2534525, 1.4047761, 0.53885716, -0.15151845, -3.3956704, 0.91862005, -0.989193, 2.6660569, -1.5682383, -0.15151845, 2.1067975, 1.1242646, 1.0190098, -3.6296773, 1.4754472, 1.2534525, -1.4047761, -1.4509711, 0.7848079, 3.5123072, -1.0997885, 1.0190098, -3.6296773, 1.0073068, 0.19918272, -3.6296773, -0.9828308, 0.19918272, -3.6296773, -0.88325304, -1.08251, 1.686038, 1.3584895, -0.2687398, -2.6929154, -1.2167463, 0.6675866, 3.7470477, 0.7966987, -1.0748086, 1.8827711, -1.4508018, 0.18616232, -2.8180883, -0.63164824, -0.15151845, -3.3956704)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m20il"]
-resource_name = "black paint"
-vertex_color_use_as_albedo = true
-albedo_color = Color(0.0498401, 0.0498401, 0.0498401, 0.003921569)
-roughness = 0.0
-emission_enabled = true
-emission = Color(0, 0, 0, 0)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0hic1"]
-transparency = 4
-cull_mode = 2
-depth_draw_mode = 1
-albedo_color = Color(0.23137255, 0.23137255, 0.23137255, 0.7294118)
-roughness = 0.0
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ndq4s"]
-albedo_color = Color(0.66656893, 0.66656864, 0.6665687, 1)
-metallic = 1.0
-roughness = 0.33
-clearcoat_enabled = true
-
 [sub_resource type="Animation" id="Animation_m20il"]
 length = 0.001
 tracks/0/type = "value"
@@ -575,20 +554,41 @@ _data = {
 &"open": SubResource("Animation_ndq4s")
 }
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m20il"]
+resource_name = "black paint"
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.0498401, 0.0498401, 0.0498401, 0.003921569)
+roughness = 0.0
+emission_enabled = true
+emission = Color(0, 0, 0, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0hic1"]
+transparency = 4
+cull_mode = 2
+depth_draw_mode = 1
+albedo_color = Color(0.23137255, 0.23137255, 0.23137255, 0.7294118)
+roughness = 0.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ndq4s"]
+albedo_color = Color(0.66656893, 0.66656864, 0.6665687, 1)
+metallic = 1.0
+roughness = 0.33
+clearcoat_enabled = true
+
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_kxxiu"]
 streams_count = 2
 stream_0/stream = ExtResource("9_wcpr6")
 stream_1/stream = ExtResource("10_mlpxp")
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_rsj67"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_lsn0k"]
 noise_type = 2
 fractal_octaves = 1
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ipdoc"]
-noise = SubResource("FastNoiseLite_rsj67")
+noise = SubResource("FastNoiseLite_lsn0k")
 seamless = true
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_2cw0x"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_m1305"]
 frequency = 0.005
 fractal_type = 2
 fractal_octaves = 2
@@ -601,7 +601,7 @@ domain_warp_fractal_type = 2
 domain_warp_fractal_octaves = 2
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_wcpr6"]
-noise = SubResource("FastNoiseLite_2cw0x")
+noise = SubResource("FastNoiseLite_m1305")
 seamless = true
 invert = true
 seamless_blend_skirt = 0.2
@@ -636,6 +636,9 @@ script = ExtResource("1_ndq4s")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1739860576]
 transform = Transform3D(0.6207, 0, 0, 0, -0.6207, -1.0112487e-07, 0, 1.0112487e-07, -0.6207, -0.0048220158, 0.95953125, 0.089764655)
 shape = SubResource("ConvexPolygonShape3D_0hic1")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=522645306]
+libraries/ = SubResource("AnimationLibrary_0hic1")
 
 [node name="Honda CRV 2023" parent="." unique_id=726734700 instance=ExtResource("1_kw0ot")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.1000001, -0.667, -0.5)
@@ -851,9 +854,6 @@ visible = false
 [node name="AnimationPlayer2" type="AnimationPlayer" parent="EnterCar/y_bot_root" unique_id=1068515422]
 "libraries/Entering Car" = ExtResource("4_ndq4s")
 autoplay = &"Entering Car/mixamo_com"
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=522645306]
-libraries/ = SubResource("AnimationLibrary_0hic1")
 
 [node name="ActionPrompt" parent="." unique_id=1664152999 instance=ExtResource("7_0hic1")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 1.8000001, -0.5)

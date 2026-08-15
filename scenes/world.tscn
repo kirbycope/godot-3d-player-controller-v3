@@ -43,7 +43,6 @@
 [ext_resource type="PackedScene" uid="uid://ck40pkrttk535" path="res://scenes/ore_small.tscn" id="41_8xaka"]
 [ext_resource type="PackedScene" uid="uid://yo68ojwutmqp" path="res://scenes/ore_large.tscn" id="42_n6seq"]
 [ext_resource type="PackedScene" uid="uid://d3o4cq6mgg8ni" path="res://scenes/tree_01.tscn" id="43_ufs10"]
-[ext_resource type="PackedScene" uid="uid://bwngmjoqsrtcx" path="res://scenes/crv.tscn" id="44_h5nhj"]
 [ext_resource type="PackedScene" uid="uid://bea6xq7pi7e0a" path="res://scenes/moon.tscn" id="45_q6do4"]
 [ext_resource type="PackedScene" uid="uid://ceyrqy0cvueei" path="res://scenes/road.tscn" id="46_pb8sg"]
 [ext_resource type="PackedScene" uid="uid://buun545xrv5hr" path="res://scenes/fishing_rod.tscn" id="47_ce70q"]
@@ -53,6 +52,7 @@
 [ext_resource type="Texture2D" uid="uid://byprefppdk7bt" path="res://assets/sketchfab/bowling_pin/Dimensions-Sports-Bowling-Ten-Pin-Pin.svg" id="51_wui3h"]
 [ext_resource type="PackedScene" uid="uid://clhihxvn4uh1b" path="res://scenes/bowling_pin.tscn" id="52_qetcs"]
 [ext_resource type="Script" uid="uid://cw6owek74g7hc" path="res://scenes/push_buttton.gd" id="53_gw1vw"]
+[ext_resource type="PackedScene" uid="uid://b72r5jskemotf" path="res://scenes/honda_crv.tscn" id="54_5hglh"]
 [ext_resource type="PackedScene" path="res://scenes/duck.tscn" id="54_xiw03"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
@@ -997,9 +997,6 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 2.5,
 [node name="Tree01" parent="Quaternius" unique_id=38701300 instance=ExtResource("43_ufs10")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -4.7683716e-07, 0, 1)
 
-[node name="CRV" parent="." unique_id=751190287 instance=ExtResource("44_h5nhj")]
-transform = Transform3D(-4.371138e-08, 0, -0.9999999, 0, 1, 0, 0.9999999, 0, -4.371138e-08, 0, -0.17951298, -11.9)
-
 [node name="Skateboard" parent="." unique_id=1958283666 instance=ExtResource("8_h3odw")]
 transform = Transform3D(2.9802322e-08, -1, 0, -4.371139e-08, -1.3027009e-15, 1, -1, -2.9802322e-08, -4.371139e-08, 4.3889647, 0.7169763, 3.982221)
 
@@ -1150,6 +1147,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92, 0)
 
 [node name="Duck" parent="." unique_id=875613134 instance=ExtResource("54_xiw03")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -10, 0, -11)
+
+[node name="HondaCRV" parent="." unique_id=863847759 instance=ExtResource("54_5hglh")]
+transform = Transform3D(1.1920929e-07, 0, -1, 0, 1, 0, 1, 0, 1.1920929e-07, 0, 0, -12)
 
 [connection signal="body_entered" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_entered"]
 [connection signal="body_exited" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_exited"]
