@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://b72r5jskemotf"]
 
 [ext_resource type="PackedScene" uid="uid://bl2xgvlguidit" path="res://assets/libertycity/2024_Honda_CRV/pack__baller_hi.glb" id="1_jstdb"]
-[ext_resource type="Script" uid="uid://ppx5neyn7vl3" path="res://scenes/crv.gd" id="1_sbl7x"]
+[ext_resource type="Script" uid="uid://ppx5neyn7vl3" path="res://scenes/honda_crv.gd" id="1_sbl7x"]
 [ext_resource type="PackedScene" uid="uid://dml3j1jtrd7u6" path="res://assets/cgtrader/honda_crv/Wheel2.glb" id="2_8d5p3"]
 [ext_resource type="PackedScene" uid="uid://bnuhx6pjxygby" path="res://addons/3d_player_controller/assets/mixamo/characters/y_bot_root.glb" id="3_sbl7x"]
 [ext_resource type="AnimationLibrary" uid="uid://dnsos1fdevv0t" path="res://addons/3d_player_controller/assets/mixamo/animations/root_motion/Driving.glb" id="4_jr6ab"]
@@ -34,8 +34,14 @@
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_sbl7x"]
 bounce = 0.2
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_5qyix"]
-points = PackedVector3Array(0.93676364, 1.5277987, 0.5147395, -0.9737183, -1.8150952, 0.24208732, -0.9737183, 1.8005309, 0.37855366, 0.8685806, -0.65534186, -0.30391833, 0.52747154, -1.8150952, 1.0606048, -0.63241553, -0.3137853, 1.1289082, -0.83715844, 0.84511304, -0.30391833, 0.049802605, -2.2930179, 0.037457943, -0.4960494, 2.0741181, -0.09900841, 0.93676364, -1.883492, 0.44657645, 0.6638377, 0.29922104, 1.0606048, -0.9053415, -0.7233112, -0.30391833, 0.93676364, 0.91350985, -0.1673117, -0.7005986, -1.883492, 0.92413855, -0.83715844, 2.0052938, 0.5147395, 0.8003975, 2.0052938, 0.5147395, -0.4960494, -2.2930179, 0.037457943, -0.9737183, -1.3376, 0.5147395, 1.0051404, -1.4055693, 0.44657645, 0.049802605, 0.16285491, 1.1289082, 0.93676364, 1.8005309, 0.24208732, -0.086369835, -1.7471259, 1.1289082, -0.63241553, -2.224621, 0.5147395, 0.8003975, -0.9280741, -0.30391833, 0.8003975, -2.088255, 0.5830428, -0.7005986, 0.23125172, 1.0606048, 0.73202074, 0.16285491, 1.0606048, -0.9737183, 0.7771437, -0.1673117, 0.93676364, -1.8150952, 0.24208732, 0.049802605, 1.1862421, -0.23547474, 0.5956546, -0.17741919, 1.1289082, -0.63241553, -1.7471259, 1.0606048)
+[sub_resource type="BoxShape3D" id="BoxShape3D_sbl7x"]
+size = Vector3(1, 0.90000004, 4.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jr6ab"]
+size = Vector3(1.4, 0.4, 2.3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4cf6d"]
+size = Vector3(1.4, 0.4, 0.90000004)
 
 [sub_resource type="Animation" id="Animation_sbl7x"]
 resource_name = "close"
@@ -108,9 +114,17 @@ center_of_mass_mode = 1
 center_of_mass = Vector3(0, 0.5, 0)
 script = ExtResource("1_sbl7x")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1011965604]
-transform = Transform3D(-1, -8.742278e-08, 0, 0, 0, 1, -8.742278e-08, 1, 0, 0, 0.5, -0.1)
-shape = SubResource("ConvexPolygonShape3D_5qyix")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=66850983]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1920929e-07, 0.6500001, -0.050000012)
+shape = SubResource("BoxShape3D_sbl7x")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="." unique_id=742609204]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.9604645e-08, 1.3000002, -0.9500002)
+shape = SubResource("BoxShape3D_jr6ab")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="." unique_id=1748076337]
+transform = Transform3D(1, 0, 0, 0, 0.84746444, -0.53085214, 0, 0.53085214, 0.84746444, 5.9604645e-08, 1.1041675, 0.48441517)
+shape = SubResource("BoxShape3D_4cf6d")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=127924701]
 libraries/ = SubResource("AnimationLibrary_4cf6d")
@@ -239,5 +253,3 @@ stream = SubResource("AudioStreamRandomizer_gda5q")
 [node name="SFXBreakLong" type="AudioStreamPlayer3D" parent="." unique_id=1387296596]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.5)
 stream = SubResource("AudioStreamRandomizer_j7eey")
-
-[editable path="Root Scene"]
