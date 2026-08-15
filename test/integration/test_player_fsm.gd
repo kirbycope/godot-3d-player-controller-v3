@@ -72,6 +72,31 @@ class TestStandingTransitions:
 		await wait_physics_frames(2)
 		
 		assert_eq(player.current_state, NodeStateMachine.States.JUMPING, "Player should transition to JUMPING state after jump action.")
+
+	func test_exhausted_player_can_jump():
+		player.enable_stamina = true
+		var stamina: Node = player.get_node("Stamina")
+		stamina.set("stamina", 0.0)
+		player.is_exhausted = true
+		await wait_physics_frames(15)
+		assert_eq(player.current_locomotion_node, "HeavyBreathing")
+
+		var sender = InputSender.new(Input)
+		sender.set_auto_flush_input(true)
+		sender.action_down("jump")
+		await wait_physics_frames(2)
+		sender.action_up("jump")
+		await wait_physics_frames(45)
+
+		assert_ne(player.current_locomotion_node, "HeavyBreathing")
+		assert_false(
+				player.is_jump_queued,
+				"Jump queue should execute from %s." % player.current_locomotion_node,
+		)
+		assert_false(
+				player.is_on_floor(),
+				"Player should leave floor from %s." % player.current_locomotion_node,
+		)
 		
 	func test_standing_to_sprinting():
 		assert_eq(player.current_state, NodeStateMachine.States.STANDING, "Player should start in STANDING state.")
