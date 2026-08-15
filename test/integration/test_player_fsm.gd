@@ -205,11 +205,44 @@ class TestAttackingTransitions:
 		
 		assert_eq(player.current_state, NodeStateMachine.States.STANDING, "Player should return to STANDING after attack timeout.")
 
+class TestEnableSettings:
+	extends FsmTestBase
+
+	func test_disabled_special_states_block_entry():
+		var special_states: Array[NodeStateMachine.States] = [
+			NodeStateMachine.States.FLYING,
+			NodeStateMachine.States.PARAGLIDING,
+			NodeStateMachine.States.RAGDOLLING,
+		]
+		for state: NodeStateMachine.States in special_states:
+			player.state_machine.travel(player.current_state, state)
+			assert_eq(
+					player.current_state,
+					NodeStateMachine.States.STANDING,
+					"Disabled special state should not be entered.",
+			)
+
+	func test_enabled_flying_allows_entry():
+		player.enable_flying = true
+		player.state_machine.travel(player.current_state, NodeStateMachine.States.FLYING)
+		assert_eq(player.current_state, NodeStateMachine.States.FLYING)
+
+	func test_enabled_paraglider_allows_entry():
+		player.enable_paraglider = true
+		player.state_machine.travel(player.current_state, NodeStateMachine.States.PARAGLIDING)
+		assert_eq(player.current_state, NodeStateMachine.States.PARAGLIDING)
+
+	func test_enabled_ragdoll_allows_entry():
+		player.enable_ragdoll = true
+		player.state_machine.travel(player.current_state, NodeStateMachine.States.RAGDOLLING)
+		assert_eq(player.current_state, NodeStateMachine.States.RAGDOLLING)
+
 class TestPauseTransitions:
 	extends FsmTestBase
 	
 	func test_no_ragdoll_when_pause_visible():
 		assert_eq(player.current_state, NodeStateMachine.States.STANDING, "Player should start in STANDING state.")
+		player.enable_ragdoll = true
 		player.pause.show_menu()
 		assert_true(player.is_paused, "Player should be paused.")
 		assert_true(player.pause.visible, "Pause CanvasLayer should be visible.")

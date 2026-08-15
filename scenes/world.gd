@@ -14,6 +14,10 @@ func _ready() -> void:
 	# Set the mouse mode to captured to hide the mouse cursor
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
+	# Set the game style parameters
+	player.enable_paraglider = true
+	player.enable_stamina = true
+
 	if first_buddy:
 		if player:
 			first_buddy.set("player", player)

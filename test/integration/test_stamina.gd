@@ -29,6 +29,7 @@ class StaminaTestBase:
 		player = PlayerScene.instantiate()
 		root.add_child(player)
 		player.position = Vector3(0, 0.1, 0) # Slightly above floor to snap down
+		player.enable_stamina = true
 		stamina = player.get_node("Stamina")
 
 		# Await physics frames so state machine can boot
@@ -42,6 +43,20 @@ class StaminaTestBase:
 			root = null
 			player = null
 			stamina = null
+
+
+class TestStaminaEnableSetting:
+	extends StaminaTestBase
+
+	func test_disabled_stamina_resets_and_clears_exhaustion():
+		stamina.stamina = 50.0
+		player.is_exhausted = true
+		player.enable_stamina = false
+		await wait_physics_frames(2)
+
+		assert_eq(stamina.stamina, stamina.max_value)
+		assert_false(player.is_exhausted)
+		assert_false(stamina.visible)
 
 
 class TestStaminaDrain:
