@@ -230,6 +230,26 @@ class TestAttackingTransitions:
 		
 		assert_eq(player.current_state, NodeStateMachine.States.STANDING, "Player should return to STANDING after attack timeout.")
 
+class TestEquipmentInteractionTransitions:
+	extends FsmTestBase
+
+	func test_greatsword_logging_animation():
+		var greatsword: Equipment = Equipment.new()
+		greatsword.equipment_type = Equipment.EquipmentType.SWORD_2H
+		greatsword.can_log = true
+		root.add_child(greatsword)
+		player.inventory.add_equipment(greatsword)
+
+		player.locomotion_state.start("GreatSword")
+		var greatsword_playback: AnimationNodeStateMachinePlayback = player.animation_tree.get(
+				"parameters/LocomotionStateMachine/GreatSword/playback",
+		)
+		greatsword_playback.start("GreatSwordLocomotion")
+		player.travel_locomotion("GreatSword/Logging")
+		await wait_physics_frames(2)
+
+		assert_true(player.is_logging, "GreatSword logging animation should become active.")
+
 class TestEnableSettings:
 	extends FsmTestBase
 
