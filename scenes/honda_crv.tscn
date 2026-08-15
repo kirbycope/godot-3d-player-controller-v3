@@ -158,6 +158,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42, 0.050000004, -0.1500000
 [node name="y_bot_root" parent="DriverSeat" unique_id=837789907 instance=ExtResource("3_sbl7x")]
 process_mode = 4
 transform = Transform3D(1, 0, -3.5527137e-15, 0, 1, 1.1647053e-22, 0, 0, 1, 0, 0, 0)
+visible = false
 
 [node name="AnimationPlayer2" type="AnimationPlayer" parent="DriverSeat/y_bot_root" unique_id=1376262368]
 libraries/Driving = ExtResource("4_jr6ab")
@@ -168,6 +169,7 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 2.23
 
 [node name="y_bot_root" parent="EnterCar" unique_id=352870842 instance=ExtResource("3_sbl7x")]
 process_mode = 4
+visible = false
 
 [node name="AnimationPlayer2" type="AnimationPlayer" parent="EnterCar/y_bot_root" unique_id=747039467]
 "libraries/Entering Car" = ExtResource("5_4cf6d")
