@@ -340,6 +340,28 @@ class TestSkateboardingTransitions:
 
 		assert_eq(player.current_state, NodeStateMachine.States.STANDING, "Player should transition to STANDING after whistle action.")
 
+	func test_ultrahand_reserves_dpad_down_while_skateboarding():
+		player.state_machine.travel(player.current_state, NodeStateMachine.States.SKATEBOARDING)
+		await wait_physics_frames(2)
+
+		var held_body: RigidBody3D = RigidBody3D.new()
+		root.add_child(held_body)
+		player.held_object._pickup_rigidbody(held_body)
+
+		var sender = InputSender.new(Input)
+		sender.set_auto_flush_input(true)
+		sender.action_down("whistle")
+		await wait_physics_frames(2)
+		sender.action_up("whistle")
+		await wait_physics_frames(2)
+
+		assert_eq(
+			player.current_state,
+			NodeStateMachine.States.SKATEBOARDING,
+			"Ultrahand should reserve D-pad Down from skateboard dismount.",
+		)
+		player.held_object.drop_held_rigidbody()
+
 	func test_move_down_does_not_dismount():
 		player.state_machine.travel(player.current_state, NodeStateMachine.States.SKATEBOARDING)
 		await wait_physics_frames(2)
@@ -364,6 +386,51 @@ class TestSkateboardingTransitions:
 		assert_eq(pad_controls.get(player.controls.joypad_button_12_label), "Dismount")
 		assert_eq(pad_controls.get(player.controls.joypad_button_1_label), "Fast Push")
 		assert_false(pad_controls.has(player.controls.joypad_button_7_label))
+
+	func test_ultrahand_contextual_controls_restore_skateboarding_labels():
+		player.state_machine.travel(player.current_state, NodeStateMachine.States.SKATEBOARDING)
+		player.controls.current_input_type = player.controls.InputType.KEYBOARD_MOUSE
+
+		var held_body: RigidBody3D = RigidBody3D.new()
+		root.add_child(held_body)
+		player.held_object._pickup_rigidbody(held_body)
+		assert_eq(player.controls.key_i_label.text, "Farther")
+		assert_eq(player.controls.key_k_label.text, "Closer")
+		assert_eq(player.controls.key_j_label.text, "")
+		assert_eq(player.controls.key_l_label.text, "")
+		assert_eq(player.controls.joypad_button_10_label.text, "Rotate")
+		assert_eq(player.controls.joypad_axis_5_plus_label.text, "Throw")
+
+		var sender = InputSender.new(Input)
+		sender.set_auto_flush_input(true)
+		sender.action_down("throw")
+		await wait_physics_frames(1)
+		assert_eq(player.controls.key_i_label.text, "Rotate Up")
+		assert_eq(player.controls.key_j_label.text, "Rotate Left")
+		assert_eq(player.controls.key_k_label.text, "Rotate Down")
+		assert_eq(player.controls.key_l_label.text, "Rotate Right")
+		sender.action_up("throw")
+		await wait_physics_frames(1)
+		assert_eq(player.controls.key_j_label.text, "")
+		assert_eq(player.controls.key_l_label.text, "")
+
+		player.controls.current_input_type = player.controls.InputType.MICROSOFT
+		assert_eq(player.controls.joypad_button_11_label.text, "Farther")
+		assert_eq(player.controls.joypad_button_12_label.text, "Closer")
+		assert_eq(player.controls.joypad_button_13_label.text, "")
+		assert_eq(player.controls.joypad_button_14_label.text, "")
+		sender.action_down("throw")
+		await wait_physics_frames(1)
+		assert_eq(player.controls.joypad_button_11_label.text, "Rotate Up")
+		assert_eq(player.controls.joypad_button_12_label.text, "Rotate Down")
+		assert_eq(player.controls.joypad_button_13_label.text, "Rotate Left")
+		assert_eq(player.controls.joypad_button_14_label.text, "Rotate Right")
+		sender.action_up("throw")
+		await wait_physics_frames(1)
+
+		player.held_object.drop_held_rigidbody()
+		assert_eq(player.controls.joypad_button_12_label.text, "Dismount")
+		assert_eq(player.controls.joypad_button_1_label.text, "Fast Push")
 
 
 
