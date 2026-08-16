@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://brqj5p23dgtkv"
+path="res://.godot/imported/Cat Meow_4.wav-ac691125c63d368c92e890b183e877a6.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Cat Meow_4.wav"
+dest_files=["res://.godot/imported/Cat Meow_4.wav-ac691125c63d368c92e890b183e877a6.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

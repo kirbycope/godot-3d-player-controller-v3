@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://cuts5wnrii8vt"
+path="res://.godot/imported/Bear_4.wav-3c67178497f1bc63961ad773e4aeba4a.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Bear_4.wav"
+dest_files=["res://.godot/imported/Bear_4.wav-3c67178497f1bc63961ad773e4aeba4a.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

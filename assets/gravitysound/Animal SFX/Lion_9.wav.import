@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://c4iw7p80r3h3y"
+path="res://.godot/imported/Lion_9.wav-5968920df9eae5f5e2f2dc36c676c1cf.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Lion_9.wav"
+dest_files=["res://.godot/imported/Lion_9.wav-5968920df9eae5f5e2f2dc36c676c1cf.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

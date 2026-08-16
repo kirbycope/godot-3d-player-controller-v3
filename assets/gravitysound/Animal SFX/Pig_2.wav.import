@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://dc7mn5r0on7py"
+path="res://.godot/imported/Pig_2.wav-da28163fe5ae8e811d9939490f324fd2.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Pig_2.wav"
+dest_files=["res://.godot/imported/Pig_2.wav-da28163fe5ae8e811d9939490f324fd2.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2
