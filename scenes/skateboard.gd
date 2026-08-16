@@ -12,21 +12,6 @@ var player: Player
 @onready var sfx_land: AudioStreamPlayer3D = $SFX_Land
 
 
-## Called when there is an input event.
-func _input(event: InputEvent) -> void:
-	# Do nothing if not the authority
-	if not is_multiplayer_authority(): return
-
-	# Unequip skateboard
-	if player \
-	and player.is_skateboarding \
-	and event.is_action_pressed("unequip") \
-	and not event.is_echo():
-		# Stop skateboarding and start standing
-		player.state_machine.travel(_this_state, NodeStateMachine.States.STANDING)
-		return
-
-
 func display_menu(_player) -> void:
 	player = _player
 	if not player:

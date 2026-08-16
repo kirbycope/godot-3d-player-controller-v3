@@ -53,6 +53,8 @@ class FsmTestBase:
 		Input.action_release("crouch")
 		Input.action_release("attack")
 		Input.action_release("move_up")
+		Input.action_release("ui_down")
+		Input.action_release("whistle")
 		if is_instance_valid(root):
 			root.free()
 			root = null
@@ -296,4 +298,73 @@ class TestPauseTransitions:
 		await wait_physics_frames(2)
 		
 		assert_ne(player.current_state, NodeStateMachine.States.RAGDOLLING, "Player should not transition to RAGDOLLING when Pause CanvasLayer is visible.")
+
+class TestSkateboardingTransitions:
+	extends FsmTestBase
+
+	func test_skateboarding_action_properties():
+		var skateboarding_node: Skateboarding = player.state_machine.get_node("Skateboarding") as Skateboarding
+		assert_not_null(skateboarding_node, "Skateboarding state node should exist.")
+		assert_eq(skateboarding_node.keyboard_dismount_action, &"whistle")
+		assert_eq(skateboarding_node.pad_dismount_action, &"whistle")
+		assert_eq(skateboarding_node.keyboard_jump_action, &"jump")
+		assert_eq(skateboarding_node.pad_jump_action, &"jump")
+
+	func test_skateboarding_dismount_keyboard():
+		player.state_machine.travel(player.current_state, NodeStateMachine.States.SKATEBOARDING)
+		await wait_physics_frames(2)
+		assert_eq(player.current_state, NodeStateMachine.States.SKATEBOARDING, "Player should be in SKATEBOARDING state.")
+
+		player.controls.current_input_type = 0 # KEYBOARD_MOUSE
+		var sender = InputSender.new(Input)
+		sender.set_auto_flush_input(true)
+		sender.action_down("whistle")
+		await wait_physics_frames(2)
+		sender.action_up("whistle")
+		await wait_physics_frames(2)
+
+		assert_eq(player.current_state, NodeStateMachine.States.STANDING, "Player should transition to STANDING after whistle action.")
+
+	func test_skateboarding_dismount_controller():
+		player.state_machine.travel(player.current_state, NodeStateMachine.States.SKATEBOARDING)
+		await wait_physics_frames(2)
+		assert_eq(player.current_state, NodeStateMachine.States.SKATEBOARDING, "Player should be in SKATEBOARDING state.")
+
+		player.controls.current_input_type = 1 # MICROSOFT controller
+		var sender = InputSender.new(Input)
+		sender.set_auto_flush_input(true)
+		sender.action_down("whistle")
+		await wait_physics_frames(2)
+		sender.action_up("whistle")
+		await wait_physics_frames(2)
+
+		assert_eq(player.current_state, NodeStateMachine.States.STANDING, "Player should transition to STANDING after whistle action.")
+
+	func test_move_down_does_not_dismount():
+		player.state_machine.travel(player.current_state, NodeStateMachine.States.SKATEBOARDING)
+		await wait_physics_frames(2)
+		assert_eq(player.current_state, NodeStateMachine.States.SKATEBOARDING, "Player should be in SKATEBOARDING state.")
+
+		var sender = InputSender.new(Input)
+		sender.set_auto_flush_input(true)
+		sender.action_down("move_down")
+		await wait_physics_frames(2)
+		sender.action_up("move_down")
+		await wait_physics_frames(2)
+
+		assert_eq(player.current_state, NodeStateMachine.States.SKATEBOARDING, "Player should remain in SKATEBOARDING state when move_down is pressed.")
+
+	func test_skateboarding_contextual_controls():
+		var skateboarding_node: Skateboarding = player.state_machine.get_node("Skateboarding") as Skateboarding
+		var kb_controls = skateboarding_node.get_contextual_controls(0)
+		assert_eq(kb_controls.get(player.controls.key_k_label), "Dismount")
+		assert_eq(kb_controls.get(player.controls.joypad_button_1_label), "Fast Push")
+
+		var pad_controls = skateboarding_node.get_contextual_controls(1)
+		assert_eq(pad_controls.get(player.controls.joypad_button_12_label), "Dismount")
+		assert_eq(pad_controls.get(player.controls.joypad_button_1_label), "Fast Push")
+		assert_false(pad_controls.has(player.controls.joypad_button_7_label))
+
+
+
 
