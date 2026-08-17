@@ -2,7 +2,7 @@ extends CharacterBody3D
 
 const GIANT_QUACK_BUS: StringName = &"GiantDuck"
 const GIANT_QUACK_BUS_LAYOUT: AudioBusLayout = preload("res://default_bus_layout.tres")
-const WALK_ANIMATION: StringName = &"FBXExportClip_0_001"
+const ANIMATION_NAME: StringName = &"FBXExportClip_0_001"
 
 @export var move_speed: float = 2.0 ## Speed at which the duck moves
 @export var turn_speed: float = 10.0 ## Speed at which the duck turns
@@ -18,10 +18,12 @@ const WALK_ANIMATION: StringName = &"FBXExportClip_0_001"
 @export var giant_quack_pitch: float = 0.5
 @export var collision_quack_speed: float = 1.0
 @export var collision_quack_cooldown: float = 0.5
+@export var attack_quack_cooldown: float = 1.2
 
 var knockback_velocity: Vector3 = Vector3.ZERO
 var nav_ready: bool = false
 var player: Player
+var _attack_quack_time: float = 0.0
 var _collision_exception_added: bool = false
 var _collision_quack_time: float = 0.0
 var _is_giant: bool = false
@@ -29,12 +31,19 @@ var _player_range_initialized: bool = false
 var _player_was_in_range: bool = false
 var _spawn_transform: Transform3D
 
-@onready var animation_player: AnimationPlayer = $WALK2/AnimationPlayer
+@onready var animation_player_eat: AnimationPlayer = $EAT2/AnimationPlayer
+@onready var eat_model: Node3D = $EAT2
+@onready var animation_player_idle: AnimationPlayer = $IDLE2/AnimationPlayer
+@onready var idle_model: Node3D = $IDLE2
+@onready var animation_player_walk: AnimationPlayer = $WALK2/AnimationPlayer
+@onready var walk_model: Node3D = $WALK2
 @onready var audio_stream_player_3d: AudioStreamPlayer3D = $AudioStreamPlayer3D
 @onready var bone_attachment_3d: BoneAttachment3D = $WALK2/WALK/Skeleton3D/BoneAttachment3D
 @onready var knife: Node3D = $WALK2/WALK/Skeleton3D/BoneAttachment3D/Knife
+@onready var knife_idle: Node3D = $IDLE2/IDLE/Skeleton3D/BoneAttachment3D/Knife
+@onready var knife_walk: Node3D = $WALK2/WALK/Skeleton3D/BoneAttachment3D/Knife
+@onready var knife_eat: Node3D = $EAT2/EAT/Skeleton3D/BoneAttachment3D/Knife
 @onready var navigation_agent_3d: NavigationAgent3D = $NavigationAgent3D
-@onready var walk_model: Node3D = $WALK2
 
 
 func _ready() -> void:
@@ -42,11 +51,17 @@ func _ready() -> void:
 	_spawn_transform = global_transform
 	navigation_agent_3d.path_desired_distance = 0.5
 	navigation_agent_3d.target_desired_distance = follow_distance
+	knife.visible = _is_giant
+	knife_idle.visible = _is_giant
+	knife_walk.visible = _is_giant
+	knife_eat.visible = _is_giant
+	_stop_moving()
 	call_deferred("_setup_navigation")
 
 
 func _physics_process(delta: float) -> void:
 	_collision_quack_time = maxf(_collision_quack_time - delta, 0.0)
+	_attack_quack_time = maxf(_attack_quack_time - delta, 0.0)
 	if global_position.y < respawn_height:
 		_respawn_as_giant()
 	if not is_on_floor():
@@ -68,12 +83,39 @@ func _physics_process(delta: float) -> void:
 	_update_player_range(distance_to_player)
 
 	# Only follow if within range and beyond the follow distance
-	if distance_to_player > max_follow_distance or distance_to_player <= follow_distance:
+	if distance_to_player > max_follow_distance:
 		_stop_moving()
+		return
+
+	# If giant is already in an attack animation, commit to it unless player moves far away
+	if _is_giant and animation_player_eat.is_playing() and distance_to_player <= follow_distance * 1.5:
+		var direction_to_player: Vector3 = global_position.direction_to(player.global_position).slide(up_direction)
+		if direction_to_player.length_squared() > 0.0001:
+			var look_target: Vector3 = global_position + direction_to_player.normalized()
+			var target_transform: Transform3D = global_transform.looking_at(look_target, up_direction)
+			global_transform = global_transform.interpolate_with(target_transform, turn_speed * delta)
+		_move_with_control(Vector3.ZERO)
+		_play_eating_animation()
+		return
+
+	if distance_to_player <= follow_distance:
+		if _is_giant:
+			var direction_to_player: Vector3 = global_position.direction_to(player.global_position).slide(up_direction)
+			if direction_to_player.length_squared() > 0.0001:
+				var look_target: Vector3 = global_position + direction_to_player.normalized()
+				var target_transform: Transform3D = global_transform.looking_at(look_target, up_direction)
+				global_transform = global_transform.interpolate_with(target_transform, turn_speed * delta)
+			_move_with_control(Vector3.ZERO)
+			_play_eating_animation()
+		else:
+			_stop_moving()
 		return
 	navigation_agent_3d.target_position = player.global_position
 	if navigation_agent_3d.is_navigation_finished():
-		_stop_moving()
+		if _is_giant and distance_to_player <= follow_distance:
+			_play_eating_animation()
+		else:
+			_stop_moving()
 		return
 	var next_path_position: Vector3 = navigation_agent_3d.get_next_path_position()
 	var direction: Vector3 = global_position.direction_to(next_path_position)
@@ -88,7 +130,10 @@ func _physics_process(delta: float) -> void:
 		_move_with_control(direction * move_speed)
 		_play_walk_animation()
 	else:
-		_stop_moving()
+		if _is_giant and distance_to_player <= follow_distance:
+			_play_eating_animation()
+		else:
+			_stop_moving()
 
 
 ## Adds an instantaneous velocity change, e.g. when hit by a vehicle.
@@ -131,7 +176,7 @@ func _check_impacts(movement_velocity: Vector3) -> void:
 	for i in range(get_slide_collision_count()):
 		var collision: KinematicCollision3D = get_slide_collision(i)
 		var collider: Object = collision.get_collider()
-		var impact_speed: float = -movement_velocity.dot(collision.get_normal())
+		var impact_speed: float = - movement_velocity.dot(collision.get_normal())
 		if collider is RigidBody3D:
 			var body: RigidBody3D = collider
 			var impact_velocity: Vector3 = body.linear_velocity
@@ -150,12 +195,17 @@ func _respawn_as_giant() -> void:
 	knockback_velocity = Vector3.ZERO
 	if not _is_giant:
 		_is_giant = true
+		idle_model.scale *= giant_scale
 		walk_model.scale *= giant_scale
+		eat_model.scale *= giant_scale
 		move_speed *= giant_move_speed_multiplier
 		follow_distance = giant_follow_distance
 		max_follow_distance *= giant_scale
 		navigation_agent_3d.target_desired_distance = follow_distance
 		knife.visible = true
+		knife_idle.visible = true
+		knife_walk.visible = true
+		knife_eat.visible = true
 		audio_stream_player_3d.pitch_scale = giant_quack_pitch
 		audio_stream_player_3d.unit_size *= giant_scale
 		audio_stream_player_3d.bus = GIANT_QUACK_BUS
@@ -170,7 +220,15 @@ func _play_quack() -> void:
 
 
 func _play_walk_animation() -> void:
-	animation_player.play(WALK_ANIMATION)
+	idle_model.visible = false
+	walk_model.visible = true
+	eat_model.visible = false
+	if not animation_player_walk.is_playing():
+		animation_player_walk.play(ANIMATION_NAME)
+	if animation_player_idle.is_playing():
+		animation_player_idle.stop()
+	if animation_player_eat.is_playing():
+		animation_player_eat.stop()
 
 
 func _ensure_giant_quack_bus() -> void:
@@ -192,5 +250,28 @@ func _update_player_range(distance_to_player: float) -> void:
 
 func _stop_moving() -> void:
 	_move_with_control(Vector3.ZERO)
-	if animation_player.is_playing():
-		animation_player.pause()
+	idle_model.visible = true
+	walk_model.visible = false
+	eat_model.visible = false
+	if animation_player_walk.is_playing():
+		animation_player_walk.pause()
+	if animation_player_eat.is_playing():
+		animation_player_eat.stop()
+	if not animation_player_idle.is_playing():
+		animation_player_idle.play(ANIMATION_NAME)
+
+
+func _play_eating_animation() -> void:
+	idle_model.visible = false
+	walk_model.visible = false
+	eat_model.visible = true
+	var was_playing: bool = animation_player_eat.is_playing()
+	if not was_playing:
+		animation_player_eat.play(ANIMATION_NAME)
+	if not was_playing and _attack_quack_time <= 0.0:
+		audio_stream_player_3d.play()
+		_attack_quack_time = attack_quack_cooldown
+	if animation_player_idle.is_playing():
+		animation_player_idle.stop()
+	if animation_player_walk.is_playing():
+		animation_player_walk.pause()

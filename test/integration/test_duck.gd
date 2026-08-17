@@ -16,11 +16,16 @@ func test_falling_below_world_respawns_giant_duck() -> void:
 	assert_almost_eq(duck.global_position.y, 5.0, 0.01)
 	assert_almost_eq(duck.global_position.z, 4.0, 0.01)
 	assert_eq(duck.scale, Vector3.ONE)
+	assert_eq(duck.idle_model.scale, Vector3.ONE * 10.0)
 	assert_eq(duck.walk_model.scale, Vector3.ONE * 10.0)
-	assert_eq(duck.move_speed, 10.0)
+	assert_eq(duck.eat_model.scale, Vector3.ONE * 10.0)
+	assert_eq(duck.move_speed, 4.0)
 	assert_eq(duck.follow_distance, 4.0)
 	assert_eq(duck.max_follow_distance, 100.0)
 	assert_true(duck.knife.visible)
+	assert_true(duck.knife_idle.visible)
+	assert_true(duck.knife_walk.visible)
+	assert_true(duck.knife_eat.visible)
 	assert_eq(duck.audio_stream_player_3d.pitch_scale, 0.5)
 	assert_eq(duck.audio_stream_player_3d.bus, &"GiantDuck")
 	var giant_bus_index: int = AudioServer.get_bus_index(&"GiantDuck")
@@ -35,12 +40,45 @@ func test_walk_animation_resumes_after_pause() -> void:
 	add_child_autofree(duck)
 	await wait_physics_frames(1)
 
-	duck.animation_player.play(&"FBXExportClip_0_001")
-	duck.animation_player.pause()
+	duck.animation_player_walk.play(&"FBXExportClip_0_001")
+	duck.animation_player_walk.pause()
 	duck.call("_play_walk_animation")
 
-	assert_true(duck.animation_player.is_playing())
-	assert_eq(duck.animation_player.current_animation, &"FBXExportClip_0_001")
+	assert_true(duck.animation_player_walk.is_playing())
+	assert_eq(duck.animation_player_walk.current_animation, &"FBXExportClip_0_001")
+	assert_true(duck.walk_model.visible)
+	assert_false(duck.idle_model.visible)
+	assert_false(duck.eat_model.visible)
+
+
+func test_state_model_visibilities_and_giant_attack() -> void:
+	var duck: CharacterBody3D = DUCK_SCENE.instantiate() as CharacterBody3D
+	add_child_autofree(duck)
+	await wait_physics_frames(1)
+
+	# Idle state
+	duck.call("_stop_moving")
+	assert_true(duck.idle_model.visible)
+	assert_false(duck.walk_model.visible)
+	assert_false(duck.eat_model.visible)
+	assert_true(duck.animation_player_idle.is_playing())
+
+	# Walking state
+	duck.call("_play_walk_animation")
+	assert_false(duck.idle_model.visible)
+	assert_true(duck.walk_model.visible)
+	assert_false(duck.eat_model.visible)
+	assert_true(duck.animation_player_walk.is_playing())
+
+	# Giant attack eating state
+	duck.audio_stream_player_3d.stop()
+	duck.call("_play_eating_animation")
+	assert_false(duck.idle_model.visible)
+	assert_false(duck.walk_model.visible)
+	assert_true(duck.eat_model.visible)
+	assert_true(duck.animation_player_eat.is_playing())
+	assert_true(duck.audio_stream_player_3d.playing)
+
 
 
 func test_impulse_collision_plays_quack() -> void:
