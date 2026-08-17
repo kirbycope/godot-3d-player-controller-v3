@@ -4,16 +4,15 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://1jmuoicdutyi"
 path.s3tc="res://.godot/imported/Boat_lp_Boat_01_MaskMap.png-a7a6b4dd3abe317f4fa171391409edb5.s3tc.ctex"
-path.etc2="res://.godot/imported/Boat_lp_Boat_01_MaskMap.png-a7a6b4dd3abe317f4fa171391409edb5.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/justcreate3d/stylized_tropical_island/Textures/Boat/Boat_lp_Boat_01_MaskMap.png"
-dest_files=["res://.godot/imported/Boat_lp_Boat_01_MaskMap.png-a7a6b4dd3abe317f4fa171391409edb5.s3tc.ctex", "res://.godot/imported/Boat_lp_Boat_01_MaskMap.png-a7a6b4dd3abe317f4fa171391409edb5.etc2.ctex"]
+dest_files=["res://.godot/imported/Boat_lp_Boat_01_MaskMap.png-a7a6b4dd3abe317f4fa171391409edb5.s3tc.ctex"]
 
 [params]
 
