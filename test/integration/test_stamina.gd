@@ -113,6 +113,29 @@ class TestStaminaDrain:
 		sender.action_up("sprint")
 		sender.action_up("move_up")
 
+	func test_no_drain_while_swimming_normal_speed():
+		player.is_swimming = true
+		player.is_sprinting = false
+		player.smoothed_motion = Vector2(0, 1.0)
+		player.velocity = Vector3(0, 0, 2.0)
+		var before: float = stamina.stamina
+		await wait_physics_frames(30)
+
+		assert_eq(stamina.stamina, before, "Stamina should not drain while swimming at normal speed.")
+		player.is_swimming = false
+
+	func test_drains_while_swimming_fast():
+		player.is_swimming = true
+		player.is_sprinting = true
+		player.smoothed_motion = Vector2(0, 1.0)
+		player.velocity = Vector3(0, 0, 4.0)
+		var before: float = stamina.stamina
+		await wait_physics_frames(30)
+
+		assert_lt(stamina.stamina, before, "Stamina should drain while swimming fast.")
+		player.is_swimming = false
+		player.is_sprinting = false
+
 
 class TestStaminaRegen:
 	extends StaminaTestBase
@@ -126,6 +149,28 @@ class TestStaminaRegen:
 
 		player.is_climbing = false
 
+	func test_no_regen_while_swimming_normal_speed():
+		stamina.stamina = 50.0
+		player.is_swimming = true
+		player.is_sprinting = false
+		player.smoothed_motion = Vector2(0, 1.0)
+		player.velocity = Vector3(0, 0, 2.0)
+		await wait_physics_frames(30)
+
+		assert_eq(stamina.stamina, 50.0, "Stamina should not recover while swimming at normal speed.")
+		player.is_swimming = false
+
+	func test_regen_while_treading_water():
+		stamina.stamina = 50.0
+		player.is_swimming = true
+		player.is_sprinting = false
+		player.smoothed_motion = Vector2.ZERO
+		player.velocity = Vector3.ZERO
+		await wait_physics_frames(30)
+
+		assert_gt(stamina.stamina, 50.0, "Stamina should regenerate while treading water.")
+		player.is_swimming = false
+
 	func test_regen_while_hanging():
 		stamina.stamina = 50.0
 		player.is_hanging_braced = true
@@ -134,3 +179,38 @@ class TestStaminaRegen:
 		assert_gt(stamina.stamina, 50.0, "Stamina should regenerate while hanging.")
 
 		player.is_hanging_braced = false
+
+
+class TestSwimmingFastStaminaRequirement:
+	extends StaminaTestBase
+
+	func test_cannot_swim_fast_when_exhausted():
+		var water = Area3D.new()
+		water.add_to_group("WATER")
+		var water_col = CollisionShape3D.new()
+		var box = BoxShape3D.new()
+		box.size = Vector3(100, 10, 100)
+		water_col.shape = box
+		water.add_child(water_col)
+		water.position = Vector3(0, 0, 0)
+		root.add_child(water)
+		await wait_physics_frames(2)
+
+		player.state_machine.travel(player.current_state, NodeStateMachine.States.SWIMMING)
+		player.is_swimming = true
+		stamina.stamina = 0.0
+		player.is_exhausted = true
+		player.smoothed_motion = Vector2(0, 1.0)
+		var sender = InputSender.new(Input)
+		sender.set_auto_flush_input(true)
+		sender.action_down("sprint")
+		await wait_physics_frames(5)
+
+		assert_false(player.is_sprinting, "Player should not sprint/swim fast when exhausted.")
+		assert_eq(player.swimming_root_motion_multiplier, 2.0, "Swimming multiplier should be normal (2.0) when exhausted.")
+
+		sender.action_up("sprint")
+		player.is_swimming = false
+		player.is_exhausted = false
+		water.queue_free()
+

@@ -7,12 +7,20 @@
 [ext_resource type="AnimationLibrary" uid="uid://cqhv3e722j6b6" path="res://addons/3d_player_controller/assets/mixamo/animations/root_motion/Idle.glb" id="84_jtj55"]
 [ext_resource type="AnimationLibrary" uid="uid://dm6ef4yyxiibs" path="res://addons/3d_player_controller/assets/mixamo/animations/root_motion/Running.glb" id="131_1j3y2"]
 [ext_resource type="AnimationLibrary" uid="uid://dsnlxptdo6n1g" path="res://addons/3d_player_controller/assets/mixamo/animations/root_motion/Running Backward.glb" id="132_b6c0k"]
+[ext_resource type="AnimationLibrary" uid="uid://b66hh3ma67hrw" path="res://addons/3d_player_controller/assets/mixamo/animations/root_motion/Standard Walk.glb" id="133_walk"]
+[ext_resource type="AnimationLibrary" uid="uid://b05nay4slsc80" path="res://addons/3d_player_controller/assets/mixamo/animations/root_motion/Walking Backwards.glb" id="134_walkb"]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_tfnjv"]
 animation = &"Idle/mixamo_com"
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_walk"]
+animation = &"Standard Walk/mixamo_com"
+
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_8an7c"]
 animation = &"Running/mixamo_com"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_walkb"]
+animation = &"Walking Backwards/mixamo_com"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_57vy8"]
 animation = &"Running Backward/mixamo_com"
@@ -27,6 +35,12 @@ blend_point_1/name = &"Running_mixamo_com"
 blend_point_2/node = SubResource("AnimationNodeAnimation_57vy8")
 blend_point_2/pos = -1.0
 blend_point_2/name = &"Running Backward_mixamo_com"
+blend_point_3/node = SubResource("AnimationNodeAnimation_walk")
+blend_point_3/pos = 0.5
+blend_point_3/name = &"Standard_Walk_mixamo_com"
+blend_point_4/node = SubResource("AnimationNodeAnimation_walkb")
+blend_point_4/pos = -0.5
+blend_point_4/name = &"Walking_Backwards_mixamo_com"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_rsxy7"]
 animation = &"Swimming/mixamo_com"
@@ -126,7 +140,9 @@ bones/64/rotation = Quaternion(-2.2998326e-07, 0.99809617, 0.061676726, -2.51202
 libraries/Idle = ExtResource("84_jtj55")
 libraries/Running = ExtResource("131_1j3y2")
 "libraries/Running Backward" = ExtResource("132_b6c0k")
+"libraries/Standard Walk" = ExtResource("133_walk")
 libraries/Swimming = ExtResource("6_tfnjv")
+"libraries/Walking Backwards" = ExtResource("134_walkb")
 
 [node name="AnimationTree" type="AnimationTree" parent="y_bot_root" unique_id=92170071]
 root_motion_track = NodePath("%GeneralSkeleton:Root")
