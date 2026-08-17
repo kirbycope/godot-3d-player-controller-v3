@@ -42,6 +42,13 @@ func _physics_process(delta: float) -> void:
 			player.state_machine.travel(_this_state, NodeStateMachine.States.STANDING)
 		return
 
+	# Hand off to "falling" once the jump starts descending so is_falling drives the falling animation and air control.
+	if not player.is_on_floor() and not player.is_jump_queued:
+		var vertical_speed: float = player.velocity.dot(player.up_direction)
+		if vertical_speed < 0.0:
+			player.state_machine.travel(_this_state, NodeStateMachine.States.FALLING)
+			return
+
 
 ## Start "jumping".
 func start() -> void:
@@ -53,6 +60,9 @@ func start() -> void:
 	player.is_jumping = true
 	# Flag the player as having a "jump queued"
 	player.is_jump_queued = true
+	# HeavyBreathing has no direct jump edge; return to the normal locomotion graph.
+	if player.current_locomotion_node == "HeavyBreathing":
+		player.travel_locomotion("StandingLocomotion")
 
 
 ## Stop "jumping".

@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://6dhi5dp7s3hj"
+path="res://.godot/imported/Chicken Bwak_3.wav-01a1697125cc32975b18fda1c38c4281.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Chicken Bwak_3.wav"
+dest_files=["res://.godot/imported/Chicken Bwak_3.wav-01a1697125cc32975b18fda1c38c4281.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

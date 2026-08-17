@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://d3gfuc0vdrli1"
+path="res://.godot/imported/Horse_3.wav-121e6c41763d915f6547444618b74469.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Horse_3.wav"
+dest_files=["res://.godot/imported/Horse_3.wav-121e6c41763d915f6547444618b74469.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

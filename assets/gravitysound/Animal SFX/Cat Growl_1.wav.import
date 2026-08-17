@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://tydrcygfq6q7"
+path="res://.godot/imported/Cat Growl_1.wav-9babe33f6c44cf5d4a83151187dfe4d1.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Cat Growl_1.wav"
+dest_files=["res://.godot/imported/Cat Growl_1.wav-9babe33f6c44cf5d4a83151187dfe4d1.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

@@ -126,7 +126,7 @@ vec3 water(vec2 uv, vec3 cdir, float iTime)
   return ret;
 }
 void fragment() {
-    vec2 uv = UV;
-    ALBEDO.rgb = vec3(water(uv * tile, vec3(0,1,0), TIME * distortion_speed));
-    ALPHA = WATER_COL.a;
+	vec2 uv = UV;
+	ALBEDO.rgb = vec3(water(uv * tile, vec3(0,1,0), TIME * distortion_speed));
+	ALPHA = WATER_COL.a;
 }

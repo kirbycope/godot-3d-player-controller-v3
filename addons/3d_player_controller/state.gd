@@ -38,6 +38,9 @@ static func get_state_name(state: int) -> StringName:
 
 ## Transition from one state to another.
 func travel(from_state: States, to_state: States) -> void:
+	if not _is_state_enabled(to_state):
+		return
+
 	# Block transition to RAGDOLLING if player is paused or Pause CanvasLayer is visible
 	if to_state == States.RAGDOLLING and player and (player.is_paused or (player.pause and player.pause.visible)):
 		return
@@ -71,12 +74,36 @@ func travel(from_state: States, to_state: States) -> void:
 			push_error("State %s missing start()" % str(to_state_name))
 		else:
 			if player and player.controls:
-				if not player.controls.input_type_changed.is_connected(to_state_node._on_input_type_changed):
-					player.controls.input_type_changed.connect(to_state_node._on_input_type_changed)
-				to_state_node._on_input_type_changed(player.controls.current_input_type)
+				var is_using_ultrahand: bool = player.held_object \
+						and player.held_object.is_using_ultrahand()
+				if is_using_ultrahand:
+					player.held_object.refresh_contextual_controls()
+				else:
+					if not player.controls.input_type_changed.is_connected(
+						to_state_node._on_input_type_changed
+					):
+						player.controls.input_type_changed.connect(
+							to_state_node._on_input_type_changed
+						)
+					to_state_node._on_input_type_changed(player.controls.current_input_type)
 			to_state_node.call("start")
 	else:
 		push_warning("Invalid to_state: %s" % str(to_state))
+
+
+func _is_state_enabled(state: States) -> bool:
+	if player == null:
+		return true
+
+	match state:
+		States.FLYING:
+			return player.enable_flying
+		States.PARAGLIDING:
+			return player.enable_paraglider
+		States.RAGDOLLING:
+			return player.enable_ragdoll
+		_:
+			return true
 
 
 

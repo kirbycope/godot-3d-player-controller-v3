@@ -26,10 +26,12 @@ func _input(event: InputEvent) -> void:
 	# Do nothing if not the authority
 	if not is_multiplayer_authority(): return
 
-	if player and not is_mined:
+	if player and player.inventory and not is_mined:
 		if event.is_action_pressed("action") and not player.is_mining:
+			if not player.inventory.has_equipment_with_capability(&"can_mine"):
+				return
 			# Make the player_model rotate (horizontally) towards the mineable object
-			var target_dir := (global_position - player.global_position)
+			var target_dir: Vector3 = global_position - player.global_position
 			target_dir = target_dir - target_dir.project(player.up_direction)
 			if target_dir.length_squared() > 0.001:
 				target_dir = target_dir.normalized()
@@ -44,6 +46,7 @@ func _input(event: InputEvent) -> void:
 func register_weapon_hit(equipment: Node = null, hit_node: Node = null) -> void:
 	if equipment and "can_mine" in equipment and equipment.can_mine:
 		register_hit()
+	print("hit_node: ", hit_node)
 
 
 ## Applies one hit of damage; depletes the ore once enough hits land.

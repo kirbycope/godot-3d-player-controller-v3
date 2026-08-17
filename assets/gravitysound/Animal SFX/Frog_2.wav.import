@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://b836clkycuawk"
+path="res://.godot/imported/Frog_2.wav-0a51d8dc9d65d1bcef0bae8f0f5e50fa.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Frog_2.wav"
+dest_files=["res://.godot/imported/Frog_2.wav-0a51d8dc9d65d1bcef0bae8f0f5e50fa.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

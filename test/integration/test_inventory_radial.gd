@@ -5,7 +5,7 @@ extends GutTest
 class TestRadialMenuHold:
 	extends IntegrationTestBase
 
-	var MainScene = load("res://scenes/main.tscn")
+	var MainScene = load("res://scenes/world.tscn")
 	var main_instance = null
 
 	func before_each() -> void:

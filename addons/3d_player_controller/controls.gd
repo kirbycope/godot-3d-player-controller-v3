@@ -557,10 +557,92 @@ func _ready() -> void:
 		key_event.physical_keycode = KEY_L
 		InputMap.action_add_event("next_weapon", key_event)
 
+	# "ui_accept" { Microsoft: Ⓐ, Keyboard: [Enter], [Numpad Enter], [Space] }
+	if not InputMap.has_action("ui_accept"):
+		# Add the [ui_accept] action to the Input Map
+		InputMap.add_action("ui_accept", 0.5)
+	# Microsoft Ⓐ, Nintendo Ⓑ, Sony Ⓧ
+	var ui_accept_joypad = InputEventJoypadButton.new()
+	ui_accept_joypad.button_index = JOY_BUTTON_A
+	if not InputMap.action_has_event("ui_accept", ui_accept_joypad):
+		InputMap.action_add_event("ui_accept", ui_accept_joypad)
+	# Keyboard [Enter]
+	var ui_accept_enter = InputEventKey.new()
+	ui_accept_enter.keycode = KEY_ENTER
+	if not InputMap.action_has_event("ui_accept", ui_accept_enter):
+		InputMap.action_add_event("ui_accept", ui_accept_enter)
+	# Keyboard [Numpad Enter]
+	var ui_accept_kp_enter = InputEventKey.new()
+	ui_accept_kp_enter.keycode = KEY_KP_ENTER
+	if not InputMap.action_has_event("ui_accept", ui_accept_kp_enter):
+		InputMap.action_add_event("ui_accept", ui_accept_kp_enter)
+	# Keyboard [Space]
+	var ui_accept_space = InputEventKey.new()
+	ui_accept_space.physical_keycode = KEY_SPACE
+	if not InputMap.action_has_event("ui_accept", ui_accept_space):
+		InputMap.action_add_event("ui_accept", ui_accept_space)
+
+	# "ui_left" { Controller: DPad Left }
+	if not InputMap.has_action("ui_left"):
+		# Add the [ui_left] action to the Input Map
+		InputMap.add_action("ui_left", 0.5)
+	# Controller DPad Left
+	var ui_left_joypad = InputEventJoypadButton.new()
+	ui_left_joypad.button_index = JOY_BUTTON_DPAD_LEFT
+	if not InputMap.action_has_event("ui_left", ui_left_joypad):
+		InputMap.action_add_event("ui_left", ui_left_joypad)
+
+	# "ui_right" { Controller: DPad Right }
+	if not InputMap.has_action("ui_right"):
+		# Add the [ui_right] action to the Input Map
+		InputMap.add_action("ui_right", 0.5)
+	# Controller DPad Right
+	var ui_right_joypad = InputEventJoypadButton.new()
+	ui_right_joypad.button_index = JOY_BUTTON_DPAD_RIGHT
+	if not InputMap.action_has_event("ui_right", ui_right_joypad):
+		InputMap.action_add_event("ui_right", ui_right_joypad)
+
+	# "ui_up" { Controller: DPad Up }
+	if not InputMap.has_action("ui_up"):
+		# Add the [ui_up] action to the Input Map
+		InputMap.add_action("ui_up", 0.5)
+	# Controller DPad Up
+	var ui_up_joypad = InputEventJoypadButton.new()
+	ui_up_joypad.button_index = JOY_BUTTON_DPAD_UP
+	if not InputMap.action_has_event("ui_up", ui_up_joypad):
+		InputMap.action_add_event("ui_up", ui_up_joypad)
+
+	# "ui_down" { Controller: DPad Down }
+	if not InputMap.has_action("ui_down"):
+		# Add the [ui_down] action to the Input Map
+		InputMap.add_action("ui_down", 0.5)
+	# Controller DPad Down
+	var ui_down_joypad = InputEventJoypadButton.new()
+	ui_down_joypad.button_index = JOY_BUTTON_DPAD_DOWN
+	if not InputMap.action_has_event("ui_down", ui_down_joypad):
+		InputMap.action_add_event("ui_down", ui_down_joypad)
+
+	# "emote" { Keyboard: [M] }
+	if not InputMap.has_action("emote"):
+		# Add the [emote] action to the Input Map
+		InputMap.add_action("emote", 0.2)
+		# Keyboard [M]
+		var key_event = InputEventKey.new()
+		key_event.physical_keycode = KEY_M
+		InputMap.action_add_event("emote", key_event)
+
+	# "debug" { Keyboard: [F3] }
+	if not InputMap.has_action("debug"):
+		# Add the [debug] action to the Input Map
+		InputMap.add_action("debug", 0.2)
+		# Keyboard [F3]
+		var key_event = InputEventKey.new()
+		key_event.keycode = KEY_F3
+		InputMap.action_add_event("debug", key_event)
+
 
 ## Called when there is an input event.
 func _input(event: InputEvent) -> void:
-
 	# Check if the input is a keyboard or mouse event
 	if event is InputEventKey or (event is InputEventMouse and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED):
 		# Set the current input type to Keyboard and Mouse
@@ -611,6 +693,14 @@ func set_labels(label_texts: Dictionary) -> void:
 		final_texts[key_s_label] = final_texts[left_joystick_label]
 	if right_joystick_label in final_texts and not key_down_label in final_texts:
 		final_texts[key_down_label] = final_texts[right_joystick_label]
+	if joypad_button_12_label in final_texts and not key_k_label in final_texts:
+		final_texts[key_k_label] = final_texts[joypad_button_12_label]
+	if key_k_label in final_texts and not joypad_button_12_label in final_texts:
+		final_texts[joypad_button_12_label] = final_texts[key_k_label]
+	if joypad_button_11_label in final_texts and not key_i_label in final_texts:
+		final_texts[key_i_label] = final_texts[joypad_button_11_label]
+	if key_i_label in final_texts and not joypad_button_11_label in final_texts:
+		final_texts[joypad_button_11_label] = final_texts[key_i_label]
 
 	for label: Variant in _label_texts.keys():
 		if label:

@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://j3opkuue6jw3"
+path="res://.godot/imported/Elephant_9.wav-af56103439e9915c005ea170c3ebc6eb.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Elephant_9.wav"
+dest_files=["res://.godot/imported/Elephant_9.wav-af56103439e9915c005ea170c3ebc6eb.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

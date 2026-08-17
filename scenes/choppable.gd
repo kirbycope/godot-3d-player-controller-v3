@@ -35,16 +35,20 @@ func _input(event: InputEvent) -> void:
 	# Do nothing if not the authority
 	if not is_multiplayer_authority(): return
 
-	if player and not is_felled:
+	if player and player.inventory and not is_felled:
 		if event.is_action_pressed("action") and not player.is_logging:
+			if not player.inventory.has_equipment_with_capability(&"can_log"):
+				return
 			# Make the player_model rotate (horizontally) towards the choppable object
-			var target_dir := (global_position - player.global_position)
+			var target_dir: Vector3 = global_position - player.global_position
 			target_dir = target_dir - target_dir.project(player.up_direction)
 			if target_dir.length_squared() > 0.001:
 				target_dir = target_dir.normalized()
 				player.orientation.basis = Basis.looking_at(-target_dir, player.up_direction)
-			# Travel to "Logging" inside the Shield group of the player's locomotion state machine
-			player.travel_locomotion("Shield/Logging")
+			# Heavy equipment uses the GreatSword locomotion group.
+			var logging_state: String = "GreatSword/Logging" \
+					if player.inventory.has_heavy_weapon_equipped() else "Shield/Logging"
+			player.travel_locomotion(logging_state)
 			# Land the chop once the swing connects
 			get_tree().create_timer(chop_delay).timeout.connect(register_chop)
 
@@ -53,6 +57,7 @@ func _input(event: InputEvent) -> void:
 func register_weapon_hit(equipment: Node = null, hit_node: Node = null) -> void:
 	if equipment and "can_log" in equipment and equipment.can_log:
 		register_chop()
+	print("hit_node: ", hit_node)
 
 
 ## Applies one chop of damage; fells the tree once enough chops land.

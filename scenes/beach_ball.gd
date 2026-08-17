@@ -30,7 +30,8 @@ func _on_body_entered(body: Node) -> void:
 				break
 			node = node.get_parent()
 
-func _physics_process(delta: float) -> void:
+
+func _physics_process(_delta: float) -> void:
 	_last_velocity = linear_velocity
 	var water_surface_y := _get_water_surface_y()
 	if is_nan(water_surface_y):

@@ -15,6 +15,11 @@ var _next_weapon_press_pending: bool = false
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if player and player.held_object and player.held_object.is_using_ultrahand():
+		_last_weapon_press_pending = false
+		_next_weapon_press_pending = false
+		return
+
 	if event.is_action_pressed("next_weapon"):
 		_next_weapon_press_time = Time.get_ticks_msec()
 		_next_weapon_press_pending = true
@@ -136,6 +141,13 @@ func has_equipment_in_backpack(type: int, bone_name: String) -> bool:
 func has_any_equipment(types: Array) -> bool:
 	for type in types:
 		if equipment_by_type.has(type):
+			return true
+	return false
+
+
+func has_equipment_with_capability(capability: StringName) -> bool:
+	for item in equipment:
+		if is_instance_valid(item) and capability in item and item.get(capability):
 			return true
 	return false
 

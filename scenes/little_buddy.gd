@@ -1,6 +1,7 @@
 extends CharacterBody3D
 
 @export var move_speed: float = 3.0
+@export var walk_speed: float = 1.5
 @export var turn_speed: float = 10.0
 @export var stopping_distance: float = 2.0
 @export var throw_force_horizontal: float = 16.0
@@ -9,7 +10,12 @@ extends CharacterBody3D
 @export var min_impact_speed: float = 2.0 ## Minimum collider speed that counts as an impact
 @export var impact_upward_boost: float = 2.0 ## Extra upward speed added on impact
 @export var knockback_damping: float = 6.0 ## How quickly knockback velocity decays
+@export var swimming_depth_offset: float = -0.3 ## Depth to submerge when swimming
 
+const LOCOMOTION_BLEND_POSITION_PATH: String = "parameters/LocomotionStateMachine/LocomotionBlendSpace/blend_position"
+const LOCOMOTION_STATE_MACHINE_PLAYBACK_PATH: String = "parameters/LocomotionStateMachine/playback"
+
+var is_swimming: bool = false
 var is_held: bool = false
 var is_thrown: bool = false
 var knockback_velocity: Vector3 = Vector3.ZERO
@@ -42,8 +48,36 @@ func _physics_process(delta: float) -> void:
 	if is_held:
 		return
 		
-	if apply_gravity and not is_on_floor():
+	var water_surface_along_up: float = _get_water_surface_along_up()
+	var new_is_swimming: bool = false
+	if not is_nan(water_surface_along_up):
+		var current_position_along_up := up_direction.dot(global_position)
+		if water_surface_along_up > current_position_along_up:
+			new_is_swimming = true
+			
+	if new_is_swimming != is_swimming:
+		is_swimming = new_is_swimming
+		if is_swimming and animation_tree:
+			animation_tree.get(LOCOMOTION_STATE_MACHINE_PLAYBACK_PATH).travel("Swimming")
+		elif not is_swimming and animation_tree:
+			animation_tree.get(LOCOMOTION_STATE_MACHINE_PLAYBACK_PATH).travel("LocomotionBlendSpace")
+		
+	if is_swimming:
+		var target_y = water_surface_along_up + swimming_depth_offset
+		var current_y = up_direction.dot(global_position)
+		var vertical_correction = (target_y - current_y) * 5.0
+		if vertical_correction < 0.0 and is_on_floor():
+			vertical_correction = 0.0
+		
+		var current_up_vel = velocity.project(up_direction).length() * sign(up_direction.dot(velocity))
+		if current_up_vel > 1.0:
+			velocity += get_gravity() * delta
+		else:
+			velocity -= velocity.project(up_direction)
+			velocity += up_direction * vertical_correction
+	elif apply_gravity and not is_on_floor():
 		velocity += get_gravity() * delta
+		
 	knockback_velocity = knockback_velocity.move_toward(Vector3.ZERO, knockback_damping * delta)
 		
 	if is_thrown:
@@ -54,7 +88,7 @@ func _physics_process(delta: float) -> void:
 		return
 		
 	if not nav_ready:
-		_move_with_control(Vector3.ZERO)
+		_move_with_control(Vector3.ZERO, delta)
 		return
 		
 	if not player:
@@ -62,44 +96,49 @@ func _physics_process(delta: float) -> void:
 		if current_scene:
 			player = current_scene.find_child("Player", true, false) as Player
 		if not player:
-			_move_with_control(Vector3.ZERO)
+			_move_with_control(Vector3.ZERO, delta)
 			return
 			
 	if player and not _collision_exception_added:
 		add_collision_exception_with(player)
 		_collision_exception_added = true
 	if player.is_driving:
-		_stop_moving()
+		_stop_moving(delta)
 		return
 	up_direction = player.up_direction
 		
-	# Update the target position (staggered to avoid massive CPU spikes with many agents)
+	# Update the target position
 	if navigation_agent_3d:
-		if Engine.get_physics_frames() % 20 == get_instance_id() % 20:
-			if navigation_agent_3d.target_position.distance_squared_to(player.global_position) > 0.5:
-				navigation_agent_3d.target_position = player.global_position
+		navigation_agent_3d.target_position = player.global_position
 	
-	# Explicit distance check (prevents getting stuck spinning near target)
-	var dist_sq_to_player: float = global_position.distance_squared_to(player.global_position)
-	if dist_sq_to_player <= stopping_distance * stopping_distance:
-		_stop_moving()
-		return
-
-	# Stop if nav agent is perfectly finished
-	if navigation_agent_3d and navigation_agent_3d.is_navigation_finished():
-		_stop_moving()
+	# Horizontal planar distance check (prevents height differences from offsetting stopping distance)
+	var horizontal_offset: Vector3 = (global_position - player.global_position).slide(up_direction)
+	var horizontal_distance: float = horizontal_offset.length()
+	var vertical_distance: float = abs(up_direction.dot(global_position) - up_direction.dot(player.global_position))
+	var is_close_enough: bool = horizontal_distance <= stopping_distance and vertical_distance < 1.5
+	if is_swimming and not player.is_swimming:
+		is_close_enough = false
+	if is_close_enough or (navigation_agent_3d and navigation_agent_3d.is_navigation_finished() and not is_swimming):
+		# Smoothly rotate to face the player while standing idle
+		var to_player: Vector3 = (player.global_position - global_position).slide(up_direction)
+		if to_player.length_squared() > 0.001:
+			var look_target: Vector3 = global_position + to_player.normalized()
+			var current_transform: Transform3D = global_transform
+			var target_transform: Transform3D = current_transform.looking_at(look_target, up_direction)
+			global_transform = current_transform.interpolate_with(target_transform, turn_speed * delta)
+		_stop_moving(delta)
 		return
 
 	var current_agent_position: Vector3 = global_position
 	var target_pos: Vector3
 	
-	# If nav agent can't find a path (e.g. Player jumped off nav mesh or no nav mesh baked), 
+	# If nav agent can't find a path or we are swimming,
 	# fallback to moving directly towards the player.
-	if navigation_agent_3d and navigation_agent_3d.is_target_reachable():
+	if not is_swimming and navigation_agent_3d and navigation_agent_3d.is_target_reachable() and not navigation_agent_3d.is_navigation_finished():
 		target_pos = navigation_agent_3d.get_next_path_position()
 		# If the next path position is exactly above/below us (like stuck snapping), fallback
-		var horizontal_offset: Vector3 = (target_pos - current_agent_position).slide(up_direction)
-		if horizontal_offset.length() < 0.1:
+		var path_offset: Vector3 = (target_pos - current_agent_position).slide(up_direction)
+		if path_offset.length() < 0.1:
 			target_pos = player.global_position
 	else:
 		target_pos = player.global_position
@@ -116,16 +155,28 @@ func _physics_process(delta: float) -> void:
 		var target_transform: Transform3D = current_transform.looking_at(look_target, up_direction)
 		global_transform = current_transform.interpolate_with(target_transform, turn_speed * delta)
 		
-		var target_velocity: Vector3 = direction * move_speed
-		animation_tree.set("parameters/Locomotion/blend_position", 1.0)
+		var current_speed: float = move_speed
+		if not is_swimming:
+			# When close to the player, walk smoothly; when farther away, transition to run
+			var walk_distance_threshold: float = stopping_distance + 1.5
+			if horizontal_distance < walk_distance_threshold:
+				var t: float = clampf((horizontal_distance - stopping_distance) / 1.5, 0.0, 1.0)
+				current_speed = lerpf(walk_speed, move_speed, t)
+		else:
+			current_speed *= 0.5
+			if is_on_wall():
+				velocity -= velocity.project(up_direction)
+				velocity += up_direction * 2.5
+				
+		var target_velocity: Vector3 = direction * current_speed
 		
 		if navigation_agent_3d and navigation_agent_3d.avoidance_enabled:
 			# With avoidance, movement happens in _on_velocity_computed
 			navigation_agent_3d.set_velocity(target_velocity)
 		else:
-			_move_with_control(target_velocity)
+			_move_with_control(target_velocity, delta)
 	else:
-		_stop_moving()
+		_stop_moving(delta)
 
 
 ## Adds an instantaneous velocity change, e.g. when hit by a vehicle.
@@ -134,11 +185,29 @@ func apply_impulse(impulse: Vector3, _position: Vector3 = Vector3.ZERO) -> void:
 	velocity += impulse.project(up_direction)
 
 
-func _move_with_control(control_velocity: Vector3) -> void:
+func _move_with_control(control_velocity: Vector3, delta: float = 0.0) -> void:
+	var h_control: Vector3 = control_velocity.slide(up_direction)
 	var vertical_velocity: Vector3 = velocity.project(up_direction)
-	velocity = control_velocity.slide(up_direction) + knockback_velocity + vertical_velocity
+	velocity = h_control + knockback_velocity + vertical_velocity
 	move_and_slide()
 	_check_impacts()
+	if animation_tree:
+		var actual_h_speed: float = velocity.slide(up_direction).length()
+		var target_blend: float = 0.0
+		if actual_h_speed > 0.05 and h_control.length() > 0.05:
+			# Blend: 0.0 = Idle, 0.5 = Walk (at walk_speed), 1.0 = Run (at move_speed)
+			if actual_h_speed <= walk_speed:
+				target_blend = (actual_h_speed / maxf(walk_speed, 0.001)) * 0.5
+			else:
+				var run_range: float = maxf(move_speed - walk_speed, 0.001)
+				target_blend = 0.5 + clampf((actual_h_speed - walk_speed) / run_range, 0.0, 1.0) * 0.5
+		
+		if delta > 0.0:
+			var current_blend: float = animation_tree.get(LOCOMOTION_BLEND_POSITION_PATH)
+			var blend_speed: float = 8.0 if target_blend < current_blend else 6.0
+			animation_tree.set(LOCOMOTION_BLEND_POSITION_PATH, move_toward(current_blend, target_blend, blend_speed * delta))
+		else:
+			animation_tree.set(LOCOMOTION_BLEND_POSITION_PATH, target_blend)
 
 
 func _check_impacts() -> void:
@@ -153,12 +222,10 @@ func _check_impacts() -> void:
 				apply_impulse(impact_velocity + up_direction * impact_upward_boost)
 
 
-func _stop_moving() -> void:
-	animation_tree.set("parameters/Locomotion/blend_position", 0.0)
+func _stop_moving(delta: float = 0.0) -> void:
 	if navigation_agent_3d and navigation_agent_3d.avoidance_enabled:
 		navigation_agent_3d.set_velocity(Vector3.ZERO)
-	else:
-		_move_with_control(Vector3.ZERO)
+	_move_with_control(Vector3.ZERO, delta)
 
 func _on_velocity_computed(safe_velocity: Vector3) -> void:
 	# This signal is triggered by set_velocity() in _physics_process
@@ -166,7 +233,7 @@ func _on_velocity_computed(safe_velocity: Vector3) -> void:
 	if is_thrown or is_held:
 		return
 		
-	_move_with_control(safe_velocity)
+	_move_with_control(safe_velocity, get_physics_process_delta_time())
 
 
 func sfx_footsteps_play() -> void:
@@ -237,7 +304,7 @@ func pick_up() -> void:
 	if collision_shape:
 		collision_shape.disabled = true
 	if animation_tree:
-		animation_tree.set("parameters/Locomotion/blend_position", 0.0)
+		animation_tree.set(LOCOMOTION_BLEND_POSITION_PATH, 0.0)
 	
 	if get_parent():
 		get_parent().remove_child(self)
@@ -292,3 +359,50 @@ func throw_with_direction(throw_dir: Vector3 = Vector3.ZERO, throw_power: float 
 	var impulse: Vector3 = (throw_dir * throw_force_horizontal + throw_up * throw_force_vertical) * throw_power
 	velocity = impulse
 	knockback_velocity = Vector3.ZERO
+
+
+func _get_water_surface_along_up() -> float:
+	if not is_inside_tree():
+		return NAN
+	var tree := get_tree()
+	if not tree:
+		return NAN
+
+	var has_surface := false
+	var highest_surface_along_up := 0.0
+	
+	var water_nodes := tree.get_nodes_in_group("WATER")
+	for node in water_nodes:
+		var water_area := node as Area3D
+		if not water_area:
+			continue
+		
+		var overlapping := water_area.overlaps_body(self)
+		if not overlapping:
+			continue
+
+		var collision_shape := water_area.get_node_or_null("CollisionShape3D") as CollisionShape3D
+		if not collision_shape:
+			continue
+
+		var box_shape := collision_shape.shape as BoxShape3D
+		if not box_shape:
+			continue
+
+		var up_in_local: Vector3 = collision_shape.global_basis.inverse() * up_direction
+		var half_size: Vector3 = box_shape.size * 0.5
+		var half_extent_along_up: float = abs(up_in_local.x) * half_size.x \
+			+ abs(up_in_local.y) * half_size.y \
+			+ abs(up_in_local.z) * half_size.z
+
+		var local_surface: Vector3 = up_in_local.normalized() * half_extent_along_up
+		var world_surface: Vector3 = collision_shape.to_global(local_surface)
+		var surface_along_up: float = up_direction.dot(world_surface)
+
+		if not has_surface or surface_along_up > highest_surface_along_up:
+			has_surface = true
+			highest_surface_along_up = surface_along_up
+
+	if not has_surface:
+		return NAN
+	return highest_surface_along_up

@@ -26,6 +26,11 @@ const LOCOMOTION_GROUPS: Array[String] = ["Bow", "Boxing", "GreatSword", "Pistol
 @export var rotation_interpolate_speed: float = 10.0
 @export var swimming_root_motion_multiplier: float = 2.0
 
+@export_category("Enable Settings")
+@export var enable_flying: bool = false
+@export var enable_paraglider: bool = false
+@export var enable_ragdoll: bool = false
+@export var enable_stamina: bool = false
 @export_category("Optional Gadgets & Gear")
 @export var paraglider_scene: PackedScene
 @export var skateboard_scene: PackedScene
@@ -154,6 +159,8 @@ var is_focusing: bool: ## Is the Player currently focusing (forward or on a targ
 	get:
 		if not is_multiplayer_authority() or is_driving:
 			return false
+		if held_object and held_object.is_using_ultrahand():
+			return false
 		# While the cursor is visible, right-click is reserved for camera rotation.
 		if Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
 			return false
@@ -200,6 +207,8 @@ var is_ragdolling: bool = false ## Is the Player currently ragdolling?
 var is_shooting: bool: ## Is the Player currently shooting?
 	get:
 		if not is_multiplayer_authority() or is_driving or inventory == null:
+			return false
+		if held_object and held_object.is_using_ultrahand():
 			return false
 		return Input.is_action_pressed("shoot") and inventory.can_player_shoot
 var is_sitting: bool = false ## Is the Player currently sitting?
@@ -406,7 +415,7 @@ func _physics_process(delta: float) -> void:
 	apply_input(delta)
 
 	# Treat "jumping" as queued jump or upward airborne movement.
-	is_jumping = (is_on_floor() and is_jump_queued) or (not is_on_floor() and current_locomotion_node.contains("Jump"))
+	is_jumping = is_jump_queued or (not is_on_floor() and current_locomotion_node.contains("Jump"))
 
 	# Stop emote state when the animation finishes and reset the blend amount.
 	if is_emoting:
@@ -426,10 +435,6 @@ func _physics_process(delta: float) -> void:
 			emote_state.travel("Waving")
 			is_emoting = true
 			has_started_emoting = false
-
-	## DEBUG: Remove all equipment for testing purposes.
-	if not is_paused and not is_ragdolling and Input.is_action_just_pressed("unequip"):
-		inventory.debug_unequip_all()
 
 
 # https://github.com/godotengine/tps-demo/blob/master/player/gd#L86
@@ -478,7 +483,7 @@ func apply_input(delta: float) -> void:
 				look_dir = (current_focus_target.global_position - global_position).slide(up_direction)
 			elif is_shooting or not is_focusing or is_first_person:
 				var camera_basis := spring_arm.global_transform.basis
-				look_dir = -camera_basis.z
+				look_dir = - camera_basis.z
 				look_dir = look_dir.slide(up_direction)
 				
 			if look_dir.length_squared() > 0.001:
@@ -565,7 +570,7 @@ func apply_input(delta: float) -> void:
 		if orbit_radius > 0.1:
 			var target_dir: Vector3 = to_target / orbit_radius
 			# Strafe distance becomes rotation about the target; forward/back changes the radius.
-			var arc_angle: float = -root_motion_position.x / orbit_radius
+			var arc_angle: float = - root_motion_position.x / orbit_radius
 			var new_radius: float = maxf(orbit_radius - root_motion_position.z, 0.1)
 			var new_offset: Vector3 = (-target_dir * new_radius).rotated(up_direction, arc_angle)
 			h_velocity = (to_target + new_offset) / delta

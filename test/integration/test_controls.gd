@@ -7,7 +7,7 @@ extends GutTest
 class ControlsTestBase:
 	extends IntegrationTestBase
 
-	var MainScene = load("res://scenes/main.tscn")
+	var MainScene = load("res://scenes/world.tscn")
 	var main_instance = null
 	var player_debug = null
 
@@ -185,3 +185,35 @@ class TestSwimmingControls:
 		assert_eq(player.controls.joypad_button_3_label.text, "Climb Out")
 		assert_eq(player.controls.joypad_button_1_label.text, "Fast Swim")
 		assert_eq(player.controls.left_joystick_label.text, "Swim")
+
+
+## Tests related to UI action bindings.
+class TestUIActions:
+	extends ControlsTestBase
+
+	func test_ui_accept_has_joypad_a():
+		var joy_a = InputEventJoypadButton.new()
+		joy_a.button_index = JOY_BUTTON_A
+		assert_true(InputMap.action_has_event("ui_accept", joy_a), "ui_accept should contain JOY_BUTTON_A")
+
+	func test_ui_accept_has_space():
+		var key_space = InputEventKey.new()
+		key_space.physical_keycode = KEY_SPACE
+		assert_true(InputMap.action_has_event("ui_accept", key_space), "ui_accept should contain KEY_SPACE")
+
+	func test_ui_directions_have_dpad():
+		var dpad_left = InputEventJoypadButton.new()
+		dpad_left.button_index = JOY_BUTTON_DPAD_LEFT
+		assert_true(InputMap.action_has_event("ui_left", dpad_left), "ui_left should contain JOY_BUTTON_DPAD_LEFT")
+
+		var dpad_right = InputEventJoypadButton.new()
+		dpad_right.button_index = JOY_BUTTON_DPAD_RIGHT
+		assert_true(InputMap.action_has_event("ui_right", dpad_right), "ui_right should contain JOY_BUTTON_DPAD_RIGHT")
+
+		var dpad_up = InputEventJoypadButton.new()
+		dpad_up.button_index = JOY_BUTTON_DPAD_UP
+		assert_true(InputMap.action_has_event("ui_up", dpad_up), "ui_up should contain JOY_BUTTON_DPAD_UP")
+
+		var dpad_down = InputEventJoypadButton.new()
+		dpad_down.button_index = JOY_BUTTON_DPAD_DOWN
+		assert_true(InputMap.action_has_event("ui_down", dpad_down), "ui_down should contain JOY_BUTTON_DPAD_DOWN")
