@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://ch83eyybcysmk"
 path.s3tc="res://.godot/imported/T_WoodTrim_BaseColor.png-3f9b620611f83e2e9d6573857b63eb40.s3tc.ctex"
+path.etc2="res://.godot/imported/T_WoodTrim_BaseColor.png-3f9b620611f83e2e9d6573857b63eb40.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/quaternius/logs/T_WoodTrim_BaseColor.png"
-dest_files=["res://.godot/imported/T_WoodTrim_BaseColor.png-3f9b620611f83e2e9d6573857b63eb40.s3tc.ctex"]
+dest_files=["res://.godot/imported/T_WoodTrim_BaseColor.png-3f9b620611f83e2e9d6573857b63eb40.s3tc.ctex", "res://.godot/imported/T_WoodTrim_BaseColor.png-3f9b620611f83e2e9d6573857b63eb40.etc2.ctex"]
 
 [params]
 

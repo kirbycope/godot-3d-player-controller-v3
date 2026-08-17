@@ -54,6 +54,20 @@
 [ext_resource type="Script" uid="uid://cw6owek74g7hc" path="res://scenes/push_buttton.gd" id="53_gw1vw"]
 [ext_resource type="PackedScene" uid="uid://b72r5jskemotf" path="res://scenes/honda_crv.tscn" id="54_5hglh"]
 [ext_resource type="PackedScene" uid="uid://ci146l3tivu1p" path="res://scenes/duck.tscn" id="54_xiw03"]
+[ext_resource type="Script" path="res://addons/date_and_time/date_and_time.gd" id="55_dt"]
+[ext_resource type="PackedScene" path="res://addons/weather_fx/weather_fx.tscn" id="56_wfx"]
+[ext_resource type="Script" path="res://addons/weather_fx/weather_zone.gd" id="57_wzone"]
+[ext_resource type="Script" path="res://addons/date_and_time/date_and_time_display.gd" id="58_dtdisplay"]
+[ext_resource type="Script" path="res://addons/weather_fx/weather_forecast_display.gd" id="59_wfdisplay"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_plains_zone"]
+size = Vector3(40, 20, 40)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_mountain_zone"]
+size = Vector3(40, 20, 40)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_desert_zone"]
+size = Vector3(40, 20, 40)
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -1148,6 +1162,70 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -18,
 
 [node name="HondaCRV" parent="." unique_id=863847759 instance=ExtResource("54_5hglh")]
 transform = Transform3D(1.1920929e-07, 0, -1, 0, 1, 0, 1, 0, 1.1920929e-07, 0, 0, -12)
+
+[node name="DateAndTime" type="Node" parent="." unique_id=98712301]
+script = ExtResource("55_dt")
+minutes_per_day = 24.0
+current_time = 10.0
+
+[node name="WeatherFX" parent="." unique_id=98712302 instance=ExtResource("56_wfx")]
+target_node = NodePath("../Player")
+date_and_time_node = NodePath("../DateAndTime")
+world_environment = NodePath("../WorldEnvironment")
+
+[node name="Zones" type="Node3D" parent="." unique_id=98712303]
+
+[node name="PlainsZone" type="Area3D" parent="Zones" unique_id=98712304]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
+script = ExtResource("57_wzone")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Zones/PlainsZone" unique_id=98712305]
+shape = SubResource("BoxShape3D_plains_zone")
+
+[node name="MountainZone" type="Area3D" parent="Zones" unique_id=98712306]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 5, 10)
+script = ExtResource("57_wzone")
+biome = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Zones/MountainZone" unique_id=98712307]
+shape = SubResource("BoxShape3D_mountain_zone")
+
+[node name="DesertZone" type="Area3D" parent="Zones" unique_id=98712308]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 5, 10)
+script = ExtResource("57_wzone")
+biome = 5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Zones/DesertZone" unique_id=98712309]
+shape = SubResource("BoxShape3D_desert_zone")
+
+[node name="HUD" type="CanvasLayer" parent="." unique_id=98712310]
+
+[node name="DateAndTimeDisplay" type="PanelContainer" parent="HUD" unique_id=98712311]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -220.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 56.0
+grow_horizontal = 0
+script = ExtResource("58_dtdisplay")
+date_and_time_node = NodePath("../../DateAndTime")
+
+[node name="WeatherForecastDisplay" type="PanelContainer" parent="HUD" unique_id=98712312]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -260.0
+offset_top = -80.0
+offset_right = -16.0
+offset_bottom = -16.0
+grow_horizontal = 0
+grow_vertical = 0
+script = ExtResource("59_wfdisplay")
+weather_fx_node = NodePath("../../WeatherFX")
 
 [connection signal="body_entered" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_entered"]
 [connection signal="body_exited" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_exited"]

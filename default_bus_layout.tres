@@ -1,4 +1,4 @@
-[gd_resource type="AudioBusLayout" load_steps=3 format=3]
+[gd_resource type="AudioBusLayout" format=3 uid="uid://kfdo4yimvqd0"]
 
 [sub_resource type="AudioEffectReverb" id="AudioEffectReverb_giant_duck"]
 resource_name = "Giant Duck Reverb"
@@ -12,10 +12,8 @@ wet = 0.45
 
 [sub_resource type="AudioEffectDelay" id="AudioEffectDelay_giant_duck"]
 resource_name = "Giant Duck Echo"
-dry = 1.0
 tap1_delay_ms = 220.0
 tap1_level_db = -7.0
-tap2_active = true
 tap2_delay_ms = 440.0
 tap2_level_db = -11.0
 feedback_active = true
@@ -23,12 +21,6 @@ feedback_delay_ms = 660.0
 feedback_level_db = -14.0
 
 [resource]
-bus/0/name = &"Master"
-bus/0/solo = false
-bus/0/mute = false
-bus/0/bypass_fx = false
-bus/0/volume_db = 0.0
-bus/0/send = &""
 bus/1/name = &"GiantDuck"
 bus/1/solo = false
 bus/1/mute = false

@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://bie1hn3qijqak"
 path.s3tc="res://.godot/imported/Weapons2_Texture_01.png-17ec00cfe4023d06dad414a254e3637c.s3tc.ctex"
+path.etc2="res://.godot/imported/Weapons2_Texture_01.png-17ec00cfe4023d06dad414a254e3637c.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/justcreate3d/weapons_lite/Weapons2_Texture_01.png"
-dest_files=["res://.godot/imported/Weapons2_Texture_01.png-17ec00cfe4023d06dad414a254e3637c.s3tc.ctex"]
+dest_files=["res://.godot/imported/Weapons2_Texture_01.png-17ec00cfe4023d06dad414a254e3637c.s3tc.ctex", "res://.godot/imported/Weapons2_Texture_01.png-17ec00cfe4023d06dad414a254e3637c.etc2.ctex"]
 
 [params]
 

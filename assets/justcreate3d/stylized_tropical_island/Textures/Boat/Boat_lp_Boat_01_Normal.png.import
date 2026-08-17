@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://vd7oogs482tr"
 path.s3tc="res://.godot/imported/Boat_lp_Boat_01_Normal.png-0f98f21e640c9206fea5b947d19d9613.s3tc.ctex"
+path.etc2="res://.godot/imported/Boat_lp_Boat_01_Normal.png-0f98f21e640c9206fea5b947d19d9613.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/justcreate3d/stylized_tropical_island/Textures/Boat/Boat_lp_Boat_01_Normal.png"
-dest_files=["res://.godot/imported/Boat_lp_Boat_01_Normal.png-0f98f21e640c9206fea5b947d19d9613.s3tc.ctex"]
+dest_files=["res://.godot/imported/Boat_lp_Boat_01_Normal.png-0f98f21e640c9206fea5b947d19d9613.s3tc.ctex", "res://.godot/imported/Boat_lp_Boat_01_Normal.png-0f98f21e640c9206fea5b947d19d9613.etc2.ctex"]
 
 [params]
 

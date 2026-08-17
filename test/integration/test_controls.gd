@@ -7,7 +7,7 @@ extends GutTest
 class ControlsTestBase:
 	extends IntegrationTestBase
 
-	var MainScene = load("res://scenes/main.tscn")
+	var MainScene = load("res://scenes/world.tscn")
 	var main_instance = null
 	var player_debug = null
 
@@ -217,4 +217,3 @@ class TestUIActions:
 		var dpad_down = InputEventJoypadButton.new()
 		dpad_down.button_index = JOY_BUTTON_DPAD_DOWN
 		assert_true(InputMap.action_has_event("ui_down", dpad_down), "ui_down should contain JOY_BUTTON_DPAD_DOWN")
-

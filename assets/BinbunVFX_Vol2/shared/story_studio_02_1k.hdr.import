@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://ed44j8f3a8us"
 path.bptc="res://.godot/imported/story_studio_02_1k.hdr-6e28fc36b6eadb2fe0e50a21de2b4bfa.bptc.ctex"
+path.astc="res://.godot/imported/story_studio_02_1k.hdr-6e28fc36b6eadb2fe0e50a21de2b4bfa.astc.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/BinbunVFX_Vol2/shared/story_studio_02_1k.hdr"
-dest_files=["res://.godot/imported/story_studio_02_1k.hdr-6e28fc36b6eadb2fe0e50a21de2b4bfa.bptc.ctex"]
+dest_files=["res://.godot/imported/story_studio_02_1k.hdr-6e28fc36b6eadb2fe0e50a21de2b4bfa.bptc.ctex", "res://.godot/imported/story_studio_02_1k.hdr-6e28fc36b6eadb2fe0e50a21de2b4bfa.astc.ctex"]
 
 [params]
 
