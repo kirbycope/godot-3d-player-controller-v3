@@ -381,22 +381,22 @@ func _get_water_surface_along_up() -> float:
 		if not overlapping:
 			continue
 
-		var collision_shape := water_area.get_node_or_null("CollisionShape3D") as CollisionShape3D
-		if not collision_shape:
+		var water_collision_shape := water_area.get_node_or_null("CollisionShape3D") as CollisionShape3D
+		if not water_collision_shape:
 			continue
 
-		var box_shape := collision_shape.shape as BoxShape3D
+		var box_shape := water_collision_shape.shape as BoxShape3D
 		if not box_shape:
 			continue
 
-		var up_in_local: Vector3 = collision_shape.global_basis.inverse() * up_direction
+		var up_in_local: Vector3 = water_collision_shape.global_basis.inverse() * up_direction
 		var half_size: Vector3 = box_shape.size * 0.5
 		var half_extent_along_up: float = abs(up_in_local.x) * half_size.x \
 			+ abs(up_in_local.y) * half_size.y \
 			+ abs(up_in_local.z) * half_size.z
 
 		var local_surface: Vector3 = up_in_local.normalized() * half_extent_along_up
-		var world_surface: Vector3 = collision_shape.to_global(local_surface)
+		var world_surface: Vector3 = water_collision_shape.to_global(local_surface)
 		var surface_along_up: float = up_direction.dot(world_surface)
 
 		if not has_surface or surface_along_up > highest_surface_along_up:

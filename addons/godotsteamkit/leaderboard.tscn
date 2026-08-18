@@ -1,0 +1,169 @@
+[gd_scene format=3 uid="uid://b2ove2ds0u4o2"]
+
+[ext_resource type="Theme" uid="uid://dlt46qyemf6cj" path="res://addons/godotsteamkit/themes/godotsteam.tres" id="1_ddfgb"]
+[ext_resource type="Script" uid="uid://byn2atm16nytl" path="res://addons/godotsteamkit/leaderboard.gd" id="1_ni5bx"]
+[ext_resource type="LabelSettings" uid="uid://bpr00dfhc336p" path="res://addons/godotsteamkit/themes/label_settings/leaderboard_title.tres" id="3_nsa2n"]
+[ext_resource type="LabelSettings" uid="uid://dioy8u206kxue" path="res://addons/godotsteamkit/themes/label_settings/leaderboard_subtitles.tres" id="4_nsa2n"]
+
+[node name="Leaderboards" type="Control" unique_id=1041951712]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -720.0
+offset_top = -400.0
+offset_right = 720.0
+offset_bottom = 400.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_ddfgb")
+script = ExtResource("1_ni5bx")
+download_at_ready = true
+leaderboard_api_names = Dictionary[StringName, StringName]({
+&"most_assists": &"Most Kill Assists",
+&"most_kills_fire": &"Most Team Fire Kills",
+&"most_kills_sponge": &"Most Team Sponge Kills",
+&"most_kills_water": &"Most  Team Water Kills",
+&"most_wins_fws": &"Most FWS Wins"
+})
+metadata/_edit_lock_ = true
+
+[node name="Panel" type="Panel" parent="." unique_id=1298103587]
+custom_minimum_size = Vector2(1200, 800)
+layout_mode = 0
+offset_right = 1440.0
+offset_bottom = 800.0
+metadata/_edit_lock_ = true
+
+[node name="Margin" type="MarginContainer" parent="Panel" unique_id=2121011992]
+custom_minimum_size = Vector2(1200, 800)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_lock_ = true
+
+[node name="VFrame" type="VBoxContainer" parent="Panel/Margin" unique_id=215864851]
+layout_mode = 2
+metadata/_edit_lock_ = true
+
+[node name="Title" type="Label" parent="Panel/Margin/VFrame" unique_id=1393218663]
+layout_mode = 2
+text = "Steam Leaderboard"
+label_settings = ExtResource("3_nsa2n")
+horizontal_alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="HFrame" type="HBoxContainer" parent="Panel/Margin/VFrame" unique_id=61292056]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 25
+metadata/_edit_lock_ = true
+
+[node name="VFrame" type="VBoxContainer" parent="Panel/Margin/VFrame/HFrame" unique_id=301347049]
+layout_mode = 2
+size_flags_horizontal = 3
+metadata/_edit_lock_ = true
+
+[node name="Scroll" type="ScrollContainer" parent="Panel/Margin/VFrame/HFrame/VFrame" unique_id=1295860833]
+layout_mode = 2
+size_flags_vertical = 3
+metadata/_edit_lock_ = true
+
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/VFrame/HFrame/VFrame/Scroll" unique_id=571598143]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+metadata/_edit_lock_ = true
+
+[node name="LeadersList" type="VBoxContainer" parent="Panel/Margin/VFrame/HFrame/VFrame/Scroll/Margin" unique_id=1852993325]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 10
+metadata/_edit_lock_ = true
+
+[node name="Controls" type="VBoxContainer" parent="Panel/Margin/VFrame/HFrame" unique_id=952602916]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+theme_override_constants/separation = 25
+metadata/_edit_lock_ = true
+
+[node name="Current" type="VBoxContainer" parent="Panel/Margin/VFrame/HFrame/Controls" unique_id=1761262703]
+layout_mode = 2
+theme_override_constants/separation = 15
+metadata/_edit_lock_ = true
+
+[node name="Leaderboard" type="Label" parent="Panel/Margin/VFrame/HFrame/Controls/Current" unique_id=1101989966]
+layout_mode = 2
+text = "Current Leaderboard"
+label_settings = ExtResource("4_nsa2n")
+metadata/_edit_lock_ = true
+
+[node name="APINames" type="OptionButton" parent="Panel/Margin/VFrame/HFrame/Controls/Current" unique_id=1153866851]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 75)
+layout_mode = 2
+metadata/_edit_lock_ = true
+
+[node name="DataRequest" type="VBoxContainer" parent="Panel/Margin/VFrame/HFrame/Controls" unique_id=211119820]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 15
+metadata/_edit_lock_ = true
+
+[node name="Requesting" type="Label" parent="Panel/Margin/VFrame/HFrame/Controls/DataRequest" unique_id=728915472]
+layout_mode = 2
+text = "Score Types"
+label_settings = ExtResource("4_nsa2n")
+metadata/_edit_lock_ = true
+
+[node name="RequestTypes" type="OptionButton" parent="Panel/Margin/VFrame/HFrame/Controls/DataRequest" unique_id=429000421 groups=["function_buttons"]]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 75)
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "Global"
+popup/item_0/id = 0
+popup/item_1/text = "Global Around User"
+popup/item_1/id = 1
+popup/item_2/text = "Friends Only"
+popup/item_2/id = 2
+metadata/_edit_lock_ = true
+
+[node name="Sort" type="VBoxContainer" parent="Panel/Margin/VFrame/HFrame/Controls" unique_id=666336700]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 15
+metadata/_edit_lock_ = true
+
+[node name="Sorting" type="Label" parent="Panel/Margin/VFrame/HFrame/Controls/Sort" unique_id=593964585]
+layout_mode = 2
+text = "Sorting"
+label_settings = ExtResource("4_nsa2n")
+metadata/_edit_lock_ = true
+
+[node name="SortOptions" type="OptionButton" parent="Panel/Margin/VFrame/HFrame/Controls/Sort" unique_id=1254015685 groups=["function_buttons"]]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 75)
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "None"
+popup/item_0/id = 0
+popup/item_1/text = "Ascending"
+popup/item_1/id = 1
+popup/item_2/text = "Descending"
+popup/item_2/id = 2
+metadata/_edit_lock_ = true
+
+[node name="DownloadEntries" type="Button" parent="Panel/Margin/VFrame/HFrame/Controls" unique_id=1539170541 groups=["function_buttons"]]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 75)
+layout_mode = 2
+text = "Download Entries"
+metadata/_edit_lock_ = true

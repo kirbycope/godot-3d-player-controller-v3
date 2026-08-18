@@ -1,0 +1,7 @@
+[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://cccv0hcqhqvac"]
+
+[ext_resource type="FontFile" uid="uid://c3e1tjlxv4ka5" path="res://addons/godotsteamkit/fonts/Inter-Bold.otf" id="1_pdfnv"]
+
+[resource]
+font = ExtResource("1_pdfnv")
+font_size = 30

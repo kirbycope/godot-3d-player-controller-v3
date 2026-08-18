@@ -9,21 +9,21 @@ class StaminaTestBase:
 	var root: Node3D
 	var player: Player
 	var stamina: TextureProgressBar
-	var floor: StaticBody3D
+	var floor_body: StaticBody3D
 
 	func before_each() -> void:
 		root = Node3D.new()
 		add_child_autofree(root)
 
 		# Create floor
-		floor = StaticBody3D.new()
+		floor_body = StaticBody3D.new()
 		var floor_shape = CollisionShape3D.new()
 		var box = BoxShape3D.new()
 		box.size = Vector3(100, 1, 100)
 		floor_shape.shape = box
-		floor.add_child(floor_shape)
-		floor.position = Vector3(0, -0.5, 0)
-		root.add_child(floor)
+		floor_body.add_child(floor_shape)
+		floor_body.position = Vector3(0, -0.5, 0)
+		root.add_child(floor_body)
 
 		# Instantiate Player
 		player = PlayerScene.instantiate()

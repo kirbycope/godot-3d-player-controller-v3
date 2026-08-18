@@ -8,7 +8,7 @@ class FsmTestBase:
 	var PlayerScene = load("res://addons/3d_player_controller/player.tscn")
 	var root: Node3D
 	var player: Player
-	var floor: StaticBody3D
+	var floor_body: StaticBody3D
 	var wall: StaticBody3D
 	
 	func before_each() -> void:
@@ -16,14 +16,14 @@ class FsmTestBase:
 		add_child_autofree(root)
 		
 		# Create floor
-		floor = StaticBody3D.new()
+		floor_body = StaticBody3D.new()
 		var floor_shape = CollisionShape3D.new()
 		var box = BoxShape3D.new()
 		box.size = Vector3(100, 1, 100)
 		floor_shape.shape = box
-		floor.add_child(floor_shape)
-		floor.position = Vector3(0, -0.5, 0)
-		root.add_child(floor)
+		floor_body.add_child(floor_shape)
+		floor_body.position = Vector3(0, -0.5, 0)
+		root.add_child(floor_body)
 		
 		# Create walls for climbing (surrounding player closely so 1m raycast hits)
 		for dir in [Vector3(0, 0, -1.2), Vector3(0, 0, 1.2), Vector3(-1.2, 0, 0), Vector3(1.2, 0, 0)]:

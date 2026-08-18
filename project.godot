@@ -19,6 +19,10 @@ config/icon="res://icon.svg"
 
 buses/default_bus_layout="uid://kfdo4yimvqd0"
 
+[autoload]
+
+Steamworks="*res://addons/godotsteamkit/autoloads/steamworks.gd"
+
 [debug]
 
 file_logging/enable_file_logging=true
@@ -68,3 +72,7 @@ weather_precipitation_strength={
 "type": "float",
 "value": 0.0
 }
+
+[steam]
+
+initialization/app_data/app_id=480

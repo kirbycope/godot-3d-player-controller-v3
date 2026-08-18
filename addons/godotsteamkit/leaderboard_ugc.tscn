@@ -1,0 +1,65 @@
+[gd_scene format=3 uid="uid://dt5mdtfdvyy1m"]
+
+[ext_resource type="Script" uid="uid://cgcp08fg0f0qp" path="res://addons/godotsteamkit/leaderboard_ugc.gd" id="1_lkt0t"]
+[ext_resource type="Theme" uid="uid://dlt46qyemf6cj" path="res://addons/godotsteamkit/themes/godotsteam.tres" id="1_xp8h8"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_tuu2w"]
+size = Vector2(256, 256)
+
+[node name="UGC" type="Control" unique_id=1691734256]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_xp8h8")
+script = ExtResource("1_lkt0t")
+metadata/_edit_lock_ = true
+
+[node name="Background" type="ColorRect" parent="." unique_id=2032604534]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.78431374)
+metadata/_edit_lock_ = true
+
+[node name="Margin" type="MarginContainer" parent="." unique_id=439146685]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+metadata/_edit_lock_ = true
+
+[node name="Center" type="CenterContainer" parent="Margin" unique_id=564606574]
+layout_mode = 2
+metadata/_edit_lock_ = true
+
+[node name="Frame" type="VBoxContainer" parent="Margin/Center" unique_id=587516195]
+layout_mode = 2
+metadata/_edit_lock_ = true
+
+[node name="UGCImage" type="TextureRect" parent="Margin/Center/Frame" unique_id=487433381]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+texture = SubResource("PlaceholderTexture2D_tuu2w")
+metadata/_edit_lock_ = true
+
+[node name="Close" type="Button" parent="Margin/Center/Frame" unique_id=422895286]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+text = "Close"
+metadata/_edit_lock_ = true
