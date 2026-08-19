@@ -14,6 +14,13 @@ var tips: Array[String] = [
 	"Tip: This space intentionally left without a tip.",
 	"Tip: Everything is going according to plan.",
 	"Tip: It's supposed to take this long.",
+	"tip: This was a tip until it wasn't.",
+	"tip: It's a tip, mabey.",
+	"tip: This tip was made by a child.",
+	"tip: you can go forever until you can't.",
+	"tip: Have you punched the ball yet?",
+	"tip: Does that bar mace you want to eat a chocolate bar?"
+	
 ]
 
 var _scene_path: String = ""
@@ -39,7 +46,10 @@ func _process(_delta: float) -> void:
 		return
 
 	var progress: Array[float] = []
-	var status := ResourceLoader.load_threaded_get_status(_scene_path, progress)
+	var status: ResourceLoader.ThreadLoadStatus = ResourceLoader.load_threaded_get_status(
+			_scene_path,
+			progress,
+	)
 	var progress_percent: int = roundi(progress[0] * 100.0) if not progress.is_empty() else 0
 	progress_bar.value = progress_percent
 	_report_newly_cached_dependencies()
