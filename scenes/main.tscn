@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bbwlgibrls8fb" path="res://scenes/main.gd" id="1_h2yge"]
 [ext_resource type="PackedScene" uid="uid://cs1ytkq7kgqdu" path="res://addons/3d_player_controller/loading.tscn" id="2_0wfyh"]
+[ext_resource type="PackedScene" uid="uid://jpcg14pa7e45" path="res://addons/3d_player_controller/title_screen.tscn" id="3_sugp2"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_sugp2"]
 font_size = 32
@@ -43,3 +44,7 @@ text = "Click to Start"
 label_settings = SubResource("LabelSettings_sugp2")
 
 [node name="Loading" parent="." unique_id=1865975731 instance=ExtResource("2_0wfyh")]
+visible = false
+
+[node name="TitleScreen" parent="." unique_id=1855623121 instance=ExtResource("3_sugp2")]
+visible = false
