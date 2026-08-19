@@ -2,7 +2,7 @@ extends GutTest
 
 const MAIN_SCENE = preload("res://scenes/main.tscn")
 const TITLE_SCREEN_SCENE = preload("res://scenes/title_screen.tscn")
-const LOADING_SCENE = preload("res://addons/3d_player_controller/loading.tscn")
+const LOADING_SCENE = preload("res://scenes/loading.tscn")
 
 
 func test_loading_node_initial_state() -> void:
@@ -69,6 +69,19 @@ func test_title_screen_emits_multi_player_pressed_on_touch_button() -> void:
 	touch_mp.emit_signal("pressed")
 
 	assert_signal_emitted(title_screen, "multi_player_pressed", "Touch button should emit multi_player_pressed signal")
+
+
+func test_title_screen_version_and_copyright_labels() -> void:
+	var title_screen: CanvasLayer = TITLE_SCREEN_SCENE.instantiate()
+	add_child_autofree(title_screen)
+
+	var version: String = ProjectSettings.get_setting("application/config/version", "")
+	var expected_version: String = version if version.begins_with("v") else "v" + version
+	assert_eq(title_screen.label_version.text, expected_version, "Label_Version should match config/version")
+
+	var current_year: int = Time.get_date_dict_from_system().year
+	var expected_copyright: String = "© Timothy Cope %d" % current_year
+	assert_eq(title_screen.label_copyright.text, expected_copyright, "Label_Copyright should match current year")
 
 
 func test_main_scene_wiring() -> void:

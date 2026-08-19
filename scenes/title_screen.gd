@@ -7,11 +7,20 @@ signal multi_player_pressed
 @onready var button_multi_player: Button = $VBoxContainer/Button_MultiPlayer
 @onready var button_options: Button = $VBoxContainer/HBoxContainer/Button_Options
 @onready var button_quit: Button = $VBoxContainer/HBoxContainer/Button_Quit
+@onready var label_version: Label = $Label_Version
+@onready var label_copyright: Label = $Label_Copyright
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	button_single_player.grab_focus()
+	for button: Button in [button_single_player, button_multi_player, button_options, button_quit]:
+		button.mouse_entered.connect(button.grab_focus)
+	var version: String = ProjectSettings.get_setting("application/config/version", "")
+	if not version.is_empty():
+		label_version.text = version if version.begins_with("v") else "v" + version
+	var current_year: int = Time.get_date_dict_from_system().year
+	label_copyright.text = "© Timothy Cope %d" % current_year
 
 
 func _on_button_single_player_pressed() -> void:

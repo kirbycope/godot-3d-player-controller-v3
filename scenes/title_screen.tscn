@@ -28,20 +28,24 @@ theme_override_constants/separation = 16
 [node name="Button_SinglePlayer" type="Button" parent="VBoxContainer" unique_id=290549578]
 custom_minimum_size = Vector2(580, 58)
 layout_mode = 2
+theme_override_constants/outline_size = 8
 theme_override_font_sizes/font_size = 24
 text = "Single-Player"
 
 [node name="TouchScreenButton_SinglePlayer" type="TouchScreenButton" parent="VBoxContainer/Button_SinglePlayer" unique_id=170033853]
+visible = false
 position = Vector2(290, 29)
 shape = SubResource("RectangleShape2D_kxxiu")
 
 [node name="Button_MultiPlayer" type="Button" parent="VBoxContainer" unique_id=1092064221]
 custom_minimum_size = Vector2(580, 58)
 layout_mode = 2
+theme_override_constants/outline_size = 8
 theme_override_font_sizes/font_size = 24
 text = "Multi-Player"
 
 [node name="TouchScreenButton_MultiPlayer" type="TouchScreenButton" parent="VBoxContainer/Button_MultiPlayer" unique_id=1366291274]
+visible = false
 position = Vector2(290, 29)
 shape = SubResource("RectangleShape2D_kxxiu")
 
@@ -57,10 +61,12 @@ layout_mode = 2
 focus_neighbor_top = NodePath("../../Button_MultiPlayer")
 focus_neighbor_right = NodePath("../Button_Quit")
 focus_neighbor_bottom = NodePath("../Button_Quit")
+theme_override_constants/outline_size = 8
 theme_override_font_sizes/font_size = 24
 text = "Options..."
 
 [node name="TouchScreenButton_Options" type="TouchScreenButton" parent="VBoxContainer/HBoxContainer/Button_Options" unique_id=1241019840]
+visible = false
 position = Vector2(132, 29)
 shape = SubResource("RectangleShape2D_4v6o2")
 
@@ -69,10 +75,12 @@ custom_minimum_size = Vector2(264, 58)
 layout_mode = 2
 focus_neighbor_left = NodePath("../Button_Options")
 focus_neighbor_top = NodePath("../../Button_MultiPlayer")
+theme_override_constants/outline_size = 8
 theme_override_font_sizes/font_size = 24
 text = "Quit Game"
 
 [node name="TouchScreenButton_Quit" type="TouchScreenButton" parent="VBoxContainer/HBoxContainer/Button_Quit" unique_id=830131086]
+visible = false
 position = Vector2(132, 29)
 shape = SubResource("RectangleShape2D_4v6o2")
 
@@ -87,7 +95,7 @@ offset_bottom = -16.0
 grow_vertical = 0
 text = "v3.0.14"
 
-[node name="LabeL_Copyright" type="Label" parent="." unique_id=761826763]
+[node name="Label_Copyright" type="Label" parent="." unique_id=761826763]
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
