@@ -1,0 +1,111 @@
+[gd_scene format=3 uid="uid://jpcg14pa7e45"]
+
+[ext_resource type="Script" uid="uid://cxftc6tm3yvva" path="res://scenes/title_screen.gd" id="1_3tmcg"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kxxiu"]
+size = Vector2(580, 58)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4v6o2"]
+size = Vector2(264, 58)
+
+[node name="TitleScreen" type="CanvasLayer" unique_id=1855623121]
+script = ExtResource("1_3tmcg")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=481226704]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -290.0
+offset_top = -60.0
+offset_right = 290.0
+offset_bottom = 60.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 16
+
+[node name="Button_SinglePlayer" type="Button" parent="VBoxContainer" unique_id=290549578]
+custom_minimum_size = Vector2(580, 58)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Single-Player"
+
+[node name="TouchScreenButton_SinglePlayer" type="TouchScreenButton" parent="VBoxContainer/Button_SinglePlayer" unique_id=170033853]
+position = Vector2(290, 29)
+shape = SubResource("RectangleShape2D_kxxiu")
+
+[node name="Button_MultiPlayer" type="Button" parent="VBoxContainer" unique_id=1092064221]
+custom_minimum_size = Vector2(580, 58)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Multi-Player"
+
+[node name="TouchScreenButton_MultiPlayer" type="TouchScreenButton" parent="VBoxContainer/Button_MultiPlayer" unique_id=1366291274]
+position = Vector2(290, 29)
+shape = SubResource("RectangleShape2D_kxxiu")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=813455274]
+custom_minimum_size = Vector2(580, 58)
+layout_mode = 2
+theme_override_constants/separation = 54
+alignment = 1
+
+[node name="Button_Options" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=1469837830]
+custom_minimum_size = Vector2(264, 58)
+layout_mode = 2
+focus_neighbor_top = NodePath("../../Button_MultiPlayer")
+focus_neighbor_right = NodePath("../Button_Quit")
+focus_neighbor_bottom = NodePath("../Button_Quit")
+theme_override_font_sizes/font_size = 24
+text = "Options..."
+
+[node name="TouchScreenButton_Options" type="TouchScreenButton" parent="VBoxContainer/HBoxContainer/Button_Options" unique_id=1241019840]
+position = Vector2(132, 29)
+shape = SubResource("RectangleShape2D_4v6o2")
+
+[node name="Button_Quit" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=644009103]
+custom_minimum_size = Vector2(264, 58)
+layout_mode = 2
+focus_neighbor_left = NodePath("../Button_Options")
+focus_neighbor_top = NodePath("../../Button_MultiPlayer")
+theme_override_font_sizes/font_size = 24
+text = "Quit Game"
+
+[node name="TouchScreenButton_Quit" type="TouchScreenButton" parent="VBoxContainer/HBoxContainer/Button_Quit" unique_id=830131086]
+position = Vector2(132, 29)
+shape = SubResource("RectangleShape2D_4v6o2")
+
+[node name="Label_Version" type="Label" parent="." unique_id=1067505784]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -39.0
+offset_right = 70.0
+offset_bottom = -16.0
+grow_vertical = 0
+text = "v3.0.14"
+
+[node name="LabeL_Copyright" type="Label" parent="." unique_id=761826763]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -182.0
+offset_top = -39.0
+offset_right = -16.0
+offset_bottom = -16.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "© Timothy Cope 2026"
+
+[connection signal="pressed" from="VBoxContainer/Button_SinglePlayer" to="." method="_on_button_single_player_pressed"]
+[connection signal="pressed" from="VBoxContainer/Button_SinglePlayer/TouchScreenButton_SinglePlayer" to="." method="_on_touch_screen_button_single_player_pressed"]
+[connection signal="pressed" from="VBoxContainer/Button_MultiPlayer" to="." method="_on_button_multi_player_pressed"]
+[connection signal="pressed" from="VBoxContainer/Button_MultiPlayer/TouchScreenButton_MultiPlayer" to="." method="_on_touch_screen_button_multi_player_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Button_Options" to="." method="_on_button_options_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Button_Options/TouchScreenButton_Options" to="." method="_on_touch_screen_button_options_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Button_Quit" to="." method="_on_button_quit_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Button_Quit/TouchScreenButton_Quit" to="." method="_on_touch_screen_button_quit_pressed"]
