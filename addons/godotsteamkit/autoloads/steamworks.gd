@@ -30,25 +30,33 @@ var username: String = "Player"
 
 
 func _ready() -> void:
+	if OS.has_feature("web"):
+		return
 	var rendering_method: String = ProjectSettings.get_setting("rendering/renderer/rendering_method")
-	if rendering_method == "forward_plus" and ClassDB.class_exists("Steam"):
+	if rendering_method == "forward_plus" and Engine.has_singleton("Steam"):
 		initialize_steam()
 
 
 #region Collect data
 func collect_build_data() -> void:
-	build_id = Steam.getAppBuildId()
-	install_dir = Steam.getAppInstallDir(app_id)
+	if not Engine.has_singleton("Steam"):
+		return
+	var steam: Object = Engine.get_singleton("Steam")
+	build_id = steam.getAppBuildId()
+	install_dir = steam.getAppInstallDir(app_id)
 
 
 func collect_game_data() -> void:
-	app_owner = Steam.getAppOwner()
-	app_languages = Steam.getAvailableGameLanguages()
-	app_installed_depots = Steam.getInstalledDepots(app_id)
-	launch_command_line = Steam.getLaunchCommandLine()
-	is_low_violence = Steam.isLowViolence() if Steam.has_method("isLowViolence") else false
-	is_on_steam_deck = Steam.call("isSteamRunningOnSteamDeck") if Steam.has_method("isSteamRunningOnSteamDeck") else false
-	is_on_vr = Steam.isSteamRunningInVR() if Steam.has_method("isSteamRunningInVR") else false
+	if not Engine.has_singleton("Steam"):
+		return
+	var steam: Object = Engine.get_singleton("Steam")
+	app_owner = steam.getAppOwner()
+	app_languages = steam.getAvailableGameLanguages()
+	app_installed_depots = steam.getInstalledDepots(app_id)
+	launch_command_line = steam.getLaunchCommandLine()
+	is_low_violence = steam.isLowViolence() if steam.has_method("isLowViolence") else false
+	is_on_steam_deck = steam.call("isSteamRunningOnSteamDeck") if steam.has_method("isSteamRunningOnSteamDeck") else false
+	is_on_vr = steam.isSteamRunningInVR() if steam.has_method("isSteamRunningInVR") else false
 
 
 # We will get some general data about the user's setup from Steam. This will let
@@ -56,12 +64,15 @@ func collect_game_data() -> void:
 # should try to block multiplayer due to VAC bans, etc. Oh, and the Steam ID!
 # Most important piece.
 func collect_user_data() -> void:
-	steam_id = Steam.getSteamID()
-	username = Steam.getPersonaName()
-	language_game = Steam.getCurrentGameLanguage()
-	language_ui = Steam.getSteamUILanguage()
-	game_acquired = Steam.getEarliestPurchaseUnixTime(app_id)
-	is_vac_banned = Steam.isVACBanned()
+	if not Engine.has_singleton("Steam"):
+		return
+	var steam: Object = Engine.get_singleton("Steam")
+	steam_id = steam.getSteamID()
+	username = steam.getPersonaName()
+	language_game = steam.getCurrentGameLanguage()
+	language_ui = steam.getSteamUILanguage()
+	game_acquired = steam.getEarliestPurchaseUnixTime(app_id)
+	is_vac_banned = steam.isVACBanned()
 #endregion
 
 
@@ -71,16 +82,17 @@ func initialize_steam() -> void:
 		steamworks_error.emit("Steam does not exist in this application, canceling initialization.")
 		return
 
-	if not Steam.isSteamRunning():
+	var steam: Object = Engine.get_singleton("Steam")
+	if not steam.isSteamRunning():
 		printerr("Steam is not running.")
 		steamworks_error.emit("Steam is not running, canceling initialization.")
 		return
 
-	var initialize_data: Dictionary = Steam.steamInitEx(app_id, true)
+	var initialize_data: Dictionary = steam.steamInitEx(app_id, true)
 	print("Steam initialization: %s" % initialize_data)
 
-	if initialize_data['status'] != Steam.STEAM_API_INIT_RESULT_OK:
-		printerr("Failed to initialize Steam. Reason: %s" % initialize_data['verbose'])
+	if initialize_data.get('status', -1) != steam.get("STEAM_API_INIT_RESULT_OK"):
+		printerr("Failed to initialize Steam. Reason: %s" % initialize_data.get('verbose', ''))
 		steamworks_error.emit("Failed to initialized Steam.")
 		return
 

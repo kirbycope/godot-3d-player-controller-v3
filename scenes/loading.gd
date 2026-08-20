@@ -14,13 +14,12 @@ var tips: Array[String] = [
 	"Tip: This space intentionally left without a tip.",
 	"Tip: Everything is going according to plan.",
 	"Tip: It's supposed to take this long.",
-	"tip: This was a tip until it wasn't.",
-	"tip: It's a tip, mabey.",
-	"tip: This tip was made by a child.",
-	"tip: you can go forever until you can't.",
-	"tip: Have you punched the ball yet?",
-	"tip: Does that bar mace you want to eat a chocolate bar?"
-	
+	"Tip: This was a tip until it wasn't.",
+	"Tip: It's a tip, mabey.",
+	"Tip: This tip was made by a child.",
+	"Tip: you can go forever until you can't.",
+	"Tip: Have you punched the ball yet?",
+	"Tip: Does that bar mace you want to eat a chocolate bar?"
 ]
 
 var _scene_path: String = ""
