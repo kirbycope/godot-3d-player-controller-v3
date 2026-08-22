@@ -1,9 +1,0 @@
-[gd_scene format=3 uid="uid://nychjiqv2rbt"]
-
-[ext_resource type="Material" uid="uid://c35j1ymhvm83c" path="res://assets/ultrahand.tres" id="1_74lcq"]
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_5xw05"]
-material = ExtResource("1_74lcq")
-
-[node name="Ultrahand" type="MeshInstance3D" unique_id=747528790]
-mesh = SubResource("CylinderMesh_5xw05")

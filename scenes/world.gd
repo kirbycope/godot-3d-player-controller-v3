@@ -30,7 +30,7 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("whistle"):
 		if player and (player.is_paused or (player.pause and player.pause.visible)):
 			return
-		if player and player.held_object and player.held_object.is_using_ultrahand():
+		if player and player.held_object and player.held_object.is_holding_object():
 			return
 		player.state_machine.travel(player.current_state, NodeStateMachine.States.RAGDOLLING)
 

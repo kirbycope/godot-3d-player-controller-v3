@@ -340,7 +340,7 @@ class TestSkateboardingTransitions:
 
 		assert_eq(player.current_state, NodeStateMachine.States.STANDING, "Player should transition to STANDING after whistle action.")
 
-	func test_ultrahand_reserves_dpad_down_while_skateboarding():
+	func test_held_object_reserves_dpad_down_while_skateboarding():
 		player.state_machine.travel(player.current_state, NodeStateMachine.States.SKATEBOARDING)
 		await wait_physics_frames(2)
 
@@ -358,7 +358,7 @@ class TestSkateboardingTransitions:
 		assert_eq(
 			player.current_state,
 			NodeStateMachine.States.SKATEBOARDING,
-			"Ultrahand should reserve D-pad Down from skateboard dismount.",
+			"Held object controls should reserve D-pad Down from skateboard dismount.",
 		)
 		player.held_object.drop_held_rigidbody()
 
@@ -387,7 +387,7 @@ class TestSkateboardingTransitions:
 		assert_eq(pad_controls.get(player.controls.joypad_button_1_label), "Fast Push")
 		assert_false(pad_controls.has(player.controls.joypad_button_7_label))
 
-	func test_ultrahand_contextual_controls_restore_skateboarding_labels():
+	func test_held_object_contextual_controls_restore_skateboarding_labels():
 		player.state_machine.travel(player.current_state, NodeStateMachine.States.SKATEBOARDING)
 		player.controls.current_input_type = player.controls.InputType.KEYBOARD_MOUSE
 
