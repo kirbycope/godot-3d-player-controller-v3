@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://addons/radi_ot/scripts/radi_ot_player_3d.gd" id="1_radio_script"]
+[ext_resource type="Resource" path="res://addons/radi_ot/resources/stations/seattle_stations_default.tres" id="2_stations"]
+
+[node name="RadiOtPlayer3D" type="AudioStreamPlayer3D"]
+max_distance = 40.0
+unit_size = 5.0
+script = ExtResource("1_radio_script")
+station_collection = ExtResource("2_stations")

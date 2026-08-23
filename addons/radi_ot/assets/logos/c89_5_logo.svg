@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="c895_grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7209b7"/>
+      <stop offset="100%" stop-color="#3a0ca3"/>
+    </linearGradient>
+    <linearGradient id="neon_cyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4cc9f0"/>
+      <stop offset="100%" stop-color="#4895ef"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="12" fill="#0d1117"/>
+  <rect x="4" y="4" width="56" height="56" rx="8" fill="url(#c895_grad)" stroke="#f72585" stroke-width="1.5"/>
+  <!-- Equalizer Bars -->
+  <rect x="14" y="32" width="3" height="8" rx="1.5" fill="#4cc9f0"/>
+  <rect x="19" y="26" width="3" height="14" rx="1.5" fill="#4cc9f0"/>
+  <rect x="24" y="20" width="3" height="20" rx="1.5" fill="#f72585"/>
+  <rect x="29" y="28" width="3" height="12" rx="1.5" fill="#4cc9f0"/>
+  <rect x="34" y="22" width="3" height="18" rx="1.5" fill="#f72585"/>
+  <rect x="39" y="29" width="3" height="11" rx="1.5" fill="#4cc9f0"/>
+  <rect x="44" y="34" width="3" height="6" rx="1.5" fill="#4cc9f0"/>
+  <!-- Station Text -->
+  <text x="32" y="20" fill="#ffffff" font-family="system-ui, sans-serif" font-weight="900" font-size="11" text-anchor="middle" letter-spacing="1">C89.5</text>
+  <rect x="14" y="45" width="36" height="8" rx="3" fill="#f72585"/>
+  <text x="32" y="51.5" fill="#ffffff" font-family="system-ui, sans-serif" font-weight="800" font-size="6" text-anchor="middle" letter-spacing="1">DANCE RADIO</text>
+</svg>

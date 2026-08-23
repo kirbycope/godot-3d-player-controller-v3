@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="RadioStation" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://addons/radi_ot/scripts/radio_station.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://addons/radi_ot/assets/logos/space_101_logo.svg" id="2_logo"]
+
+[resource]
+script = ExtResource("1_script")
+station_name = "Space 101.1 FM"
+call_sign = "KMGP"
+frequency = 101.1
+stream_url = "https://kmgp.broadcasttool.stream/xstream.mp3"
+genre = "Indie / Local Seattle / Eclectic"
+tagline = "Seattle Community Radio from Magnolia"
+description = "Low-power community radio broadcasting from Seattle Center and Magnolia."
+logo = ExtResource("2_logo")

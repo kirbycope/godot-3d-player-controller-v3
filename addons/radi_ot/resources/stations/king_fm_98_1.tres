@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="RadioStation" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://addons/radi_ot/scripts/radio_station.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://addons/radi_ot/assets/logos/king_fm_logo.svg" id="2_logo"]
+
+[resource]
+script = ExtResource("1_script")
+station_name = "Classical KING 98.1 FM"
+call_sign = "KING-FM"
+frequency = 98.1
+stream_url = "https://classicalking.streamguys1.com/king-fm-mp3-96k"
+genre = "Classical / Orchestral"
+tagline = "Classical Music for the Pacific Northwest"
+description = "Dedicated classical music for Seattle and the greater Pacific Northwest."
+logo = ExtResource("2_logo")

@@ -1,14 +1,17 @@
 {
   "servers": {
     "github": {
-      "type": "http",
-      "url": "https://api.githubcopilot.com/mcp/"
-    }, 
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ]
+    },
     "godot": {
       "command": "npx",
       "args": ["-y", "godot-mcp-runtime"],
       "env": {
-        "GODOT_PATH": "C:\\Godot\\godot.exe"
+        "GODOT_PATH": "c:\\Godot\\godot.exe"
       }
     }
   }

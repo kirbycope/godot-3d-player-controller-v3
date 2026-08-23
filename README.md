@@ -73,3 +73,11 @@ When code is merged into `main`, the GitHub Action at `.github/workflows/release
 1. Publish a GitHub Release with the new tag and the zip as a downloadable asset
 
 The first automated release starts from `v3.0.0` if no previous `v*` tag exists.
+
+
+----
+
+## AI Notes
+- VSCode
+   - Skills: [.agents/skills/](.agents/skills/) and/or [.github/skills/](.github/skills/)
+   - MCP: [.vscode/mcp.json](.vscode/mcp.json)

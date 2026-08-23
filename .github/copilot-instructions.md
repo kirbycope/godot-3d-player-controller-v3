@@ -2,10 +2,11 @@
 
 ## Core Project Skills & Architecture
 
-- Whenever the user asks you to write code, design systems, or implement features, you MUST read and conform to the guidelines, architectural patterns, and project rules defined in the following file located at the root of this project:
+- Whenever the user asks you to write code, design systems, or implement features, you MUST read and conform to the guidelines, architectural patterns, and project rules defined in the following files located in this project:
 
-* `.github/rules/style.md`
-* `.github/skills/caveman/SKILL.md`
+* `.agents/skills/*/SKILL.md`
+* `.github/skills/*/SKILL.md`
+* `.github/rules/*.md`
 
 ### Exceptions
 
@@ -17,6 +18,9 @@
   - Also, never assume positive Y is up, use player.up_direction instead.
 - When writing GDScript, prefer explicit local variable type annotations over `:=` for any generated or edited code, especially for expressions involving math operators, `clamp()`, `min()`, `max()`, `lerp()`, `move_toward()`, `dot()`, `slide()`, node/property access, enum values, or function return values. After editing GDScript, check diagnostics for inference errors such as `Cannot infer the type of ... variable because the value doesn't have a set type` and fix them before finishing.
 - For Player child manager scripts (for example, `inventory.gd`), prefer `@export var player: Player` wired in the scene over runtime parent discovery or assignment in `_ready()` / `_process()`. Avoid per-frame wiring for player references.
+- Use the `.agents/mcp_config.json` file for configuring the MCP (Multi-Component Project) settings.
+  - Always use the `godot-mcp-runtime` to test code changes.
+  - Write tests using `gut`
 
 ## Acknowledgment
 

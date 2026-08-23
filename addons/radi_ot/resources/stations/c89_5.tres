@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="RadioStation" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://addons/radi_ot/scripts/radio_station.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://addons/radi_ot/assets/logos/c89_5_logo.svg" id="2_logo"]
+
+[resource]
+script = ExtResource("1_script")
+station_name = "C89.5 KNHC"
+call_sign = "C89.5"
+frequency = 89.5
+stream_url = "https://knhc-ice.streamguys1.com/live"
+genre = "Dance / Electronic / House"
+tagline = "Seattle's Home for Dance"
+description = "The iconic student-run high school electronic and dance music station from North Seattle."
+logo = ExtResource("2_logo")

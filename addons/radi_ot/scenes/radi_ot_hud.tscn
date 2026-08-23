@@ -1,0 +1,206 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://addons/radi_ot/scripts/radi_ot_hud.gd" id="1_hud_script"]
+[ext_resource type="Texture2D" path="res://addons/radi_ot/assets/icons/status_dot.svg" id="2_status_dot"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.06, 0.09, 0.08, 0.88)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.2, 0.7, 0.45, 0.75)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0, 0, 0, 0.4)
+shadow_size = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dial_bg"]
+bg_color = Color(0.03, 0.05, 0.04, 0.9)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dial_fill"]
+bg_color = Color(0.2, 0.85, 0.5, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bulletin"]
+bg_color = Color(0.8, 0.1, 0.1, 0.92)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 0.8, 0.2, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+shadow_color = Color(0, 0, 0, 0.6)
+shadow_size = 8
+
+[node name="RadiOtHUD" type="CanvasLayer"]
+script = ExtResource("1_hud_script")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -260.0
+offset_top = -140.0
+offset_right = 260.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="MarginContainer" type="MarginContainer" parent="Control/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="HeaderHBox" type="HBoxContainer" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="LogoTextureRect" type="TextureRect" parent="Control/PanelContainer/MarginContainer/VBoxContainer/HeaderHBox"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="StationNameLabel" type="Label" parent="Control/PanelContainer/MarginContainer/VBoxContainer/HeaderHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.95, 0.98, 0.96, 1)
+theme_override_font_sizes/font_size = 17
+text = "KEXP - KEXP 90.3 FM"
+
+[node name="FrequencyLabel" type="Label" parent="Control/PanelContainer/MarginContainer/VBoxContainer/HeaderHBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 0.9, 0.6, 1)
+theme_override_font_sizes/font_size = 17
+text = "90.3 MHz"
+
+[node name="StatusBadge" type="HBoxContainer" parent="Control/PanelContainer/MarginContainer/VBoxContainer/HeaderHBox"]
+modulate = Color(0.2, 1, 0.5, 1)
+layout_mode = 2
+theme_override_constants/separation = 4
+alignment = 2
+
+[node name="StatusDot" type="TextureRect" parent="Control/PanelContainer/MarginContainer/VBoxContainer/HeaderHBox/StatusBadge"]
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("2_status_dot")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="StatusLabel" type="Label" parent="Control/PanelContainer/MarginContainer/VBoxContainer/HeaderHBox/StatusBadge"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "ON AIR"
+
+[node name="TaglineLabel" type="Label" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.85, 0.8, 1)
+theme_override_font_sizes/font_size = 12
+text = "Where the Music Matters"
+
+[node name="GenreLabel" type="Label" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.7, 0.55, 1)
+theme_override_font_sizes/font_size = 11
+text = "• INDIE / ALTERNATIVE / ECLECTIC •"
+
+[node name="DialContainer" type="HBoxContainer" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="DialMin" type="Label" parent="Control/PanelContainer/MarginContainer/VBoxContainer/DialContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5, 0.6, 0.55, 1)
+theme_override_font_sizes/font_size = 10
+text = "88.0"
+
+[node name="DialProgressBar" type="ProgressBar" parent="Control/PanelContainer/MarginContainer/VBoxContainer/DialContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_styles/background = SubResource("StyleBoxFlat_dial_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_dial_fill")
+min_value = 88.0
+max_value = 108.0
+step = 0.1
+value = 90.3
+show_percentage = false
+
+[node name="DialMax" type="Label" parent="Control/PanelContainer/MarginContainer/VBoxContainer/DialContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5, 0.6, 0.55, 1)
+theme_override_font_sizes/font_size = 10
+text = "108.0"
+
+[node name="HintLabel" type="Label" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5, 0.6, 0.55, 1)
+theme_override_font_sizes/font_size = 11
+text = "[J] Prev Station   [L] Next Station   [M] Power"
+horizontal_alignment = 1
+
+[node name="BulletinBanner" type="PanelContainer" parent="Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -380.0
+offset_top = 24.0
+offset_right = 380.0
+offset_bottom = 84.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bulletin")
+
+[node name="MarginContainer" type="MarginContainer" parent="Control/BulletinBanner"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/BulletinBanner/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="BulletinLabel" type="Label" parent="Control/BulletinBanner/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "[EMERGENCY SEATTLE BROADCAST] Breaking news story in progress..."
+autowrap_mode = 3
