@@ -48,7 +48,7 @@ func _input(event: InputEvent) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if Engine.is_editor_hint() or radio_player == null:
 		return
-	if not radio_player.enable_keyboard_controls or not radio_player.is_power_on():
+	if not radio_player.is_power_on():
 		return
 
 	if event is InputEventKey and event.is_pressed() and not event.is_echo():

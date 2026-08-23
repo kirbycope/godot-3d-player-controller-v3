@@ -20,16 +20,20 @@ const DEFAULT_STATIONS_PATH: String = (
 )
 
 @export var station_collection: RadioStationCollection
-@export var current_station_index: int = 0:
+
+var current_station_index: int = 0:
 	set(value):
 		current_station_index = value
-		if is_inside_tree() and _power_on:
+		if is_inside_tree() and _power_on and not Engine.is_editor_hint():
 			_tune_current_station()
 
+@export_group("Audio")
 @export var play_static_while_buffering: bool = true
 @export var static_volume_db: float = -6.0
-@export var enable_hud: bool = true
 @export var auto_play_on_ready: bool = false
+
+@export_group("HUD")
+@export var enable_hud: bool = true
 
 var _power_on: bool = true
 var _is_bulletin_active: bool = false
@@ -247,6 +251,11 @@ func _setup_internal_nodes() -> void:
 
 
 func _tune_current_station() -> void:
+	if Engine.is_editor_hint():
+		if _hud != null:
+			_hud.update_station_info(get_current_station())
+		return
+
 	if not _power_on or _is_bulletin_active:
 		return
 
@@ -268,6 +277,8 @@ func _tune_current_station() -> void:
 
 
 func _play_static() -> void:
+	if Engine.is_editor_hint():
+		return
 	if _static_player != null and is_inside_tree() and not _static_player.playing:
 		_static_player.volume_db = static_volume_db
 		_static_player.play()

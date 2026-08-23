@@ -88,6 +88,8 @@ transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0.35, 
 mesh = SubResource("CylinderMesh_speaker")
 
 [node name="RadiOtPlayer3D" parent="RadioMesh" unique_id=309460503 instance=ExtResource("2_radio_player")]
+auto_play_on_ready = true
+toast_hide = false
 
 [node name="UI" type="Control" parent="." unique_id=895559756]
 layout_mode = 3

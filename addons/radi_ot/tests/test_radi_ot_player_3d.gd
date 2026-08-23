@@ -141,3 +141,15 @@ func test_spatial_audio_follows_parent_transform() -> void:
 	assert_eq(radio_instance.global_position, new_expected, "Radio should update when parent moves")
 	assert_eq(radio_instance._streamer._channel_a.global_position, new_expected, "StreamChannelA should update when parent moves")
 	assert_eq(radio_instance._streamer._channel_b.global_position, new_expected, "StreamChannelB should update when parent moves")
+
+
+func test_hud_instantiation() -> void:
+	var hud_player: RadiOtPlayer3D = RadiOtPlayer3DScript.new()
+	hud_player.enable_hud = true
+	var collection: RadioStationCollection = load(DEFAULT_COLLECTION_PATH) as RadioStationCollection
+	hud_player.station_collection = collection
+	add_child_autofree(hud_player)
+
+	assert_not_null(hud_player.get_hud(), "HUD should be instantiated when enable_hud is true")
+
+

@@ -63,6 +63,8 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
+	if Engine.is_editor_hint():
+		return
 	if _is_web_platform:
 		if _is_playing and _target_player_3d != null:
 			_update_web_spatial_audio()
@@ -95,6 +97,8 @@ func set_target_player(player: AudioStreamPlayer3D) -> void:
 
 
 func play_station(station: RadioStation) -> void:
+	if Engine.is_editor_hint():
+		return
 	if station == null:
 		stop()
 		return
