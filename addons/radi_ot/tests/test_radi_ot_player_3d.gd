@@ -111,8 +111,8 @@ func test_urgent_bulletin_auto_finishes_and_resumes() -> void:
 	_player.urgent_bulletin(null, "Flash Alert", 0.05)
 	assert_true(_player.is_bulletin_active(), "Bulletin active initially")
 
-	# Wait for timer to finish
-	await wait_seconds(0.1)
+	# Wait for bulletin_finished signal (with 2.0s max timeout for CI stability)
+	await wait_for_signal(_player.bulletin_finished, 2.0)
 	assert_false(_player.is_bulletin_active(), "Bulletin auto-finishes after timer")
 	assert_signal_emitted(_player, "bulletin_finished", "bulletin_finished emitted automatically")
 
