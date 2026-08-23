@@ -46,17 +46,19 @@ func _input(event: InputEvent) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if Engine.is_editor_hint() or not enable_keyboard_controls or not _power_on:
+	if Engine.is_editor_hint() or radio_player == null:
+		return
+	if not radio_player.enable_keyboard_controls or not radio_player.is_power_on():
 		return
 
 	if event is InputEventKey and event.is_pressed() and not event.is_echo():
 		var key_event: InputEventKey = event as InputEventKey
 		if key_event.physical_keycode == KEY_L or key_event.keycode == KEY_L:
-			tune_next_station()
+			radio_player.tune_next_station()
 		elif key_event.physical_keycode == KEY_J or key_event.keycode == KEY_J:
-			tune_previous_station()
+			radio_player.tune_previous_station()
 		elif key_event.physical_keycode == KEY_M or key_event.keycode == KEY_M:
-			toggle_power()
+			radio_player.toggle_power()
 
 
 func _start_demo() -> void:
