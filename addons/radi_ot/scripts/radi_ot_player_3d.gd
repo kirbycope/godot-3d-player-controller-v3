@@ -29,8 +29,7 @@ const DEFAULT_STATIONS_PATH: String = (
 @export var play_static_while_buffering: bool = true
 @export var static_volume_db: float = -6.0
 @export var enable_hud: bool = true
-@export var enable_keyboard_controls: bool = true
-@export var auto_play_on_ready: bool = true
+@export var auto_play_on_ready: bool = false
 
 var _power_on: bool = true
 var _is_bulletin_active: bool = false
@@ -185,6 +184,10 @@ func get_station_count() -> int:
 	return station_collection.get_station_count()
 
 
+func get_hud() -> RadiOtHUD:
+	return _hud
+
+
 # -----------------------------------------------------------------------------
 # Internal Setup & Audio Routing
 # -----------------------------------------------------------------------------
@@ -194,8 +197,8 @@ func _setup_internal_nodes() -> void:
 	if _streamer == null:
 		_streamer = RadiOtStreamer.new()
 		_streamer.name = "RadiOtStreamer"
-		add_child(_streamer)
 		_streamer.set_target_player(self)
+		add_child(_streamer)
 		_streamer.buffering_started.connect(_on_buffering_started)
 		_streamer.playback_started.connect(_on_playback_started)
 		_streamer.playback_failed.connect(_on_playback_failed)
@@ -207,6 +210,10 @@ func _setup_internal_nodes() -> void:
 		_static_player.volume_db = static_volume_db
 		_static_player.max_distance = max_distance
 		_static_player.unit_size = unit_size
+		_static_player.bus = bus
+		_static_player.attenuation_model = attenuation_model
+		_static_player.panning_strength = panning_strength
+		_static_player.doppler_tracking = doppler_tracking
 		_static_player.stream = RadiOtStaticGenerator.get_static_stream()
 		add_child(_static_player)
 
@@ -214,8 +221,13 @@ func _setup_internal_nodes() -> void:
 	if _bulletin_player == null:
 		_bulletin_player = AudioStreamPlayer3D.new()
 		_bulletin_player.name = "BulletinPlayer3D"
+		_bulletin_player.volume_db = volume_db
 		_bulletin_player.max_distance = max_distance
 		_bulletin_player.unit_size = unit_size
+		_bulletin_player.bus = bus
+		_bulletin_player.attenuation_model = attenuation_model
+		_bulletin_player.panning_strength = panning_strength
+		_bulletin_player.doppler_tracking = doppler_tracking
 		add_child(_bulletin_player)
 		_bulletin_player.finished.connect(_on_bulletin_finished)
 

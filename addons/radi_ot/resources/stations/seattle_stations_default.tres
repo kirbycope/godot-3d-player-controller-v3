@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="RadioStationCollection" load_steps=8 format=3]
+[gd_resource type="Resource" script_class="RadioStationCollection" format=3 uid="uid://dy87f2jqj3wyr"]
 
-[ext_resource type="Script" path="res://addons/radi_ot/scripts/radio_station_collection.gd" id="1_collection_script"]
+[ext_resource type="Script" uid="uid://brm8yd0581ca5" path="res://addons/radi_ot/scripts/radio_station_collection.gd" id="1_collection_script"]
 [ext_resource type="Resource" path="res://addons/radi_ot/resources/stations/kexp_90_3.tres" id="2_kexp"]
+[ext_resource type="Script" uid="uid://01ed2wgos7om" path="res://addons/radi_ot/scripts/radio_station.gd" id="2_vlsbh"]
 [ext_resource type="Resource" path="res://addons/radi_ot/resources/stations/c89_5.tres" id="3_c895"]
 [ext_resource type="Resource" path="res://addons/radi_ot/resources/stations/knkx_88_5.tres" id="4_knkx"]
 [ext_resource type="Resource" path="res://addons/radi_ot/resources/stations/king_fm_98_1.tres" id="5_king"]
@@ -10,4 +11,4 @@
 
 [resource]
 script = ExtResource("1_collection_script")
-stations = Array[Resource]([ExtResource("2_kexp"), ExtResource("3_c895"), ExtResource("4_knkx"), ExtResource("5_king"), ExtResource("6_kuow"), ExtResource("7_kbcs")])
+stations = Array[ExtResource("2_vlsbh")]([ExtResource("2_kexp"), ExtResource("3_c895"), ExtResource("4_knkx"), ExtResource("7_kbcs"), ExtResource("6_kuow"), ExtResource("5_king")])

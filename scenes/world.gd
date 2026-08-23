@@ -1,12 +1,16 @@
 extends Node3D
 
+const RADIO_OFF_ICON: Texture2D = preload("res://addons/radi_ot/assets/icons/stop_icon.svg")
+
 @export var little_buddy_count: int = 64
 @export var spawn_frame_interval: int = 4
 
 @onready var player: Player = $Player
 @onready var first_buddy: Node3D = get_node_or_null("LittleBuddy") as Node3D
+@onready var radi_ot_player: RadiOtPlayer3D = get_node_or_null("Player/RadiOtPlayer3D") as RadiOtPlayer3D
 var buddy_list: Array[Node3D] = []
 var frame_counter: int = 0
+var _was_driving: bool = false
 
 
 ## Called when the node enters the scene tree for the first time.
@@ -17,6 +21,15 @@ func _ready() -> void:
 	# Set the game style parameters
 	player.enable_paraglider = true
 	player.enable_stamina = true
+
+	if radi_ot_player:
+		radi_ot_player.auto_play_on_ready = false
+		radi_ot_player.set_power(false)
+		radi_ot_player.station_changed.connect(_on_radio_station_changed)
+		radi_ot_player.radio_toggled.connect(_on_radio_toggled)
+		var hud = radi_ot_player.get_hud()
+		if hud:
+			hud.hide_hud()
 
 	if first_buddy:
 		if player:
@@ -39,6 +52,19 @@ func _input(event: InputEvent) -> void:
 func _physics_process(_delta: float) -> void:
 	# Do nothing if not the authority
 	if not is_multiplayer_authority(): return
+
+	var is_actively_driving: bool = (
+		player != null
+		and player.is_driving
+		and not player.is_entering_vehicle
+		and not player.is_exiting_vehicle
+	)
+	if is_actively_driving != _was_driving:
+		_was_driving = is_actively_driving
+		if is_actively_driving:
+			_on_player_started_driving()
+		else:
+			_on_player_stopped_driving()
 
 	# Spawn LittleBuddy at the specified frame interval until reaching target count.
 	#if first_buddy and buddy_list.size() < little_buddy_count:
@@ -120,3 +146,102 @@ func _warp(body: Node3D, target_transform: Transform3D) -> void:
 		warp_player.orientation = Transform3D(warp_player.global_transform.basis, Vector3.ZERO)
 		warp_player.player_model.transform = warp_player.initial_player_model_transform
 		warp_player.collision_shape.transform = warp_player.initial_collision_shape_transform
+
+
+func _on_player_started_driving() -> void:
+	if radi_ot_player:
+		radi_ot_player.set_power(true)
+		var hud = radi_ot_player.get_hud()
+		if hud:
+			hud.show_toast(5.0)
+
+	if player and player.inventory:
+		var radial_menu = player.inventory.get_node_or_null("RadialMenu") as RadialMenu
+		if radial_menu:
+			radial_menu.custom_item_provider = _provide_radio_items
+			radial_menu.custom_item_selected = _on_radio_item_selected
+			radial_menu.custom_item_is_equipped = _is_radio_item_equipped
+		player.inventory.custom_cycle_handler = _on_cycle_radio_station
+
+
+func _on_player_stopped_driving() -> void:
+	if radi_ot_player:
+		radi_ot_player.set_power(false)
+		var hud = radi_ot_player.get_hud()
+		if hud:
+			hud.hide_toast()
+
+	if player and player.inventory:
+		var radial_menu = player.inventory.get_node_or_null("RadialMenu") as RadialMenu
+		if radial_menu:
+			radial_menu.custom_item_provider = Callable()
+			radial_menu.custom_item_selected = Callable()
+			radial_menu.custom_item_is_equipped = Callable()
+		player.inventory.custom_cycle_handler = Callable()
+
+
+func _provide_radio_items() -> Array:
+	var items: Array = []
+	items.append({
+		"is_radio_off": true,
+		"display_name": "Radio Off",
+		"icon": RADIO_OFF_ICON
+	})
+	if radi_ot_player and radi_ot_player.station_collection:
+		for i in range(radi_ot_player.station_collection.get_station_count()):
+			var station: RadioStation = radi_ot_player.station_collection.get_station_at(i)
+			if station:
+				items.append({
+					"station": station,
+					"station_index": i,
+					"display_name": station.get_full_title(),
+					"icon": station.logo
+				})
+	return items
+
+
+func _on_radio_item_selected(item: Variant, index: int) -> void:
+	if not radi_ot_player:
+		return
+	if index == 0 or (item is Dictionary and item.get("is_radio_off")):
+		radi_ot_player.set_power(false)
+	elif item is Dictionary and "station_index" in item:
+		radi_ot_player.set_power(true)
+		radi_ot_player.tune_to_station_index(item.station_index)
+
+
+func _is_radio_item_equipped(item: Variant, index: int) -> bool:
+	if not radi_ot_player:
+		return false
+	if index == 0 or (item is Dictionary and item.get("is_radio_off")):
+		return not radi_ot_player.is_power_on()
+	if item is Dictionary and "station_index" in item:
+		return radi_ot_player.is_power_on() and radi_ot_player.current_station_index == item.station_index
+	return false
+
+
+func _on_cycle_radio_station(direction: int) -> void:
+	if not radi_ot_player:
+		return
+	if not radi_ot_player.is_power_on():
+		radi_ot_player.set_power(true)
+		return
+	if direction > 0:
+		radi_ot_player.tune_next_station()
+	else:
+		radi_ot_player.tune_previous_station()
+
+
+func _on_radio_station_changed(_station: RadioStation) -> void:
+	if radi_ot_player and _was_driving:
+		var hud = radi_ot_player.get_hud()
+		if hud:
+			hud.show_toast(5.0)
+
+
+func _on_radio_toggled(_is_playing: bool) -> void:
+	if radi_ot_player and _was_driving:
+		var hud = radi_ot_player.get_hud()
+		if hud:
+			hud.show_toast(5.0)
+

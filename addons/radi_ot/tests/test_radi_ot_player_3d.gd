@@ -115,3 +115,29 @@ func test_urgent_bulletin_auto_finishes_and_resumes() -> void:
 	await wait_seconds(0.1)
 	assert_false(_player.is_bulletin_active(), "Bulletin auto-finishes after timer")
 	assert_signal_emitted(_player, "bulletin_finished", "bulletin_finished emitted automatically")
+
+
+func test_spatial_audio_follows_parent_transform() -> void:
+	var dummy_parent: Node3D = Node3D.new()
+	add_child_autofree(dummy_parent)
+	dummy_parent.position = Vector3(50.0, 10.0, -25.0)
+
+	var radio_instance: RadiOtPlayer3D = RadiOtPlayer3DScript.new()
+	radio_instance.enable_hud = false
+	dummy_parent.add_child(radio_instance)
+	radio_instance.position = Vector3(0.0, 1.5, 0.0)
+
+	# Verify global transform propagation to internal stream channels and players
+	var expected_global_pos: Vector3 = Vector3(50.0, 11.5, -25.0)
+	assert_eq(radio_instance.global_position, expected_global_pos, "Radio should follow parent Node3D")
+	assert_eq(radio_instance._static_player.global_position, expected_global_pos, "Static player should follow radio position")
+	assert_eq(radio_instance._bulletin_player.global_position, expected_global_pos, "Bulletin player should follow radio position")
+	assert_eq(radio_instance._streamer._channel_a.global_position, expected_global_pos, "StreamChannelA should follow radio position")
+	assert_eq(radio_instance._streamer._channel_b.global_position, expected_global_pos, "StreamChannelB should follow radio position")
+
+	# Move parent
+	dummy_parent.global_position = Vector3(100.0, 5.0, 200.0)
+	var new_expected: Vector3 = Vector3(100.0, 6.5, 200.0)
+	assert_eq(radio_instance.global_position, new_expected, "Radio should update when parent moves")
+	assert_eq(radio_instance._streamer._channel_a.global_position, new_expected, "StreamChannelA should update when parent moves")
+	assert_eq(radio_instance._streamer._channel_b.global_position, new_expected, "StreamChannelB should update when parent moves")

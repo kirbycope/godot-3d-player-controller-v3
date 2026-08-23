@@ -1,6 +1,6 @@
 @tool
 class_name RadiOtStreamer
-extends Node
+extends Node3D
 
 ## Backend audio stream manager for radi-ot.
 ## Handles dual-platform continuous streaming for Web (Compatibility)
@@ -72,6 +72,24 @@ func _process(_delta: float) -> void:
 
 func set_target_player(player: AudioStreamPlayer3D) -> void:
 	_target_player_3d = player
+	if _channel_a != null and is_instance_valid(_channel_a):
+		var cur_parent: Node = _channel_a.get_parent()
+		var new_parent: Node = _target_player_3d if _target_player_3d != null else self
+		if cur_parent != new_parent:
+			if cur_parent != null:
+				cur_parent.remove_child(_channel_a)
+			new_parent.add_child(_channel_a)
+			_channel_a.position = Vector3.ZERO
+
+	if _channel_b != null and is_instance_valid(_channel_b):
+		var cur_parent: Node = _channel_b.get_parent()
+		var new_parent: Node = _target_player_3d if _target_player_3d != null else self
+		if cur_parent != new_parent:
+			if cur_parent != null:
+				cur_parent.remove_child(_channel_b)
+			new_parent.add_child(_channel_b)
+			_channel_b.position = Vector3.ZERO
+
 	_setup_desktop_channels()
 	_sync_channel_properties()
 
@@ -81,6 +99,7 @@ func play_station(station: RadioStation) -> void:
 		stop()
 		return
 
+	_sync_channel_properties()
 	var url: String = station.stream_url.strip_edges()
 	_current_url = url
 	_is_buffering = true
@@ -274,12 +293,14 @@ func _setup_desktop_channels() -> void:
 		_channel_a = AudioStreamPlayer3D.new()
 		_channel_a.name = "StreamChannelA"
 		parent_node.add_child(_channel_a)
+		_channel_a.position = Vector3.ZERO
 		_channel_a.finished.connect(_on_channel_a_finished)
 
 	if _channel_b == null:
 		_channel_b = AudioStreamPlayer3D.new()
 		_channel_b.name = "StreamChannelB"
 		parent_node.add_child(_channel_b)
+		_channel_b.position = Vector3.ZERO
 		_channel_b.finished.connect(_on_channel_b_finished)
 
 	_sync_channel_properties()
@@ -295,6 +316,10 @@ func _sync_channel_properties() -> void:
 		_channel_a.volume_db = _target_player_3d.volume_db
 		_channel_a.bus = _target_player_3d.bus
 		_channel_a.attenuation_model = _target_player_3d.attenuation_model
+		_channel_a.panning_strength = _target_player_3d.panning_strength
+		_channel_a.doppler_tracking = _target_player_3d.doppler_tracking
+		_channel_a.max_polyphony = _target_player_3d.max_polyphony
+		_channel_a.position = Vector3.ZERO
 
 	if _channel_b != null:
 		_channel_b.max_distance = _target_player_3d.max_distance
@@ -302,6 +327,10 @@ func _sync_channel_properties() -> void:
 		_channel_b.volume_db = _target_player_3d.volume_db
 		_channel_b.bus = _target_player_3d.bus
 		_channel_b.attenuation_model = _target_player_3d.attenuation_model
+		_channel_b.panning_strength = _target_player_3d.panning_strength
+		_channel_b.doppler_tracking = _target_player_3d.doppler_tracking
+		_channel_b.max_polyphony = _target_player_3d.max_polyphony
+		_channel_b.position = Vector3.ZERO
 
 
 func _set_desktop_paused(is_paused: bool) -> void:

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://ytmc6rccjh7i"]
 
 [ext_resource type="Texture2D" uid="uid://ceiimv767w1ec" path="res://assets/kenney_nl/Prototype Textures/Vector/texture_04.svg" id="1_oubdj"]
-[ext_resource type="PackedScene" uid="uid://bwngmjoqsrtcx" path="res://scenes/crv.tscn" id="2_wgoyw"]
+[ext_resource type="PackedScene" uid="uid://b72r5jskemotf" path="res://scenes/honda_crv.tscn" id="2_wgoyw"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_t6skd"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
