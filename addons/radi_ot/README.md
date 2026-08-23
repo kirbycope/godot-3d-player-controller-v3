@@ -2,7 +2,7 @@
 
 # radi-ot (Radio + Godot) 📻
 
-**radi-ot** is a feature-packed 3D audio streaming addon for **Godot 4.8** that streams real live Seattle radio stations over the internet. Built for both **Steam (Forward+)** and **Web (Compatibility)**, it features positional 3D audio, an in-game retro-modern CanvasLayer HUD, procedural FM tuning static, `[J]` / `[L]` hotkeys, and an `urgent_bulletin()` API designed for in-game narrative progression and emergency broadcasts.
+**radi-ot** is a feature-packed 3D audio streaming addon for **Godot 4.8** that streams real live Seattle radio stations over the internet. Built for both **Steam (Forward+)** and **Web (Compatibility)**, it features positional 3D audio, an in-game retro-modern CanvasLayer HUD, procedural FM tuning static, and an `urgent_bulletin()` API designed for in-game narrative progression and emergency broadcasts.
 
 ---
 
@@ -22,7 +22,7 @@
 - **Dual-Platform Streaming Engine:**
   - **Steam / Desktop (Forward+):** High-performance chunk-buffered HTTP client with automatic redirect handling (HTTP 301/302/307), MP3 frame-sync alignment, and persistent stream connection management.
   - **Web (HTML5 / Compatibility):** Native Web Audio API / HTML5 Audio integration with 3D camera-listener distance attenuation and volume tracking.
-- **Interactive Keyboard Controls:**
+- **Interactive Demo Keyboard Controls:**
   - `[L]` — Tune to Next Station
   - `[J]` — Tune to Previous Station
   - `[M]` — Toggle Radio Power On/Off
@@ -75,7 +75,12 @@ res://addons/radi_ot/scenes/radi_ot_player_3d.tscn
 - Select the `RadiOtPlayer3D` node in the Scene tree.
 - In the Inspector, verify that `station_collection` is set to `seattle_stations_default.tres` (or assign your own custom collection).
 - Run the scene (`F5` or `F6`).
-- Use `[L]` (Next Station), `[J]` (Previous Station), and `[M]` (Power Toggle) to tune between live Seattle stations.
+- Call `tune_next_station()` to go to the Next Station
+  - The demo uses the [J] key to tune next station.
+- Call `tune_previous_station()` to go to the Previous Station
+  - The demo uses the [L] key to tune previous station.
+- Call `toggle_power()` to turn the radio on or off
+  - The demo uses the [M] key to toggle power.
 
 ---
 
