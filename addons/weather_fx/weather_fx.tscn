@@ -1,7 +1,10 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://addons/weather_fx/weather_fx.gd" id="1_wfx"]
-[ext_resource type="AudioStream" path="res://assets/freesound/570701__robinhood76__10136-flag-flicking-on-strong-wind-isolated.wav" id="2_wind"]
+[ext_resource type="AudioStream" uid="uid://ba3f2ves324th" path="res://assets/gravitysound/Weather Sound Pack/Rain/light rain 1.ogg" id="2_rain_light"]
+[ext_resource type="AudioStream" uid="uid://cunptavn8fliu" path="res://assets/gravitysound/Weather Sound Pack/Rain/heavy rain 1.ogg" id="3_rain_heavy"]
+[ext_resource type="AudioStream" uid="uid://je1keybik6vk" path="res://assets/gravitysound/Weather Sound Pack/Rain and Thunder/heavy rain and thunder 1.ogg" id="4_storm"]
+[ext_resource type="AudioStream" uid="uid://f82y5pv4d1g7" path="res://assets/gravitysound/Weather Sound Pack/Wind/heavy wind.ogg" id="5_wind"]
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_rain"]
 emission_shape = 3
@@ -15,7 +18,7 @@ collision_mode = 0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rain"]
 transparency = 1
-albedo_color = Color(0.65, 0.82, 1.0, 0.6)
+albedo_color = Color(0.65, 0.82, 1, 0.6)
 emission_enabled = true
 emission = Color(0.4, 0.7, 0.9, 1)
 billboard_mode = 2
@@ -36,7 +39,7 @@ collision_mode = 0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_snow"]
 transparency = 1
-albedo_color = Color(0.95, 0.98, 1.0, 0.85)
+albedo_color = Color(0.95, 0.98, 1, 0.85)
 billboard_mode = 3
 particles_anim_h_frames = 1
 particles_anim_v_frames = 1
@@ -46,10 +49,13 @@ particles_anim_loop = false
 material = SubResource("StandardMaterial3D_snow")
 size = Vector2(0.08, 0.08)
 
-[node name="WeatherFX" type="Node3D" node_paths=PackedStringArray("rain_particles", "snow_particles", "audio_wind")]
+[node name="WeatherFX" type="Node3D" node_paths=PackedStringArray("rain_particles", "snow_particles", "audio_rain_light", "audio_rain_heavy", "audio_storm", "audio_wind")]
 script = ExtResource("1_wfx")
 rain_particles = NodePath("RainParticles")
 snow_particles = NodePath("SnowParticles")
+audio_rain_light = NodePath("RainLightSFX")
+audio_rain_heavy = NodePath("RainHeavySFX")
+audio_storm = NodePath("StormSFX")
 audio_wind = NodePath("WindSFX")
 
 [node name="RainParticles" type="GPUParticles3D" parent="."]
@@ -71,14 +77,17 @@ process_material = SubResource("ParticleProcessMaterial_snow")
 draw_pass_1 = SubResource("QuadMesh_snow")
 
 [node name="RainLightSFX" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_rain_light")
 volume_db = -6.0
 
 [node name="RainHeavySFX" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_rain_heavy")
 volume_db = -3.0
 
 [node name="StormSFX" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_storm")
 volume_db = 0.0
 
 [node name="WindSFX" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("2_wind")
+stream = ExtResource("5_wind")
 volume_db = -8.0

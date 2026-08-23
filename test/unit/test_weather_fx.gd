@@ -75,3 +75,48 @@ func test_hud_forecast_display_updates_on_biome_change() -> void:
 	# Change biome to ARCTIC_TUNDRA
 	wfx.current_biome = ClimateData.BiomeZone.ARCTIC_TUNDRA
 	assert_true(display._info_label.text.contains("Arctic Tundra"))
+
+
+func test_weather_fx_scene_audio_and_vfx() -> void:
+	var scene = load("res://addons/weather_fx/weather_fx.tscn")
+	assert_not_null(scene)
+	var instance: WeatherFX = scene.instantiate()
+	assert_not_null(instance)
+	add_child_autofree(instance)
+
+	assert_not_null(instance.rain_particles)
+	assert_not_null(instance.snow_particles)
+	assert_not_null(instance.audio_rain_light)
+	assert_not_null(instance.audio_rain_heavy)
+	assert_not_null(instance.audio_storm)
+	assert_not_null(instance.audio_wind)
+
+	assert_not_null(instance.audio_rain_light.stream)
+	assert_not_null(instance.audio_rain_heavy.stream)
+	assert_not_null(instance.audio_storm.stream)
+	assert_not_null(instance.audio_wind.stream)
+
+	# Verify rain weather activates rain audio and particles
+	instance.set_weather(ClimateData.WeatherType.RAIN)
+	assert_true(instance.rain_particles.emitting)
+	assert_true(instance.audio_rain_light.playing)
+
+	# Verify heavy rain
+	instance.set_weather(ClimateData.WeatherType.HEAVY_RAIN)
+	assert_true(instance.rain_particles.emitting)
+	assert_true(instance.audio_rain_heavy.playing)
+
+	# Verify storm
+	instance.set_weather(ClimateData.WeatherType.STORM)
+	assert_true(instance.rain_particles.emitting)
+	assert_true(instance.audio_storm.playing)
+	assert_true(instance.audio_wind.playing)
+
+	# Verify blue sky clears all audio and particles
+	instance.set_weather(ClimateData.WeatherType.BLUE_SKY)
+	assert_false(instance.rain_particles.emitting)
+	assert_false(instance.audio_rain_light.playing)
+	assert_false(instance.audio_rain_heavy.playing)
+	assert_false(instance.audio_storm.playing)
+	assert_false(instance.audio_wind.playing)
+
