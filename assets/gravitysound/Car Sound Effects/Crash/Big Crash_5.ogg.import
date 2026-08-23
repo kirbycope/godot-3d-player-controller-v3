@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://co6531snsq74b"
+path="res://.godot/imported/Big Crash_5.ogg-69cac779d4d374f899e6f732cc5eb0ef.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Car Sound Effects/Crash/Big Crash_5.ogg"
+dest_files=["res://.godot/imported/Big Crash_5.ogg-69cac779d4d374f899e6f732cc5eb0ef.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

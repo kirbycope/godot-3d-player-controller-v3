@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://drkhcrx1np1ft"
+path="res://.godot/imported/Mouse_2.ogg-baa9f7d4b45367d0cc0df6fcc3bff006.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Mouse_2.ogg"
+dest_files=["res://.godot/imported/Mouse_2.ogg-baa9f7d4b45367d0cc0df6fcc3bff006.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

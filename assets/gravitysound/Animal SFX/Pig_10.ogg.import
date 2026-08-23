@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://cwmed2oyvkeld"
+path="res://.godot/imported/Pig_10.ogg-ac60d14d666dda26f1ee88fa7a2ea169.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Pig_10.ogg"
+dest_files=["res://.godot/imported/Pig_10.ogg-ac60d14d666dda26f1ee88fa7a2ea169.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

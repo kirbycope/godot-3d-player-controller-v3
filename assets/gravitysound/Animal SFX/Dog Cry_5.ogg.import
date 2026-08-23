@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dybusnhg56msx"
+path="res://.godot/imported/Dog Cry_5.ogg-d3c4ed4d739d7cd9c0ff6383854ae948.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Dog Cry_5.ogg"
+dest_files=["res://.godot/imported/Dog Cry_5.ogg-d3c4ed4d739d7cd9c0ff6383854ae948.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

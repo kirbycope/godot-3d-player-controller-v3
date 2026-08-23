@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://q2pgblldrirb"
+path="res://.godot/imported/Foot Push on Concrete_4.ogg-3c5738e63fb7cf2069d006f30de0ae84.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Skateboard SFX/Foot Push on Concrete_4.ogg"
+dest_files=["res://.godot/imported/Foot Push on Concrete_4.ogg-3c5738e63fb7cf2069d006f30de0ae84.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

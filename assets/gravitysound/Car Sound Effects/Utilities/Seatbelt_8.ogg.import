@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://ciprvqpm0y8su"
+path="res://.godot/imported/Seatbelt_8.ogg-f65ba9c6a56d172602643dd35511d652.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Car Sound Effects/Utilities/Seatbelt_8.ogg"
+dest_files=["res://.godot/imported/Seatbelt_8.ogg-f65ba9c6a56d172602643dd35511d652.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

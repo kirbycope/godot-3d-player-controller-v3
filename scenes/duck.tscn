@@ -7,12 +7,12 @@
 [ext_resource type="Texture2D" uid="uid://5viksjufvekt" path="res://assets/cgtrader/bilalcreation/WALK_Duck_White_Bump.jpg" id="3_kls7j"]
 [ext_resource type="PackedScene" uid="uid://cri0y0hjph85v" path="res://assets/cgtrader/bilalcreation/EAT.glb" id="5_83675"]
 [ext_resource type="PackedScene" uid="uid://d3c50jdndr402" path="res://assets/sketchfab/knife/knife_low-poly.glb" id="5_hwgnm"]
-[ext_resource type="AudioStream" uid="uid://cubsdexg6qqu0" path="res://assets/gravitysound/Animal SFX/Duck_1.wav" id="6_8gupq"]
-[ext_resource type="AudioStream" uid="uid://cidrl14osb7js" path="res://assets/gravitysound/Animal SFX/Duck_2.wav" id="7_cso76"]
-[ext_resource type="AudioStream" uid="uid://dq121swygma47" path="res://assets/gravitysound/Animal SFX/Duck_3.wav" id="8_4hpwl"]
-[ext_resource type="AudioStream" uid="uid://brghw401jnmhu" path="res://assets/gravitysound/Animal SFX/Duck_4.wav" id="9_83675"]
-[ext_resource type="AudioStream" uid="uid://cks55thoafojn" path="res://assets/gravitysound/Animal SFX/Duck_5.wav" id="10_t4sxs"]
-[ext_resource type="AudioStream" uid="uid://baw60hpngir5h" path="res://assets/gravitysound/Animal SFX/Duck_6.wav" id="11_7o3gr"]
+[ext_resource type="AudioStream" uid="uid://5suc1n568utf" path="res://assets/gravitysound/Animal SFX/Duck_1.ogg" id="6_8gupq"]
+[ext_resource type="AudioStream" uid="uid://dli4383ofgrib" path="res://assets/gravitysound/Animal SFX/Duck_2.ogg" id="7_cso76"]
+[ext_resource type="AudioStream" uid="uid://bevv32rl2v2w" path="res://assets/gravitysound/Animal SFX/Duck_3.ogg" id="8_4hpwl"]
+[ext_resource type="AudioStream" uid="uid://bpjv21yfvyt26" path="res://assets/gravitysound/Animal SFX/Duck_4.ogg" id="9_83675"]
+[ext_resource type="AudioStream" uid="uid://dw7jihkky3b17" path="res://assets/gravitysound/Animal SFX/Duck_5.ogg" id="10_t4sxs"]
+[ext_resource type="AudioStream" uid="uid://1tij4jh6i0jx" path="res://assets/gravitysound/Animal SFX/Duck_6.ogg" id="11_7o3gr"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hwgnm"]
 resource_name = "Duck_White"

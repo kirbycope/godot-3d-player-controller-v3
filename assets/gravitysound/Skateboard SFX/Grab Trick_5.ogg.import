@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://cmiqakbtl0h8h"
+path="res://.godot/imported/Grab Trick_5.ogg-c1e67b0d6e00e1bf97150b58f7c9d1df.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Skateboard SFX/Grab Trick_5.ogg"
+dest_files=["res://.godot/imported/Grab Trick_5.ogg-c1e67b0d6e00e1bf97150b58f7c9d1df.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

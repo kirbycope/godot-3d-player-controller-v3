@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://bbf1fl223tplh"
+path="res://.godot/imported/Speed Up Inside Car_4.ogg-528a34217d813d44b1334ae78b3c990e.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Car Sound Effects/Driving/Speed Up Inside Car_4.ogg"
+dest_files=["res://.godot/imported/Speed Up Inside Car_4.ogg-528a34217d813d44b1334ae78b3c990e.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

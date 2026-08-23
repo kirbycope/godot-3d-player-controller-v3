@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://damgk075427bo"
+path="res://.godot/imported/Speed Up_5.ogg-ddb815e89f833f3a56807bf086235065.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Car Sound Effects/Driving/Speed Up_5.ogg"
+dest_files=["res://.godot/imported/Speed Up_5.ogg-ddb815e89f833f3a56807bf086235065.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

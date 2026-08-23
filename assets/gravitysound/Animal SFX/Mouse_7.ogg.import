@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://iksg6rai3pvt"
+path="res://.godot/imported/Mouse_7.ogg-342496fb778c33f56ac4e220b6850872.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Mouse_7.ogg"
+dest_files=["res://.godot/imported/Mouse_7.ogg-342496fb778c33f56ac4e220b6850872.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

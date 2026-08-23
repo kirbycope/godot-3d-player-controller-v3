@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://cfq5bln83dg8t"
+path="res://.godot/imported/Door Close_3.ogg-c324b08ba36ce977c3cd356b2ec58730.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Car Sound Effects/Utilities/Door Close_3.ogg"
+dest_files=["res://.godot/imported/Door Close_3.ogg-c324b08ba36ce977c3cd356b2ec58730.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

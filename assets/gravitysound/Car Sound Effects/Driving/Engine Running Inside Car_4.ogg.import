@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://m3k338sdkpmc"
+path="res://.godot/imported/Engine Running Inside Car_4.ogg-09fad3f2e3013fd12882f282b0117f4c.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Car Sound Effects/Driving/Engine Running Inside Car_4.ogg"
+dest_files=["res://.godot/imported/Engine Running Inside Car_4.ogg-09fad3f2e3013fd12882f282b0117f4c.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

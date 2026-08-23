@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dwyqsdlao0fog"
+path="res://.godot/imported/Windshield Wipers_2.ogg-912a7799d470375d84f6582e4901ec88.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Car Sound Effects/Utilities/Windshield Wipers_2.ogg"
+dest_files=["res://.godot/imported/Windshield Wipers_2.ogg-912a7799d470375d84f6582e4901ec88.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

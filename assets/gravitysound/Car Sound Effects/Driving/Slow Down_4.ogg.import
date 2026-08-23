@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://woq8fvbtmdo1"
+path="res://.godot/imported/Slow Down_4.ogg-65d6cf44be6d288d55115a5fbb733664.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Car Sound Effects/Driving/Slow Down_4.ogg"
+dest_files=["res://.godot/imported/Slow Down_4.ogg-65d6cf44be6d288d55115a5fbb733664.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://c5lq44hmjlwtt"
+path="res://.godot/imported/Owl_1.ogg-b5ab0f22eb9112c92d0124814ce6ea6b.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Owl_1.ogg"
+dest_files=["res://.godot/imported/Owl_1.ogg-b5ab0f22eb9112c92d0124814ce6ea6b.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

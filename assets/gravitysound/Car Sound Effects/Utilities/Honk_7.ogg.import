@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://b2jets3vmeanc"
+path="res://.godot/imported/Honk_7.ogg-2f1a6b3617aff90ca9979f4071cdcc5f.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Car Sound Effects/Utilities/Honk_7.ogg"
+dest_files=["res://.godot/imported/Honk_7.ogg-2f1a6b3617aff90ca9979f4071cdcc5f.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

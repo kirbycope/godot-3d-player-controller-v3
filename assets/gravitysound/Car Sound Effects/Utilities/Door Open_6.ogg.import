@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://bvrrwsvocc2mc"
+path="res://.godot/imported/Door Open_6.ogg-423760e7ee6e923e3f8879faa36c6d40.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Car Sound Effects/Utilities/Door Open_6.ogg"
+dest_files=["res://.godot/imported/Door Open_6.ogg-423760e7ee6e923e3f8879faa36c6d40.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

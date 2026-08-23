@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://b2klbfdp8uh2i"
+path="res://.godot/imported/Break_3.ogg-15511ba37a75494223e14666b1f7e5fd.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Car Sound Effects/Driving/Break_3.ogg"
+dest_files=["res://.godot/imported/Break_3.ogg-15511ba37a75494223e14666b1f7e5fd.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

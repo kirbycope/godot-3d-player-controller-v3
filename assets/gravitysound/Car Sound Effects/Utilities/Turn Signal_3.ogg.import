@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://ble2ekdht5ltp"
+path="res://.godot/imported/Turn Signal_3.ogg-45d7961ef2a9c8b779b57a5a95c4f616.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Car Sound Effects/Utilities/Turn Signal_3.ogg"
+dest_files=["res://.godot/imported/Turn Signal_3.ogg-45d7961ef2a9c8b779b57a5a95c4f616.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

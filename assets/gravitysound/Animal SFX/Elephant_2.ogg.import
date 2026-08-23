@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://uw4rtfd8he06"
+path="res://.godot/imported/Elephant_2.ogg-0a1b4e306c1a45fbd02dd0332471fb5f.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Elephant_2.ogg"
+dest_files=["res://.godot/imported/Elephant_2.ogg-0a1b4e306c1a45fbd02dd0332471fb5f.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

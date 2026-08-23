@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dkm7t8vgtdwbl"
+path="res://.godot/imported/Frog_2.ogg-bf1e7597587f1784aee82179c5e315fb.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Frog_2.ogg"
+dest_files=["res://.godot/imported/Frog_2.ogg-bf1e7597587f1784aee82179c5e315fb.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

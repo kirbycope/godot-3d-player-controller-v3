@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://rcohk1cinnvk"
+path="res://.godot/imported/Rooster_8.ogg-098d51756a6200627d0eac3f4eb2469b.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Rooster_8.ogg"
+dest_files=["res://.godot/imported/Rooster_8.ogg-098d51756a6200627d0eac3f4eb2469b.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

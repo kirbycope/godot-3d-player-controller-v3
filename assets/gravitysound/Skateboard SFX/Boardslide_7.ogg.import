@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dr5dfiiu2qv0s"
+path="res://.godot/imported/Boardslide_7.ogg-71b09b3dbc2c5e9a062be599dc5b6e52.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Skateboard SFX/Boardslide_7.ogg"
+dest_files=["res://.godot/imported/Boardslide_7.ogg-71b09b3dbc2c5e9a062be599dc5b6e52.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://3gko2xtefb5s"
+path="res://.godot/imported/Dog Howl_1.ogg-6398b0832a9384d58c5da09d17c893db.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Dog Howl_1.ogg"
+dest_files=["res://.godot/imported/Dog Howl_1.ogg-6398b0832a9384d58c5da09d17c893db.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

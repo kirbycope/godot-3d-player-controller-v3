@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://capbtl6pr6ckf"
+path="res://.godot/imported/Cow_6.ogg-a2405f7c2625c1598b6bd412236d44a5.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Cow_6.ogg"
+dest_files=["res://.godot/imported/Cow_6.ogg-a2405f7c2625c1598b6bd412236d44a5.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

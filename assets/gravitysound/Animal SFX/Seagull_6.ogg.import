@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://brqitdic4mk3s"
+path="res://.godot/imported/Seagull_6.ogg-12dcaad387a16b4424644f90a764b43b.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Seagull_6.ogg"
+dest_files=["res://.godot/imported/Seagull_6.ogg-12dcaad387a16b4424644f90a764b43b.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

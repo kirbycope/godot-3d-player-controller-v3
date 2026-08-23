@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://cy3tsp13d73j"
+path="res://.godot/imported/Gear Change Handle_7.ogg-fde0f68e5339c254cd121044b84b502f.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Car Sound Effects/Utilities/Gear Change Handle_7.ogg"
+dest_files=["res://.godot/imported/Gear Change Handle_7.ogg-fde0f68e5339c254cd121044b84b502f.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://b2ggv0qd2fdl8"
+path="res://.godot/imported/Cat Hiss_1.ogg-099e30894dbd321d9b2b6281f5e36515.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Cat Hiss_1.ogg"
+dest_files=["res://.godot/imported/Cat Hiss_1.ogg-099e30894dbd321d9b2b6281f5e36515.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

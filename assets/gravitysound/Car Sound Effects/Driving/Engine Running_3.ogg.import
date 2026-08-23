@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://ckfpem76hra7p"
+path="res://.godot/imported/Engine Running_3.ogg-93957e754caf3fd91c188fe3602a7fb7.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Car Sound Effects/Driving/Engine Running_3.ogg"
+dest_files=["res://.godot/imported/Engine Running_3.ogg-93957e754caf3fd91c188fe3602a7fb7.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

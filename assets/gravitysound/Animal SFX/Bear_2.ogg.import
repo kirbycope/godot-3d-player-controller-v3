@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://040p87c8lpl7"
+path="res://.godot/imported/Bear_2.ogg-d840cfa02b4cbaa467dc0fa97a5b068f.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Bear_2.ogg"
+dest_files=["res://.godot/imported/Bear_2.ogg-d840cfa02b4cbaa467dc0fa97a5b068f.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
