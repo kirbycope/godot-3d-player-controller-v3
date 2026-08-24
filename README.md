@@ -10,15 +10,15 @@ Click [here](https://timothycope.com/godot-3d-player-controller-v3/) to play!
 
 ## Documentation
 
-The general idea of this addon is that the [NodeStateMachine](/addons/3d_player_controller/state.gd) handles transitions between primary **Locomotion states** (e.g., "standing", "jumping", "climbing", "swimming"). Think of locomotion as what your character does with their lower body; only one locomotion state can be active at a time. Upper-body actions (like shooting or boxing) layer on top as secondary actions/sub-states.
+The general idea of this addon is that the [NodeStateMachine](/addons/3d_player_controller/scripts/state.gd) handles transitions between primary **Locomotion states** (e.g., "standing", "jumping", "climbing", "swimming"). Think of locomotion as what your character does with their lower body; only one locomotion state can be active at a time. Upper-body actions (like shooting or boxing) layer on top as secondary actions/sub-states.
 
-The character's [AnimationTree](/addons/3d_player_controller/animation_tree.gd) controls the actual animation playback by reading boolean state flags on the Player (e.g., `is_sprinting`, `is_climbing`).
+The character's [AnimationTree](https://docs.godotengine.org/en/stable/classes/class_animationtree.html) controls the actual animation playback by reading boolean state flags on the Player (e.g., `is_sprinting`, `is_climbing`).
 
 ### Getting Started
 
 1. Download `3d_player_controller-v3.#.#.zip` from the [Releases](https://github.com/kirbycope/godot-3d-player-controller-v3/releases) page
 1. Copy the contents of the zip (the `3d-player-controller` folder) to your project's `addons` folder.
-1. Drag-and-drop the `addons/3d_player_controller/player.tscn` file from the FileSystem dock into your scene.
+1. Drag-and-drop the `addons/3d_player_controller/scenes/player.tscn` file from the FileSystem dock into your scene.
 
 ### Adding (and Preparing) New Animations
 
@@ -50,7 +50,7 @@ The character's [AnimationTree](/addons/3d_player_controller/animation_tree.gd) 
 1. On the right, change "Settings > Loop Mode" to "Linear"
    - Do not do this step for one-shot animations, like emotes
 1. Select the "Reimport" button
-1. Open the [Player scene](/addons/3d_player_controller/player.tscn)
+1. Open the [Player scene](/addons/3d_player_controller/scenes/player.tscn)
 1. Select the "AnimationPlayer" from the Scene tree
 1. Select "Animation > Manage Animations"
 1. Select the "Load Library" button

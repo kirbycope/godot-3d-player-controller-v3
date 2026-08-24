@@ -302,3 +302,16 @@ class TestCarEvents:
 			assert_false(car_instance.fire_sfx.playing, "Fire SFX should stop playing after explosion.")
 		if car_instance.explosion_sfx:
 			assert_true(car_instance.explosion_sfx.playing, "Explosion SFX should be playing after explosion.")
+
+		# Verify burnt material applied to meshes
+		var found_burnt_mesh := false
+		for mesh_node in car_instance.find_children("*", "MeshInstance3D", true, false):
+			var mi := mesh_node as MeshInstance3D
+			if mi and not "glass" in mi.name.to_lower() and not "window" in mi.name.to_lower():
+				var mat = mi.get_surface_override_material(0)
+				if mat is StandardMaterial3D:
+					assert_almost_eq((mat as StandardMaterial3D).albedo_color.r, 0.22, 0.1, "Burnt material should be charred ash gray.")
+					found_burnt_mesh = true
+					break
+		assert_true(found_burnt_mesh, "At least one car mesh should have burnt material applied.")
+

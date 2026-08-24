@@ -10,6 +10,17 @@ In-game and in-editor date, time, and calendar progression system with full `@to
 
 ---
 
+## Interactive Demo Scene
+
+Open and run **`res://addons/date_and_time/scenes/demo/demo.tscn`** to explore time flow, day/night transitions, and calendar features:
+- **Time Scrubber**: Drag the slider (0:00 to 24:00) with real-time sun/moon lighting synchronization.
+- **Pace / Speed Multipliers**: Run time at 1x, 5x, 24x (1 min/day), 60x, or 300x.
+- **Date & Calendar Controls**: Increment Day, Month, and Year with leap year handling.
+- **Display Options**: Toggle 12h/24h format, show/hide date, and 5-min/10-min/exact minute rounding.
+- **OS Clock Sync**: Toggle synchronization with real-world system time.
+
+---
+
 ## Features
 - **In-Editor & Runtime Execution (`@tool`)**: Start, stop, and scrub through time directly in the editor viewport or at runtime.
 - **Customizable Day Length**: Set `minutes_per_day` (e.g. 15.0 or 24.0 real minutes for a 24h day).

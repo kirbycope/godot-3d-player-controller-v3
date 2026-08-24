@@ -67,6 +67,16 @@ git submodule add https://github.com/kirbycope/radi-ot.git addons/radi_ot
 
 ---
 
+## 📻 Interactive Demo Scene
+
+Open and run **`res://addons/radi_ot/scenes/demo/demo.tscn`** to experience live 3D positional radio streaming:
+- **Live Seattle Streams**: Stream real audio from KEXP, C89.5, KNKX, KUOW, KBCS, and KING-FM.
+- **Narrative Story Bulletins**: Trigger simulated emergency broadcasts with voiceovers that interrupt the live broadcast.
+- **Spatial Orbit Camera**: Orbits around the 3D radio to showcase distance attenuation and positional panning.
+- **Tuning Controls**: Switch stations (`J`/`L` keys or on-screen buttons) and toggle power (`M`).
+
+---
+
 ## 🚀 Quick Start
 
 ### 1. Add to Your Scene
@@ -101,7 +111,7 @@ extends Node3D
 @onready var radio: RadiOtPlayer3D = $RadiOtPlayer3D
 
 func trigger_emergency_story_event() -> void:
-    var news_audio: AudioStream = preload("res://assets/audio/alien_invasion_news.ogg")
+    var news_audio: AudioStream = preload("res://addons/radi_ot/assets/audio/eleven_labs/david/breaking_news_space_needle.mp3")
 
     radio.urgent_bulletin(
         news_audio,

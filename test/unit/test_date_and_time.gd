@@ -101,3 +101,14 @@ func test_standard_time_display_format() -> void:
 
 	dt.set_time(14, 30, 0)
 	assert_eq(display._standard_label.text, "02:30 PM")
+
+
+func test_date_and_time_demo_scene_instantiation() -> void:
+	var scene = load("res://addons/date_and_time/scenes/demo/demo.tscn")
+	assert_not_null(scene)
+	var demo = scene.instantiate()
+	assert_not_null(demo)
+	add_child_autofree(demo)
+	assert_not_null(demo.date_and_time)
+	assert_not_null(demo.time_slider)
+	assert_not_null(demo.speed_option_button)

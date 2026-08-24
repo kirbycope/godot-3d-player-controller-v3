@@ -119,6 +119,7 @@ func test_weather_fx_scene_audio_and_vfx() -> void:
 	add_child_autofree(instance)
 
 	assert_not_null(instance.rain_particles)
+	assert_not_null(instance.rain_splash_particles)
 	assert_not_null(instance.snow_particles)
 	assert_not_null(instance.audio_rain_light)
 	assert_not_null(instance.audio_rain_heavy)
@@ -133,22 +134,26 @@ func test_weather_fx_scene_audio_and_vfx() -> void:
 	# Verify rain weather activates rain audio and particles
 	instance.set_weather(ClimateData.WeatherType.RAIN)
 	assert_true(instance.rain_particles.emitting)
+	assert_true(instance.rain_splash_particles.emitting)
 	assert_true(instance.audio_rain_light.playing)
 
 	# Verify heavy rain
 	instance.set_weather(ClimateData.WeatherType.HEAVY_RAIN)
 	assert_true(instance.rain_particles.emitting)
+	assert_true(instance.rain_splash_particles.emitting)
 	assert_true(instance.audio_rain_heavy.playing)
 
 	# Verify storm
 	instance.set_weather(ClimateData.WeatherType.STORM)
 	assert_true(instance.rain_particles.emitting)
+	assert_true(instance.rain_splash_particles.emitting)
 	assert_true(instance.audio_storm.playing)
 	assert_true(instance.audio_wind.playing)
 
 	# Verify blue sky clears all audio and particles
 	instance.set_weather(ClimateData.WeatherType.BLUE_SKY)
 	assert_false(instance.rain_particles.emitting)
+	assert_false(instance.rain_splash_particles.emitting)
 	assert_false(instance.audio_rain_light.playing)
 	assert_false(instance.audio_rain_heavy.playing)
 	assert_false(instance.audio_storm.playing)
@@ -165,6 +170,7 @@ func test_weather_fx_pause_stops_sfx_and_vfx() -> void:
 	# Set storm weather (both VFX and SFX active)
 	instance.set_weather(ClimateData.WeatherType.STORM)
 	assert_true(instance.rain_particles.emitting)
+	assert_true(instance.rain_splash_particles.emitting)
 	assert_true(instance.audio_storm.playing)
 	assert_true(instance.audio_wind.playing)
 
@@ -172,6 +178,7 @@ func test_weather_fx_pause_stops_sfx_and_vfx() -> void:
 	instance.pause()
 	assert_false(instance.is_playing)
 	assert_false(instance.rain_particles.emitting)
+	assert_false(instance.rain_splash_particles.emitting)
 	assert_false(instance.audio_storm.playing)
 	assert_false(instance.audio_wind.playing)
 
@@ -179,18 +186,21 @@ func test_weather_fx_pause_stops_sfx_and_vfx() -> void:
 	instance.play()
 	assert_true(instance.is_playing)
 	assert_true(instance.rain_particles.emitting)
+	assert_true(instance.rain_splash_particles.emitting)
 	assert_true(instance.audio_storm.playing)
 	assert_true(instance.audio_wind.playing)
 
 	# Setting is_playing = false should also stop VFX and SFX
 	instance.is_playing = false
 	assert_false(instance.rain_particles.emitting)
+	assert_false(instance.rain_splash_particles.emitting)
 	assert_false(instance.audio_storm.playing)
 	assert_false(instance.audio_wind.playing)
 
 	# Setting is_playing = true should resume VFX and SFX
 	instance.is_playing = true
 	assert_true(instance.rain_particles.emitting)
+	assert_true(instance.rain_splash_particles.emitting)
 	assert_true(instance.audio_storm.playing)
 	assert_true(instance.audio_wind.playing)
 
@@ -288,6 +298,20 @@ func test_weather_forecast_display_pops_oldest_and_appends_newest_on_advance() -
 
 	# Scroll offset reset to scroll_offset_start
 	assert_almost_eq(display._hbox.position.x, 12.0, 0.01)
+
+
+func test_weather_fx_demo_scene_instantiation() -> void:
+	var scene = load("res://addons/weather_fx/scenes/demo/demo.tscn")
+	assert_not_null(scene)
+	var demo = scene.instantiate()
+	assert_not_null(demo)
+	add_child_autofree(demo)
+	assert_not_null(demo.weather_fx)
+	assert_not_null(demo.date_and_time)
+	assert_not_null(demo.biome_option_button)
+	assert_not_null(demo.weather_option_button)
+	assert_eq(demo.biome_option_button.item_count, 20)
+
 
 
 

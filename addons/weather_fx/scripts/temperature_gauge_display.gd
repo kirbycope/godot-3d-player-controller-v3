@@ -10,7 +10,7 @@ extends Button
 # ------------------------------------------------------------------------------
 # Constants
 # ------------------------------------------------------------------------------
-const DEFAULT_SHADER: Shader = preload("res://materials/temperature_guage.gdshader")
+const DEFAULT_SHADER: Shader = preload("res://addons/weather_fx/materials/temperature_gauge.gdshader")
 const GaugeNeedleScript: Script = preload("res://addons/weather_fx/scripts/gauge_needle.gd")
 
 # ------------------------------------------------------------------------------

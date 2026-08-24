@@ -153,3 +153,14 @@ func test_hud_instantiation() -> void:
 	assert_not_null(hud_player.get_hud(), "HUD should be instantiated when enable_hud is true")
 
 
+func test_radi_ot_demo_scene_instantiation() -> void:
+	var scene = load("res://addons/radi_ot/scenes/demo/demo.tscn")
+	assert_not_null(scene)
+	var demo = scene.instantiate()
+	assert_not_null(demo)
+	add_child_autofree(demo)
+	assert_not_null(demo.radio_player)
+	assert_not_null(demo._bulletin_button_1)
+
+
+

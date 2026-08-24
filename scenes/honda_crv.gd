@@ -263,57 +263,58 @@ func hide_menu() -> void:
 
 
 func _apply_burned_material() -> void:
-	var crv_root = get_node_or_null("Honda CRV 2023")
-	if not crv_root:
-		return
-
-	var body_node = get_node_or_null("Honda CRV 2023/Exterior body 00")
-	var burned_mat: StandardMaterial3D = null
-
-	if body_node and body_node is MeshInstance3D:
-		var orig_mat = body_node.get_surface_override_material(0)
-		if not orig_mat and body_node.mesh:
-			orig_mat = body_node.mesh.surface_get_material(0)
-		if orig_mat is StandardMaterial3D:
-			burned_mat = orig_mat.duplicate() as StandardMaterial3D
-			
-	if not burned_mat:
-		burned_mat = StandardMaterial3D.new()
-
-	burned_mat.albedo_color = Color(0.08, 0.08, 0.08, 1.0)
+	var burned_mat := StandardMaterial3D.new()
+	burned_mat.albedo_color = Color(0.22, 0.22, 0.23, 1.0)
 	burned_mat.clearcoat_enabled = false
-	burned_mat.metallic = 0.0
-	burned_mat.roughness = 1.0
+	burned_mat.metallic = 0.15
+	burned_mat.metallic_specular = 0.2
+	burned_mat.roughness = 0.82
 
 	var noise := FastNoiseLite.new()
 	noise.noise_type = FastNoiseLite.TYPE_PERLIN
 	noise.frequency = 0.05
-	noise.fractal_octaves = 3
+	noise.fractal_octaves = 4
+
+	var gradient := Gradient.new()
+	gradient.colors = PackedColorArray([Color(0.25, 0.25, 0.27, 1.0), Color(0.65, 0.65, 0.68, 1.0)])
 
 	var noise_tex := NoiseTexture2D.new()
 	noise_tex.noise = noise
 	noise_tex.seamless = true
+	noise_tex.color_ramp = gradient
 
 	burned_mat.detail_enabled = true
 	burned_mat.detail_blend_mode = BaseMaterial3D.BLEND_MODE_MUL
 	burned_mat.detail_albedo = noise_tex
 	burned_mat.roughness_texture = noise_tex
 
-	_apply_material_recursive(crv_root, burned_mat)
+	_apply_material_recursive(self, burned_mat)
+
 
 
 func _apply_material_recursive(node: Node, mat: Material) -> void:
+	# Skip VFX, particles, prompts
+	if node == fire or node == explosion or node is GPUParticles3D or node is CPUParticles3D:
+		return
+	if node.name.begins_with("VFX") or node.name.begins_with("Fire") or node.name.begins_with("Explosion") or node.name == "ActionPrompt":
+		return
+
+	if node is MeshInstance3D:
+		var node_name := node.name.to_lower()
+		if "glass" in node_name or "window" in node_name:
+			node.visible = false
+		else:
+			var surf_count := 1
+			if node.mesh:
+				surf_count = node.mesh.get_surface_count()
+			else:
+				surf_count = node.get_surface_override_material_count()
+			for i in range(surf_count):
+				node.set_surface_override_material(i, mat)
+
 	for child in node.get_children():
-		if child is MeshInstance3D:
-			if not "glass" in child.name.to_lower():
-				var surf_count := 1
-				if child.mesh:
-					surf_count = child.mesh.get_surface_count()
-				else:
-					surf_count = child.get_surface_override_material_count()
-				for i in range(surf_count):
-					child.set_surface_override_material(i, mat)
 		_apply_material_recursive(child, mat)
+
 
 
 func _update_engine_sfx() -> void:

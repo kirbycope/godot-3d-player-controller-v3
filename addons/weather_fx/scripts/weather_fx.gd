@@ -87,14 +87,14 @@ var active_weather: ClimateData.WeatherType = ClimateData.WeatherType.BLUE_SKY
 @export_group("Environment & Tracking")
 
 ## Optional link to a DateAndTime node. If not set, WeatherFX will search scene or use manual time.
-@export var date_and_time_node: DateAndTime :
+@export var date_and_time_node: Node :
 	set(value):
 		if date_and_time_node != value:
-			if date_and_time_node and date_and_time_node.time_changed.is_connected(_on_external_time_changed):
-				date_and_time_node.time_changed.disconnect(_on_external_time_changed)
+			if date_and_time_node and date_and_time_node.has_signal("time_changed") and date_and_time_node.is_connected("time_changed", _on_external_time_changed):
+				date_and_time_node.disconnect("time_changed", _on_external_time_changed)
 			date_and_time_node = value
-			if date_and_time_node:
-				date_and_time_node.time_changed.connect(_on_external_time_changed)
+			if date_and_time_node and date_and_time_node.has_signal("time_changed"):
+				date_and_time_node.connect("time_changed", _on_external_time_changed)
 
 ## Fallback time of day (0.0 - 24.0 hours) used when no DateAndTime node is linked.
 @export_range(0.0, 24.0, 0.1) var manual_time_of_day: float = 12.0 :
@@ -141,6 +141,7 @@ var current_temperature: float = 20.0
 @export_group("VFX & Audio Nodes")
 
 @export var rain_particles: GPUParticles3D
+@export var rain_splash_particles: GPUParticles3D
 @export var snow_particles: GPUParticles3D
 @export var audio_rain_light: AudioStreamPlayer
 @export var audio_rain_heavy: AudioStreamPlayer
@@ -166,7 +167,7 @@ func _ready() -> void:
 	
 	if date_and_time_node == null:
 		var found = get_tree().root.find_child("DateAndTime", true, false)
-		if found is DateAndTime:
+		if found != null:
 			date_and_time_node = found
 
 	if target_node == null:
@@ -208,6 +209,8 @@ func _process(delta: float) -> void:
 		var target_pos = target_node.global_position
 		if is_instance_valid(rain_particles):
 			rain_particles.global_position = Vector3(target_pos.x, target_pos.y + 12.0, target_pos.z)
+		if is_instance_valid(rain_splash_particles) and rain_splash_particles.get_parent() != rain_particles:
+			rain_splash_particles.global_position = Vector3(target_pos.x, target_pos.y, target_pos.z)
 		if is_instance_valid(snow_particles):
 			snow_particles.global_position = Vector3(target_pos.x, target_pos.y + 12.0, target_pos.z)
 
@@ -228,8 +231,8 @@ func _process(delta: float) -> void:
 # ------------------------------------------------------------------------------
 ## Returns current time in hours (from DateAndTime node if available, otherwise manual_time_of_day).
 func get_current_time_hours() -> float:
-	if is_instance_valid(date_and_time_node):
-		return date_and_time_node.current_time
+	if is_instance_valid(date_and_time_node) and "current_time" in date_and_time_node:
+		return float(date_and_time_node.current_time)
 	return manual_time_of_day
 
 
@@ -447,6 +450,8 @@ func apply_weather_effects(weather_type: ClimateData.WeatherType) -> void:
 func clear_all_effects() -> void:
 	if is_instance_valid(rain_particles):
 		rain_particles.emitting = false
+	if is_instance_valid(rain_splash_particles):
+		rain_splash_particles.emitting = false
 	if is_instance_valid(snow_particles):
 		snow_particles.emitting = false
 		
@@ -464,6 +469,9 @@ func _apply_rain(amount: int) -> void:
 	if is_instance_valid(rain_particles):
 		rain_particles.amount = amount
 		rain_particles.emitting = true
+	if is_instance_valid(rain_splash_particles):
+		rain_splash_particles.amount = int(amount * 1.5)
+		rain_splash_particles.emitting = true
 
 
 func _apply_snow(amount: int, gravity_y: float) -> void:

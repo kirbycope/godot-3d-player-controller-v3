@@ -109,19 +109,6 @@ func _physics_process(_delta: float) -> void:
 		player.camera.looking_at = null
 
 
-func _on_player_detection_body_entered(body: Node3D) -> void:
-	if body is Player:
-		var p: Player = body as Player
-		if p.state_machine and not p.is_driving and p.is_driving_in == null and not p.is_entering_vehicle and not p.is_exiting_vehicle:
-			p.state_machine.travel(p.current_state, NodeStateMachine.States.SWIMMING)
-
-
-func _on_player_detection_body_exited(body: Node3D) -> void:
-	if body is Player:
-		var p: Player = body as Player
-		p.is_swimming = false
-
-
 func _on_warp_zone_body_entered(body: Node3D) -> void:
 	var target_marker: Marker3D = $WarpZone/Marker3D as Marker3D
 	_warp(body, target_marker.global_transform)
@@ -135,6 +122,18 @@ func _on_warp_zone_2_body_entered(body: Node3D) -> void:
 func _on_warp_zone_3_body_entered(body: Node3D) -> void:
 	var target_marker: Marker3D = $WarpZone3/Marker3D as Marker3D
 	_warp(body, target_marker.global_transform)
+
+
+func _on_water_area_3d_body_entered(body: Node3D) -> void:
+	if body is Player:
+		var water_area := get_node_or_null("Pool/WaterArea3D") as Area3D
+		(body as Player).enter_water(water_area)
+
+
+func _on_water_area_3d_body_exited(body: Node3D) -> void:
+	if body is Player:
+		var water_area := get_node_or_null("Pool/WaterArea3D") as Area3D
+		(body as Player).exit_water(water_area)
 
 
 func _warp(body: Node3D, target_transform: Transform3D) -> void:

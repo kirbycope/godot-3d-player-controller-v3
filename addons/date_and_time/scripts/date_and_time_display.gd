@@ -15,7 +15,7 @@ const COLOR_CYAN: Color = Color(0.565, 0.843, 0.929, 1.0)
 const COLOR_OUTLINE: Color = Color(0.0, 0.541, 0.682, 1.0)
 const COLOR_SHADOW: Color = Color(0.0, 0.541, 0.682, 0.275)
 const DOWN_ARROW_TEXTURE_PATH: String = "res://addons/date_and_time/assets/icons/down_arrow.svg"
-const ITALIC_FONT_PATH: String = "res://assets/fonts/Rodin-Italic.ttf"
+const ITALIC_FONT_PATH: String = "res://addons/date_and_time/assets/fonts/Rodin-Italic.ttf"
 
 # ------------------------------------------------------------------------------
 # Exported Groups: Node References
