@@ -5,7 +5,7 @@ extends GutTest
 class StaminaTestBase:
 	extends IntegrationTestBase
 
-	var PlayerScene = load("res://addons/3d_player_controller/player.tscn")
+	var PlayerScene = load("res://addons/3d_player_controller/scenes/player.tscn")
 	var root: Node3D
 	var player: Player
 	var stamina: TextureProgressBar
@@ -213,4 +213,3 @@ class TestSwimmingFastStaminaRequirement:
 		player.is_swimming = false
 		player.is_exhausted = false
 		water.queue_free()
-

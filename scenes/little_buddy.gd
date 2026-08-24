@@ -320,11 +320,16 @@ func drop() -> void:
 	if collision_shape:
 		collision_shape.disabled = false
 		
-	var current_scene = get_tree().current_scene
+	var current_scene = get_tree().current_scene if get_tree() else null
 	var drop_pos = global_position
 	if get_parent():
 		get_parent().remove_child(self)
-	current_scene.add_child(self)
+	if current_scene:
+		current_scene.add_child(self)
+	elif player and player.get_parent():
+		player.get_parent().add_child(self)
+	elif get_tree() and get_tree().root:
+		get_tree().root.add_child(self)
 	global_position = drop_pos
 	_collision_exception_added = false
 	velocity = Vector3.ZERO
@@ -339,11 +344,16 @@ func throw_with_direction(throw_dir: Vector3 = Vector3.ZERO, throw_power: float 
 	if collision_shape:
 		collision_shape.disabled = false
 		
-	var current_scene = get_tree().current_scene
+	var current_scene = get_tree().current_scene if get_tree() else null
 	var throw_pos = global_position
 	if get_parent():
 		get_parent().remove_child(self)
-	current_scene.add_child(self)
+	if current_scene:
+		current_scene.add_child(self)
+	elif player and player.get_parent():
+		player.get_parent().add_child(self)
+	elif get_tree() and get_tree().root:
+		get_tree().root.add_child(self)
 	global_position = throw_pos
 	_collision_exception_added = false
 	

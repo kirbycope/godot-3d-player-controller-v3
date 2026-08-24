@@ -22,14 +22,15 @@ func _process(_delta: float) -> void:
 	if not is_multiplayer_authority(): return
 
 	if player:
-		if player.is_drawing_arrow:
+		var is_holding_throwable: bool = player.is_throwing or (player.held_object and player.held_object.is_holding_object())
+		if player.is_drawing_arrow and not is_holding_throwable:
 			await get_tree().create_timer(0.2).timeout
 			animation_player.play("Pull_Start")
 			if not loading.is_playing:
 				loading.play()
-		if player.is_aiming_bow:
+		if player.is_aiming_bow and not is_holding_throwable:
 			animation_player.play("Pull")
-		if player.is_shooting_bow:
+		if player.is_shooting_bow and not is_holding_throwable:
 			animation_player.play("attack")
 			if not release.is_playing:
 				release.play()

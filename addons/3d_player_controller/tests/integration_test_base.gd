@@ -18,10 +18,12 @@ func send_key(keycode: Key) -> void:
 	sender.set_auto_flush_input(true)
 
 	var key_down_event := InputEventKey.new()
+	key_down_event.keycode = keycode
 	key_down_event.physical_keycode = keycode
 	key_down_event.pressed = true
 
 	var key_up_event := InputEventKey.new()
+	key_up_event.keycode = keycode
 	key_up_event.physical_keycode = keycode
 	key_up_event.pressed = false
 

@@ -1,27 +1,32 @@
 extends GutTest
 
-## Purpose: To test the actions and keybindings in `res://addons/3d_player_controller/controls.gd`.
+## Purpose: To test the actions and keybindings in `res://addons/3d_player_controller/scripts/controls.gd`.
 
 
 ## Shared base setup/teardown for test classes that inherit from _this_ one.
 class ControlsTestBase:
 	extends IntegrationTestBase
 
-	var MainScene = load("res://scenes/world.tscn")
-	var main_instance = null
-	var player_debug = null
+	var PlayerScene = load("res://addons/3d_player_controller/scenes/player.tscn")
+	var root: Node3D = null
+	var player_instance: Player = null
+	var player_debug: CanvasLayer = null
 
 	## Runs before each test is executed.
 	func before_each() -> void:
-		main_instance = MainScene.instantiate()
-		add_child_autofree(main_instance)
-		player_debug = main_instance.get_node("Player/Debug")
+		root = Node3D.new()
+		add_child_autofree(root)
+		player_instance = PlayerScene.instantiate() as Player
+		root.add_child(player_instance)
+		player_debug = player_instance.get_node("Debug") as CanvasLayer
+		await wait_physics_frames(2)
 
 	## Runs after each test is executed.
 	func after_each() -> void:
-		if is_instance_valid(main_instance):
-			main_instance.free()
-			main_instance = null
+		if is_instance_valid(root):
+			root.free()
+			root = null
+			player_instance = null
 			player_debug = null
 
 
@@ -65,7 +70,7 @@ class TestKeyIJKLActionBindings:
 	extends ControlsTestBase
 
 	func test_key_ijkl_actions_assigned():
-		var player = main_instance.get_node("Player") as Player
+		var player = player_instance
 		assert_eq(player.controls.key_i.action, "seeker")
 		assert_eq(player.controls.key_j.action, "last_weapon")
 		assert_eq(player.controls.key_k.action, "whistle")
@@ -77,7 +82,8 @@ class TestFlyingControls:
 	extends ControlsTestBase
 
 	func test_flying_contextual_controls_keyboard():
-		var player = main_instance.get_node("Player") as Player
+		var player = player_instance
+		player.enable_flying = true
 		player.controls.current_input_type = 0 # KEYBOARD_MOUSE
 		player.state_machine.travel(NodeStateMachine.States.STANDING, NodeStateMachine.States.FLYING)
 
@@ -86,7 +92,8 @@ class TestFlyingControls:
 		assert_eq(player.controls.left_joystick_label.text, "Fly")
 
 	func test_flying_contextual_controls_controller():
-		var player = main_instance.get_node("Player") as Player
+		var player = player_instance
+		player.enable_flying = true
 		player.controls.current_input_type = 1 # MICROSOFT controller
 		player.state_machine.travel(NodeStateMachine.States.STANDING, NodeStateMachine.States.FLYING)
 
@@ -100,7 +107,8 @@ class TestParaglidingControls:
 	extends ControlsTestBase
 
 	func test_paragliding_contextual_controls_keyboard():
-		var player = main_instance.get_node("Player") as Player
+		var player = player_instance
+		player.enable_paraglider = true
 		player.controls.current_input_type = 0 # KEYBOARD_MOUSE
 		player.state_machine.travel(NodeStateMachine.States.STANDING, NodeStateMachine.States.PARAGLIDING)
 
@@ -108,7 +116,8 @@ class TestParaglidingControls:
 		assert_eq(player.controls.left_joystick_label.text, "Steer")
 
 	func test_paragliding_contextual_controls_controller():
-		var player = main_instance.get_node("Player") as Player
+		var player = player_instance
+		player.enable_paraglider = true
 		player.controls.current_input_type = 1 # MICROSOFT controller
 		player.state_machine.travel(NodeStateMachine.States.STANDING, NodeStateMachine.States.PARAGLIDING)
 
@@ -121,7 +130,7 @@ class TestClimbingControls:
 	extends ControlsTestBase
 
 	func test_climbing_contextual_controls_keyboard():
-		var player = main_instance.get_node("Player") as Player
+		var player = player_instance
 		player.controls.current_input_type = 0 # KEYBOARD_MOUSE
 		player.state_machine.travel(NodeStateMachine.States.STANDING, NodeStateMachine.States.CLIMBING)
 
@@ -131,7 +140,7 @@ class TestClimbingControls:
 		assert_eq(player.controls.left_joystick_label.text, "Climb")
 
 	func test_climbing_contextual_controls_controller():
-		var player = main_instance.get_node("Player") as Player
+		var player = player_instance
 		player.controls.current_input_type = 1 # MICROSOFT controller
 		player.state_machine.travel(NodeStateMachine.States.STANDING, NodeStateMachine.States.CLIMBING)
 
@@ -146,7 +155,7 @@ class TestHangingControls:
 	extends ControlsTestBase
 
 	func test_hanging_contextual_controls_keyboard():
-		var player = main_instance.get_node("Player") as Player
+		var player = player_instance
 		player.controls.current_input_type = 0 # KEYBOARD_MOUSE
 		player.state_machine.travel(NodeStateMachine.States.STANDING, NodeStateMachine.States.HANGING)
 
@@ -155,7 +164,7 @@ class TestHangingControls:
 		assert_eq(player.controls.left_joystick_label.text, "Shimmy")
 
 	func test_hanging_contextual_controls_controller():
-		var player = main_instance.get_node("Player") as Player
+		var player = player_instance
 		player.controls.current_input_type = 1 # MICROSOFT controller
 		player.state_machine.travel(NodeStateMachine.States.STANDING, NodeStateMachine.States.HANGING)
 
@@ -169,7 +178,7 @@ class TestSwimmingControls:
 	extends ControlsTestBase
 
 	func test_swimming_contextual_controls_keyboard():
-		var player = main_instance.get_node("Player") as Player
+		var player = player_instance
 		player.controls.current_input_type = 0 # KEYBOARD_MOUSE
 		player.state_machine.travel(NodeStateMachine.States.STANDING, NodeStateMachine.States.SWIMMING)
 
@@ -178,7 +187,7 @@ class TestSwimmingControls:
 		assert_eq(player.controls.left_joystick_label.text, "Swim")
 
 	func test_swimming_contextual_controls_controller():
-		var player = main_instance.get_node("Player") as Player
+		var player = player_instance
 		player.controls.current_input_type = 1 # MICROSOFT controller
 		player.state_machine.travel(NodeStateMachine.States.STANDING, NodeStateMachine.States.SWIMMING)
 

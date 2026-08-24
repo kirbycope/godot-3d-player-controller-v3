@@ -1,6 +1,6 @@
 extends GutTest
 
-## Purpose: To test the actions and events related to the car.
+## Purpose: To test the actions and events related to the demo car scene.
 
 
 ## Shared base setup/teardown for test classes that inherit from _this_ one.
@@ -8,7 +8,7 @@ class CarTestBase:
 	extends IntegrationTestBase
 
 	var MainScene = load("res://test/integration/test_car.tscn")
-	var PlayerScene = load("res://addons/3d_player_controller/player.tscn")
+	var PlayerScene = load("res://addons/3d_player_controller/scenes/player.tscn")
 	var main_instance = null
 	var car_instance = null
 	var player_instance = null

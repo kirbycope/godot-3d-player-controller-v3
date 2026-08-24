@@ -5,7 +5,7 @@ extends GutTest
 class FsmTestBase:
 	extends IntegrationTestBase
 
-	var PlayerScene = load("res://addons/3d_player_controller/player.tscn")
+	var PlayerScene = load("res://addons/3d_player_controller/scenes/player.tscn")
 	var root: Node3D
 	var player: Player
 	var floor_body: StaticBody3D
@@ -431,7 +431,3 @@ class TestSkateboardingTransitions:
 		player.held_object.drop_held_rigidbody()
 		assert_eq(player.controls.joypad_button_12_label.text, "Dismount")
 		assert_eq(player.controls.joypad_button_1_label.text, "Fast Push")
-
-
-
-

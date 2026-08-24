@@ -5,22 +5,27 @@ extends GutTest
 class TestRadialMenuHold:
 	extends IntegrationTestBase
 
-	var MainScene = load("res://scenes/world.tscn")
-	var main_instance = null
+	var PlayerScene = load("res://addons/3d_player_controller/scenes/player.tscn")
+	var root: Node3D = null
+	var player_instance: Player = null
 
 	func before_each() -> void:
-		main_instance = MainScene.instantiate()
-		add_child_autofree(main_instance)
+		root = Node3D.new()
+		add_child_autofree(root)
+		player_instance = PlayerScene.instantiate() as Player
+		root.add_child(player_instance)
+		await wait_physics_frames(2)
 
 	func after_each() -> void:
 		Input.action_release("last_weapon")
 		Input.action_release("next_weapon")
-		if is_instance_valid(main_instance):
-			main_instance.free()
-			main_instance = null
+		if is_instance_valid(root):
+			root.free()
+			root = null
+			player_instance = null
 
 	func test_radial_menu_is_menu_held_returns_true_for_last_or_next_weapon():
-		var player = main_instance.get_node("Player") as Player
+		var player = player_instance
 		var radial_menu = player.inventory.get_node("RadialMenu") as RadialMenu
 		assert_not_null(radial_menu, "RadialMenu should exist on inventory")
 		
