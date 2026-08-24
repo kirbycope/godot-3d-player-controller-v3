@@ -32,6 +32,7 @@
 ## 📦 Installation
 
 ### Option 1: Manual Installation (Recommended)
+
 1. Download or clone this repository.
 2. Copy the `addons/radi_ot/` directory into your Godot project's `addons/` folder:
    ```text
@@ -39,7 +40,7 @@
    ├── addons/
    │   └── radi_ot/
    │       ├── plugin.cfg
-   │       ├── radi_ot.gd
+   │       ├── plugin.gd
    │       ├── resources/
    │       ├── scenes/
    │       └── scripts/
@@ -50,12 +51,15 @@
 4. Go to **Project > Project Settings > Plugins** and toggle the **Enable** checkbox next to **radi-ot**.
 
 ### Option 2: Git Submodule
+
 If your project uses Git, add `radi-ot` directly as a submodule into your `addons/` folder:
+
 ```bash
 git submodule add https://github.com/kirbycope/radi-ot.git addons/radi_ot
 ```
 
 ### Option 3: Godot Asset Library
+
 1. Open Godot and select the **AssetLib** tab at the top of the editor.
 2. Search for **radi-ot**.
 3. Click **Download**, then **Install** into your project.
@@ -66,12 +70,15 @@ git submodule add https://github.com/kirbycope/radi-ot.git addons/radi_ot
 ## 🚀 Quick Start
 
 ### 1. Add to Your Scene
+
 Add a `RadiOtPlayer3D` node to your 3D world, or instantiate the ready-to-use scene:
+
 ```text
 res://addons/radi_ot/scenes/radi_ot_player_3d.tscn
 ```
 
 ### 2. Configure & Tune
+
 - Select the `RadiOtPlayer3D` node in the Scene tree.
 - In the Inspector, verify that `station_collection` is set to `seattle_stations_default.tres` (or assign your own custom collection).
 - Run the scene (`F5` or `F6`).
@@ -95,7 +102,7 @@ extends Node3D
 
 func trigger_emergency_story_event() -> void:
     var news_audio: AudioStream = preload("res://assets/audio/alien_invasion_news.ogg")
-    
+
     radio.urgent_bulletin(
         news_audio,
         "EMERGENCY BROADCAST: Unidentified objects spotted over Elliott Bay and the Space Needle!",
@@ -104,6 +111,7 @@ func trigger_emergency_story_event() -> void:
 ```
 
 You can also cancel an active bulletin early:
+
 ```gdscript
 radio.cancel_bulletin()
 ```
@@ -113,6 +121,7 @@ radio.cancel_bulletin()
 ## 📻 Custom Stations & Collections (`.tres`)
 
 ### Creating a New Station
+
 Create a new `RadioStation` resource (`.tres`) in the Godot inspector:
 
 ```text
@@ -126,6 +135,7 @@ description: "Late-night synthwave broadcast from atop the Space Needle."
 ```
 
 ### Station Collections
+
 Group your stations into a `RadioStationCollection` resource (`.tres`) and assign it to the `station_collection` property of `RadiOtPlayer3D`.
 
 ---
@@ -133,6 +143,7 @@ Group your stations into a `RadioStationCollection` resource (`.tres`) and assig
 ## 🛠️ Public API Reference
 
 ### `RadiOtPlayer3D`
+
 - `tune_next_station()` — Cycles to the next station in the collection.
 - `tune_previous_station()` — Cycles to the previous station in the collection.
 - `tune_to_station_index(index: int)` — Tunes directly to a specific station index.
@@ -144,6 +155,7 @@ Group your stations into a `RadioStationCollection` resource (`.tres`) and assig
 - `get_current_station() -> RadioStation` — Returns the currently tuned `RadioStation` resource.
 
 ### Signals
+
 - `station_changed(station: RadioStation)`
 - `stream_buffering_started`
 - `stream_playback_started`
@@ -159,16 +171,19 @@ Group your stations into a `RadioStationCollection` resource (`.tres`) and assig
 Run the automated [GUT (Godot Unit Test)](https://github.com/bitwes/Gut) suite via the command line or the in-editor GUT panel:
 
 ### Command Line (Headless)
+
 ```bash
 godot --headless -s addons/gut/gut_cmdln.gd -gdir=res://addons/radi_ot/tests/
 ```
 
 Or run all project GUT tests:
+
 ```bash
 godot --headless -s addons/gut/gut_cmdln.gd
 ```
 
 ### Godot Editor
+
 1. Open the project in the Godot Editor.
 2. Open the **GUT** bottom panel.
 3. Click **Run All** (or select test scripts in `res://addons/radi_ot/tests/`).
@@ -176,4 +191,5 @@ godot --headless -s addons/gut/gut_cmdln.gd
 ---
 
 ## 📄 License
+
 MIT License.
