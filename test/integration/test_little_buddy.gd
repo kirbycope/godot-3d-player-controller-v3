@@ -3,7 +3,7 @@ extends GutTest
 ## Purpose: To test Little Buddy animation and locomotion state behavior.
 
 const LITTLE_BUDDY_SCENE: PackedScene = preload("res://scenes/little_buddy.tscn")
-const PLAYER_SCENE: PackedScene = preload("res://addons/3d_player_controller/player.tscn")
+const PLAYER_SCENE: PackedScene = preload("res://addons/3d_player_controller/scenes/player.tscn")
 
 var root: Node3D
 
