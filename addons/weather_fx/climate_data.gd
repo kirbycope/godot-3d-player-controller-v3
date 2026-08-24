@@ -319,3 +319,13 @@ static func get_smooth_temperature(zone: BiomeZone, altitude: float, time_of_day
 	var diurnal_factor = 0.5 - 0.5 * cos(normalized_time * TAU)
 	
 	return lerpf(night_temp, day_temp, diurnal_factor)
+
+
+## Converts temperature in Celsius to Fahrenheit.
+static func celsius_to_fahrenheit(celsius: float) -> float:
+	return (celsius * 1.8) + 32.0
+
+
+## Converts temperature in Fahrenheit to Celsius.
+static func fahrenheit_to_celsius(fahrenheit: float) -> float:
+	return (fahrenheit - 32.0) / 1.8

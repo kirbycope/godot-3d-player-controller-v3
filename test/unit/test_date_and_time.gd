@@ -57,18 +57,47 @@ func test_play_pause() -> void:
 
 
 func test_datetime_dict_conversion() -> void:
-	var target_dict = {
+	var target_dict: Dictionary = {
 		"year": 2026,
 		"month": 12,
 		"day": 25,
 		"hour": 10,
 		"minute": 15,
-		"second": 0
+		"second": 0,
 	}
 	dt.set_from_datetime_dict(target_dict)
-	var out_dict = dt.get_datetime_dict()
+	var out_dict: Dictionary = dt.get_datetime_dict()
 	assert_eq(out_dict.year, 2026)
 	assert_eq(out_dict.month, 12)
 	assert_eq(out_dict.day, 25)
 	assert_eq(out_dict.hour, 10)
 	assert_eq(out_dict.minute, 15)
+
+
+func test_botw_time_display_rounding_and_format() -> void:
+	var display: DateAndTimeDisplay = DateAndTimeDisplay.new()
+	display.date_and_time_node = dt
+	display.botw_style = true
+	display.minute_increment = 5
+	display.use_12_hour = true
+	add_child_autofree(display)
+
+	# 14:27 should round down to 14:25, which in 12-hour is 2:25
+	dt.set_time(14, 27, 0)
+	assert_eq(display._rtl.text, "[i]2:25[/i]")
+
+	# 0:03 should round to 12:00
+	dt.set_time(0, 3, 0)
+	assert_eq(display._rtl.text, "[i]12:00[/i]")
+
+
+func test_standard_time_display_format() -> void:
+	var display: DateAndTimeDisplay = DateAndTimeDisplay.new()
+	display.date_and_time_node = dt
+	display.botw_style = false
+	display.minute_increment = 0
+	display.use_12_hour = true
+	add_child_autofree(display)
+
+	dt.set_time(14, 30, 0)
+	assert_eq(display._standard_label.text, "02:30 PM")

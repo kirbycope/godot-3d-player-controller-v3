@@ -23,17 +23,25 @@ signal wind_changed(strength: float, direction: Vector3)
 # ------------------------------------------------------------------------------
 @export_group("Simulation Controls")
 
-## Starts or pauses weather cycle progression.
-@export var is_playing: bool = true
+## Starts or pauses weather cycle progression and audio/VFX playback.
+@export var is_playing: bool = true :
+	set(value):
+		if is_playing != value:
+			is_playing = value
+			_update_playback_state()
 
 ## Allows simulation to tick inside the editor viewport.
-@export var editor_weather_enabled: bool = true
+@export var editor_weather_enabled: bool = true :
+	set(value):
+		if editor_weather_enabled != value:
+			editor_weather_enabled = value
+			_update_playback_state()
 
 ## Duration of each weather cycle in real-world seconds (BotW default is 240.0s = 4 minutes).
 @export_range(1.0, 3600.0, 1.0) var cycle_duration_seconds: float = 240.0
 
 ## Number of forecast steps to maintain (including current cycle).
-@export_range(2, 10) var forecast_length: int = 5
+@export_range(2, 12) var forecast_length: int = 7
 
 ## Press to instantly advance to the next forecast cycle in the editor.
 @export var trigger_advance_cycle: bool = false :
@@ -168,17 +176,31 @@ func _ready() -> void:
 
 	ensure_shader_globals()
 	_regenerate_forecast()
-	_update_active_weather()
+	if _can_simulate():
+		_update_active_weather()
+	else:
+		clear_all_effects()
 	_update_wind_globals()
+
+
+func _can_simulate() -> bool:
+	if Engine.is_editor_hint():
+		return is_playing and editor_weather_enabled
+	return is_playing
+
+
+func _update_playback_state() -> void:
+	if not is_inside_tree():
+		return
+	if _can_simulate():
+		apply_weather_effects(active_weather)
+	else:
+		clear_all_effects()
 
 
 func _process(delta: float) -> void:
 	# Check if simulation can tick
-	var can_tick = false
-	if Engine.is_editor_hint():
-		can_tick = is_playing and editor_weather_enabled
-	else:
-		can_tick = is_playing
+	var can_tick = _can_simulate()
 
 	# Update altitude and center particle emitters over target node if available
 	if is_instance_valid(target_node):
@@ -391,6 +413,9 @@ static func ensure_shader_globals() -> void:
 func apply_weather_effects(weather_type: ClimateData.WeatherType) -> void:
 	clear_all_effects()
 
+	if not _can_simulate():
+		return
+
 	match weather_type:
 		ClimateData.WeatherType.BLUE_SKY:
 			pass
@@ -510,3 +535,16 @@ func get_forecast() -> Array:
 ## Returns active weather enum.
 func get_current_weather() -> ClimateData.WeatherType:
 	return active_weather
+
+
+## Returns current cycle progress fraction between 0.0 and 1.0.
+func get_cycle_progress() -> float:
+	if cycle_duration_seconds <= 0.001:
+		return 0.0
+	return clampf(_cycle_timer / cycle_duration_seconds, 0.0, 1.0)
+
+
+## Returns elapsed seconds in current weather cycle.
+func get_cycle_timer() -> float:
+	return _cycle_timer
+
