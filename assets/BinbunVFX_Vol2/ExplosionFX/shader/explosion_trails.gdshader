@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode particle_trails, blend_add, unshaded;
+render_mode blend_add, unshaded;
 
 group_uniforms Color;
 uniform vec3 primary_color : source_color;

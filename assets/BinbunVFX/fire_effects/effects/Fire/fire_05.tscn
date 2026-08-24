@@ -89,9 +89,6 @@ turbulence_noise_speed = Vector3(0, 12.49, 0)
 turbulence_noise_speed_random = 0.0
 turbulence_influence_max = 1.0
 turbulence_influence_over_life = SubResource("CurveTexture_o1vve")
-sub_emitter_mode = 4
-sub_emitter_amount_at_start = 1
-sub_emitter_keep_velocity = true
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_vkxb0"]
 noise_type = 5
@@ -146,9 +143,6 @@ turbulence_noise_speed = Vector3(0, 12.49, 0)
 turbulence_noise_speed_random = 0.0
 turbulence_influence_max = 1.0
 turbulence_influence_over_life = SubResource("CurveTexture_o1vve")
-sub_emitter_mode = 4
-sub_emitter_amount_at_start = 1
-sub_emitter_keep_velocity = true
 
 [sub_resource type="Gradient" id="Gradient_7j0j5"]
 
@@ -307,7 +301,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000316582, -0.00331225, 0.0
 sorting_offset = 0.01
 sorting_use_aabb_center = false
 amount = 40
-sub_emitter = NodePath("../Smoke")
 lifetime = 2.5
 draw_order = 3
 process_material = SubResource("ParticleProcessMaterial_vln4c")
@@ -318,7 +311,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000316582, -0.00331225, 0.0
 sorting_offset = 0.01
 sorting_use_aabb_center = false
 amount = 20
-sub_emitter = NodePath("../Smoke")
 lifetime = 0.5
 draw_order = 3
 process_material = SubResource("ParticleProcessMaterial_c8564")

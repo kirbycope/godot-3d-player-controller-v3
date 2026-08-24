@@ -162,8 +162,12 @@ var _is_forward_plus: bool = true
 # Lifecycle
 # ------------------------------------------------------------------------------
 func _ready() -> void:
-	var rendering_method = ProjectSettings.get_setting("rendering/renderer/rendering_method")
-	_is_forward_plus = (rendering_method == "forward_plus")
+	var rendering_method: String = ProjectSettings.get_setting("rendering/renderer/rendering_method", "")
+	var is_web: bool = OS.has_feature("web")
+	var is_compatibility: bool = OS.has_feature("gl_compatibility") or rendering_method == "gl_compatibility" or RenderingServer.get_rendering_device() == null
+	_is_forward_plus = (rendering_method == "forward_plus") and not is_web and not is_compatibility
+
+	_setup_renderer_compatibility(is_web or is_compatibility)
 	
 	if date_and_time_node == null:
 		var found = get_tree().root.find_child("DateAndTime", true, false)
@@ -182,6 +186,42 @@ func _ready() -> void:
 	else:
 		clear_all_effects()
 	_update_wind_globals()
+
+
+## Configures particle features (sub-emitters, trails) based on whether Web / Compatibility renderer is in use.
+func _setup_renderer_compatibility(is_compatibility_mode: bool) -> void:
+	if is_compatibility_mode:
+		# Disable sub-emitters and trails on all GPUParticles3D children to avoid Web / Compatibility warnings
+		for child in find_children("*", "GPUParticles3D", true, false):
+			if child is GPUParticles3D:
+				child.trail_enabled = false
+				child.sub_emitter = NodePath("")
+				if child.process_material is ParticleProcessMaterial:
+					(child.process_material as ParticleProcessMaterial).sub_emitter_mode = ParticleProcessMaterial.SUB_EMITTER_DISABLED
+		if is_instance_valid(rain_particles):
+			rain_particles.trail_enabled = false
+			rain_particles.sub_emitter = NodePath("")
+			if rain_particles.process_material is ParticleProcessMaterial:
+				(rain_particles.process_material as ParticleProcessMaterial).sub_emitter_mode = ParticleProcessMaterial.SUB_EMITTER_DISABLED
+		if is_instance_valid(rain_splash_particles):
+			rain_splash_particles.trail_enabled = false
+			rain_splash_particles.sub_emitter = NodePath("")
+			if rain_splash_particles.process_material is ParticleProcessMaterial:
+				(rain_splash_particles.process_material as ParticleProcessMaterial).sub_emitter_mode = ParticleProcessMaterial.SUB_EMITTER_DISABLED
+		if is_instance_valid(snow_particles):
+			snow_particles.trail_enabled = false
+			snow_particles.sub_emitter = NodePath("")
+			if snow_particles.process_material is ParticleProcessMaterial:
+				(snow_particles.process_material as ParticleProcessMaterial).sub_emitter_mode = ParticleProcessMaterial.SUB_EMITTER_DISABLED
+	else:
+		# Forward+ and Mobile support sub-emitters. Dynamically link rain to rain_splash.
+		if is_instance_valid(rain_particles) and is_instance_valid(rain_splash_particles):
+			rain_particles.sub_emitter = rain_particles.get_path_to(rain_splash_particles)
+			if rain_particles.process_material is ParticleProcessMaterial:
+				var mat = rain_particles.process_material as ParticleProcessMaterial
+				mat.sub_emitter_mode = ParticleProcessMaterial.SUB_EMITTER_AT_END
+				mat.sub_emitter_amount_at_end = 1
+
 
 
 func _can_simulate() -> bool:

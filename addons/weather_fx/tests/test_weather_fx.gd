@@ -313,6 +313,30 @@ func test_weather_fx_demo_scene_instantiation() -> void:
 	assert_eq(demo.biome_option_button.item_count, 20)
 
 
+func test_weather_fx_renderer_compatibility_setup() -> void:
+	var scene = load("res://addons/weather_fx/scenes/weather_fx.tscn")
+	assert_not_null(scene)
+	var instance: WeatherFX = scene.instantiate()
+	assert_not_null(instance)
+	add_child_autofree(instance)
+
+	# Compatibility mode: sub-emitters & trails should be disabled
+	instance._setup_renderer_compatibility(true)
+	assert_eq(instance.rain_particles.sub_emitter, NodePath(""))
+	assert_false(instance.rain_particles.trail_enabled)
+	var mat_compat = instance.rain_particles.process_material as ParticleProcessMaterial
+	assert_not_null(mat_compat)
+	assert_eq(mat_compat.sub_emitter_mode, ParticleProcessMaterial.SUB_EMITTER_DISABLED)
+
+	# Forward+ mode: sub-emitter is dynamically connected
+	instance._setup_renderer_compatibility(false)
+	assert_ne(instance.rain_particles.sub_emitter, NodePath(""))
+	var mat_forward = instance.rain_particles.process_material as ParticleProcessMaterial
+	assert_not_null(mat_forward)
+	assert_eq(mat_forward.sub_emitter_mode, ParticleProcessMaterial.SUB_EMITTER_AT_END)
+
+
+
 
 
 
