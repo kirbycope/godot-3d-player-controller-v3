@@ -28,6 +28,24 @@ func _ready() -> void:
 	elif log_node:
 		log_node.hide()
 		_set_collision_shapes_disabled(log_node, true)
+	_apply_foliage_wind_material()
+
+
+func _apply_foliage_wind_material() -> void:
+	var foliage_mat: Material = load("res://materials/foliage_material.tres")
+	if foliage_mat == null or standing_node == null:
+		return
+	var mesh_instances: Array[Node] = standing_node.find_children("*", "MeshInstance3D", true, false)
+	if standing_node is MeshInstance3D:
+		mesh_instances.append(standing_node)
+	for mi in mesh_instances:
+		if mi is MeshInstance3D and mi.mesh:
+			for s in range(mi.mesh.get_surface_count()):
+				var mat = mi.get_surface_override_material(s)
+				if mat == null:
+					mat = mi.mesh.surface_get_material(s)
+				if mat and (mat.resource_name.to_lower().contains("leaves") or s == 1):
+					mi.set_surface_override_material(s, foliage_mat)
 
 
 ## Called when there is an input event.
