@@ -234,10 +234,17 @@ func _update_fire_state() -> void:
 func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority(): return
 	
-	if player == null or is_on_fire or has_exploded:
+	var is_driven: bool = player != null and player.is_driving and player.is_driving_in == self \
+		and not player.is_entering_vehicle and not player.is_exiting_vehicle
+
+	if not is_driven or is_on_fire or has_exploded:
 		steering = 0.0
 		engine_force = 0.0
-		brake = 0.0
+		brake = max_brake_force
+		for child in get_children():
+			if child is VehicleWheel3D:
+				child.engine_force = 0.0
+				child.brake = max_brake_force
 
 	var up_dir: Vector3 = - get_gravity().normalized()
 	if up_dir == Vector3.ZERO:

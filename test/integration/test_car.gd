@@ -38,6 +38,9 @@ class CarTestBase:
 		car_instance.player = player_instance
 		player_instance.state_machine.travel(player_instance.current_state, NodeStateMachine.States.DRIVING)
 		player_instance.is_entering_vehicle = false
+		for child in car_instance.get_children():
+			if child is VehicleWheel3D:
+				child.brake = 0.0
 
 	## Helper getter to access the Driving state node on the player instance.
 	var driving_state: Driving:
@@ -219,7 +222,17 @@ class TestCarActions:
 		# Clean up inputs
 		sender.action_up(accel_action)
 		sender.action_up(brake_action)
- 
+
+	## Test Case: Testing that parked car tires are locked with brake force.
+	func test_car_parked_tires_locked():
+		# Act: Process physics frames without a player driving.
+		await wait_physics_frames(5)
+
+		# Assert: Confirm all wheels have max_brake_force applied when parked.
+		for child in car_instance.get_children():
+			if child is VehicleWheel3D:
+				assert_eq(child.brake, car_instance.max_brake_force, "Parked car tires should be locked with max_brake_force.")
+
 
 ## Tests related to the function performed by an event.
 class TestCarEvents:
