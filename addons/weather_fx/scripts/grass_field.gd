@@ -66,7 +66,7 @@ extends MultiMeshInstance3D
 		if is_inside_tree():
 			regenerate()
 
-const DEFAULT_QUATERNIUS_MESH: Mesh = preload("res://assets/quaternius/nature/Grass_Common_Short_mesh.tres")
+const DEFAULT_QUATERNIUS_MESH: Mesh = preload("res://addons/weather_fx/resources/grass_mesh.tres")
 
 @export var custom_mesh: Mesh = null:
 	set(val):
@@ -167,11 +167,12 @@ func regenerate() -> void:
 		
 	var mat: Material = custom_grass_material
 	if mat == null:
-		mat = load("res://addons/weather_fx/materials/grass_material.tres")
+		mat = load("res://addons/weather_fx/resources/grass_material.tres")
 	if mat:
 		material_override = mat
 		if mesh_to_use and mesh_to_use.get_surface_count() > 0:
 			mesh_to_use.surface_set_material(0, mat)
+
 
 	var mm = MultiMesh.new()
 	mm.transform_format = MultiMesh.TRANSFORM_3D

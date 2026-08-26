@@ -1,7 +1,8 @@
 [gd_resource type="ShaderMaterial" load_steps=3 format=3]
 
-[ext_resource type="Shader" uid="uid://jqrwa1d8fqbj" path="res://addons/weather_fx/materials/grass_wind.gdshader" id="1_sway"]
-[ext_resource type="Texture2D" uid="uid://c6s7vh063yqms" path="res://assets/quaternius/nature/Grass.png" id="2_tex"]
+[ext_resource type="Shader" uid="uid://jqrwa1d8fqbj" path="res://addons/weather_fx/resources/grass_wind.gdshader" id="1_sway"]
+[ext_resource type="Texture2D" uid="uid://dq5w6u8n2g123" path="res://addons/weather_fx/assets/models/Grass.png" id="2_tex"]
+
 
 [resource]
 render_priority = 0
@@ -12,6 +13,7 @@ shader_parameter/alpha_scissor_threshold = 0.5
 shader_parameter/albedo = ExtResource("2_tex")
 shader_parameter/nightColor = Color(0.1, 0.2, 0.4, 1)
 shader_parameter/nightTime = 0.0
+
 
 
 
