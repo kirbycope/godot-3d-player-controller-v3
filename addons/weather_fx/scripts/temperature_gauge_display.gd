@@ -11,8 +11,8 @@ extends Button
 # Constants
 # ------------------------------------------------------------------------------
 const DEFAULT_SHADER: Shader = preload("res://addons/weather_fx/resources/temperature_gauge.gdshader")
-const GaugeNeedleScript: Script = preload("res://addons/weather_fx/scripts/gauge_needle.gd")
 
+const GaugeNeedleScript: Script = preload("res://addons/weather_fx/scripts/gauge_needle.gd")
 
 # ------------------------------------------------------------------------------
 # Exported Groups: Node References

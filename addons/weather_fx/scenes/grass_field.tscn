@@ -2,13 +2,10 @@
 
 [ext_resource type="Script" path="res://addons/weather_fx/scripts/grass_field.gd" id="1_grassgd"]
 [ext_resource type="Material" path="res://addons/weather_fx/resources/grass_material.tres" id="2_grassmat"]
-[ext_resource type="ArrayMesh" path="res://addons/weather_fx/resources/grass_mesh.tres" id="3_qmesh"]
+
 
 [node name="GrassField" type="MultiMeshInstance3D"]
 script = ExtResource("1_grassgd")
 instance_count = 1200
 field_size = Vector2(40, 40)
-custom_mesh = ExtResource("3_qmesh")
 custom_grass_material = ExtResource("2_grassmat")
-
-

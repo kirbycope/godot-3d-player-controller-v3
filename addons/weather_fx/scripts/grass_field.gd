@@ -17,13 +17,13 @@ extends MultiMeshInstance3D
 		if is_inside_tree():
 			regenerate()
 
-@export var min_scale: float = 0.18:
+@export var min_scale: float = 0.7:
 	set(val):
-		min_scale = maxf(0.01, val)
+		min_scale = maxf(0.1, val)
 		if is_inside_tree():
 			regenerate()
 
-@export var max_scale: float = 0.28:
+@export var max_scale: float = 1.3:
 	set(val):
 		max_scale = maxf(min_scale, val)
 		if is_inside_tree():
@@ -48,25 +48,29 @@ extends MultiMeshInstance3D
 		if is_inside_tree():
 			regenerate()
 
-@export_range(0.01, 0.5, 0.005) var tuft_radius: float = 0.035:
+@export_range(0.05, 1.0, 0.01) var tuft_radius: float = 0.18:
 	set(val):
-		tuft_radius = maxf(0.005, val)
+		tuft_radius = maxf(0.01, val)
 		if is_inside_tree():
 			regenerate()
 
-@export_range(0.05, 3.0, 0.05) var blade_height: float = 0.28:
+@export_range(0.1, 3.0, 0.05) var blade_height: float = 0.85:
 	set(val):
 		blade_height = maxf(0.05, val)
 		if is_inside_tree():
 			regenerate()
 
-@export_range(0.05, 3.0, 0.05) var blade_width: float = 0.15:
+@export_range(0.02, 0.5, 0.01) var blade_width: float = 0.09:
 	set(val):
-		blade_width = maxf(0.05, val)
+		blade_width = maxf(0.01, val)
 		if is_inside_tree():
 			regenerate()
 
-const DEFAULT_QUATERNIUS_MESH: Mesh = preload("res://addons/weather_fx/resources/grass_mesh.tres")
+@export_range(0.0, 1.0, 0.05) var blade_curve: float = 0.35:
+	set(val):
+		blade_curve = clampf(val, 0.0, 1.0)
+		if is_inside_tree():
+			regenerate()
 
 @export var custom_mesh: Mesh = null:
 	set(val):
@@ -93,59 +97,129 @@ func _ready() -> void:
 		regenerate()
 
 
-## Generates dense 3D cross-quads for stylized grass blade sampling.
+## Generates an optimized stylized 3D grass tuft mesh with curved, tapered blades and volumetric spherical normals.
 static func create_stylized_grass_mesh(
-	height: float = 0.28,
-	width: float = 0.15,
-	_blades_count: int = 6,
-	_segments_per_blade: int = 4,
-	_tuft_rad: float = 0.035,
-	_curve_strength: float = 0.08
+	height: float = 0.85,
+	width: float = 0.09,
+	blades_count: int = 6,
+	segments_per_blade: int = 4,
+	tuft_rad: float = 0.18,
+	curve_strength: float = 0.35
 ) -> ArrayMesh:
 	var st = SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
-	var half_w = width * 0.5
-	var n = Vector3(0.0, 1.0, 0.0)
 	
-	# Generate 3 intersecting vertical quads (at 0, 60, and 120 degrees) for volumetric 3D tufts
-	for q in range(3):
-		var angle = float(q) * (PI / 3.0)
-		var dir = Vector3(cos(angle), 0.0, sin(angle))
+	for b in range(blades_count):
+		# Distribute blades around the tuft with organic angle and radius jitter
+		var base_angle = (float(b) / float(blades_count)) * TAU
+		var jitter_angle = (float((b * 17) % 7) / 7.0 - 0.5) * 0.45
+		var angle = base_angle + jitter_angle
 		
-		var v0 = -dir * half_w
-		var v1 = dir * half_w
-		var v2 = -dir * half_w + Vector3(0.0, height, 0.0)
-		var v3 = dir * half_w + Vector3(0.0, height, 0.0)
+		var r = tuft_rad * (0.35 + 0.65 * (float((b * 13) % 5) / 5.0))
+		var dir = Vector2(cos(angle), sin(angle))
+		var base_pos = Vector3(dir.x * r, 0.0, dir.y * r)
 		
-		# Triangle 1
-		st.set_normal(n)
-		st.set_uv(Vector2(0.0, 1.0))
-		st.add_vertex(v0)
+		var outward = Vector3(dir.x, 0.0, dir.y).normalized()
+		var tangent = Vector3(-dir.y, 0.0, dir.x).normalized()
 		
-		st.set_normal(n)
-		st.set_uv(Vector2(1.0, 1.0))
-		st.add_vertex(v1)
+		# Organic height, width, and outward curvature multipliers per blade
+		var h_mult = 0.75 + 0.35 * (float((b * 23) % 7) / 7.0)
+		var w_mult = 0.85 + 0.30 * (float((b * 11) % 5) / 5.0)
+		var c_mult = curve_strength * (0.7 + 0.6 * (float((b * 31) % 7) / 7.0))
 		
-		st.set_normal(n)
-		st.set_uv(Vector2(1.0, 0.0))
-		st.add_vertex(v3)
+		var cur_height = height * h_mult
+		var cur_width = width * w_mult
 		
-		# Triangle 2
-		st.set_normal(n)
-		st.set_uv(Vector2(0.0, 1.0))
-		st.add_vertex(v0)
+		# Generate vertices along the curved blade spine
+		var left_verts: Array[Vector3] = []
+		var right_verts: Array[Vector3] = []
+		var normals: Array[Vector3] = []
+		var uvs_left: Array[Vector2] = []
+		var uvs_right: Array[Vector2] = []
 		
-		st.set_normal(n)
-		st.set_uv(Vector2(1.0, 0.0))
-		st.add_vertex(v3)
+		for s in range(segments_per_blade + 1):
+			var t = float(s) / float(segments_per_blade) # 0.0 (base) to 1.0 (tip)
+			var y = cur_height * t
+			
+			# Parabolic outward arch curve
+			var disp = outward * (c_mult * pow(t, 1.5))
+			var center = base_pos + disp + Vector3(0.0, y, 0.0)
+			
+			# Taper width towards a sharp pointy tip
+			var half_w = (cur_width * 0.5) * maxf(0.0, 1.0 - pow(t, 1.15))
+			if s == segments_per_blade:
+				half_w = 0.0
+				
+			var v_l = center - tangent * half_w
+			var v_r = center + tangent * half_w
+			
+			# Volumetric normal: blend upward with outward radial vector from clump center
+			var radial = (Vector3(center.x, 0.0, center.z).normalized() * 0.4 + Vector3.UP * 0.6).normalized()
+			
+			left_verts.append(v_l)
+			right_verts.append(v_r)
+			normals.append(radial)
+			uvs_left.append(Vector2(0.0, 1.0 - t))
+			uvs_right.append(Vector2(1.0, 1.0 - t))
 		
-		st.set_normal(n)
-		st.set_uv(Vector2(0.0, 0.0))
-		st.add_vertex(v2)
-	
-	return st.commit()
-
-
+		# Triangulate quad segments and tip
+		for s in range(segments_per_blade):
+			var v0 = left_verts[s]
+			var v1 = right_verts[s]
+			var v2 = left_verts[s + 1]
+			var v3 = right_verts[s + 1]
+			
+			var n0 = normals[s]
+			var n1 = normals[s + 1]
+			
+			var uv0_l = uvs_left[s]
+			var uv0_r = uvs_right[s]
+			var uv1_l = uvs_left[s + 1]
+			var uv1_r = uvs_right[s + 1]
+			
+			if s == segments_per_blade - 1:
+				# Apex triangle (v0, v1, v2 where v2 == v3 is the tip point)
+				st.set_normal(n0)
+				st.set_uv(uv0_l)
+				st.add_vertex(v0)
+				
+				st.set_normal(n0)
+				st.set_uv(uv0_r)
+				st.add_vertex(v1)
+				
+				st.set_normal(n1)
+				st.set_uv(uv1_l)
+				st.add_vertex(v2)
+			else:
+				# Quad segment (v0, v1, v3, v2)
+				# Triangle 1
+				st.set_normal(n0)
+				st.set_uv(uv0_l)
+				st.add_vertex(v0)
+				
+				st.set_normal(n0)
+				st.set_uv(uv0_r)
+				st.add_vertex(v1)
+				
+				st.set_normal(n1)
+				st.set_uv(uv1_r)
+				st.add_vertex(v3)
+				
+				# Triangle 2
+				st.set_normal(n0)
+				st.set_uv(uv0_l)
+				st.add_vertex(v0)
+				
+				st.set_normal(n1)
+				st.set_uv(uv1_r)
+				st.add_vertex(v3)
+				
+				st.set_normal(n1)
+				st.set_uv(uv1_l)
+				st.add_vertex(v2)
+				
+	var mesh = st.commit()
+	return mesh
 
 
 ## Rebuilds the MultiMesh instances within field boundaries.
@@ -157,13 +231,14 @@ func regenerate() -> void:
 	
 	var mesh_to_use: Mesh = custom_mesh
 	if mesh_to_use == null:
-		mesh_to_use = DEFAULT_QUATERNIUS_MESH
-	if mesh_to_use == null:
 		mesh_to_use = create_stylized_grass_mesh(
 			blade_height,
-			blade_width
+			blade_width,
+			blades_per_tuft,
+			blade_segments,
+			tuft_radius,
+			blade_curve
 		)
-
 		
 	var mat: Material = custom_grass_material
 	if mat == null:
