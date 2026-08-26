@@ -75,9 +75,30 @@ When code is merged into `main`, the GitHub Action at `.github/workflows/release
 The first automated release starts from `v3.0.0` if no previous `v*` tag exists.
 
 
-----
+---
+
+## Credits & Asset Attributions
+
+This project and its interactive demo scenes utilize high-quality CC0 (Creative Commons 0 / Public Domain) and MIT licensed assets:
+
+- **Nature & Foliage**:
+  - [Quaternius • Ultimate Stylized Nature Pack](https://quaternius.com) - Stylized trees, bark, logs, and leaves (**CC0 / Public Domain**).
+  - Wind-Reactive Grass & Foliage Spatial Shaders (`materials/grass_wind.gdshader`, `materials/foliage_wind.gdshader`) and `GrassField` generator (**MIT License**).
+- **PBR Textures & Surfaces**:
+  - [ambientCG](https://ambientcg.com) - `Grass001_1K`, `Planks020_1K`, `Wood073_1K` ground and terrain textures (**CC0 / Public Domain**).
+  - [Kenney.nl](https://kenney.nl) - Prototype Textures & Road Textures (**CC0 / Public Domain**).
+- **Vehicles & Characters**:
+  - Bilal Creation / CGTrader - Animated Low-Poly Duck (**Royalty Free / CC0**).
+  - GalacticLake - Godot Plush 3D Model (**CC-BY / MIT compatible**).
+- **Audio & Sound Effects**:
+  - [Pixabay](https://pixabay.com) & [Freesound](https://freesound.org) - Environmental sound effects, weather ambiance, and action audio (**Pixabay License / CC0**).
+- **Icons**:
+  - [Game-icons.net](https://game-icons.net) - Weapon and equipment HUD icons (**CC-BY 3.0** by Lorc, Delapouite, and contributors).
+
+---
 
 ## AI Notes
 - VSCode
    - Skills: [.agents/skills/](.agents/skills/) and/or [.github/skills/](.github/skills/)
    - MCP: [.vscode/mcp.json](.vscode/mcp.json)
+

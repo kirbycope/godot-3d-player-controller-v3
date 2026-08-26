@@ -55,9 +55,8 @@ jobs:
             -d \
             --path "$PWD" \
             -s addons/gut/gut_cmdln.gd \
-            -gconfig=.gutconfig.json \
-            -gjunit_xml_file \
-            test-results/gut-junit.xml \
+            -gconfig=res://addons/3d_player_controller/.gutconfig.json \
+            -gjunit_xml_file=test-results/gut-junit.xml \
             -gcompact_mode \
             -gexit
 

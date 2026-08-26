@@ -61,6 +61,7 @@
 [ext_resource type="Script" uid="uid://cxw0x2g3wc150" path="res://addons/date_and_time/scripts/date_and_time_display.gd" id="58_dtdisplay"]
 [ext_resource type="Script" uid="uid://hf7o6rfms5xs" path="res://addons/weather_fx/scripts/weather_forecast_display.gd" id="59_wfdisplay"]
 [ext_resource type="Script" uid="uid://c066077ej7yf8" path="res://addons/weather_fx/scripts/temperature_gauge_display.gd" id="60_tgdisplay"]
+[ext_resource type="PackedScene" path="res://addons/weather_fx/scenes/grass_field.tscn" id="61_grassfield"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -1320,6 +1321,18 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 2.5,
 
 [node name="Tree01" parent="Quaternius" unique_id=38701300 instance=ExtResource("43_ufs10")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -4.7683716e-07, 0, 1)
+
+[node name="GrassField1" parent="Quaternius" instance=ExtResource("61_grassfield")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
+instance_count = 600
+field_size = Vector2(24, 20)
+
+[node name="GrassField2" parent="Quaternius" instance=ExtResource("61_grassfield")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, 5)
+instance_count = 600
+field_size = Vector2(24, 20)
+seed_value = 54321
+
 
 [node name="Skateboard" parent="." unique_id=1958283666 instance=ExtResource("8_h3odw")]
 transform = Transform3D(2.9802322e-08, -1, 0, -4.371139e-08, -1.3027009e-15, 1, -1, -2.9802322e-08, -4.371139e-08, 4.3889647, 0.7169763, 3.982221)
