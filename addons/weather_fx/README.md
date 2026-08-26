@@ -5,8 +5,8 @@ A high-performance, modular climate and weather simulation system featuring 20 u
 > [!NOTE]
 > **Plugin Activation vs Scene Usage**:
 > All core scripts use `class_name` (`WeatherFX`, `WeatherZone`, `WeatherForecastDisplay`, `TemperatureGaugeDisplay`, `ClimateData`).
-> - **Direct Usage**: You can add and use these nodes immediately in your scenes, drag `.gd` scripts, or call them via code without enabling anything in Project Settings.
-> - **Enabling the Plugin**: Enabling `Weather FX` in **Project Settings > Plugins** registers the custom icons and adds the node types directly to Godot's "Create New Node" hierarchy dialog.
+> - **Direct Usage**: You can add and use these nodes immediately in your scenes, drag `.gd` scripts, or call them via code. Ensure the global shader parameters are added in **Project Settings > Shader Globals**.
+> - **Enabling the Plugin**: Enabling `Weather FX` in **Project Settings > Plugins** registers the custom icons, adds the node types directly to Godot's "Create New Node" hierarchy dialog, and automatically configures the required **Shader Globals** in `ProjectSettings`.
 
 ---
 
@@ -46,12 +46,62 @@ Provides statistical probabilities and altitude curves across 20 distinct biomes
 - Generates a queue of upcoming weather conditions (default 7 cycles ahead).
 - Advances automatically every 240 seconds (configurable) or manually in editor / via API.
 
-### 5. Wind & Shader Integration
-- Dynamically updates global shader uniforms:
-  - `weather_wind_strength` (float)
-  - `weather_wind_direction` (Vector3)
-  - `weather_precipitation_strength` (float)
-- Foliage, grass, and water shaders can read these uniforms without manual wiring.
+### 5. Wind & Global Shader Integration (Foliage & Grass Sway)
+Dynamically synchronizes weather parameters with Godot's global shader variables:
+- `weather_wind_strength` (`float`): Current wind power multiplier (scales according to biome base power and active storm / blizzard multipliers).
+- `weather_wind_direction` (`vec3`): Normalized 3D world-space wind direction.
+- `weather_precipitation_strength` (`float`): Wetness and rain/snow intensity (0.0 to 1.2+).
+
+These can be accessed directly in any Godot shader without extra script bindings. The project includes ready-to-use spatial shaders and procedural foliage tools:
+- **`materials/grass_wind.gdshader`**: Feature-rich wind-reactive grass shader featuring:
+  - Macro sweeping gust waves and micro-flutter turbulence.
+  - Realistic tip-bending physics with vertical dip conservation.
+  - 3-stop vertical color gradient (`color_base`, `color_mid`, `color_tip`) with root ambient occlusion.
+  - Rolling macro terrain color variation (procedural pasture patches).
+  - Volumetric upward normal blending for fluffy Ghibli/BotW-style foliage lighting.
+  - Subsurface scattering / backlight transmission through blade tips.
+  - Dynamic character / object push-aside displacement.
+  - Rain wetness response (darkened soaked albedo, reduced roughness, glossy specular highlights).
+- **`materials/foliage_wind.gdshader`**: Tree canopy and leaf flutter shader reacting to wind direction and velocity.
+- **`scenes/grass_field.tscn` / `GrassField`**: High-performance instanced `MultiMeshInstance3D` grass generator that creates procedural 3D curved-blade tufts (multi-segment tapered blades with organic radial distribution and volumetric normals).
+
+```gdshader
+shader_type spatial;
+render_mode cull_disabled, diffuse_toon, specular_schlick_ggx;
+
+global uniform float weather_wind_strength;
+global uniform vec3 weather_wind_direction;
+global uniform float weather_precipitation_strength;
+
+uniform float sway_strength : hint_range(0.0, 2.0) = 0.50;
+
+void vertex() {
+    float height_factor = clamp(1.0 - UV.y, 0.0, 1.0);
+    vec3 world_origin = MODEL_MATRIX[3].xyz;
+    vec3 wind_dir = normalize(weather_wind_direction);
+    
+    float raw_wave = sin(TIME * (1.6 + 0.2 * max(weather_wind_strength, 0.5)) + (world_origin.x + world_origin.z) * 0.08);
+    float wave = pow(raw_wave * 0.5 + 0.5, 1.35);
+    float micro = sin(TIME * 4.2 + VERTEX.x * 1.3 + VERTEX.z * 1.3) * 0.08;
+    float bend = max(wave + micro, 0.0) * sway_strength * max(weather_wind_strength, 0.5) * 0.5 * pow(height_factor, 1.65);
+    vec3 sway = wind_dir * bend;
+    sway.y -= bend * 0.22 * height_factor;
+    
+    VERTEX += (inverse(MODEL_MATRIX) * vec4(sway, 0.0)).xyz;
+    NORMAL = normalize(mix(NORMAL, vec3(0.0, 1.0, 0.0), 0.55));
+}
+```
+
+---
+
+## Credits & Attributions
+
+Special thanks and attributions to open-source shaders and creators whose techniques and insights inspired WeatherFX's foliage rendering:
+- **Malido** – *Stylized Multimesh Grass Shader* ([GodotShaders](https://godotshaders.com/shader/stylized-multimesh-grass-shader/), CC0 Public Domain / [GitHub](https://github.com/Malidos/Grass-Shader-Example))
+- **Calico** – *Stylized Customable Grass* ([GodotShaders](https://godotshaders.com/shader/stylized-customable-grass/), CC0 Public Domain)
+- **Bramreth (Bramwell)** – *Godot 4 3D Stylized Grass* ([GitHub](https://github.com/bramreth/Godot-4-3D-Stylized-Grass), MIT License)
+- **2Retr0** – *GodotGrass* ([GitHub](https://github.com/2Retr0/GodotGrass), MIT License)
+
 
 ### 6. In-Editor `@tool` Controls
 - **Play/Pause**: Toggle `is_playing` to freeze or progress weather in the viewport.
