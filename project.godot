@@ -16,6 +16,10 @@ run/main_scene="uid://dtnxqy114fjc1"
 config/features=PackedStringArray("4.8", "Forward Plus")
 config/icon="res://icon.svg"
 
+[audio]
+
+buses/default_bus_layout="uid://kfdo4yimvqd0"
+
 [autoload]
 
 Steamworks="*res://addons/godotsteamkit/autoloads/steamworks.gd"
