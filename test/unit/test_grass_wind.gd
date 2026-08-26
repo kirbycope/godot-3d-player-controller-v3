@@ -2,7 +2,7 @@ extends GutTest
 
 ## Tests for GrassField, Grass Wind Shader, and Foliage Sway Shader integration.
 
-const GrassFieldScript = preload("res://scenes/grass_field.gd")
+const GrassFieldScript = preload("res://addons/weather_fx/scripts/grass_field.gd")
 
 func test_grass_field_instantiation() -> void:
 	var grass_field = GrassFieldScript.new()

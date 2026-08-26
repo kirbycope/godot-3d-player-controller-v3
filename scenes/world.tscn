@@ -61,7 +61,7 @@
 [ext_resource type="Script" uid="uid://cxw0x2g3wc150" path="res://addons/date_and_time/scripts/date_and_time_display.gd" id="58_dtdisplay"]
 [ext_resource type="Script" uid="uid://hf7o6rfms5xs" path="res://addons/weather_fx/scripts/weather_forecast_display.gd" id="59_wfdisplay"]
 [ext_resource type="Script" uid="uid://c066077ej7yf8" path="res://addons/weather_fx/scripts/temperature_gauge_display.gd" id="60_tgdisplay"]
-[ext_resource type="PackedScene" path="res://scenes/grass_field.tscn" id="61_grassfield"]
+[ext_resource type="PackedScene" path="res://addons/weather_fx/scenes/grass_field.tscn" id="61_grassfield"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
