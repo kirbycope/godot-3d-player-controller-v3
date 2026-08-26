@@ -33,6 +33,16 @@ func test_falling_below_world_respawns_giant_duck() -> void:
 	assert_true(AudioServer.get_bus_effect(giant_bus_index, 0) is AudioEffectReverb)
 	assert_true(AudioServer.get_bus_effect(giant_bus_index, 1) is AudioEffectDelay)
 	assert_true(duck.audio_stream_player_3d.playing)
+	assert_true(duck.collision_shape.disabled)
+	assert_false((duck.get_node("CollisionShape3D2") as CollisionShape3D).disabled)
+	assert_true((duck.get_node("CollisionShape3D3") as CollisionShape3D).disabled)
+	assert_true((duck.get_node("CollisionShape3D4") as CollisionShape3D).disabled)
+	assert_false((duck.get_node("CollisionShape3D5") as CollisionShape3D).disabled)
+	assert_false((duck.get_node("CollisionShape3D6") as CollisionShape3D).disabled)
+	assert_true((duck.get_node("CollisionShape3D7") as CollisionShape3D).disabled)
+	assert_true((duck.get_node("CollisionShape3D8") as CollisionShape3D).disabled)
+	assert_true((duck.get_node("CollisionShape3D9") as CollisionShape3D).disabled)
+	assert_true((duck.get_node("CollisionShape3D10") as CollisionShape3D).disabled)
 
 
 func test_walk_animation_resumes_after_pause() -> void:
@@ -150,3 +160,96 @@ func test_rigid_body_collision_plays_quack() -> void:
 			break
 
 	assert_true(quack_played)
+
+
+func test_normal_duck_collision_shapes() -> void:
+	var duck: CharacterBody3D = DUCK_SCENE.instantiate() as CharacterBody3D
+	add_child_autofree(duck)
+	await wait_physics_frames(1)
+
+	assert_false(duck.collision_shape.disabled)
+	assert_true((duck.get_node("CollisionShape3D2") as CollisionShape3D).disabled)
+	assert_true((duck.get_node("CollisionShape3D3") as CollisionShape3D).disabled)
+	assert_true((duck.get_node("CollisionShape3D4") as CollisionShape3D).disabled)
+	assert_true((duck.get_node("CollisionShape3D5") as CollisionShape3D).disabled)
+	assert_true((duck.get_node("CollisionShape3D6") as CollisionShape3D).disabled)
+	assert_true((duck.get_node("CollisionShape3D7") as CollisionShape3D).disabled)
+	assert_true((duck.get_node("CollisionShape3D8") as CollisionShape3D).disabled)
+	assert_true((duck.get_node("CollisionShape3D9") as CollisionShape3D).disabled)
+	assert_true((duck.get_node("CollisionShape3D10") as CollisionShape3D).disabled)
+
+
+func test_duck_pushes_rigidbody() -> void:
+	var duck: CharacterBody3D = DUCK_SCENE.instantiate() as CharacterBody3D
+	duck.position = Vector3(0.0, 0.5, 0.0)
+	add_child_autofree(duck)
+
+	var pin: RigidBody3D = RigidBody3D.new()
+	var pin_col: CollisionShape3D = CollisionShape3D.new()
+	var pin_shape: BoxShape3D = BoxShape3D.new()
+	pin_shape.size = Vector3(1.0, 1.0, 1.0)
+	pin_col.shape = pin_shape
+	pin.add_child(pin_col)
+	pin.position = Vector3(0.0, 0.5, -0.6)
+	pin.gravity_scale = 0.0
+	pin.mass = 40.0
+	add_child_autofree(pin)
+	await wait_physics_frames(1)
+
+	duck.call("_move_with_control", Vector3(0.0, 0.0, -4.0))
+	await wait_physics_frames(1)
+
+	assert_gt(pin.linear_velocity.length(), 0.0)
+
+
+func test_continuous_collision_quack_suppressed() -> void:
+	var duck: CharacterBody3D = DUCK_SCENE.instantiate() as CharacterBody3D
+	duck.position = Vector3(0.0, 0.5, 0.0)
+	add_child_autofree(duck)
+	duck.set_physics_process(false)
+
+	var wall: StaticBody3D = StaticBody3D.new()
+	var wall_col: CollisionShape3D = CollisionShape3D.new()
+	var wall_shape: BoxShape3D = BoxShape3D.new()
+	wall_shape.size = Vector3(5.0, 5.0, 1.0)
+	wall_col.shape = wall_shape
+	wall.add_child(wall_col)
+	wall.position = Vector3(0.0, 0.5, -2.0)
+	add_child_autofree(wall)
+	await wait_physics_frames(1)
+
+	# First impact: move into wall
+	duck.audio_stream_player_3d.stop()
+	duck._collision_quack_time = 0.0
+	for i in range(30):
+		duck.call("_move_with_control", Vector3(0.0, 0.0, -4.0))
+		if duck.get_slide_collision_count() > 0:
+			break
+
+	assert_true(duck.audio_stream_player_3d.playing)
+
+	# Second frame while still stuck against the wall - audio should not trigger again
+	duck.audio_stream_player_3d.stop()
+	duck._collision_quack_time = 0.0
+	duck.call("_move_with_control", Vector3(0.0, 0.0, -4.0))
+	assert_false(duck.audio_stream_player_3d.playing)
+
+
+func test_already_respawned_giant_duck_does_not_respawn_again() -> void:
+	var duck: CharacterBody3D = DUCK_SCENE.instantiate() as CharacterBody3D
+	duck.position = Vector3(3.0, 5.0, 4.0)
+	add_child_autofree(duck)
+	await wait_physics_frames(1)
+
+	# First fall: Respawns as giant
+	duck.global_position.y = -41.0
+	await wait_physics_frames(1)
+	assert_almost_eq(duck.global_position.y, 5.0, 0.01)
+	assert_true(duck._is_giant)
+
+	# Second fall: Should NOT respawn again
+	duck.global_position = Vector3(10.0, -42.0, 15.0)
+	await wait_physics_frames(1)
+	assert_almost_eq(duck.global_position.x, 10.0, 0.01)
+	assert_almost_eq(duck.global_position.z, 15.0, 0.01)
+	assert_lt(duck.global_position.y, -40.0)

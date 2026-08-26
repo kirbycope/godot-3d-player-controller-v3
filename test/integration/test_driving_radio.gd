@@ -139,3 +139,18 @@ class TestDrivingRadio:
 		assert_false(radio.is_power_on(), "Radio should remain off when driving stops")
 		assert_false(radial_menu.custom_item_provider.is_valid(), "Radial menu custom item provider should remain cleared")
 		assert_false(player.inventory.custom_cycle_handler.is_valid(), "Inventory custom cycle handler should be cleared")
+
+	func test_driving_contextual_controls_include_radio_labels():
+		var player = world_instance.get_node("Player") as Player
+		var driving_node: Driving = player.state_machine.get_node("Driving") as Driving
+		assert_not_null(driving_node, "Driving state node should exist")
+
+		var kb_controls = driving_node.get_contextual_controls(0)
+		assert_eq(kb_controls.get(player.controls.key_j_label), "Prev\nStation")
+		assert_eq(kb_controls.get(player.controls.key_l_label), "Next\nStation")
+		assert_eq(kb_controls.get(player.controls.joypad_button_13_label), "Prev\nStation")
+		assert_eq(kb_controls.get(player.controls.joypad_button_14_label), "Next\nStation")
+
+		var pad_controls = driving_node.get_contextual_controls(1)
+		assert_eq(pad_controls.get(player.controls.joypad_button_13_label), "Prev\nStation")
+		assert_eq(pad_controls.get(player.controls.joypad_button_14_label), "Next\nStation")

@@ -20,6 +20,8 @@ const ANIMATION_NAME: StringName = &"FBXExportClip_0_001"
 @export var collision_quack_cooldown: float = 0.5
 @export var attack_quack_cooldown: float = 1.2
 @export var swimming_depth_offset: float = -0.2 ## Depth to submerge when swimming
+@export var mass: float = 2.0 ## Mass of the duck in kg
+@export var push_force: float = 1.0 ## Push force multiplier on RigidBody3D objects
 
 var is_swimming: bool = false
 var knockback_velocity: Vector3 = Vector3.ZERO
@@ -32,6 +34,7 @@ var _is_giant: bool = false
 var _player_range_initialized: bool = false
 var _player_was_in_range: bool = false
 var _spawn_transform: Transform3D
+var _was_colliding_last_frame: bool = false
 
 @onready var animation_player_eat: AnimationPlayer = $EAT2/AnimationPlayer
 @onready var eat_model: Node3D = $EAT2
@@ -41,6 +44,7 @@ var _spawn_transform: Transform3D
 @onready var walk_model: Node3D = $WALK2
 @onready var audio_stream_player_3d: AudioStreamPlayer3D = $AudioStreamPlayer3D
 @onready var bone_attachment_3d: BoneAttachment3D = $WALK2/WALK/Skeleton3D/BoneAttachment3D
+@onready var collision_shape: CollisionShape3D = $CollisionShape3D
 @onready var knife: Node3D = $WALK2/WALK/Skeleton3D/BoneAttachment3D/Knife
 @onready var knife_idle: Node3D = $IDLE2/IDLE/Skeleton3D/BoneAttachment3D/Knife
 @onready var knife_walk: Node3D = $WALK2/WALK/Skeleton3D/BoneAttachment3D/Knife
@@ -57,6 +61,7 @@ func _ready() -> void:
 	knife_idle.visible = _is_giant
 	knife_walk.visible = _is_giant
 	knife_eat.visible = _is_giant
+	_update_collision_shapes()
 	_stop_moving()
 	call_deferred("_setup_navigation")
 
@@ -64,7 +69,7 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	_collision_quack_time = maxf(_collision_quack_time - delta, 0.0)
 	_attack_quack_time = maxf(_attack_quack_time - delta, 0.0)
-	if global_position.y < respawn_height:
+	if global_position.y < respawn_height and not _is_giant:
 		_respawn_as_giant()
 		
 	var water_surface_along_up: float = _get_water_surface_along_up()
@@ -223,42 +228,64 @@ func _move_with_control(control_velocity: Vector3) -> void:
 
 
 func _check_impacts(movement_velocity: Vector3) -> void:
+	var has_new_slide_collision: bool = false
 	for i in range(get_slide_collision_count()):
 		var collision: KinematicCollision3D = get_slide_collision(i)
 		var collider: Object = collision.get_collider()
 		var impact_speed: float = - movement_velocity.dot(collision.get_normal())
 		if collider is RigidBody3D:
 			var body: RigidBody3D = collider
-			var impact_velocity: Vector3 = body.linear_velocity
-			impact_speed = maxf(impact_speed, impact_velocity.dot(collision.get_normal()))
-			if impact_velocity.length() >= min_impact_speed \
+			var incoming_speed: float = body.linear_velocity.dot(collision.get_normal())
+			impact_speed = maxf(impact_speed, incoming_speed)
+			if incoming_speed >= min_impact_speed \
 					and knockback_velocity.length() < min_impact_speed:
-				apply_impulse(impact_velocity + up_direction * impact_upward_boost)
-		if impact_speed >= collision_quack_speed \
-				and _collision_quack_time <= 0.0:
+				apply_impulse(body.linear_velocity + up_direction * impact_upward_boost)
+
+			# Push the rigid body based on relative velocity and effective mass
+			var push_dir: Vector3 = -collision.get_normal()
+			var velocity_proj: float = movement_velocity.dot(push_dir)
+			var rb_velocity_proj: float = body.linear_velocity.dot(push_dir)
+			var relative_velocity_proj: float = velocity_proj - rb_velocity_proj
+			if relative_velocity_proj > 0.0:
+				var current_mass: float = mass * (giant_scale * 10.0 if _is_giant else 1.0)
+				var effective_mass: float = (current_mass * body.mass) / (current_mass + body.mass)
+				var push_impulse: Vector3 = push_dir * (relative_velocity_proj * effective_mass * push_force)
+				var push_pos: Vector3 = collision.get_position() - body.global_position
+				body.apply_impulse(push_impulse, push_pos)
+
+		if impact_speed >= collision_quack_speed:
+			has_new_slide_collision = true
+
+	# Suppress repeated quacking when stuck continuously pressing against an obstacle/wall
+	if has_new_slide_collision and not _was_colliding_last_frame:
+		if _collision_quack_time <= 0.0:
 			_play_quack()
+
+	_was_colliding_last_frame = get_slide_collision_count() > 0 or is_on_wall()
 
 
 func _respawn_as_giant() -> void:
+	if _is_giant:
+		return
+	_is_giant = true
 	global_transform = _spawn_transform
 	velocity = Vector3.ZERO
 	knockback_velocity = Vector3.ZERO
-	if not _is_giant:
-		_is_giant = true
-		idle_model.scale *= giant_scale
-		walk_model.scale *= giant_scale
-		eat_model.scale *= giant_scale
-		move_speed *= giant_move_speed_multiplier
-		follow_distance = giant_follow_distance
-		max_follow_distance *= giant_scale
-		navigation_agent_3d.target_desired_distance = follow_distance
-		knife.visible = true
-		knife_idle.visible = true
-		knife_walk.visible = true
-		knife_eat.visible = true
-		audio_stream_player_3d.pitch_scale = giant_quack_pitch
-		audio_stream_player_3d.unit_size *= giant_scale
-		audio_stream_player_3d.bus = GIANT_QUACK_BUS
+	idle_model.scale *= giant_scale
+	walk_model.scale *= giant_scale
+	eat_model.scale *= giant_scale
+	move_speed *= giant_move_speed_multiplier
+	follow_distance = giant_follow_distance
+	max_follow_distance *= giant_scale
+	navigation_agent_3d.target_desired_distance = follow_distance
+	knife.visible = true
+	knife_idle.visible = true
+	knife_walk.visible = true
+	knife_eat.visible = true
+	audio_stream_player_3d.pitch_scale = giant_quack_pitch
+	audio_stream_player_3d.unit_size *= giant_scale
+	audio_stream_player_3d.bus = GIANT_QUACK_BUS
+	_update_collision_shapes()
 	audio_stream_player_3d.play()
 
 
@@ -273,6 +300,8 @@ func _play_walk_animation() -> void:
 	idle_model.visible = false
 	walk_model.visible = true
 	eat_model.visible = false
+	if _is_giant:
+		_update_collision_shapes()
 	if not animation_player_walk.is_playing():
 		animation_player_walk.play(ANIMATION_NAME)
 	if animation_player_idle.is_playing():
@@ -287,10 +316,12 @@ func _ensure_giant_quack_bus() -> void:
 
 
 func _update_player_range(distance_to_player: float) -> void:
-	var is_in_range: bool = distance_to_player <= max_follow_distance
+	var enter_threshold: float = max_follow_distance
+	var exit_threshold: float = max_follow_distance + 0.5
+	var is_in_range: bool = distance_to_player <= enter_threshold if not _player_was_in_range else distance_to_player <= exit_threshold
 	if not _player_range_initialized:
 		_player_range_initialized = true
-		_player_was_in_range = is_in_range
+		_player_was_in_range = distance_to_player <= max_follow_distance
 		return
 	if is_in_range == _player_was_in_range:
 		return
@@ -303,6 +334,8 @@ func _stop_moving() -> void:
 	idle_model.visible = true
 	walk_model.visible = false
 	eat_model.visible = false
+	if _is_giant:
+		_update_collision_shapes()
 	if animation_player_walk.is_playing():
 		animation_player_walk.pause()
 	if animation_player_eat.is_playing():
@@ -315,6 +348,8 @@ func _play_eating_animation() -> void:
 	idle_model.visible = false
 	walk_model.visible = false
 	eat_model.visible = true
+	if _is_giant:
+		_update_collision_shapes()
 	var was_playing: bool = animation_player_eat.is_playing()
 	if not was_playing:
 		animation_player_eat.play(ANIMATION_NAME)
@@ -325,6 +360,22 @@ func _play_eating_animation() -> void:
 		animation_player_idle.stop()
 	if animation_player_walk.is_playing():
 		animation_player_walk.pause()
+
+
+func _update_collision_shapes() -> void:
+	if _is_giant:
+		if collision_shape:
+			collision_shape.disabled = true
+		for child in find_children("*", "CollisionShape3D", true, false):
+			if child is CollisionShape3D and child != collision_shape:
+				var is_vis: bool = child.is_visible_in_tree() if child.is_inside_tree() else child.visible
+				child.disabled = not is_vis
+	else:
+		if collision_shape:
+			collision_shape.disabled = false
+		for child in find_children("*", "CollisionShape3D", true, false):
+			if child is CollisionShape3D and child != collision_shape:
+				child.disabled = true
 
 
 func _get_water_surface_along_up() -> float:

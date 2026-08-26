@@ -192,6 +192,14 @@ func get_hud() -> RadiOtHUD:
 	return _hud
 
 
+func set_volume(linear_val: float) -> void:
+	volume_db = linear_to_db(linear_val) if linear_val > 0.0 else -80.0
+	if _streamer != null:
+		_streamer.set_volume(linear_val)
+	if _bulletin_player != null:
+		_bulletin_player.volume_db = volume_db
+
+
 # -----------------------------------------------------------------------------
 # Internal Setup & Audio Routing
 # -----------------------------------------------------------------------------
@@ -202,6 +210,7 @@ func _setup_internal_nodes() -> void:
 		_streamer = RadiOtStreamer.new()
 		_streamer.name = "RadiOtStreamer"
 		_streamer.set_target_player(self)
+		_streamer.set_volume(db_to_linear(volume_db))
 		add_child(_streamer)
 		_streamer.buffering_started.connect(_on_buffering_started)
 		_streamer.playback_started.connect(_on_playback_started)

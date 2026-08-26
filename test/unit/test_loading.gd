@@ -106,3 +106,21 @@ func test_main_scene_wiring() -> void:
 		title_screen.is_connected("multi_player_pressed", Callable(main, "multi_player")),
 		"TitleScreen multi_player_pressed signal should be connected to Main.multi_player"
 	)
+
+
+func test_main_unhandled_input_button_0_selects_focused_option() -> void:
+	var main = MAIN_SCENE.instantiate()
+	add_child_autofree(main)
+
+	var title_screen = main.get_node("TitleScreen")
+	var btn_mp: Button = title_screen.get_node("VBoxContainer/Button_MultiPlayer")
+	btn_mp.grab_focus()
+
+	watch_signals(title_screen)
+
+	var joy_event = InputEventJoypadButton.new()
+	joy_event.button_index = JOY_BUTTON_A
+	joy_event.pressed = true
+	main._unhandled_input(joy_event)
+
+	assert_signal_emitted(title_screen, "multi_player_pressed", "Button 0 (JOY_BUTTON_A) in _unhandled_input should activate focused button")

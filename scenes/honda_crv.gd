@@ -9,16 +9,28 @@ const DOOR_OPEN_TIME: float = 1.1333 # seconds into the "Entering Car" animation
 const DOOR_CLOSE_TIME: float = 3.7333 # seconds into the "Entering Car" animation when the door closes
 
 @export var max_acceleration_force: float = 4500.0
-@export var max_brake_force: float = 225.0
-@export var max_reverse_force: float = -3375.0
+@export var max_brake_force: float = 1800.0
+@export var max_reverse_force: float = -2500.0
 @export var explosion_impulse_force: float = 6750.0
 @export var flipped_time_to_burn: float = 5.0 ## Seconds vehicle must be flipped before catching fire
 @export var time_to_explode: float = 10.0 ## Seconds vehicle burns before exploding
-@export var brake_velocity_threshold: float = 5.0 ## Velocity threshold to switch between sfx_break_short and sfx_break_long
+@export var min_brake_sound_velocity: float = 6.0 ## Minimum speed required to trigger brake screech sound
+@export var brake_velocity_threshold: float = 14.0 ## Velocity threshold to switch between sfx_break_short and sfx_break_long
 
+@export_group("GTA Handling & Transmission")
+@export var drive_bias_front: float = 0.5 ## AWD torque distribution (0.5 = 50% front / 50% rear)
+@export var brake_bias_front: float = 0.65 ## Brake bias (65% front, 35% rear)
+@export var handbrake_traction_loss: float = 0.82 ## Rear wheel traction multiplier during handbrake
+@export var downforce_coeff: float = 4.0 ## Downforce multiplier
+@export var anti_roll_force: float = 12000.0 ## Anti-roll bar force across axles
+
+var current_gear: int = 1
+var current_rpm: float = 0.0 # 0.0 = idle, 1.0 = redline
+var clutch_timer: float = 0.0
 var fire_timer: float = 0.0
 var flipped_timer: float = 0.0
 var has_exploded: bool = false
+var initial_spawn_transform: Transform3D
 var is_on_fire: bool = false:
 	set(value):
 		if is_on_fire == value:
@@ -36,6 +48,8 @@ var menu_displayed: bool = false
 var player: Player
 var was_driving: bool = false
 var _revved_current_accel: bool = false
+var _screech_timer: float = 0.0
+const SCREECH_RETRIGGER_DELAY: float = 0.8
 
 @onready var action_prompt: Node3D = $ActionPrompt
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
@@ -55,6 +69,46 @@ var _revved_current_accel: bool = false
 @onready var sfx_engine_running_outside: AudioStreamPlayer3D = $SFXEngineRunningOutside
 @onready var sfx_break_short: AudioStreamPlayer3D = $SFXBreakShort
 @onready var sfx_break_long: AudioStreamPlayer3D = $SFXBreakLong
+
+
+func _ready() -> void:
+	add_to_group("vehicles")
+	initial_spawn_transform = global_transform
+	var settings_res = PlayerSettingsResource.load_or_create()
+	set_sfx_volume(settings_res.sfx_volume)
+	if is_on_fire:
+		_update_fire_state()
+	_configure_engine_loops()
+
+
+## Returns true if any vehicle wheel is currently touching ground.
+func is_any_wheel_on_ground() -> bool:
+	for child in get_children():
+		if child is VehicleWheel3D and (child as VehicleWheel3D).is_in_contact():
+			return true
+	return false
+
+
+func _configure_engine_loops() -> void:
+	var looping_players: Array[AudioStreamPlayer3D] = [
+		sfx_engine_running_inside,
+		sfx_engine_running_outside,
+		sfx_engine_speed_up_inside,
+		sfx_engine_speed_up_outside,
+		sfx_engine_slow_down_inside,
+		sfx_engine_slow_down_outside
+	]
+	for p in looping_players:
+		if p and p.stream is AudioStreamOggVorbis:
+			(p.stream as AudioStreamOggVorbis).loop = true
+
+
+## Update volume on all vehicle SFX AudioStreamPlayer3D nodes.
+func set_sfx_volume(value: float) -> void:
+	var db = linear_to_db(value / 100.0) if value > 0.0 else -80.0
+	for child in find_children("*", "AudioStreamPlayer3D", true, false):
+		if child is AudioStreamPlayer3D:
+			child.volume_db = db
 
 
 ## Called when there is an input event.
@@ -146,7 +200,7 @@ func _process(delta: float) -> void:
 			player = null
 			
 	was_driving = is_driving_this_car
-	_update_engine_sfx()
+	_update_engine_sfx(delta)
 
 
 ## Opens then closes the driver door in sync with the player's "Entering Car" animation.
@@ -161,11 +215,6 @@ func _play_door_sequence() -> void:
 	if not is_instance_valid(animation_player):
 		return
 	animation_player.play("close")
-
-
-func _ready() -> void:
-	if is_on_fire:
-		_update_fire_state()
 
 
 func _update_fire_state() -> void:
@@ -317,7 +366,7 @@ func _apply_material_recursive(node: Node, mat: Material) -> void:
 
 
 
-func _update_engine_sfx() -> void:
+func _update_engine_sfx(delta: float = 0.0) -> void:
 	var is_driving_this_car: bool = player and player.is_driving and player.is_driving_in == self \
 		and not player.is_entering_vehicle and not player.is_exiting_vehicle
 
@@ -326,52 +375,74 @@ func _update_engine_sfx() -> void:
 		if sfx_break_short and sfx_break_short.playing: sfx_break_short.stop()
 		if sfx_break_long and sfx_break_long.playing: sfx_break_long.stop()
 		_revved_current_accel = false
+		_screech_timer = 0.0
 		return
 
 	var accelerate_pressed := false
 	var brake_pressed := false
+	var handbrake_pressed := false
 	if player:
 		var driving_state := player.state_machine.get_node_or_null("Driving") as Driving if player.state_machine else null
 		if driving_state:
 			accelerate_pressed = driving_state.is_accelerate_pressed()
 			brake_pressed = driving_state.is_brake_pressed()
+			handbrake_pressed = driving_state.is_handbrake_pressed()
 		else:
 			accelerate_pressed = Input.is_action_pressed("shoot")
 			brake_pressed = Input.is_action_pressed("focus")
+			handbrake_pressed = Input.is_action_pressed("throw")
 
 	if not accelerate_pressed:
 		_revved_current_accel = false
 
 	# If start SFX is still playing and player isn't providing inputs yet, let start SFX finish
-	if sfx_car_start and sfx_car_start.playing and not (accelerate_pressed or brake_pressed):
+	if sfx_car_start and sfx_car_start.playing and not (accelerate_pressed or brake_pressed or handbrake_pressed):
 		_stop_all_engine_sfx()
 		return
 
 	var player_cam = player.camera as Camera
 	var is_first_person: bool = (player_cam and player_cam.perspective == Camera.Perspective.FIRST_PERSON) or first_person_camera.current
 
-	var fwd_heading := global_transform.basis.z
-	var forward_speed := fwd_heading.dot(linear_velocity)
-	var speed := linear_velocity.length()
+	var fwd_heading: Vector3 = global_transform.basis.z
+	var forward_speed: float = fwd_heading.dot(linear_velocity)
+	var lateral_speed: float = absf(global_transform.basis.x.dot(linear_velocity))
+	var speed: float = linear_velocity.length()
 
-	# 1. Check Brake squeal SFX (when braking ONLY and moving forward)
-	var is_braking_only: bool = brake_pressed and not accelerate_pressed and forward_speed > 0.1
-	if is_braking_only:
-		if speed < brake_velocity_threshold:
-			if sfx_break_long and sfx_break_long.playing: sfx_break_long.stop()
-			if sfx_break_short and not sfx_break_short.playing: sfx_break_short.play()
-		else:
-			if sfx_break_short and sfx_break_short.playing: sfx_break_short.stop()
-			if sfx_break_long and not sfx_break_long.playing: sfx_break_long.play()
+	var any_wheel_on_ground: bool = is_any_wheel_on_ground()
+
+	# 1. Brake Screech / Skid SFX (Only if wheels are in contact with ground and speed exceeds threshold!)
+	var is_screeching: bool = false
+	if any_wheel_on_ground:
+		if handbrake_pressed and speed > min_brake_sound_velocity:
+			is_screeching = true
+		elif lateral_speed > 2.5 and speed > min_brake_sound_velocity:
+			is_screeching = true
+		elif brake_pressed and not accelerate_pressed and forward_speed > min_brake_sound_velocity:
+			is_screeching = true
+		elif accelerate_pressed and not brake_pressed and forward_speed < -min_brake_sound_velocity:
+			is_screeching = true
+
+	if _screech_timer > 0.0:
+		_screech_timer -= delta
+
+	if is_screeching:
+		var any_screech_playing: bool = (sfx_break_short and sfx_break_short.playing) or (sfx_break_long and sfx_break_long.playing)
+		if not any_screech_playing and _screech_timer <= 0.0:
+			_screech_timer = SCREECH_RETRIGGER_DELAY
+			if speed > brake_velocity_threshold or lateral_speed > 4.0:
+				if sfx_break_long: sfx_break_long.play()
+			else:
+				if sfx_break_short: sfx_break_short.play()
 	else:
 		if sfx_break_short and sfx_break_short.playing: sfx_break_short.stop()
 		if sfx_break_long and sfx_break_long.playing: sfx_break_long.stop()
+		_screech_timer = 0.0
 
 	# 2. Determine target Engine SFX
 	var target_sfx: AudioStreamPlayer3D = null
 
-	# Rev: holding brake and presses accelerate (only once per acceleration press)
-	if brake_pressed and accelerate_pressed:
+	# Rev Engine: ONLY during stationary burnout
+	if (brake_pressed or handbrake_pressed) and accelerate_pressed and speed < 2.5:
 		if not _revved_current_accel:
 			_revved_current_accel = true
 			target_sfx = sfx_engine_rev
@@ -379,17 +450,32 @@ func _update_engine_sfx() -> void:
 			target_sfx = sfx_engine_rev
 		else:
 			target_sfx = sfx_engine_running_inside if is_first_person else sfx_engine_running_outside
-	# Reversing (braking & not accelerating while stopped/moving backward) OR Accelerating (accelerate & not brake)
-	elif accelerate_pressed or (brake_pressed and forward_speed <= 0.1):
+	# Accelerating forward (on-throttle while moving forward or standstill)
+	elif accelerate_pressed and forward_speed >= -0.4:
 		target_sfx = sfx_engine_speed_up_inside if is_first_person else sfx_engine_speed_up_outside
-	# Slow down (braking & not accelerating while moving forward)
-	elif is_braking_only:
-		target_sfx = sfx_engine_slow_down_inside if is_first_person else sfx_engine_slow_down_outside
-	# Engine Running (Idle)
+	# Reversing (actively rolling backward with reverse throttle)
+	elif brake_pressed and not accelerate_pressed and forward_speed < -1.5:
+		target_sfx = sfx_engine_speed_up_inside if is_first_person else sfx_engine_speed_up_outside
+	# Braking / Coasting / Normal stopping / Idle (Off-throttle)
 	else:
 		target_sfx = sfx_engine_running_inside if is_first_person else sfx_engine_running_outside
 
-	# 3. Play target SFX and stop all other engine SFX
+	# 3. Dynamic RPM-Driven Continuous Pitch Modulation
+	var base_pitch: float = lerp(0.85, 1.6, current_rpm)
+	if target_sfx:
+		if target_sfx == sfx_engine_speed_up_inside or target_sfx == sfx_engine_speed_up_outside:
+			target_sfx.pitch_scale = clampf(base_pitch, 0.85, 1.65)
+		elif target_sfx == sfx_engine_slow_down_inside or target_sfx == sfx_engine_slow_down_outside:
+			target_sfx.pitch_scale = clampf(lerp(0.8, 1.25, current_rpm), 0.75, 1.3)
+		elif target_sfx == sfx_engine_running_inside or target_sfx == sfx_engine_running_outside:
+			if (brake_pressed or handbrake_pressed) and accelerate_pressed:
+				target_sfx.pitch_scale = 1.35
+			else:
+				target_sfx.pitch_scale = clampf(base_pitch, 0.85, 1.5)
+		elif target_sfx == sfx_engine_rev:
+			target_sfx.pitch_scale = 1.0
+
+	# 4. Play target SFX and stop all other engine SFX
 	var engine_sfx_list: Array[AudioStreamPlayer3D] = [
 		sfx_engine_rev,
 		sfx_engine_running_inside,

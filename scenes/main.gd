@@ -28,6 +28,23 @@ func _input(event: InputEvent) -> void:
 			loading.load_scene(single_player_scene)
 
 
+## Called when an input event is not handled by the GUI.
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventJoypadButton and event.is_pressed() and not event.is_echo():
+		if event.button_index == JOY_BUTTON_A:
+			if click_to_start.visible:
+				click_to_start.hide()
+				loading.load_scene(single_player_scene)
+				return
+			var focused_control = get_viewport().gui_get_focus_owner()
+			if focused_control is BaseButton:
+				focused_control.emit_signal("pressed")
+			elif title_screen and title_screen.has_node("VBoxContainer/Button_SinglePlayer"):
+				var single_player_btn = title_screen.get_node("VBoxContainer/Button_SinglePlayer") as Button
+				if single_player_btn:
+					single_player_btn.emit_signal("pressed")
+
+
 func single_player() -> void:
 	loading.load_scene(single_player_scene)
 
