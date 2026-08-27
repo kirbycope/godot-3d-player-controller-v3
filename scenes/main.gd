@@ -46,8 +46,10 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func single_player() -> void:
-	loading.load_scene(single_player_scene)
+	if not single_player_scene.is_empty():
+		loading.load_scene(single_player_scene)
 
 
 func multi_player() -> void:
-	loading.load_scene(multi_player_scene)
+	if not multi_player_scene.is_empty():
+		loading.load_scene(multi_player_scene)

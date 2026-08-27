@@ -7,7 +7,7 @@ extends GutTest
 class CarTestBase:
 	extends IntegrationTestBase
 
-	var MainScene = load("res://test/integration/test_car.tscn")
+	var MainScene = load("res://tests/integration/test_car.tscn")
 	var PlayerScene = load("res://addons/3d_player_controller/scenes/player.tscn")
 	var main_instance = null
 	var car_instance = null

@@ -83,7 +83,6 @@ This project and its interactive demo scenes utilize high-quality CC0 (Creative 
 
 - **Nature & Foliage**:
   - [Quaternius • Ultimate Stylized Nature Pack](https://quaternius.com) - Stylized trees, bark, logs, and leaves (**CC0 / Public Domain**).
-  - Wind-Reactive Grass & Foliage Spatial Shaders (`materials/grass_wind.gdshader`, `materials/foliage_wind.gdshader`) and `GrassField` generator (**MIT License**).
 - **PBR Textures & Surfaces**:
   - [ambientCG](https://ambientcg.com) - `Grass001_1K`, `Planks020_1K`, `Wood073_1K` ground and terrain textures (**CC0 / Public Domain**).
   - [Kenney.nl](https://kenney.nl) - Prototype Textures & Road Textures (**CC0 / Public Domain**).

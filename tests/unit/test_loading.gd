@@ -90,6 +90,7 @@ func test_main_scene_wiring() -> void:
 
 	# Verify export paths
 	assert_eq(main.single_player_scene, "res://scenes/world.tscn", "Main single_player_scene should point to world.tscn string path")
+	assert_eq(main.multi_player_scene, "res://scenes/world.tscn", "Main multi_player_scene should point to world.tscn string path")
 
 	# Verify child nodes
 	var title_screen = main.get_node_or_null("TitleScreen")

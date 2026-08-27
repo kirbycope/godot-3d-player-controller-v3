@@ -2,10 +2,20 @@
 	"background_color": "262626ff",
 	"compact_mode": false,
 	"configured_dirs": [
-		"res://addons/3d_player_controller/tests"
+		"res://addons/3d_player_controller/tests",
+		"res://addons/date_and_time/tests",
+		"res://addons/radi_ot/tests",
+		"res://addons/weather_fx/tests",
+		"res://tests/unit",
+		"res://tests/integration"
 	],
 	"dirs": [
-		"res://addons/3d_player_controller/tests"
+		"res://addons/3d_player_controller/tests",
+		"res://addons/date_and_time/tests",
+		"res://addons/radi_ot/tests",
+		"res://addons/weather_fx/tests",
+		"res://tests/unit",
+		"res://tests/integration"
 	],
 	"disable_colors": false,
 	"double_strategy": 1,
