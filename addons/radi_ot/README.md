@@ -200,6 +200,7 @@ godot --headless -s addons/gut/gut_cmdln.gd
 
 ---
 
-## 📄 License
+## 📄 License & Credits
 
-MIT License.
+- Code is licensed under the [MIT License](LICENSE).
+- Third-party assets and model attributions are documented in [credits.md](../../credits.md).

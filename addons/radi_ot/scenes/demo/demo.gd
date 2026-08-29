@@ -16,6 +16,10 @@ const AUDIO_COASTAL_WIND: AudioStream = preload(
 
 var project_rendering_method: String = ProjectSettings.get_setting("rendering/renderer/rendering_method")
 
+var _camera_distance: float = 4.0
+var _camera_height: float = 1.6
+var _camera_angle_offset: float = 0.0
+
 @onready var _bulletin_button_1: Button = $UI/VBoxContainer/BulletinBtn1 as Button
 @onready var _bulletin_button_2: Button = $UI/VBoxContainer/BulletinBtn2 as Button
 @onready var _cancel_bulletin_btn: Button = $UI/VBoxContainer/CancelBulletinBtn as Button
@@ -26,6 +30,13 @@ var project_rendering_method: String = ProjectSettings.get_setting("rendering/re
 func _ready() -> void:
 	if radio_player == null and has_node("RadioMesh/RadiOtPlayer3D"):
 		radio_player = get_node("RadioMesh/RadiOtPlayer3D") as RadiOtPlayer3D
+
+	if _camera != null:
+		var horiz_dist: float = Vector2(_camera.position.x, _camera.position.z).length()
+		_camera_distance = horiz_dist if horiz_dist > 0.0 else 4.0
+		_camera_height = _camera.position.y
+		if _camera.position.x != 0.0 or _camera.position.z != 0.0:
+			_camera_angle_offset = atan2(_camera.position.x, _camera.position.z)
 
 	var requires_input_activation: bool = (
 		OS.has_feature("web")
@@ -71,11 +82,10 @@ func _start_demo() -> void:
 
 func _process(_delta: float) -> void:
 	if _camera != null:
-		var current_y: float = _camera.position.y
-		var time: float = Time.get_ticks_msec() / 1000.0 * 0.2
-		_camera.position.x = sin(time) * 4.0
-		_camera.position.z = cos(time) * 4.0
-		_camera.position.y = current_y
+		var time: float = (Time.get_ticks_msec() / 1000.0 * 0.2) + _camera_angle_offset
+		_camera.position.x = sin(time) * _camera_distance
+		_camera.position.z = cos(time) * _camera_distance
+		_camera.position.y = _camera_height
 		_camera.look_at(Vector3(0.0, 0.5, 0.0))
 
 

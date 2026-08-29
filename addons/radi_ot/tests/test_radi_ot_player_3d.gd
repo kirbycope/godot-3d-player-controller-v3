@@ -161,6 +161,22 @@ func test_radi_ot_demo_scene_instantiation() -> void:
 	add_child_autofree(demo)
 	assert_not_null(demo.radio_player)
 	assert_not_null(demo._bulletin_button_1)
+	assert_not_null(demo._camera)
+	assert_almost_eq(demo._camera_height, 1.6, 0.01, "Demo should preserve initial camera pos.y height")
+	assert_almost_eq(demo._camera_distance, 3.2, 0.01, "Demo should preserve initial camera horizontal distance")
+
+
+func test_radi_ot_demo_camera_custom_height_and_distance() -> void:
+	var scene = load("res://addons/radi_ot/scenes/demo/demo.tscn")
+	var demo = scene.instantiate()
+	var cam = demo.get_node("Camera3D") as Camera3D
+	cam.position = Vector3(0.0, 2.5, 6.0)
+	add_child_autofree(demo)
+	assert_almost_eq(demo._camera_height, 2.5, 0.01, "Camera node pos.y should be respected")
+	assert_almost_eq(demo._camera_distance, 6.0, 0.01, "Camera node horizontal distance should be respected")
+
+
+
 
 
 
