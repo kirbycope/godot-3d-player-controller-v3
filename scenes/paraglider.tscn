@@ -2,8 +2,42 @@
 
 [ext_resource type="Script" uid="uid://bbtrlr2iw4qic" path="res://scenes/paraglider.gd" id="1_h0jve"]
 [ext_resource type="PackedScene" uid="uid://28w5vav5xicg" path="res://assets/quaternius/paraglider/Paraglider.glb" id="1_pqews"]
+[ext_resource type="Shader" path="res://scenes/cloth_ruffle.gdshader" id="2_cloth_shader"]
 [ext_resource type="AudioStream" uid="uid://b6p3jfykr2tns" path="res://assets/freesound/72853__benboncan__parachute.wav" id="3_b4i8u"]
 [ext_resource type="AudioStream" uid="uid://cu12hhqie3sjn" path="res://assets/freesound/570701__robinhood76__10136-flag-flicking-on-strong-wind-isolated.wav" id="4_i248c"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_blue_fabric"]
+render_priority = 0
+shader = ExtResource("2_cloth_shader")
+shader_parameter/albedo = Color(0.0155825, 0.0270463, 0.107003, 1)
+shader_parameter/roughness = 0.65
+shader_parameter/specular = 0.25
+shader_parameter/enable_vertex_motion = true
+shader_parameter/vertex_wave_speed = 6.0
+shader_parameter/vertex_wave_strength = 0.004
+shader_parameter/vertex_wave_frequency = 2.5
+shader_parameter/ripple_speed = 14.0
+shader_parameter/ripple_strength = 0.45
+shader_parameter/ripple_frequency = 18.0
+shader_parameter/flutter_speed = 28.0
+shader_parameter/flutter_frequency = 36.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_beige_fabric"]
+render_priority = 0
+shader = ExtResource("2_cloth_shader")
+shader_parameter/albedo = Color(0.374342, 0.231151, 0.135873, 1)
+shader_parameter/roughness = 0.65
+shader_parameter/specular = 0.25
+shader_parameter/enable_vertex_motion = true
+shader_parameter/vertex_wave_speed = 6.0
+shader_parameter/vertex_wave_strength = 0.004
+shader_parameter/vertex_wave_frequency = 2.5
+shader_parameter/ripple_speed = 14.0
+shader_parameter/ripple_strength = 0.45
+shader_parameter/ripple_frequency = 18.0
+shader_parameter/flutter_speed = 28.0
+shader_parameter/flutter_frequency = 36.0
+
 [sub_resource type="Curve" id="Curve_trail"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 2
@@ -16,6 +50,10 @@ script = ExtResource("1_h0jve")
 
 [node name="Paraglider2" parent="." unique_id=169648825 instance=ExtResource("1_pqews")]
 transform = Transform3D(0.9961947, -0.08715578, 0, 0.043577865, 0.49809757, -0.86602587, 0.07547908, 0.8627304, 0.5000002, 0.245, 0.165, -0.33)
+
+[node name="Paraglider" parent="Paraglider2" index="0"]
+surface_material_override/0 = SubResource("ShaderMaterial_blue_fabric")
+surface_material_override/1 = SubResource("ShaderMaterial_beige_fabric")
 
 [node name="LeftWing" type="Trail3D" parent="." unique_id=589915828]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.15033162, -0.019061707)
@@ -42,3 +80,5 @@ max_db = -6.0
 [node name="ClothRuffling" type="AudioStreamPlayer3D" parent="." unique_id=700950393]
 stream = ExtResource("4_i248c")
 max_db = -6.0
+
+[editable path="Paraglider2"]
