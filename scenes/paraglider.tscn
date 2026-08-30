@@ -3,12 +3,13 @@
 [ext_resource type="Script" uid="uid://bbtrlr2iw4qic" path="res://scenes/paraglider.gd" id="1_h0jve"]
 [ext_resource type="PackedScene" uid="uid://28w5vav5xicg" path="res://assets/quaternius/paraglider/Paraglider.glb" id="1_pqews"]
 [ext_resource type="AudioStream" uid="uid://b6p3jfykr2tns" path="res://assets/freesound/72853__benboncan__parachute.wav" id="3_b4i8u"]
-[ext_resource type="Script" uid="uid://8gsyqt385owa" path="res://assets/le_lu/contrail.gd" id="3_i248c"]
 [ext_resource type="AudioStream" uid="uid://cu12hhqie3sjn" path="res://assets/freesound/570701__robinhood76__10136-flag-flicking-on-strong-wind-isolated.wav" id="4_i248c"]
+[sub_resource type="Curve" id="Curve_trail"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
 
-[sub_resource type="PlaceholderMesh" id="PlaceholderMesh_i248c"]
-
-[sub_resource type="PlaceholderMesh" id="PlaceholderMesh_4w7gj"]
+[sub_resource type="Gradient" id="Gradient_trail"]
+colors = PackedColorArray(1, 1, 1, 0.2, 1, 1, 1, 0)
 
 [node name="Paraglider" type="Node3D" unique_id=986503034]
 script = ExtResource("1_h0jve")
@@ -16,15 +17,23 @@ script = ExtResource("1_h0jve")
 [node name="Paraglider2" parent="." unique_id=169648825 instance=ExtResource("1_pqews")]
 transform = Transform3D(0.9961947, -0.08715578, 0, 0.043577865, 0.49809757, -0.86602587, 0.07547908, 0.8627304, 0.5000002, 0.245, 0.165, -0.33)
 
-[node name="LeftWing" type="MeshInstance3D" parent="." unique_id=589915828]
+[node name="LeftWing" type="Trail3D" parent="." unique_id=589915828]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.15033162, -0.019061707)
-mesh = SubResource("PlaceholderMesh_i248c")
-script = ExtResource("3_i248c")
+emitting = false
+width = 0.05
+lifetime = 1.0
+min_section_length = 0.06
+color_gradient = SubResource("Gradient_trail")
+width_curve = SubResource("Curve_trail")
 
-[node name="RightWing" type="MeshInstance3D" parent="." unique_id=88704883]
+[node name="RightWing" type="Trail3D" parent="." unique_id=88704883]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5375535, 0.07844145, -0.1384865)
-mesh = SubResource("PlaceholderMesh_4w7gj")
-script = ExtResource("3_i248c")
+emitting = false
+width = 0.05
+lifetime = 1.0
+min_section_length = 0.06
+color_gradient = SubResource("Gradient_trail")
+width_curve = SubResource("Curve_trail")
 
 [node name="Opening" type="AudioStreamPlayer3D" parent="." unique_id=404195623]
 stream = ExtResource("3_b4i8u")
