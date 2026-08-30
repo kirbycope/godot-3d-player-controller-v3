@@ -137,12 +137,14 @@ func test_weather_fx_scene_audio_and_vfx() -> void:
 	assert_true(instance.rain_particles.emitting)
 	assert_true(instance.rain_splash_particles.emitting)
 	assert_true(instance.audio_rain_light.playing)
+	assert_true(instance.wind_vfx_node.visible)
 
 	# Verify heavy rain
 	instance.set_weather(ClimateData.WeatherType.HEAVY_RAIN)
 	assert_true(instance.rain_particles.emitting)
 	assert_true(instance.rain_splash_particles.emitting)
 	assert_true(instance.audio_rain_heavy.playing)
+	assert_true(instance.wind_vfx_node.visible)
 
 	# Verify storm
 	instance.set_weather(ClimateData.WeatherType.STORM)
@@ -150,8 +152,9 @@ func test_weather_fx_scene_audio_and_vfx() -> void:
 	assert_true(instance.rain_splash_particles.emitting)
 	assert_true(instance.audio_storm.playing)
 	assert_true(instance.audio_wind.playing)
+	assert_true(instance.wind_vfx_node.visible)
 
-	# Verify blue sky clears all audio and particles
+	# Verify blue sky clears all audio and particles, and disables wind vfx
 	instance.set_weather(ClimateData.WeatherType.BLUE_SKY)
 	assert_false(instance.rain_particles.emitting)
 	assert_false(instance.rain_splash_particles.emitting)
@@ -159,6 +162,7 @@ func test_weather_fx_scene_audio_and_vfx() -> void:
 	assert_false(instance.audio_rain_heavy.playing)
 	assert_false(instance.audio_storm.playing)
 	assert_false(instance.audio_wind.playing)
+	assert_false(instance.wind_vfx_node.visible)
 
 
 func test_weather_fx_pause_stops_sfx_and_vfx() -> void:

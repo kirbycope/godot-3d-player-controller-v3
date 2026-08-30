@@ -545,10 +545,11 @@ func _update_wind_globals() -> void:
 
 	emit_signal("wind_changed", final_strength, wind_direction)
 	
+	var is_clear_weather = (active_weather == ClimateData.WeatherType.BLUE_SKY)
 	if is_instance_valid(wind_vfx_node):
 		if "enabled" in wind_vfx_node:
-			wind_vfx_node.enabled = true
-		wind_vfx_node.visible = true
+			wind_vfx_node.enabled = not is_clear_weather
+		wind_vfx_node.visible = not is_clear_weather
 	
 	if update_global_shader_variables:
 		ensure_shader_globals()
@@ -588,10 +589,11 @@ func apply_weather_effects(weather_type: ClimateData.WeatherType) -> void:
 	if not _can_simulate():
 		return
 
+	var is_clear_weather = (weather_type == ClimateData.WeatherType.BLUE_SKY)
 	if is_instance_valid(wind_vfx_node):
 		if "enabled" in wind_vfx_node:
-			wind_vfx_node.enabled = true
-		wind_vfx_node.visible = true
+			wind_vfx_node.enabled = not is_clear_weather
+		wind_vfx_node.visible = not is_clear_weather
 
 	match weather_type:
 		ClimateData.WeatherType.BLUE_SKY:

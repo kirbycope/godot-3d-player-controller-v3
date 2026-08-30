@@ -24,3 +24,18 @@ func test_paraglider_mesh_surface_materials() -> void:
 
 	assert_not_null(shader_mat_0.shader, "Surface 0 shader should not be null")
 	assert_not_null(shader_mat_1.shader, "Surface 1 shader should not be null")
+
+
+func test_paraglider_wind_vfx_nodes() -> void:
+	var paraglider: Node3D = PARAGLIDER_SCENE.instantiate() as Node3D
+	add_child_autofree(paraglider)
+
+	var airflow_streaks: GPUParticles3D = paraglider.get_node_or_null("AirflowStreaks") as GPUParticles3D
+	var opening_wind_burst: GPUParticles3D = paraglider.get_node_or_null("OpeningWindBurst") as GPUParticles3D
+
+	assert_not_null(airflow_streaks, "Paraglider should have AirflowStreaks GPUParticles3D node")
+	assert_not_null(opening_wind_burst, "Paraglider should have OpeningWindBurst GPUParticles3D node")
+
+	assert_false(airflow_streaks.emitting, "AirflowStreaks should start inactive")
+	assert_false(opening_wind_burst.emitting, "OpeningWindBurst should start inactive")
+	assert_true(opening_wind_burst.one_shot, "OpeningWindBurst should be configured as one_shot")

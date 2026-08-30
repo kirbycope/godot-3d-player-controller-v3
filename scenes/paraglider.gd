@@ -6,6 +6,8 @@ extends Node3D
 @onready var cloth_ruffling: AudioStreamPlayer3D = $ClothRuffling
 @onready var left_wing: Trail3D = $LeftWing
 @onready var right_wing: Trail3D = $RightWing
+@onready var airflow_streaks: GPUParticles3D = $AirflowStreaks
+@onready var opening_wind_burst: GPUParticles3D = $OpeningWindBurst
 
 
 ## Called every physics frame. '_delta' is the elapsed time since the previous frame.
@@ -18,6 +20,9 @@ func _physics_process(_delta: float) -> void:
 		show()
 		left_wing.emitting = true
 		right_wing.emitting = true
+		airflow_streaks.emitting = true
+		opening_wind_burst.restart()
+		opening_wind_burst.emitting = true
 		if not opening.playing:
 			opening.play()
 		if not cloth_ruffling.playing:
@@ -30,6 +35,7 @@ func _physics_process(_delta: float) -> void:
 			cloth_ruffling.stop()
 		left_wing.emitting = false
 		right_wing.emitting = false
+		airflow_streaks.emitting = false
+		opening_wind_burst.emitting = false
 		left_wing.clear()
 		right_wing.clear()
-
