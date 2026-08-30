@@ -31,7 +31,7 @@ signal wind_changed(strength: float, direction: Vector3)
 			_update_playback_state()
 
 ## Allows simulation to tick inside the editor viewport.
-@export var editor_weather_enabled: bool = true :
+@export var editor_weather_enabled: bool = false :
 	set(value):
 		if editor_weather_enabled != value:
 			editor_weather_enabled = value
@@ -90,24 +90,39 @@ var active_weather: ClimateData.WeatherType = ClimateData.WeatherType.BLUE_SKY
 @export var date_and_time_node: Node :
 	set(value):
 		if date_and_time_node != value:
-			if date_and_time_node and date_and_time_node.has_signal("time_changed") and date_and_time_node.is_connected("time_changed", _on_external_time_changed):
+			if is_instance_valid(date_and_time_node) and date_and_time_node.has_signal("time_changed") and date_and_time_node.is_connected("time_changed", _on_external_time_changed):
 				date_and_time_node.disconnect("time_changed", _on_external_time_changed)
 			date_and_time_node = value
-			if date_and_time_node and date_and_time_node.has_signal("time_changed"):
-				date_and_time_node.connect("time_changed", _on_external_time_changed)
+			if is_instance_valid(date_and_time_node) and date_and_time_node.has_signal("time_changed"):
+				if not date_and_time_node.is_connected("time_changed", _on_external_time_changed):
+					date_and_time_node.connect("time_changed", _on_external_time_changed)
+			_update_temperature_and_weather()
 
 ## Fallback time of day (0.0 - 24.0 hours) used when no DateAndTime node is linked.
 @export_range(0.0, 24.0, 0.1) var manual_time_of_day: float = 12.0 :
 	set(value):
+		if is_equal_approx(manual_time_of_day, value):
+			return
 		manual_time_of_day = value
+		if is_instance_valid(date_and_time_node) and "current_time" in date_and_time_node:
+			if not is_equal_approx(date_and_time_node.current_time, value):
+				date_and_time_node.current_time = value
 		_update_temperature_and_weather()
 
 ## Optional target node (e.g. Player) to track altitude and position.
 @export var target_node: Node3D
 
+## Optional DirectionalLight3D to automatically orient and tint based on time of day and biome.
+@export var sun_light: DirectionalLight3D :
+	set(value):
+		sun_light = value
+		_update_sun_lighting()
+
 ## Current altitude in meters. If target_node is assigned, this is updated automatically.
 @export_range(0.0, 1500.0, 1.0) var current_altitude: float = 0.0 :
 	set(value):
+		if is_equal_approx(current_altitude, value):
+			return
 		current_altitude = value
 		_update_temperature_and_weather()
 
@@ -132,6 +147,10 @@ var current_temperature: float = 20.0
 		wind_strength_multiplier = value
 		_update_wind_globals()
 
+## Calculated wind strength (0.0 when paused or simulation disabled).
+@export_custom(PROPERTY_HINT_NONE, "", PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_READ_ONLY)
+var current_wind_strength: float = 0.0
+
 ## Push wind parameters to ProjectSettings / RenderingServer global shader uniforms.
 @export var update_global_shader_variables: bool = true
 
@@ -143,11 +162,22 @@ var current_temperature: float = 20.0
 @export var rain_particles: GPUParticles3D
 @export var rain_splash_particles: GPUParticles3D
 @export var snow_particles: GPUParticles3D
+@export var wind_vfx_node: Node3D
 @export var audio_rain_light: AudioStreamPlayer
 @export var audio_rain_heavy: AudioStreamPlayer
 @export var audio_storm: AudioStreamPlayer
 @export var audio_wind: AudioStreamPlayer
 @export var world_environment: WorldEnvironment
+
+@export_group("Background Sounds (BGS)")
+## Separate AudioStreamPlayer / AudioStreamPlayer3D nodes for each ambient condition.
+## If not assigned, background ambient audio simulation is bypassed with zero overhead.
+@export var audio_bgs_day_clear: Node
+@export var audio_bgs_day_rain: Node
+@export var audio_bgs_day_storm: Node
+@export var audio_bgs_night_clear: Node
+@export var audio_bgs_night_rain: Node
+@export var audio_bgs_night_storm: Node
 
 # ------------------------------------------------------------------------------
 # Internal State
@@ -169,10 +199,18 @@ func _ready() -> void:
 
 	_setup_renderer_compatibility(is_web or is_compatibility)
 	
-	if date_and_time_node == null:
+	if date_and_time_node == null and not Engine.is_editor_hint():
 		var found = get_tree().root.find_child("DateAndTime", true, false)
 		if found != null:
 			date_and_time_node = found
+	elif date_and_time_node == null and Engine.is_editor_hint() and get_tree().edited_scene_root:
+		var found = get_tree().edited_scene_root.find_child("DateAndTime", true, false)
+		if found != null:
+			date_and_time_node = found
+
+	if is_instance_valid(date_and_time_node) and date_and_time_node.has_signal("time_changed"):
+		if not date_and_time_node.is_connected("time_changed", _on_external_time_changed):
+			date_and_time_node.connect("time_changed", _on_external_time_changed)
 
 	if target_node == null:
 		var found_player = get_tree().root.find_child("Player", true, false)
@@ -187,6 +225,7 @@ func _ready() -> void:
 	else:
 		clear_all_effects()
 	_update_wind_globals()
+	_update_sun_lighting()
 
 
 ## Configures particle features (sub-emitters, trails) based on whether Web / Compatibility renderer is in use.
@@ -226,6 +265,8 @@ func _setup_renderer_compatibility(is_compatibility_mode: bool) -> void:
 
 
 func _can_simulate() -> bool:
+	if not is_inside_tree():
+		return false
 	if Engine.is_editor_hint():
 		return is_playing and editor_weather_enabled
 	return is_playing
@@ -238,27 +279,32 @@ func _update_playback_state() -> void:
 		apply_weather_effects(active_weather)
 	else:
 		clear_all_effects()
+	_update_wind_globals()
 
 
 func _process(delta: float) -> void:
 	# Check if simulation can tick
 	var can_tick = _can_simulate()
 
+	if not can_tick:
+		return
+
 	# Update altitude and center particle emitters over target node if available
-	if is_instance_valid(target_node):
+	if is_instance_valid(target_node) and target_node.is_inside_tree():
 		current_altitude = maxf(0.0, target_node.global_position.y)
 		var target_pos = target_node.global_position
+		var wind_offset = -wind_direction.normalized() * (current_wind_strength * 0.22) if not wind_direction.is_zero_approx() else Vector3.ZERO
 		if is_instance_valid(rain_particles):
-			rain_particles.global_position = Vector3(target_pos.x, target_pos.y + 12.0, target_pos.z)
+			rain_particles.global_position = Vector3(target_pos.x + wind_offset.x, target_pos.y + 12.0, target_pos.z + wind_offset.z)
 		if is_instance_valid(rain_splash_particles) and rain_splash_particles.get_parent() != rain_particles:
 			rain_splash_particles.global_position = Vector3(target_pos.x, target_pos.y, target_pos.z)
 		if is_instance_valid(snow_particles):
-			snow_particles.global_position = Vector3(target_pos.x, target_pos.y + 12.0, target_pos.z)
+			snow_particles.global_position = Vector3(target_pos.x + wind_offset.x * 1.5, target_pos.y + 12.0, target_pos.z + wind_offset.z * 1.5)
+		if is_instance_valid(wind_vfx_node):
+			wind_vfx_node.global_position = Vector3(target_pos.x, target_pos.y + 1.5, target_pos.z)
 
 	_update_temperature()
-
-	if not can_tick:
-		return
+	_update_sun_lighting()
 
 	# Advance cycle timer
 	_cycle_timer += delta
@@ -386,9 +432,41 @@ func _update_temperature_and_weather() -> void:
 	_update_temperature()
 	_update_active_weather()
 	_update_wind_globals()
+	_update_sun_lighting()
+
+
+## Updates the sun DirectionalLight3D orientation, energy, and color based on time of day and biome.
+func _update_sun_lighting() -> void:
+	if not is_instance_valid(sun_light):
+		return
+	var t = get_current_time_hours()
+	# Map 0h - 24h to sun angle (6h sunrise = 0°, 12h noon = 90°, 18h sunset = 180°, 0h midnight = 270°)
+	var sun_rot_x = ((t - 6.0) / 24.0) * TAU
+	sun_light.rotation = Vector3(-sun_rot_x, deg_to_rad(-30.0), 0.0)
+	
+	var is_day = is_daylight(t)
+	sun_light.light_energy = 1.0 if is_day else 0.15
+	
+	match current_biome:
+		ClimateData.BiomeZone.ARCTIC_TUNDRA, ClimateData.BiomeZone.ALPINE_PEAKS, ClimateData.BiomeZone.DESERT_GLACIER:
+			sun_light.light_color = Color(0.9, 0.95, 1.0) if is_day else Color(0.3, 0.4, 0.65)
+		ClimateData.BiomeZone.VOLCANIC_FOOTHILLS, ClimateData.BiomeZone.VOLCANIC_CRATER, ClimateData.BiomeZone.VOLCANIC_CALDERA:
+			sun_light.light_color = Color(1.0, 0.7, 0.5) if is_day else Color(0.5, 0.25, 0.2)
+		ClimateData.BiomeZone.DESERT_DUNES, ClimateData.BiomeZone.DESERT_PLATEAU, ClimateData.BiomeZone.DEEP_DESERT, ClimateData.BiomeZone.ARID_CANYON:
+			sun_light.light_color = Color(1.0, 0.9, 0.7) if is_day else Color(0.3, 0.35, 0.55)
+		ClimateData.BiomeZone.TROPICAL_RAINFOREST, ClimateData.BiomeZone.WETLANDS_VALLEY, ClimateData.BiomeZone.HUMID_COAST:
+			sun_light.light_color = Color(0.85, 1.0, 0.9) if is_day else Color(0.25, 0.4, 0.5)
+		_:
+			sun_light.light_color = Color(1.0, 0.95, 0.85) if is_day else Color(0.35, 0.45, 0.7)
+
+	_update_bgs()
 
 
 func _update_active_weather(force_apply: bool = false) -> void:
+	if not _can_simulate():
+		clear_all_effects()
+		return
+
 	var target_weather: ClimateData.WeatherType
 	if force_weather:
 		target_weather = manual_weather
@@ -405,8 +483,40 @@ func _update_active_weather(force_apply: bool = false) -> void:
 		emit_signal("weather_changed", active_weather, old)
 
 
+# Global static cache of current wind and precipitation values for CPU scripts
+static var active_wind_strength: float = 0.0
+static var active_wind_direction: Vector3 = Vector3(1.0, 0.0, 0.0)
+static var active_precipitation_strength: float = 0.0
+
+static func get_wind_strength() -> float:
+	return active_wind_strength
+
+static func get_wind_direction() -> Vector3:
+	return active_wind_direction
+
+static func get_precipitation_strength() -> float:
+	return active_precipitation_strength
+
+
 ## Updates global shader parameters for wind and precipitation.
 func _update_wind_globals() -> void:
+	if not _can_simulate():
+		current_wind_strength = 0.0
+		active_wind_strength = 0.0
+		active_wind_direction = wind_direction
+		active_precipitation_strength = 0.0
+		emit_signal("wind_changed", 0.0, wind_direction)
+		if update_global_shader_variables:
+			ensure_shader_globals()
+			RenderingServer.global_shader_parameter_set(&"weather_wind_strength", 0.0)
+			RenderingServer.global_shader_parameter_set(&"weather_wind_direction", wind_direction)
+			RenderingServer.global_shader_parameter_set(&"weather_precipitation_strength", 0.0)
+		if is_instance_valid(wind_vfx_node):
+			if "enabled" in wind_vfx_node:
+				wind_vfx_node.enabled = false
+			wind_vfx_node.visible = false
+		return
+
 	var biome_info = ClimateData.get_biome_data(current_biome)
 	var base_power: float = biome_info.get("wind_power", 7.5)
 	
@@ -422,19 +532,31 @@ func _update_wind_globals() -> void:
 		ClimateData.WeatherType.HEAVY_SNOW: weather_mult = 1.8
 		
 	var final_strength = base_power * weather_mult * wind_strength_multiplier
+	current_wind_strength = final_strength
+	active_wind_strength = final_strength
+	active_wind_direction = wind_direction
+	
+	var precip_val = 0.0
+	match active_weather:
+		ClimateData.WeatherType.RAIN, ClimateData.WeatherType.SNOW: precip_val = 0.5
+		ClimateData.WeatherType.HEAVY_RAIN, ClimateData.WeatherType.HEAVY_SNOW: precip_val = 1.0
+		ClimateData.WeatherType.STORM: precip_val = 1.2
+	active_precipitation_strength = precip_val
+
 	emit_signal("wind_changed", final_strength, wind_direction)
+	
+	if is_instance_valid(wind_vfx_node):
+		if "enabled" in wind_vfx_node:
+			wind_vfx_node.enabled = true
+		wind_vfx_node.visible = true
 	
 	if update_global_shader_variables:
 		ensure_shader_globals()
-		var precip_val = 0.0
-		match active_weather:
-			ClimateData.WeatherType.RAIN, ClimateData.WeatherType.SNOW: precip_val = 0.5
-			ClimateData.WeatherType.HEAVY_RAIN, ClimateData.WeatherType.HEAVY_SNOW: precip_val = 1.0
-			ClimateData.WeatherType.STORM: precip_val = 1.2
-			
 		RenderingServer.global_shader_parameter_set(&"weather_wind_strength", final_strength)
 		RenderingServer.global_shader_parameter_set(&"weather_wind_direction", wind_direction)
 		RenderingServer.global_shader_parameter_set(&"weather_precipitation_strength", precip_val)
+
+	_update_particle_wind_physics()
 
 
 static var _globals_checked: bool = false
@@ -461,9 +583,15 @@ static func ensure_shader_globals() -> void:
 ## Applies visual and audio effects for the given weather type.
 func apply_weather_effects(weather_type: ClimateData.WeatherType) -> void:
 	clear_all_effects()
+	active_weather = weather_type
 
 	if not _can_simulate():
 		return
+
+	if is_instance_valid(wind_vfx_node):
+		if "enabled" in wind_vfx_node:
+			wind_vfx_node.enabled = true
+		wind_vfx_node.visible = true
 
 	match weather_type:
 		ClimateData.WeatherType.BLUE_SKY:
@@ -491,6 +619,8 @@ func apply_weather_effects(weather_type: ClimateData.WeatherType) -> void:
 			_play_audio(audio_wind)
 			_apply_fog(true, 0.03)
 
+	_update_bgs()
+
 
 ## Stops all weather particle and audio effects.
 func clear_all_effects() -> void:
@@ -500,11 +630,19 @@ func clear_all_effects() -> void:
 		rain_splash_particles.emitting = false
 	if is_instance_valid(snow_particles):
 		snow_particles.emitting = false
+	if is_instance_valid(wind_vfx_node):
+		if "enabled" in wind_vfx_node:
+			wind_vfx_node.enabled = false
+		wind_vfx_node.visible = false
+		for child in wind_vfx_node.find_children("*", "GPUParticles3D", true, false):
+			if child is GPUParticles3D:
+				child.emitting = false
 		
 	if is_instance_valid(audio_rain_light): audio_rain_light.stop()
 	if is_instance_valid(audio_rain_heavy): audio_rain_heavy.stop()
 	if is_instance_valid(audio_storm): audio_storm.stop()
 	if is_instance_valid(audio_wind): audio_wind.stop()
+	_stop_bgs()
 	
 	if is_instance_valid(world_environment) and world_environment.environment:
 		world_environment.environment.fog_enabled = false
@@ -518,6 +656,7 @@ func _apply_rain(amount: int) -> void:
 	if is_instance_valid(rain_splash_particles):
 		rain_splash_particles.amount = int(amount * 1.5)
 		rain_splash_particles.emitting = true
+	_update_particle_wind_physics()
 
 
 func _apply_snow(amount: int, gravity_y: float) -> void:
@@ -526,9 +665,50 @@ func _apply_snow(amount: int, gravity_y: float) -> void:
 		if snow_particles.process_material is ParticleProcessMaterial:
 			(snow_particles.process_material as ParticleProcessMaterial).gravity = Vector3(0.0, gravity_y, 0.0)
 		snow_particles.emitting = true
+	_update_particle_wind_physics()
+
+
+## Updates rain, splash, and snow particle trajectories, slanting angles, and turbulence based on wind.
+func _update_particle_wind_physics() -> void:
+	var wind_dir = wind_direction.normalized() if not wind_direction.is_zero_approx() else Vector3(1.0, 0.0, 0.0)
+	var wind_spd = current_wind_strength
+
+	# Rain particles: slant velocity and align mesh along trajectory
+	if is_instance_valid(rain_particles) and rain_particles.process_material is ParticleProcessMaterial:
+		var r_mat = rain_particles.process_material as ParticleProcessMaterial
+		r_mat.particle_flag_align_y = true
+		var fall_vel = Vector3(0.0, -24.0, 0.0) + wind_dir * (wind_spd * 0.75)
+		var fall_speed = fall_vel.length()
+		r_mat.direction = fall_vel.normalized()
+		r_mat.spread = 2.0
+		r_mat.initial_velocity_min = fall_speed * 0.95
+		r_mat.initial_velocity_max = fall_speed * 1.05
+		r_mat.gravity = Vector3(0.0, -9.8, 0.0)
+
+	# Splash particles: slight downwind spray drift
+	if is_instance_valid(rain_splash_particles) and rain_splash_particles.process_material is ParticleProcessMaterial:
+		var sp_mat = rain_splash_particles.process_material as ParticleProcessMaterial
+		sp_mat.gravity = Vector3(wind_dir.x * wind_spd * 0.35, -9.8, wind_dir.z * wind_spd * 0.35)
+
+	# Snow particles: lightweight atmospheric drift and swirling turbulence
+	if is_instance_valid(snow_particles) and snow_particles.process_material is ParticleProcessMaterial:
+		var sn_mat = snow_particles.process_material as ParticleProcessMaterial
+		var snow_fall_dir = (Vector3(0.0, -1.8, 0.0) + wind_dir * (wind_spd * 0.7)).normalized()
+		sn_mat.direction = snow_fall_dir
+		sn_mat.gravity = Vector3(wind_dir.x * wind_spd * 1.2, -1.5 - wind_spd * 0.1, wind_dir.z * wind_spd * 1.2)
+		sn_mat.initial_velocity_min = 1.2 + wind_spd * 0.3
+		sn_mat.initial_velocity_max = 3.0 + wind_spd * 0.7
+		sn_mat.turbulence_enabled = true
+		sn_mat.turbulence_noise_strength = 0.6 + 1.8 * clampf(wind_spd / 8.0, 0.0, 2.0)
+		sn_mat.turbulence_noise_scale = 1.0
 
 
 func _apply_fog(volumetric: bool, density: float) -> void:
+	if not _can_simulate():
+		if is_instance_valid(world_environment) and world_environment.environment:
+			world_environment.environment.fog_enabled = false
+			world_environment.environment.volumetric_fog_enabled = false
+		return
 	if is_instance_valid(world_environment) and world_environment.environment:
 		world_environment.environment.fog_enabled = true
 		world_environment.environment.fog_density = density
@@ -538,12 +718,66 @@ func _apply_fog(volumetric: bool, density: float) -> void:
 
 
 func _play_audio(player: AudioStreamPlayer) -> void:
-	if is_instance_valid(player) and not player.playing:
+	if not _can_simulate():
+		if is_instance_valid(player): player.stop()
+		return
+	if is_instance_valid(player) and player.is_inside_tree() and not player.playing:
 		player.play()
 
 
-func _on_external_time_changed(_time: float) -> void:
+## Returns the appropriate BGS player node based on time of day and weather.
+func get_target_bgs_player(weather_override: int = -1) -> Node:
+	var daytime: bool = is_daylight()
+	var w = weather_override if weather_override >= 0 else active_weather
+	match w:
+		ClimateData.WeatherType.STORM:
+			return audio_bgs_day_storm if daytime else audio_bgs_night_storm
+		ClimateData.WeatherType.RAIN, ClimateData.WeatherType.HEAVY_RAIN:
+			return audio_bgs_day_rain if daytime else audio_bgs_night_rain
+		_:
+			return audio_bgs_day_clear if daytime else audio_bgs_night_clear
+
+
+## Updates BGS playback to match current weather and time of day.
+func _update_bgs(weather_override: int = -1) -> void:
+	var target_player: Node = get_target_bgs_player(weather_override) if _can_simulate() else null
+	var all_bgs: Array[Node] = [
+		audio_bgs_day_clear,
+		audio_bgs_day_rain,
+		audio_bgs_day_storm,
+		audio_bgs_night_clear,
+		audio_bgs_night_rain,
+		audio_bgs_night_storm
+	]
+	for player_node in all_bgs:
+		if is_instance_valid(player_node):
+			if player_node == target_player:
+				if player_node.is_inside_tree() and not bool(player_node.get("playing")):
+					player_node.call("play")
+			else:
+				if bool(player_node.get("playing")):
+					player_node.call("stop")
+
+
+func _stop_bgs() -> void:
+	var all_bgs: Array[Node] = [
+		audio_bgs_day_clear,
+		audio_bgs_day_rain,
+		audio_bgs_day_storm,
+		audio_bgs_night_clear,
+		audio_bgs_night_rain,
+		audio_bgs_night_storm
+	]
+	for player_node in all_bgs:
+		if is_instance_valid(player_node) and bool(player_node.get("playing")):
+			player_node.call("stop")
+
+
+func _on_external_time_changed(time: float) -> void:
+	if not is_equal_approx(manual_time_of_day, time):
+		manual_time_of_day = time
 	_update_temperature_and_weather()
+	_update_bgs()
 
 
 # ------------------------------------------------------------------------------

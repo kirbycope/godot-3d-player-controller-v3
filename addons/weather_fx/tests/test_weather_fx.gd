@@ -2,6 +2,7 @@ extends GutTest
 
 const GaugeNeedleScript: Script = preload("res://addons/weather_fx/scripts/gauge_needle.gd")
 const TemperatureGaugeDisplayScript: Script = preload("res://addons/weather_fx/scripts/temperature_gauge_display.gd")
+const WindVFXScript: Script = preload("res://addons/weather_fx/scripts/wind_vfx.gd")
 
 var wfx: WeatherFX
 
@@ -173,36 +174,41 @@ func test_weather_fx_pause_stops_sfx_and_vfx() -> void:
 	assert_true(instance.rain_splash_particles.emitting)
 	assert_true(instance.audio_storm.playing)
 	assert_true(instance.audio_wind.playing)
+	assert_gt(instance.current_wind_strength, 0.0)
 
-	# Pausing should stop both VFX and SFX
+	# Pausing should stop VFX, SFX, and zero wind strength
 	instance.pause()
 	assert_false(instance.is_playing)
 	assert_false(instance.rain_particles.emitting)
 	assert_false(instance.rain_splash_particles.emitting)
 	assert_false(instance.audio_storm.playing)
 	assert_false(instance.audio_wind.playing)
+	assert_almost_eq(instance.current_wind_strength, 0.0, 0.001)
 
-	# Resuming should restore both VFX and SFX for active weather
+	# Resuming should restore VFX, SFX, and wind strength for active weather
 	instance.play()
 	assert_true(instance.is_playing)
 	assert_true(instance.rain_particles.emitting)
 	assert_true(instance.rain_splash_particles.emitting)
 	assert_true(instance.audio_storm.playing)
 	assert_true(instance.audio_wind.playing)
+	assert_gt(instance.current_wind_strength, 0.0)
 
-	# Setting is_playing = false should also stop VFX and SFX
+	# Setting is_playing = false should also stop VFX, SFX, and zero wind strength
 	instance.is_playing = false
 	assert_false(instance.rain_particles.emitting)
 	assert_false(instance.rain_splash_particles.emitting)
 	assert_false(instance.audio_storm.playing)
 	assert_false(instance.audio_wind.playing)
+	assert_almost_eq(instance.current_wind_strength, 0.0, 0.001)
 
-	# Setting is_playing = true should resume VFX and SFX
+	# Setting is_playing = true should resume VFX, SFX, and wind strength
 	instance.is_playing = true
 	assert_true(instance.rain_particles.emitting)
 	assert_true(instance.rain_splash_particles.emitting)
 	assert_true(instance.audio_storm.playing)
 	assert_true(instance.audio_wind.playing)
+	assert_gt(instance.current_wind_strength, 0.0)
 
 
 func test_gauge_needle_angle_and_percentage() -> void:
@@ -356,8 +362,7 @@ func test_grass_field_generation_and_properties() -> void:
 	
 	grass_field.instance_count = 100
 	grass_field.field_size = Vector2(20.0, 20.0)
-	grass_field.blades_per_tuft = 6
-	grass_field.blade_segments = 4
+	grass_field.mesh_type = GrassField.GrassMeshType.COMMON_SHORT
 	grass_field.regenerate()
 	
 	assert_not_null(grass_field.multimesh)
@@ -367,7 +372,7 @@ func test_grass_field_generation_and_properties() -> void:
 	assert_not_null(mesh)
 	assert_gt(mesh.get_surface_count(), 0)
 	
-	# Verify stylized mesh attributes
+	# Verify Quaternius mesh attributes
 	var arrays = mesh.surface_get_arrays(0)
 	var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
 	var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
@@ -381,6 +386,29 @@ func test_grass_field_generation_and_properties() -> void:
 	var t0 = grass_field.multimesh.get_instance_transform(0)
 	assert_almost_eq(t0.origin.y, 0.0, 0.01)
 
+	# Test switching to other Quaternius types
+	grass_field.mesh_type = GrassField.GrassMeshType.WISPY_SHORT
+	grass_field.regenerate()
+	assert_not_null(grass_field.multimesh.mesh)
+
+	grass_field.mesh_type = GrassField.GrassMeshType.COMMON_TALL
+	grass_field.regenerate()
+	assert_not_null(grass_field.multimesh.mesh)
+
+	grass_field.mesh_type = GrassField.GrassMeshType.WISPY_TALL
+	grass_field.regenerate()
+	assert_not_null(grass_field.multimesh.mesh)
+
+	# Test exclusion radius clearing
+	grass_field.exclusion_radius = 4.0
+	grass_field.exclusion_center = Vector2(0.0, 0.0)
+	grass_field.regenerate()
+	var origins = grass_field.get_instance_origins()
+	assert_eq(origins.size(), grass_field.instance_count)
+	for org in origins:
+		var dist = Vector2(org.x, org.z).length()
+		assert_gt(dist, 3.99, "Grass instances should be outside exclusion radius")
+
 
 func test_grass_material_resource() -> void:
 	var mat = load("res://addons/weather_fx/resources/grass_material.tres") as ShaderMaterial
@@ -388,7 +416,203 @@ func test_grass_material_resource() -> void:
 	assert_not_null(mat.shader)
 	assert_not_null(mat.get_shader_parameter("color_base"))
 	assert_not_null(mat.get_shader_parameter("color_tip"))
+	assert_not_null(mat.get_shader_parameter("texture_albedo"))
 	assert_not_null(mat.get_shader_parameter("wind_speed"))
+
+
+func test_date_and_time_node_and_manual_time_synchronization() -> void:
+	var clock_script = load("res://addons/weather_fx/scenes/demo/demo_date_and_time.gd")
+	assert_not_null(clock_script)
+	var clock = clock_script.new()
+	add_child_autofree(clock)
+	clock.current_time = 6.0
+
+	var test_wfx = WeatherFX.new()
+	add_child_autofree(test_wfx)
+
+	# Assign date_and_time_node
+	test_wfx.date_and_time_node = clock
+	assert_almost_eq(test_wfx.get_current_time_hours(), 6.0, 0.01)
+
+	# Modifying clock.current_time emits time_changed, updating test_wfx and manual_time_of_day
+	clock.current_time = 18.0
+	assert_almost_eq(test_wfx.get_current_time_hours(), 18.0, 0.01)
+	assert_almost_eq(test_wfx.manual_time_of_day, 18.0, 0.01)
+
+	# Modifying test_wfx.manual_time_of_day updates clock.current_time
+	test_wfx.manual_time_of_day = 12.0
+	assert_almost_eq(clock.current_time, 12.0, 0.01)
+	assert_almost_eq(test_wfx.get_current_time_hours(), 12.0, 0.01)
+
+
+func test_sun_light_time_and_biome_updates() -> void:
+	var light = DirectionalLight3D.new()
+	add_child_autofree(light)
+
+	var test_wfx = WeatherFX.new()
+	add_child_autofree(test_wfx)
+	test_wfx.sun_light = light
+	test_wfx.manual_time_of_day = 12.0 # Noon
+
+	# Noon: energy 1.0 (daylight)
+	test_wfx._update_sun_lighting()
+	assert_almost_eq(light.light_energy, 1.0, 0.01)
+
+	# Midnight (0.0): energy 0.15 (night)
+	test_wfx.manual_time_of_day = 0.0
+	assert_almost_eq(light.light_energy, 0.15, 0.01)
+
+	# Biome change updates light tint
+	test_wfx.set_biome(ClimateData.BiomeZone.VOLCANIC_CRATER)
+	test_wfx.manual_time_of_day = 12.0
+	assert_almost_eq(light.light_color.r, 1.0, 0.01)
+	assert_almost_eq(light.light_color.g, 0.7, 0.01)
+	assert_almost_eq(light.light_color.b, 0.5, 0.01)
+
+
+func test_wind_vfx_instantiation_and_properties() -> void:
+	var wind_scn = load("res://addons/weather_fx/scenes/wind_vfx.tscn") as PackedScene
+	assert_not_null(wind_scn)
+	var wind_inst = wind_scn.instantiate()
+	add_child_autofree(wind_inst)
+	assert_not_null(wind_inst)
+	assert_true(is_instance_of(wind_inst, WindVFXScript))
+	assert_true(wind_inst.enabled)
+	
+	# Test disabling and process handling
+	wind_inst.enabled = false
+	assert_false(wind_inst.visible)
+	wind_inst.enabled = true
+	assert_true(wind_inst.visible)
+	
+	# Test active emission when wind strength >= min_wind_threshold
+	WeatherFX.active_wind_strength = 5.0
+	wind_inst._process(0.1)
+	for p in wind_inst._airflow_particles:
+		assert_true(p.emitting)
+		
+	# Test shutdown when wind strength drops below threshold
+	WeatherFX.active_wind_strength = 0.0
+	wind_inst._process(0.1)
+	for p in wind_inst._airflow_particles:
+		assert_false(p.emitting)
+
+
+func test_precipitation_particles_wind_physics() -> void:
+	var wfx_scene = load("res://addons/weather_fx/scenes/weather_fx.tscn") as PackedScene
+	assert_not_null(wfx_scene)
+	var wfx_inst = wfx_scene.instantiate() as WeatherFX
+	add_child_autofree(wfx_inst)
+	wfx_inst.is_playing = true
+
+	# Set blowing East with strong wind
+	wfx_inst.wind_direction = Vector3(1.0, 0.0, 0.0)
+	wfx_inst.wind_strength_multiplier = 2.0
+	wfx_inst.apply_weather_effects(ClimateData.WeatherType.RAIN)
+
+	# Rain should slant eastward and align with velocity
+	var rain_mat = wfx_inst.rain_particles.process_material as ParticleProcessMaterial
+	assert_not_null(rain_mat)
+	assert_gt(rain_mat.direction.x, 0.2, "Rain fall direction should slant along wind direction")
+	assert_true(rain_mat.particle_flag_align_y, "Rain particles should align Y axis along velocity")
+
+	# Snow test: switch to snow and blow West
+	wfx_inst.wind_direction = Vector3(-1.0, 0.0, 0.0)
+	wfx_inst.apply_weather_effects(ClimateData.WeatherType.SNOW)
+
+	var snow_mat = wfx_inst.snow_particles.process_material as ParticleProcessMaterial
+	assert_not_null(snow_mat)
+	assert_lt(snow_mat.direction.x, -0.2, "Snow fall direction should slant westward along wind")
+	assert_lt(snow_mat.gravity.x, -0.5, "Snow gravity should pull westward")
+	assert_true(snow_mat.turbulence_enabled, "Snow should have turbulence enabled")
+
+
+func test_pond_water_shader_resource() -> void:
+	var mat = load("res://addons/weather_fx/resources/pond_water_material.tres") as ShaderMaterial
+	assert_not_null(mat, "Pond water material should load successfully")
+	assert_not_null(mat.shader, "Pond water shader should be assigned")
+	assert_not_null(mat.get_shader_parameter("shallow_color"))
+	assert_not_null(mat.get_shader_parameter("deep_color"))
+	assert_not_null(mat.get_shader_parameter("wave_amplitude"))
+	assert_not_null(mat.get_shader_parameter("wave_frequency"))
+	assert_not_null(mat.get_shader_parameter("normal_map"))
+
+
+func test_bgs_audio_matching_weather_and_time() -> void:
+	var wfx = WeatherFX.new()
+	var bgs_dc = AudioStreamPlayer.new()
+	var bgs_dr = AudioStreamPlayer.new()
+	var bgs_ds = AudioStreamPlayer.new()
+	var bgs_nc = AudioStreamPlayer.new()
+	var bgs_nr = AudioStreamPlayer.new()
+	var bgs_ns = AudioStreamPlayer.new()
+
+	wfx.add_child(bgs_dc)
+	wfx.add_child(bgs_dr)
+	wfx.add_child(bgs_ds)
+	wfx.add_child(bgs_nc)
+	wfx.add_child(bgs_nr)
+	wfx.add_child(bgs_ns)
+
+	wfx.audio_bgs_day_clear = bgs_dc
+	wfx.audio_bgs_day_rain = bgs_dr
+	wfx.audio_bgs_day_storm = bgs_ds
+	wfx.audio_bgs_night_clear = bgs_nc
+	wfx.audio_bgs_night_rain = bgs_nr
+	wfx.audio_bgs_night_storm = bgs_ns
+
+	add_child_autofree(wfx)
+	wfx.is_playing = true
+
+	# Test Day Clear (12:00)
+	wfx.manual_time_of_day = 12.0
+	wfx.apply_weather_effects(ClimateData.WeatherType.BLUE_SKY)
+	assert_eq(wfx.get_target_bgs_player(), bgs_dc, "Day clear should target bgs_day_clear player")
+
+	# Test Day Rain
+	wfx.apply_weather_effects(ClimateData.WeatherType.RAIN)
+	assert_eq(wfx.get_target_bgs_player(), bgs_dr, "Day rain should target bgs_day_rain player")
+
+	# Test Day Storm
+	wfx.apply_weather_effects(ClimateData.WeatherType.STORM)
+	assert_eq(wfx.get_target_bgs_player(), bgs_ds, "Day storm should target bgs_day_storm player")
+
+	# Test Night Clear (22:00)
+	wfx.manual_time_of_day = 22.0
+	wfx.apply_weather_effects(ClimateData.WeatherType.BLUE_SKY)
+	assert_eq(wfx.get_target_bgs_player(), bgs_nc, "Night clear should target bgs_night_clear player")
+
+	# Test Night Rain
+	wfx.apply_weather_effects(ClimateData.WeatherType.RAIN)
+	assert_eq(wfx.get_target_bgs_player(), bgs_nr, "Night rain should target bgs_night_rain player")
+
+	# Test Night Storm
+	wfx.apply_weather_effects(ClimateData.WeatherType.STORM)
+	assert_eq(wfx.get_target_bgs_player(), bgs_ns, "Night storm should target bgs_night_storm player")
+
+
+func test_bgs_unassigned_optional_behavior() -> void:
+	var wfx = WeatherFX.new()
+	# Without any BGS nodes assigned, WeatherFX should operate cleanly with zero errors
+	assert_null(wfx.audio_bgs_day_clear)
+	assert_null(wfx.audio_bgs_day_rain)
+	assert_null(wfx.audio_bgs_day_storm)
+	assert_null(wfx.audio_bgs_night_clear)
+	assert_null(wfx.audio_bgs_night_rain)
+	assert_null(wfx.audio_bgs_night_storm)
+	add_child_autofree(wfx)
+	wfx.is_playing = true
+
+	# Applying weather and changing time should execute without errors
+	wfx.apply_weather_effects(ClimateData.WeatherType.RAIN)
+	wfx.manual_time_of_day = 22.0
+	wfx.apply_weather_effects(ClimateData.WeatherType.STORM)
+	wfx.clear_all_effects()
+	assert_null(wfx.get_target_bgs_player(), "Target BGS player should be null when unassigned")
+
+
+
+
 
 
 
