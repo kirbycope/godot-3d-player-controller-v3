@@ -13,6 +13,7 @@
 [ext_resource type="Texture2D" path="res://addons/weather_fx/assets/vfx/wind/textures/T_VFX_WindNoise1.png" id="10_windnoise"]
 [ext_resource type="Texture2D" path="res://addons/weather_fx/assets/vfx/wind/textures/T_VFX_simple_1.png" id="11_simple1"]
 [ext_resource type="ArrayMesh" path="res://addons/weather_fx/assets/vfx/wind/objects/sm_ring7.obj" id="12_ring_mesh"]
+[ext_resource type="Script" path="res://scenes/contrail_3d.gd" id="13_contrail"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_blue_fabric"]
 render_priority = 0
@@ -52,6 +53,13 @@ point_count = 2
 
 [sub_resource type="Gradient" id="Gradient_trail"]
 colors = PackedColorArray(1, 1, 1, 0.2, 1, 1, 1, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_trail"]
+transparency = 1
+cull_mode = 2
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_color = Color(1, 1, 1, 1)
 
 [sub_resource type="Gradient" id="Gradient_airflow_color"]
 colors = PackedColorArray(0.65, 0.65, 0.65, 0, 1, 1, 1, 0.8)
@@ -152,18 +160,20 @@ transform = Transform3D(0.9961947, -0.08715578, 0, 0.043577865, 0.49809757, -0.8
 surface_material_override/0 = SubResource("ShaderMaterial_blue_fabric")
 surface_material_override/1 = SubResource("ShaderMaterial_beige_fabric")
 
-[node name="LeftWing" type="Trail3D" parent="." unique_id=589915828]
+[node name="LeftWing" type="MeshInstance3D" parent="." unique_id=589915828]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.15033162, -0.019061707)
-emitting = false
+material_override = SubResource("StandardMaterial3D_trail")
+script = ExtResource("13_contrail")
 width = 0.05
 lifetime = 1.0
 min_section_length = 0.06
 color_gradient = SubResource("Gradient_trail")
 width_curve = SubResource("Curve_trail")
 
-[node name="RightWing" type="Trail3D" parent="." unique_id=88704883]
+[node name="RightWing" type="MeshInstance3D" parent="." unique_id=88704883]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5375535, 0.07844145, -0.1384865)
-emitting = false
+material_override = SubResource("StandardMaterial3D_trail")
+script = ExtResource("13_contrail")
 width = 0.05
 lifetime = 1.0
 min_section_length = 0.06

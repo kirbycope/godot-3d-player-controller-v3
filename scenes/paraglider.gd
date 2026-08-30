@@ -1,11 +1,13 @@
 extends Node3D
 
-@export var player: Player
+const Contrail3D = preload("res://scenes/contrail_3d.gd")
+
+@export var player: CharacterBody3D
 
 @onready var opening: AudioStreamPlayer3D = $Opening
 @onready var cloth_ruffling: AudioStreamPlayer3D = $ClothRuffling
-@onready var left_wing: Trail3D = $LeftWing
-@onready var right_wing: Trail3D = $RightWing
+@onready var left_wing: Contrail3D = $LeftWing
+@onready var right_wing: Contrail3D = $RightWing
 @onready var airflow_streaks: GPUParticles3D = $AirflowStreaks
 @onready var opening_wind_burst: GPUParticles3D = $OpeningWindBurst
 
