@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode cull_disabled, diffuse_toon, specular_schlick_ggx;
+render_mode cull_disabled, diffuse_toon, specular_toon;
 
 // =============================================================================
 // WeatherFX - Stylized Wind-Reactive Foliage & Grass Shader
@@ -38,8 +38,9 @@ uniform float sway_strength : hint_range(0.0, 2.0, 0.05) = 0.50;
 
 // Character & Object Interaction
 group_uniforms Interaction;
+uniform bool enable_player_displacement = false;
 instance uniform vec3 player_position;
-uniform float player_displacement_strength : hint_range(0.0, 2.0, 0.05) = 0.6;
+uniform float player_displacement_strength : hint_range(0.0, 2.0, 0.05) = 0.0;
 uniform float player_displacement_radius : hint_range(0.1, 5.0, 0.1) = 1.2;
 
 varying vec3 v_world_pos;
@@ -49,7 +50,7 @@ void vertex() {
 	vec3 world_origin = MODEL_MATRIX[3].xyz;
 	v_world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	
-	// Height factor along the blade: roots at VERTEX.y <= 0.0 remain firmly planted
+	// Height factor along the blade (local mesh space): roots at VERTEX.y <= 0.0 remain firmly planted
 	float height = max(VERTEX.y, 0.0);
 	v_height = clamp(height / 1.2, 0.0, 1.0);
 	
@@ -60,9 +61,12 @@ void vertex() {
 	} else {
 		wind_dir = normalize(wind_dir);
 	}
-	vec3 wind_perp = vec3(-wind_dir.z, 0.0, wind_dir.x);
 	
-	// Harmonic wind sway guided by vegetation_sway sinusoidal wave physics
+	// Transform wind direction to local mesh space so sway stays scale-invariant
+	vec3 local_wind_dir = normalize((inverse(MODEL_MATRIX) * vec4(wind_dir, 0.0)).xyz);
+	vec3 local_wind_perp = vec3(-local_wind_dir.z, 0.0, local_wind_dir.x);
+	
+	// Harmonic wind sway guided by sinusoidal wave physics
 	float effective_speed = wind_speed * (0.8 + 0.25 * weather_wind_strength);
 	float wave_coord = (world_origin.x * wind_dir.x + world_origin.z * wind_dir.z) * wind_wave_size;
 	
@@ -71,22 +75,28 @@ void vertex() {
 	float wave_micro = sin(wave_coord * 2.3 + TIME * effective_speed * 1.8 + world_origin.x * 0.5) * 0.3 * wind_turbulence;
 	
 	// Wind push (steady lean + dynamic sway)
-	float lean = weather_wind_strength * 0.05;
-	float sway_oscillation = (wave_main + wave_micro) * (0.08 + 0.03 * weather_wind_strength) * sway_strength;
+	float lean = weather_wind_strength * 0.025;
+	float sway_oscillation = (wave_main + wave_micro) * (0.05 + 0.02 * weather_wind_strength) * sway_strength;
 	float total_sway = lean + sway_oscillation;
 	
-	vec3 world_sway = (wind_dir * total_sway + wind_perp * (wave_micro * 0.03 * sway_strength)) * height;
+	// Local sway displacement proportional to blade height
+	vec3 local_sway = (local_wind_dir * total_sway + local_wind_perp * (wave_micro * 0.02 * sway_strength)) * height;
 	
-	// Player / entity displacement interaction
-	vec3 push_delta = v_world_pos - player_position;
-	float dist_to_player = length(vec3(push_delta.x, push_delta.y * 1.6, push_delta.z));
-	if (dist_to_player < player_displacement_radius && dist_to_player > 0.001) {
-		float push_factor = smoothstep(player_displacement_radius, 0.0, dist_to_player) * v_height * player_displacement_strength;
-		world_sway += normalize(vec3(push_delta.x, -0.2, push_delta.z)) * push_factor;
+	// Length conservation: bending down when swaying to eliminate vertical elongation
+	local_sway.y -= min(height * 0.35, (local_sway.x * local_sway.x + local_sway.z * local_sway.z) * 0.5);
+	
+	// Player / entity displacement interaction (local space)
+	if (enable_player_displacement && player_displacement_strength > 0.0) {
+		vec3 push_delta = v_world_pos - player_position;
+		float dist_to_player = length(vec3(push_delta.x, push_delta.y * 1.6, push_delta.z));
+		if (dist_to_player < player_displacement_radius && dist_to_player > 0.001) {
+			float push_factor = smoothstep(player_displacement_radius, 0.0, dist_to_player) * v_height * player_displacement_strength;
+			vec3 world_push = normalize(vec3(push_delta.x, -0.2, push_delta.z)) * push_factor;
+			vec3 local_push = (inverse(MODEL_MATRIX) * vec4(world_push, 0.0)).xyz;
+			local_sway += clamp(local_push, vec3(-height * 0.8), vec3(height * 0.8));
+		}
 	}
 	
-	// Apply displacement in local vertex coordinates
-	vec3 local_sway = (inverse(MODEL_MATRIX) * vec4(world_sway, 0.0)).xyz;
 	VERTEX += local_sway;
 	
 	// Soften vertex normals upward towards sky for volumetric foliage shading
@@ -125,11 +135,11 @@ void fragment() {
 	albedo_result *= (1.0 - wetness * 0.22); // Rain-soaked darkening
 	
 	ALBEDO = albedo_result;
-	ROUGHNESS = mix(0.65, 0.15, wetness);
-	SPECULAR = mix(0.20, 0.75, wetness);
+	ROUGHNESS = mix(0.85, 0.4, wetness);
+	SPECULAR = mix(0.05, 0.25, wetness);
 	
 	// Subsurface transmission / backlight through sunlit blade tips
-	BACKLIGHT = transmission_tint * transmission_strength * h * (1.0 - wetness * 0.4);
+	BACKLIGHT = transmission_tint * transmission_strength * h * 0.4 * (1.0 - wetness * 0.4);
 	
 	if (!FRONT_FACING) {
 		NORMAL = -NORMAL;

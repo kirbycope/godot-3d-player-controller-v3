@@ -22,6 +22,8 @@ func _ready() -> void:
 	player.enable_paraglider = true
 	player.enable_stamina = true
 
+	_initialize_steam_lobby()
+
 	if radi_ot_player:
 		radi_ot_player.auto_play_on_ready = false
 		radi_ot_player.set_power(false)
@@ -243,3 +245,41 @@ func _on_radio_toggled(_is_playing: bool) -> void:
 		var hud = radi_ot_player.get_hud()
 		if hud:
 			hud.show_toast(5.0)
+
+
+func _initialize_steam_lobby() -> void:
+	if not Engine.has_singleton("Steam"):
+		return
+	var steam: Object = Engine.get_singleton("Steam")
+	if not steam.isSteamRunning():
+		return
+
+	var steamworks = get_node_or_null("/root/Steamworks")
+	var current_lobby_id: int = steamworks.lobby_id if steamworks else 0
+
+	# Only create a lobby if not already in one
+	if current_lobby_id == 0:
+		var callback_connect: int = Steam.connect("lobby_created", Callable(self, "_on_steam_lobby_created"))
+		if callback_connect != OK and callback_connect != ERR_ALREADY_EXISTS:
+			printerr("Connecting lobby_created callback failed: %s" % callback_connect)
+		# Create a public lobby for up to 4 players
+		Steam.createLobby(Steam.LOBBY_TYPE_PUBLIC, 4)
+		print("Requested Steam lobby creation for single-player world.")
+
+
+func _on_steam_lobby_created(connect_status: int, lobby_id: int) -> void:
+	if not Engine.has_singleton("Steam"):
+		return
+	if connect_status == Steam.RESULT_OK:
+		var steamworks = get_node_or_null("/root/Steamworks")
+		if steamworks:
+			steamworks.lobby_id = lobby_id
+		var username: String = steamworks.username if steamworks else "Player"
+		var lobby_name: String = "%s's World" % username
+		Steam.setLobbyData(lobby_id, "lobby_name", lobby_name)
+		Steam.setLobbyData(lobby_id, "name", lobby_name)
+		Steam.setLobbyData(lobby_id, "game", "Godot3DPlayerController")
+		Steam.setLobbyData(lobby_id, "mode", "world")
+		print("Auto-created Steam Lobby: %s (ID: %d)" % [lobby_name, lobby_id])
+	else:
+		printerr("Failed to auto-create Steam lobby: %s" % connect_status)
