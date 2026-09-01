@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://ceiimv767w1ec" path="res://assets/kenney_nl/Prototype Textures/Vector/texture_04.svg" id="3_pf35h"]
 [ext_resource type="Texture2D" uid="uid://bx5wuwx7autid" path="res://assets/kenney_nl/Prototype Textures/Vector/texture_12.svg" id="4_iexy4"]
 [ext_resource type="Shader" uid="uid://c5ati1mmy6d7m" path="res://assets/godotshaders/wind_waker_2d_water_shader.gdshader" id="5_npbic"]
+[ext_resource type="Material" uid="uid://bfcrrq7vpylax" path="res://addons/weather_fx/resources/pond_water_material.tres" id="5_pondwater"]
 [ext_resource type="PackedScene" uid="uid://ct7n8imyllhbo" path="res://addons/3d_player_controller/scenes/player.tscn" id="6_e6ckp"]
 [ext_resource type="PackedScene" uid="uid://bra3khigbuanl" path="res://scenes/paraglider.tscn" id="7_mvg0v"]
 [ext_resource type="PackedScene" uid="uid://drmvyehu4dq43" path="res://scenes/skateboard.tscn" id="8_h3odw"]
@@ -432,8 +433,10 @@ shader_parameter/tile = Vector2(5, 5)
 shader_parameter/wave_speed = 1.5
 
 [sub_resource type="QuadMesh" id="QuadMesh_hxkk4"]
-material = SubResource("ShaderMaterial_1i6q1")
+material = ExtResource("5_pondwater")
 size = Vector2(32, 16)
+subdivide_width = 48
+subdivide_depth = 24
 orientation = 1
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o7ddy"]

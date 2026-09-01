@@ -82,6 +82,9 @@ Gold-standard chemical-engine-inspired fire simulation, fully self-contained wit
 - **Rain quenching**: any precipitation strength `>= 0.4` immediately extinguishes all active fires.
 - **Shared wind spread math**: all propagation systems use `WeatherFX.get_wind_spread_factor()` (downwind boost, capped; upwind suppression).
 
+### 8. Interactive Pond Water (`pond_water.gdshader`)
+Toon-banded pond surface with wind-driven waves, contact/edge foam, and rain impact ripples. Also exposes swimmer interaction uniforms (`swimmer_active`, `swimmer_position`, `swimmer_direction`, `swimmer_speed`) — feed them from any character controller to get a Kelvin-style V wake while moving and concentric treading ripples at rest, with body-churn foam merged into the toon foam pass. The 3D Player Controller's swimming state feeds these automatically when the water mesh is near the active `WATER` area.
+
 ---
 
 ## Scene Tree Architecture
