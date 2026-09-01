@@ -5,6 +5,9 @@ extends GutTest
 const PLAYER_SCENE: PackedScene = preload("res://addons/3d_player_controller/scenes/player.tscn")
 const TREE_01_SCENE: PackedScene = preload("res://scenes/tree_01.tscn")
 const ORE_SMALL_SCENE: PackedScene = preload("res://scenes/ore_small.tscn")
+const BurnableGrassScript: Script = preload("res://addons/weather_fx/scripts/burnable_grass.gd")
+const WeatherFXScript: Script = preload("res://addons/weather_fx/scripts/weather_fx.gd")
+const WeatherZoneScript: Script = preload("res://addons/weather_fx/scripts/weather_zone.gd")
 
 var root: Node3D
 var player: Player
@@ -111,12 +114,14 @@ func test_player_water_area_swimming_transition() -> void:
 
 
 func test_weather_zone_biome_trigger() -> void:
-	var wfx := WeatherFX.new()
+	var wfx = Node3D.new()
+	wfx.set_script(WeatherFXScript)
 	wfx.name = "WeatherFX"
 	wfx.current_biome = ClimateData.BiomeZone.TEMPERATE_PLAINS
 	root.add_child(wfx)
 
-	var zone := WeatherZone.new()
+	var zone = Area3D.new()
+	zone.set_script(WeatherZoneScript)
 	zone.biome = ClimateData.BiomeZone.DESERT_DUNES
 	zone.set("_weather_fx", wfx)
 	root.add_child(zone)
@@ -126,3 +131,70 @@ func test_weather_zone_biome_trigger() -> void:
 	# Trigger body entered with player
 	zone._on_body_entered(player)
 	assert_eq(wfx.current_biome, ClimateData.BiomeZone.DESERT_DUNES, "WeatherZone should switch WeatherFX biome to Desert Dunes on player entry")
+
+
+func test_burnable_grass_ignition_and_thermal_updraft() -> void:
+	player.enable_stamina = true
+
+	var grass_patch = BurnableGrassScript.new()
+	root.add_child(grass_patch)
+	grass_patch.global_position = Vector3(0, 0, 0)
+	grass_patch._setup_components()
+
+	# Initial state: unignited
+	assert_false(grass_patch.is_burning, "Grass should start unignited")
+	var updraft_area = grass_patch.find_child("ThermalUpdraftArea", true, false) as Area3D
+	assert_not_null(updraft_area, "Updraft Area3D should exist")
+	assert_false(updraft_area.monitoring, "Updraft area should be inactive before ignition")
+
+	# Ignite grass
+	grass_patch.ignite()
+	assert_true(grass_patch.is_burning, "Grass should be burning after ignite()")
+	assert_true(updraft_area.monitoring, "Updraft area should be active while burning")
+
+	# Position player in paragliding state above burning grass
+	player.global_position = Vector3(0, 5.0, 0)
+	player.current_state = NodeStateMachine.States.PARAGLIDING
+	player.is_paragliding = true
+	if player.stamina:
+		player.stamina.value = 50.0
+
+	var paragliding_node: Paragliding = player.get_node("NodeStateMachine/Paragliding") as Paragliding
+	assert_not_null(paragliding_node)
+
+	# Verify paraglider detects thermal updraft
+	assert_true(paragliding_node._check_in_updraft(), "Paraglider should detect thermal updraft above burning grass")
+
+	# Process frame and verify lift
+	paragliding_node._physics_process(0.1)
+	assert_gt(player.velocity.y, 0.0, "Thermal updraft should boost player upward")
+	if player.stamina:
+		assert_gte(player.stamina.value, 50.0, "Thermal updraft should replenish stamina")
+
+	# Extinguish fire
+	grass_patch.extinguish()
+	assert_false(grass_patch.is_burning, "Grass should stop burning after extinguish()")
+	assert_false(updraft_area.monitoring, "Updraft area should deactivate after extinguish")
+
+
+func test_fire_spread_to_neighboring_grass() -> void:
+	var grass_1 = BurnableGrassScript.new()
+	grass_1.add_to_group("BurnableGrass")
+	root.add_child(grass_1)
+	grass_1.global_position = Vector3(0, 0, 0)
+	grass_1._setup_components()
+
+	var grass_2 = BurnableGrassScript.new()
+	grass_2.add_to_group("BurnableGrass")
+	root.add_child(grass_2)
+	grass_2.global_position = Vector3(2.5, 0, 0)
+	grass_2._setup_components()
+
+	assert_false(grass_1.is_burning)
+	assert_false(grass_2.is_burning)
+
+	grass_1.ignite()
+	grass_1.spread_to_neighbors()
+
+	assert_true(grass_1.is_burning)
+	assert_true(grass_2.is_burning, "Neighboring grass within spread radius should catch fire")

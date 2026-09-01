@@ -23,6 +23,8 @@ func _ensure_shader_globals() -> void:
 		"shader_globals/weather_wind_strength": {"type": "float", "value": 0.0},
 		"shader_globals/weather_wind_direction": {"type": "vec3", "value": Vector3(1, 0, 0)},
 		"shader_globals/weather_precipitation_strength": {"type": "float", "value": 0.0},
+		"shader_globals/weather_foliage_tint": {"type": "color", "value": Color(1, 1, 1, 1)},
+		"shader_globals/weather_grass_tint": {"type": "color", "value": Color(1, 1, 1, 1)},
 	}
 	var modified = false
 	for path in globals:

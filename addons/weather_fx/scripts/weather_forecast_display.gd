@@ -27,13 +27,13 @@ const COLOR_FADED: Color = Color(0.565, 0.843, 0.929, 0.65)
 # Exported Groups: Node References
 # ------------------------------------------------------------------------------
 @export_group("Node References")
-@export var weather_fx_node: WeatherFX:
+@export var weather_fx_node: Node3D:
 	set(value):
 		if weather_fx_node != value:
 			_disconnect_signals()
 			weather_fx_node = value
 			_connect_signals()
-			if weather_fx_node:
+			if weather_fx_node and weather_fx_node.has_method("get_forecast"):
 				_rebuild_display(weather_fx_node.get_forecast())
 
 # ------------------------------------------------------------------------------
@@ -103,8 +103,8 @@ func _ready() -> void:
 	_update_theme_style()
 	if weather_fx_node == null:
 		var found: Node = get_tree().root.find_child("WeatherFX", true, false)
-		if found is WeatherFX:
-			weather_fx_node = found
+		if is_instance_valid(found):
+			weather_fx_node = found as Node3D
 	else:
 		_connect_signals()
 

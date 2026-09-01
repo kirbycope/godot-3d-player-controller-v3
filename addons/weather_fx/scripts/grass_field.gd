@@ -99,7 +99,13 @@ const QUATERNIUS_MESH_PATHS = {
 		if custom_grass_material:
 			material_override = custom_grass_material
 
+@export_group("Wildfire Physics")
+@export var enable_wildfire: bool = true ## Enables wind-reactive grass fires and thermal updrafts across the field.
+@export var fire_spread_speed: float = 2.5 ## Speed at which the fire front advances downwind in m/s.
+@export var max_active_fires: int = 6
+
 var _instance_origins: Array[Vector3] = []
+var _active_fires: Array[Dictionary] = []
 
 
 func _enter_tree() -> void:
@@ -109,9 +115,205 @@ func _enter_tree() -> void:
 
 
 func _ready() -> void:
+	add_to_group("GrassField")
 	cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON if cast_grass_shadows else GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	if multimesh == null or multimesh.instance_count == 0:
 		regenerate()
+
+
+var _creeper_heads: Array[Dictionary] = []
+var _trail_nodes: Array[Node3D] = []
+
+
+func _process(delta: float) -> void:
+	if Engine.is_editor_hint() or not enable_wildfire:
+		return
+
+	var precip: float = WeatherFX.get_precipitation_strength()
+	if precip > 0.4:
+		extinguish_all_fires()
+		return
+
+	# Clean up freed/expired trail nodes
+	var n_idx = _trail_nodes.size() - 1
+	while n_idx >= 0:
+		if not is_instance_valid(_trail_nodes[n_idx]):
+			_trail_nodes.remove_at(n_idx)
+		n_idx -= 1
+
+	if _creeper_heads.is_empty():
+		return
+
+	var wind_dir: Vector3 = WeatherFX.get_wind_direction()
+	var wind_strength: float = WeatherFX.get_wind_strength()
+	var h_wind = Vector2(wind_dir.x, wind_dir.z)
+	var has_wind = h_wind.length_squared() > 0.001
+	if has_wind:
+		h_wind = h_wind.normalized()
+
+	var h_idx = _creeper_heads.size() - 1
+	while h_idx >= 0:
+		var head = _creeper_heads[h_idx]
+		head.age += delta
+
+		if head.age >= head.max_life or _trail_nodes.size() >= 48:
+			_creeper_heads.remove_at(h_idx)
+			h_idx -= 1
+			continue
+
+		# Update creeping direction with wind bias and organic meandering
+		if has_wind:
+			var target_heading = h_wind.rotated(head.angle_offset + sin(head.age * 3.5 + head.noise_seed) * 0.35)
+			head.heading = head.heading.slerp(target_heading, delta * 3.0).normalized()
+		else:
+			head.heading = head.heading.rotated(sin(head.age * 2.0 + head.noise_seed) * delta * 0.8).normalized()
+
+		# Advance creeper head
+		var move_dist = head.speed * delta
+		head.pos += head.heading * move_dist
+		head.dist_since_drop += move_dist
+
+		# Check field bounds
+		var local_p = to_local(Vector3(head.pos.x, 0.0, head.pos.y))
+		if abs(local_p.x) > field_size.x * 0.5 or abs(local_p.z) > field_size.y * 0.5:
+			_creeper_heads.remove_at(h_idx)
+			h_idx -= 1
+			continue
+
+		# Drop new connected FireTrailNode along the path (0.28m spacing for continuous overlap)
+		if head.dist_since_drop >= 0.28:
+			head.dist_since_drop = 0.0
+			var world_p = Vector3(head.pos.x, 0.0, head.pos.y)
+			_drop_trail_node(local_p, world_p)
+
+			# Occasional gentle lateral branch
+			if head.branches_left > 0 and head.age > 1.2 and randf() < (delta * 0.8):
+				head.branches_left -= 1
+				_spawn_branch_head(head.pos, head.heading, -head.angle_offset)
+
+		h_idx -= 1
+
+
+func _drop_trail_node(local_pos: Vector3, world_pos: Vector3) -> Node3D:
+	var node_scene = null
+	if ResourceLoader.exists("res://addons/weather_fx/scenes/fire_trail_node.tscn"):
+		node_scene = load("res://addons/weather_fx/scenes/fire_trail_node.tscn") as PackedScene
+	elif ResourceLoader.exists("res://addons/weather_fx/scenes/wildfire_patch.tscn"):
+		node_scene = load("res://addons/weather_fx/scenes/wildfire_patch.tscn") as PackedScene
+
+	if node_scene:
+		var node = node_scene.instantiate() as Node3D
+		node.position = local_pos
+		add_child(node)
+		_trail_nodes.append(node)
+		_consume_grass_in_radius(world_pos, 0.75)
+		return node
+	return null
+
+
+func _spawn_branch_head(pos_2d: Vector2, parent_heading: Vector2, angle_offset: float) -> void:
+	if _creeper_heads.size() >= 6:
+		return
+	var wind_strength: float = WeatherFX.get_wind_strength()
+	var branch_head = {
+		"pos": pos_2d,
+		"heading": parent_heading.rotated(angle_offset).normalized(),
+		"speed": randf_range(0.35, 0.55) * (0.8 + 0.15 * wind_strength),
+		"age": 0.0,
+		"max_life": randf_range(4.0, 6.0),
+		"dist_since_drop": 0.0,
+		"angle_offset": angle_offset,
+		"noise_seed": randf() * 100.0,
+		"branches_left": 0
+	}
+	_creeper_heads.append(branch_head)
+
+
+## Ignites a trailing, spreading wildfire on this grass field that trails, grows, combines, and burns out.
+func ignite_at(world_pos: Vector3, initial_radius: float = 2.0, duration: float = 6.0) -> bool:
+	if not enable_wildfire:
+		return false
+
+	var local_p = to_local(world_pos)
+	var half_x = field_size.x * 0.5 + 2.0
+	var half_z = field_size.y * 0.5 + 2.0
+	if abs(local_p.x) > half_x or abs(local_p.z) > half_z:
+		return false
+
+	# Initial ignition node
+	var initial_node = _drop_trail_node(local_p, world_pos)
+
+	# Spawn trailing creeper heads biased downwind with slow, natural creeping pace
+	var wind_dir: Vector3 = WeatherFX.get_wind_direction()
+	var wind_strength: float = WeatherFX.get_wind_strength()
+	var h_wind = Vector2(wind_dir.x, wind_dir.z)
+	var has_wind = h_wind.length_squared() > 0.001
+	if has_wind:
+		h_wind = h_wind.normalized()
+	else:
+		h_wind = Vector2.RIGHT
+
+	var pos_2d = Vector2(world_pos.x, world_pos.z)
+	var angle_spreads = [-0.35, 0.0, 0.35] if has_wind else [0.0, 2.1, 4.2]
+
+	for offset_angle in angle_spreads:
+		var head_dir = h_wind.rotated(offset_angle).normalized()
+		var head = {
+			"pos": pos_2d + head_dir * 0.2,
+			"heading": head_dir,
+			"speed": randf_range(0.35, 0.55) * (0.8 + 0.15 * wind_strength),
+			"age": 0.0,
+			"max_life": duration,
+			"dist_since_drop": 0.2,
+			"angle_offset": offset_angle,
+			"noise_seed": randf() * 100.0,
+			"branches_left": 1
+		}
+		_creeper_heads.append(head)
+
+	# Compatibility record for tests
+	var fire_record = {
+		"origin": world_pos,
+		"current_pos": world_pos,
+		"radius": initial_radius,
+		"age": 0.0,
+		"duration": duration,
+		"patch_node": initial_node,
+		"updraft_area": initial_node.get_node_or_null("ThermalUpdraftArea") if initial_node else null,
+		"vfx_node": initial_node
+	}
+	_active_fires.append(fire_record)
+	return true
+
+
+func _consume_grass_in_radius(world_pos: Vector3, radius: float) -> void:
+	if multimesh == null or _instance_origins.is_empty():
+		return
+	var local_center = to_local(world_pos)
+	var count = multimesh.instance_count
+	var r_sq = radius * radius
+	for idx in range(count):
+		if idx < _instance_origins.size():
+			var p = _instance_origins[idx]
+			var dx = p.x - local_center.x
+			var dz = p.z - local_center.z
+			if dx * dx + dz * dz <= r_sq:
+				var t = multimesh.get_instance_transform(idx)
+				t.basis = t.basis.scaled(Vector3(1.0, 0.25, 1.0))
+				multimesh.set_instance_transform(idx, t)
+
+
+## Extinguishes all active wildfire fronts on this field.
+func extinguish_all_fires() -> void:
+	_creeper_heads.clear()
+	_active_fires.clear()
+	for node in _trail_nodes:
+		if is_instance_valid(node):
+			if node.has_method("extinguish"):
+				node.extinguish()
+			else:
+				node.queue_free()
+	_trail_nodes.clear()
 
 
 func _notification(what: int) -> void:

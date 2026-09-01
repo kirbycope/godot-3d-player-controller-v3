@@ -15,7 +15,7 @@ signal zone_exited(zone_name: String, biome: ClimateData.BiomeZone)
 @export var priority_level: int = 0
 @export var weather_fx_path: NodePath = ^""
 
-var _weather_fx: WeatherFX
+var _weather_fx: Node3D
 
 
 func _ready() -> void:
@@ -23,10 +23,10 @@ func _ready() -> void:
 	body_exited.connect(_on_body_exited)
 	
 	if not weather_fx_path.is_empty():
-		_weather_fx = get_node_or_null(weather_fx_path) as WeatherFX
+		_weather_fx = get_node_or_null(weather_fx_path) as Node3D
 	if _weather_fx == null:
 		var found = get_tree().root.find_child("WeatherFX", true, false)
-		if found is WeatherFX:
+		if found is Node3D:
 			_weather_fx = found
 
 

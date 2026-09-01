@@ -151,13 +151,22 @@ var current_temperature: float = 20.0
 @export_custom(PROPERTY_HINT_NONE, "", PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_READ_ONLY)
 var current_wind_strength: float = 0.0
 
-## Push wind parameters to ProjectSettings / RenderingServer global shader uniforms.
-@export var update_global_shader_variables: bool = true
-
 # ------------------------------------------------------------------------------
 # Exported Groups: VFX & Audio Binding
 # ------------------------------------------------------------------------------
 @export_group("VFX & Audio Nodes")
+
+@export_group("Performance & Optimizations")
+@export var update_global_shader_variables: bool = true
+@export var dynamic_particle_density: bool = true
+@export var max_rain_density_budget: int = 1500
+
+@export_group("Foliage & Grass Biome Tinting")
+@export var enable_biome_tinting: bool = true ## Dynamically tints tree canopies, leaves, and ground grass based on current biome.
+@export var biome_tint_transition_speed: float = 2.0 ## Smooth blend speed when transitioning between biomes.
+
+var current_foliage_tint: Color = Color(1.0, 1.0, 1.0, 1.0)
+var current_grass_tint: Color = Color(1.0, 1.0, 1.0, 1.0)
 
 @export var rain_particles: GPUParticles3D
 @export var rain_splash_particles: GPUParticles3D
@@ -305,6 +314,7 @@ func _process(delta: float) -> void:
 
 	_update_temperature()
 	_update_sun_lighting()
+	_update_biome_tinting(delta)
 
 	# Advance cycle timer
 	_cycle_timer += delta
@@ -556,8 +566,24 @@ func _update_wind_globals() -> void:
 		RenderingServer.global_shader_parameter_set(&"weather_wind_strength", final_strength)
 		RenderingServer.global_shader_parameter_set(&"weather_wind_direction", wind_direction)
 		RenderingServer.global_shader_parameter_set(&"weather_precipitation_strength", precip_val)
+		RenderingServer.global_shader_parameter_set(&"weather_foliage_tint", current_foliage_tint)
+		RenderingServer.global_shader_parameter_set(&"weather_grass_tint", current_grass_tint)
 
 	_update_particle_wind_physics()
+
+
+## Smoothly blends and updates global foliage and grass color tints according to the active biome.
+func _update_biome_tinting(delta: float) -> void:
+	var target_foliage: Color = ClimateData.get_biome_foliage_tint(current_biome) if enable_biome_tinting else Color.WHITE
+	var target_grass: Color = ClimateData.get_biome_grass_tint(current_biome) if enable_biome_tinting else Color.WHITE
+
+	current_foliage_tint = current_foliage_tint.lerp(target_foliage, clampf(delta * biome_tint_transition_speed, 0.0, 1.0))
+	current_grass_tint = current_grass_tint.lerp(target_grass, clampf(delta * biome_tint_transition_speed, 0.0, 1.0))
+
+	if update_global_shader_variables:
+		ensure_shader_globals()
+		RenderingServer.global_shader_parameter_set(&"weather_foliage_tint", current_foliage_tint)
+		RenderingServer.global_shader_parameter_set(&"weather_grass_tint", current_grass_tint)
 
 
 static var _globals_checked: bool = false
@@ -570,7 +596,9 @@ static func ensure_shader_globals() -> void:
 	var required_globals: Array[String] = [
 		"weather_wind_strength",
 		"weather_wind_direction",
-		"weather_precipitation_strength"
+		"weather_precipitation_strength",
+		"weather_foliage_tint",
+		"weather_grass_tint"
 	]
 	var missing: Array[String] = []
 	for param in required_globals:

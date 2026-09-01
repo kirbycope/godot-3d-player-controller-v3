@@ -2,14 +2,16 @@ shader_type spatial;
 render_mode cull_disabled, diffuse_toon, specular_toon;
 
 // =============================================================================
-// WeatherFX - Stylized Wind-Reactive Foliage & Grass Shader
-// Incorporates harmonic vegetation sway physics with WeatherFX global wind uniforms.
+// WeatherFX - Stylized Wind-Reactive & Burnable Foliage/Grass Shader
+// Incorporates harmonic vegetation sway physics, Minecraft-style biome tinting,
+// and BotW/TotK gold-standard wind-driven fire combustion & ash charring.
 // =============================================================================
 
 // WeatherFX Global Atmospheric Uniforms
 global uniform float weather_wind_strength;
 global uniform vec3 weather_wind_direction;
 global uniform float weather_precipitation_strength;
+global uniform vec4 weather_grass_tint;
 
 // Grass Appearance & Gradients
 group_uniforms Shading;
@@ -22,6 +24,14 @@ uniform float dry_patch_blend : hint_range(0.0, 1.0, 0.05) = 0.18;
 uniform float ambient_occlusion_strength : hint_range(0.0, 1.0, 0.05) = 0.45;
 uniform sampler2D texture_albedo : source_color, filter_linear_mipmap, hint_default_white;
 uniform float alpha_scissor_threshold : hint_range(0.0, 1.0) = 0.5;
+
+// Combustion & Wildfire Dynamics (BotW Decomp Style)
+group_uniforms Combustion;
+uniform float burn_progress : hint_range(0.0, 1.0, 0.01) = 0.0;
+instance uniform float instance_burn_progress : hint_range(0.0, 1.0, 0.01) = 0.0;
+uniform vec4 ember_inner_color : source_color = vec4(4.0, 1.8, 0.3, 1.0);
+uniform vec4 ember_outer_color : source_color = vec4(2.5, 0.4, 0.05, 1.0);
+uniform vec4 ash_color : source_color = vec4(0.06, 0.05, 0.04, 1.0);
 
 // Volumetric Foliage Light & Subsurface
 group_uniforms Transmission;
@@ -45,10 +55,15 @@ uniform float player_displacement_radius : hint_range(0.1, 5.0, 0.1) = 1.2;
 
 varying vec3 v_world_pos;
 varying float v_height;
+varying float v_burn;
 
 void vertex() {
 	vec3 world_origin = MODEL_MATRIX[3].xyz;
 	v_world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
+	
+	// Determine effective burn factor from material uniform or instance uniform
+	float effective_burn = max(burn_progress, instance_burn_progress);
+	v_burn = clamp(effective_burn, 0.0, 1.0);
 	
 	// Height factor along the blade (local mesh space): roots at VERTEX.y <= 0.0 remain firmly planted
 	float height = max(VERTEX.y, 0.0);
@@ -85,6 +100,19 @@ void vertex() {
 	// Length conservation: bending down when swaying to eliminate vertical elongation
 	local_sway.y -= min(height * 0.35, (local_sway.x * local_sway.x + local_sway.z * local_sway.z) * 0.5);
 	
+	// Fire combustion physics: violent thermal updraft turbulence & blade height decay
+	if (v_burn > 0.01) {
+		// Heat flutter jitter while burning
+		float heat_intensity = sin(v_burn * 3.1415926);
+		float heat_flutter = sin(TIME * 28.0 + v_world_pos.x * 4.0 + v_world_pos.z * 4.0) * heat_intensity * 0.06;
+		local_sway.x += heat_flutter * height;
+		local_sway.z += heat_flutter * height;
+		
+		// Blade collapses down into charred ground ash
+		float height_collapse = mix(1.0, 0.35, smoothstep(0.3, 0.95, v_burn));
+		VERTEX.y *= height_collapse;
+	}
+	
 	// Player / entity displacement interaction (local space)
 	if (enable_player_displacement && player_displacement_strength > 0.0) {
 		vec3 push_delta = v_world_pos - player_position;
@@ -110,6 +138,7 @@ void fragment() {
 	}
 	
 	float h = v_height;
+	float burn = v_burn;
 	
 	// 3-Stop vertical color gradient (Root -> Mid -> Tip)
 	vec3 grad_color;
@@ -128,18 +157,42 @@ void fragment() {
 	patch_noise = clamp(patch_noise * 0.5 + 0.5, 0.0, 1.0);
 	grad_color = mix(grad_color, color_dry_variation.rgb, patch_noise * dry_patch_blend * h);
 	
-	vec3 albedo_result = tex_color.rgb * grad_color;
+	// Minecraft/TotK style biome tinting
+	vec3 biome_grass_tint = weather_grass_tint.rgb;
+	if (length(biome_grass_tint) < 0.01) {
+		biome_grass_tint = vec3(1.0);
+	}
+	vec3 albedo_result = tex_color.rgb * grad_color * biome_grass_tint;
 	
 	// Rain & precipitation response
 	float wetness = clamp(weather_precipitation_strength, 0.0, 1.0);
 	albedo_result *= (1.0 - wetness * 0.22); // Rain-soaked darkening
 	
+	// =========================================================================
+	// Gold-Standard Fire & Combustion Edge (BotW Decomp Style)
+	// =========================================================================
+	vec3 fire_emission = vec3(0.0);
+	if (burn > 0.005) {
+		// Combustion flame front travelling down the blade
+		float flame_threshold = 1.0 - burn;
+		float flame_band = smoothstep(flame_threshold - 0.22, flame_threshold, h) * (1.0 - smoothstep(flame_threshold, flame_threshold + 0.18, h));
+		
+		// Glowing orange/yellow ember emission
+		float ember_glow_strength = smoothstep(0.02, 0.85, burn) * (1.0 - smoothstep(0.85, 1.0, burn));
+		fire_emission = mix(ember_outer_color.rgb, ember_inner_color.rgb, flame_band) * flame_band * 3.5 * ember_glow_strength;
+		
+		// Charred ash color blend behind the flame front
+		float ash_factor = smoothstep(flame_threshold - 0.1, 1.0, h) * smoothstep(0.15, 0.95, burn);
+		albedo_result = mix(albedo_result, ash_color.rgb, ash_factor);
+	}
+	
 	ALBEDO = albedo_result;
+	EMISSION = fire_emission;
 	ROUGHNESS = mix(0.85, 0.4, wetness);
 	SPECULAR = mix(0.05, 0.25, wetness);
 	
-	// Subsurface transmission / backlight through sunlit blade tips
-	BACKLIGHT = transmission_tint * transmission_strength * h * 0.4 * (1.0 - wetness * 0.4);
+	// Subsurface transmission / backlight through sunlit blade tips (extinguished when burning)
+	BACKLIGHT = transmission_tint * transmission_strength * h * 0.4 * (1.0 - wetness * 0.4) * (1.0 - smoothstep(0.1, 0.7, burn));
 	
 	if (!FRONT_FACING) {
 		NORMAL = -NORMAL;

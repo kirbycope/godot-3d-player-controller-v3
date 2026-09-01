@@ -18,13 +18,13 @@ const GaugeNeedleScript: Script = preload("res://addons/weather_fx/scripts/gauge
 # Exported Groups: Node References
 # ------------------------------------------------------------------------------
 @export_group("Node References")
-@export var weather_fx_node: WeatherFX:
+@export var weather_fx_node: Node3D:
 	set(value):
 		if weather_fx_node != value:
 			_disconnect_signals()
 			weather_fx_node = value
 			_connect_signals()
-			if weather_fx_node:
+			if weather_fx_node and "current_temperature" in weather_fx_node:
 				_update_temperature(weather_fx_node.current_temperature)
 
 # ------------------------------------------------------------------------------

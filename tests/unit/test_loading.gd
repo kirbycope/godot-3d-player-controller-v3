@@ -89,7 +89,7 @@ func test_main_scene_wiring() -> void:
 	add_child_autofree(main)
 
 	assert_eq(main.single_player_scene, "res://scenes/world.tscn", "Main single_player_scene should point to world.tscn string path")
-	assert_eq(main.multi_player_scene, "res://addons/godotsteamkit/lobby_manager.tscn", "Main multi_player_scene should point to lobby_manager.tscn string path")
+	assert_eq(main.multi_player_scene, "res://addons/3d_player_controller/scenes/lobby_explorer.tscn", "Main multi_player_scene should point to lobby_explorer.tscn string path")
 
 	# Verify child nodes
 	var title_screen = main.get_node_or_null("TitleScreen")

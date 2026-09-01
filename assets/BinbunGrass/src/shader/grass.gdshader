@@ -20,9 +20,10 @@ uniform vec2 wind_velocity = vec2(1.5, 1.0);
 uniform float wind_speed : hint_range(0.1, 5.0, 0.05) = 0.7;
 uniform float sway_strength : hint_range(0.0, 1.0, 0.02) = 0.20;
 
-// WeatherFX Global Wind
+// WeatherFX Global Wind & Biome
 global uniform float weather_wind_strength;
 global uniform vec3 weather_wind_direction;
+global uniform vec4 weather_grass_tint;
 
 group_uniforms Transparency;
 uniform float alpha_scissor_threshold : hint_range(0.0, 1.0, 0.05) = 0.45;
@@ -101,7 +102,11 @@ void fragment() {
 	
 	vec4 grad_sample = texture(color_gradient, vec2(noise_value, 0.0));
 	vec3 base_tint = mix(color_root.rgb, color_tip.rgb, pow(clamp(1.0 - UV.y, 0.0, 1.0), 1.2));
-	vec3 color = grad_sample.rgb * base_tint * 1.35;
+	vec3 b_tint = weather_grass_tint.rgb;
+	if (length(b_tint) < 0.01) {
+		b_tint = vec3(1.0);
+	}
+	vec3 color = grad_sample.rgb * base_tint * 1.35 * b_tint;
 
 	ALBEDO = color;
 	ROUGHNESS = 0.85;

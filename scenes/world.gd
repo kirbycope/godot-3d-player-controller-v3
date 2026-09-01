@@ -4,6 +4,7 @@ const RADIO_OFF_ICON: Texture2D = preload("res://addons/radi_ot/assets/icons/sto
 
 @export var little_buddy_count: int = 64
 @export var spawn_frame_interval: int = 4
+@export var max_lobby_players: int = 4
 
 @onready var player: Player = $Player
 @onready var first_buddy: Node3D = get_node_or_null("LittleBuddy") as Node3D
@@ -262,8 +263,8 @@ func _initialize_steam_lobby() -> void:
 		var callback_connect: int = Steam.connect("lobby_created", Callable(self, "_on_steam_lobby_created"))
 		if callback_connect != OK and callback_connect != ERR_ALREADY_EXISTS:
 			printerr("Connecting lobby_created callback failed: %s" % callback_connect)
-		# Create a public lobby for up to 4 players
-		Steam.createLobby(Steam.LOBBY_TYPE_PUBLIC, 4)
+		# Create a public lobby for up to max_lobby_players
+		Steam.createLobby(Steam.LOBBY_TYPE_PUBLIC, max_lobby_players)
 		print("Requested Steam lobby creation for single-player world.")
 
 

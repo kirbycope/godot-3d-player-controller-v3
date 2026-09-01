@@ -69,6 +69,20 @@ const SCREECH_RETRIGGER_DELAY: float = 0.8
 @onready var sfx_engine_running_outside: AudioStreamPlayer3D = $SFXEngineRunningOutside
 @onready var sfx_break_short: AudioStreamPlayer3D = $SFXBreakShort
 @onready var sfx_break_long: AudioStreamPlayer3D = $SFXBreakLong
+@onready var vehicle_synchronizer: MultiplayerSynchronizer = get_node_or_null("VehicleSynchronizer") as MultiplayerSynchronizer
+
+@export var current_driver_peer_id: int = 1
+
+
+## Sets the current driver and updates multiplayer authority.
+func set_driver(p: Player) -> void:
+	player = p
+	if p:
+		current_driver_peer_id = p.get_multiplayer_authority()
+		set_multiplayer_authority(current_driver_peer_id)
+	else:
+		current_driver_peer_id = 1
+		set_multiplayer_authority(1)
 
 
 func _ready() -> void:
@@ -122,6 +136,7 @@ func _input(event: InputEvent) -> void:
 			and not player.is_driving \
 			and not is_on_fire \
 			and not has_exploded:
+				set_driver(player)
 				player.is_driving_in = self
 				var enter_car = $EnterCar
 				if enter_car:

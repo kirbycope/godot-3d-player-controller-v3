@@ -1,0 +1,93 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/torch.gd" id="1_torch_script"]
+[ext_resource type="PackedScene" path="res://assets/BinbunVFX/fire_effects/effects/Fire/fire_05.tscn" id="2_fire_vfx"]
+[ext_resource type="AudioStream" path="res://assets/tommusic/fantasy_sfx/OGG Files/SFX/Torch/Torch Loop.ogg" id="3_audio_loop"]
+[ext_resource type="AudioStream" path="res://assets/tommusic/fantasy_sfx/OGG Files/SFX/Torch/Torch Impact 1.ogg" id="4_audio_impact"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_torch"]
+friction = 0.7
+bounce = 0.15
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wood"]
+albedo_color = Color(0.32, 0.2, 0.12, 1)
+roughness = 0.85
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_shaft"]
+material = SubResource("StandardMaterial3D_wood")
+top_radius = 0.045
+bottom_radius = 0.035
+height = 0.8
+radial_segments = 12
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wrap"]
+albedo_color = Color(0.22, 0.18, 0.14, 1)
+roughness = 0.9
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_head"]
+material = SubResource("StandardMaterial3D_wrap")
+top_radius = 0.075
+bottom_radius = 0.055
+height = 0.22
+radial_segments = 12
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ember"]
+albedo_color = Color(0.15, 0.08, 0.04, 1)
+emission_enabled = true
+emission = Color(1, 0.45, 0.1, 1)
+emission_energy_multiplier = 3.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_ember"]
+material = SubResource("StandardMaterial3D_ember")
+radius = 0.065
+height = 0.12
+radial_segments = 12
+rings = 6
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_torch"]
+radius = 0.09
+height = 1.05
+
+[node name="Torch" type="RigidBody3D" unique_id=987654321 groups=["Fire", "Throwable", "Torch"]]
+mass = 1.2
+physics_material_override = SubResource("PhysicsMaterial_torch")
+continuous_cd = true
+contact_monitor = true
+max_contacts_reported = 8
+script = ExtResource("1_torch_script")
+
+[node name="ShaftMesh" type="MeshInstance3D" parent="." unique_id=987654322]
+mesh = SubResource("CylinderMesh_shaft")
+
+[node name="HeadMesh" type="MeshInstance3D" parent="." unique_id=987654323]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42, 0)
+mesh = SubResource("CylinderMesh_head")
+
+[node name="EmberMesh" type="MeshInstance3D" parent="." unique_id=987654324]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.52, 0)
+mesh = SubResource("SphereMesh_ember")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=987654325]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+shape = SubResource("CapsuleShape3D_torch")
+
+[node name="FireVFX" parent="." unique_id=987654326 instance=ExtResource("2_fire_vfx")]
+transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, 0, 0, 0.7, 0, 0.52, 0)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=987654327]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+light_color = Color(1, 0.65, 0.25, 1)
+light_energy = 2.0
+shadow_enabled = true
+omni_range = 8.0
+
+[node name="AudioLoop" type="AudioStreamPlayer3D" parent="." unique_id=987654328]
+stream = ExtResource("3_audio_loop")
+volume_db = -6.0
+max_distance = 15.0
+autoplay = true
+
+[node name="ImpactAudio" type="AudioStreamPlayer3D" parent="." unique_id=987654329]
+stream = ExtResource("4_audio_impact")
+volume_db = -2.0
+max_distance = 20.0

@@ -105,7 +105,43 @@ stream_1/stream = ExtResource("25_nv3ho")
 stream_2/stream = ExtResource("26_ldw8g")
 stream_3/stream = ExtResource("27_1085y")
 stream_4/stream = ExtResource("28_5my0l")
-stream_5/stream = ExtResource("29_e2c2f")
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_crv"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:steering")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+properties/3/path = NodePath(".:engine_force")
+properties/3/spawn = true
+properties/3/replication_mode = 1
+properties/4/path = NodePath(".:brake")
+properties/4/spawn = true
+properties/4/replication_mode = 1
+properties/5/path = NodePath(".:linear_velocity")
+properties/5/spawn = true
+properties/5/replication_mode = 1
+properties/6/path = NodePath(".:angular_velocity")
+properties/6/spawn = true
+properties/6/replication_mode = 1
+properties/7/path = NodePath(".:is_on_fire")
+properties/7/spawn = true
+properties/7/replication_mode = 2
+properties/8/path = NodePath(".:has_exploded")
+properties/8/spawn = true
+properties/8/replication_mode = 2
+properties/9/path = NodePath(".:is_engine_started")
+properties/9/spawn = true
+properties/9/replication_mode = 2
+properties/10/path = NodePath(".:is_flipped")
+properties/10/spawn = true
+properties/10/replication_mode = 2
+properties/11/path = NodePath(".:current_driver_peer_id")
+properties/11/spawn = true
+properties/11/replication_mode = 2
 
 [node name="HondaCRV" type="VehicleBody3D" unique_id=863847759]
 mass = 1500.0
@@ -113,6 +149,9 @@ physics_material_override = SubResource("PhysicsMaterial_sbl7x")
 center_of_mass_mode = 1
 center_of_mass = Vector3(0, -0.05, -0.1)
 script = ExtResource("1_sbl7x")
+
+[node name="VehicleSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=863847760]
+replication_config = SubResource("SceneReplicationConfig_crv")
 
 [node name="CollisionChassis" type="CollisionShape3D" parent="." unique_id=66850983]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.65, -0.1)

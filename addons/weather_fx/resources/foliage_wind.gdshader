@@ -10,6 +10,7 @@ render_mode cull_disabled, diffuse_toon, specular_toon;
 global uniform float weather_wind_strength;
 global uniform vec3 weather_wind_direction;
 global uniform float weather_precipitation_strength;
+global uniform vec4 weather_foliage_tint;
 
 // Canopy Appearance Uniforms
 group_uniforms Shading;
@@ -100,7 +101,11 @@ void fragment() {
 		discard;
 	}
 	
-	ALBEDO = tex_color.rgb * foliage_tint.rgb;
+	vec3 biome_tint = weather_foliage_tint.rgb;
+	if (length(biome_tint) < 0.01) {
+		biome_tint = vec3(1.0);
+	}
+	ALBEDO = tex_color.rgb * foliage_tint.rgb * biome_tint;
 	
 	// Rain wetness reaction
 	float wetness = clamp(weather_precipitation_strength, 0.0, 1.0);
