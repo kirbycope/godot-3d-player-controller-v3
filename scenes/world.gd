@@ -2,6 +2,10 @@ extends Node3D
 
 const RADIO_OFF_ICON: Texture2D = preload("res://addons/radi_ot/assets/icons/stop_icon.svg")
 
+## GodotSteam constant mirrors (the Steam class is absent on web exports).
+const STEAM_RESULT_OK: int = 1
+const STEAM_LOBBY_TYPE_PUBLIC: int = 2
+
 @export var little_buddy_count: int = 64
 @export var spawn_frame_interval: int = 4
 @export var max_lobby_players: int = 4
@@ -260,27 +264,28 @@ func _initialize_steam_lobby() -> void:
 
 	# Only create a lobby if not already in one
 	if current_lobby_id == 0:
-		var callback_connect: int = Steam.connect("lobby_created", Callable(self, "_on_steam_lobby_created"))
+		var callback_connect: int = steam.connect("lobby_created", Callable(self, "_on_steam_lobby_created"))
 		if callback_connect != OK and callback_connect != ERR_ALREADY_EXISTS:
 			printerr("Connecting lobby_created callback failed: %s" % callback_connect)
 		# Create a public lobby for up to max_lobby_players
-		Steam.createLobby(Steam.LOBBY_TYPE_PUBLIC, max_lobby_players)
+		steam.createLobby(STEAM_LOBBY_TYPE_PUBLIC, max_lobby_players)
 		print("Requested Steam lobby creation for single-player world.")
 
 
 func _on_steam_lobby_created(connect_status: int, lobby_id: int) -> void:
 	if not Engine.has_singleton("Steam"):
 		return
-	if connect_status == Steam.RESULT_OK:
+	var steam: Object = Engine.get_singleton("Steam")
+	if connect_status == STEAM_RESULT_OK:
 		var steamworks = get_node_or_null("/root/Steamworks")
 		if steamworks:
 			steamworks.lobby_id = lobby_id
 		var username: String = steamworks.username if steamworks else "Player"
 		var lobby_name: String = "%s's World" % username
-		Steam.setLobbyData(lobby_id, "lobby_name", lobby_name)
-		Steam.setLobbyData(lobby_id, "name", lobby_name)
-		Steam.setLobbyData(lobby_id, "game", "Godot3DPlayerController")
-		Steam.setLobbyData(lobby_id, "mode", "world")
+		steam.setLobbyData(lobby_id, "lobby_name", lobby_name)
+		steam.setLobbyData(lobby_id, "name", lobby_name)
+		steam.setLobbyData(lobby_id, "game", "Godot3DPlayerController")
+		steam.setLobbyData(lobby_id, "mode", "world")
 		print("Auto-created Steam Lobby: %s (ID: %d)" % [lobby_name, lobby_id])
 	else:
 		printerr("Failed to auto-create Steam lobby: %s" % connect_status)

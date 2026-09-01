@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://scenes/torch.gd" id="1_torch_script"]
 [ext_resource type="PackedScene" path="res://assets/BinbunVFX/fire_effects/effects/Fire/fire_05.tscn" id="2_fire_vfx"]
 [ext_resource type="AudioStream" path="res://assets/tommusic/fantasy_sfx/OGG Files/SFX/Torch/Torch Loop.ogg" id="3_audio_loop"]
+[ext_resource type="Script" path="res://assets/BinbunVFX/fire_effects/src/script/vfx_fire_controller.gd" id="3_ndh0a"]
 [ext_resource type="AudioStream" path="res://assets/tommusic/fantasy_sfx/OGG Files/SFX/Torch/Torch Impact 1.ogg" id="4_audio_impact"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_torch"]
@@ -71,8 +72,9 @@ mesh = SubResource("SphereMesh_ember")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
 shape = SubResource("CapsuleShape3D_torch")
 
-[node name="FireVFX" parent="." unique_id=987654326 instance=ExtResource("2_fire_vfx")]
+[node name="FireVFX" type="Node3D" parent="." unique_id=987654326 instance=ExtResource("2_fire_vfx")]
 transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, 0, 0, 0.7, 0, 0.52, 0)
+script = ExtResource("3_ndh0a")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=987654327]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
@@ -84,8 +86,8 @@ omni_range = 8.0
 [node name="AudioLoop" type="AudioStreamPlayer3D" parent="." unique_id=987654328]
 stream = ExtResource("3_audio_loop")
 volume_db = -6.0
-max_distance = 15.0
 autoplay = true
+max_distance = 15.0
 
 [node name="ImpactAudio" type="AudioStreamPlayer3D" parent="." unique_id=987654329]
 stream = ExtResource("4_audio_impact")

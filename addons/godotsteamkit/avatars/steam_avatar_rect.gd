@@ -6,8 +6,13 @@ extends TextureRect
 ## A custom TextureRect node used to automatically update a player's Steam avatar based on the Steam ID
 ## that is set.
 
+## Mirrors Steam.AvatarSizes (Steam class is absent on web exports).
+enum AvatarSizes { AVATAR_SMALL = 1, AVATAR_MEDIUM = 2, AVATAR_LARGE = 3 }
+## Mirrors Steam.PersonaChange.PERSONA_CHANGE_AVATAR.
+const PERSONA_CHANGE_AVATAR: int = 64
+
 ## The size of the requested avatar. Small is 32 pixel, medium is 64 pixels, and large is 184 pixels.
-@export var avatar_size: Steam.AvatarSizes = Steam.AvatarSizes.AVATAR_MEDIUM
+@export var avatar_size: AvatarSizes = AvatarSizes.AVATAR_MEDIUM
 ## Set a specific size for the Steam avatar which will override the avatar sizes. Make sure this is
 ## smaller than the avatar_size you are using. For example, if custom_size is 50 pixel then select
 ## AVATAR_MEDIUM (or 2) as your avatar_size.
@@ -16,11 +21,14 @@ extends TextureRect
 ## avatar and persona callbacks.
 @export var steam_id: int = 0 : set = set_steam_id
 
+## Steam singleton when the GodotSteam extension is present, otherwise null.
+var _steam: Object = Engine.get_singleton("Steam") if Engine.has_singleton("Steam") else null
+
 
 func _ready() -> void:
-	if Engine.has_singleton("Steam"):
-		Steam.avatar_loaded.connect(_on_avatar_loaded)
-		Steam.persona_state_change.connect(_on_persona_state_change)
+	if _steam:
+		_steam.connect("avatar_loaded", _on_avatar_loaded)
+		_steam.connect("persona_state_change", _on_persona_state_change)
 
 
 func _on_avatar_loaded(avatar_id: int, image_size: int, image_data: Array) -> void:
@@ -34,12 +42,13 @@ func _on_avatar_loaded(avatar_id: int, image_size: int, image_data: Array) -> vo
 
 func _on_persona_state_change(changed_id: int, flags: int) -> void:
 	if steam_id == changed_id:
-		if flags & Steam.PersonaChange.PERSONA_CHANGE_AVATAR:
-			Steam.getPlayerAvatar(avatar_size, steam_id)
+		if flags & PERSONA_CHANGE_AVATAR:
+			_steam.getPlayerAvatar(avatar_size, steam_id)
 
 
 ## Sets the Steam ID to track and automatically requests the avatar.
 func set_steam_id(new_steam_id: int) -> void:
 	steam_id = new_steam_id
 	if not is_node_ready(): await ready
-	Steam.getPlayerAvatar(avatar_size, steam_id)
+	if _steam:
+		_steam.getPlayerAvatar(avatar_size, steam_id)
