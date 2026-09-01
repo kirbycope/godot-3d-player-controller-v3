@@ -281,6 +281,26 @@ func _can_simulate() -> bool:
 	return is_playing
 
 
+## Queries the physics world below the given position to find the actual ground/mesh elevation.
+func _find_ground_y(origin: Vector3) -> float:
+	if not is_inside_tree():
+		return origin.y
+	var world3d := get_world_3d()
+	if not world3d:
+		return origin.y
+	var space_state := world3d.direct_space_state
+	if not space_state:
+		return origin.y
+
+	var from_pos := Vector3(origin.x, origin.y + 15.0, origin.z)
+	var to_pos := Vector3(origin.x, origin.y - 120.0, origin.z)
+	var query := PhysicsRayQueryParameters3D.create(from_pos, to_pos)
+	var result := space_state.intersect_ray(query)
+	if not result.is_empty() and result.has("position"):
+		return (result["position"] as Vector3).y
+	return 0.0
+
+
 func _update_playback_state() -> void:
 	if not is_inside_tree():
 		return
@@ -302,11 +322,13 @@ func _process(delta: float) -> void:
 	if is_instance_valid(target_node) and target_node.is_inside_tree():
 		current_altitude = maxf(0.0, target_node.global_position.y)
 		var target_pos = target_node.global_position
+		var ground_y = _find_ground_y(target_pos)
 		var wind_offset = -wind_direction.normalized() * (current_wind_strength * 0.22) if not wind_direction.is_zero_approx() else Vector3.ZERO
 		if is_instance_valid(rain_particles):
 			rain_particles.global_position = Vector3(target_pos.x + wind_offset.x, target_pos.y + 12.0, target_pos.z + wind_offset.z)
-		if is_instance_valid(rain_splash_particles) and rain_splash_particles.get_parent() != rain_particles:
-			rain_splash_particles.global_position = Vector3(target_pos.x, target_pos.y, target_pos.z)
+		if is_instance_valid(rain_splash_particles):
+			# Always anchor splash ripples and droplets to the actual ground elevation, never floating in mid-air
+			rain_splash_particles.global_position = Vector3(target_pos.x, ground_y + 0.02, target_pos.z)
 		if is_instance_valid(snow_particles):
 			snow_particles.global_position = Vector3(target_pos.x + wind_offset.x * 1.5, target_pos.y + 12.0, target_pos.z + wind_offset.z * 1.5)
 		if is_instance_valid(wind_vfx_node):
@@ -508,6 +530,58 @@ static func get_precipitation_strength() -> float:
 	return active_precipitation_strength
 
 
+## BotW-style wind spread factor shared by all fire propagation systems:
+## downwind alignment boosts range, upwind alignment suppresses it.
+static func get_wind_spread_factor(wind_alignment: float, wind_strength: float, wind_multiplier: float = 0.35) -> float:
+	var downwind_boost: float = maxf(0.0, wind_alignment) * minf(wind_strength * wind_multiplier, 2.5)
+	var upwind_penalty: float = maxf(0.0, -wind_alignment) * 0.5
+	return 1.0 + downwind_boost - upwind_penalty
+
+
+static var _player_cache: Node3D = null
+static var _player_search_cooldown_frame: int = -1
+
+## Frames to wait between full-tree class-based player searches when no Player exists.
+const PLAYER_SEARCH_COOLDOWN_FRAMES: int = 120
+
+## Returns true if the node is the player. Prefers the "Player" group (clean decoupling),
+## falling back to a `class_name Player` script check for scenes that don't use the group.
+static func is_player_node(node: Node) -> bool:
+	if node == null:
+		return false
+	if node.is_in_group("Player"):
+		return true
+	var node_script: Script = node.get_script() as Script
+	while node_script:
+		if node_script.get_global_name() == &"Player":
+			return true
+		node_script = node_script.get_base_script()
+	return false
+
+
+## Finds the active Player. Prefers the O(1) "Player" group lookup; only falls back to a
+## cached, rate-limited class-based tree scan when no node is in the group.
+static func find_player(tree: SceneTree) -> Node3D:
+	if tree == null or tree.root == null:
+		return null
+	var grouped: Node = tree.get_first_node_in_group("Player")
+	if grouped is Node3D:
+		return grouped as Node3D
+	if is_instance_valid(_player_cache) and _player_cache.is_inside_tree():
+		return _player_cache
+	_player_cache = null
+	# Rate-limit full-tree scans when no Player exists (e.g. standalone WeatherFX demos)
+	var frame: int = Engine.get_process_frames()
+	if _player_search_cooldown_frame >= 0 and frame - _player_search_cooldown_frame < PLAYER_SEARCH_COOLDOWN_FRAMES:
+		return null
+	_player_search_cooldown_frame = frame
+	for body in tree.root.find_children("*", "CharacterBody3D", true, false):
+		if is_player_node(body):
+			_player_cache = body as Node3D
+			break
+	return _player_cache
+
+
 ## Updates global shader parameters for wind and precipitation.
 func _update_wind_globals() -> void:
 	if not _can_simulate():
@@ -574,8 +648,8 @@ func _update_wind_globals() -> void:
 
 ## Smoothly blends and updates global foliage and grass color tints according to the active biome.
 func _update_biome_tinting(delta: float) -> void:
-	var target_foliage: Color = ClimateData.get_biome_foliage_tint(current_biome) if enable_biome_tinting else Color.WHITE
-	var target_grass: Color = ClimateData.get_biome_grass_tint(current_biome) if enable_biome_tinting else Color.WHITE
+	var target_foliage: Color = get_target_foliage_tint()
+	var target_grass: Color = get_target_grass_tint()
 
 	current_foliage_tint = current_foliage_tint.lerp(target_foliage, clampf(delta * biome_tint_transition_speed, 0.0, 1.0))
 	current_grass_tint = current_grass_tint.lerp(target_grass, clampf(delta * biome_tint_transition_speed, 0.0, 1.0))
@@ -584,6 +658,34 @@ func _update_biome_tinting(delta: float) -> void:
 		ensure_shader_globals()
 		RenderingServer.global_shader_parameter_set(&"weather_foliage_tint", current_foliage_tint)
 		RenderingServer.global_shader_parameter_set(&"weather_grass_tint", current_grass_tint)
+
+
+## Target foliage tint for the active biome, normalized so TEMPERATE_PLAINS renders untinted.
+func get_target_foliage_tint() -> Color:
+	if not enable_biome_tinting:
+		return Color.WHITE
+	var reference: Color = ClimateData.get_biome_foliage_tint(ClimateData.BiomeZone.TEMPERATE_PLAINS)
+	return normalize_biome_tint(ClimateData.get_biome_foliage_tint(current_biome), reference)
+
+
+## Target grass tint for the active biome, normalized so TEMPERATE_PLAINS renders untinted.
+func get_target_grass_tint() -> Color:
+	if not enable_biome_tinting:
+		return Color.WHITE
+	var reference: Color = ClimateData.get_biome_grass_tint(ClimateData.BiomeZone.TEMPERATE_PLAINS)
+	return normalize_biome_tint(ClimateData.get_biome_grass_tint(current_biome), reference)
+
+
+## Normalizes a biome tint per-channel against a reference so the reference biome is identity (white).
+## Shader materials are already authored in temperate colors; this makes tints a relative hue shift
+## instead of a double-multiply that only darkens the existing greens.
+static func normalize_biome_tint(tint: Color, reference: Color) -> Color:
+	return Color(
+		tint.r / maxf(reference.r, 0.001),
+		tint.g / maxf(reference.g, 0.001),
+		tint.b / maxf(reference.b, 0.001),
+		1.0
+	)
 
 
 static var _globals_checked: bool = false

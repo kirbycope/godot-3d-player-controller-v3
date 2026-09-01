@@ -231,10 +231,12 @@ func _spawn_gust_sweep(wind_dir: Vector3, wind_factor: float, allow_leaves: bool
 
 	# Auto-clean after lifetime
 	var timer = get_tree().create_timer(5.0)
-	timer.timeout.connect(func():
-		if is_instance_valid(gust):
-			gust.queue_free()
-	)
+	timer.timeout.connect(_on_gust_timer_timeout.bind(gust))
+
+
+func _on_gust_timer_timeout(gust: Node3D) -> void:
+	if is_instance_valid(gust):
+		gust.queue_free()
 
 
 func _update_visibility() -> void:

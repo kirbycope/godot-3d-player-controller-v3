@@ -70,6 +70,18 @@ WeatherFX synchronizes real-time atmospheric wind parameters across GPU shaders 
 - Generates a queue of upcoming weather conditions (default 7 cycles ahead).
 - Advances automatically every 240 seconds (configurable) or manually via API / UI controls.
 
+### 7. BotW-Style Wildfire & Thermal Updrafts
+Gold-standard chemical-engine-inspired fire simulation, fully self-contained within the addon:
+
+- **`GrassField` creeping wildfire**: `ignite_at(world_pos)` spawns creeper heads that advance the fire front downwind at a clamped **1.2–1.8 m/s** (BotW decomp band, `fire_spread_speed` export) — wind biases *direction and lean*, not raw speed — with organic meandering and lateral branch splits.
+- **`FireTrailNode` life phases**: ignition/grow (0.8s) → peak roaring flame with flicker (2.8s) → burnout decay (1.4s), consuming/charring grass beneath and freeing itself cleanly (updraft areas leave the `Updraft`/`Thermal` groups on burnout — no ghost lift).
+- **`BurnableGrass` interactive patches**: ignite by player action or any `Fire`-group area contact; delegates field-wide creeping to any overlapping `GrassField` so there is a single propagation engine.
+- **`WildfirePatch` / `GroundWildfireSegment`**: stationary burn spots with ash decals and persistent charred stubs.
+- **Thermal updrafts**: every burning node registers a vertical `Area3D` cylinder (~2m radius × 20m height, groups `Updraft` + `Thermal`) that paragliders can catch for lift.
+- **Proximity VFX culling**: spiraling wind-streak updraft VFX only activates when the player (detected via the "Player" group with `class_name` fallback, camera fallback in player-less scenes) is within 5m.
+- **Rain quenching**: any precipitation strength `>= 0.4` immediately extinguishes all active fires.
+- **Shared wind spread math**: all propagation systems use `WeatherFX.get_wind_spread_factor()` (downwind boost, capped; upwind suppression).
+
 ---
 
 ## Scene Tree Architecture
@@ -169,6 +181,14 @@ var wind_spd: float = WeatherFX.get_wind_strength()
 var wind_dir: Vector3 = WeatherFX.get_wind_direction()
 var wetness: float = WeatherFX.get_precipitation_strength()
 
+# BotW-style wind spread factor shared by all fire propagation systems
+var factor: float = WeatherFX.get_wind_spread_factor(wind_alignment, wind_spd)
+
+# Player detection without any hard dependency on the player controller addon.
+# Prefers the O(1) "Player" group lookup; falls back to a `class_name Player` script check.
+var is_player: bool = WeatherFX.is_player_node(body)
+var player: Node3D = WeatherFX.find_player(get_tree())
+
 # Temperature conversions
 var temp_f: float = ClimateData.celsius_to_fahrenheit(20.0) # 68.0°F
 var temp_c: float = ClimateData.fahrenheit_to_celsius(68.0) # 20.0°C
@@ -209,6 +229,9 @@ void fragment() {
 Special thanks and attributions to open-source creators whose models, textures, shaders, and techniques inspired WeatherFX:
 
 - **Quaternius** – *Stylized Nature Megakit* ([CC0 Public Domain / quaternius.com](https://quaternius.com/)) for tree models, bark, and foliage textures.
+- **BinbunVFX** – *Fire Effects Pack* ([binbunvfx.itch.io](https://binbunvfx.itch.io/)) — the billboard flame shader in `assets/vfx/fire/flame_01.gdshader` is adapted from this pack.
+- **TomMusic** – *Fantasy SFX* ([tommusic.itch.io](https://tommusic.itch.io/)) — torch/fire crackle loop in `assets/audio/tommusic/torch_loop.ogg`.
+- **Gravity Sound** – *Weather Sound Pack* ([gravity-sound.itch.io](https://gravity-sound.itch.io/)) — wind ambience used by burning grass audio.
 
 ---
 

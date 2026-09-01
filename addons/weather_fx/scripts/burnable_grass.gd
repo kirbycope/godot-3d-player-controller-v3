@@ -106,6 +106,9 @@ func _setup_components() -> void:
 			fire_scene = load("res://assets/BinbunVFX/fire_effects/effects/Fire/fire_05.tscn") as PackedScene
 		elif ResourceLoader.exists("res://assets/BinbunVFX/fire_effects/effects/Fire/fire_area_01.tscn"):
 			fire_scene = load("res://assets/BinbunVFX/fire_effects/effects/Fire/fire_area_01.tscn") as PackedScene
+		elif ResourceLoader.exists("res://addons/weather_fx/scenes/vfx_flame.tscn"):
+			# Addon-local fallback flame so the addon stays atomic
+			fire_scene = load("res://addons/weather_fx/scenes/vfx_flame.tscn") as PackedScene
 
 		if fire_scene:
 			_fire_vfx_instance = fire_scene.instantiate() as Node3D
@@ -259,7 +262,21 @@ func ignite() -> void:
 	_spread_timer = 0.0
 	current_burn_progress = 0.1
 	_update_burn_state()
+	_delegate_to_grass_fields()
 	emit_signal("ignited")
+
+
+## Hands field-wide creeping propagation to any overlapping GrassField so there is a single creeper engine.
+func _delegate_to_grass_fields() -> void:
+	if Engine.is_editor_hint() or not is_inside_tree():
+		return
+	var tree: SceneTree = get_tree()
+	if tree == null:
+		return
+	for field in tree.get_nodes_in_group("GrassField"):
+		if field.has_method("ignite_at"):
+			if field.ignite_at(global_position, spread_radius, burn_duration if burn_duration > 0.0 else 6.0):
+				break
 
 
 ## Extinguishes the fire safely.
@@ -305,13 +322,11 @@ func spread_to_neighbors() -> void:
 			if dist < 0.001:
 				continue
 
-			var h_dir = h_delta / dist
-			var wind_align = h_dir.dot(h_wind) if has_wind else 0.0
+			var h_dir: Vector2 = h_delta / dist
+			var wind_align: float = h_dir.dot(h_wind) if has_wind else 0.0
 
 			# BotW decomp standard: downwind fire propagation boost, upwind suppression
-			var wind_boost = maxf(0.0, wind_align) * minf(wind_strength * wind_spread_multiplier, 2.5)
-			var upwind_penalty = maxf(0.0, -wind_align) * 0.50
-			var effective_spread_radius = spread_radius * (1.0 + wind_boost - upwind_penalty)
+			var effective_spread_radius: float = spread_radius * WeatherFX.get_wind_spread_factor(wind_align, wind_strength, wind_spread_multiplier)
 
 			if dist <= effective_spread_radius:
 				node.ignite()
@@ -380,14 +395,14 @@ func _update_burn_state() -> void:
 
 
 func _on_body_entered(body: Node3D) -> void:
-	if body.name == "Player" or body.is_in_group("player"):
+	if WeatherFX.is_player_node(body):
 		_player_nearby = true
 		if enable_interaction and is_instance_valid(_action_prompt) and not is_charred:
 			_action_prompt.show()
 
 
 func _on_body_exited(body: Node3D) -> void:
-	if body.name == "Player" or body.is_in_group("player"):
+	if WeatherFX.is_player_node(body):
 		_player_nearby = false
 		if is_instance_valid(_action_prompt):
 			_action_prompt.hide()

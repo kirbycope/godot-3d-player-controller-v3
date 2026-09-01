@@ -10,7 +10,8 @@ render_mode cull_disabled, diffuse_toon, specular_toon;
 global uniform float weather_wind_strength;
 global uniform vec3 weather_wind_direction;
 global uniform float weather_precipitation_strength;
-global uniform vec4 weather_foliage_tint;
+// source_color hint is required to bind a ProjectSettings shader global of type "color"
+global uniform vec4 weather_foliage_tint : source_color;
 
 // Canopy Appearance Uniforms
 group_uniforms Shading;

@@ -95,12 +95,12 @@ func _try_spread_fire() -> void:
 		if randf() < 0.75:
 			base_angle = wind_angle + randf_range(-PI * 0.35, PI * 0.35)
 
-	var dir_2d = Vector2(cos(base_angle), sin(base_angle))
-	var wind_dot = dir_2d.dot(h_wind) if has_wind else 0.0
+	var dir_2d := Vector2(cos(base_angle), sin(base_angle))
+	var wind_dot: float = dir_2d.dot(h_wind) if has_wind else 0.0
 
-	# Downwind fires travel further; upwind fires stay close
-	var distance_factor = 1.0 + maxf(0.0, wind_dot) * minf(wind_strength * 0.4, 1.8) - maxf(0.0, -wind_dot) * 0.4
-	var dist = spread_radius * randf_range(0.8, 1.3) * distance_factor
+	# Downwind fires travel further; upwind fires stay close (shared BotW spread math)
+	var distance_factor: float = WeatherFX.get_wind_spread_factor(wind_dot, wind_strength)
+	var dist: float = spread_radius * randf_range(0.8, 1.3) * distance_factor
 
 	var spawn_pos = global_position + Vector3(dir_2d.x * dist, 0.0, dir_2d.y * dist)
 
@@ -136,6 +136,9 @@ func _burn_out() -> void:
 	if is_instance_valid(_updraft_area):
 		_updraft_area.monitoring = false
 		_updraft_area.monitorable = false
+		# Leave the groups too so burned-out patches can never grant ghost lift.
+		_updraft_area.remove_from_group("Updraft")
+		_updraft_area.remove_from_group("Thermal")
 
 	if is_instance_valid(_flame_vfx):
 		for p in _flame_vfx.find_children("*", "GPUParticles3D", true, false):

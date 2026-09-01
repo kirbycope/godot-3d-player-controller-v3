@@ -101,8 +101,12 @@ const QUATERNIUS_MESH_PATHS = {
 
 @export_group("Wildfire Physics")
 @export var enable_wildfire: bool = true ## Enables wind-reactive grass fires and thermal updrafts across the field.
-@export var fire_spread_speed: float = 2.5 ## Speed at which the fire front advances downwind in m/s.
+@export var fire_spread_speed: float = 1.5 ## Fire front creep speed in m/s, clamped to the BotW 1.2-1.8 band. Wind biases direction, not speed.
 @export var max_active_fires: int = 6
+
+## BotW decomp fire front creep speed band (m/s).
+const CREEP_SPEED_MIN: float = 1.2
+const CREEP_SPEED_MAX: float = 1.8
 
 var _instance_origins: Array[Vector3] = []
 var _active_fires: Array[Dictionary] = []
@@ -180,14 +184,14 @@ func _process(delta: float) -> void:
 			h_idx -= 1
 			continue
 
-		# Drop new connected FireTrailNode along the path (0.28m spacing for continuous overlap)
-		if head.dist_since_drop >= 0.28:
+		# Drop new connected FireTrailNode along the path (0.35m spacing for seamless overlap)
+		if head.dist_since_drop >= 0.35:
 			head.dist_since_drop = 0.0
 			var world_p = Vector3(head.pos.x, 0.0, head.pos.y)
 			_drop_trail_node(local_p, world_p)
 
-			# Occasional gentle lateral branch
-			if head.branches_left > 0 and head.age > 1.2 and randf() < (delta * 0.8):
+			# Occasional lateral branch (trail split / combining)
+			if head.branches_left > 0 and head.age > 0.8 and randf() < (delta * 1.2):
 				head.branches_left -= 1
 				_spawn_branch_head(head.pos, head.heading, -head.angle_offset)
 
@@ -206,21 +210,20 @@ func _drop_trail_node(local_pos: Vector3, world_pos: Vector3) -> Node3D:
 		node.position = local_pos
 		add_child(node)
 		_trail_nodes.append(node)
-		_consume_grass_in_radius(world_pos, 0.75)
+		_consume_grass_in_radius(world_pos, 1.2)
 		return node
 	return null
 
 
 func _spawn_branch_head(pos_2d: Vector2, parent_heading: Vector2, angle_offset: float) -> void:
-	if _creeper_heads.size() >= 6:
+	if _creeper_heads.size() >= 8:
 		return
-	var wind_strength: float = WeatherFX.get_wind_strength()
 	var branch_head = {
 		"pos": pos_2d,
 		"heading": parent_heading.rotated(angle_offset).normalized(),
-		"speed": randf_range(0.35, 0.55) * (0.8 + 0.15 * wind_strength),
+		"speed": clampf(fire_spread_speed * randf_range(0.75, 0.95), CREEP_SPEED_MIN, CREEP_SPEED_MAX),
 		"age": 0.0,
-		"max_life": randf_range(4.0, 6.0),
+		"max_life": randf_range(3.5, 5.5),
 		"dist_since_drop": 0.0,
 		"angle_offset": angle_offset,
 		"noise_seed": randf() * 100.0,
@@ -243,9 +246,8 @@ func ignite_at(world_pos: Vector3, initial_radius: float = 2.0, duration: float 
 	# Initial ignition node
 	var initial_node = _drop_trail_node(local_p, world_pos)
 
-	# Spawn trailing creeper heads biased downwind with slow, natural creeping pace
+	# Spawn trailing creeper heads biased downwind
 	var wind_dir: Vector3 = WeatherFX.get_wind_direction()
-	var wind_strength: float = WeatherFX.get_wind_strength()
 	var h_wind = Vector2(wind_dir.x, wind_dir.z)
 	var has_wind = h_wind.length_squared() > 0.001
 	if has_wind:
@@ -254,20 +256,20 @@ func ignite_at(world_pos: Vector3, initial_radius: float = 2.0, duration: float 
 		h_wind = Vector2.RIGHT
 
 	var pos_2d = Vector2(world_pos.x, world_pos.z)
-	var angle_spreads = [-0.35, 0.0, 0.35] if has_wind else [0.0, 2.1, 4.2]
+	var angle_spreads = [-0.4, 0.0, 0.4] if has_wind else [0.0, 2.1, 4.2]
 
 	for offset_angle in angle_spreads:
 		var head_dir = h_wind.rotated(offset_angle).normalized()
 		var head = {
-			"pos": pos_2d + head_dir * 0.2,
+			"pos": pos_2d + head_dir * 0.3,
 			"heading": head_dir,
-			"speed": randf_range(0.35, 0.55) * (0.8 + 0.15 * wind_strength),
+			"speed": clampf(fire_spread_speed * randf_range(0.9, 1.1), CREEP_SPEED_MIN, CREEP_SPEED_MAX),
 			"age": 0.0,
 			"max_life": duration,
-			"dist_since_drop": 0.2,
+			"dist_since_drop": 0.3,
 			"angle_offset": offset_angle,
 			"noise_seed": randf() * 100.0,
-			"branches_left": 1
+			"branches_left": 2
 		}
 		_creeper_heads.append(head)
 

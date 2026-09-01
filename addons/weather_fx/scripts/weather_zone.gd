@@ -45,4 +45,4 @@ func _on_body_exited(body: Node3D) -> void:
 func _is_target_player(body: Node3D) -> bool:
 	if _weather_fx and _weather_fx.target_node:
 		return body == _weather_fx.target_node
-	return body.name == "Player" or body.is_in_group("player")
+	return WeatherFX.is_player_node(body)

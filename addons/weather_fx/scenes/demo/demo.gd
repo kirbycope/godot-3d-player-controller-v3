@@ -106,12 +106,22 @@ func _setup_ui_signals() -> void:
 		wind_dir_slider.value_changed.connect(_on_wind_dir_slider_changed)
 	play_pause_button.pressed.connect(_on_play_pause_pressed)
 	advance_cycle_button.pressed.connect(_on_advance_cycle_pressed)
-	unit_button.pressed.connect(_on_unit_button_pressed)
+	weather_fx.weather_changed.connect(_on_weather_fx_state_changed)
+	weather_fx.biome_changed.connect(_on_weather_fx_state_changed)
+	weather_fx.temperature_changed.connect(_on_weather_fx_temperature_changed)
+	weather_fx.wind_changed.connect(_on_weather_fx_wind_changed)
 
-	weather_fx.weather_changed.connect(func(_new, _old): _update_ui_state())
-	weather_fx.biome_changed.connect(func(_new, _old): _update_ui_state())
-	weather_fx.temperature_changed.connect(func(_temp): _update_ui_state())
-	weather_fx.wind_changed.connect(func(_strength, _dir): _update_ui_state())
+
+func _on_weather_fx_state_changed(_new_state: Variant = null, _old_state: Variant = null) -> void:
+	_update_ui_state()
+
+
+func _on_weather_fx_temperature_changed(_temp: float) -> void:
+	_update_ui_state()
+
+
+func _on_weather_fx_wind_changed(_strength: float, _dir: Vector3) -> void:
+	_update_ui_state()
 
 
 # ------------------------------------------------------------------------------

@@ -23,7 +23,8 @@ uniform float sway_strength : hint_range(0.0, 1.0, 0.02) = 0.20;
 // WeatherFX Global Wind & Biome
 global uniform float weather_wind_strength;
 global uniform vec3 weather_wind_direction;
-global uniform vec4 weather_grass_tint;
+// source_color hint is required to bind a ProjectSettings shader global of type "color"
+global uniform vec4 weather_grass_tint : source_color;
 
 group_uniforms Transparency;
 uniform float alpha_scissor_threshold : hint_range(0.0, 1.0, 0.05) = 0.45;

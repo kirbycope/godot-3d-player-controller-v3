@@ -7,26 +7,20 @@ func _init() -> void:
 
 	var player = world.get_node_or_null("Player")
 	if player:
+		# Elevate player to Y=6.0 in air
+		player.global_position = Vector3(0.0, 6.0, 0.0)
 		player.rotation_degrees.y = 180.0
 		var cam_pivot = player.get_node_or_null("CameraPivot")
 		if cam_pivot:
 			cam_pivot.rotation_degrees.y = 180.0
 
 	var wfx = world.get_node_or_null("WeatherFX")
-	if wfx and wfx.has_method("set_weather"):
-		wfx.set_weather(0)
+	if wfx:
+		wfx.set_weather(1) # RAIN
+		wfx.apply_weather_effects(1)
 
-	WeatherFX.active_precipitation_strength = 0.0
-	WeatherFX.active_wind_direction = Vector3(1.0, 0.0, 0.0)
-	WeatherFX.active_wind_strength = 3.5
-
-	# Tip torch at 60 degree tilt to visually test that flame burns straight UP in world space
-	var torch = world.get_node_or_null("Torch")
-	if torch:
-		torch.rotation_degrees.z = 60.0
-
-	# Process 90 physics frames
-	for i in range(90):
+	# Process 60 physics frames in rain
+	for i in range(60):
 		await physics_frame
 
 	var img = root.get_viewport().get_texture().get_image()

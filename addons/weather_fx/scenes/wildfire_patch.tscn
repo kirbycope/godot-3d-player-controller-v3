@@ -1,8 +1,8 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://addons/weather_fx/scripts/wildfire_patch.gd" id="1_wildfire_script"]
-[ext_resource type="PackedScene" path="res://assets/BinbunVFX/fire_effects/effects/Fire/fire_05.tscn" id="2_fire_scene"]
-[ext_resource type="AudioStream" path="res://assets/tommusic/fantasy_sfx/OGG Files/SFX/Torch/Torch Loop.ogg" id="3_audio_crackle"]
+[ext_resource type="PackedScene" path="res://addons/weather_fx/scenes/vfx_flame.tscn" id="2_fire_scene"]
+[ext_resource type="AudioStream" path="res://addons/weather_fx/assets/audio/tommusic/torch_loop.ogg" id="3_audio_crackle"]
 [ext_resource type="Shader" path="res://addons/weather_fx/resources/ash_decal.gdshader" id="4_ash_shader"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_updraft"]

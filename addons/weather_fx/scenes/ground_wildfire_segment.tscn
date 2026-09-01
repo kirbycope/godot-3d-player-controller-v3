@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" path="res://addons/weather_fx/scripts/ground_wildfire_segment.gd" id="1_segment_script"]
 [ext_resource type="Shader" path="res://addons/weather_fx/resources/ash_decal.gdshader" id="2_ash_shader"]
-[ext_resource type="PackedScene" path="res://assets/BinbunVFX/fire_effects/effects/Fire/fire_trail.tscn" id="3_fire_trail"]
-[ext_resource type="AudioStream" path="res://assets/tommusic/fantasy_sfx/OGG Files/SFX/Torch/Torch Loop.ogg" id="5_audio_crackle"]
+[ext_resource type="PackedScene" path="res://addons/weather_fx/scenes/vfx_flame.tscn" id="3_fire_trail"]
+[ext_resource type="AudioStream" path="res://addons/weather_fx/assets/audio/tommusic/torch_loop.ogg" id="5_audio_crackle"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ash"]
 render_priority = 0

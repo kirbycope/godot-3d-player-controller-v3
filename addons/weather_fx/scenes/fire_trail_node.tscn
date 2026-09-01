@@ -1,9 +1,10 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://addons/weather_fx/scripts/fire_trail_node.gd" id="1_node_script"]
-[ext_resource type="Shader" path="res://assets/BinbunVFX/fire_effects/src/shader/fire/flame_01.gdshader" id="3_flame_shader"]
-[ext_resource type="Texture2D" uid="uid://cb6uibjeyk6lq" path="res://assets/BinbunVFX/fire_effects/src/texture/flame/flame_01.tres" id="4_flame_tex"]
-[ext_resource type="AudioStream" path="res://assets/tommusic/fantasy_sfx/OGG Files/SFX/Torch/Torch Loop.ogg" id="5_audio_loop"]
+[ext_resource type="Shader" path="res://addons/weather_fx/assets/vfx/fire/flame_01.gdshader" id="3_flame_shader"]
+[ext_resource type="Texture2D" path="res://addons/weather_fx/assets/vfx/fire/flame_noise.tres" id="4_flame_tex"]
+[ext_resource type="AudioStream" path="res://addons/weather_fx/assets/audio/tommusic/torch_loop.ogg" id="5_audio_loop"]
+[ext_resource type="PackedScene" path="res://addons/weather_fx/assets/vfx/wind/Scenes/VFX_AirFlowUP.tscn" id="6_updraft_vfx"]
 
 [sub_resource type="Gradient" id="Gradient_flame"]
 colors = PackedColorArray(1, 1, 0.8, 1, 1, 0.2, 0, 1)
@@ -80,6 +81,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ThermalUpdraftArea"]
 shape = SubResource("CylinderShape3D_updraft")
+
+[node name="UpdraftVFX" parent="." instance=ExtResource("6_updraft_vfx")]
+transform = Transform3D(1, 0, 0, 0, 1.3, 0, 0, 0, 1, 0, 0.1, 0)
+visible = false
 
 [node name="AudioCrackle" type="AudioStreamPlayer3D" parent="."]
 stream = ExtResource("5_audio_loop")
