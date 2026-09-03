@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://d3o4cq6mgg8ni"]
+[gd_scene load_steps=2 format=3 uid="uid://d3o4cq6mgg8ni"]
 
 [ext_resource type="Script" uid="uid://bm34tsmkx4rsr" path="res://scenes/choppable.gd" id="1_1a2o8"]
 [ext_resource type="PackedScene" uid="uid://bttr7p1xafvaw" path="res://assets/quaternius/logs/Tree_Bark_1.gltf" id="1_je8fs"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://dprg3ba60c1vw" path="res://scenes/progress_bar_3d.tscn" id="5_pb3d"]
 [ext_resource type="Material" uid="uid://cy88j74yep2kd" path="res://addons/weather_fx/resources/tree_bark_material.tres" id="6_bark"]
 [ext_resource type="Material" uid="uid://b7vswk0jfeq7b" path="res://addons/weather_fx/resources/tree_leaves_material.tres" id="7_leaves"]
+[ext_resource type="SceneReplicationConfig" path="res://scenes/harvestable_replication.tres" id="sync_config"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_cth4h"]
 height = 2.15
@@ -80,6 +81,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
 
 [node name="LogCollisionTimer" type="Timer" parent="."]
 wait_time = 0.5
+
+[node name="StateSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = ExtResource("sync_config")
 
 [connection signal="timeout" from="LogCollisionTimer" to="." method="_on_log_collision_timer_timeout"]
 

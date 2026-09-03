@@ -1,4 +1,4 @@
-[gd_scene format=4 uid="uid://ci146l3tivu1p"]
+[gd_scene load_steps=2 format=4 uid="uid://ci146l3tivu1p"]
 
 [ext_resource type="Script" uid="uid://xxn2ncb6te7m" path="res://scenes/duck.gd" id="1_kls7j"]
 [ext_resource type="PackedScene" uid="uid://c206s3wul2wgj" path="res://assets/cgtrader/bilalcreation/WALK.glb" id="1_ql0qm"]
@@ -13,6 +13,7 @@
 [ext_resource type="AudioStream" uid="uid://bpjv21yfvyt26" path="res://assets/gravitysound/Animal SFX/Duck_4.ogg" id="9_83675"]
 [ext_resource type="AudioStream" uid="uid://dw7jihkky3b17" path="res://assets/gravitysound/Animal SFX/Duck_5.ogg" id="10_t4sxs"]
 [ext_resource type="AudioStream" uid="uid://1tij4jh6i0jx" path="res://assets/gravitysound/Animal SFX/Duck_6.ogg" id="11_7o3gr"]
+[ext_resource type="SceneReplicationConfig" path="res://addons/3d_player_controller/resources/character_body_replication.tres" id="sync_config"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hwgnm"]
 resource_name = "Duck_White"
@@ -1090,6 +1091,9 @@ one_shot = true
 [node name="AttackQuackCooldown" type="Timer" parent="."]
 wait_time = 1.2
 one_shot = true
+
+[node name="BodySynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = ExtResource("sync_config")
 
 [connection signal="collided" from="." to="." method="_on_collided"]
 

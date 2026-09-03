@@ -21,8 +21,8 @@ class TestDrivingRadio:
 			world_instance = null
 
 	func test_radio_powers_on_and_wires_radial_menu_when_driving():
-		var player = world_instance.get_node("Player") as Player
-		var radio = world_instance.get_node("Player/RadiOtPlayer3D") as RadiOtPlayer3D
+		var player = world_instance.get_node("Players/1") as Player
+		var radio = world_instance.get_node("Players/1/RadiOtPlayer3D") as RadiOtPlayer3D
 		var radial_menu = player.inventory.get_node("RadialMenu") as RadialMenu
 
 		assert_not_null(player, "Player should exist")
@@ -50,8 +50,8 @@ class TestDrivingRadio:
 		assert_false(radial_menu.custom_item_provider.is_valid(), "Radial menu provider should be cleared after driving")
 
 	func test_radial_menu_select_station_and_radio_off():
-		var player = world_instance.get_node("Player") as Player
-		var radio = world_instance.get_node("Player/RadiOtPlayer3D") as RadiOtPlayer3D
+		var player = world_instance.get_node("Players/1") as Player
+		var radio = world_instance.get_node("Players/1/RadiOtPlayer3D") as RadiOtPlayer3D
 		var radial_menu = player.inventory.get_node("RadialMenu") as RadialMenu
 
 		player.current_state = NodeStateMachine.States.DRIVING
@@ -70,8 +70,8 @@ class TestDrivingRadio:
 		assert_false(radio.is_power_on(), "Radio should be powered off after selecting Radio Off")
 
 	func test_radial_menu_is_equipped():
-		var player = world_instance.get_node("Player") as Player
-		var radio = world_instance.get_node("Player/RadiOtPlayer3D") as RadiOtPlayer3D
+		var player = world_instance.get_node("Players/1") as Player
+		var radio = world_instance.get_node("Players/1/RadiOtPlayer3D") as RadiOtPlayer3D
 		var radial_menu = player.inventory.get_node("RadialMenu") as RadialMenu
 
 		player.current_state = NodeStateMachine.States.DRIVING
@@ -92,8 +92,8 @@ class TestDrivingRadio:
 		assert_false(radial_menu.custom_item_is_equipped.call(items[1], 1), "Station 0 should NOT be equipped when radio is off")
 
 	func test_cycle_radio_station_while_driving():
-		var player = world_instance.get_node("Player") as Player
-		var radio = world_instance.get_node("Player/RadiOtPlayer3D") as RadiOtPlayer3D
+		var player = world_instance.get_node("Players/1") as Player
+		var radio = world_instance.get_node("Players/1/RadiOtPlayer3D") as RadiOtPlayer3D
 
 		player.current_state = NodeStateMachine.States.DRIVING
 		await wait_physics_frames(2)
@@ -111,8 +111,8 @@ class TestDrivingRadio:
 		assert_eq(radio.current_station_index, initial_station_index, "Cycle previous should return to initial station index")
 
 	func test_exiting_driving_powers_off_radio_and_restores_weapon_menu():
-		var player = world_instance.get_node("Player") as Player
-		var radio = world_instance.get_node("Player/RadiOtPlayer3D") as RadiOtPlayer3D
+		var player = world_instance.get_node("Players/1") as Player
+		var radio = world_instance.get_node("Players/1/RadiOtPlayer3D") as RadiOtPlayer3D
 		var radial_menu = player.inventory.get_node("RadialMenu") as RadialMenu
 
 		# Actively driving
@@ -131,7 +131,7 @@ class TestDrivingRadio:
 		assert_false(player.inventory.custom_cycle_handler.is_valid(), "Inventory custom cycle handler should be cleared")
 
 	func test_driving_contextual_controls_include_radio_labels():
-		var player = world_instance.get_node("Player") as Player
+		var player = world_instance.get_node("Players/1") as Player
 		var driving_node: Driving = player.state_machine.get_node("Driving") as Driving
 		assert_not_null(driving_node, "Driving state node should exist")
 

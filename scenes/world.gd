@@ -1,4 +1,8 @@
 extends Node3D
+## The demo world. Players are spawned per peer by [PlayerSpawner]; the lobby owner hosts the Steam
+## session through [SteamPeer]. Server-owned state (clock, weather, NPCs, physics props, harvestables)
+## replicates to clients through the synchronizers in the scenes; projectiles spawn on every peer
+## through [ProjectileSpawner].
 
 const RADIO_OFF_ICON: Texture2D = preload("res://addons/radi_ot/assets/icons/stop_icon.svg")
 
@@ -8,27 +12,75 @@ const STEAM_LOBBY_TYPE_PUBLIC: int = 2
 
 @export var max_lobby_players: int = 4
 
-@onready var player: Player = $Player
-@onready var radi_ot_player: RadiOtPlayer3D = $Player/RadiOtPlayer3D
+var player: Player ## The player this peer controls, once spawned.
+var radi_ot_player: RadiOtPlayer3D ## The local player's car radio.
+
+@onready var player_spawner: PlayerSpawner = $PlayerSpawner
+@onready var steam_peer: SteamPeer = $SteamPeer
+@onready var date_and_time: DateAndTime = $DateAndTime
+@onready var weather_fx: WeatherFX = $WeatherFX
 
 
 ## Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	# Set the mouse mode to captured to hide the mouse cursor
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	_initialize_steam_lobby()
+	_apply_network_roles()
 
-	# Set the game style parameters
+
+## Binds the world to the player this peer controls (connected in the scene to PlayerSpawner.local_player_spawned).
+func _on_local_player_spawned(local_player: Player) -> void:
+	player = local_player
 	player.enable_paraglider = true
 	player.enable_stamina = true
-
-	_initialize_steam_lobby()
-
+	player.state_changed.connect(_on_player_state_changed)
+	radi_ot_player = player.get_node("RadiOtPlayer3D")
 	radi_ot_player.auto_play_on_ready = false
 	radi_ot_player.set_power(false)
 	radi_ot_player.get_hud().hide_hud()
+	radi_ot_player.radio_toggled.connect(_on_radio_toggled)
+	radi_ot_player.station_changed.connect(_on_radio_station_changed)
+	# The spawner readies before this node, so resolve siblings directly instead of through @onready
+	($WeatherFX as WeatherFX).target_node = player
+	# NPCs follow the server's player; clients only display them
+	if multiplayer.is_server():
+		($Duck as FollowerNpc).player = player
+		($LittleBuddy as FollowerNpc).player = player
 
 
-## Powers the car radio and its radial-menu stations while the Player drives.
+## The server runs the clock and weather; clients receive them.
+func _apply_network_roles() -> void:
+	var is_server: bool = multiplayer.is_server()
+	date_and_time.is_running = is_server
+	if is_server:
+		if not weather_fx.weather_changed.is_connected(_on_weather_changed):
+			weather_fx.weather_changed.connect(_on_weather_changed)
+			weather_fx.biome_changed.connect(_on_biome_changed)
+			multiplayer.peer_connected.connect(_send_weather_to_peer)
+
+
+func _on_weather_changed(new_weather: ClimateData.WeatherType, _old_weather: ClimateData.WeatherType) -> void:
+	if multiplayer.has_multiplayer_peer():
+		_sync_weather.rpc(weather_fx.current_biome, new_weather)
+
+
+func _on_biome_changed(new_biome: ClimateData.BiomeZone, _old_biome: ClimateData.BiomeZone) -> void:
+	if multiplayer.has_multiplayer_peer():
+		_sync_weather.rpc(new_biome, weather_fx.active_weather)
+
+
+func _send_weather_to_peer(peer_id: int) -> void:
+	_sync_weather.rpc_id(peer_id, weather_fx.current_biome, weather_fx.active_weather)
+
+
+@rpc("authority", "call_remote", "reliable")
+func _sync_weather(biome: ClimateData.BiomeZone, weather: ClimateData.WeatherType) -> void:
+	weather_fx.current_biome = biome
+	weather_fx.set_weather(weather)
+
+
+## Powers the car radio and its radial-menu stations while the local Player drives.
 func _on_player_state_changed(from_state: int, to_state: int) -> void:
 	if to_state == NodeStateMachine.States.DRIVING:
 		radi_ot_player.set_power(true)
@@ -47,13 +99,13 @@ func _on_player_state_changed(from_state: int, to_state: int) -> void:
 
 
 func _on_warp_zone_body_entered(body: Node3D, marker_path: NodePath) -> void:
-	if body is Player:
+	if body is Player and (body as Player).is_multiplayer_authority():
 		(body as Player).warp_to((get_node(marker_path) as Marker3D).global_transform)
 
 
 ## Respawns a Player that fell out of the world at their starting position.
 func _on_kill_zone_body_entered(body: Node3D) -> void:
-	if body is Player and not (body as Player).is_driving and not (body as Player).is_flying:
+	if body is Player and (body as Player).is_multiplayer_authority() and not (body as Player).is_driving and not (body as Player).is_flying:
 		(body as Player).warp_to((body as Player).initial_transform)
 
 
@@ -63,8 +115,6 @@ func _on_water_area_3d_body_entered(body: Node3D, water_area_path: NodePath) -> 
 		(body as Player).enter_water(water_area)
 	elif body is FollowerNpc:
 		(body as FollowerNpc).in_water_area = water_area
-	elif body is BeachBall:
-		(body as BeachBall).in_water_area = water_area
 
 
 func _on_water_area_3d_body_exited(body: Node3D, water_area_path: NodePath) -> void:
@@ -72,8 +122,6 @@ func _on_water_area_3d_body_exited(body: Node3D, water_area_path: NodePath) -> v
 		(body as Player).exit_water(get_node(water_area_path) as Area3D)
 	elif body is FollowerNpc:
 		(body as FollowerNpc).in_water_area = null
-	elif body is BeachBall:
-		(body as BeachBall).in_water_area = null
 
 
 func _provide_radio_items() -> Array:
@@ -132,6 +180,7 @@ func _on_radio_toggled(_is_playing: bool) -> void:
 		radi_ot_player.get_hud().show_toast(5.0)
 
 
+## Joins the lobby we arrived through (SteamPeer connects on ready) or creates one and hosts it.
 func _initialize_steam_lobby() -> void:
 	if not Engine.has_singleton("Steam"):
 		return
@@ -167,5 +216,8 @@ func _on_steam_lobby_created(connect_status: int, lobby_id: int) -> void:
 		steam.setLobbyData(lobby_id, "game", "Godot3DPlayerController")
 		steam.setLobbyData(lobby_id, "mode", "world")
 		print("Auto-created Steam Lobby: %s (ID: %d)" % [lobby_name, lobby_id])
+		# Host the session for anyone who joins this lobby
+		steam_peer.host()
+		_apply_network_roles()
 	else:
 		printerr("Failed to auto-create Steam lobby: %s" % connect_status)

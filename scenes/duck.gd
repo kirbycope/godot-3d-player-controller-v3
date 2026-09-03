@@ -52,6 +52,8 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if not is_multiplayer_authority():
+		return
 	if global_position.y < respawn_height and not _is_giant:
 		_respawn_as_giant()
 	if player:

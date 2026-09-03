@@ -11,12 +11,14 @@ Click [here](https://timothycope.com/godot-3d-player-controller-v3/) to play!
 ## Features
 
 - **Player controller** (`addons/3d_player_controller`): `CharacterBody3D` + `AnimationTree` locomotion state machine (standing, sprinting, crouching, jumping, climbing, hanging, swimming/diving, sliding, ragdoll, sitting), first/third-person camera with interaction prompts, equipment/combat/inventory radial menu, stamina, paraglider and skateboard gadgets, multiplayer synchronizer and voice chat.
+- **Shooting**: the pistol and rifle are `Firearm` equipment that spawn physical `Projectile` rounds from a muzzle marker toward the camera's projectile ray, with a laser sight while aiming; the bow fires `Arrow` projectiles the same way. Every round sweeps a ray between physics steps, so fast shots reliably pop the red balloons and knock the beach ball around.
+- **Abilities**: World of Warcraft style spells without a morphing action bar. Tap `Q` / Left Bumper to cast the picked ability, hold it for the ability wheel. Stealth fades the player and makes the duck and Little Buddy lose them until an attack ends it; Heal is a 1.5 s cast that refills stamina and is interrupted by moving.
 - **Vehicle**: a drivable Honda CR-V (`scenes/honda_crv.tscn`) with enter/exit animations and an in-car radio driven by the `radi_ot` addon (stations appear in the radial menu while driving).
 - **NPCs**: `FollowerNpc` companions that follow the player over the navigation mesh, swim in water areas and react to physics impacts: a duck that respawns as a giant, and a "little buddy" that can be picked up and thrown.
-- **World interactions**: choppable trees and mineable ore (`Harvestable`), a push button, a boat seat, warp zones, a kill zone that respawns the player, a moon with its own gravity, balloons to shoot, a bowling alley and a beach ball that floats.
+- **World interactions**: choppable trees and mineable ore (`Harvestable`), a push button, a boat seat, warp zones, a kill zone that respawns the player, a moon with its own gravity, balloons to shoot, a bowling alley, and a pool with buoyancy (`Buoyancy` on the water area) that floats the beach ball and any other rigid body on the pond shader's waves while the boat rocks on them, its hull still masking the water with a stencil.
 - **Torch and fire**: a throwable torch (`Torch`) that ignites `weather_fx` grass fields and burnable grass; fires create thermal updrafts for the paraglider.
 - **Weather, date and radio addons**: `weather_fx` (biomes, precipitation, wind, wildfire), `date_and_time` (clock and calendar HUD) and `radi_ot` (internet radio) work alongside each other and the player addon.
-- **Steam lobby**: with GodotSteam present, the world auto-creates a public lobby (`scenes/world.gd`) and the title screen lists joinable lobbies.
+- **Steam multiplayer**: with GodotSteam present, the world auto-creates a public lobby and hosts it (`SteamPeer`); joining a lobby from the title screen connects to the owner. `PlayerSpawner` spawns `scenes/world_player.tscn` per peer, `ProjectileSpawner` replicates every bullet and arrow, the host owns the clock (`DateAndTime/TimeSynchronizer`), weather (relayed by RPC from `world.gd`), NPCs, physics props and harvestables (`BodySynchronizer`/`StateSynchronizer` in their scenes), and the car hands its authority to whoever drives it.
 
 ---
 

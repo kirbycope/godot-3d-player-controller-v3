@@ -3,6 +3,8 @@
 
 shader_type spatial;
 render_mode depth_draw_always, cull_disabled, specular_schlick_ggx;
+// Meshes that write stencil 1 (a boat hull's water mask) cut holes in the surface
+stencil_mode read, compare_not_equal, 1;
 
 // Global atmospheric shader parameters from WeatherFX
 global uniform float weather_wind_strength;

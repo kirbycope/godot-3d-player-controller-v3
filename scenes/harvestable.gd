@@ -7,8 +7,18 @@ extends Node3D
 @export var capability: StringName = &"can_log" ## Equipment capability needed to harvest (see [Equipment]).
 @export var harvest_animation: String = "Logging" ## Locomotion node played inside the equipped weapon group while harvesting.
 
-var hits_taken: int = 0
-var is_depleted: bool = false
+var hits_taken: int = 0: ## Replicated from the server; the setter keeps the progress bar in step.
+	set(value):
+		hits_taken = value
+		if progress_bar:
+			progress_bar.value = value
+var is_depleted: bool = false: ## Replicated from the server; the setter swaps the visuals.
+	set(value):
+		if value == is_depleted:
+			return
+		is_depleted = value
+		if value:
+			_on_depleted()
 var player: Player
 
 @onready var action_prompt: ActionPrompt = $ActionPrompt
@@ -44,15 +54,23 @@ func register_weapon_hit(equipment: Node = null, _hit_node: Node = null) -> void
 
 
 ## Applies one hit of damage; depletes the harvestable once enough hits land.
+## Counts a hit on the server (clients relay theirs); `hits_taken`/`is_depleted` replicate back to every peer.
 func register_hit() -> void:
 	if is_depleted:
 		return
+	if not multiplayer.is_server():
+		_request_hit.rpc_id(1)
+		return
 	hits_taken += 1
-	progress_bar.value = hits_taken
 	if hits_taken >= hits_to_finish:
 		is_depleted = true
-		_on_depleted()
 		hide_menu()
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func _request_hit() -> void:
+	if multiplayer.is_server():
+		register_hit()
 
 
 ## Swaps the intact model for its depleted version. Overridden by subclasses.

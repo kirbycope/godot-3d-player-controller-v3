@@ -1,10 +1,12 @@
-[gd_scene format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scenes/torch.gd" id="1_torch_script"]
 [ext_resource type="PackedScene" path="res://assets/BinbunVFX/fire_effects/effects/Fire/fire_05.tscn" id="2_fire_vfx"]
 [ext_resource type="AudioStream" path="res://assets/tommusic/fantasy_sfx/OGG Files/SFX/Torch/Torch Loop.ogg" id="3_audio_loop"]
 [ext_resource type="Script" path="res://assets/BinbunVFX/fire_effects/src/script/vfx_fire_controller.gd" id="3_ndh0a"]
 [ext_resource type="AudioStream" path="res://assets/tommusic/fantasy_sfx/OGG Files/SFX/Torch/Torch Impact 1.ogg" id="4_audio_impact"]
+[ext_resource type="Script" path="res://addons/3d_player_controller/scripts/synced_body.gd" id="sync_script"]
+[ext_resource type="SceneReplicationConfig" path="res://addons/3d_player_controller/resources/rigid_body_replication.tres" id="sync_config"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_torch"]
 friction = 0.7
@@ -97,5 +99,9 @@ max_distance = 20.0
 [node name="ImpactCooldownTimer" type="Timer" parent="."]
 wait_time = 0.5
 one_shot = true
+
+[node name="BodySynchronizer" type="MultiplayerSynchronizer" parent="."]
+script = ExtResource("sync_script")
+replication_config = ExtResource("sync_config")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

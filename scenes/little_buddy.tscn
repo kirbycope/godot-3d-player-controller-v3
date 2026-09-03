@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://b55kg5055u1k8"]
+[gd_scene load_steps=2 format=3 uid="uid://b55kg5055u1k8"]
 
 [ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://scenes/action_prompt.tscn" id="1_actpr"]
 [ext_resource type="Script" uid="uid://chujawfkubv85" path="res://scenes/little_buddy.gd" id="1_llqmq"]
@@ -9,6 +9,7 @@
 [ext_resource type="AnimationLibrary" uid="uid://dsnlxptdo6n1g" path="res://addons/3d_player_controller/assets/mixamo/animations/root_motion/Running Backward.glb" id="132_b6c0k"]
 [ext_resource type="AnimationLibrary" uid="uid://b66hh3ma67hrw" path="res://addons/3d_player_controller/assets/mixamo/animations/root_motion/Standard Walk.glb" id="133_walk"]
 [ext_resource type="AnimationLibrary" uid="uid://b05nay4slsc80" path="res://addons/3d_player_controller/assets/mixamo/animations/root_motion/Walking Backwards.glb" id="134_walkb"]
+[ext_resource type="SceneReplicationConfig" path="res://addons/3d_player_controller/resources/character_body_replication.tres" id="sync_config"]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_tfnjv"]
 animation = &"Idle/mixamo_com"
@@ -164,6 +165,9 @@ shape = SubResource("CapsuleShape3D_5xw05")
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0.39999998, 0)
 visible = false
 message_end = "to pick up  "
+
+[node name="BodySynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = ExtResource("sync_config")
 
 [connection signal="swimming_changed" from="." to="." method="_on_swimming_changed"]
 [connection signal="velocity_computed" from="NavigationAgent3D" to="." method="_on_velocity_computed"]

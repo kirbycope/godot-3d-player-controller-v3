@@ -16,6 +16,8 @@ var is_thrown: bool = false
 
 
 func _physics_process(delta: float) -> void:
+	if not is_multiplayer_authority():
+		return
 	if is_held:
 		return
 	super(delta)

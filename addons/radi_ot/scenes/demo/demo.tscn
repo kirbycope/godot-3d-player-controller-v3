@@ -96,6 +96,9 @@ mesh = SubResource("CylinderMesh_speaker")
 [node name="RadiOtPlayer3D" parent="RadioMesh" unique_id=836129621 instance=ExtResource("2_radio_player")]
 auto_play_on_ready = true
 
+[node name="RadiOtHUD" parent="RadioMesh/RadiOtPlayer3D"]
+toast_hide = false
+
 [node name="UI" type="Control" parent="." unique_id=1233821812]
 layout_mode = 3
 anchors_preset = 15

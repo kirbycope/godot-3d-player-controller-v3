@@ -1,8 +1,10 @@
-[gd_scene format=3 uid="uid://c4b8e2a1h7qaq"]
+[gd_scene load_steps=3 format=3 uid="uid://c4b8e2a1h7qaq"]
 
 [ext_resource type="Shader" uid="uid://b3ub3skp1gt1d" path="res://scenes/beach_ball.gdshader" id="1_beach_shader"]
 [ext_resource type="Script" uid="uid://6s62lhtskj7w" path="res://scenes/beach_ball.gd" id="1_script"]
 [ext_resource type="AudioStream" uid="uid://bqylorbffg64t" path="res://assets/freesound/117111__blindmanonacid__fotballplast.wav" id="3_hupay"]
+[ext_resource type="Script" path="res://addons/3d_player_controller/scripts/synced_body.gd" id="sync_script"]
+[ext_resource type="SceneReplicationConfig" path="res://addons/3d_player_controller/resources/rigid_body_replication.tres" id="sync_config"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_beach"]
 friction = 0.3
@@ -52,5 +54,9 @@ shape = SubResource("SphereShape3D_beach")
 [node name="SFX_Impact" type="AudioStreamPlayer3D" parent="." unique_id=969627450]
 stream = ExtResource("3_hupay")
 max_distance = 5.0
+
+[node name="BodySynchronizer" type="MultiplayerSynchronizer" parent="."]
+script = ExtResource("sync_script")
+replication_config = ExtResource("sync_config")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

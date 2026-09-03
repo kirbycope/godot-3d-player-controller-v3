@@ -57,6 +57,8 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if not is_multiplayer_authority():
+		return
 	# Float at the water surface or fall under gravity
 	var height_along_up: float = up_direction.dot(global_position)
 	var water_surface: float = get_water_surface_along_up(in_water_area, up_direction) if is_instance_valid(in_water_area) else -INF
@@ -75,7 +77,7 @@ func _physics_process(delta: float) -> void:
 
 	knockback_velocity = knockback_velocity.move_toward(Vector3.ZERO, knockback_damping * delta)
 
-	if not player or (player.is_driving and not follow_while_driving):
+	if not player or player.is_stealthed or (player.is_driving and not follow_while_driving):
 		_stop_moving()
 		return
 	up_direction = player.up_direction

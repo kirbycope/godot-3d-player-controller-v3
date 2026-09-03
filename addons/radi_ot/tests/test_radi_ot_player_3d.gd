@@ -147,3 +147,13 @@ func test_radi_ot_demo_camera_custom_height_and_distance() -> void:
 	add_child_autofree(demo)
 	assert_almost_eq(demo._camera_height, 2.5, 0.01, "Camera node pos.y should be respected")
 	assert_almost_eq(demo._camera_distance, 6.0, 0.01, "Camera node horizontal distance should be respected")
+
+
+func test_demo_hud_stays_visible() -> void:
+	var demo: Node = load("res://addons/radi_ot/scenes/demo/demo.tscn").instantiate()
+	add_child_autofree(demo)
+	var hud: RadiOtHUD = demo.radio_player.get_hud()
+	assert_false(hud.toast_hide, "The demo keeps the HUD on screen instead of fading it out")
+	hud.show_hud()
+	assert_true(hud._auto_hide_timer.is_stopped(), "Showing the HUD in the demo must not start the auto-hide timer")
+	assert_true(hud._panel_container.visible)

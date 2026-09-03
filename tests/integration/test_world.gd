@@ -30,8 +30,8 @@ func test_pool_sets_follower_npc_water_area() -> void:
 
 
 func test_driving_state_powers_radio_and_radial_menu() -> void:
-	var player: Player = world.get_node("Player") as Player
-	var radio: RadiOtPlayer3D = world.get_node("Player/RadiOtPlayer3D") as RadiOtPlayer3D
+	var player: Player = world.get_node("Players/1") as Player
+	var radio: RadiOtPlayer3D = world.get_node("Players/1/RadiOtPlayer3D") as RadiOtPlayer3D
 	assert_false(radio.is_power_on())
 
 	player.current_state = NodeStateMachine.States.DRIVING
@@ -44,7 +44,7 @@ func test_driving_state_powers_radio_and_radial_menu() -> void:
 
 
 func test_warp_zone_and_warp_to() -> void:
-	var player: Player = world.get_node("Player") as Player
+	var player: Player = world.get_node("Players/1") as Player
 	var marker: Marker3D = world.get_node("WarpZone2/Marker3D") as Marker3D
 	player.velocity = Vector3(1.0, 2.0, 3.0)
 

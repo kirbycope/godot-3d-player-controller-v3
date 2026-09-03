@@ -1,15 +1,9 @@
 class_name BeachBall
 extends RigidBody3D
-## A light ball that floats in water and registers hits on whatever it bumps into.
+## A light ball that registers hits on whatever it bumps into; the pool's [Buoyancy] floats it.
 
-@export var buoyancy_force: float = 15.0
-@export var fluid_drag: float = 2.0
-@export var fluid_angular_drag: float = 2.0
-
-var in_water_area: Area3D = null ## The water [Area3D] the ball is currently inside, set by the world.
 var _last_velocity: Vector3 = Vector3.ZERO
 
-@onready var collision_shape: CollisionShape3D = $CollisionShape3D
 @onready var audio_player: AudioStreamPlayer3D = $SFX_Impact
 
 
@@ -30,20 +24,6 @@ func _on_body_entered(body: Node) -> void:
 			node = node.get_parent()
 
 
+## Remembers the speed before a contact so the impact sound reflects it.
 func _physics_process(_delta: float) -> void:
 	_last_velocity = linear_velocity
-	if not is_instance_valid(in_water_area):
-		return
-
-	var radius: float = (collision_shape.shape as SphereShape3D).radius
-	var bottom_y: float = global_position.y - radius
-	var water_surface_y: float = FollowerNpc.get_water_surface_along_up(in_water_area, Vector3.UP)
-	if water_surface_y <= bottom_y:
-		return
-
-	var submerged_ratio: float = clampf((water_surface_y - bottom_y) / (radius * 2.0), 0.0, 1.0)
-	# Apply buoyancy force
-	apply_central_force(Vector3.UP * mass * buoyancy_force * submerged_ratio)
-	# Apply drag
-	apply_central_force(-linear_velocity * fluid_drag * submerged_ratio)
-	apply_torque(-angular_velocity * fluid_angular_drag * submerged_ratio)
