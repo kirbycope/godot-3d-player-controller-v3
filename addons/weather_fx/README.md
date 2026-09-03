@@ -86,7 +86,7 @@ Fully self-contained within the addon:
 - **Shared wind spread math**: `WeatherFX.get_wind_spread_factor()` (downwind boost, capped; upwind suppression).
 
 ### 9. Interactive Pond Water (`resources/pond_water.gdshader`)
-Toon-banded pond surface with wind-driven waves, contact/edge foam, and rain impact ripples. Exposes swimmer interaction uniforms (`swimmer_active`, `swimmer_position`, `swimmer_direction`, `swimmer_speed`) — feed them from any character controller for a V wake while moving and treading ripples at rest. The surface reads the stencil buffer (`stencil_mode read, compare_not_equal, 1`), so any mesh drawn with a stencil-writing mask (a boat hull) cuts a hole in the water; the vertex waves are a plain function of position, TIME, the wave uniforms and the wind globals, so gameplay code can mirror them for buoyancy.
+Toon-banded pond surface with wind-driven waves, contact/edge foam, and scattered rain impact ripples (hashed per cell and staggered in time, so they never form a grid). Exposes swimmer interaction uniforms (`swimmer_active`, `swimmer_position`, `swimmer_direction`, `swimmer_speed`) — feed them from any character controller for a V wake while moving and treading ripples at rest. The surface reads the stencil buffer (`stencil_mode read, compare_not_equal, 1`), so any mesh drawn with a stencil-writing mask (a boat hull) cuts a hole in the water; the vertex waves are a plain function of position, TIME, the wave uniforms and the wind globals, so gameplay code can mirror them for buoyancy.
 
 ---
 

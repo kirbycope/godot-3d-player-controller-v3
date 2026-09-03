@@ -40,6 +40,38 @@ uniform float swimmer_speed : hint_range(0.0, 10.0) = 0.0; // horizontal m/s
 varying vec3 v_world_pos;
 varying vec2 v_uv;
 
+float hash21(vec2 p) {
+	p = fract(p * vec2(123.34, 456.21));
+	p += dot(p, p + 45.32);
+	return fract(p.x * p.y);
+}
+
+// Three overlapping drop layers; each cell lands one drop at a random spot on its own schedule,
+// and heavier rain wakes more of the cells.
+vec2 rain_ripples(vec2 uv, float t) {
+	vec2 total = vec2(0.0);
+	for (int i = 0; i < 3; i++) {
+		float fi = float(i);
+		vec2 cell_uv = uv * (13.0 + fi * 6.0) + vec2(fi * 0.37, fi * 0.71);
+		vec2 id = floor(cell_uv);
+		vec2 f = fract(cell_uv);
+		float h = hash21(id + fi * 17.0);
+		if (h > weather_precipitation_strength * 1.3) {
+			continue;
+		}
+		vec2 center = vec2(hash21(id + 3.1), hash21(id + 7.7)) * 0.7 + 0.15;
+		float period = 1.1 + hash21(id + 11.3) * 1.7;
+		float phase = fract(t / period + h);
+		vec2 offset = f - center;
+		float d = length(offset);
+		float radius = phase * 0.4;
+		float ring = sin((d - radius) * 45.0) * exp(-abs(d - radius) * 14.0);
+		float fade = (1.0 - phase) * smoothstep(0.0, 0.08, phase);
+		total += (offset / max(d, 0.001)) * ring * fade;
+	}
+	return total;
+}
+
 void vertex() {
 	v_uv = UV;
 	v_world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
@@ -88,13 +120,9 @@ void fragment() {
 	vec3 n2 = texture(normal_map, flow_uv2).rgb;
 	vec3 blended_normal = normalize(n1 + n2 - 1.0) * 0.5 + 0.5;
 
-	// Raindrop impact ripples during rain
+	// Raindrop impact ripples during rain: scattered, staggered rings, never a lattice
 	if (weather_precipitation_strength > 0.05) {
-		vec2 rip_uv = v_uv * 16.0;
-		vec2 rip_grid = fract(rip_uv) - 0.5;
-		float rip_dist = length(rip_grid);
-		float rip_wave = sin(rip_dist * 26.0 - TIME * 14.0) * exp(-rip_dist * 5.5);
-		blended_normal.xy += rip_wave * 0.35 * weather_precipitation_strength;
+		blended_normal.xy += rain_ripples(v_uv, TIME) * 0.3 * weather_precipitation_strength;
 	}
 
 	// Swimmer interaction: concentric treading ripples at rest, Kelvin-style V wake when moving
