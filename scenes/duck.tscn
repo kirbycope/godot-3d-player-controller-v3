@@ -859,6 +859,7 @@ points = PackedVector3Array(0.02425124, 0.36432815, 0.19373207, -0.005743631, 0.
 
 [node name="Duck" type="CharacterBody3D" unique_id=875613134]
 script = ExtResource("1_kls7j")
+max_follow_distance = 10.0
 
 [node name="IDLE2" parent="." unique_id=1592355276 instance=ExtResource("2_4hpwl")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
@@ -1081,6 +1082,16 @@ disabled = true
 transform = Transform3D(-10, 0, 1.509958e-06, 0, 10, 0, -1.509958e-06, 0, -10, 0, 0, 0)
 shape = SubResource("ConvexPolygonShape3D_hxxp2")
 disabled = true
+
+[node name="CollisionQuackCooldown" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[node name="AttackQuackCooldown" type="Timer" parent="."]
+wait_time = 1.2
+one_shot = true
+
+[connection signal="collided" from="." to="." method="_on_collided"]
 
 [editable path="IDLE2"]
 [editable path="EAT2"]

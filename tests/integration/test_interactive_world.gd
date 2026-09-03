@@ -5,7 +5,7 @@ extends GutTest
 const PLAYER_SCENE: PackedScene = preload("res://addons/3d_player_controller/scenes/player.tscn")
 const TREE_01_SCENE: PackedScene = preload("res://scenes/tree_01.tscn")
 const ORE_SMALL_SCENE: PackedScene = preload("res://scenes/ore_small.tscn")
-const BurnableGrassScript: Script = preload("res://addons/weather_fx/scripts/burnable_grass.gd")
+const BURNABLE_GRASS_SCENE: PackedScene = preload("res://addons/weather_fx/scenes/burnable_grass.tscn")
 const WeatherFXScript: Script = preload("res://addons/weather_fx/scripts/weather_fx.gd")
 const WeatherZoneScript: Script = preload("res://addons/weather_fx/scripts/weather_zone.gd")
 
@@ -33,45 +33,45 @@ func after_each() -> void:
 func test_choppable_tree_logging_and_felling() -> void:
 	var choppable: Choppable = TREE_01_SCENE.instantiate() as Choppable
 	root.add_child(choppable)
-	choppable.chops_to_fell = 3
+	choppable.hits_to_finish = 3
 
 	# Initial state
-	assert_false(choppable.is_felled, "Tree should start intact")
-	assert_eq(choppable.chops_taken, 0)
+	assert_false(choppable.is_depleted, "Tree should start intact")
+	assert_eq(choppable.hits_taken, 0)
 	assert_eq(choppable.progress_bar.max_value, 3)
 	assert_true(choppable.standing_node.visible, "Standing tree should be visible")
 	assert_false(choppable.stump_node.visible, "Stump should be hidden")
 
 	# First chop
-	choppable.register_chop()
-	assert_eq(choppable.chops_taken, 1)
+	choppable.register_hit()
+	assert_eq(choppable.hits_taken, 1)
 	assert_eq(choppable.progress_bar.value, 1)
-	assert_false(choppable.is_felled)
+	assert_false(choppable.is_depleted)
 
 	# Second chop
-	choppable.register_chop()
-	assert_eq(choppable.chops_taken, 2)
+	choppable.register_hit()
+	assert_eq(choppable.hits_taken, 2)
 	assert_eq(choppable.progress_bar.value, 2)
-	assert_false(choppable.is_felled)
+	assert_false(choppable.is_depleted)
 
 	# Third chop should fell the tree
-	choppable.register_chop()
-	assert_true(choppable.is_felled, "Tree should be felled after 3 chops")
+	choppable.register_hit()
+	assert_true(choppable.is_depleted, "Tree should be felled after 3 chops")
 	assert_false(choppable.standing_node.visible, "Standing tree should be hidden after felling")
 	assert_true(choppable.stump_node.visible, "Stump should be shown after felling")
 
 	# Subsequent chops ignored
-	choppable.register_chop()
-	assert_eq(choppable.chops_taken, 3)
+	choppable.register_hit()
+	assert_eq(choppable.hits_taken, 3)
 
 
 func test_mineable_ore_depletion() -> void:
 	var mineable: Mineable = ORE_SMALL_SCENE.instantiate() as Mineable
 	root.add_child(mineable)
-	mineable.hits_to_mine = 2
+	mineable.hits_to_finish = 2
 
 	# Initial state
-	assert_false(mineable.is_mined, "Ore should start intact")
+	assert_false(mineable.is_depleted, "Ore should start intact")
 	assert_eq(mineable.hits_taken, 0)
 	assert_eq(mineable.progress_bar.max_value, 2)
 	assert_true(mineable.with_nodes.visible, "Unmined ore nodes should be visible")
@@ -81,11 +81,11 @@ func test_mineable_ore_depletion() -> void:
 	mineable.register_hit()
 	assert_eq(mineable.hits_taken, 1)
 	assert_eq(mineable.progress_bar.value, 1)
-	assert_false(mineable.is_mined)
+	assert_false(mineable.is_depleted)
 
 	# Second hit depletes ore
 	mineable.register_hit()
-	assert_true(mineable.is_mined, "Ore should be depleted after 2 hits")
+	assert_true(mineable.is_depleted, "Ore should be depleted after 2 hits")
 	assert_false(mineable.with_nodes.visible, "Unmined ore nodes should be hidden")
 	assert_true(mineable.without_nodes.visible, "Depleted ore base should be shown")
 
@@ -136,10 +136,9 @@ func test_weather_zone_biome_trigger() -> void:
 func test_burnable_grass_ignition_and_thermal_updraft() -> void:
 	player.enable_stamina = true
 
-	var grass_patch = BurnableGrassScript.new()
+	var grass_patch = BURNABLE_GRASS_SCENE.instantiate()
 	root.add_child(grass_patch)
 	grass_patch.global_position = Vector3(0, 0, 0)
-	grass_patch._setup_components()
 
 	# Initial state: unignited
 	assert_false(grass_patch.is_burning, "Grass should start unignited")
@@ -149,6 +148,7 @@ func test_burnable_grass_ignition_and_thermal_updraft() -> void:
 
 	# Ignite grass
 	grass_patch.ignite()
+	await wait_process_frames(1) # Area3D monitoring toggles are deferred
 	assert_true(grass_patch.is_burning, "Grass should be burning after ignite()")
 	assert_true(updraft_area.monitoring, "Updraft area should be active while burning")
 
@@ -173,22 +173,21 @@ func test_burnable_grass_ignition_and_thermal_updraft() -> void:
 
 	# Extinguish fire
 	grass_patch.extinguish()
+	await wait_process_frames(1) # Area3D monitoring toggles are deferred
 	assert_false(grass_patch.is_burning, "Grass should stop burning after extinguish()")
 	assert_false(updraft_area.monitoring, "Updraft area should deactivate after extinguish")
 
 
 func test_fire_spread_to_neighboring_grass() -> void:
-	var grass_1 = BurnableGrassScript.new()
+	var grass_1 = BURNABLE_GRASS_SCENE.instantiate()
 	grass_1.add_to_group("BurnableGrass")
 	root.add_child(grass_1)
 	grass_1.global_position = Vector3(0, 0, 0)
-	grass_1._setup_components()
 
-	var grass_2 = BurnableGrassScript.new()
+	var grass_2 = BURNABLE_GRASS_SCENE.instantiate()
 	grass_2.add_to_group("BurnableGrass")
 	root.add_child(grass_2)
 	grass_2.global_position = Vector3(2.5, 0, 0)
-	grass_2._setup_components()
 
 	assert_false(grass_1.is_burning)
 	assert_false(grass_2.is_burning)

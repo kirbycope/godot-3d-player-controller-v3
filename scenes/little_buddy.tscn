@@ -71,6 +71,8 @@ height = 0.6
 
 [node name="LittleBuddy" type="CharacterBody3D" unique_id=1463126112]
 script = ExtResource("1_llqmq")
+move_speed = 3.0
+walk_speed = 1.5
 throw_force_horizontal = 8.0
 throw_force_vertical = 2.0
 swimming_depth_offset = -0.1
@@ -162,5 +164,8 @@ shape = SubResource("CapsuleShape3D_5xw05")
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0.39999998, 0)
 visible = false
 message_end = "to pick up  "
+
+[connection signal="swimming_changed" from="." to="." method="_on_swimming_changed"]
+[connection signal="velocity_computed" from="NavigationAgent3D" to="." method="_on_velocity_computed"]
 
 [editable path="y_bot_root"]

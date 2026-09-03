@@ -48,3 +48,15 @@ shape = SubResource("BoxShape3D_hitbox")
 stream = ExtResource("7_audio")
 unit_size = 8.0
 max_distance = 25.0
+
+[node name="BurnTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="SpreadTimer" type="Timer" parent="."]
+wait_time = 2.5
+
+[connection signal="area_entered" from="HitboxArea" to="." method="_on_area_entered"]
+[connection signal="body_entered" from="HitboxArea" to="." method="_on_body_entered"]
+[connection signal="body_exited" from="HitboxArea" to="." method="_on_body_exited"]
+[connection signal="timeout" from="BurnTimer" to="." method="burn_out"]
+[connection signal="timeout" from="SpreadTimer" to="." method="spread_to_neighbors"]

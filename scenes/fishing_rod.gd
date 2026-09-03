@@ -1,71 +1,63 @@
 class_name FishingRod
 extends Equipment
+## Casts and reels the fishing line with the upper-body Fishing emotes while equipped.
 
-@export var fishing_action: String = &"action"
-@export var reel_duration: float = 2.0 ## Reeling duration in seconds
+const FISHING_EMOTES: Array[String] = ["FishingIdle", "FishingCast", "FishingReel"]
+
+@export var fishing_action: StringName = &"action"
 
 var line_cast: bool = false ## Has the line been cast (post casting animation)
-var was_casting: bool = false ## Was casting in the previous frame
-var was_reeling: bool = false ## Was reeling in the previous frame
-var reel_timer: float = 0.0
+var emote_state: AnimationNodeStateMachinePlayback
 
-var just_equipped: bool = true
-@onready var animation_player = $Sketchfab_Scene/AnimationPlayer
+@onready var animation_player: AnimationPlayer = $Sketchfab_Scene/AnimationPlayer
+@onready var reel_timer: Timer = $ReelTimer ## Reeling duration.
 
 
-## Called every physics frame. 'delta' is the elapsed time since the previous frame.
-func _physics_process(delta: float) -> void:
-	# Do nothing if not the authority
-	if not is_multiplayer_authority(): return
+## Called when the node enters the scene tree for the first time (the equipped copy has [member player] set).
+func _ready() -> void:
+	if not player or not is_multiplayer_authority(): return
+	emote_state = player.animation_tree.get(Player.EMOTE_STATE_PLAYBACK_PATH)
+	player.inventory.equipment_changed.connect(_on_equipment_changed)
+	player.animation_tree.animation_finished.connect(_on_animation_finished)
+	_on_equipment_changed()
 
-	# Proceed once the player has been initialized
-	if player:
-		# Check if the player has a fishing rod equipped
-		player.is_fishing = player.inventory.has_equipment(Equipment.EquipmentType.FISHING_ROD)
-		if not player.is_fishing:
-			player.animation_tree.set("parameters/EmoteSpineBlend2/blend_amount", 0.0)
-			just_equipped = true
-			return
 
-		var emote_state = player.animation_tree.get(player.EMOTE_STATE_PLAYBACK_PATH)
+## Called when there is an input event.
+func _input(event: InputEvent) -> void:
+	if not player or not player.is_fishing or not event.is_action_pressed(fishing_action): return
 
-		# Keep Fishing upper-body posture active while equipped
-		player.animation_tree.set("parameters/EmoteSpineBlend2/blend_amount", 1.0)
+	var current_node: String = String(emote_state.get_current_node())
+	if current_node == "FishingCast" or current_node == "FishingReel": return
 
-		var current_node: String = String(emote_state.get_current_node())
-		if current_node == "Idle":
-			emote_state.start("FishingIdle")
-			current_node = "FishingIdle"
+	# Cast the line if it is not out, otherwise reel it in
+	if line_cast:
+		emote_state.start("FishingReel")
+		reel_timer.start()
+		if animation_player.has_animation("Take 001"):
+			animation_player.play("Take 001")
+	else:
+		emote_state.start("FishingCast")
+		line_cast = true
 
-		var is_casting: bool = current_node == "FishingCast"
-		var is_reeling: bool = current_node == "FishingReel"
 
-		if just_equipped:
-			just_equipped = false
-			return
+## Holds the fishing upper-body posture while a rod is equipped.
+func _on_equipment_changed() -> void:
+	player.is_fishing = player.inventory.has_equipment(Equipment.EquipmentType.FISHING_ROD)
+	player.animation_tree.set("parameters/EmoteSpineBlend2/blend_amount", 1.0 if player.is_fishing else 0.0)
+	if player.is_fishing:
+		emote_state.start("FishingIdle")
+	else:
+		reel_timer.stop()
+		line_cast = false
 
-		# Set line_cast once casting animation finishes (was_casting was true, now false)
-		if was_casting and not is_casting:
-			line_cast = true
 
-		# Handle fishing input (cast line if not cast, reel in if line is cast)
-		if Input.is_action_just_pressed(fishing_action):
-			if not line_cast and not is_casting and not is_reeling:
-				emote_state.start("FishingCast")
-			elif line_cast and not is_reeling:
-				emote_state.start("FishingReel")
-				reel_timer = reel_duration
-				if animation_player and animation_player.has_animation("Take 001"):
-					animation_player.play("Take 001")
+## Returns to the fishing posture once any other emote finishes.
+func _on_animation_finished(_animation_name: StringName) -> void:
+	if player.is_fishing and String(emote_state.get_current_node()) not in FISHING_EMOTES:
+		emote_state.start("FishingIdle")
 
-		# Handle reeling duration
-		if is_reeling:
-			reel_timer -= delta
-			if reel_timer <= 0.0:
-				if animation_player and animation_player.is_playing():
-					animation_player.stop()
-				line_cast = false
-				emote_state.start("FishingIdle")
 
-		was_casting = is_casting
-		was_reeling = is_reeling
+func _on_reel_timer_timeout() -> void:
+	animation_player.stop()
+	line_cast = false
+	emote_state.start("FishingIdle")

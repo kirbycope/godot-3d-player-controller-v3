@@ -143,12 +143,13 @@ properties/11/path = NodePath(".:current_driver_peer_id")
 properties/11/spawn = true
 properties/11/replication_mode = 2
 
-[node name="HondaCRV" type="VehicleBody3D" unique_id=863847759]
+[node name="HondaCRV" type="VehicleBody3D" unique_id=863847759 node_paths=PackedStringArray("wheels")]
 mass = 1500.0
 physics_material_override = SubResource("PhysicsMaterial_sbl7x")
 center_of_mass_mode = 1
 center_of_mass = Vector3(0, -0.05, -0.1)
 script = ExtResource("1_sbl7x")
+wheels = [NodePath("VehicleWheel3D"), NodePath("VehicleWheel3D2"), NodePath("VehicleWheel3D3"), NodePath("VehicleWheel3D4")]
 
 [node name="VehicleSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=863847760]
 replication_config = SubResource("SceneReplicationConfig_crv")
@@ -282,31 +283,33 @@ stream = SubResource("AudioStreamRandomizer_klyh2")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 1.5)
 stream = ExtResource("13_wce3k")
 
-[node name="SFXEngineRev" type="AudioStreamPlayer3D" parent="." unique_id=1456449727]
+[node name="EngineSFX" type="Node3D" parent="."]
+
+[node name="SFXEngineRev" type="AudioStreamPlayer3D" parent="EngineSFX" unique_id=1456449727]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 1.5)
 stream = ExtResource("14_wpc8q")
 
-[node name="SFXEngineSlowDownInside" type="AudioStreamPlayer3D" parent="." unique_id=2140769218]
+[node name="SFXEngineSlowDownInside" type="AudioStreamPlayer3D" parent="EngineSFX" unique_id=2140769218]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.7)
 stream = ExtResource("15_cvkma")
 
-[node name="SFXEngineSlowDownOutside" type="AudioStreamPlayer3D" parent="." unique_id=69494700]
+[node name="SFXEngineSlowDownOutside" type="AudioStreamPlayer3D" parent="EngineSFX" unique_id=69494700]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 1.5)
 stream = ExtResource("16_lvbvx")
 
-[node name="SFXEngineSpeedUpInside" type="AudioStreamPlayer3D" parent="." unique_id=566907736]
+[node name="SFXEngineSpeedUpInside" type="AudioStreamPlayer3D" parent="EngineSFX" unique_id=566907736]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.7)
 stream = ExtResource("17_cra3c")
 
-[node name="SFXEngineSpeedUpOutside" type="AudioStreamPlayer3D" parent="." unique_id=793779475]
+[node name="SFXEngineSpeedUpOutside" type="AudioStreamPlayer3D" parent="EngineSFX" unique_id=793779475]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 1.5)
 stream = ExtResource("18_hwq47")
 
-[node name="SFXEngineRunningInside" type="AudioStreamPlayer3D" parent="." unique_id=445465330]
+[node name="SFXEngineRunningInside" type="AudioStreamPlayer3D" parent="EngineSFX" unique_id=445465330]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.7)
 stream = ExtResource("19_nucll")
 
-[node name="SFXEngineRunningOutside" type="AudioStreamPlayer3D" parent="." unique_id=1805820383]
+[node name="SFXEngineRunningOutside" type="AudioStreamPlayer3D" parent="EngineSFX" unique_id=1805820383]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 1.5)
 stream = ExtResource("20_ixk27")
 
@@ -317,3 +320,33 @@ stream = SubResource("AudioStreamRandomizer_gda5q")
 [node name="SFXBreakLong" type="AudioStreamPlayer3D" parent="." unique_id=1387296596]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.5)
 stream = SubResource("AudioStreamRandomizer_j7eey")
+
+[node name="FlippedTimer" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
+
+[node name="FireTimer" type="Timer" parent="."]
+wait_time = 10.0
+one_shot = true
+
+[node name="ScreechTimer" type="Timer" parent="."]
+wait_time = 0.8
+one_shot = true
+
+[node name="LookReturnTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="ClutchTimer" type="Timer" parent="."]
+wait_time = 0.12
+one_shot = true
+
+[node name="ReverseHoldTimer" type="Timer" parent="."]
+wait_time = 0.6
+one_shot = true
+
+[node name="ForwardHoldTimer" type="Timer" parent="."]
+wait_time = 0.6
+one_shot = true
+
+[connection signal="timeout" from="FlippedTimer" to="." method="_on_flipped_timer_timeout"]
+[connection signal="timeout" from="FireTimer" to="." method="_on_fire_timer_timeout"]

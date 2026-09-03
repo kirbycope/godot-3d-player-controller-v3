@@ -11,32 +11,26 @@ func get_station_count() -> int:
 	return stations.size()
 
 
+## Returns the station at `index`, or null when out of range (RadiOtPlayer3D handles wrap-around).
 func get_station_at(index: int) -> RadioStation:
-	if stations.is_empty():
+	if index < 0 or index >= stations.size():
 		return null
-	var clamped_index: int = posmod(index, stations.size())
-	return stations[clamped_index]
+	return stations[index]
 
 
 func find_station_by_call_sign(call_sign: String) -> int:
 	var target_sign: String = call_sign.to_upper().strip_edges()
-	for i in range(stations.size()):
-		var station: RadioStation = stations[i]
-		if station and station.call_sign.to_upper().strip_edges() == target_sign:
+	for i: int in stations.size():
+		if stations[i] != null and stations[i].call_sign.to_upper().strip_edges() == target_sign:
 			return i
 	return -1
 
 
 func find_closest_station_by_frequency(frequency: float) -> int:
-	if stations.is_empty():
-		return -1
-	var closest_index: int = 0
-	var min_diff: float = 999999.0
-	for i in range(stations.size()):
-		var station: RadioStation = stations[i]
-		if station:
-			var diff: float = absf(station.frequency - frequency)
-			if diff < min_diff:
-				min_diff = diff
-				closest_index = i
+	var closest_index: int = -1
+	var min_diff: float = INF
+	for i: int in stations.size():
+		if stations[i] != null and absf(stations[i].frequency - frequency) < min_diff:
+			min_diff = absf(stations[i].frequency - frequency)
+			closest_index = i
 	return closest_index

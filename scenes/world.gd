@@ -9,9 +9,7 @@ const STEAM_LOBBY_TYPE_PUBLIC: int = 2
 @export var max_lobby_players: int = 4
 
 @onready var player: Player = $Player
-@onready var first_buddy: Node3D = get_node_or_null("LittleBuddy") as Node3D
-@onready var radi_ot_player: RadiOtPlayer3D = get_node_or_null("Player/RadiOtPlayer3D") as RadiOtPlayer3D
-var _was_driving: bool = false
+@onready var radi_ot_player: RadiOtPlayer3D = $Player/RadiOtPlayer3D
 
 
 ## Called when the node enters the scene tree for the first time.
@@ -25,137 +23,57 @@ func _ready() -> void:
 
 	_initialize_steam_lobby()
 
-	if radi_ot_player:
-		radi_ot_player.auto_play_on_ready = false
-		radi_ot_player.set_power(false)
-		radi_ot_player.station_changed.connect(_on_radio_station_changed)
-		radi_ot_player.radio_toggled.connect(_on_radio_toggled)
-		var hud = radi_ot_player.get_hud()
-		if hud:
-			hud.hide_hud()
-
-	if first_buddy and player:
-		first_buddy.set("player", player)
+	radi_ot_player.auto_play_on_ready = false
+	radi_ot_player.set_power(false)
+	radi_ot_player.get_hud().hide_hud()
 
 
-## Called every physics frame. 'delta' is the elapsed time since the previous frame.
-func _physics_process(_delta: float) -> void:
-	# Do nothing if not the authority
-	if not is_multiplayer_authority(): return
-
-	var is_actively_driving: bool = (
-		player != null
-		and player.is_driving
-		and not player.is_entering_vehicle
-		and not player.is_exiting_vehicle
-	)
-	if is_actively_driving != _was_driving:
-		_was_driving = is_actively_driving
-		if is_actively_driving:
-			_on_player_started_driving()
-		else:
-			_on_player_stopped_driving()
-
-	# If we're below -40, respawn (teleport to the initial position).
-	if player and not player.is_driving and not player.is_flying:
-		if player.global_position.y < -40.0:
-			_warp(player, player.initial_transform)
-
-	# Check if the "CameraRayCast" is colliding with an object that has a "display_menu" method, and if so, call that method
-	if player.camera.camera_ray_cast.is_colliding():
-		var collider = player.camera.camera_ray_cast.get_collider()
-		if collider:
-			var target = null
-			var current_node = collider
-			while current_node:
-				if current_node.has_method("display_menu"):
-					target = current_node
-					break
-				current_node = current_node.get_parent()
-			
-			if target:
-				if player.camera.looking_at and player.camera.looking_at != target and player.camera.looking_at.has_method("hide_menu"):
-					player.camera.looking_at.hide_menu()
-				target.display_menu(player)
-				player.camera.looking_at = target
-			else:
-				if player.camera.looking_at and player.camera.looking_at.has_method("hide_menu"):
-					player.camera.looking_at.hide_menu()
-				player.camera.looking_at = null
-	else:
-		if player.camera.looking_at and player.camera.looking_at.has_method("hide_menu"):
-			player.camera.looking_at.hide_menu()
-		player.camera.looking_at = null
-
-
-func _on_warp_zone_body_entered(body: Node3D) -> void:
-	var target_marker: Marker3D = $WarpZone/Marker3D as Marker3D
-	_warp(body, target_marker.global_transform)
-
-
-func _on_warp_zone_2_body_entered(body: Node3D) -> void:
-	var target_marker: Marker3D = $WarpZone2/Marker3D as Marker3D
-	_warp(body, target_marker.global_transform)
-
-
-func _on_warp_zone_3_body_entered(body: Node3D) -> void:
-	var target_marker: Marker3D = $WarpZone3/Marker3D as Marker3D
-	_warp(body, target_marker.global_transform)
-
-
-func _on_water_area_3d_body_entered(body: Node3D) -> void:
-	if body is Player:
-		var water_area := get_node_or_null("Pool/WaterArea3D") as Area3D
-		(body as Player).enter_water(water_area)
-
-
-func _on_water_area_3d_body_exited(body: Node3D) -> void:
-	if body is Player:
-		var water_area := get_node_or_null("Pool/WaterArea3D") as Area3D
-		(body as Player).exit_water(water_area)
-
-
-func _warp(body: Node3D, target_transform: Transform3D) -> void:
-	if body is Player:
-		var warp_player: Player = body as Player
-		warp_player.global_transform = target_transform
-		warp_player.velocity = Vector3.ZERO
-		warp_player.up_direction = target_transform.basis.y.normalized()
-		warp_player.orientation = Transform3D(warp_player.global_transform.basis, Vector3.ZERO)
-		warp_player.player_model.transform = warp_player.initial_player_model_transform
-		warp_player.collision_shape.transform = warp_player.initial_collision_shape_transform
-
-
-func _on_player_started_driving() -> void:
-	if radi_ot_player:
+## Powers the car radio and its radial-menu stations while the Player drives.
+func _on_player_state_changed(from_state: int, to_state: int) -> void:
+	if to_state == NodeStateMachine.States.DRIVING:
 		radi_ot_player.set_power(true)
-		var hud = radi_ot_player.get_hud()
-		if hud:
-			hud.show_toast(5.0)
-
-	if player and player.inventory:
-		var radial_menu = player.inventory.get_node_or_null("RadialMenu") as RadialMenu
-		if radial_menu:
-			radial_menu.custom_item_provider = _provide_radio_items
-			radial_menu.custom_item_selected = _on_radio_item_selected
-			radial_menu.custom_item_is_equipped = _is_radio_item_equipped
+		radi_ot_player.get_hud().show_toast(5.0)
+		player.radial_menu.custom_item_provider = _provide_radio_items
+		player.radial_menu.custom_item_selected = _on_radio_item_selected
+		player.radial_menu.custom_item_is_equipped = _is_radio_item_equipped
 		player.inventory.custom_cycle_handler = _on_cycle_radio_station
-
-
-func _on_player_stopped_driving() -> void:
-	if radi_ot_player:
+	elif from_state == NodeStateMachine.States.DRIVING:
 		radi_ot_player.set_power(false)
-		var hud = radi_ot_player.get_hud()
-		if hud:
-			hud.hide_toast()
-
-	if player and player.inventory:
-		var radial_menu = player.inventory.get_node_or_null("RadialMenu") as RadialMenu
-		if radial_menu:
-			radial_menu.custom_item_provider = Callable()
-			radial_menu.custom_item_selected = Callable()
-			radial_menu.custom_item_is_equipped = Callable()
+		radi_ot_player.get_hud().hide_toast()
+		player.radial_menu.custom_item_provider = Callable()
+		player.radial_menu.custom_item_selected = Callable()
+		player.radial_menu.custom_item_is_equipped = Callable()
 		player.inventory.custom_cycle_handler = Callable()
+
+
+func _on_warp_zone_body_entered(body: Node3D, marker_path: NodePath) -> void:
+	if body is Player:
+		(body as Player).warp_to((get_node(marker_path) as Marker3D).global_transform)
+
+
+## Respawns a Player that fell out of the world at their starting position.
+func _on_kill_zone_body_entered(body: Node3D) -> void:
+	if body is Player and not (body as Player).is_driving and not (body as Player).is_flying:
+		(body as Player).warp_to((body as Player).initial_transform)
+
+
+func _on_water_area_3d_body_entered(body: Node3D, water_area_path: NodePath) -> void:
+	var water_area: Area3D = get_node(water_area_path)
+	if body is Player:
+		(body as Player).enter_water(water_area)
+	elif body is FollowerNpc:
+		(body as FollowerNpc).in_water_area = water_area
+	elif body is BeachBall:
+		(body as BeachBall).in_water_area = water_area
+
+
+func _on_water_area_3d_body_exited(body: Node3D, water_area_path: NodePath) -> void:
+	if body is Player:
+		(body as Player).exit_water(get_node(water_area_path) as Area3D)
+	elif body is FollowerNpc:
+		(body as FollowerNpc).in_water_area = null
+	elif body is BeachBall:
+		(body as BeachBall).in_water_area = null
 
 
 func _provide_radio_items() -> Array:
@@ -165,8 +83,8 @@ func _provide_radio_items() -> Array:
 		"display_name": "Radio Off",
 		"icon": RADIO_OFF_ICON
 	})
-	if radi_ot_player and radi_ot_player.station_collection:
-		for i in range(radi_ot_player.station_collection.get_station_count()):
+	if radi_ot_player.station_collection:
+		for i: int in range(radi_ot_player.station_collection.get_station_count()):
 			var station: RadioStation = radi_ot_player.station_collection.get_station_at(i)
 			if station:
 				items.append({
@@ -179,8 +97,6 @@ func _provide_radio_items() -> Array:
 
 
 func _on_radio_item_selected(item: Variant, index: int) -> void:
-	if not radi_ot_player:
-		return
 	if index == 0 or (item is Dictionary and item.get("is_radio_off")):
 		radi_ot_player.set_power(false)
 	elif item is Dictionary and "station_index" in item:
@@ -189,8 +105,6 @@ func _on_radio_item_selected(item: Variant, index: int) -> void:
 
 
 func _is_radio_item_equipped(item: Variant, index: int) -> bool:
-	if not radi_ot_player:
-		return false
 	if index == 0 or (item is Dictionary and item.get("is_radio_off")):
 		return not radi_ot_player.is_power_on()
 	if item is Dictionary and "station_index" in item:
@@ -199,8 +113,6 @@ func _is_radio_item_equipped(item: Variant, index: int) -> bool:
 
 
 func _on_cycle_radio_station(direction: int) -> void:
-	if not radi_ot_player:
-		return
 	if not radi_ot_player.is_power_on():
 		radi_ot_player.set_power(true)
 		return
@@ -211,17 +123,13 @@ func _on_cycle_radio_station(direction: int) -> void:
 
 
 func _on_radio_station_changed(_station: RadioStation) -> void:
-	if radi_ot_player and _was_driving:
-		var hud = radi_ot_player.get_hud()
-		if hud:
-			hud.show_toast(5.0)
+	if player.current_state == NodeStateMachine.States.DRIVING:
+		radi_ot_player.get_hud().show_toast(5.0)
 
 
 func _on_radio_toggled(_is_playing: bool) -> void:
-	if radi_ot_player and _was_driving:
-		var hud = radi_ot_player.get_hud()
-		if hud:
-			hud.show_toast(5.0)
+	if player.current_state == NodeStateMachine.States.DRIVING:
+		radi_ot_player.get_hud().show_toast(5.0)
 
 
 func _initialize_steam_lobby() -> void:
@@ -231,7 +139,7 @@ func _initialize_steam_lobby() -> void:
 	if not steam.isSteamRunning():
 		return
 
-	var steamworks = get_node_or_null("/root/Steamworks")
+	var steamworks: Node = get_node_or_null("/root/Steamworks")
 	var current_lobby_id: int = steamworks.lobby_id if steamworks else 0
 
 	# Only create a lobby if not already in one
@@ -249,7 +157,7 @@ func _on_steam_lobby_created(connect_status: int, lobby_id: int) -> void:
 		return
 	var steam: Object = Engine.get_singleton("Steam")
 	if connect_status == STEAM_RESULT_OK:
-		var steamworks = get_node_or_null("/root/Steamworks")
+		var steamworks: Node = get_node_or_null("/root/Steamworks")
 		if steamworks:
 			steamworks.lobby_id = lobby_id
 		var username: String = steamworks.username if steamworks else "Player"

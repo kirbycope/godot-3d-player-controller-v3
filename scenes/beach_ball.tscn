@@ -39,6 +39,8 @@ material = SubResource("ShaderMaterial_beach")
 [node name="BeachBall" type="RigidBody3D" unique_id=1825606941]
 mass = 0.2
 physics_material_override = SubResource("PhysicsMaterial_beach")
+contact_monitor = true
+max_contacts_reported = 4
 script = ExtResource("1_script")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1726347234]
@@ -50,3 +52,5 @@ shape = SubResource("SphereShape3D_beach")
 [node name="SFX_Impact" type="AudioStreamPlayer3D" parent="." unique_id=969627450]
 stream = ExtResource("3_hupay")
 max_distance = 5.0
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

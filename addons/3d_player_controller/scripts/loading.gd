@@ -37,13 +37,11 @@ var _cached_dependency_count: int = 0
 ## Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	hide()
+	set_process(false)
 
 
-## Called every frame. 'delta' is the elapsed time since the previous frame.
+## Polls the threaded load while a request is in flight (ResourceLoader has no completion signal).
 func _process(_delta: float) -> void:
-	if _scene_path.is_empty():
-		return
-
 	var progress: Array[float] = []
 	var status: ResourceLoader.ThreadLoadStatus = ResourceLoader.load_threaded_get_status(
 			_scene_path,
@@ -62,21 +60,26 @@ func _process(_delta: float) -> void:
 		_append_detail("Loading complete; changing scene to " + _scene_path)
 		var packed_scene: PackedScene = ResourceLoader.load_threaded_get(_scene_path)
 		_scene_path = ""
+		set_process(false)
 		get_tree().change_scene_to_packed(packed_scene)
 	elif status == ResourceLoader.THREAD_LOAD_FAILED or status == ResourceLoader.THREAD_LOAD_INVALID_RESOURCE:
 		_append_detail("Error loading scene: " + _scene_path)
 		push_error("Error loading scene: " + _scene_path)
 		_scene_path = ""
+		set_process(false)
 		hide()
 
 
-## Starts loading a scene from the given file path.
+## Starts loading a scene from the given file path; ignored while another load is in flight.
 func load_scene(path: String) -> void:
 	if path.is_empty():
 		push_error("[Loading] Target scene path is empty.")
 		return
+	if not _scene_path.is_empty():
+		return
 
 	_scene_path = path
+	set_process(true)
 	_last_status = -1
 	_load_started_at_msec = Time.get_ticks_msec()
 	tip.text = tips[randi() % tips.size()]

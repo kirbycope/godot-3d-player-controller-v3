@@ -46,7 +46,7 @@ func clear() -> void:
 
 func _process(delta: float) -> void:
 	# Advance age of existing trail points
-	var idx = 0
+	var idx: int = 0
 	while idx < points.size():
 		point_ages[idx] += delta
 		if point_ages[idx] >= lifetime:
@@ -56,33 +56,27 @@ func _process(delta: float) -> void:
 		else:
 			idx += 1
 
-	var current_pos = global_position
+	var current_pos: Vector3 = global_position
 	# Spawn new point when distance threshold is reached while emitting
 	if emitting:
+		var side_axis: Vector3 = global_transform.basis.x.normalized()
+		if side_axis.is_zero_approx():
+			side_axis = Vector3.RIGHT
 		if points.is_empty():
-			var side_axis = global_transform.basis.x.normalized()
-			if side_axis.is_zero_approx():
-				side_axis = Vector3.RIGHT
 			points.push_front(current_pos)
 			point_ages.push_front(0.0)
 			point_axes.push_front(side_axis)
 			_last_spawn_pos = current_pos
 		else:
-			var dist = (current_pos - _last_spawn_pos).length()
-			var spacing = maxf(min_section_length, 0.005)
+			var dist: float = (current_pos - _last_spawn_pos).length()
+			var spacing: float = maxf(min_section_length, 0.005)
 			if dist >= spacing:
-				var side_axis = global_transform.basis.x.normalized()
-				if side_axis.is_zero_approx():
-					side_axis = Vector3.RIGHT
-				
 				# Sub-step interpolation for high-speed motion
-				var step_dir = (current_pos - _last_spawn_pos) / dist
-				var travel = spacing
-				var last_pos = _last_spawn_pos
-				var count_added = 0
+				var step_dir: Vector3 = (current_pos - _last_spawn_pos) / dist
+				var travel: float = spacing
+				var count_added: int = 0
 				while travel <= dist and count_added < 32:
-					var pt = last_pos + step_dir * travel
-					points.push_front(pt)
+					points.push_front(_last_spawn_pos + step_dir * travel)
 					point_ages.push_front(0.0)
 					point_axes.push_front(side_axis)
 					travel += spacing
@@ -93,13 +87,13 @@ func _process(delta: float) -> void:
 
 
 func _render_mesh() -> void:
-	var imm_mesh = mesh as ImmediateMesh
+	var imm_mesh: ImmediateMesh = mesh as ImmediateMesh
 	if not imm_mesh:
 		return
 
 	imm_mesh.clear_surfaces()
 
-	var count = points.size()
+	var count: int = points.size()
 	if count < 2:
 		return
 
@@ -115,37 +109,36 @@ func _render_mesh() -> void:
 func _draw_strip_pass(imm_mesh: ImmediateMesh, count: int, cam: Camera3D, flip: bool) -> void:
 	imm_mesh.surface_begin(Mesh.PRIMITIVE_TRIANGLE_STRIP)
 
-	for i in range(count):
-		var t = clampf(point_ages[i] / maxf(lifetime, 0.001), 0.0, 1.0)
-		
+	for i: int in range(count):
+		var t: float = clampf(point_ages[i] / maxf(lifetime, 0.001), 0.0, 1.0)
+
 		# Calculate width from curve or linear fade
-		var w_factor = width_curve.sample(t) if width_curve else (1.0 - t)
-		var current_half_w = (width * 0.5) * w_factor
-		
+		var w_factor: float = width_curve.sample(t) if width_curve else (1.0 - t)
+		var current_half_w: float = (width * 0.5) * w_factor
+
 		# Calculate color from gradient or default white alpha fade
-		var col = color_gradient.sample(t) if color_gradient else Color(1.0, 1.0, 1.0, (1.0 - t) * 0.5)
-		
+		var col: Color = color_gradient.sample(t) if color_gradient else Color(1.0, 1.0, 1.0, (1.0 - t) * 0.5)
+
 		var side_dir: Vector3
-		if billboard and cam and is_instance_valid(cam):
-			var to_cam = (cam.global_position - points[i]).normalized()
-			var seg_forward = (points[max(0, i - 1)] - points[min(count - 1, i + 1)]).normalized()
+		if billboard and is_instance_valid(cam):
+			var to_cam: Vector3 = (cam.global_position - points[i]).normalized()
+			var seg_forward: Vector3 = (points[maxi(0, i - 1)] - points[mini(count - 1, i + 1)]).normalized()
 			if seg_forward.is_zero_approx():
 				seg_forward = -global_transform.basis.z
 			side_dir = to_cam.cross(seg_forward).normalized()
 		else:
 			side_dir = point_axes[i]
 
-		var offset = side_dir * current_half_w
-		var local_p1 = to_local(points[i] + offset)
-		var local_p2 = to_local(points[i] - offset)
+		var offset: Vector3 = side_dir * current_half_w
+		var local_p1: Vector3 = to_local(points[i] + offset)
+		var local_p2: Vector3 = to_local(points[i] - offset)
 
-		var uv_y = t
 		imm_mesh.surface_set_color(col)
-		imm_mesh.surface_set_uv(Vector2(0.0, uv_y))
+		imm_mesh.surface_set_uv(Vector2(0.0, t))
 		imm_mesh.surface_add_vertex(local_p2 if flip else local_p1)
 
 		imm_mesh.surface_set_color(col)
-		imm_mesh.surface_set_uv(Vector2(1.0, uv_y))
+		imm_mesh.surface_set_uv(Vector2(1.0, t))
 		imm_mesh.surface_add_vertex(local_p1 if flip else local_p2)
 
 	imm_mesh.surface_end()

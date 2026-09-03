@@ -15,11 +15,12 @@
   - **98.1 FM — KING-FM:** Classical Seattle
   - **101.1 FM — KMGP (Space 101.1 FM):** Indie, Local Seattle, and Eclectic community radio
 - **Urgent Bulletin System (`urgent_bulletin`):** Seamlessly interrupt live radio broadcasts with custom story audio (emergency broadcasts, story alerts, news flashes). When the bulletin finishes, live radio automatically resumes.
-- **Retro-Modern CanvasLayer HUD:** Displays current frequency, call sign, genre, live signal indicator, animated dial bar, keyboard hints, and emergency alert banners.
+- **Retro-Modern CanvasLayer HUD:** Displays current frequency, call sign, genre, live signal indicator, a Tween-animated dial bar, optional key hints (`hint_text`), and emergency alert banners. The panel auto-hides through its `AutoHideTimer` child and fades out with a Tween.
 - **Procedural FM Static:** Realistic white/pink noise static plays seamlessly while buffering or switching between stations.
 - **Dual-Platform Streaming Engine:**
-  - **Steam / Desktop (Forward+):** High-performance chunk-buffered HTTP client with automatic redirect handling (HTTP 301/302/307), MP3 frame-sync alignment, and persistent stream connection management.
-  - **Web (HTML5 / Compatibility):** Native Web Audio API / HTML5 Audio integration with 3D camera-listener distance attenuation and volume tracking.
+  - **Desktop:** `HTTPClient` stream with automatic redirect handling (up to 4 hops), chunks cut on validated MPEG frame headers (version, layer, bitrate and sample-rate fields checked), and two ping-pong `AudioStreamPlayer3D` channels swapped by their `finished` signals. A 10 s Timer (`RadiOtStreamer.STREAM_TIMEOUT_SECONDS`) covers connect, first byte and stalls and reports `stream_playback_failed` when it expires.
+  - **Web (HTML5):** HTML5 Audio element whose volume mirrors the player's attenuation model, refreshed by a 10 Hz Timer and only when the value changes. `auto_play_on_ready` is ignored on web because browsers block autoplay until the page is clicked.
+- **"radio" group:** The player scene is in the `radio` group and exposes `set_volume(linear: float)`, which sets the stream channels, the bulletin player and the node itself. Audio settings menus can call `get_tree().call_group("radio", "set_volume", value)`.
 - **Interactive Demo Keyboard Controls:**
   - `[L]` — Tune to Next Station
   - `[J]` — Tune to Previous Station
@@ -79,10 +80,16 @@ Open and run **`res://addons/radi_ot/scenes/demo/demo.tscn`** to experience live
 
 ### 1. Add to Your Scene
 
-Add a `RadiOtPlayer3D` node to your 3D world, or instantiate the ready-to-use scene:
+Instantiate the player scene in your 3D world (the script requires its children, so a bare `RadiOtPlayer3D` node is not supported):
 
 ```text
 res://addons/radi_ot/scenes/radi_ot_player_3d.tscn
+```
+
+Its children are the `RadiOtStreamer`, the static and bulletin `AudioStreamPlayer3D`s, the `BulletinTimer` and the `RadiOtHUD`; all signals between them are wired in the scene. Set `hint_text` on the HUD from the scene that binds the keys:
+
+```gdscript
+radio.get_hud().hint_text = "[J] Prev Station   [L] Next Station   [M] Power"
 ```
 
 ### 2. Configure & Tune
@@ -161,6 +168,9 @@ Group your stations into a `RadioStationCollection` resource (`.tres`) and assig
 - `urgent_bulletin(stream: AudioStream, text: String, duration: float = 0.0)` — Broadcasts a narrative alert.
 - `cancel_bulletin()` — Cancels the current bulletin and resumes the live station.
 - `get_current_station() -> RadioStation` — Returns the currently tuned `RadioStation` resource.
+- `get_station_count() -> int` — Number of stations in the collection.
+- `get_hud() -> RadiOtHUD` — The HUD child (`show_toast(seconds)`, `hide_toast()`, `hide_hud()`, `hint_text`, `toast_hide`, `toast_hide_seconds`).
+- `set_volume(linear: float)` — Linear volume for the stream channels, the bulletin player and the node (also reachable through the `radio` group).
 
 ### Signals
 
@@ -204,6 +214,7 @@ godot --headless -s addons/gut/gut_cmdln.gd
 - `assets/audio/eleven_labs` — Bulletin voice clips generated with [ElevenLabs](https://elevenlabs.io).
 - `assets/logos` — Station logos are trademarks of the respective stations.
 - `assets/icons` — HUD and editor icons. Source not recorded — fill in.
+- Radio static is generated procedurally by `RadiOtStaticGenerator` (no asset).
 
 ---
 

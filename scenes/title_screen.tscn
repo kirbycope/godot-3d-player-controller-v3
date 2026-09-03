@@ -109,6 +109,10 @@ grow_horizontal = 0
 grow_vertical = 0
 text = "© Timothy Cope 2026"
 
+[connection signal="mouse_entered" from="VBoxContainer/Button_SinglePlayer" to="VBoxContainer/Button_SinglePlayer" method="grab_focus"]
+[connection signal="mouse_entered" from="VBoxContainer/Button_MultiPlayer" to="VBoxContainer/Button_MultiPlayer" method="grab_focus"]
+[connection signal="mouse_entered" from="VBoxContainer/HBoxContainer/Button_Options" to="VBoxContainer/HBoxContainer/Button_Options" method="grab_focus"]
+[connection signal="mouse_entered" from="VBoxContainer/HBoxContainer/Button_Quit" to="VBoxContainer/HBoxContainer/Button_Quit" method="grab_focus"]
 [connection signal="pressed" from="VBoxContainer/Button_SinglePlayer" to="." method="_on_button_single_player_pressed"]
 [connection signal="pressed" from="VBoxContainer/Button_SinglePlayer/TouchScreenButton_SinglePlayer" to="." method="_on_touch_screen_button_single_player_pressed"]
 [connection signal="pressed" from="VBoxContainer/Button_MultiPlayer" to="." method="_on_button_multi_player_pressed"]

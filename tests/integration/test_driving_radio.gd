@@ -33,17 +33,10 @@ class TestDrivingRadio:
 		assert_false(radio.is_power_on(), "Radio should be powered off initially")
 		assert_false(radial_menu.custom_item_provider.is_valid(), "Radial menu should have default item provider initially")
 
-		# While entering vehicle: radio should remain off
-		player.is_driving = true
-		player.is_entering_vehicle = true
-		await wait_physics_frames(2)
-		assert_false(radio.is_power_on(), "Radio should NOT power on while is_entering_vehicle is true")
-
-		# Finished entering vehicle: player is now driving
-		player.is_entering_vehicle = false
+		# Entering the DRIVING state turns the radio on and wires the radial menu
+		player.current_state = NodeStateMachine.States.DRIVING
 		await wait_physics_frames(2)
 
-		# While actively driving: radio turns on, custom item provider is set
 		assert_true(radio.is_power_on(), "Radio should power on when actively driving")
 		assert_true(radial_menu.custom_item_provider.is_valid(), "Radial menu should have custom radio item provider")
 
@@ -52,12 +45,16 @@ class TestDrivingRadio:
 		assert_true(items[0].get("is_radio_off", false), "First item should be Radio Off")
 		assert_eq(items[0].get("display_name"), "Radio Off", "First item display name should be 'Radio Off'")
 
+		# Leaving the DRIVING state hands the radial menu back to the inventory
+		player.current_state = NodeStateMachine.States.STANDING
+		assert_false(radial_menu.custom_item_provider.is_valid(), "Radial menu provider should be cleared after driving")
+
 	func test_radial_menu_select_station_and_radio_off():
 		var player = world_instance.get_node("Player") as Player
 		var radio = world_instance.get_node("Player/RadiOtPlayer3D") as RadiOtPlayer3D
 		var radial_menu = player.inventory.get_node("RadialMenu") as RadialMenu
 
-		player.is_driving = true
+		player.current_state = NodeStateMachine.States.DRIVING
 		await wait_physics_frames(2)
 
 		var items: Array = radial_menu.custom_item_provider.call()
@@ -77,7 +74,7 @@ class TestDrivingRadio:
 		var radio = world_instance.get_node("Player/RadiOtPlayer3D") as RadiOtPlayer3D
 		var radial_menu = player.inventory.get_node("RadialMenu") as RadialMenu
 
-		player.is_driving = true
+		player.current_state = NodeStateMachine.States.DRIVING
 		await wait_physics_frames(2)
 
 		var items: Array = radial_menu.custom_item_provider.call()
@@ -98,7 +95,7 @@ class TestDrivingRadio:
 		var player = world_instance.get_node("Player") as Player
 		var radio = world_instance.get_node("Player/RadiOtPlayer3D") as RadiOtPlayer3D
 
-		player.is_driving = true
+		player.current_state = NodeStateMachine.States.DRIVING
 		await wait_physics_frames(2)
 
 		radio.set_power(true)
@@ -119,22 +116,15 @@ class TestDrivingRadio:
 		var radial_menu = player.inventory.get_node("RadialMenu") as RadialMenu
 
 		# Actively driving
-		player.is_driving = true
-		player.is_entering_vehicle = false
-		player.is_exiting_vehicle = false
+		player.current_state = NodeStateMachine.States.DRIVING
 		await wait_physics_frames(2)
-		assert_true(radio.is_power_on(), "Radio should be on while actively driving")
+		assert_true(radio.is_power_on(), "Radio should be on while driving")
 
-		# Start exiting vehicle
-		player.is_exiting_vehicle = true
+		# Leaving the DRIVING state powers the radio off and restores the weapon menu
+		player.current_state = NodeStateMachine.States.STANDING
 		await wait_physics_frames(2)
-		assert_false(radio.is_power_on(), "Radio should power off immediately when is_exiting_vehicle becomes true")
+		assert_false(radio.is_power_on(), "Radio should power off when the DRIVING state ends")
 		assert_false(radial_menu.custom_item_provider.is_valid(), "Radial menu custom item provider should be cleared")
-
-		# Fully exited driving
-		player.is_driving = false
-		player.is_exiting_vehicle = false
-		await wait_physics_frames(2)
 
 		assert_false(radio.is_power_on(), "Radio should remain off when driving stops")
 		assert_false(radial_menu.custom_item_provider.is_valid(), "Radial menu custom item provider should remain cleared")

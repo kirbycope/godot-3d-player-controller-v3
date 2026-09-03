@@ -22,13 +22,14 @@ func test_lobby_manager_show_and_hide() -> void:
 
 	lobby_manager.show_menu()
 	assert_true(lobby_manager.visible, "show_menu should make lobby manager visible")
+	assert_true(lobby_manager.invite_button.disabled, "Invite should be disabled without an active lobby")
 
 	lobby_manager.hide_menu()
 	assert_false(lobby_manager.visible, "hide_menu should make lobby manager hidden")
 
 
-func test_lobby_player_item_nodes() -> void:
-	var item = LOBBY_PLAYER_ITEM_SCENE.instantiate()
+func test_lobby_player_item_nodes_and_default_avatar() -> void:
+	var item: LobbyPlayerItem = LOBBY_PLAYER_ITEM_SCENE.instantiate()
 	add_child_autofree(item)
 
 	assert_not_null(item.avatar, "Avatar node should exist")
@@ -40,6 +41,11 @@ func test_lobby_player_item_nodes() -> void:
 	assert_not_null(item.achievements_button, "AchievementsButton should exist")
 	assert_not_null(item.promote_button, "PromoteButton should exist")
 	assert_not_null(item.kick_button, "KickButton should exist")
+
+	item.steam_id = 123
+	assert_true(item.avatar.texture.resource_path.ends_with("profile.png"), "The avatar should show the default icon until Steam delivers one")
+	assert_false(item.host_icon.visible, "Without a lobby nobody is host")
+	assert_false(item.kick_button.visible, "Without a lobby nobody can be kicked")
 
 
 func test_lobby_player_item_options_toggle() -> void:

@@ -5,10 +5,10 @@
 class_name BurnableGrass
 extends Node3D
 
-## Interactive, wind-reactive burnable grass patch for WeatherFX and Player Controller.
-## When ignited, it catches fire, burns dynamically with glowing combustion embers,
-## spreads downwind following BotW/TotK gold-standard fire propagation physics,
-## and generates a powerful vertical thermal updraft that launches paragliders skyward.
+## Interactive, wind-reactive burnable grass patch. When ignited it burns with glowing embers,
+## spreads downwind following BotW/TotK fire propagation physics, douses in rain, and drives a
+## vertical thermal updraft that launches paragliders skyward.
+## Node wiring (HitboxArea signals, BurnTimer, SpreadTimer) lives in burnable_grass.tscn.
 
 signal ignited()
 signal extinguished()
@@ -28,9 +28,7 @@ signal burned_out()
 @export var current_burn_progress: float = 0.0 ## 0.0 (healthy) -> 0.5 (burning) -> 1.0 (charred ash).
 
 @export_group("Thermal Updraft")
-@export var enable_thermal_updraft: bool = true ## Creates a vertical lift column for paragliding when burning.
-@export var updraft_height: float = 20.0 ## Height of the thermal lift column in meters.
-@export var updraft_radius: float = 4.5 ## Radius of the thermal lift column in meters.
+@export var enable_thermal_updraft: bool = true ## Activates the ThermalUpdraftArea lift column while burning.
 
 @export_group("Wind-Driven Fire Propagation")
 @export var enable_fire_spread: bool = true ## Propagates fire to neighboring grass along the wind vector.
@@ -41,364 +39,173 @@ signal burned_out()
 
 @export_group("Interaction & Visuals")
 @export var enable_interaction: bool = true
+## Input action that ignites / extinguishes the patch while the player stands in the hitbox.
+@export var ignite_action: StringName = &"action"
 @export var grass_scale: Vector3 = Vector3.ONE
-@export var custom_grass_material: Material = null:
-	set(val):
-		custom_grass_material = val
-		if is_instance_valid(_grass_mesh):
-			_grass_mesh.material_override = custom_grass_material
+@export var custom_grass_material: Material
+@export var weather_fx: WeatherFX
 
-# Internal nodes
-var _fire_vfx_instance: Node3D = null
-var _updraft_vfx_instance: Node3D = null
-var _updraft_area: Area3D = null
-var _action_prompt: Node3D = null
-var _grass_mesh: MeshInstance3D = null
-var _audio_player: AudioStreamPlayer3D = null
-var _burn_timer: float = 0.0
-var _spread_timer: float = 0.0
+@onready var _grass_mesh: MeshInstance3D = $GrassMesh
+@onready var _fire_vfx: Node3D = $FireVFX
+@onready var _updraft_vfx: Node3D = $UpdraftVFX
+@onready var _updraft_area: Area3D = $ThermalUpdraftArea
+@onready var _audio: AudioStreamPlayer3D = $FireAudio
+@onready var _burn_timer: Timer = $BurnTimer
+@onready var _spread_timer: Timer = $SpreadTimer
+## Optional project-specific prompt node shown while the player stands in the hitbox.
+@onready var _action_prompt: Node3D = get_node_or_null(^"ActionPrompt")
+
 var _player_nearby: bool = false
+var _wind_strength: float = WeatherFX.active_wind_strength
+var _wind_direction: Vector3 = WeatherFX.active_wind_direction
+var _is_raining: bool = WeatherFX.active_precipitation_strength > 0.4
 
 
 func _ready() -> void:
-	_setup_components()
-	if auto_ignite and not Engine.is_editor_hint():
+	# Per-instance material so burn_progress does not leak to sibling patches
+	var mat: Material = custom_grass_material if custom_grass_material else _grass_mesh.material_override
+	if mat:
+		_grass_mesh.material_override = mat.duplicate()
+	if Engine.is_editor_hint():
+		_update_burn_state()
+		return
+	if weather_fx == null:
+		weather_fx = get_tree().get_first_node_in_group(&"WeatherFX") as WeatherFX
+	if is_instance_valid(weather_fx):
+		weather_fx.wind_changed.connect(_on_wind_changed)
+		weather_fx.weather_changed.connect(_on_weather_changed)
+		_on_wind_changed(weather_fx.current_wind_strength, weather_fx.wind_direction)
+		_is_raining = weather_fx.is_simulating() and ClimateData.get_precipitation_strength(weather_fx.active_weather) > 0.4
+	if auto_ignite:
 		ignite()
 	else:
 		_update_burn_state()
 
 
-func _setup_components() -> void:
-	# 1. Grass Mesh Clump
-	if not has_node("GrassMesh"):
-		_grass_mesh = MeshInstance3D.new()
-		_grass_mesh.name = "GrassMesh"
-		if ResourceLoader.exists("res://addons/weather_fx/resources/mesh_grass_common_tall.tres"):
-			_grass_mesh.mesh = load("res://addons/weather_fx/resources/mesh_grass_common_tall.tres") as Mesh
-		elif ResourceLoader.exists("res://addons/weather_fx/resources/mesh_grass_wispy_tall.tres"):
-			_grass_mesh.mesh = load("res://addons/weather_fx/resources/mesh_grass_wispy_tall.tres") as Mesh
-		
-		if custom_grass_material != null:
-			_grass_mesh.material_override = custom_grass_material.duplicate()
-		elif ResourceLoader.exists("res://addons/weather_fx/resources/grass_material.tres"):
-			var base_mat = load("res://addons/weather_fx/resources/grass_material.tres") as Material
-			if base_mat:
-				_grass_mesh.material_override = base_mat.duplicate()
-
-		_grass_mesh.scale = grass_scale * 1.5
-		add_child(_grass_mesh)
-	else:
-		_grass_mesh = get_node("GrassMesh") as MeshInstance3D
-		if _grass_mesh.material_override == null:
-			if custom_grass_material != null:
-				_grass_mesh.material_override = custom_grass_material.duplicate()
-			elif ResourceLoader.exists("res://addons/weather_fx/resources/grass_material.tres"):
-				var base_mat = load("res://addons/weather_fx/resources/grass_material.tres") as Material
-				if base_mat:
-					_grass_mesh.material_override = base_mat.duplicate()
-		else:
-			_grass_mesh.material_override = _grass_mesh.material_override.duplicate()
-
-	# 2. Fire VFX Instance
-	if not has_node("FireVFX"):
-		var fire_scene: PackedScene = null
-		if ResourceLoader.exists("res://assets/BinbunVFX/fire_effects/effects/Fire/fire_05.tscn"):
-			fire_scene = load("res://assets/BinbunVFX/fire_effects/effects/Fire/fire_05.tscn") as PackedScene
-		elif ResourceLoader.exists("res://assets/BinbunVFX/fire_effects/effects/Fire/fire_area_01.tscn"):
-			fire_scene = load("res://assets/BinbunVFX/fire_effects/effects/Fire/fire_area_01.tscn") as PackedScene
-		elif ResourceLoader.exists("res://addons/weather_fx/scenes/vfx_flame.tscn"):
-			# Addon-local fallback flame so the addon stays atomic
-			fire_scene = load("res://addons/weather_fx/scenes/vfx_flame.tscn") as PackedScene
-
-		if fire_scene:
-			_fire_vfx_instance = fire_scene.instantiate() as Node3D
-			_fire_vfx_instance.name = "FireVFX"
-			_fire_vfx_instance.scale = Vector3.ONE * 1.2
-			add_child(_fire_vfx_instance)
-	else:
-		_fire_vfx_instance = get_node("FireVFX") as Node3D
-
-	# 3. Updraft VFX Instance
-	if not has_node("UpdraftVFX"):
-		var updraft_scene: PackedScene = null
-		if ResourceLoader.exists("res://addons/weather_fx/assets/vfx/wind/Scenes/VFX_AirFlowUP_strong.tscn"):
-			updraft_scene = load("res://addons/weather_fx/assets/vfx/wind/Scenes/VFX_AirFlowUP_strong.tscn") as PackedScene
-		elif ResourceLoader.exists("res://addons/weather_fx/assets/vfx/wind/Scenes/VFX_AirFlowUP.tscn"):
-			updraft_scene = load("res://addons/weather_fx/assets/vfx/wind/Scenes/VFX_AirFlowUP.tscn") as PackedScene
-
-		if updraft_scene:
-			_updraft_vfx_instance = updraft_scene.instantiate() as Node3D
-			_updraft_vfx_instance.name = "UpdraftVFX"
-			_updraft_vfx_instance.scale = Vector3(updraft_radius * 0.4, updraft_height * 0.1, updraft_radius * 0.4)
-			add_child(_updraft_vfx_instance)
-	else:
-		_updraft_vfx_instance = get_node("UpdraftVFX") as Node3D
-
-	# 4. Thermal Updraft Area3D
-	if not has_node("ThermalUpdraftArea"):
-		_updraft_area = Area3D.new()
-		_updraft_area.name = "ThermalUpdraftArea"
-		_updraft_area.add_to_group("Updraft")
-		_updraft_area.add_to_group("Thermal")
-		_updraft_area.position = Vector3(0.0, updraft_height * 0.5, 0.0)
-
-		var col = CollisionShape3D.new()
-		col.name = "CollisionShape3D"
-		var cyl = CylinderShape3D.new()
-		cyl.height = updraft_height
-		cyl.radius = updraft_radius
-		col.shape = cyl
-		_updraft_area.add_child(col)
-		add_child(_updraft_area)
-	else:
-		_updraft_area = get_node("ThermalUpdraftArea") as Area3D
-
-	# 5. Hitbox / Interaction Area
-	if not has_node("HitboxArea"):
-		var hitbox = Area3D.new()
-		hitbox.name = "HitboxArea"
-		var col = CollisionShape3D.new()
-		var box = BoxShape3D.new()
-		box.size = Vector3(5.0, 3.0, 5.0)
-		col.shape = box
-		col.position = Vector3(0, 1.5, 0)
-		hitbox.add_child(col)
-		hitbox.body_entered.connect(_on_body_entered)
-		hitbox.body_exited.connect(_on_body_exited)
-		hitbox.area_entered.connect(_on_area_entered)
-		add_child(hitbox)
-	else:
-		var hitbox = get_node("HitboxArea") as Area3D
-		if is_instance_valid(hitbox):
-			if not hitbox.body_entered.is_connected(_on_body_entered):
-				hitbox.body_entered.connect(_on_body_entered)
-			if not hitbox.body_exited.is_connected(_on_body_exited):
-				hitbox.body_exited.connect(_on_body_exited)
-			if not hitbox.area_entered.is_connected(_on_area_entered):
-				hitbox.area_entered.connect(_on_area_entered)
-
-	# 6. Action Prompt
-	if not has_node("ActionPrompt"):
-		if ResourceLoader.exists("res://scenes/action_prompt.tscn"):
-			var prompt_scene = load("res://scenes/action_prompt.tscn") as PackedScene
-			if prompt_scene:
-				_action_prompt = prompt_scene.instantiate() as Node3D
-				_action_prompt.name = "ActionPrompt"
-				_action_prompt.position = Vector3(0.0, 2.0, 0.0)
-				_action_prompt.set("message_begin", "Press")
-				_action_prompt.set("message_end", "to ignite grass")
-				_action_prompt.hide()
-				add_child(_action_prompt)
-	else:
-		_action_prompt = get_node("ActionPrompt") as Node3D
-
-	# 7. Audio Player
-	if not has_node("FireAudio"):
-		_audio_player = AudioStreamPlayer3D.new()
-		_audio_player.name = "FireAudio"
-		_audio_player.unit_size = 8.0
-		_audio_player.max_distance = 25.0
-		if ResourceLoader.exists("res://addons/weather_fx/assets/audio/gravitysound/Weather Sound Pack/Wind/heavy wind.ogg"):
-			_audio_player.stream = load("res://addons/weather_fx/assets/audio/gravitysound/Weather Sound Pack/Wind/heavy wind.ogg") as AudioStream
-		add_child(_audio_player)
-	else:
-		_audio_player = get_node("FireAudio") as AudioStreamPlayer3D
-
-
-func _process(delta: float) -> void:
-	if Engine.is_editor_hint():
-		return
-
-	# Douse fire if it starts raining/storming
-	if rain_extinguish_enabled and is_burning:
-		var precip = WeatherFX.get_precipitation_strength()
-		if precip > 0.4:
-			extinguish()
-			return
-
-	if is_burning:
-		if burn_duration > 0.0:
-			_burn_timer += delta
-			current_burn_progress = clampf(_burn_timer / burn_duration, 0.0, 1.0)
-			if _burn_timer >= burn_duration:
-				burn_out()
-				return
-		else:
-			current_burn_progress = 0.5
-
-		_update_shader_burn_progress()
-
-		if enable_fire_spread:
-			_spread_timer += delta
-			if _spread_timer >= spread_interval:
-				_spread_timer = 0.0
-				spread_to_neighbors()
-	elif is_charred:
-		current_burn_progress = 1.0
-		_update_shader_burn_progress()
-	else:
-		current_burn_progress = 0.0
-		_update_shader_burn_progress()
+## Only runs while burning with a finite burn_duration: animates the charring shader parameter.
+func _process(_delta: float) -> void:
+	current_burn_progress = 1.0 - _burn_timer.time_left / burn_duration
+	_update_shader_burn_progress()
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not enable_interaction or not _player_nearby or is_charred:
+	if not enable_interaction or not _player_nearby or is_charred or not InputMap.has_action(ignite_action):
 		return
-
-	if event.is_action_pressed("action") and not event.is_echo():
-		if not is_burning:
-			ignite()
-		else:
+	if event.is_action_pressed(ignite_action) and not event.is_echo():
+		if is_burning:
 			extinguish()
+		else:
+			ignite()
 		get_viewport().set_input_as_handled()
 
 
-## Ignites this grass patch into roaring fire and activates thermal updraft.
+func _on_wind_changed(strength: float, direction: Vector3) -> void:
+	_wind_strength = strength
+	_wind_direction = direction
+
+
+func _on_weather_changed(new_weather: ClimateData.WeatherType, _old_weather: ClimateData.WeatherType) -> void:
+	_is_raining = ClimateData.get_precipitation_strength(new_weather) > 0.4
+	if rain_extinguish_enabled and _is_raining:
+		extinguish()
+
+
+## Ignites this grass patch, activates the thermal updraft and hands field-wide creeping
+## propagation to the first overlapping GrassField so there is a single creeper engine.
 func ignite() -> void:
-	if is_burning or is_charred:
+	if is_burning or is_charred or (rain_extinguish_enabled and _is_raining):
 		return
-	is_burning = true
-	_burn_timer = 0.0
-	_spread_timer = 0.0
 	current_burn_progress = 0.1
-	_update_burn_state()
-	_delegate_to_grass_fields()
-	emit_signal("ignited")
-
-
-## Hands field-wide creeping propagation to any overlapping GrassField so there is a single creeper engine.
-func _delegate_to_grass_fields() -> void:
-	if Engine.is_editor_hint() or not is_inside_tree():
-		return
-	var tree: SceneTree = get_tree()
-	if tree == null:
-		return
-	for field in tree.get_nodes_in_group("GrassField"):
-		if field.has_method("ignite_at"):
-			if field.ignite_at(global_position, spread_radius, burn_duration if burn_duration > 0.0 else 6.0):
-				break
+	is_burning = true
+	for field: Node in get_tree().get_nodes_in_group(&"GrassField"):
+		if field is GrassField and (field as GrassField).ignite_at(global_position, spread_radius, burn_duration if burn_duration > 0.0 else 6.0):
+			break
+	ignited.emit()
 
 
 ## Extinguishes the fire safely.
 func extinguish() -> void:
 	if not is_burning:
 		return
-	is_burning = false
 	current_burn_progress = 0.0
-	_update_burn_state()
-	emit_signal("extinguished")
+	is_burning = false
+	extinguished.emit()
 
 
 ## Triggered when grass has burned for full duration into charred ash.
 func burn_out() -> void:
-	is_burning = false
 	is_charred = true
 	current_burn_progress = 1.0
+	is_burning = false
 	_update_burn_state()
-	emit_signal("burned_out")
+	burned_out.emit()
 
 
-## Propagates fire to neighboring BurnableGrass patches along the active wind vector.
-## Follows BotW/TotK gold-standard directional wildfire propagation physics.
+## Propagates fire to neighboring BurnableGrass patches along the active wind vector
+## (BotW/TotK gold-standard directional wildfire propagation). Driven by SpreadTimer.
 func spread_to_neighbors() -> void:
 	if not is_inside_tree():
 		return
-	var tree = get_tree()
-	if tree == null:
-		return
-
-	var wind_dir = WeatherFX.get_wind_direction()
-	var wind_strength = WeatherFX.get_wind_strength()
-	var h_wind = Vector2(wind_dir.x, wind_dir.z)
-	var has_wind = h_wind.length_squared() > 0.001
+	var h_wind: Vector2 = Vector2(_wind_direction.x, _wind_direction.z)
+	var has_wind: bool = h_wind.length_squared() > 0.001
 	if has_wind:
 		h_wind = h_wind.normalized()
-
-	for node in tree.get_nodes_in_group("BurnableGrass"):
-		if node is BurnableGrass and node != self and not node.is_burning and not node.is_charred:
-			var delta_pos: Vector3 = node.global_position - global_position
-			var h_delta = Vector2(delta_pos.x, delta_pos.z)
-			var dist = h_delta.length()
-			if dist < 0.001:
-				continue
-
-			var h_dir: Vector2 = h_delta / dist
-			var wind_align: float = h_dir.dot(h_wind) if has_wind else 0.0
-
-			# BotW decomp standard: downwind fire propagation boost, upwind suppression
-			var effective_spread_radius: float = spread_radius * WeatherFX.get_wind_spread_factor(wind_align, wind_strength, wind_spread_multiplier)
-
-			if dist <= effective_spread_radius:
-				node.ignite()
+	for node: Node in get_tree().get_nodes_in_group(&"BurnableGrass"):
+		var other: BurnableGrass = node as BurnableGrass
+		if other == null or other == self or other.is_burning or other.is_charred:
+			continue
+		var delta_pos: Vector3 = other.global_position - global_position
+		var h_delta: Vector2 = Vector2(delta_pos.x, delta_pos.z)
+		var dist: float = h_delta.length()
+		if dist < 0.001:
+			continue
+		var wind_align: float = (h_delta / dist).dot(h_wind) if has_wind else 0.0
+		# BotW decomp standard: downwind fire propagation boost, upwind suppression
+		if dist <= spread_radius * WeatherFX.get_wind_spread_factor(wind_align, _wind_strength, wind_spread_multiplier):
+			other.ignite()
 
 
 func _update_shader_burn_progress() -> void:
-	if is_instance_valid(_grass_mesh) and _grass_mesh.material_override is ShaderMaterial:
-		var smat: ShaderMaterial = _grass_mesh.material_override as ShaderMaterial
-		smat.set_shader_parameter("burn_progress", current_burn_progress)
+	var shader_mat: ShaderMaterial = _grass_mesh.material_override as ShaderMaterial
+	if shader_mat:
+		shader_mat.set_shader_parameter(&"burn_progress", current_burn_progress)
 
 
 func _update_burn_state() -> void:
-	# Fire VFX
-	if is_instance_valid(_fire_vfx_instance):
-		_fire_vfx_instance.visible = is_burning
-		if _fire_vfx_instance.has_method("play") and _fire_vfx_instance.has_method("stop"):
-			if is_burning:
-				_fire_vfx_instance.call("play")
-			else:
-				_fire_vfx_instance.call("stop")
-		if "emitting" in _fire_vfx_instance:
-			_fire_vfx_instance.set("emitting", is_burning)
-		for p in _fire_vfx_instance.find_children("*", "GPUParticles3D", true, false):
-			if p is GPUParticles3D:
-				p.emitting = is_burning
-				p.visible = is_burning
-		for m in _fire_vfx_instance.find_children("*", "MeshInstance3D", true, false):
-			if m is MeshInstance3D and m.is_in_group("effect_mesh"):
-				m.visible = is_burning
-
-	# Updraft VFX & Area
-	if is_instance_valid(_updraft_vfx_instance):
-		_updraft_vfx_instance.visible = is_burning and enable_thermal_updraft
-		for p in _updraft_vfx_instance.find_children("*", "GPUParticles3D", true, false):
-			if p is GPUParticles3D:
-				p.emitting = is_burning and enable_thermal_updraft
-
-	if is_instance_valid(_updraft_area):
-		_updraft_area.monitoring = is_burning and enable_thermal_updraft
-		_updraft_area.monitorable = is_burning and enable_thermal_updraft
-
-	# Audio
-	if is_instance_valid(_audio_player):
-		if is_burning and not _audio_player.playing:
-			_audio_player.play()
-		elif not is_burning and _audio_player.playing:
-			_audio_player.stop()
-
-	# Action Prompt Text
+	var updraft_on: bool = is_burning and enable_thermal_updraft
+	_fire_vfx.visible = is_burning
+	for particles: GPUParticles3D in _fire_vfx.find_children("*", "GPUParticles3D", true, false):
+		particles.emitting = is_burning
+	_updraft_vfx.visible = updraft_on
+	for particles: GPUParticles3D in _updraft_vfx.find_children("*", "GPUParticles3D", true, false):
+		particles.emitting = updraft_on
+	_updraft_area.set_deferred(&"monitoring", updraft_on) # may run inside an Area3D signal (e.g. HitboxArea or WeatherZone)
+	_updraft_area.set_deferred(&"monitorable", updraft_on)
+	if _audio.playing != is_burning:
+		_audio.playing = is_burning
 	if is_instance_valid(_action_prompt):
-		if is_charred:
-			_action_prompt.hide()
-		elif is_burning:
-			_action_prompt.set("message_end", "to extinguish fire")
-		else:
-			_action_prompt.set("message_end", "to ignite grass")
-
-	# Grass visual state & material charring
-	if is_instance_valid(_grass_mesh):
-		if is_charred:
-			_grass_mesh.scale = grass_scale * 0.6
-		else:
-			_grass_mesh.scale = grass_scale * 1.5
-
+		_action_prompt.visible = _player_nearby and enable_interaction and not is_charred
+		_action_prompt.set(&"message_end", "to extinguish fire" if is_burning else "to ignite grass")
+	_grass_mesh.scale = grass_scale * (0.6 if is_charred else 1.5)
+	if is_burning:
+		if burn_duration > 0.0 and _burn_timer.is_stopped():
+			_burn_timer.start(burn_duration)
+		if enable_fire_spread and _spread_timer.is_stopped():
+			_spread_timer.start(spread_interval)
+		if burn_duration <= 0.0:
+			current_burn_progress = 0.5
+	else:
+		_burn_timer.stop()
+		_spread_timer.stop()
+	set_process(is_burning and burn_duration > 0.0)
 	_update_shader_burn_progress()
 
 
 func _on_body_entered(body: Node3D) -> void:
 	if WeatherFX.is_player_node(body):
 		_player_nearby = true
-		if enable_interaction and is_instance_valid(_action_prompt) and not is_charred:
-			_action_prompt.show()
+		if is_instance_valid(_action_prompt):
+			_action_prompt.visible = enable_interaction and not is_charred
 
 
 func _on_body_exited(body: Node3D) -> void:
@@ -409,10 +216,5 @@ func _on_body_exited(body: Node3D) -> void:
 
 
 func _on_area_entered(area: Area3D) -> void:
-	if area == _updraft_area or area.get_parent() == self:
-		return
-	if area.name.begins_with("HitboxArea") or area.name.begins_with("ThermalUpdraftArea"):
-		return
-	var a_name = area.name.to_lower()
-	if area.is_in_group("Fire") or "fire" in a_name or "flame" in a_name or "explosion" in a_name:
+	if area.is_in_group(&"Fire"):
 		ignite()

@@ -58,6 +58,7 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="Control"]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -88,12 +89,14 @@ layout_mode = 2
 theme_override_constants/separation = 8
 
 [node name="LogoTextureRect" type="TextureRect" parent="Control/PanelContainer/MarginContainer/VBoxContainer/HeaderHBox"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 expand_mode = 1
 stretch_mode = 5
 
 [node name="StationNameLabel" type="Label" parent="Control/PanelContainer/MarginContainer/VBoxContainer/HeaderHBox"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.95, 0.98, 0.96, 1)
@@ -101,12 +104,14 @@ theme_override_font_sizes/font_size = 17
 text = "KEXP - KEXP 90.3 FM"
 
 [node name="FrequencyLabel" type="Label" parent="Control/PanelContainer/MarginContainer/VBoxContainer/HeaderHBox"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.3, 0.9, 0.6, 1)
 theme_override_font_sizes/font_size = 17
 text = "90.3 MHz"
 
 [node name="StatusBadge" type="HBoxContainer" parent="Control/PanelContainer/MarginContainer/VBoxContainer/HeaderHBox"]
+unique_name_in_owner = true
 modulate = Color(0.2, 1, 0.5, 1)
 layout_mode = 2
 theme_override_constants/separation = 4
@@ -121,17 +126,20 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="StatusLabel" type="Label" parent="Control/PanelContainer/MarginContainer/VBoxContainer/HeaderHBox/StatusBadge"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 13
 text = "ON AIR"
 
 [node name="TaglineLabel" type="Label" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.75, 0.85, 0.8, 1)
 theme_override_font_sizes/font_size = 12
 text = "Where the Music Matters"
 
 [node name="GenreLabel" type="Label" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.4, 0.7, 0.55, 1)
 theme_override_font_sizes/font_size = 11
@@ -148,6 +156,7 @@ theme_override_font_sizes/font_size = 10
 text = "88.0"
 
 [node name="DialProgressBar" type="ProgressBar" parent="Control/PanelContainer/MarginContainer/VBoxContainer/DialContainer"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -167,13 +176,15 @@ theme_override_font_sizes/font_size = 10
 text = "108.0"
 
 [node name="HintLabel" type="Label" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
 layout_mode = 2
 theme_override_colors/font_color = Color(0.5, 0.6, 0.55, 1)
 theme_override_font_sizes/font_size = 11
-text = "[J] Prev Station   [L] Next Station   [M] Power"
 horizontal_alignment = 1
 
 [node name="BulletinBanner" type="PanelContainer" parent="Control"]
+unique_name_in_owner = true
 visible = false
 layout_mode = 1
 anchors_preset = 5
@@ -198,9 +209,16 @@ layout_mode = 2
 theme_override_constants/separation = 12
 
 [node name="BulletinLabel" type="Label" parent="Control/BulletinBanner/MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 14
 text = "[EMERGENCY SEATTLE BROADCAST] Breaking news story in progress..."
 autowrap_mode = 3
+
+[node name="AutoHideTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+one_shot = true
+
+[connection signal="timeout" from="AutoHideTimer" to="." method="_on_auto_hide_timer_timeout"]

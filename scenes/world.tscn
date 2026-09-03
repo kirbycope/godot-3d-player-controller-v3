@@ -53,15 +53,15 @@
 [ext_resource type="PackedScene" uid="uid://bsuh86cuoff0k" path="res://scenes/guy_number_one.tscn" id="50_7b7y8"]
 [ext_resource type="Texture2D" uid="uid://byprefppdk7bt" path="res://assets/sketchfab/bowling_pin/Dimensions-Sports-Bowling-Ten-Pin-Pin.svg" id="51_wui3h"]
 [ext_resource type="PackedScene" uid="uid://clhihxvn4uh1b" path="res://scenes/bowling_pin.tscn" id="52_qetcs"]
-[ext_resource type="Script" uid="uid://cw6owek74g7hc" path="res://scenes/push_buttton.gd" id="53_gw1vw"]
+[ext_resource type="Script" uid="uid://cw6owek74g7hc" path="res://scenes/push_button.gd" id="53_gw1vw"]
 [ext_resource type="PackedScene" uid="uid://b72r5jskemotf" path="res://scenes/honda_crv.tscn" id="54_5hglh"]
 [ext_resource type="PackedScene" uid="uid://ci146l3tivu1p" path="res://scenes/duck.tscn" id="54_xiw03"]
 [ext_resource type="Script" uid="uid://b5icexjxoi6mg" path="res://addons/date_and_time/scripts/date_and_time.gd" id="55_dt"]
 [ext_resource type="PackedScene" uid="uid://do6j5qhjt8bsf" path="res://addons/weather_fx/scenes/weather_fx.tscn" id="56_wfx"]
 [ext_resource type="Script" uid="uid://bhmeif0ssxubk" path="res://addons/weather_fx/scripts/weather_zone.gd" id="57_wzone"]
-[ext_resource type="Script" uid="uid://cxw0x2g3wc150" path="res://addons/date_and_time/scripts/date_and_time_display.gd" id="58_dtdisplay"]
-[ext_resource type="Script" uid="uid://hf7o6rfms5xs" path="res://addons/weather_fx/scripts/weather_forecast_display.gd" id="59_wfdisplay"]
-[ext_resource type="Script" uid="uid://c066077ej7yf8" path="res://addons/weather_fx/scripts/temperature_gauge_display.gd" id="60_tgdisplay"]
+[ext_resource type="PackedScene" path="res://addons/date_and_time/scenes/date_and_time_display.tscn" id="58_dtdisplay"]
+[ext_resource type="PackedScene" path="res://addons/weather_fx/scenes/weather_forecast_display.tscn" id="59_wfdisplay"]
+[ext_resource type="PackedScene" path="res://addons/weather_fx/scenes/temperature_gauge_display.tscn" id="60_tgdisplay"]
 [ext_resource type="PackedScene" uid="uid://decgf2x3tagdu" path="res://addons/weather_fx/scenes/grass_field.tscn" id="61_grassfield"]
 [ext_resource type="Material" uid="uid://dnb46gq1n57a5" path="res://addons/weather_fx/resources/grass_material.tres" id="62_grassmat"]
 [ext_resource type="PackedScene" path="res://scenes/torch.tscn" id="63_torch"]
@@ -506,29 +506,8 @@ size = Vector3(40, 20, 40)
 [sub_resource type="BoxShape3D" id="BoxShape3D_desert_zone"]
 size = Vector3(40, 20, 40)
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pq8jk"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q57r8"]
-content_margin_left = 0.0
-content_margin_top = 4.0
-content_margin_right = 0.0
-content_margin_bottom = 4.0
-bg_color = Color(0.1, 0.1, 0.1, 0.6)
-corner_radius_top_left = 24
-corner_radius_top_right = 24
-corner_radius_bottom_right = 24
-corner_radius_bottom_left = 24
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4kmvx"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-bg_color = Color(0.1, 0.1, 0.1, 0.6)
-corner_radius_top_left = 24
-corner_radius_top_right = 24
-corner_radius_bottom_right = 24
-corner_radius_bottom_left = 24
+[sub_resource type="BoxShape3D" id="BoxShape3D_killzone"]
+size = Vector3(2000, 20, 2000)
 
 [node name="World" type="Node3D" unique_id=336392758]
 script = ExtResource("1_5hglh")
@@ -634,13 +613,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.949999, 3.3, 0)
 use_collision = true
 size = Vector3(0.1, 6.5, 15.8)
 material = SubResource("StandardMaterial3D_c3ehd")
-
-[node name="PlayerDetection" type="Area3D" parent="NavigationRegion3D/Pool" unique_id=320977462 groups=["WATER"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.099999905, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/Pool/PlayerDetection" unique_id=1235206536]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.3, 0)
-shape = SubResource("BoxShape3D_hxkk4")
 
 [node name="Stairs" type="Node3D" parent="NavigationRegion3D" unique_id=1061546804]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0, -2.5)
@@ -1000,7 +972,8 @@ connector_scene = "uid://cp8l5m7auhh4p"
 
 [node name="RadiOtPlayer3D" parent="Player" unique_id=968257921 instance=ExtResource("9_mvg0v")]
 
-[node name="LittleBuddy" parent="." unique_id=174060025 instance=ExtResource("9_5hl1e")]
+[node name="LittleBuddy" parent="." unique_id=174060025 node_paths=PackedStringArray("player") instance=ExtResource("9_5hl1e")]
+player = NodePath("../Player")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 2)
 
 [node name="JustCreate3D" type="Node3D" parent="." unique_id=647333121]
@@ -1429,7 +1402,7 @@ use_collision = true
 [node name="BeachBall" parent="." unique_id=1694960044 instance=ExtResource("49_mu18u")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -4)
 
-[node name="GuyNumberOne" parent="." unique_id=1077715446 groups=["Target"] instance=ExtResource("50_7b7y8")]
+[node name="GuyNumberOne" parent="." unique_id=1077715446 groups=["Focusable"] instance=ExtResource("50_7b7y8")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3)
 
 [node name="BowlingAlley" type="Node3D" parent="." unique_id=1646603174]
@@ -1470,32 +1443,33 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.4250011, 0, -2.8000002)
 [node name="BowlingPin10" parent="BowlingAlley" unique_id=1034166867 instance=ExtResource("52_qetcs")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.05, 0, -2.8)
 
-[node name="PushButtton" type="StaticBody3D" parent="." unique_id=1589196424]
+[node name="PushButton" type="StaticBody3D" parent="." unique_id=1589196424]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -2, 0.4, 2)
 script = ExtResource("53_gw1vw")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="PushButtton" unique_id=958608677]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="PushButton" unique_id=958608677]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.20000002, 0)
 mesh = SubResource("BoxMesh_5xw05")
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="PushButtton" unique_id=44354960]
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="PushButton" unique_id=44354960]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
 mesh = SubResource("CylinderMesh_cth4h")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="PushButtton" unique_id=1073553450]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PushButton" unique_id=1073553450]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.9802322e-08, 0.20000002, 0)
 shape = SubResource("BoxShape3D_5xw05")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="PushButtton" unique_id=652363871]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="PushButton" unique_id=652363871]
 libraries/ = SubResource("AnimationLibrary_0loja")
 
-[node name="ActionPrompt" parent="PushButtton" unique_id=2090560719 instance=ExtResource("13_4kmvx")]
+[node name="ActionPrompt" parent="PushButton" unique_id=2090560719 instance=ExtResource("13_4kmvx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.1, 1.1, 0)
 
-[node name="IKTarget" type="Marker3D" parent="PushButtton" unique_id=1423986701]
+[node name="IKTarget" type="Marker3D" parent="PushButton" unique_id=1423986701]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92, 0)
 
-[node name="Duck" parent="." unique_id=875613134 instance=ExtResource("54_xiw03")]
+[node name="Duck" parent="." unique_id=875613134 node_paths=PackedStringArray("player") instance=ExtResource("54_xiw03")]
+player = NodePath("../Player")
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -18, 0, -15)
 
 [node name="HondaCRV" parent="." unique_id=863847759 instance=ExtResource("54_5hglh")]
@@ -1510,7 +1484,6 @@ day = 3
 date_and_time_node = NodePath("../DateAndTime")
 manual_time_of_day = 12.0
 target_node = NodePath("../Player")
-initial_weather = 0
 
 [node name="Zones" type="Node3D" parent="." unique_id=98712303]
 
@@ -1553,48 +1526,46 @@ offset_bottom = -16.0
 grow_horizontal = 0
 grow_vertical = 0
 
-[node name="DateAndTimeDisplay" type="PanelContainer" parent="HUD/BottomRight" unique_id=98712313 node_paths=PackedStringArray("date_and_time_node")]
+[node name="DateAndTimeDisplay" parent="HUD/BottomRight" unique_id=98712313 node_paths=PackedStringArray("date_and_time_node") instance=ExtResource("58_dtdisplay")]
 layout_mode = 0
 offset_top = -38.0
 offset_right = 48.0
-theme_override_styles/panel = SubResource("StyleBoxEmpty_pq8jk")
-script = ExtResource("58_dtdisplay")
+offset_bottom = 0.0
 date_and_time_node = NodePath("../../../DateAndTime")
 
-[node name="WeatherForecastDisplay" type="PanelContainer" parent="HUD/BottomRight" unique_id=98712314 node_paths=PackedStringArray("weather_fx_node")]
-clip_contents = true
+[node name="WeatherForecastDisplay" parent="HUD/BottomRight" unique_id=98712314 node_paths=PackedStringArray("weather_fx") instance=ExtResource("59_wfdisplay")]
 layout_mode = 0
 offset_right = 110.0
 offset_bottom = 36.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_q57r8")
-script = ExtResource("59_wfdisplay")
-weather_fx_node = NodePath("../../../WeatherFX")
+weather_fx = NodePath("../../../WeatherFX")
 temperature_unit = 1
 
-[node name="TemperatureGaugeDisplay" type="Button" parent="HUD/BottomRight" unique_id=98712312 node_paths=PackedStringArray("weather_fx_node")]
-custom_minimum_size = Vector2(36, 36)
+[node name="TemperatureGaugeDisplay" parent="HUD/BottomRight" unique_id=98712312 node_paths=PackedStringArray("weather_fx") instance=ExtResource("60_tgdisplay")]
 layout_mode = 0
 offset_left = 100.0
 offset_top = -36.0
 offset_right = 136.0
-mouse_filter = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_4kmvx")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_4kmvx")
-theme_override_styles/hover = SubResource("StyleBoxFlat_4kmvx")
-theme_override_styles/disabled = SubResource("StyleBoxFlat_4kmvx")
-theme_override_styles/focus = SubResource("StyleBoxFlat_4kmvx")
-flat = true
-script = ExtResource("60_tgdisplay")
-weather_fx_node = NodePath("../../../WeatherFX")
+offset_bottom = 0.0
+weather_fx = NodePath("../../../WeatherFX")
 
 [node name="Torch" parent="." unique_id=987654321 instance=ExtResource("63_torch")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 5)
 
-[connection signal="body_entered" from="WarpZone" to="." method="_on_warp_zone_body_entered"]
-[connection signal="body_entered" from="WarpZone2" to="." method="_on_warp_zone_2_body_entered"]
-[connection signal="body_entered" from="WarpZone3" to="." method="_on_warp_zone_3_body_entered"]
-[connection signal="body_entered" from="Pool/WaterArea3D" to="." method="_on_water_area_3d_body_entered"]
-[connection signal="body_exited" from="Pool/WaterArea3D" to="." method="_on_water_area_3d_body_exited"]
+[node name="KillZone" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -50, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="KillZone"]
+shape = SubResource("BoxShape3D_killzone")
+
+[connection signal="state_changed" from="Player" to="." method="_on_player_state_changed"]
+[connection signal="radio_toggled" from="Player/RadiOtPlayer3D" to="." method="_on_radio_toggled"]
+[connection signal="station_changed" from="Player/RadiOtPlayer3D" to="." method="_on_radio_station_changed"]
+[connection signal="body_entered" from="WarpZone" to="." method="_on_warp_zone_body_entered" binds= [NodePath("WarpZone/Marker3D")]]
+[connection signal="body_entered" from="WarpZone2" to="." method="_on_warp_zone_body_entered" binds= [NodePath("WarpZone2/Marker3D")]]
+[connection signal="body_entered" from="WarpZone3" to="." method="_on_warp_zone_body_entered" binds= [NodePath("WarpZone3/Marker3D")]]
+[connection signal="body_entered" from="Pool/WaterArea3D" to="." method="_on_water_area_3d_body_entered" binds= [NodePath("Pool/WaterArea3D")]]
+[connection signal="body_exited" from="Pool/WaterArea3D" to="." method="_on_water_area_3d_body_exited" binds= [NodePath("Pool/WaterArea3D")]]
+[connection signal="body_entered" from="KillZone" to="." method="_on_kill_zone_body_entered"]
 
 [editable path="Player"]
 [editable path="Player/PlayerModel"]

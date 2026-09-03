@@ -220,7 +220,7 @@ func test_continuous_collision_quack_suppressed() -> void:
 
 	# First impact: move into wall
 	duck.audio_stream_player_3d.stop()
-	duck._collision_quack_time = 0.0
+	duck.collision_quack_cooldown.stop()
 	for i in range(30):
 		duck.call("_move_with_control", Vector3(0.0, 0.0, -4.0))
 		if duck.get_slide_collision_count() > 0:
@@ -230,7 +230,7 @@ func test_continuous_collision_quack_suppressed() -> void:
 
 	# Second frame while still stuck against the wall - audio should not trigger again
 	duck.audio_stream_player_3d.stop()
-	duck._collision_quack_time = 0.0
+	duck.collision_quack_cooldown.stop()
 	duck.call("_move_with_control", Vector3(0.0, 0.0, -4.0))
 	assert_false(duck.audio_stream_player_3d.playing)
 

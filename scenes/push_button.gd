@@ -14,10 +14,9 @@ signal button_pushed ## Emitted when the button is pressed down.
 
 var has_pressed: bool = false
 var is_pushing: bool = false
-var menu_displayed: bool = false
 var player: Player
 
-@onready var action_prompt: Node3D = $ActionPrompt
+@onready var action_prompt: ActionPrompt = $ActionPrompt
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var ik_target: Marker3D = $IKTarget
 
@@ -97,29 +96,14 @@ func stop_push() -> void:
 		player.right_hand_ik.set_target_node(0, NodePath(""))
 
 
+## Called by [Camera] while the player looks at the button.
 func display_menu(_player: Player) -> void:
 	if is_pushing:
 		return
 	player = _player
-	if action_prompt:
-		action_prompt.show()
-		action_prompt.update_text()
-		action_prompt.get_node("KeyboardMouse").hide()
-		action_prompt.get_node("Microsoft").hide()
-		action_prompt.get_node("Nintendo").hide()
-		action_prompt.get_node("Sony").hide()
-		if player.controls.current_input_type == player.controls.InputType.KEYBOARD_MOUSE:
-			action_prompt.get_node("KeyboardMouse").show()
-		elif player.controls.current_input_type == player.controls.InputType.MICROSOFT:
-			action_prompt.get_node("Microsoft").show()
-		elif player.controls.current_input_type == player.controls.InputType.NINTENDO:
-			action_prompt.get_node("Nintendo").show()
-		elif player.controls.current_input_type == player.controls.InputType.SONY:
-			action_prompt.get_node("Sony").show()
-	menu_displayed = true
+	action_prompt.show_for(player)
 
 
+## Called by [Camera] when the player looks away from the button.
 func hide_menu() -> void:
-	if action_prompt:
-		action_prompt.hide()
-	menu_displayed = false
+	action_prompt.hide()

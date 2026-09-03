@@ -51,9 +51,6 @@
 [ext_resource type="AudioStream" uid="uid://mee1jxk0mw73" path="res://assets/gravitysound/Skateboard SFX/Land_9.ogg" id="49_00cg4"]
 [ext_resource type="AudioStream" uid="uid://bls8s10hvef8u" path="res://assets/gravitysound/Skateboard SFX/Land_10.ogg" id="50_0pqn3"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_senyo"]
-size = Vector3(1.4, 0.4, 0.2)
-
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_5xw05"]
 streams_count = 9
 stream_0/stream = ExtResource("4_ei60u")
@@ -125,13 +122,6 @@ transform = Transform3D(-3.496911e-08, 0, -0.80000013, 0, 0.79999965, 0, 0.79999
 [node name="ActionPrompt" parent="." unique_id=1664152999 instance=ExtResource("3_s43gb")]
 transform = Transform3D(-0.9999999, -4.3711395e-08, 4.371141e-08, 4.3711385e-08, -4.3711392e-08, 1.0000006, -4.3711374e-08, 1.0000001, 4.3711417e-08, 0.16666669, 0.1, 0.79999995)
 message_end = "     to skateboard"
-
-[node name="Area3D" type="Area3D" parent="." unique_id=992282511]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -0.03333336, 0, -1.4901161e-08)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=1607489431]
-transform = Transform3D(0.80000013, 0, 0, 0, -3.4969116e-08, -0.7999998, 0, 0.8000001, -3.49691e-08, 0, 0, 0)
-shape = SubResource("BoxShape3D_senyo")
 
 [node name="SFX_Roll_on_Cobblestone" type="AudioStreamPlayer3D" parent="." unique_id=943357211]
 stream = SubResource("AudioStreamRandomizer_5xw05")

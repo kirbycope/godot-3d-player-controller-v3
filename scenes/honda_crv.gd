@@ -1,21 +1,26 @@
 extends VehicleBody3D
+## Demo car: drivetrain, transmission, damage (flip, burn, explode), engine SFX and first-person look.
+##
+## The Player's Driving state only passes inputs: it calls [method set_drive_input] every physics
+## frame while seated and [method set_driver] with null when the driver gets out.
 
-const LOOK_RETURN_DELAY: float = 1.0 # time before returning to center
 const MAX_LOOK_YAW: float = 1.0472 # 60 degrees in radians
 const MAX_LOOK_PITCH: float = 1.0472 # 60 degrees in radians
 const FLIPPED_DOT_THRESHOLD: float = 0.5 # dot product <= 0.5 means tilted >= 60 degrees
 const FLIPPED_VELOCITY_THRESHOLD: float = 2.0 # max linear/angular velocity to be considered settled
 const DOOR_OPEN_TIME: float = 1.1333 # seconds into the "Entering Car" animation when the door opens
 const DOOR_CLOSE_TIME: float = 3.7333 # seconds into the "Entering Car" animation when the door closes
+const GEAR_SPEEDS: Array[float] = [8.0, 16.0, 25.0, 36.0, 50.0] # top speed (m/s) of each forward gear
+const GEAR_TORQUE_MULTS: Array[float] = [1.2, 1.0, 0.85, 0.7, 0.55] # engine force multiplier per forward gear
+const BURNED_MATERIAL: StandardMaterial3D = preload("res://materials/burned.tres")
 
 @export var max_acceleration_force: float = 4500.0
 @export var max_brake_force: float = 1800.0
 @export var max_reverse_force: float = -2500.0
 @export var explosion_impulse_force: float = 6750.0
-@export var flipped_time_to_burn: float = 5.0 ## Seconds vehicle must be flipped before catching fire
-@export var time_to_explode: float = 10.0 ## Seconds vehicle burns before exploding
 @export var min_brake_sound_velocity: float = 6.0 ## Minimum speed required to trigger brake screech sound
 @export var brake_velocity_threshold: float = 14.0 ## Velocity threshold to switch between sfx_break_short and sfx_break_long
+@export var wheels: Array[VehicleWheel3D]
 
 @export_group("GTA Handling & Transmission")
 @export var drive_bias_front: float = 0.5 ## AWD torque distribution (0.5 = 50% front / 50% rear)
@@ -23,12 +28,13 @@ const DOOR_CLOSE_TIME: float = 3.7333 # seconds into the "Entering Car" animatio
 @export var handbrake_traction_loss: float = 0.82 ## Rear wheel traction multiplier during handbrake
 @export var downforce_coeff: float = 4.0 ## Downforce multiplier
 @export var anti_roll_force: float = 12000.0 ## Anti-roll bar force across axles
+@export var max_steering_angle: float = 30.0
+@export var steering_speed: float = 3.5
+
+@export var current_driver_peer_id: int = 1
 
 var current_gear: int = 1
 var current_rpm: float = 0.0 # 0.0 = idle, 1.0 = redline
-var clutch_timer: float = 0.0
-var fire_timer: float = 0.0
-var flipped_timer: float = 0.0
 var has_exploded: bool = false
 var initial_spawn_transform: Transform3D
 var is_on_fire: bool = false:
@@ -38,18 +44,17 @@ var is_on_fire: bool = false:
 		is_on_fire = value
 		if is_node_ready():
 			_update_fire_state()
-
 var is_flipped: bool = false
 var is_engine_started: bool = false
-var was_entering_vehicle: bool = false
+var is_driving_this_car: bool = false ## True from the first drive input until the driver gets out.
 var look_angles: Vector2 = Vector2.ZERO
-var look_return_timer: float = 0.0
 var menu_displayed: bool = false
-var player: Player
-var was_driving: bool = false
+var player: Player ## The driver, or the Player looking at the action prompt.
+var _accelerate: bool = false
+var _brake: bool = false
+var _handbrake: bool = false
+var _steer: float = 0.0
 var _revved_current_accel: bool = false
-var _screech_timer: float = 0.0
-const SCREECH_RETRIGGER_DELAY: float = 0.8
 
 @onready var action_prompt: Node3D = $ActionPrompt
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
@@ -59,243 +64,345 @@ const SCREECH_RETRIGGER_DELAY: float = 0.8
 @onready var explosion_sfx: AudioStreamPlayer3D = $VFXGroundExplosion_01/ExplosionSFX
 @onready var first_person_camera: Camera3D = $FirstPersonCamera
 @onready var initial_camera_quat: Quaternion = first_person_camera.quaternion
+@onready var engine_sfx: Node3D = $EngineSFX ## Container of every looping/rev engine player.
 @onready var sfx_car_start: AudioStreamPlayer3D = $SFXCarStart
-@onready var sfx_engine_rev: AudioStreamPlayer3D = $SFXEngineRev
-@onready var sfx_engine_slow_down_inside: AudioStreamPlayer3D = $SFXEngineSlowDownInside
-@onready var sfx_engine_slow_down_outside: AudioStreamPlayer3D = $SFXEngineSlowDownOutside
-@onready var sfx_engine_speed_up_inside: AudioStreamPlayer3D = $SFXEngineSpeedUpInside
-@onready var sfx_engine_speed_up_outside: AudioStreamPlayer3D = $SFXEngineSpeedUpOutside
-@onready var sfx_engine_running_inside: AudioStreamPlayer3D = $SFXEngineRunningInside
-@onready var sfx_engine_running_outside: AudioStreamPlayer3D = $SFXEngineRunningOutside
+@onready var sfx_engine_rev: AudioStreamPlayer3D = $EngineSFX/SFXEngineRev
+@onready var sfx_engine_slow_down_inside: AudioStreamPlayer3D = $EngineSFX/SFXEngineSlowDownInside
+@onready var sfx_engine_slow_down_outside: AudioStreamPlayer3D = $EngineSFX/SFXEngineSlowDownOutside
+@onready var sfx_engine_speed_up_inside: AudioStreamPlayer3D = $EngineSFX/SFXEngineSpeedUpInside
+@onready var sfx_engine_speed_up_outside: AudioStreamPlayer3D = $EngineSFX/SFXEngineSpeedUpOutside
+@onready var sfx_engine_running_inside: AudioStreamPlayer3D = $EngineSFX/SFXEngineRunningInside
+@onready var sfx_engine_running_outside: AudioStreamPlayer3D = $EngineSFX/SFXEngineRunningOutside
 @onready var sfx_break_short: AudioStreamPlayer3D = $SFXBreakShort
 @onready var sfx_break_long: AudioStreamPlayer3D = $SFXBreakLong
-@onready var vehicle_synchronizer: MultiplayerSynchronizer = get_node_or_null("VehicleSynchronizer") as MultiplayerSynchronizer
-
-@export var current_driver_peer_id: int = 1
-
-
-## Sets the current driver and updates multiplayer authority.
-func set_driver(p: Player) -> void:
-	player = p
-	if p:
-		current_driver_peer_id = p.get_multiplayer_authority()
-		set_multiplayer_authority(current_driver_peer_id)
-	else:
-		current_driver_peer_id = 1
-		set_multiplayer_authority(1)
+@onready var vehicle_synchronizer: MultiplayerSynchronizer = $VehicleSynchronizer
+@onready var flipped_timer: Timer = $FlippedTimer ## Runs while flipped and settled; timeout ignites the car.
+@onready var fire_timer: Timer = $FireTimer ## Runs while burning; timeout explodes the car.
+@onready var screech_timer: Timer = $ScreechTimer ## Minimum gap between brake screech retriggers.
+@onready var look_return_timer: Timer = $LookReturnTimer ## Delay before first-person look recenters.
+@onready var clutch_timer: Timer = $ClutchTimer ## Brief RPM dip after a gear shift.
+@onready var reverse_hold_timer: Timer = $ReverseHoldTimer ## Holds the car still before reverse engages.
+@onready var forward_hold_timer: Timer = $ForwardHoldTimer ## Holds the car still before forward engages from reverse.
 
 
 func _ready() -> void:
 	add_to_group("vehicles")
 	initial_spawn_transform = global_transform
-	var settings_res = PlayerSettingsResource.load_or_create()
-	set_sfx_volume(settings_res.sfx_volume)
+	set_sfx_volume(PlayerSettingsResource.load_or_create().sfx_volume)
 	if is_on_fire:
 		_update_fire_state()
-	_configure_engine_loops()
+	for sfx: Node in engine_sfx.get_children():
+		if sfx != sfx_engine_rev and sfx.stream is AudioStreamOggVorbis:
+			(sfx.stream as AudioStreamOggVorbis).loop = true
+
+
+## Sets the current driver and updates multiplayer authority; null when the driver gets out.
+func set_driver(driver: Player) -> void:
+	if driver:
+		player = driver
+		current_driver_peer_id = driver.get_multiplayer_authority()
+		set_multiplayer_authority(current_driver_peer_id)
+		_play_door_sequence()
+		return
+	if is_driving_this_car and player and player.is_exiting_vehicle:
+		_play_door_sequence()
+	if player and first_person_camera.current:
+		player.camera.current = true
+	is_driving_this_car = false
+	current_driver_peer_id = 1
+	set_multiplayer_authority(1)
+	player = null
+
+
+## Called by the Player's Driving state every physics frame while seated.
+func set_drive_input(accelerate: bool, brake_pressed: bool, handbrake: bool, steer: float) -> void:
+	if not is_driving_this_car and not is_engine_started:
+		sfx_car_start.play()
+		is_engine_started = true
+	is_driving_this_car = player != null
+	_accelerate = accelerate
+	_brake = brake_pressed
+	_handbrake = handbrake
+	_steer = steer
 
 
 ## Returns true if any vehicle wheel is currently touching ground.
 func is_any_wheel_on_ground() -> bool:
-	for child in get_children():
-		if child is VehicleWheel3D and (child as VehicleWheel3D).is_in_contact():
+	for wheel: VehicleWheel3D in wheels:
+		if wheel.is_in_contact():
 			return true
 	return false
 
 
-func _configure_engine_loops() -> void:
-	var looping_players: Array[AudioStreamPlayer3D] = [
-		sfx_engine_running_inside,
-		sfx_engine_running_outside,
-		sfx_engine_speed_up_inside,
-		sfx_engine_speed_up_outside,
-		sfx_engine_slow_down_inside,
-		sfx_engine_slow_down_outside
-	]
-	for p in looping_players:
-		if p and p.stream is AudioStreamOggVorbis:
-			(p.stream as AudioStreamOggVorbis).loop = true
-
-
 ## Update volume on all vehicle SFX AudioStreamPlayer3D nodes.
 func set_sfx_volume(value: float) -> void:
-	var db = linear_to_db(value / 100.0) if value > 0.0 else -80.0
-	for child in find_children("*", "AudioStreamPlayer3D", true, false):
-		if child is AudioStreamPlayer3D:
-			child.volume_db = db
+	var db: float = linear_to_db(value / 100.0) if value > 0.0 else -80.0
+	for child: Node in find_children("*", "AudioStreamPlayer3D", true, false):
+		(child as AudioStreamPlayer3D).volume_db = db
 
 
-## Called when there is an input event.
 func _input(event: InputEvent) -> void:
-	# Do nothing if not the authority
-	if not is_multiplayer_authority(): return
+	if not is_multiplayer_authority() or player == null:
+		return
 
-	if player:
-		if event.is_action_pressed("action"):
-			if menu_displayed \
-			and not player.is_driving \
-			and not is_on_fire \
-			and not has_exploded:
-				set_driver(player)
-				player.is_driving_in = self
-				var enter_car = $EnterCar
-				if enter_car:
-					player.global_position = enter_car.global_position
-					player.orientation = enter_car.global_transform
-					player.orientation.origin = Vector3.ZERO
-					player.player_model.global_transform = enter_car.global_transform
-					player.velocity = Vector3.ZERO
-				player.state_machine.travel(player.current_state, NodeStateMachine.States.DRIVING)
-				return
+	if event.is_action_pressed("action") and menu_displayed and not player.is_driving and not is_on_fire and not has_exploded:
+		set_driver(player)
+		player.is_driving_in = self
+		var enter_car: Node3D = $EnterCar
+		player.global_position = enter_car.global_position
+		player.orientation = enter_car.global_transform
+		player.orientation.origin = Vector3.ZERO
+		player.player_model.global_transform = enter_car.global_transform
+		player.velocity = Vector3.ZERO
+		player.state_machine.travel(player.current_state, NodeStateMachine.States.DRIVING)
+		return
 
-		if player.is_driving and player.is_driving_in == self and first_person_camera.current:
-			var player_cam = player.camera as Camera
-			if player_cam and event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-				look_angles.x -= deg_to_rad(event.relative.x * player_cam.mouse_sensitivity)
-				look_angles.y -= deg_to_rad(event.relative.y * player_cam.mouse_sensitivity)
-				look_angles.x = clampf(look_angles.x, -MAX_LOOK_YAW, MAX_LOOK_YAW)
-				look_angles.y = clampf(look_angles.y, -MAX_LOOK_PITCH, MAX_LOOK_PITCH)
-				look_return_timer = LOOK_RETURN_DELAY
+	if is_driving_this_car and first_person_camera.current and event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+		var player_cam: Camera = player.camera as Camera
+		var motion: InputEventMouseMotion = event
+		look_angles.x = clampf(look_angles.x - deg_to_rad(motion.relative.x * player_cam.mouse_sensitivity), -MAX_LOOK_YAW, MAX_LOOK_YAW)
+		look_angles.y = clampf(look_angles.y - deg_to_rad(motion.relative.y * player_cam.mouse_sensitivity), -MAX_LOOK_PITCH, MAX_LOOK_PITCH)
+		look_return_timer.start()
 
 
 func _process(delta: float) -> void:
-	if not is_multiplayer_authority(): return
-	
-	var is_driving_this_car: bool = player and player.is_driving and player.is_driving_in == self \
-		and not player.is_entering_vehicle and not player.is_exiting_vehicle
-	
-	var is_in_car: bool = player != null and player.is_driving_in == self
-	var is_entering: bool = player.is_entering_vehicle if is_in_car else false
-	
-	if is_in_car:
-		if is_entering and not was_entering_vehicle:
-			_play_door_sequence()
-		if was_entering_vehicle and not is_entering:
-			if not is_engine_started:
-				if sfx_car_start:
-					sfx_car_start.play()
-				is_engine_started = true
-	was_entering_vehicle = is_entering
-
+	if not is_multiplayer_authority():
+		return
 	if is_driving_this_car:
-		var player_cam = player.camera as Camera
-		var is_first_person: bool = player_cam and player_cam.perspective == Camera.Perspective.FIRST_PERSON
-		
-		if is_first_person:
+		var player_cam: Camera = player.camera as Camera
+		if player_cam.perspective == Camera.Perspective.FIRST_PERSON:
 			if not first_person_camera.current:
 				first_person_camera.current = true
 				look_angles = Vector2.ZERO
 				first_person_camera.quaternion = initial_camera_quat
-		else:
-			if first_person_camera.current:
-				player.camera.current = true
-				
-		if first_person_camera.current:
-			var joypad_motion_input: Vector2 = Input.get_vector("look_left", "look_right", "look_up", "look_down")
-			if joypad_motion_input != Vector2.ZERO and player_cam:
-				look_angles.x -= deg_to_rad(joypad_motion_input.x * player_cam.joypad_sensitivity * delta)
-				look_angles.y -= deg_to_rad(joypad_motion_input.y * player_cam.joypad_sensitivity * delta)
-				look_angles.x = clampf(look_angles.x, -MAX_LOOK_YAW, MAX_LOOK_YAW)
-				look_angles.y = clampf(look_angles.y, -MAX_LOOK_PITCH, MAX_LOOK_PITCH)
-				look_return_timer = LOOK_RETURN_DELAY
-			elif look_return_timer > 0.0:
-				look_return_timer -= delta
-			else:
-				# SLERP back to center
-				look_angles = look_angles.lerp(Vector2.ZERO, delta * 5.0)
-
-			var look_quat = Quaternion.from_euler(Vector3(look_angles.y, look_angles.x, 0.0))
-			var target_quat = initial_camera_quat * look_quat
-			first_person_camera.quaternion = first_person_camera.quaternion.slerp(target_quat, delta * 15.0)
-
-	elif was_driving: # Player just exited the car
-		if player and first_person_camera.current:
+		elif first_person_camera.current:
 			player.camera.current = true
-		if player and not menu_displayed and player.is_driving_in != self:
-			player = null
-			
-	was_driving = is_driving_this_car
-	_update_engine_sfx(delta)
+
+		if first_person_camera.current:
+			var joypad_look: Vector2 = Input.get_vector("look_left", "look_right", "look_up", "look_down")
+			if joypad_look != Vector2.ZERO:
+				look_angles.x = clampf(look_angles.x - deg_to_rad(joypad_look.x * player_cam.joypad_sensitivity * delta), -MAX_LOOK_YAW, MAX_LOOK_YAW)
+				look_angles.y = clampf(look_angles.y - deg_to_rad(joypad_look.y * player_cam.joypad_sensitivity * delta), -MAX_LOOK_PITCH, MAX_LOOK_PITCH)
+				look_return_timer.start()
+			elif look_return_timer.is_stopped():
+				look_angles = look_angles.lerp(Vector2.ZERO, delta * 5.0)
+			var target_quat: Quaternion = initial_camera_quat * Quaternion.from_euler(Vector3(look_angles.y, look_angles.x, 0.0))
+			first_person_camera.quaternion = first_person_camera.quaternion.slerp(target_quat, delta * 15.0)
+	_update_engine_sfx()
 
 
-## Opens then closes the driver door in sync with the player's "Entering Car" animation.
+## Opens then closes the driver door in sync with the Player's enter/exit animations.
 func _play_door_sequence() -> void:
-	if animation_player == null:
-		return
 	await get_tree().create_timer(DOOR_OPEN_TIME).timeout
 	if not is_instance_valid(animation_player):
 		return
 	animation_player.play("open")
 	await get_tree().create_timer(DOOR_CLOSE_TIME - DOOR_OPEN_TIME).timeout
-	if not is_instance_valid(animation_player):
-		return
-	animation_player.play("close")
+	if is_instance_valid(animation_player):
+		animation_player.play("close")
 
 
 func _update_fire_state() -> void:
+	fire.emitting = is_on_fire
 	if is_on_fire:
-		if fire:
-			fire.emitting = true
-		if fire_sfx and not fire_sfx.playing:
+		if not fire_sfx.playing:
 			fire_sfx.play()
+		if not has_exploded and is_multiplayer_authority():
+			fire_timer.start()
 		hide_menu()
 	else:
-		if fire:
-			fire.emitting = false
-		if fire_sfx and fire_sfx.playing:
-			fire_sfx.stop()
+		fire_sfx.stop()
+		fire_timer.stop()
+
+
+func _on_flipped_timer_timeout() -> void:
+	is_on_fire = true
+
+
+func _on_fire_timer_timeout() -> void:
+	has_exploded = true
+	fire.emitting = false
+	fire_sfx.stop()
+	explosion.play()
+	explosion_sfx.play()
+	apply_impulse(-get_gravity().normalized() * explosion_impulse_force)
+	_apply_burned_material(self)
+	hide_menu()
 
 
 func _physics_process(delta: float) -> void:
-	if not is_multiplayer_authority(): return
-	
-	var is_driven: bool = player != null and player.is_driving and player.is_driving_in == self \
-		and not player.is_entering_vehicle and not player.is_exiting_vehicle
+	if not is_multiplayer_authority():
+		return
 
-	if not is_driven or is_on_fire or has_exploded:
+	if is_driving_this_car and not is_on_fire and not has_exploded:
+		_apply_drivetrain(delta)
+	else:
 		steering = 0.0
 		engine_force = 0.0
 		brake = max_brake_force
-		for child in get_children():
-			if child is VehicleWheel3D:
-				child.engine_force = 0.0
-				child.brake = max_brake_force
+		for wheel: VehicleWheel3D in wheels:
+			wheel.engine_force = 0.0
+			wheel.brake = max_brake_force
 
-	var up_dir: Vector3 = - get_gravity().normalized()
+	var up_dir: Vector3 = -get_gravity().normalized()
 	if up_dir == Vector3.ZERO:
 		up_dir = Vector3.UP
-	
+
 	if not is_on_fire:
 		var is_tilted: bool = global_transform.basis.y.dot(up_dir) <= FLIPPED_DOT_THRESHOLD
 		var is_settled: bool = linear_velocity.length() < FLIPPED_VELOCITY_THRESHOLD and angular_velocity.length() < FLIPPED_VELOCITY_THRESHOLD
 		is_flipped = is_tilted and is_settled
-		if is_flipped:
-			flipped_timer += delta
-			if flipped_timer >= flipped_time_to_burn:
-				is_on_fire = true
-		else:
-			flipped_timer = 0.0
-	elif fire:
+		if not is_flipped:
+			flipped_timer.stop()
+		elif flipped_timer.is_stopped():
+			flipped_timer.start()
+	else:
 		var fwd: Vector3 = global_transform.basis.z
-		if abs(fwd.dot(up_dir)) > 0.99:
+		if absf(fwd.dot(up_dir)) > 0.99:
 			fwd = global_transform.basis.x
 		fire.global_transform.basis = Basis.looking_at(fwd, up_dir)
-		
-		if not has_exploded:
-			fire_timer += delta
-			if fire_timer >= time_to_explode:
-				has_exploded = true
-				if fire:
-					fire.emitting = false
-				if fire_sfx:
-					fire_sfx.stop()
-				if explosion:
-					explosion.play()
-				if explosion_sfx:
-					explosion_sfx.play()
-				apply_impulse(up_dir * explosion_impulse_force)
-				_apply_burned_material()
-				hide_menu()
+
+
+## Transmission, RPM, wheel forces, speed-sensitive steering and downforce from the stored drive inputs.
+func _apply_drivetrain(delta: float) -> void:
+	var speed: float = linear_velocity.length()
+	var heading: Vector3 = Vector3(global_transform.basis.z.x, 0.0, global_transform.basis.z.z).normalized()
+	var forward_speed: float = heading.dot(linear_velocity) if heading != Vector3.ZERO else global_transform.basis.z.dot(linear_velocity)
+	var ground_speed: float = Vector2(linear_velocity.x, linear_velocity.z).length()
+	var is_grounded: bool = is_any_wheel_on_ground()
+
+	# --- Transmission & Gear State Machine ---
+	var target_gear: int = -1
+	if forward_speed >= -0.3:
+		target_gear = GEAR_SPEEDS.size()
+		for g_idx: int in GEAR_SPEEDS.size():
+			if speed <= GEAR_SPEEDS[g_idx]:
+				target_gear = g_idx + 1
+				break
+		# Aggressive handbrake downshift: reset gear when handbraking slows the vehicle
+		if _handbrake:
+			if speed < 10.0:
+				target_gear = 1
+			elif speed < 18.0:
+				target_gear = mini(target_gear, 2)
+			elif speed < 28.0:
+				target_gear = mini(target_gear, 3)
+
+	if target_gear != current_gear and target_gear > 0 and current_gear > 0:
+		if _handbrake:
+			clutch_timer.stop() # Instant downshift on handbrake without shift lag
+		else:
+			clutch_timer.start() # Brief clutch disengagement for shift sound drop
+		current_gear = target_gear
+	elif target_gear < 0 or current_gear < 0:
+		current_gear = target_gear
+
+	# --- Target RPM Calculation ---
+	var target_rpm: float = 0.0
+	if not is_grounded and not _accelerate:
+		target_rpm = 0.1 # Gentle idle hum in mid-air
+	elif current_gear > 0:
+		var g_idx: int = current_gear - 1
+		var min_g_spd: float = 0.0 if g_idx == 0 else GEAR_SPEEDS[g_idx - 1]
+		var progress: float = clampf((ground_speed - min_g_spd) / maxf(GEAR_SPEEDS[g_idx] - min_g_spd, 1.0), 0.0, 1.0)
+		target_rpm = lerpf(0.35, 1.0, progress) if _accelerate else lerpf(0.1, 0.5, progress)
+	elif current_gear == -1: # Reverse
+		target_rpm = lerpf(0.3, 0.9, clampf(ground_speed / 12.0, 0.0, 1.0)) if _brake else 0.1
+
+	if (_brake or _handbrake) and _accelerate and speed < 2.5:
+		target_rpm = 0.95 # Burnout redline
+	if not clutch_timer.is_stopped():
+		target_rpm = 0.25 # Clutch dip on gear shift
+	current_rpm = lerpf(current_rpm, target_rpm, delta * 12.0)
+
+	# --- Force Calculation ---
+	var target_engine_force: float = 0.0
+	var target_brake_front: float = 0.0
+	var target_brake_rear: float = 0.0
+	var rear_slip_multiplier: float = 1.0
+	var current_gear_mult: float = GEAR_TORQUE_MULTS[clampi(current_gear - 1, 0, GEAR_TORQUE_MULTS.size() - 1)] if current_gear > 0 else 1.0
+
+	# 1. Acceleration Forward / Braking when in Reverse
+	if _accelerate:
+		if forward_speed < -0.4:
+			# Moving backward in reverse: pressing accelerate smoothly brakes to a stop
+			forward_hold_timer.start()
+			target_brake_front = max_brake_force * brake_bias_front
+			target_brake_rear = max_brake_force * (1.0 - brake_bias_front)
+		elif absf(forward_speed) <= 0.4 and not forward_hold_timer.is_stopped() and not _brake:
+			# Hold standstill when stopped from reverse
+			target_brake_front = max_brake_force
+			target_brake_rear = max_brake_force
+		else:
+			target_engine_force = max_acceleration_force * current_gear_mult
+	else:
+		forward_hold_timer.stop()
+
+	# 2. Regular Braking Forward / Reversing
+	if _brake:
+		if forward_speed > 0.4:
+			# Moving forward: smoothly brake to a stop and hold before reversing
+			reverse_hold_timer.start()
+			target_brake_front = max_brake_force * brake_bias_front
+			target_brake_rear = max_brake_force * (1.0 - brake_bias_front)
+			if not _handbrake and not _accelerate:
+				target_engine_force = 0.0
+		elif forward_speed < -0.4:
+			# Already moving backward: continue reverse unless accelerating
+			if _accelerate:
+				target_brake_front = max_brake_force
+				target_brake_rear = max_brake_force
+				target_engine_force = 0.0
+			else:
+				target_engine_force = max_reverse_force
+				target_brake_front = 0.0
+				target_brake_rear = 0.0
+		elif _accelerate or not reverse_hold_timer.is_stopped():
+			# Standstill: rev in place / hold still before reverse engages
+			target_brake_front = max_brake_force
+			target_brake_rear = max_brake_force
+			target_engine_force = 0.0
+		else:
+			target_engine_force = max_reverse_force
+			target_brake_front = 0.0
+			target_brake_rear = 0.0
+	else:
+		reverse_hold_timer.stop()
+
+	# 3. Handbrake (locks rear wheels only, enables progressive drift)
+	if _handbrake:
+		target_brake_rear = max_brake_force * 1.5
+		rear_slip_multiplier = handbrake_traction_loss
+		if not _brake and not (_accelerate and forward_speed < -0.4):
+			target_brake_front = 0.0
+		if _accelerate and forward_speed >= -0.4:
+			target_engine_force = max_acceleration_force * current_gear_mult
+
+	# --- Apply Forces to Wheels ---
+	for wheel: VehicleWheel3D in wheels:
+		if not wheel.has_meta("default_friction"):
+			wheel.set_meta("default_friction", wheel.wheel_friction_slip)
+		var is_rear: bool = wheel.position.z < 0.0
+		wheel.brake = lerpf(wheel.brake, target_brake_rear if is_rear else target_brake_front, delta * 10.0)
+
+		if wheel.use_as_traction:
+			if (_brake and forward_speed > 0.4 and not _accelerate) or (_accelerate and forward_speed < -0.4 and not _brake):
+				wheel.engine_force = 0.0
+			else:
+				# Distribute torque according to drive_bias_front
+				var wheel_torque_share: float = (1.0 - drive_bias_front) if is_rear else drive_bias_front
+				wheel.engine_force = lerpf(wheel.engine_force, target_engine_force * wheel_torque_share * 2.0, delta * 12.0)
+
+		var target_slip: float = float(wheel.get_meta("default_friction")) * (rear_slip_multiplier if is_rear else 1.0)
+		wheel.wheel_friction_slip = lerpf(wheel.wheel_friction_slip, target_slip, delta * (12.0 if _handbrake else 25.0))
+
+	# --- Speed-Sensitive Steering ---
+	var steer_speed_factor: float = clampf(1.0 - (speed / 35.0) * 0.62, 0.35, 1.0)
+	steering = move_toward(steering, _steer * deg_to_rad(max_steering_angle * steer_speed_factor), delta * steering_speed)
+
+	# --- Aerodynamic Downforce Stabilization ---
+	if is_grounded:
+		apply_central_force(-global_transform.basis.y * clampf(ground_speed * ground_speed * downforce_coeff, 0.0, 4000.0))
 
 
 func display_menu(_player: Player) -> void:
@@ -304,20 +411,8 @@ func display_menu(_player: Player) -> void:
 		return
 	player = _player
 	if action_prompt:
-		action_prompt.show()
 		action_prompt.update_text()
-		action_prompt.get_node("KeyboardMouse").hide()
-		action_prompt.get_node("Microsoft").hide()
-		action_prompt.get_node("Nintendo").hide()
-		action_prompt.get_node("Sony").hide()
-		if player.controls.current_input_type == player.controls.InputType.KEYBOARD_MOUSE:
-			action_prompt.get_node("KeyboardMouse").show()
-		elif player.controls.current_input_type == player.controls.InputType.MICROSOFT:
-			action_prompt.get_node("Microsoft").show()
-		elif player.controls.current_input_type == player.controls.InputType.NINTENDO:
-			action_prompt.get_node("Nintendo").show()
-		elif player.controls.current_input_type == player.controls.InputType.SONY:
-			action_prompt.get_node("Sony").show()
+		action_prompt.show_for(player)
 	menu_displayed = true
 
 
@@ -330,37 +425,8 @@ func hide_menu() -> void:
 	player = null
 
 
-func _apply_burned_material() -> void:
-	var burned_mat := StandardMaterial3D.new()
-	burned_mat.albedo_color = Color(0.22, 0.22, 0.23, 1.0)
-	burned_mat.clearcoat_enabled = false
-	burned_mat.metallic = 0.15
-	burned_mat.metallic_specular = 0.2
-	burned_mat.roughness = 0.82
-
-	var noise := FastNoiseLite.new()
-	noise.noise_type = FastNoiseLite.TYPE_PERLIN
-	noise.frequency = 0.05
-	noise.fractal_octaves = 4
-
-	var gradient := Gradient.new()
-	gradient.colors = PackedColorArray([Color(0.25, 0.25, 0.27, 1.0), Color(0.65, 0.65, 0.68, 1.0)])
-
-	var noise_tex := NoiseTexture2D.new()
-	noise_tex.noise = noise
-	noise_tex.seamless = true
-	noise_tex.color_ramp = gradient
-
-	burned_mat.detail_enabled = true
-	burned_mat.detail_blend_mode = BaseMaterial3D.BLEND_MODE_MUL
-	burned_mat.detail_albedo = noise_tex
-	burned_mat.roughness_texture = noise_tex
-
-	_apply_material_recursive(self, burned_mat)
-
-
-
-func _apply_material_recursive(node: Node, mat: Material) -> void:
+## Replaces every body mesh material with the charred material and hides the glass.
+func _apply_burned_material(node: Node) -> void:
 	# Skip VFX, particles, prompts
 	if node == fire or node == explosion or node is GPUParticles3D or node is CPUParticles3D:
 		return
@@ -368,162 +434,96 @@ func _apply_material_recursive(node: Node, mat: Material) -> void:
 		return
 
 	if node is MeshInstance3D:
-		var node_name := node.name.to_lower()
+		var mesh_instance: MeshInstance3D = node
+		var node_name: String = node.name.to_lower()
 		if "glass" in node_name or "window" in node_name:
-			node.visible = false
+			mesh_instance.visible = false
 		else:
-			var surf_count := 1
-			if node.mesh:
-				surf_count = node.mesh.get_surface_count()
-			else:
-				surf_count = node.get_surface_override_material_count()
-			for i in range(surf_count):
-				node.set_surface_override_material(i, mat)
+			var surface_count: int = mesh_instance.mesh.get_surface_count() if mesh_instance.mesh else mesh_instance.get_surface_override_material_count()
+			for i: int in surface_count:
+				mesh_instance.set_surface_override_material(i, BURNED_MATERIAL)
 
-	for child in node.get_children():
-		_apply_material_recursive(child, mat)
+	for child: Node in node.get_children():
+		_apply_burned_material(child)
 
 
-
-func _update_engine_sfx(delta: float = 0.0) -> void:
-	var is_driving_this_car: bool = player and player.is_driving and player.is_driving_in == self \
-		and not player.is_entering_vehicle and not player.is_exiting_vehicle
-
+## Plays the engine and brake SFX that match the stored drive inputs and current RPM.
+func _update_engine_sfx() -> void:
 	if not is_driving_this_car or is_on_fire or has_exploded:
-		_stop_all_engine_sfx()
-		if sfx_break_short and sfx_break_short.playing: sfx_break_short.stop()
-		if sfx_break_long and sfx_break_long.playing: sfx_break_long.stop()
+		for sfx: Node in engine_sfx.get_children():
+			(sfx as AudioStreamPlayer3D).stop()
+		sfx_break_short.stop()
+		sfx_break_long.stop()
 		_revved_current_accel = false
-		_screech_timer = 0.0
+		screech_timer.stop()
 		return
 
-	var accelerate_pressed := false
-	var brake_pressed := false
-	var handbrake_pressed := false
-	if player:
-		var driving_state := player.state_machine.get_node_or_null("Driving") as Driving if player.state_machine else null
-		if driving_state:
-			accelerate_pressed = driving_state.is_accelerate_pressed()
-			brake_pressed = driving_state.is_brake_pressed()
-			handbrake_pressed = driving_state.is_handbrake_pressed()
-		else:
-			accelerate_pressed = Input.is_action_pressed("shoot")
-			brake_pressed = Input.is_action_pressed("focus")
-			handbrake_pressed = Input.is_action_pressed("throw")
-
-	if not accelerate_pressed:
+	if not _accelerate:
 		_revved_current_accel = false
 
 	# If start SFX is still playing and player isn't providing inputs yet, let start SFX finish
-	if sfx_car_start and sfx_car_start.playing and not (accelerate_pressed or brake_pressed or handbrake_pressed):
-		_stop_all_engine_sfx()
+	if sfx_car_start.playing and not (_accelerate or _brake or _handbrake):
+		for sfx: Node in engine_sfx.get_children():
+			(sfx as AudioStreamPlayer3D).stop()
 		return
 
-	var player_cam = player.camera as Camera
+	var player_cam: Camera = player.camera as Camera
 	var is_first_person: bool = (player_cam and player_cam.perspective == Camera.Perspective.FIRST_PERSON) or first_person_camera.current
-
-	var fwd_heading: Vector3 = global_transform.basis.z
-	var forward_speed: float = fwd_heading.dot(linear_velocity)
+	var forward_speed: float = global_transform.basis.z.dot(linear_velocity)
 	var lateral_speed: float = absf(global_transform.basis.x.dot(linear_velocity))
 	var speed: float = linear_velocity.length()
 
-	var any_wheel_on_ground: bool = is_any_wheel_on_ground()
-
-	# 1. Brake Screech / Skid SFX (Only if wheels are in contact with ground and speed exceeds threshold!)
-	var is_screeching: bool = false
-	if any_wheel_on_ground:
-		if handbrake_pressed and speed > min_brake_sound_velocity:
-			is_screeching = true
-		elif lateral_speed > 2.5 and speed > min_brake_sound_velocity:
-			is_screeching = true
-		elif brake_pressed and not accelerate_pressed and forward_speed > min_brake_sound_velocity:
-			is_screeching = true
-		elif accelerate_pressed and not brake_pressed and forward_speed < -min_brake_sound_velocity:
-			is_screeching = true
-
-	if _screech_timer > 0.0:
-		_screech_timer -= delta
-
+	# 1. Brake screech / skid SFX (only with wheels on the ground and above the speed threshold)
+	var is_screeching: bool = is_any_wheel_on_ground() and speed > min_brake_sound_velocity \
+			and (_handbrake or lateral_speed > 2.5 \
+			or (_brake and not _accelerate and forward_speed > min_brake_sound_velocity) \
+			or (_accelerate and not _brake and forward_speed < -min_brake_sound_velocity))
 	if is_screeching:
-		var any_screech_playing: bool = (sfx_break_short and sfx_break_short.playing) or (sfx_break_long and sfx_break_long.playing)
-		if not any_screech_playing and _screech_timer <= 0.0:
-			_screech_timer = SCREECH_RETRIGGER_DELAY
+		if not sfx_break_short.playing and not sfx_break_long.playing and screech_timer.is_stopped():
+			screech_timer.start()
 			if speed > brake_velocity_threshold or lateral_speed > 4.0:
-				if sfx_break_long: sfx_break_long.play()
+				sfx_break_long.play()
 			else:
-				if sfx_break_short: sfx_break_short.play()
+				sfx_break_short.play()
 	else:
-		if sfx_break_short and sfx_break_short.playing: sfx_break_short.stop()
-		if sfx_break_long and sfx_break_long.playing: sfx_break_long.stop()
-		_screech_timer = 0.0
+		sfx_break_short.stop()
+		sfx_break_long.stop()
+		screech_timer.stop()
 
-	# 2. Determine target Engine SFX
-	var target_sfx: AudioStreamPlayer3D = null
-
-	# Rev Engine: ONLY during stationary burnout
-	if (brake_pressed or handbrake_pressed) and accelerate_pressed and speed < 2.5:
+	# 2. Determine target engine SFX
+	var target_sfx: AudioStreamPlayer3D
+	if (_brake or _handbrake) and _accelerate and speed < 2.5:
+		# Rev engine only during a stationary burnout, once per accelerate press
 		if not _revved_current_accel:
 			_revved_current_accel = true
 			target_sfx = sfx_engine_rev
-		elif sfx_engine_rev and sfx_engine_rev.playing:
+		elif sfx_engine_rev.playing:
 			target_sfx = sfx_engine_rev
 		else:
 			target_sfx = sfx_engine_running_inside if is_first_person else sfx_engine_running_outside
-	# Accelerating forward (on-throttle while moving forward or standstill)
-	elif accelerate_pressed and forward_speed >= -0.4:
+	elif (_accelerate and forward_speed >= -0.4) or (_brake and not _accelerate and forward_speed < -1.5):
+		# Accelerating forward, or actively reversing
 		target_sfx = sfx_engine_speed_up_inside if is_first_person else sfx_engine_speed_up_outside
-	# Reversing (actively rolling backward with reverse throttle)
-	elif brake_pressed and not accelerate_pressed and forward_speed < -1.5:
-		target_sfx = sfx_engine_speed_up_inside if is_first_person else sfx_engine_speed_up_outside
-	# Braking / Coasting / Normal stopping / Idle (Off-throttle)
 	else:
+		# Braking / coasting / idle (off-throttle)
 		target_sfx = sfx_engine_running_inside if is_first_person else sfx_engine_running_outside
 
-	# 3. Dynamic RPM-Driven Continuous Pitch Modulation
-	var base_pitch: float = lerp(0.85, 1.6, current_rpm)
-	if target_sfx:
-		if target_sfx == sfx_engine_speed_up_inside or target_sfx == sfx_engine_speed_up_outside:
-			target_sfx.pitch_scale = clampf(base_pitch, 0.85, 1.65)
-		elif target_sfx == sfx_engine_slow_down_inside or target_sfx == sfx_engine_slow_down_outside:
-			target_sfx.pitch_scale = clampf(lerp(0.8, 1.25, current_rpm), 0.75, 1.3)
-		elif target_sfx == sfx_engine_running_inside or target_sfx == sfx_engine_running_outside:
-			if (brake_pressed or handbrake_pressed) and accelerate_pressed:
-				target_sfx.pitch_scale = 1.35
-			else:
-				target_sfx.pitch_scale = clampf(base_pitch, 0.85, 1.5)
-		elif target_sfx == sfx_engine_rev:
-			target_sfx.pitch_scale = 1.0
+	# 3. RPM-driven pitch modulation
+	var base_pitch: float = lerpf(0.85, 1.6, current_rpm)
+	if target_sfx == sfx_engine_speed_up_inside or target_sfx == sfx_engine_speed_up_outside:
+		target_sfx.pitch_scale = clampf(base_pitch, 0.85, 1.65)
+	elif target_sfx == sfx_engine_rev:
+		target_sfx.pitch_scale = 1.0
+	elif (_brake or _handbrake) and _accelerate:
+		target_sfx.pitch_scale = 1.35
+	else:
+		target_sfx.pitch_scale = clampf(base_pitch, 0.85, 1.5)
 
-	# 4. Play target SFX and stop all other engine SFX
-	var engine_sfx_list: Array[AudioStreamPlayer3D] = [
-		sfx_engine_rev,
-		sfx_engine_running_inside,
-		sfx_engine_running_outside,
-		sfx_engine_speed_up_inside,
-		sfx_engine_speed_up_outside,
-		sfx_engine_slow_down_inside,
-		sfx_engine_slow_down_outside
-	]
-
-	for sfx in engine_sfx_list:
-		if sfx == target_sfx:
-			if sfx and not sfx.playing:
-				sfx.play()
+	# 4. Play the target SFX and stop every other engine SFX
+	for sfx: Node in engine_sfx.get_children():
+		var engine_player: AudioStreamPlayer3D = sfx
+		if engine_player == target_sfx:
+			if not engine_player.playing:
+				engine_player.play()
 		else:
-			if sfx and sfx.playing:
-				sfx.stop()
-
-
-func _stop_all_engine_sfx() -> void:
-	var engine_sfx_list: Array[AudioStreamPlayer3D] = [
-		sfx_engine_rev,
-		sfx_engine_running_inside,
-		sfx_engine_running_outside,
-		sfx_engine_speed_up_inside,
-		sfx_engine_speed_up_outside,
-		sfx_engine_slow_down_inside,
-		sfx_engine_slow_down_outside
-	]
-	for sfx in engine_sfx_list:
-		if sfx and sfx.playing:
-			sfx.stop()
+			engine_player.stop()

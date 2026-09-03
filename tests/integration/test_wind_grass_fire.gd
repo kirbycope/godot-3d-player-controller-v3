@@ -3,9 +3,8 @@ extends GutTest
 ## Purpose: Integration test suite for BotW/TotK gold-standard wind-driven wildfire physics,
 ## shader combustion progress, rain dousing, and GrassField thermal updraft generation.
 
-const BurnableGrassScript: Script = preload("res://addons/weather_fx/scripts/burnable_grass.gd")
+const BURNABLE_GRASS_SCENE: PackedScene = preload("res://addons/weather_fx/scenes/burnable_grass.tscn")
 const GrassFieldScript: Script = preload("res://addons/weather_fx/scripts/grass_field.gd")
-const WeatherFXScript: Script = preload("res://addons/weather_fx/scripts/weather_fx.gd")
 
 var root: Node3D
 
@@ -32,25 +31,22 @@ func test_wind_driven_directional_fire_spread() -> void:
 	WeatherFX.active_wind_strength = 6.0
 
 	# Source burning grass at origin
-	var source_grass = BurnableGrassScript.new()
+	var source_grass = BURNABLE_GRASS_SCENE.instantiate()
 	source_grass.add_to_group("BurnableGrass")
 	root.add_child(source_grass)
 	source_grass.global_position = Vector3(0, 0, 0)
-	source_grass._setup_components()
 
 	# Downwind grass (+X) at 6.0m (beyond base 4.5m radius, but within wind-boosted radius ~8.5m)
-	var downwind_grass = BurnableGrassScript.new()
+	var downwind_grass = BURNABLE_GRASS_SCENE.instantiate()
 	downwind_grass.add_to_group("BurnableGrass")
 	root.add_child(downwind_grass)
 	downwind_grass.global_position = Vector3(6.0, 0, 0)
-	downwind_grass._setup_components()
 
 	# Upwind grass (-X) at 4.0m (within base 4.5m radius, but suppressed by upwind penalty)
-	var upwind_grass = BurnableGrassScript.new()
+	var upwind_grass = BURNABLE_GRASS_SCENE.instantiate()
 	upwind_grass.add_to_group("BurnableGrass")
 	root.add_child(upwind_grass)
 	upwind_grass.global_position = Vector3(-4.0, 0, 0)
-	upwind_grass._setup_components()
 
 	assert_false(source_grass.is_burning)
 	assert_false(downwind_grass.is_burning)
@@ -65,49 +61,33 @@ func test_wind_driven_directional_fire_spread() -> void:
 	assert_false(upwind_grass.is_burning, "Upwind grass should NOT ignite due to opposing wind penalty")
 
 
-func test_shader_burn_progress_and_charring() -> void:
-	var grass = BurnableGrassScript.new()
+func test_burn_timer_drives_charring() -> void:
+	var grass: BurnableGrass = BURNABLE_GRASS_SCENE.instantiate()
 	root.add_child(grass)
 	grass.burn_duration = 10.0
-	grass._setup_components()
 
 	assert_eq(grass.current_burn_progress, 0.0)
-
 	grass.ignite()
 	assert_true(grass.is_burning)
-
-	# Process 5 seconds (50% burn)
-	grass._process(5.0)
-	assert_almost_eq(grass.current_burn_progress, 0.5, 0.05, "Burn progress should reach ~0.5 midway")
+	assert_false(grass._burn_timer.is_stopped(), "Igniting starts the burn timer")
+	assert_almost_eq(grass._burn_timer.wait_time, 10.0, 0.01, "Burn timer runs for burn_duration")
 
 	var mesh_node: MeshInstance3D = grass.find_child("GrassMesh", true, false) as MeshInstance3D
-	assert_not_null(mesh_node)
 	assert_not_null(mesh_node.material_override, "Grass mesh should have material_override assigned")
 
-	if mesh_node.material_override is ShaderMaterial:
-		var smat: ShaderMaterial = mesh_node.material_override as ShaderMaterial
-		var param_val = smat.get_shader_parameter("burn_progress")
-		assert_almost_eq(float(param_val), 0.5, 0.05, "Shader burn_progress should mirror script progress")
-
-	# Process remaining duration to burnout
-	grass._process(6.0)
+	grass.burn_out()
 	assert_false(grass.is_burning)
 	assert_true(grass.is_charred, "Grass should be charred after burnout")
 	assert_eq(grass.current_burn_progress, 1.0, "Burn progress should reach 1.0 on burnout")
 
 
 func test_rain_douses_burning_grass() -> void:
-	var grass = BurnableGrassScript.new()
+	var grass: BurnableGrass = BURNABLE_GRASS_SCENE.instantiate()
 	root.add_child(grass)
-	grass._setup_components()
-
 	grass.ignite()
 	assert_true(grass.is_burning)
 
-	# Simulate heavy rain
-	WeatherFX.active_precipitation_strength = 0.8
-	grass._process(0.1)
-
+	grass._on_weather_changed(ClimateData.WeatherType.RAIN, ClimateData.WeatherType.BLUE_SKY)
 	assert_false(grass.is_burning, "Rain should automatically extinguish burning grass")
 
 
@@ -115,7 +95,7 @@ func test_grass_field_wildfire_wind_advance() -> void:
 	WeatherFX.active_wind_direction = Vector3(1.0, 0.0, 0.0)
 	WeatherFX.active_wind_strength = 5.0
 
-	var field = GrassFieldScript.new()
+	var field: GrassField = GrassFieldScript.new()
 	field.field_size = Vector2(40.0, 40.0)
 	field.instance_count = 50
 	root.add_child(field)
@@ -131,6 +111,5 @@ func test_grass_field_wildfire_wind_advance() -> void:
 	assert_true(fire.updraft_area.is_in_group("Thermal"))
 
 	# Rain extinguishes field wildfire
-	WeatherFX.active_precipitation_strength = 0.7
-	field._process(0.1)
+	field._on_weather_changed(ClimateData.WeatherType.RAIN, ClimateData.WeatherType.BLUE_SKY)
 	assert_eq(field._active_fires.size(), 0, "Rain should douse all active field fires")

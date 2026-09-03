@@ -1,10 +1,36 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://addons/radi_ot/scripts/radi_ot_player_3d.gd" id="1_radio_script"]
 [ext_resource type="Resource" path="res://addons/radi_ot/resources/stations/seattle_stations_default.tres" id="2_stations"]
+[ext_resource type="Script" path="res://addons/radi_ot/scripts/radi_ot_streamer.gd" id="3_streamer_script"]
+[ext_resource type="PackedScene" path="res://addons/radi_ot/scenes/radi_ot_hud.tscn" id="4_hud_scene"]
 
-[node name="RadiOtPlayer3D" type="AudioStreamPlayer3D"]
+[node name="RadiOtPlayer3D" type="AudioStreamPlayer3D" groups=["radio"]]
 max_distance = 40.0
 unit_size = 5.0
 script = ExtResource("1_radio_script")
 station_collection = ExtResource("2_stations")
+
+[node name="RadiOtStreamer" type="Node3D" parent="." node_paths=PackedStringArray("target_player")]
+script = ExtResource("3_streamer_script")
+target_player = NodePath("..")
+
+[node name="StaticPlayer3D" type="AudioStreamPlayer3D" parent="."]
+volume_db = -6.0
+unit_size = 5.0
+max_distance = 40.0
+
+[node name="BulletinPlayer3D" type="AudioStreamPlayer3D" parent="."]
+unit_size = 5.0
+max_distance = 40.0
+
+[node name="BulletinTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="RadiOtHUD" parent="." instance=ExtResource("4_hud_scene")]
+
+[connection signal="buffering_started" from="RadiOtStreamer" to="." method="_on_buffering_started"]
+[connection signal="playback_failed" from="RadiOtStreamer" to="." method="_on_playback_failed"]
+[connection signal="playback_started" from="RadiOtStreamer" to="." method="_on_playback_started"]
+[connection signal="finished" from="BulletinPlayer3D" to="." method="_on_bulletin_finished"]
+[connection signal="timeout" from="BulletinTimer" to="." method="_on_bulletin_finished"]

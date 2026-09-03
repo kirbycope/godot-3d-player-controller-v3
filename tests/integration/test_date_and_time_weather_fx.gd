@@ -82,23 +82,22 @@ func test_date_and_time_node_reassignment() -> void:
 	assert_false(wfx.is_daylight())
 
 
-const DTDisplayScript: Script = preload("res://addons/date_and_time/scripts/date_and_time_display.gd")
-const WFDisplayScript: Script = preload("res://addons/weather_fx/scripts/weather_forecast_display.gd")
-const TGDisplayScript: Script = preload("res://addons/weather_fx/scripts/temperature_gauge_display.gd")
+const DT_DISPLAY_SCENE: PackedScene = preload("res://addons/date_and_time/scenes/date_and_time_display.tscn")
+const WF_DISPLAY_SCENE: PackedScene = preload("res://addons/weather_fx/scenes/weather_forecast_display.tscn")
 
 
 func test_hud_date_time_and_weather_forecast_coexistence() -> void:
 	var hud := CanvasLayer.new()
 	root.add_child(hud)
 
-	var dt_display = DTDisplayScript.new()
+	var dt_display: DateAndTimeDisplay = DT_DISPLAY_SCENE.instantiate()
 	dt_display.date_and_time_node = dt
 	dt_display.botw_style = true
 	dt_display.minute_increment = 5
 	hud.add_child(dt_display)
 
-	var wf_display = WFDisplayScript.new()
-	wf_display.weather_fx_node = wfx
+	var wf_display: WeatherForecastDisplay = WF_DISPLAY_SCENE.instantiate()
+	wf_display.weather_fx = wfx
 	hud.add_child(wf_display)
 
 	assert_not_null(dt_display)
