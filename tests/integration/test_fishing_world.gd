@@ -44,21 +44,27 @@ func _cast_and_wait_for_water() -> void:
 
 func test_full_loop_catches_a_fish() -> void:
 	assert_true(player.is_fishing)
+	var action: Label = player.controls.joypad_button_0_label
+	assert_eq(action.text, "Cast", "Holding the rod puts Cast on the Action prompt")
 	watch_signals(rod)
 	await _cast_and_wait_for_water()
+	assert_eq(action.text, "Reel In", "A line in the water offers Reel In")
 	assert_not_null(rod.hooked_fish, "Landing picks what will bite")
 	assert_false(rod.bite_timer.is_stopped())
 	rod.bite_timer.stop()
 	rod._on_bite_timer_timeout()
 	assert_eq(rod.state, FishingRod.State.BITE)
+	assert_eq(action.text, "Hook!", "The bite asks for the hook")
 	assert_signal_emitted(rod, "bite")
 	rod.hook()
+	assert_eq(action.text, "", "Reeling has no Action prompt")
 	assert_eq(rod.state, FishingRod.State.REELING)
 	assert_signal_emitted(rod, "fish_hooked")
 	rod.reel_timer.stop()
 	rod._on_reel_timer_timeout()
 	assert_signal_emitted(rod, "fish_caught")
 	assert_eq(rod.state, FishingRod.State.IDLE)
+	assert_eq(action.text, "Cast", "Back to Cast after the catch")
 	assert_null(rod.bobber, "The line is back in")
 	await wait_physics_frames(2)
 	assert_true(world.get_node("Projectiles").get_children().any(func(n: Node) -> bool: return n is FishModel), "The catch model arcs out of the water")
@@ -84,3 +90,12 @@ func test_changing_state_pulls_the_line_in() -> void:
 	player.state_changed.emit(NodeStateMachine.States.STANDING, NodeStateMachine.States.JUMPING)
 	assert_eq(rod.state, FishingRod.State.IDLE)
 	assert_null(rod.bobber)
+
+
+func test_unequipping_the_rod_hands_the_labels_back() -> void:
+	var action: Label = player.controls.joypad_button_0_label
+	assert_eq(action.text, "Cast")
+	player.inventory.unequip_all()
+	await wait_physics_frames(1)
+	assert_false(player.is_fishing)
+	assert_ne(action.text, "Cast", "The state's own labels return once the rod is put away")

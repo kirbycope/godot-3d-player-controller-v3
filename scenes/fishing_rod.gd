@@ -16,6 +16,7 @@ signal fish_escaped(fish: Fish) ## The hook window closed, or the line was pulle
 enum State { IDLE, CASTING, WAITING, BITE, REELING }
 
 const FISHING_EMOTES: Array[String] = ["FishingIdle", "FishingCast", "FishingReel"]
+const ACTION_LABELS: Dictionary[int, String] = {State.IDLE: "Cast", State.CASTING: "", State.WAITING: "Reel In", State.BITE: "Hook!", State.REELING: ""} ## Action prompt per state.
 const CAST_ANIMATION: StringName = &"Fishing Cast/mixamo_com"
 
 @export var fishing_action: StringName = &"action"
@@ -62,6 +63,7 @@ func _ready() -> void:
 	player.inventory.equipment_changed.connect(_on_equipment_changed)
 	player.animation_tree.animation_finished.connect(_on_animation_finished)
 	player.state_changed.connect(_on_player_state_changed)
+	player.controls.input_type_changed.connect(_on_input_type_changed)
 	_on_equipment_changed()
 
 
@@ -86,6 +88,7 @@ func cast() -> void:
 	player.rotate_model_to_direction(-player.projectile_raycast.global_basis.z)
 	emote_state.start("FishingCast")
 	cast_timer.start(cast_release)
+	update_labels()
 
 
 ## Hooks the biting fish and starts reeling; bigger fish take longer.
@@ -95,6 +98,7 @@ func hook() -> void:
 	hook_timer.stop()
 	state = State.REELING
 	player.is_reeling_line = true
+	update_labels()
 	emote_state.start("FishingReel")
 	if animation_player.has_animation("Take 001"):
 		animation_player.play("Take 001")
@@ -112,6 +116,7 @@ func retract() -> void:
 	state = State.IDLE
 	if player.is_fishing:
 		emote_state.start("FishingIdle")
+		update_labels()
 	if lost:
 		fish_escaped.emit(lost)
 
@@ -166,6 +171,7 @@ func _on_cast_timer_timeout() -> void:
 		_adopt_bobber(local)
 	state = State.WAITING
 	player.is_casting_line = false
+	update_labels()
 	line_cast.emit()
 
 
@@ -216,6 +222,7 @@ func _on_bite_timer_timeout() -> void:
 	_play(bite_sfx)
 	Input.start_joy_vibration(0, 0.5, 0.7, 0.3)
 	hook_timer.start(hook_window)
+	update_labels()
 	bite.emit(hooked_fish)
 
 
@@ -238,11 +245,24 @@ func _on_reel_timer_timeout() -> void:
 	state = State.IDLE
 	_clear_line()
 	emote_state.start("FishingIdle")
+	update_labels()
 	var card: FishCard = player.controls.get_node_or_null(^"FishCard") as FishCard
 	if card:
 		card.show_catch(fish, length)
 	_play(catch_sfx)
 	fish_caught.emit(fish, length)
+
+
+## The Action prompt follows the fishing state while the rod is out; states yield the labels meanwhile.
+func update_labels() -> void:
+	if not player.is_fishing:
+		return
+	player.controls.reset_labels()
+	player.controls.joypad_button_0_label.text = ACTION_LABELS[state]
+
+
+func _on_input_type_changed(_input_type: int) -> void:
+	update_labels()
 
 
 func _play(stream: AudioStream) -> void:
@@ -257,8 +277,14 @@ func _on_equipment_changed() -> void:
 	player.animation_tree.set("parameters/EmoteSpineBlend2/blend_amount", 1.0 if player.is_fishing else 0.0)
 	if player.is_fishing:
 		emote_state.start("FishingIdle")
+		update_labels()
 	else:
 		retract()
+		# Hand the control labels back to the active state, as a dropped held object does
+		player.controls.reset_labels()
+		var state_node: NodeStateMachine = player.state_machine.get_node_or_null(NodePath(NodeStateMachine.get_state_name(player.current_state))) as NodeStateMachine
+		if state_node:
+			state_node._on_input_type_changed(player.controls.current_input_type)
 
 
 ## Any non-fishing emote hands back to the fishing posture once it ends.
