@@ -116,6 +116,7 @@ func set_driver(driver: Player) -> void:
 
 ## Called by the Player's Driving state every physics frame while seated.
 func set_drive_input(accelerate: bool, brake_pressed: bool, handbrake: bool, steer: float) -> void:
+	freeze = false
 	if not is_driving_this_car and not is_engine_started:
 		sfx_car_start.play()
 		is_engine_started = true
@@ -225,6 +226,7 @@ func _on_fire_timer_timeout() -> void:
 	fire_sfx.stop()
 	explosion.play()
 	explosion_sfx.play()
+	freeze = false
 	apply_impulse(-get_gravity().normalized() * explosion_impulse_force)
 	_apply_burned_material(self)
 	hide_menu()
@@ -243,6 +245,9 @@ func _physics_process(delta: float) -> void:
 		for wheel: VehicleWheel3D in wheels:
 			wheel.engine_force = 0.0
 			wheel.brake = max_brake_force
+		# Godot's wheel brake creeps a standing car in proportion to its force, so a parked car holds still frozen
+		if not freeze and linear_velocity.length() < 0.5 and angular_velocity.length() < 0.5 and is_any_wheel_on_ground():
+			freeze = true
 
 	var up_dir: Vector3 = -get_gravity().normalized()
 	if up_dir == Vector3.ZERO:
