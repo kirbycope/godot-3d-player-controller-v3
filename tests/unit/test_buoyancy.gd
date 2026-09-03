@@ -73,8 +73,7 @@ func test_leaving_the_water_stops_the_lift() -> void:
 
 func test_wave_offset_mirrors_the_pond_shader() -> void:
 	var amplitude: float = POND_MATERIAL.get_shader_parameter("wave_amplitude")
-	var strength: Variant = RenderingServer.global_shader_parameter_get(&"weather_wind_strength")
-	var wind_speed: float = maxf(0.1, strength if strength is float else 0.0)
+	var wind_speed: float = 0.1 # no WeatherFX in this scene, so the shader's minimum wind applies
 	var max_offset: float = amplitude * (0.6 + clampf(wind_speed * 0.1, 0.0, 2.0))
 	var samples: Array[float] = []
 	for i in 6:

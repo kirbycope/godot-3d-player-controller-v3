@@ -10,6 +10,7 @@ extends Area3D
 const WAVE_TIME_ROLLOVER: float = 3600.0 ## Shader TIME wraps at rendering/limits/time/time_rollover_secs.
 
 @export var water_mesh: MeshInstance3D ## Quad drawn with pond_water.gdshader; its height and wave uniforms define the surface.
+@export var weather: WeatherFX ## Source of the wind the shader reads from its globals; without it the shader's fallbacks apply.
 @export var buoyancy: float = 2.0 ## Lift at full submersion as a multiple of the body's weight; 2 floats a body half submerged.
 @export var probe_depth: float = 0.5 ## Metres below the surface at which a probe counts as fully submerged.
 @export var drag: float = 8.0 ## Linear damping per unit of submersion, scaled by mass; settles a bob within a few swings.
@@ -26,12 +27,11 @@ func _ready() -> void:
 
 ## Wave height above the resting surface at [param point], matching pond_water.gdshader's vertex waves.
 func get_wave_offset(point: Vector3) -> float:
-	# The wind globals are unset without a renderer (headless), where the shader's fallbacks apply
-	var wind: Variant = RenderingServer.global_shader_parameter_get(&"weather_wind_direction")
-	var wind_dir: Vector2 = Vector2(wind.x, wind.z) if wind is Vector3 else Vector2.ZERO
+	# Reading the shader globals back is editor-only, so the wind comes from WeatherFX itself
+	var wind: Vector3 = weather.wind_direction if weather else Vector3.RIGHT
+	var wind_dir: Vector2 = Vector2(wind.x, wind.z)
 	wind_dir = wind_dir.normalized() if wind_dir.length() >= 0.001 else Vector2.RIGHT
-	var strength: Variant = RenderingServer.global_shader_parameter_get(&"weather_wind_strength")
-	var wind_speed: float = maxf(0.1, strength if strength is float else 0.0)
+	var wind_speed: float = maxf(0.1, weather.current_wind_strength if weather else 0.0)
 	var speed: float = _material.get_shader_parameter("wave_speed") * (1.0 + wind_speed * 0.15)
 	var amplitude: float = _material.get_shader_parameter("wave_amplitude") * (0.6 + clampf(wind_speed * 0.1, 0.0, 2.0))
 	var frequency: float = _material.get_shader_parameter("wave_frequency")

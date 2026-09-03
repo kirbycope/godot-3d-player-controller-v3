@@ -1173,10 +1173,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -24)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.01, 0)
 mesh = SubResource("QuadMesh_hxkk4")
 
-[node name="WaterArea3D" type="Area3D" parent="Pool" unique_id=98712397 groups=["WATER"] node_paths=PackedStringArray("water_mesh")]
+[node name="WaterArea3D" type="Area3D" parent="Pool" unique_id=98712397 groups=["WATER"] node_paths=PackedStringArray("water_mesh", "weather")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.3, 0)
 script = ExtResource("buoyancy_script")
 water_mesh = NodePath("../Water")
+weather = NodePath("../../WeatherFX")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Pool/WaterArea3D" unique_id=98712396]
 shape = SubResource("BoxShape3D_hxkk4")
