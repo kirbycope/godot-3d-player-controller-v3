@@ -92,12 +92,13 @@ func _process(_delta: float) -> void:
 	mesh.surface_end()
 
 
-## Starts the cast; the float leaves [member cast_release] seconds into the cast animation.
+## Starts the cast facing the crosshair, like a throw; the float leaves [member cast_release] seconds into the animation.
 func cast() -> void:
 	if state != State.IDLE:
 		return
 	state = State.CASTING
 	player.is_casting_line = true
+	player.rotate_model_to_direction(-player.projectile_raycast.global_basis.z)
 	emote_state.start("FishingCast")
 	cast_timer.start(cast_release)
 
@@ -154,9 +155,10 @@ func _clear_line() -> void:
 func _on_cast_timer_timeout() -> void:
 	if state != State.CASTING:
 		return
-	var origin: Vector3 = player.global_position + player.up_direction * 1.3 + player.get_facing_direction() * 0.4
 	var ray: RayCast3D = player.projectile_raycast
 	ray.force_raycast_update()
+	var aim: Vector3 = (-ray.global_basis.z).slide(player.up_direction).normalized()
+	var origin: Vector3 = player.global_position + player.up_direction * 1.3 + aim * 0.4
 	var target: Vector3 = ray.get_collision_point() if ray.is_colliding() else ray.global_position - ray.global_basis.z * max_cast_distance
 	var flat: Vector3 = (target - origin).slide(Vector3.UP)
 	if flat.length() > max_cast_distance:

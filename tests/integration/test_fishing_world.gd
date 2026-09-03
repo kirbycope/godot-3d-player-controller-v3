@@ -26,6 +26,8 @@ func before_each() -> void:
 func _cast_and_wait_for_water() -> void:
 	rod.cast()
 	assert_eq(rod.state, FishingRod.State.CASTING)
+	var aim: Vector3 = (-player.projectile_raycast.global_basis.z).slide(Vector3.UP).normalized()
+	assert_gt(player.player_model.global_basis.z.slide(Vector3.UP).normalized().dot(aim), 0.95, "Casting turns the model (forward is +Z) to the crosshair, like throwing")
 	assert_false(rod.cast_timer.is_stopped(), "The cast timer runs to the animation's release point")
 	rod.cast_timer.stop()
 	rod._on_cast_timer_timeout()
