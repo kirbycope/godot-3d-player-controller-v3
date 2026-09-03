@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="Fish" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/fish.gd" id="1_fish"]
+
+[resource]
+script = ExtResource("1_fish")
+display_name = "Old Boot"
+color = Color(0.4, 0.25, 0.12, 1)
+min_length_cm = 0.0
+max_length_cm = 0.0
+weight = 1.5
+from_hour = 0
+to_hour = 24
+rain = 0
+is_junk = true
+shadow_scale = 1.0

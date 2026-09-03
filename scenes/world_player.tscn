@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/player.tscn" id="6_e6ckp"]
 [ext_resource type="PackedScene" path="res://scenes/paraglider.tscn" id="7_mvg0v"]
 [ext_resource type="PackedScene" path="res://scenes/skateboard.tscn" id="8_h3odw"]
 [ext_resource type="PackedScene" path="res://addons/radi_ot/scenes/radi_ot_player_3d.tscn" id="9_mvg0v"]
 [ext_resource type="Resource" path="res://addons/radi_ot/resources/stations/seattle_stations_default.tres" id="345_5hhec"]
+[ext_resource type="PackedScene" uid="uid://c7fishcard0001" path="res://scenes/fish_card.tscn" id="fish_card"]
 [node name="Player" unique_id=994458497 node_paths=PackedStringArray("animation_tree") instance=ExtResource("6_e6ckp")]
 animation_tree = NodePath("AnimationTree")
 paraglider_scene = ExtResource("7_mvg0v")
@@ -304,3 +305,5 @@ max_distance = 40.0
 station_collection = ExtResource("345_5hhec")
 
 [editable path="PlayerModel"]
+
+[node name="FishCard" parent="Controls" instance=ExtResource("fish_card")]

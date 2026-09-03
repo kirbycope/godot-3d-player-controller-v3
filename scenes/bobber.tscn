@@ -1,0 +1,57 @@
+[gd_scene format=3 uid="uid://c7bobber00001"]
+
+[ext_resource type="Script" path="res://scenes/bobber.gd" id="1_bobber"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_bobber"]
+radius = 0.06
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_top"]
+albedo_color = Color(0.9, 0.12, 0.1, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bottom"]
+albedo_color = Color(0.95, 0.95, 0.9, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_top"]
+material = SubResource("StandardMaterial3D_top")
+radius = 0.06
+height = 0.12
+
+[sub_resource type="SphereMesh" id="SphereMesh_bottom"]
+material = SubResource("StandardMaterial3D_bottom")
+radius = 0.05
+height = 0.1
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_sensor"]
+radius = 0.05
+
+[node name="Bobber" type="RigidBody3D"]
+mass = 0.05
+continuous_cd = true
+contact_monitor = true
+max_contacts_reported = 2
+script = ExtResource("1_bobber")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_bobber")
+
+[node name="Float" type="Node3D" parent="."]
+
+[node name="Top" type="MeshInstance3D" parent="Float"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, 0)
+mesh = SubResource("SphereMesh_top")
+
+[node name="Bottom" type="MeshInstance3D" parent="Float"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.04, 0)
+mesh = SubResource("SphereMesh_bottom")
+
+[node name="BuoyancyProbe" type="Marker3D" parent="." groups=["BuoyancyProbe"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.28, 0)
+
+[node name="WaterSensor" type="Area3D" parent="."]
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WaterSensor"]
+shape = SubResource("SphereShape3D_sensor")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="area_entered" from="WaterSensor" to="." method="_on_water_sensor_area_entered"]

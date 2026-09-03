@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="Fish" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/fish.gd" id="1_fish"]
+
+[resource]
+script = ExtResource("1_fish")
+display_name = "Rainbow Trout"
+color = Color(0.8, 0.55, 0.6, 1)
+min_length_cm = 25.0
+max_length_cm = 50.0
+weight = 3.0
+from_hour = 0
+to_hour = 24
+rain = 1
+is_junk = false
+shadow_scale = 1.0

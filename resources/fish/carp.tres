@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="Fish" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/fish.gd" id="1_fish"]
+
+[resource]
+script = ExtResource("1_fish")
+display_name = "Carp"
+color = Color(0.45, 0.5, 0.3, 1)
+min_length_cm = 25.0
+max_length_cm = 60.0
+weight = 5.0
+from_hour = 0
+to_hour = 24
+rain = 0
+is_junk = false
+shadow_scale = 1.2

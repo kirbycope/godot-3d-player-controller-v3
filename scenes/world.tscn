@@ -72,6 +72,14 @@
 [ext_resource type="PackedScene" path="res://scenes/world_player.tscn" id="mp_world_player"]
 [ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/arrow.tscn" id="mp_arrow"]
 [ext_resource type="Script" path="res://scenes/buoyancy.gd" id="buoyancy_script"]
+[ext_resource type="Script" path="res://scenes/fish.gd" id="fish_script"]
+[ext_resource type="Script" path="res://scenes/fish_shadows.gd" id="fish_shadows_script"]
+[ext_resource type="Resource" path="res://resources/fish/carp.tres" id="fish_carp"]
+[ext_resource type="Resource" path="res://resources/fish/perch.tres" id="fish_perch"]
+[ext_resource type="Resource" path="res://resources/fish/catfish.tres" id="fish_catfish"]
+[ext_resource type="Resource" path="res://resources/fish/rainbow_trout.tres" id="fish_trout"]
+[ext_resource type="Resource" path="res://resources/fish/koi.tres" id="fish_koi"]
+[ext_resource type="Resource" path="res://resources/fish/old_boot.tres" id="fish_boot"]
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
 ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -1173,14 +1181,21 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -24)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.01, 0)
 mesh = SubResource("QuadMesh_hxkk4")
 
-[node name="WaterArea3D" type="Area3D" parent="Pool" unique_id=98712397 groups=["WATER"] node_paths=PackedStringArray("water_mesh", "weather")]
+[node name="WaterArea3D" type="Area3D" parent="Pool" unique_id=98712397 groups=["WATER"] node_paths=PackedStringArray("water_mesh", "weather", "clock", "shadows")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.3, 0)
 script = ExtResource("buoyancy_script")
 water_mesh = NodePath("../Water")
 weather = NodePath("../../WeatherFX")
+fish = Array[ExtResource("fish_script")]([ExtResource("fish_carp"), ExtResource("fish_perch"), ExtResource("fish_catfish"), ExtResource("fish_trout"), ExtResource("fish_koi"), ExtResource("fish_boot")])
+clock = NodePath("../../DateAndTime")
+shadows = NodePath("../FishShadows")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Pool/WaterArea3D" unique_id=98712396]
 shape = SubResource("BoxShape3D_hxkk4")
+
+[node name="FishShadows" type="Node3D" parent="Pool" node_paths=PackedStringArray("water")]
+script = ExtResource("fish_shadows_script")
+water = NodePath("../WaterArea3D")
 
 [node name="Boat" parent="." unique_id=1834386809 node_paths=PackedStringArray("water") instance=ExtResource("48_odf6h")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, -18)

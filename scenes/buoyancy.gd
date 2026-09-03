@@ -6,6 +6,7 @@ extends Area3D
 ## proportion to how deep each probe sits below the wave surface, so offset probes make hulls roll and
 ## pitch. Forces have no signal, so they are applied per physics frame while any body is inside.
 ## [method get_wave_offset] mirrors the vertex waves of pond_water.gdshader so kinematic bodies ride them too.
+## The water also owns what can be fished out of it: [member fish], picked by the in-game hour and rain.
 
 const WAVE_TIME_ROLLOVER: float = 3600.0 ## Shader TIME wraps at rendering/limits/time/time_rollover_secs.
 
@@ -15,6 +16,10 @@ const WAVE_TIME_ROLLOVER: float = 3600.0 ## Shader TIME wraps at rendering/limit
 @export var probe_depth: float = 0.5 ## Metres below the surface at which a probe counts as fully submerged.
 @export var drag: float = 8.0 ## Linear damping per unit of submersion, scaled by mass; settles a bob within a few swings.
 @export var angular_drag: float = 2.0 ## Angular damping per unit of submersion, scaled by mass.
+@export_group("Fishing")
+@export var fish: Array[Fish] = [] ## What bites here; empty water never bites.
+@export var clock: DateAndTime ## In-game clock for the fish tables; without it every table reads noon.
+@export var shadows: FishShadows ## Optional shadows swimming in this water.
 
 var bodies: Dictionary[RigidBody3D, Array] = {} ## Floating body -> the nodes it is lifted at.
 
@@ -79,3 +84,25 @@ func _on_body_exited(body: Node3D) -> void:
 	if bodies.erase(body as RigidBody3D):
 		body.can_sleep = true
 	set_physics_process(not bodies.is_empty())
+
+
+func is_raining() -> bool:
+	return WeatherFX.get_precipitation_strength() > 0.0
+
+
+## Weighted pick among the fish available at the current hour and weather; null when nothing bites.
+func pick_fish() -> Fish:
+	var hour: int = clock.get_hour() if clock else 12
+	var raining: bool = is_raining()
+	var available: Array[Fish] = fish.filter(func(candidate: Fish) -> bool: return candidate.is_available(hour, raining))
+	if available.is_empty():
+		return null
+	var total: float = 0.0
+	for candidate: Fish in available:
+		total += candidate.weight
+	var roll: float = randf() * total
+	for candidate: Fish in available:
+		roll -= candidate.weight
+		if roll <= 0.0:
+			return candidate
+	return available.back()

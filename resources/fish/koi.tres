@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="Fish" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/fish.gd" id="1_fish"]
+
+[resource]
+script = ExtResource("1_fish")
+display_name = "Koi"
+color = Color(1, 0.55, 0.15, 1)
+min_length_cm = 30.0
+max_length_cm = 70.0
+weight = 1.0
+from_hour = 5
+to_hour = 8
+rain = 0
+is_junk = false
+shadow_scale = 1.4
