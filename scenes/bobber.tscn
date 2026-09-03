@@ -62,6 +62,7 @@ shape = SubResource("SphereShape3D_sensor")
 
 [node name="Line" type="MeshInstance3D" parent="."]
 top_level = true
+cast_shadow = 0
 material_override = SubResource("StandardMaterial3D_line")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
