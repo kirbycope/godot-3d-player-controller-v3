@@ -55,3 +55,9 @@ func test_warp_zone_and_warp_to() -> void:
 	player.warp_to(Transform3D(Basis(), Vector3(5.0, 6.0, 7.0)))
 	assert_eq(player.global_position, Vector3(5.0, 6.0, 7.0))
 	assert_eq(player.up_direction, Vector3.UP)
+
+
+func test_hud_temperature_gauge_stays_square() -> void:
+	var gauge: Control = world.get_node("HUD/BottomRight/TemperatureGaugeDisplay")
+	await wait_physics_frames(2)
+	assert_eq(gauge.size, Vector2(36.0, 36.0), "The gauge dial is 36x36; a stretched height means an unpinned offset_bottom")

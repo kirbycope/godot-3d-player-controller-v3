@@ -1397,10 +1397,12 @@ temperature_unit = 1
 
 [node name="TemperatureGaugeDisplay" parent="HUD/BottomRight" unique_id=98712312 node_paths=PackedStringArray("weather_fx") instance=ExtResource("60_tgdisplay")]
 custom_minimum_size = Vector2(36, 36)
+layout_mode = 0
 anchors_preset = 0
 offset_left = 100.0
 offset_top = -36.0
 offset_right = 136.0
+offset_bottom = 0.0
 mouse_filter = 2
 weather_fx = NodePath("../../../WeatherFX")
 
