@@ -4,7 +4,8 @@ extends Equipment
 ## inside the hook window hooks the fish, reeling plays out on its own and the catch lands on the HUD card.
 ##
 ## Timing runs on the Timer nodes wired in the scene; the fish table and shadows come from the [Buoyancy]
-## water the float lands in. Only the caster sees the float and line; other peers see the emotes.
+## water the float lands in. The float goes through the ProjectileSpawner when the scene has one, so every
+## peer sees the float, its line, the dips and the catch; the rod itself only runs on its owner.
 
 signal line_cast ## The float has left the rod.
 signal bite(fish: Fish) ## The hook window is open.
@@ -19,7 +20,6 @@ const CAST_ANIMATION: StringName = &"Fishing Cast/mixamo_com"
 
 @export var fishing_action: StringName = &"action"
 @export var bobber_scene: PackedScene
-@export var fish_scene: PackedScene ## Placeholder catch model for any [Fish] without one of its own.
 @export var max_cast_distance: float = 12.0
 @export var cast_release: float = 1.5 ## Seconds into the cast animation at which the float leaves the rod.
 @export var bite_wait: Vector2 = Vector2(3.0, 8.0) ## Seconds before the bite, before the rain and shadow bonuses.
@@ -47,14 +47,11 @@ var emote_state: AnimationNodeStateMachinePlayback
 @onready var nibble_timer: Timer = $NibbleTimer
 @onready var hook_timer: Timer = $HookTimer
 @onready var reel_timer: Timer = $ReelTimer
-@onready var line: MeshInstance3D = $Line
 @onready var audio: AudioStreamPlayer3D = $Audio
 
 
 ## Runs for the equipped copy (which has [member player] set); the world pickup does nothing.
 func _ready() -> void:
-	set_process(false)
-	line.mesh = ImmediateMesh.new()
 	# The model's own thread hangs to the floor; the Line node draws the real one to the float
 	var thread: Node3D = $Sketchfab_Scene.find_child("*RodThread*", true, false)
 	if thread:
@@ -78,18 +75,6 @@ func _input(event: InputEvent) -> void:
 			retract()
 		State.BITE:
 			hook()
-
-
-## Draws the line from the rod tip to the float while one is out.
-func _process(_delta: float) -> void:
-	if not is_instance_valid(bobber):
-		return
-	var mesh: ImmediateMesh = line.mesh
-	mesh.clear_surfaces()
-	mesh.surface_begin(Mesh.PRIMITIVE_LINES)
-	mesh.surface_add_vertex(line.to_local(get_rod_tip()))
-	mesh.surface_add_vertex(line.to_local(bobber.global_position))
-	mesh.surface_end()
 
 
 ## Starts the cast facing the crosshair, like a throw; the float leaves [member cast_release] seconds into the animation.
@@ -139,12 +124,10 @@ func _clear_line() -> void:
 	for timer: Timer in [cast_timer, bite_timer, nibble_timer, hook_timer, reel_timer]:
 		timer.stop()
 	if is_instance_valid(bobber):
-		bobber.queue_free()
+		bobber.retract.rpc()
 	bobber = null
 	water = null
 	hooked_fish = null
-	set_process(false)
-	(line.mesh as ImmediateMesh).clear_surfaces()
 	animation_player.stop()
 	player.is_casting_line = false
 	player.is_reeling_line = false
@@ -168,21 +151,40 @@ func _on_cast_timer_timeout() -> void:
 	var time: float = clampf(flat.length() / 6.0, 0.5, 1.4)
 	var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 	var velocity: Vector3 = flat / time + Vector3.UP * (rise + 0.5 * gravity * time * time) / time
-	bobber = bobber_scene.instantiate()
-	bobber.landed_in_water.connect(_on_bobber_landed_in_water)
-	bobber.landed_dry.connect(retract)
-	player.get_parent().add_child(bobber)
-	bobber.launch(Transform3D(Basis(), origin), velocity.normalized(), velocity.length(), player, self)
+	var spawner: ProjectileSpawner = get_tree().get_first_node_in_group(&"ProjectileSpawner") as ProjectileSpawner
+	if spawner:
+		# A client's copy arrives through the spawner's spawned signal instead of the return value
+		if not spawner.spawned.is_connected(_on_spawner_spawned):
+			spawner.spawned.connect(_on_spawner_spawned)
+		var spawned: Projectile = spawner.fire(bobber_scene, Transform3D(Basis(), origin), velocity.normalized(), velocity.length(), player, self)
+		if spawned:
+			_adopt_bobber(spawned as Bobber)
+	else:
+		var local: Bobber = bobber_scene.instantiate()
+		player.get_parent().add_child(local)
+		local.launch(Transform3D(Basis(), origin), velocity.normalized(), velocity.length(), player, self)
+		_adopt_bobber(local)
 	state = State.WAITING
 	player.is_casting_line = false
-	set_process(true)
 	line_cast.emit()
+
+
+## The spawner hands a client its own float once the server has spawned it.
+func _on_spawner_spawned(node: Node) -> void:
+	if bobber == null and state == State.WAITING and node is Bobber and (node as Bobber).shooter == player:
+		_adopt_bobber(node as Bobber)
+
+
+func _adopt_bobber(float_node: Bobber) -> void:
+	bobber = float_node
+	bobber.landed_in_water.connect(_on_bobber_landed_in_water)
+	bobber.landed_dry.connect(retract)
 
 
 ## Rolls what will bite and how soon; rain and a nearby shadow both shorten the wait.
 func _on_bobber_landed_in_water(area: Area3D) -> void:
 	water = area as Buoyancy
-	bobber.plunge(0.08, 0.5)
+	bobber.plunge.rpc(0.08, 0.5)
 	_play(splash_sfx)
 	hooked_fish = water.pick_fish() if water else null
 	if hooked_fish == null:
@@ -199,7 +201,7 @@ func _on_bobber_landed_in_water(area: Area3D) -> void:
 func _on_nibble_timer_timeout() -> void:
 	if state != State.WAITING or bite_timer.time_left < 0.6:
 		return
-	bobber.plunge(0.04, 0.4)
+	bobber.plunge.rpc(0.04, 0.4)
 	_play(nibble_sfx)
 	nibble_timer.start(randf_range(nibble_interval.x, nibble_interval.y))
 
@@ -210,7 +212,7 @@ func _on_bite_timer_timeout() -> void:
 	state = State.BITE
 	nibble_timer.stop()
 	hooked_length = hooked_fish.roll_length()
-	bobber.plunge(0.35, 0.8)
+	bobber.plunge.rpc(0.35, 0.8)
 	_play(bite_sfx)
 	Input.start_joy_vibration(0, 0.5, 0.7, 0.3)
 	hook_timer.start(hook_window)
@@ -231,31 +233,16 @@ func _on_reel_timer_timeout() -> void:
 		return
 	var fish: Fish = hooked_fish
 	var length: float = hooked_length
-	var from: Vector3 = bobber.global_position
+	# Every peer watches the catch arc out of the water; the card is the caster's alone
+	bobber.present_catch.rpc(fish.resource_path, length)
 	state = State.IDLE
 	_clear_line()
 	emote_state.start("FishingIdle")
-	_present_catch(fish, length, from)
-	_play(catch_sfx)
-	fish_caught.emit(fish, length)
-
-
-## Arcs the catch out of the water into the Player's hands and shows the card.
-func _present_catch(fish: Fish, length: float, from: Vector3) -> void:
-	var scene: PackedScene = fish.model_scene if fish.model_scene else fish_scene
-	var model: Node3D = scene.instantiate()
-	player.get_parent().add_child(model)
-	model.global_position = from
-	if model is FishModel:
-		model.setup(fish, length)
-	var target: Vector3 = player.global_position + player.up_direction * 1.3
-	var tween: Tween = model.create_tween()
-	tween.tween_method(func(t: float) -> void: model.global_position = from.lerp(target, t) + Vector3.UP * sin(t * PI) * 1.5, 0.0, 1.0, 0.7)
-	tween.tween_interval(1.5)
-	tween.tween_callback(model.queue_free)
 	var card: FishCard = player.controls.get_node_or_null(^"FishCard") as FishCard
 	if card:
 		card.show_catch(fish, length)
+	_play(catch_sfx)
+	fish_caught.emit(fish, length)
 
 
 func _play(stream: AudioStream) -> void:

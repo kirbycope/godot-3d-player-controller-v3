@@ -38,6 +38,8 @@ func _cast_and_wait_for_water() -> void:
 		if rod.water:
 			break
 	assert_eq(rod.water, world.get_node("Pool/WaterArea3D"), "The float lands in the pool")
+	assert_eq(rod.bobber.get_parent(), world.get_node("Projectiles"), "The float goes through the ProjectileSpawner so peers see it")
+	assert_eq((rod.bobber.line.mesh as ImmediateMesh).get_surface_count(), 1, "The float draws its own line back to the rod")
 
 
 func test_full_loop_catches_a_fish() -> void:
@@ -58,6 +60,8 @@ func test_full_loop_catches_a_fish() -> void:
 	assert_signal_emitted(rod, "fish_caught")
 	assert_eq(rod.state, FishingRod.State.IDLE)
 	assert_null(rod.bobber, "The line is back in")
+	await wait_physics_frames(2)
+	assert_true(world.get_node("Projectiles").get_children().any(func(n: Node) -> bool: return n is FishModel), "The catch model arcs out of the water")
 	var card: FishCard = player.controls.get_node("FishCard")
 	assert_true(card.visible, "The catch card is up")
 	assert_ne(card.name_label.text, "", "The card names the catch")

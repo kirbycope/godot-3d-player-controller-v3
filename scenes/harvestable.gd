@@ -6,12 +6,18 @@ extends Node3D
 @export var hit_delay: float = 0.9 ## Seconds after the harvesting animation starts before the hit lands.
 @export var capability: StringName = &"can_log" ## Equipment capability needed to harvest (see [Equipment]).
 @export var harvest_animation: String = "Logging" ## Locomotion node played inside the equipped weapon group while harvesting.
+@export_group("Strike Effects")
+@export var hit_sfx: AudioStream ## Played on every strike, on every peer.
+@export var depleted_sfx: AudioStream ## Played when the last strike lands.
 
-var hits_taken: int = 0: ## Replicated from the server; the setter keeps the progress bar in step.
+var hits_taken: int = 0: ## Replicated from the server; the setter keeps the progress bar in step and plays each strike.
 	set(value):
+		var struck: bool = value > hits_taken
 		hits_taken = value
 		if progress_bar:
 			progress_bar.value = value
+		if struck:
+			play_strike()
 var is_depleted: bool = false: ## Replicated from the server; the setter swaps the visuals.
 	set(value):
 		if value == is_depleted:
@@ -19,10 +25,13 @@ var is_depleted: bool = false: ## Replicated from the server; the setter swaps t
 		is_depleted = value
 		if value:
 			_on_depleted()
+			_play(depleted_sfx)
 var player: Player
 
 @onready var action_prompt: ActionPrompt = $ActionPrompt
 @onready var progress_bar: ProgressBar3D = $ProgressBar3D
+@onready var hit_audio: AudioStreamPlayer3D = $HitAudio
+@onready var hit_particles: GPUParticles3D = $HitParticles ## One-shot chips at strike height.
 
 
 ## Called when the node enters the scene tree for the first time.
@@ -71,6 +80,19 @@ func register_hit() -> void:
 func _request_hit() -> void:
 	if multiplayer.is_server():
 		register_hit()
+
+
+## Chips fly and the strike sound plays; runs on every peer through the replicated hit count.
+func play_strike() -> void:
+	if hit_particles:
+		hit_particles.restart()
+	_play(hit_sfx)
+
+
+func _play(stream: AudioStream) -> void:
+	if hit_audio and stream:
+		hit_audio.stream = stream
+		hit_audio.play()
 
 
 ## Swaps the intact model for its depleted version. Overridden by subclasses.

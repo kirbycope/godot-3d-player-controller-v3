@@ -5,21 +5,14 @@
 [ext_resource type="Texture2D" uid="uid://cxepvualva35x" path="res://addons/3d_player_controller/assets/game_icons/fishing-pole.svg" id="2_binnr"]
 [ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://scenes/action_prompt.tscn" id="2_h4s14"]
 [ext_resource type="PackedScene" uid="uid://c7bobber00001" path="res://scenes/bobber.tscn" id="3_bobber"]
-[ext_resource type="PackedScene" uid="uid://c7fishmodel001" path="res://scenes/fish_model.tscn" id="4_fish"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1xn5j"]
 radius = 0.2
 height = 2.1
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_line"]
-shading_mode = 0
-albedo_color = Color(0.9, 0.9, 0.85, 1)
-cull_mode = 2
-
 [node name="FishingRod" type="Node3D" unique_id=2053350041]
 script = ExtResource("1_1xn5j")
 bobber_scene = ExtResource("3_bobber")
-fish_scene = ExtResource("4_fish")
 bone_attachment_bone_name = "LeftHand"
 equipment_type = 4
 icon = ExtResource("2_binnr")
@@ -44,9 +37,6 @@ unique_name_in_owner = true
 
 [node name="ActionPrompt" parent="." unique_id=1664152999 instance=ExtResource("2_h4s14")]
 transform = Transform3D(0.34202003, -0.9396927, -4.1075268e-08, 0.9396927, 0.34202003, 1.495017e-08, -2.6865725e-16, -4.3711385e-08, 1, -1.1198463, 0.4710101, 0)
-
-[node name="Line" type="MeshInstance3D" parent="."]
-material_override = SubResource("StandardMaterial3D_line")
 
 [node name="Audio" type="AudioStreamPlayer3D" parent="."]
 bus = &"SFX"

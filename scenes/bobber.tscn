@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://c7bobber00001"]
 
 [ext_resource type="Script" path="res://scenes/bobber.gd" id="1_bobber"]
+[ext_resource type="PackedScene" uid="uid://c7fishmodel001" path="res://scenes/fish_model.tscn" id="2_fish"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_bobber"]
 radius = 0.06
@@ -24,12 +25,18 @@ height = 0.1
 [sub_resource type="SphereShape3D" id="SphereShape3D_sensor"]
 radius = 0.05
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_line"]
+shading_mode = 0
+albedo_color = Color(0.9, 0.9, 0.85, 1)
+cull_mode = 2
+
 [node name="Bobber" type="RigidBody3D"]
 mass = 0.05
 continuous_cd = true
 contact_monitor = true
 max_contacts_reported = 2
 script = ExtResource("1_bobber")
+fish_scene = ExtResource("2_fish")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_bobber")
@@ -52,6 +59,10 @@ monitorable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WaterSensor"]
 shape = SubResource("SphereShape3D_sensor")
+
+[node name="Line" type="MeshInstance3D" parent="."]
+top_level = true
+material_override = SubResource("StandardMaterial3D_line")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="area_entered" from="WaterSensor" to="." method="_on_water_sensor_area_entered"]
