@@ -334,9 +334,6 @@ func drop() -> void:
 	_collision_exception_added = false
 	velocity = Vector3.ZERO
 
-func throw(throw_dir: Vector3 = Vector3.ZERO, throw_power: float = 1.0) -> void:
-	throw_with_direction(throw_dir, throw_power)
-
 func throw_with_direction(throw_dir: Vector3 = Vector3.ZERO, throw_power: float = 1.0) -> void:
 	is_held = false
 	is_thrown = true

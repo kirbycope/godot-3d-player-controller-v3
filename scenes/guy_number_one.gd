@@ -43,7 +43,7 @@ func _play_hit_reaction(source: Node, hit_node: Node = null) -> void:
 			elif source.get_parent() is Node3D:
 				attacker = source.get_parent()
 		if attacker == null:
-			attacker = get_tree().get_first_node_in_group("player")
+			attacker = get_tree().get_first_node_in_group("Player")
 				
 		if attacker:
 			var to_attacker: Vector3 = global_position.direction_to(attacker.global_position)

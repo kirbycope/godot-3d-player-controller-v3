@@ -7,10 +7,6 @@ var player: Player
 @onready var seat_01: Marker3D = $Seat01
 
 
-func _ready() -> void:
-	pass
-
-
 func _input(event: InputEvent) -> void:
 	if not is_multiplayer_authority(): return
 

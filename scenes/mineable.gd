@@ -43,10 +43,9 @@ func _input(event: InputEvent) -> void:
 
 
 ## Called by [HitDetection] when a melee weapon connects with this object.
-func register_weapon_hit(equipment: Node = null, hit_node: Node = null) -> void:
+func register_weapon_hit(equipment: Node = null, _hit_node: Node = null) -> void:
 	if equipment and "can_mine" in equipment and equipment.can_mine:
 		register_hit()
-	print("hit_node: ", hit_node)
 
 
 ## Applies one hit of damage; depletes the ore once enough hits land.

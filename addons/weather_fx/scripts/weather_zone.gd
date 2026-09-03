@@ -12,7 +12,6 @@ signal zone_entered(zone_name: String, biome: ClimateData.BiomeZone)
 signal zone_exited(zone_name: String, biome: ClimateData.BiomeZone)
 
 @export var biome: ClimateData.BiomeZone = ClimateData.BiomeZone.TEMPERATE_PLAINS
-@export var priority_level: int = 0
 @export var weather_fx_path: NodePath = ^""
 
 var _weather_fx: Node3D

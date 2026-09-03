@@ -279,20 +279,6 @@ func _update_sun_lighting() -> void:
 	sun_light.light_color = Color(1.0, 0.95, 0.85) if is_day else Color(0.35, 0.45, 0.7)
 
 
-func _apply_biome_ambient(biome: ClimateData.BiomeZone) -> void:
-	match biome:
-		ClimateData.BiomeZone.ARCTIC_TUNDRA, ClimateData.BiomeZone.ALPINE_PEAKS, ClimateData.BiomeZone.DESERT_GLACIER:
-			sun_light.light_color = Color(0.9, 0.95, 1.0)
-		ClimateData.BiomeZone.VOLCANIC_FOOTHILLS, ClimateData.BiomeZone.VOLCANIC_CRATER, ClimateData.BiomeZone.VOLCANIC_CALDERA:
-			sun_light.light_color = Color(1.0, 0.7, 0.5)
-		ClimateData.BiomeZone.DESERT_DUNES, ClimateData.BiomeZone.DESERT_PLATEAU, ClimateData.BiomeZone.DEEP_DESERT, ClimateData.BiomeZone.ARID_CANYON:
-			sun_light.light_color = Color(1.0, 0.9, 0.7)
-		ClimateData.BiomeZone.TROPICAL_RAINFOREST, ClimateData.BiomeZone.WETLANDS_VALLEY, ClimateData.BiomeZone.HUMID_COAST:
-			sun_light.light_color = Color(0.85, 1.0, 0.9)
-		_:
-			sun_light.light_color = Color(1.0, 0.95, 0.85)
-
-
 # ------------------------------------------------------------------------------
 # Interactive Camera Controls
 # ------------------------------------------------------------------------------

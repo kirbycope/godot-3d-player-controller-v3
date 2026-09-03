@@ -6,15 +6,11 @@ const RADIO_OFF_ICON: Texture2D = preload("res://addons/radi_ot/assets/icons/sto
 const STEAM_RESULT_OK: int = 1
 const STEAM_LOBBY_TYPE_PUBLIC: int = 2
 
-@export var little_buddy_count: int = 64
-@export var spawn_frame_interval: int = 4
 @export var max_lobby_players: int = 4
 
 @onready var player: Player = $Player
 @onready var first_buddy: Node3D = get_node_or_null("LittleBuddy") as Node3D
 @onready var radi_ot_player: RadiOtPlayer3D = get_node_or_null("Player/RadiOtPlayer3D") as RadiOtPlayer3D
-var buddy_list: Array[Node3D] = []
-var frame_counter: int = 0
 var _was_driving: bool = false
 
 
@@ -38,21 +34,8 @@ func _ready() -> void:
 		if hud:
 			hud.hide_hud()
 
-	if first_buddy:
-		if player:
-			first_buddy.set("player", player)
-		buddy_list.append(first_buddy)
-
-
-## Called when there is an input event.
-func _input(event: InputEvent) -> void:
-	# DEBUG - Whistle action triggers ragdoll state for the player
-	if event.is_action_pressed("whistle"):
-		if player and (player.is_paused or (player.pause and player.pause.visible)):
-			return
-		if player and player.held_object and player.held_object.is_holding_object():
-			return
-		player.state_machine.travel(player.current_state, NodeStateMachine.States.RAGDOLLING)
+	if first_buddy and player:
+		first_buddy.set("player", player)
 
 
 ## Called every physics frame. 'delta' is the elapsed time since the previous frame.
@@ -72,17 +55,6 @@ func _physics_process(_delta: float) -> void:
 			_on_player_started_driving()
 		else:
 			_on_player_stopped_driving()
-
-	# Spawn LittleBuddy at the specified frame interval until reaching target count.
-	#if first_buddy and buddy_list.size() < little_buddy_count:
-	#	frame_counter += 1
-	#	if frame_counter >= spawn_frame_interval:
-	#		frame_counter = 0
-	#		var duplicate_buddy = first_buddy.duplicate() as Node3D
-	#		if player:
-	#			duplicate_buddy.set("player", player)
-	#		add_child(duplicate_buddy)
-	#		buddy_list.append(duplicate_buddy)
 
 	# If we're below -40, respawn (teleport to the initial position).
 	if player and not player.is_driving and not player.is_flying:

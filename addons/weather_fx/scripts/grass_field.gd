@@ -102,11 +102,11 @@ const QUATERNIUS_MESH_PATHS = {
 @export_group("Wildfire Physics")
 @export var enable_wildfire: bool = true ## Enables wind-reactive grass fires and thermal updrafts across the field.
 @export var fire_spread_speed: float = 1.5 ## Fire front creep speed in m/s, clamped to the BotW 1.2-1.8 band. Wind biases direction, not speed.
-@export var max_active_fires: int = 6
 
 ## BotW decomp fire front creep speed band (m/s).
 const CREEP_SPEED_MIN: float = 1.2
 const CREEP_SPEED_MAX: float = 1.8
+const FIRE_TRAIL_SCENE: PackedScene = preload("res://addons/weather_fx/scenes/fire_trail_node.tscn")
 
 var _instance_origins: Array[Vector3] = []
 var _active_fires: Array[Dictionary] = []
@@ -199,20 +199,12 @@ func _process(delta: float) -> void:
 
 
 func _drop_trail_node(local_pos: Vector3, world_pos: Vector3) -> Node3D:
-	var node_scene = null
-	if ResourceLoader.exists("res://addons/weather_fx/scenes/fire_trail_node.tscn"):
-		node_scene = load("res://addons/weather_fx/scenes/fire_trail_node.tscn") as PackedScene
-	elif ResourceLoader.exists("res://addons/weather_fx/scenes/wildfire_patch.tscn"):
-		node_scene = load("res://addons/weather_fx/scenes/wildfire_patch.tscn") as PackedScene
-
-	if node_scene:
-		var node = node_scene.instantiate() as Node3D
-		node.position = local_pos
-		add_child(node)
-		_trail_nodes.append(node)
-		_consume_grass_in_radius(world_pos, 1.2)
-		return node
-	return null
+	var node: Node3D = FIRE_TRAIL_SCENE.instantiate() as Node3D
+	node.position = local_pos
+	add_child(node)
+	_trail_nodes.append(node)
+	_consume_grass_in_radius(world_pos, 1.2)
+	return node
 
 
 func _spawn_branch_head(pos_2d: Vector2, parent_heading: Vector2, angle_offset: float) -> void:

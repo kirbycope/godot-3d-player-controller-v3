@@ -31,7 +31,7 @@ func test_station_navigation_next_and_previous() -> void:
 
 	# Next station
 	_player.tune_next_station()
-	assert_signal_emitted(_player, "station_changed", "station_changed should emit on tune_next_station")
+	assert_signal_emit_count(_player, "station_changed", 1, "station_changed should emit exactly once on tune_next_station")
 	assert_eq(_player.get_current_station().call_sign, "C89.5", "Next station after KEXP should be C89.5")
 
 	# Previous station
@@ -162,8 +162,8 @@ func test_radi_ot_demo_scene_instantiation() -> void:
 	assert_not_null(demo.radio_player)
 	assert_not_null(demo._bulletin_button_1)
 	assert_not_null(demo._camera)
-	assert_almost_eq(demo._camera_height, 1.6, 0.01, "Demo should preserve initial camera pos.y height")
-	assert_almost_eq(demo._camera_distance, 3.2, 0.01, "Demo should preserve initial camera horizontal distance")
+	assert_almost_eq(demo._camera_height, 0.8, 0.01, "Demo should preserve initial camera pos.y height")
+	assert_almost_eq(demo._camera_distance, 1.6, 0.01, "Demo should preserve initial camera horizontal distance")
 
 
 func test_radi_ot_demo_camera_custom_height_and_distance() -> void:

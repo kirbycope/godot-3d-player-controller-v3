@@ -290,10 +290,7 @@ func _physics_process(delta: float) -> void:
 				if fire_sfx:
 					fire_sfx.stop()
 				if explosion:
-					if explosion.has_method("play"):
-						explosion.play()
-					else:
-						explosion.emitting = true
+					explosion.play()
 				if explosion_sfx:
 					explosion_sfx.play()
 				apply_impulse(up_dir * explosion_impulse_force)

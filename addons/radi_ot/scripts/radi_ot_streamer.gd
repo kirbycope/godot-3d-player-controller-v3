@@ -25,7 +25,6 @@ var _is_bulletin_paused: bool = false
 var _is_web_platform: bool = false
 var _is_buffering: bool = false
 var _is_playing: bool = false
-var _current_url: String = ""
 var _volume_linear: float = 1.0
 var _muted: bool = false
 
@@ -41,7 +40,6 @@ var _active_channel_idx: int = 0
 var _incoming_raw_bytes: PackedByteArray = PackedByteArray()
 var _chunk_queue: Array[AudioStreamMP3] = []
 var _waiting_for_chunk: bool = false
-var _chunk_swap_triggered: bool = false
 
 var _redirect_count: int = 0
 var _max_redirects: int = 4
@@ -105,7 +103,6 @@ func play_station(station: RadioStation) -> void:
 
 	_sync_channel_properties()
 	var url: String = station.stream_url.strip_edges()
-	_current_url = url
 	_is_buffering = true
 	_is_playing = false
 	buffering_started.emit()
@@ -120,7 +117,6 @@ func stop() -> void:
 	_is_playing = false
 	_is_buffering = false
 	_is_bulletin_paused = false
-	_current_url = ""
 
 	if _is_web_platform:
 		_stop_web_stream()
@@ -613,7 +609,6 @@ func _stop_desktop_stream() -> void:
 	_incoming_raw_bytes.clear()
 	_chunk_queue.clear()
 	_waiting_for_chunk = false
-	_chunk_swap_triggered = false
 
 	if _channel_a != null and _channel_a.is_inside_tree() and _channel_a.playing:
 		_channel_a.stop()
@@ -622,6 +617,8 @@ func _stop_desktop_stream() -> void:
 
 
 func _on_desktop_stream_error(error_message: String) -> void:
+	_stop_desktop_stream()
 	_stream_state = StreamState.ERROR
 	_is_buffering = false
+	_is_playing = false
 	playback_failed.emit(error_message)

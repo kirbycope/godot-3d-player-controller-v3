@@ -157,13 +157,13 @@ func test_burnable_grass_ignition_and_thermal_updraft() -> void:
 	player.current_state = NodeStateMachine.States.PARAGLIDING
 	player.is_paragliding = true
 	if player.stamina:
-		player.stamina.value = 50.0
+		player.stamina.stamina = 50.0
 
 	var paragliding_node: Paragliding = player.get_node("NodeStateMachine/Paragliding") as Paragliding
 	assert_not_null(paragliding_node)
 
 	# Verify paraglider detects thermal updraft
-	assert_true(paragliding_node._check_in_updraft(), "Paraglider should detect thermal updraft above burning grass")
+	assert_true(player.is_in_updraft(), "Paraglider should detect thermal updraft above burning grass")
 
 	# Process frame and verify lift
 	paragliding_node._physics_process(0.1)

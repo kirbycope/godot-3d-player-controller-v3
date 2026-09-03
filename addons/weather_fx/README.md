@@ -76,8 +76,7 @@ Gold-standard chemical-engine-inspired fire simulation, fully self-contained wit
 - **`GrassField` creeping wildfire**: `ignite_at(world_pos)` spawns creeper heads that advance the fire front downwind at a clamped **1.2–1.8 m/s** (BotW decomp band, `fire_spread_speed` export) — wind biases *direction and lean*, not raw speed — with organic meandering and lateral branch splits.
 - **`FireTrailNode` life phases**: ignition/grow (0.8s) → peak roaring flame with flicker (2.8s) → burnout decay (1.4s), consuming/charring grass beneath and freeing itself cleanly (updraft areas leave the `Updraft`/`Thermal` groups on burnout — no ghost lift).
 - **`BurnableGrass` interactive patches**: ignite by player action or any `Fire`-group area contact; delegates field-wide creeping to any overlapping `GrassField` so there is a single propagation engine.
-- **`WildfirePatch` / `GroundWildfireSegment`**: stationary burn spots with ash decals and persistent charred stubs.
-- **Thermal updrafts**: every burning node registers a vertical `Area3D` cylinder (~2m radius × 20m height, groups `Updraft` + `Thermal`) that paragliders can catch for lift.
+- **Thermal updrafts**: every burning node registers a vertical `Area3D` cylinder (20 m tall; 2 m radius for `FireTrailNode`, 4.5 m for `BurnableGrass`; groups `Updraft` + `Thermal`) that paragliders can catch for lift.
 - **Proximity VFX culling**: spiraling wind-streak updraft VFX only activates when the player (detected via the "Player" group with `class_name` fallback, camera fallback in player-less scenes) is within 5m.
 - **Rain quenching**: any precipitation strength `>= 0.4` immediately extinguishes all active fires.
 - **Shared wind spread math**: all propagation systems use `WeatherFX.get_wind_spread_factor()` (downwind boost, capped; upwind suppression).
@@ -235,6 +234,10 @@ Special thanks and attributions to open-source creators whose models, textures, 
 - **BinbunVFX** – *Fire Effects Pack* ([binbunvfx.itch.io](https://binbunvfx.itch.io/)) — the billboard flame shader in `assets/vfx/fire/flame_01.gdshader` is adapted from this pack.
 - **TomMusic** – *Fantasy SFX* ([tommusic.itch.io](https://tommusic.itch.io/)) — torch/fire crackle loop in `assets/audio/tommusic/torch_loop.ogg`.
 - **Gravity Sound** – *Weather Sound Pack* ([gravity-sound.itch.io](https://gravity-sound.itch.io/)) — wind ambience used by burning grass audio.
+- **ambientCG** – *Grass 004* ([ambientcg.com/view?id=Grass004](https://ambientcg.com/view?id=Grass004), CC0) — `assets/textures/Grass004_1K-JPG_Color.jpg` ground texture.
+- **Godot Shaders** – *Stylized BOTW Fire* ([godotshaders.com](https://godotshaders.com/shader/stylized-botw-fire/)) and *Stylized Smoke Shader* ([godotshaders.com](https://godotshaders.com/shader/stylized-smoke-shader/)) — shaders, meshes, and textures in `assets/models/loop_box/`. License not recorded — fill in.
+- **`assets/vfx/wind/`** (wind ribbon/streak VFX scenes, meshes, shaders, and textures) — source/license not recorded — fill in.
+- **`assets/audio/tommusic/bgs/`** (Forest Day / Forest Night ambient loops) — source/license not recorded — fill in.
 
 ---
 

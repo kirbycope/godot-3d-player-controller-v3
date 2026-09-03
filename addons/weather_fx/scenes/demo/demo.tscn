@@ -488,3 +488,5 @@ weather_fx_node = NodePath("../../../WeatherFX")
 dial_radius = 16.0
 
 [node name="BackGroundSounds" parent="." unique_id=467843491 instance=ExtResource("17_bgs")]
+
+[connection signal="pressed" from="HUD/ControlPanel/VBox/ButtonRow/UnitButton" to="." method="_on_unit_button_pressed"]

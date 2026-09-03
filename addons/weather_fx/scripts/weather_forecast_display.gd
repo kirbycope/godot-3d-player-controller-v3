@@ -175,12 +175,8 @@ func _setup_ui() -> void:
 
 func _connect_signals() -> void:
 	if is_instance_valid(weather_fx_node):
-		if not weather_fx_node.cycle_advanced.is_connected(_on_cycle_advanced):
-			weather_fx_node.cycle_advanced.connect(_on_cycle_advanced)
 		if not weather_fx_node.forecast_updated.is_connected(_on_forecast_updated):
 			weather_fx_node.forecast_updated.connect(_on_forecast_updated)
-		if not weather_fx_node.biome_changed.is_connected(_on_biome_changed):
-			weather_fx_node.biome_changed.connect(_on_biome_changed)
 		if not weather_fx_node.temperature_changed.is_connected(_on_temperature_changed):
 			weather_fx_node.temperature_changed.connect(_on_temperature_changed)
 		if not weather_fx_node.weather_changed.is_connected(_on_weather_changed):
@@ -189,32 +185,16 @@ func _connect_signals() -> void:
 
 func _disconnect_signals() -> void:
 	if is_instance_valid(weather_fx_node):
-		if weather_fx_node.cycle_advanced.is_connected(_on_cycle_advanced):
-			weather_fx_node.cycle_advanced.disconnect(_on_cycle_advanced)
 		if weather_fx_node.forecast_updated.is_connected(_on_forecast_updated):
 			weather_fx_node.forecast_updated.disconnect(_on_forecast_updated)
-		if weather_fx_node.biome_changed.is_connected(_on_biome_changed):
-			weather_fx_node.biome_changed.disconnect(_on_biome_changed)
 		if weather_fx_node.temperature_changed.is_connected(_on_temperature_changed):
 			weather_fx_node.temperature_changed.disconnect(_on_temperature_changed)
 		if weather_fx_node.weather_changed.is_connected(_on_weather_changed):
 			weather_fx_node.weather_changed.disconnect(_on_weather_changed)
 
 
-func _on_cycle_advanced(_new_active_weather: ClimateData.WeatherType) -> void:
-	if weather_fx_node:
-		var forecast: Array = weather_fx_node.get_forecast()
-		_advance_display_queue(forecast)
-
-
 func _on_forecast_updated(forecast: Array) -> void:
-	if _icon_rects.size() != forecast.size():
-		_rebuild_display(forecast)
-
-
-func _on_biome_changed(_new_biome: ClimateData.BiomeZone, _old_biome: ClimateData.BiomeZone) -> void:
-	if weather_fx_node:
-		_rebuild_display(weather_fx_node.get_forecast())
+	_rebuild_display(forecast)
 
 
 func _on_temperature_changed(_new_temp: float) -> void:
@@ -260,40 +240,6 @@ func _create_icon_rect(w_type: ClimateData.WeatherType, is_active: bool) -> Text
 		rect.modulate = COLOR_FADED if botw_style else Color(0.8, 0.8, 0.8, 0.65)
 
 	return rect
-
-
-func _update_icon_modulates() -> void:
-	for i in range(_icon_rects.size()):
-		var rect: TextureRect = _icon_rects[i]
-		if i == 0:
-			rect.modulate = COLOR_CYAN if botw_style else Color(1.0, 1.0, 1.0, 1.0)
-		else:
-			rect.modulate = COLOR_FADED if botw_style else Color(0.8, 0.8, 0.8, 0.65)
-
-
-func _advance_display_queue(forecast: Array) -> void:
-	if _hbox == null:
-		return
-
-	# Pop oldest weather icon from the front
-	if _hbox.get_child_count() > 0:
-		var old_first: Node = _hbox.get_child(0)
-		_hbox.remove_child(old_first)
-		old_first.free()
-
-	if not _icon_rects.is_empty():
-		_icon_rects.pop_front()
-
-	# Append newest future weather icon to the back
-	if not forecast.is_empty():
-		var newest_weather: ClimateData.WeatherType = forecast[-1]
-		var new_rect: TextureRect = _create_icon_rect(newest_weather, false)
-		_hbox.add_child(new_rect)
-		_icon_rects.append(new_rect)
-
-	_update_icon_modulates()
-	_update_info_label()
-	_update_scroll_position()
 
 
 func _rebuild_display(forecast: Array = []) -> void:

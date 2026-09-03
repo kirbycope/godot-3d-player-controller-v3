@@ -5,3 +5,8 @@
 .env
 .mcp/
 addons/godotsteam/win64/~libgodotsteam.windows.template_debug.x86_64.dll
+scratch/
+*.log
+wfx_*.txt
+screenshot_*.png
+screenshot_*.png.import

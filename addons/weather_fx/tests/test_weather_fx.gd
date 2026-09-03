@@ -81,6 +81,31 @@ func test_hud_forecast_display_updates_on_biome_change() -> void:
 	assert_true(display._info_label.text.contains("Arctic Tundra"))
 
 
+func test_hud_forecast_icons_match_new_forecast_on_biome_change() -> void:
+	var display: WeatherForecastDisplay = WeatherForecastDisplay.new()
+	display.weather_fx_node = wfx
+	add_child_autofree(display)
+
+	# DESERT_GLACIER locks daytime weather to blue sky; from 06:00 all 7 cycles (1.6 h each) stay in daylight,
+	# so the regenerated forecast is deterministic
+	wfx.manual_time_of_day = 6.0
+	wfx.current_biome = ClimateData.BiomeZone.DESERT_GLACIER
+	var forecast: Array = wfx.get_forecast()
+	assert_eq(display._icon_rects.size(), forecast.size())
+	for i in range(forecast.size()):
+		assert_eq(forecast[i], ClimateData.WeatherType.BLUE_SKY)
+		assert_eq(display._icon_rects[i].texture.resource_path, ClimateData.get_weather_icon_path(forecast[i]),
+				"Icon %d should show the regenerated forecast, not the stale one" % i)
+
+
+func test_altitude_change_only_updates_temperature() -> void:
+	watch_signals(wfx)
+	wfx.current_altitude = 300.0
+	assert_signal_emitted(wfx, "temperature_changed")
+	assert_signal_not_emitted(wfx, "wind_changed")
+	assert_signal_not_emitted(wfx, "weather_changed")
+
+
 func test_temperature_unit_conversions() -> void:
 	assert_almost_eq(ClimateData.celsius_to_fahrenheit(0.0), 32.0, 0.01)
 	assert_almost_eq(ClimateData.celsius_to_fahrenheit(100.0), 212.0, 0.01)
@@ -283,7 +308,7 @@ func test_weather_forecast_display_timeline_scroll() -> void:
 	assert_almost_eq(display._hbox.position.x, 12.0 - 15.0, 0.01)
 
 
-func test_weather_forecast_display_pops_oldest_and_appends_newest_on_advance() -> void:
+func test_weather_forecast_display_matches_forecast_on_advance() -> void:
 	var display: WeatherForecastDisplay = WeatherForecastDisplay.new()
 	display.weather_fx_node = wfx
 	display.botw_style = true
@@ -291,19 +316,15 @@ func test_weather_forecast_display_pops_oldest_and_appends_newest_on_advance() -
 	display.scroll_offset_start = 12.0
 	add_child_autofree(display)
 
-	var initial_forecast: Array = wfx.get_forecast()
-	var expected_new_active = initial_forecast[1]
-	var initial_second_rect = display._icon_rects[1]
-
 	# Advance cycle
 	wfx.advance_cycle()
+	var forecast: Array = wfx.get_forecast()
 
-	# Display should now have 7 icons
+	# Display should now have 7 icons matching the advanced forecast
 	assert_eq(display._icon_rects.size(), 7)
 	assert_eq(display._hbox.get_child_count(), 7)
-
-	# The new front icon is what was previously the second icon
-	assert_eq(display._icon_rects[0], initial_second_rect)
+	for i in range(forecast.size()):
+		assert_eq(display._icon_rects[i].texture.resource_path, ClimateData.get_weather_icon_path(forecast[i]))
 	assert_almost_eq(display._icon_rects[0].modulate.r, WeatherForecastDisplay.COLOR_CYAN.r, 0.01)
 
 	# Scroll offset reset to scroll_offset_start

@@ -58,11 +58,11 @@ signal wind_changed(strength: float, direction: Vector3)
 @export var current_biome: ClimateData.BiomeZone = ClimateData.BiomeZone.TEMPERATE_PLAINS :
 	set(value):
 		if current_biome != value:
-			var old = current_biome
+			var old: ClimateData.BiomeZone = current_biome
 			current_biome = value
-			emit_signal("biome_changed", current_biome, old)
 			_regenerate_forecast()
 			_update_temperature_and_weather()
+			emit_signal("biome_changed", current_biome, old)
 
 ## Force manual weather instead of procedural simulation.
 @export var force_weather: bool = false :
@@ -124,7 +124,7 @@ var active_weather: ClimateData.WeatherType = ClimateData.WeatherType.BLUE_SKY
 		if is_equal_approx(current_altitude, value):
 			return
 		current_altitude = value
-		_update_temperature_and_weather()
+		_update_temperature()
 
 ## Calculated temperature in °C at current altitude and time.
 @export_custom(PROPERTY_HINT_NONE, "", PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_READ_ONLY)
@@ -158,8 +158,6 @@ var current_wind_strength: float = 0.0
 
 @export_group("Performance & Optimizations")
 @export var update_global_shader_variables: bool = true
-@export var dynamic_particle_density: bool = true
-@export var max_rain_density_budget: int = 1500
 
 @export_group("Foliage & Grass Biome Tinting")
 @export var enable_biome_tinting: bool = true ## Dynamically tints tree canopies, leaves, and ground grass based on current biome.
@@ -193,7 +191,6 @@ var current_grass_tint: Color = Color(1.0, 1.0, 1.0, 1.0)
 # ------------------------------------------------------------------------------
 var _cycle_timer: float = 0.0
 var _forecast: Array = []
-var _previous_weather: int = -1
 var _is_forward_plus: bool = true
 
 
@@ -507,10 +504,9 @@ func _update_active_weather(force_apply: bool = false) -> void:
 			_regenerate_forecast()
 		target_weather = _forecast[0] if not _forecast.is_empty() else ClimateData.WeatherType.BLUE_SKY
 
-	if force_apply or active_weather != target_weather or _previous_weather != target_weather:
-		var old = active_weather
+	if force_apply or active_weather != target_weather:
+		var old: ClimateData.WeatherType = active_weather
 		active_weather = target_weather
-		_previous_weather = target_weather
 		apply_weather_effects(active_weather)
 		emit_signal("weather_changed", active_weather, old)
 
@@ -858,10 +854,9 @@ func _play_audio(player: AudioStreamPlayer) -> void:
 
 
 ## Returns the appropriate BGS player node based on time of day and weather.
-func get_target_bgs_player(weather_override: int = -1) -> Node:
+func get_target_bgs_player() -> Node:
 	var daytime: bool = is_daylight()
-	var w = weather_override if weather_override >= 0 else active_weather
-	match w:
+	match active_weather:
 		ClimateData.WeatherType.STORM:
 			return audio_bgs_day_storm if daytime else audio_bgs_night_storm
 		ClimateData.WeatherType.RAIN, ClimateData.WeatherType.HEAVY_RAIN:
@@ -871,8 +866,8 @@ func get_target_bgs_player(weather_override: int = -1) -> Node:
 
 
 ## Updates BGS playback to match current weather and time of day.
-func _update_bgs(weather_override: int = -1) -> void:
-	var target_player: Node = get_target_bgs_player(weather_override) if _can_simulate() else null
+func _update_bgs() -> void:
+	var target_player: Node = get_target_bgs_player() if _can_simulate() else null
 	var all_bgs: Array[Node] = [
 		audio_bgs_day_clear,
 		audio_bgs_day_rain,

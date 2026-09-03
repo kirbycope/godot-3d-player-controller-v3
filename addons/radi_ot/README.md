@@ -1,5 +1,3 @@
-![Preview](/radi-ot.png)
-
 # radi-ot (Radio + Godot) 📻
 
 **radi-ot** is a feature-packed 3D audio streaming addon for **Godot 4.8** that streams real live Seattle radio stations over the internet. Built for both **Steam (Forward+)** and **Web (Compatibility)**, it features positional 3D audio, an in-game retro-modern CanvasLayer HUD, procedural FM tuning static, and an `urgent_bulletin()` API designed for in-game narrative progression and emergency broadcasts.
@@ -13,9 +11,9 @@
   - **88.5 FM — KNKX:** Jazz, Blues, and NPR News
   - **89.5 FM — C89.5 (KNHC):** Student-run Electronic, Dance, and House
   - **90.3 FM — KEXP:** World-renowned Independent, Alternative, and Eclectic
-  - **91.3 FM — KBCS:** Community radio and diverse global sounds
   - **94.9 FM — KUOW:** Puget Sound NPR News and Information
   - **98.1 FM — KING-FM:** Classical Seattle
+  - **101.1 FM — KMGP (Space 101.1 FM):** Indie, Local Seattle, and Eclectic community radio
 - **Urgent Bulletin System (`urgent_bulletin`):** Seamlessly interrupt live radio broadcasts with custom story audio (emergency broadcasts, story alerts, news flashes). When the bulletin finishes, live radio automatically resumes.
 - **Retro-Modern CanvasLayer HUD:** Displays current frequency, call sign, genre, live signal indicator, animated dial bar, keyboard hints, and emergency alert banners.
 - **Procedural FM Static:** Realistic white/pink noise static plays seamlessly while buffering or switching between stations.
@@ -70,7 +68,7 @@ git submodule add https://github.com/kirbycope/radi-ot.git addons/radi_ot
 ## 📻 Interactive Demo Scene
 
 Open and run **`res://addons/radi_ot/scenes/demo/demo.tscn`** to experience live 3D positional radio streaming:
-- **Live Seattle Streams**: Stream real audio from KEXP, C89.5, KNKX, KUOW, KBCS, and KING-FM.
+- **Live Seattle Streams**: Stream real audio from KEXP, C89.5, KNKX, KUOW, KING-FM, and KMGP.
 - **Narrative Story Bulletins**: Trigger simulated emergency broadcasts with voiceovers that interrupt the live broadcast.
 - **Spatial Orbit Camera**: Orbits around the 3D radio to showcase distance attenuation and positional panning.
 - **Tuning Controls**: Switch stations (`J`/`L` keys or on-screen buttons) and toggle power (`M`).
@@ -93,9 +91,9 @@ res://addons/radi_ot/scenes/radi_ot_player_3d.tscn
 - In the Inspector, verify that `station_collection` is set to `seattle_stations_default.tres` (or assign your own custom collection).
 - Run the scene (`F5` or `F6`).
 - Call `tune_next_station()` to go to the Next Station
-  - The demo uses the [J] key to tune next station.
+  - The demo uses the [L] key to tune next station.
 - Call `tune_previous_station()` to go to the Previous Station
-  - The demo uses the [L] key to tune previous station.
+  - The demo uses the [J] key to tune previous station.
 - Call `toggle_power()` to turn the radio on or off
   - The demo uses the [M] key to toggle power.
 
@@ -200,7 +198,15 @@ godot --headless -s addons/gut/gut_cmdln.gd
 
 ---
 
-## 📄 License & Credits
+## 🖼️ Assets
 
-- Code is licensed under the [MIT License](LICENSE).
-- Third-party assets and model attributions are documented in [credits.md](../../credits.md).
+- `assets/models/retro-radio-boombox` — Retro Radio model and textures. Source and license not recorded — fill in.
+- `assets/audio/eleven_labs` — Bulletin voice clips generated with [ElevenLabs](https://elevenlabs.io).
+- `assets/logos` — Station logos are trademarks of the respective stations.
+- `assets/icons` — HUD and editor icons. Source not recorded — fill in.
+
+---
+
+## 📄 License
+
+Code is licensed under the MIT License.

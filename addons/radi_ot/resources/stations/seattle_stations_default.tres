@@ -7,8 +7,8 @@
 [ext_resource type="Resource" path="res://addons/radi_ot/resources/stations/knkx_88_5.tres" id="4_knkx"]
 [ext_resource type="Resource" path="res://addons/radi_ot/resources/stations/king_fm_98_1.tres" id="5_king"]
 [ext_resource type="Resource" path="res://addons/radi_ot/resources/stations/kuow_94_9.tres" id="6_kuow"]
-[ext_resource type="Resource" path="res://addons/radi_ot/resources/stations/kbcs_91_3.tres" id="7_kbcs"]
+[ext_resource type="Resource" path="res://addons/radi_ot/resources/stations/kmgp_101_1.tres" id="7_kmgp"]
 
 [resource]
 script = ExtResource("1_collection_script")
-stations = Array[ExtResource("2_vlsbh")]([ExtResource("2_kexp"), ExtResource("3_c895"), ExtResource("4_knkx"), ExtResource("7_kbcs"), ExtResource("6_kuow"), ExtResource("5_king")])
+stations = Array[ExtResource("2_vlsbh")]([ExtResource("2_kexp"), ExtResource("3_c895"), ExtResource("4_knkx"), ExtResource("7_kmgp"), ExtResource("6_kuow"), ExtResource("5_king")])

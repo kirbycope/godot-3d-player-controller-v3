@@ -10,19 +10,6 @@ extends CanvasLayer
 @export var toast_hide: bool = true
 @export var toast_hide_seconds: float = 5.0
 
-## Backward compatibility aliases
-var auto_hide_after_seconds: float:
-	get:
-		return toast_hide_seconds
-	set(value):
-		toast_hide_seconds = value
-
-var toast_mode: bool:
-	get:
-		return toast_hide
-	set(value):
-		toast_hide = value
-
 var _auto_hide_timer: float = 0.0
 var _is_bulletin_active: bool = false
 var _target_frequency: float = 90.3
@@ -52,7 +39,7 @@ func _ready() -> void:
 		_bulletin_banner.visible = false
 	if _hint_label != null:
 		_hint_label.visible = show_tuning_hints
-	if toast_mode:
+	if toast_hide:
 		_auto_hide_timer = 0.0
 		if _panel_container != null:
 			_panel_container.modulate.a = 0.0
@@ -91,7 +78,7 @@ func _process(delta: float) -> void:
 
 
 func show_hud(duration: float = -1.0) -> void:
-	_auto_hide_timer = duration if duration > 0.0 else auto_hide_after_seconds
+	_auto_hide_timer = duration if duration > 0.0 else toast_hide_seconds
 	if _panel_container != null:
 		_panel_container.visible = true
 		_panel_container.modulate.a = 1.0
@@ -156,6 +143,16 @@ func set_buffering_state(is_buffering: bool) -> void:
 		if _status_label != null:
 			_status_label.text = "ON AIR"
 		_status_badge.modulate = Color(0.2, 1.0, 0.5)
+
+
+func set_error_state(message: String) -> void:
+	show_hud()
+	if _status_label != null:
+		_status_label.text = "NO SIGNAL"
+	if _status_badge != null:
+		_status_badge.modulate = Color(1.0, 0.3, 0.3)
+	if _tagline_label != null:
+		_tagline_label.text = message
 
 
 func set_power_state(is_on: bool) -> void:

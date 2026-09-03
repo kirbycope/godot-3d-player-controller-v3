@@ -24,7 +24,7 @@ const DEFAULT_STATIONS_PATH: String = (
 var current_station_index: int = 0:
 	set(value):
 		current_station_index = value
-		if is_inside_tree() and _power_on and not Engine.is_editor_hint():
+		if is_inside_tree():
 			_tune_current_station()
 
 @export_group("Audio")
@@ -70,7 +70,6 @@ func tune_next_station() -> void:
 		return
 	var count: int = station_collection.get_station_count()
 	current_station_index = (current_station_index + 1) % count
-	_tune_current_station()
 
 
 func tune_previous_station() -> void:
@@ -78,14 +77,12 @@ func tune_previous_station() -> void:
 		return
 	var count: int = station_collection.get_station_count()
 	current_station_index = (current_station_index - 1 + count) % count
-	_tune_current_station()
 
 
 func tune_to_station_index(index: int) -> void:
 	if station_collection == null or station_collection.get_station_count() == 0:
 		return
 	current_station_index = posmod(index, station_collection.get_station_count())
-	_tune_current_station()
 
 
 func tune_to_frequency(frequency: float) -> void:
@@ -329,7 +326,7 @@ func _on_playback_started() -> void:
 func _on_playback_failed(err_msg: String) -> void:
 	_stop_static()
 	if _hud != null and not _is_bulletin_active:
-		_hud.set_buffering_state(false)
+		_hud.set_error_state(err_msg)
 	stream_playback_failed.emit(err_msg)
 
 
