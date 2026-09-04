@@ -16,6 +16,7 @@ signal fish_escaped(fish: Fish) ## The hook window closed, or the line was pulle
 enum State { IDLE, CASTING, WAITING, BITE, REELING }
 
 const FISHING_EMOTES: Array[String] = ["FishingIdle", "FishingCast", "FishingReel"]
+const LINE_STATES: Array[int] = [NodeStateMachine.States.STANDING, NodeStateMachine.States.SPRINTING, NodeStateMachine.States.CROUCHING, NodeStateMachine.States.NONE] ## States the line stays out through; anything else pulls it in.
 const ACTION_LABELS: Dictionary[int, String] = {State.IDLE: "Cast", State.CASTING: "", State.WAITING: "Reel In", State.BITE: "Hook!", State.REELING: ""} ## Action prompt per state.
 const CAST_ANIMATION: StringName = &"Fishing Cast/mixamo_com"
 
@@ -181,10 +182,10 @@ func _on_spawner_spawned(node: Node) -> void:
 		_adopt_bobber(node as Bobber)
 
 
+## A float that lands on dry ground just lies there until the player reels in; only water starts the bite.
 func _adopt_bobber(float_node: Bobber) -> void:
 	bobber = float_node
 	bobber.landed_in_water.connect(_on_bobber_landed_in_water)
-	bobber.landed_dry.connect(retract)
 
 
 ## Rolls what will bite and how soon; rain and a nearby shadow both shorten the wait.
@@ -293,7 +294,7 @@ func _on_animation_finished(_animation_name: StringName) -> void:
 		emote_state.start("FishingIdle")
 
 
-## Jumping, swimming, driving or anything else that changes state pulls the line in.
-func _on_player_state_changed(_from_state: int, _to_state: int) -> void:
-	if state != State.IDLE:
+## Jumping, falling, swimming, driving and the like pull the line in; stopping a sprint or crouching does not.
+func _on_player_state_changed(_from_state: int, to_state: int) -> void:
+	if state != State.IDLE and not to_state in LINE_STATES:
 		retract()

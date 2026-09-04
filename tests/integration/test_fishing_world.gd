@@ -87,8 +87,12 @@ func test_missing_the_hook_window_loses_the_fish() -> void:
 
 func test_changing_state_pulls_the_line_in() -> void:
 	await _cast_and_wait_for_water()
+	player.state_changed.emit(NodeStateMachine.States.SPRINTING, NodeStateMachine.States.STANDING)
+	assert_eq(rod.state, FishingRod.State.WAITING, "Coming out of a sprint keeps the line out")
+	player.state_changed.emit(NodeStateMachine.States.STANDING, NodeStateMachine.States.CROUCHING)
+	assert_eq(rod.state, FishingRod.State.WAITING, "Crouching keeps the line out")
 	player.state_changed.emit(NodeStateMachine.States.STANDING, NodeStateMachine.States.JUMPING)
-	assert_eq(rod.state, FishingRod.State.IDLE)
+	assert_eq(rod.state, FishingRod.State.IDLE, "Jumping pulls the line in")
 	assert_null(rod.bobber)
 
 
