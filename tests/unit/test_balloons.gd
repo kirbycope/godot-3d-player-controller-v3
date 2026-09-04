@@ -30,3 +30,19 @@ func test_popping_releases_the_plush() -> void:
 	assert_false(plush.freeze, "Popping unfreezes the plush")
 	assert_ne(plush.get_parent(), balloon, "Plush is reparented out of the balloon")
 	plush.queue_free()
+
+
+func test_the_ring_spins_by_default_and_hides_strings_by_path() -> void:
+	var circle: Node3D = CIRCLE_SCENE.instantiate()
+	add_child_autofree(circle)
+	await wait_physics_frames(1)
+	assert_true(circle.play, "The ring ships spinning")
+	var before: float = circle.get_node("Pivot").rotation.z
+	await wait_seconds(0.3)
+	assert_ne(circle.get_node("Pivot").rotation.z, before, "The pivot turns")
+	for balloon: Node3D in circle.get_node("Pivot").get_children():
+		assert_false(balloon.get_node("Visuals/String").visible, "The world ring hides its strings")
+	circle.show_balloon_string = true
+	for balloon: Node3D in circle.get_node("Pivot").get_children():
+		assert_true(balloon.get_node("Visuals/String").visible, "Toggling the export reaches every string by path")
+

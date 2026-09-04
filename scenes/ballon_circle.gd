@@ -16,8 +16,11 @@ extends Node3D
 	set(value):
 		show_balloon_string = value
 		if is_node_ready():
-			for balloon: RedBalloon in pivot.get_children():
-				balloon.balloon_string.visible = value
+			# By path, not through RedBalloon's @onready: the balloon script is not a tool script, so in the editor it has no instance
+			for balloon: Node3D in pivot.get_children():
+				var string: Node3D = balloon.get_node_or_null(^"Visuals/String")
+				if string:
+					string.visible = value
 
 @onready var pivot: Node3D = $Pivot
 
