@@ -97,19 +97,20 @@ func test_grass_field_wildfire_wind_advance() -> void:
 
 	var field: GrassField = GrassFieldScript.new()
 	field.field_size = Vector2(40.0, 40.0)
-	field.instance_count = 50
+	field.instance_count = 400
 	root.add_child(field)
 	field.regenerate()
 
 	# Ignite wildfire at center
 	field.ignite_at(Vector3(0, 0, 0), 3.0, 10.0)
-	assert_eq(field._active_fires.size(), 1)
+	assert_gt(field._burning_cells.size(), 0, "The cells around the point catch")
+	assert_gt(field._trail_nodes.size(), 0, "A flame node sits on each lit cell")
 
-	var fire = field._active_fires[0]
-	assert_not_null(fire.updraft_area)
-	assert_true(fire.updraft_area.is_in_group("Updraft"))
-	assert_true(fire.updraft_area.is_in_group("Thermal"))
+	var updraft_area: Area3D = field._trail_nodes[0].get_node("ThermalUpdraftArea")
+	assert_true(updraft_area.is_in_group("Updraft"))
+	assert_true(updraft_area.is_in_group("Thermal"))
 
 	# Rain extinguishes field wildfire
 	field._on_weather_changed(ClimateData.WeatherType.RAIN, ClimateData.WeatherType.BLUE_SKY)
-	assert_eq(field._active_fires.size(), 0, "Rain should douse all active field fires")
+	assert_eq(field._burning_cells.size(), 0, "Rain should douse all active field fires")
+	assert_true(field._trail_nodes.is_empty())
