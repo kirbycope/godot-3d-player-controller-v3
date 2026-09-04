@@ -319,6 +319,41 @@ func test_a_round_on_the_head_kills_outright_while_a_body_shot_only_wounds() -> 
 	rifleman.register_projectile_hit(bullet, rifleman.global_position + Vector3(0.0, 1.0, 0.0), Vector3.FORWARD)
 	assert_false(rifleman.is_dead, "A chest hit wounds")
 	assert_eq(rifleman.health.health, rifleman.health.max_health - bullet.damage)
-	swordsman.register_projectile_hit(bullet, swordsman.head.global_position, Vector3.FORWARD)
+	bullet.hit_part = swordsman.get_node("Mannequin_M/Armature/GeneralSkeleton/BoneAttachment3D/Head")
+	swordsman.register_projectile_hit(bullet, bullet.hit_part.global_position, Vector3.FORWARD)
 	assert_signal_emitted(swordsman, "headshot")
 	assert_true(swordsman.is_dead, "A head hit kills outright")
+
+
+func test_a_pistol_round_sweeps_to_the_head_bone_behind_the_capsule() -> void:
+	var archer: EnemyNpc = _enemy("Archer")
+	var rifleman: EnemyNpc = _enemy("Rifleman")
+	for enemy: EnemyNpc in [archer, rifleman]:
+		enemy.leash_distance = 200.0
+	watch_signals(archer)
+	player.warp_to(Transform3D(Basis(), archer.global_position + Vector3(0.0, 0.0, 6.0)))
+	world.get_node("JustCreate3D/Weapon_01").equip(player)
+	await wait_physics_frames(3)
+	var gun: Firearm = player.inventory.get_equipment_by_type(Equipment.EquipmentType.PISTOL)
+	var head: Node3D = archer.get_node("Mannequin_M/Armature/GeneralSkeleton/BoneAttachment3D/Head/CollisionShape3D")
+	_aim(head.global_position)
+	await wait_physics_frames(3)
+	var bullet: Projectile = gun.fire()
+	var round_damage: float = bullet.damage
+	await wait_seconds(0.4)
+	assert_signal_emitted(archer, "headshot", "The sweep finds the Head hurtbox behind the capsule")
+	assert_true(archer.is_dead)
+	_aim(rifleman.global_position + Vector3(0.0, 0.9, 0.0))
+	await wait_physics_frames(3)
+	gun.fire_timer.stop()
+	gun.fire()
+	await wait_seconds(0.4)
+	assert_false(rifleman.is_dead, "A round in the body is a wound")
+	assert_eq(rifleman.health.health, rifleman.health.max_health - round_damage)
+
+
+func _aim(at: Vector3) -> void:
+	var mount: Node3D = player.camera_mount
+	var to: Vector3 = at - mount.global_position
+	mount.rotation.y = atan2(-to.x, -to.z)
+	mount.rotation.x = atan2(to.y, Vector2(to.x, to.z).length())

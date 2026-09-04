@@ -30,7 +30,6 @@ const LOCOMOTION_BLEND_PATH: String = "parameters/Locomotion/blend_position"
 @export var projectile_scene: PackedScene ## Archers and riflemen fire this; empty means melee.
 @export var projectile_speed: float = 30.0
 @export var melee_hit_damage: float = 25.0 ## Damage taken from one of the Player's melee swings.
-@export var headshot_margin: float = 0.12 ## A projectile landing no lower than this below the Head bone kills outright; hits land on the capsule, so height is what counts.
 @export var leash_distance: float = 30.0 ## A target further than this from the post is given up on; the enemy resets.
 @export var footstep_sfx: AudioStream ## Played by the walk and run animations' method tracks.
 
@@ -68,7 +67,6 @@ var locomotion_blend: float = 0.0: ## Replicated: 0 idle, 0.5 walk, 1 run, eased
 @onready var boss: Boss = $Boss
 @onready var collision_shape: CollisionShape3D = $CollisionShape3D
 @onready var aggro_area: Area3D = $AggroArea
-@onready var head: BoneAttachment3D = $Mannequin_M/Armature/GeneralSkeleton/BoneAttachment3D ## Rides the Head bone; hits at its height or above are headshots.
 @onready var footstep_audio: AudioStreamPlayer3D = $FootstepAudio
 @onready var physical_bone_simulator: PhysicalBoneSimulator3D = $Mannequin_M/Armature/GeneralSkeleton/PhysicalBoneSimulator3D
 
@@ -191,10 +189,10 @@ func register_weapon_hit(equipment: Node = null, _hit_node: Node = null) -> void
 	aggro(attacker)
 
 
-## Called by a landing [Projectile]; one on the head kills outright.
+## Called by a landing [Projectile]; one on the Head hurtbox kills outright.
 func register_projectile_hit(projectile: Projectile, point: Vector3, _normal: Vector3) -> void:
 	var damage: float = projectile.damage
-	if up_direction.dot(point - head.global_position) >= -headshot_margin:
+	if projectile.hit_part and projectile.hit_part.name == "Head":
 		damage = health.max_health
 		headshot.emit(projectile)
 	take_hit(damage, point)

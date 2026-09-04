@@ -359,6 +359,9 @@ states/RifleAttack/position = Vector2(950, 300)
 transitions = ["Start", "Locomotion", SubResource("AnimationNodeStateMachineTransition_7dlp2"), "Locomotion", "ReactionHitOnLeftSide", SubResource("AnimationNodeStateMachineTransition_ducsy"), "ReactionHitOnLeftSide", "Locomotion", SubResource("AnimationNodeStateMachineTransition_13xtl"), "ReactionHitOnRightSide", "Locomotion", SubResource("AnimationNodeStateMachineTransition_rfmtl"), "Locomotion", "ReactionHitOnRightSide", SubResource("AnimationNodeStateMachineTransition_8yijt"), "Locomotion", "GettingHit", SubResource("AnimationNodeStateMachineTransition_ghin"), "GettingHit", "Locomotion", SubResource("AnimationNodeStateMachineTransition_ghout"), "SwordAttack", "Locomotion", SubResource("AnimationNodeStateMachineTransition_sword_end"), "CastAttack", "Locomotion", SubResource("AnimationNodeStateMachineTransition_cast_end"), "BowAttack", "Locomotion", SubResource("AnimationNodeStateMachineTransition_bow_end"), "RifleAttack", "Locomotion", SubResource("AnimationNodeStateMachineTransition_rifle_end")]
 graph_offset = Vector2(-334.13638, -114)
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_head"]
+radius = 0.14
+
 [node name="EnemyNpc" type="CharacterBody3D" groups=["Focusable"]]
 script = ExtResource("1_script")
 move_speed = 3.5
@@ -496,6 +499,16 @@ bone_name = "Head"
 bone_idx = 6
 
 [node name="Marker3D_FocusTarget" type="Marker3D" parent="Mannequin_M/Armature/GeneralSkeleton/BoneAttachment3D" unique_id=1681723939]
+
+[node name="Head" type="Area3D" parent="Mannequin_M/Armature/GeneralSkeleton/BoneAttachment3D"]
+collision_layer = 2
+collision_mask = 0
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Mannequin_M/Armature/GeneralSkeleton/BoneAttachment3D/Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+shape = SubResource("SphereShape3D_head")
 
 [node name="PhysicalBoneSimulator3D" type="PhysicalBoneSimulator3D" parent="Mannequin_M/Armature/GeneralSkeleton" index="2" unique_id=298433228]
 
