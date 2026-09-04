@@ -47,6 +47,8 @@ func hide_menu() -> void:
 
 ## Pins the Player to the seat while sitting and releases the boat once they stand up.
 func _on_player_state_changed(_from_state: int, to_state: int) -> void:
+	if to_state == NodeStateMachine.States.NONE:
+		return # travel() passes through NONE on its way to the next state
 	_seated = to_state == NodeStateMachine.States.SITTING
 	seat_01_dummy.visible = not _seated
 	set_physics_process(_seated or water != null)
