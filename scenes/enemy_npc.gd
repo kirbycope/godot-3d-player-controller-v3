@@ -96,10 +96,12 @@ func aggro(who: Node) -> void:
 		return
 	if is_instance_valid(target):
 		target.health.died.disconnect(_on_target_died)
+		target.hunted_by(get_path(), false)
 	target = who
 	player = who
 	is_returning_home = false
 	target.health.died.connect(_on_target_died)
+	target.hunted_by(get_path(), true)
 	if is_boss:
 		boss.engage(who.get_multiplayer_authority())
 	aggroed.emit(target)
@@ -109,6 +111,7 @@ func aggro(who: Node) -> void:
 func _on_target_died() -> void:
 	if is_instance_valid(target):
 		target.health.died.disconnect(_on_target_died)
+		target.hunted_by(get_path(), false)
 	target = null
 	player = null
 	caster.interrupt()
@@ -256,6 +259,8 @@ func _update_locomotion() -> void:
 func _apply_death() -> void:
 	caster.interrupt()
 	boss.disengage()
+	if is_instance_valid(target) and is_multiplayer_authority():
+		target.hunted_by(get_path(), false)
 	target = null
 	player = null
 	animation_tree.active = false

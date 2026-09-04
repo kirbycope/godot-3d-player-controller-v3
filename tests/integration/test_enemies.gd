@@ -197,3 +197,12 @@ func test_the_hunter_walks_home_when_its_player_dies() -> void:
 	assert_lt(swordsman.global_position.distance_to(home), 0.8, "Back at its post before the Player respawns")
 	assert_signal_emitted(swordsman, "returned_home")
 	assert_false(swordsman.is_returning_home)
+
+
+func test_being_hunted_pauses_mana_regen_until_the_enemy_dies() -> void:
+	var swordsman: EnemyNpc = _enemy("Swordsman")
+	swordsman.aggro(player)
+	assert_true(player.health.regen_paused, "In combat: no mana regen")
+	swordsman.take_hit(1000.0, player.global_position)
+	await wait_physics_frames(2)
+	assert_false(player.health.regen_paused, "The hunter is dead: mana regenerates again")
