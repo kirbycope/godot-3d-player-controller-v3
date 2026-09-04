@@ -6,7 +6,9 @@ extends FollowerNpc
 ## [member leash_distance] from the post (a respawn far away counts), it turns on any other living Player still
 ## inside its aggro area or walks back to where it started, stands as it stood and heals to full. A Player in a
 ## vehicle is never chased: it is attacked while inside attack range and given up on once it drives out of it.
-## Health, death and the animation state replicate from the server; hits from clients relay.
+## Locomotion is root motion, as for the Player: the navigation decides where to face and whether to walk or
+## run, and the animation's Root bone carries the body. Health, death and the animation state replicate from
+## the server; hits from clients relay.
 
 signal aggroed(target: Node3D)
 signal attacked(target: Node3D) ## A melee swing or a shot was started.
@@ -30,6 +32,7 @@ const LOCOMOTION_STATES: Array[String] = ["Idle", "Walking", "Running"]
 
 var target: Node3D ## The Player being hunted; abilities read it through [method Ability.get_target].
 var is_returning_home: bool = false ## Walking back to the spawn point with nobody to hunt.
+var _control_speed: float = 0.0 ## How fast the navigation wants to go this frame; picks Idle, Walking or Running.
 var _spawn_transform: Transform3D
 var is_dead: bool = false: ## Replicated; the setter drops the body into the ragdoll on every peer.
 	set(value):
@@ -44,6 +47,7 @@ var anim_state: String = "Idle": ## Replicated AnimationTree state.
 		if playback and String(playback.get_current_node()) != value:
 			playback.start(value)
 
+@onready var mannequin: Node3D = $Mannequin_M ## The animated model; root motion is in its space.
 @onready var animation_tree: AnimationTree = $AnimationTree
 @onready var playback: AnimationNodeStateMachinePlayback = animation_tree.get("parameters/playback")
 @onready var attack_timer: Timer = $AttackTimer ## Cooldown between attacks.
@@ -260,6 +264,15 @@ func _fire() -> void:
 	projectile.launch(origin, direction, projectile_speed, self)
 
 
+## Root motion moves the body: the navigation's wish only decides the animation, then the Root bone's
+## travel this frame becomes the velocity, so the feet never slide.
+func _move_with_control(control_velocity: Vector3) -> void:
+	_control_speed = control_velocity.slide(up_direction).length()
+	if is_on_floor() and not is_swimming and String(playback.get_current_node()) != "Idle":
+		control_velocity = (mannequin.global_basis * animation_tree.get_root_motion_position() / get_physics_process_delta_time()).slide(up_direction)
+	super(control_velocity)
+
+
 ## Called by the Mixamo walk and run animations' method tracks.
 func sfx_footsteps_play() -> void:
 	if footstep_sfx:
@@ -267,12 +280,11 @@ func sfx_footsteps_play() -> void:
 		footstep_audio.play()
 
 
-## Idle, walk or run to match the body's speed, never cutting off a swing or a hit reaction.
+## Idle, walk or run to match what the navigation asked for, never cutting off a swing or a hit reaction.
 func _update_locomotion() -> void:
 	if String(playback.get_current_node()) not in LOCOMOTION_STATES:
 		return
-	var speed: float = velocity.slide(up_direction).length()
-	anim_state = "Idle" if speed < 0.2 else ("Walking" if speed < move_speed * 0.6 else "Running")
+	anim_state = "Idle" if _control_speed < 0.2 else ("Walking" if _control_speed < move_speed * 0.6 else "Running")
 
 
 ## The ragdoll takes over and the enemy stops being a threat or a target.

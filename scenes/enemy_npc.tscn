@@ -1341,6 +1341,8 @@ shape = SubResource("CapsuleShape3D_5xw05")
 
 [node name="AnimationTree" type="AnimationTree" parent="." unique_id=131107979]
 root_node = NodePath("../Mannequin_M")
+root_motion_track = NodePath("%GeneralSkeleton:Root")
+callback_mode_process = 0
 tree_root = SubResource("AnimationNodeStateMachine_5xw05")
 anim_player = NodePath("../Mannequin_M/AnimationPlayer")
 

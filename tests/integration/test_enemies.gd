@@ -268,3 +268,15 @@ func test_a_car_driving_through_the_aggro_area_gets_its_driver_hunted() -> void:
 	player.is_driving = false
 	player.is_driving_in = null
 	car.free()
+
+
+func test_enemies_move_by_root_motion_with_the_model_staying_on_its_body() -> void:
+	var swordsman: EnemyNpc = _enemy("Swordsman")
+	var start: Vector3 = swordsman.global_position
+	_stand_near(swordsman, 10.0)
+	swordsman.aggro(player)
+	await wait_seconds(0.8)
+	assert_eq(swordsman.anim_state, "Running")
+	assert_gt(swordsman.animation_tree.get_root_motion_position().length(), 0.0, "The run clip's Root bone travel is extracted")
+	assert_gt(swordsman.global_position.distance_to(start), 0.5, "And it is what carries the body")
+	assert_lt(swordsman.mannequin.position.length(), 0.01, "The mesh stays on its body instead of walking away from it")
