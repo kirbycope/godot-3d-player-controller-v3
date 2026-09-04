@@ -129,6 +129,10 @@ func _request_hit(damage: float, from: Vector3) -> void:
 		take_hit(damage, from)
 
 
+func can_heal() -> bool:
+	return health.can_heal()
+
+
 ## Restores health; false when already full, so a heal ability is not wasted.
 func heal(amount: float) -> bool:
 	return health.heal(amount)
