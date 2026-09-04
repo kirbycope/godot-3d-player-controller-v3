@@ -13,7 +13,12 @@ projectile_speed = 35.0
 follow_distance = 8.0
 projectile_scene = ExtResource("3_projectile")
 
+[node name="WeaponAttachment" parent="Mannequin_M/Armature/GeneralSkeleton"]
+bone_name = "LeftHand"
+
 [node name="Weapon" parent="Mannequin_M/Armature/GeneralSkeleton/WeaponAttachment" instance=ExtResource("2_weapon")]
+position = Vector3(0, 0.1, 0.025)
+rotation_degrees = Vector3(180, 90, 15)
 
 [node name="Boss" parent="." index="0"]
 boss_name = "Archer"

@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" path="res://assets/n_hance_studio/weapons/SK_Sword_1H_Newbie_01.fbx" id="2_weapon"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_blade"]
-size = Vector3(0.35, 0.35, 1.4)
+size = Vector3(1.4, 0.35, 0.35)
 
 [node name="EnemySwordsman" instance=ExtResource("1_base")]
 attack_animation = "SwordAttack"
@@ -12,9 +12,11 @@ attack_range = 1.8
 follow_distance = 1.2
 
 [node name="Weapon" parent="Mannequin_M/Armature/GeneralSkeleton/WeaponAttachment" instance=ExtResource("2_weapon")]
+position = Vector3(0, 0.1, 0.025)
+rotation_degrees = Vector3(0, 90, 180)
 
 [node name="CollisionShape3D" parent="Mannequin_M/Armature/GeneralSkeleton/WeaponAttachment/WeaponHitbox"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.03, 0.45)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 0.135, 0.025)
 shape = SubResource("BoxShape3D_blade")
 
 [node name="Boss" parent="." index="0"]
