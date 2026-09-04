@@ -1338,7 +1338,6 @@ libraries/Running = ExtResource("lib_run")
 "libraries/Rifle Aiming Standing Idle" = ExtResource("lib_rifle")
 "libraries/Male Reaction Hit On The Left Side" = ExtResource("3_jxkwc")
 "libraries/Male Reaction Hit On The Right Side" = ExtResource("4_0afue")
-autoplay = &"Idle/mixamo_com"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1016725125]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
