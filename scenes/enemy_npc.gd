@@ -29,6 +29,8 @@ const LOCOMOTION_BLEND_PATH: String = "parameters/Locomotion/blend_position"
 @export var strike_delay: float = 0.45 ## Seconds into the attack animation when the hit or shot happens.
 @export var projectile_scene: PackedScene ## Archers and riflemen fire this; empty means melee.
 @export var projectile_speed: float = 30.0
+@export var accuracy: Accuracy ## Spread cone of the weapon it shoots, the same resource the Player's copy uses; empty fires dead straight.
+@export var skill_level: int = 0 ## Marksmanship: shrinks [member accuracy]'s spread (0 novice, expert at the resource's expert_level).
 @export var melee_hit_damage: float = 25.0 ## Damage taken from one of the Player's melee swings.
 @export var leash_distance: float = 30.0 ## A target further than this from the post is given up on; the enemy resets.
 @export var footstep_sfx: AudioStream ## Played by the walk and run animations' method tracks.
@@ -263,17 +265,20 @@ func _on_weapon_hitbox_hit(body: Node3D) -> void:
 	struck.emit(body)
 
 
-## Fires the projectile from the muzzle at the target's focus point, through the spawner when the scene has one.
-func _fire() -> void:
+## Fires the projectile from the muzzle at the target's focus point, off the line by [member accuracy]'s spread
+## for [member skill_level], through the spawner when the scene has one.
+func _fire() -> Projectile:
 	var origin: Transform3D = Transform3D(Basis(), muzzle.global_position)
 	var direction: Vector3 = muzzle.global_position.direction_to(Focus.get_focus_target_position(target))
+	if accuracy:
+		direction = accuracy.scatter(direction, skill_level)
 	var spawner: ProjectileSpawner = get_tree().get_first_node_in_group(&"ProjectileSpawner") as ProjectileSpawner
 	if spawner:
-		spawner.fire(projectile_scene, origin, direction, projectile_speed, self)
-		return
+		return spawner.fire(projectile_scene, origin, direction, projectile_speed, self)
 	var projectile: Projectile = projectile_scene.instantiate()
 	get_parent().add_child(projectile)
 	projectile.launch(origin, direction, projectile_speed, self)
+	return projectile
 
 
 ## Root motion moves the body: the navigation's wish only decides the animation, then the Root bone's

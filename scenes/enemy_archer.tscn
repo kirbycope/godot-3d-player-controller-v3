@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://c7enemynpc001" path="res://scenes/enemy_npc.tscn" id="1_base"]
 [ext_resource type="PackedScene" path="res://assets/n_hance_studio/weapons/SK_Bow_Newbie_01.fbx" id="2_weapon"]
+[ext_resource type="Resource" path="res://addons/3d_player_controller/resources/accuracy/bow.tres" id="4_accuracy"]
 [ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/arrow.tscn" id="3_projectile"]
 
 [node name="EnemyArcher" instance=ExtResource("1_base")]
@@ -12,6 +13,8 @@ strike_delay = 0.6
 projectile_speed = 35.0
 follow_distance = 8.0
 projectile_scene = ExtResource("3_projectile")
+accuracy = ExtResource("4_accuracy")
+skill_level = 4
 
 [node name="WeaponAttachment" parent="Mannequin_M/Armature/GeneralSkeleton"]
 bone_name = "LeftHand"

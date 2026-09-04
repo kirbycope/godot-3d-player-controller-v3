@@ -84,6 +84,9 @@
 [ext_resource type="PackedScene" path="res://scenes/enemy_archer.tscn" id="enemy_archer"]
 [ext_resource type="PackedScene" path="res://scenes/enemy_rifleman.tscn" id="enemy_rifleman"]
 [ext_resource type="PackedScene" path="res://scenes/enemy_spellcaster.tscn" id="enemy_spellcaster"]
+[ext_resource type="Resource" path="res://addons/3d_player_controller/resources/accuracy/pistol.tres" id="accuracy_pistol"]
+[ext_resource type="Resource" path="res://addons/3d_player_controller/resources/accuracy/rifle.tres" id="accuracy_rifle"]
+[ext_resource type="Resource" path="res://addons/3d_player_controller/resources/accuracy/bow.tres" id="accuracy_bow"]
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
 ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -744,6 +747,7 @@ is_exclusive = true
 position_offset = Vector3(0, 0.09, 0.025)
 rotation_offset_degrees = Vector3(0, 180, 80)
 projectile_speed = 120.0
+accuracy = ExtResource("accuracy_rifle")
 projectile_scene = ExtResource("15_bullet")
 muzzle = NodePath("Muzzle")
 fire_timer = NodePath("FireTimer")
@@ -780,6 +784,7 @@ is_exclusive = true
 position_offset = Vector3(0, 0.09, 0.025)
 rotation_offset_degrees = Vector3(-10, 180, 80)
 projectile_speed = 80.0
+accuracy = ExtResource("accuracy_pistol")
 projectile_scene = ExtResource("15_bullet")
 muzzle = NodePath("Muzzle")
 fire_timer = NodePath("FireTimer")
@@ -880,6 +885,7 @@ icon = ExtResource("r_bowarrowsvg")
 is_exclusive = true
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(180, 90, 15)
+accuracy = ExtResource("accuracy_bow")
 arrow_scene = ExtResource("mp_arrow")
 
 [node name="Area3D" type="Area3D" parent="N_Hance_Studio_1/SK_Bow_Newbie_01" unique_id=326004096]

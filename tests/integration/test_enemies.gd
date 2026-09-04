@@ -357,3 +357,46 @@ func _aim(at: Vector3) -> void:
 	var to: Vector3 = at - mount.global_position
 	mount.rotation.y = atan2(-to.x, -to.z)
 	mount.rotation.x = atan2(to.y, Vector2(to.x, to.z).length())
+
+
+func test_the_archer_spreads_its_arrows_by_its_skill_and_a_novice_player_spreads_pistol_rounds() -> void:
+	var archer: EnemyNpc = _enemy("Archer")
+	archer.leash_distance = 200.0
+	player.warp_to(Transform3D(Basis(), archer.global_position + Vector3(0.0, 0.0, 8.0)))
+	await wait_physics_frames(2)
+	archer.target = player
+	assert_not_null(archer.accuracy, "The archer scene carries the bow's Accuracy resource")
+	var aim: Vector3 = archer.muzzle.global_position.direction_to(Focus.get_focus_target_position(player))
+	var widest: float = 0.0
+	var strays: int = 0
+	archer.skill_level = 0
+	for _i: int in 12:
+		var arrow: Projectile = archer._fire()
+		var angle: float = rad_to_deg(arrow.linear_velocity.angle_to(aim))
+		widest = maxf(widest, angle)
+		if angle > 0.01:
+			strays += 1
+		assert_lte(angle, archer.accuracy.spread_for(0) + 0.01, "Inside the novice cone")
+		arrow.queue_free()
+	assert_gt(strays, 6, "A novice archer rarely fires dead on the line")
+	archer.skill_level = 100
+	for _i: int in 6:
+		var arrow: Projectile = archer._fire()
+		assert_lte(rad_to_deg(arrow.linear_velocity.angle_to(aim)), archer.accuracy.expert_spread_degrees + 0.01, "An expert stays inside the tight cone")
+		arrow.queue_free()
+	world.get_node("JustCreate3D/Weapon_01").equip(player)
+	await wait_physics_frames(3)
+	var gun: Firearm = player.inventory.get_equipment_by_type(Equipment.EquipmentType.PISTOL)
+	assert_not_null(gun.accuracy, "The world's pistol carries its Accuracy resource")
+	player.skill_level = 0
+	var line: Vector3 = -player.projectile_raycast.global_basis.z
+	var pistol_strays: int = 0
+	for _i: int in 12:
+		gun.fire_timer.stop()
+		var bullet: Projectile = gun.fire()
+		var angle: float = rad_to_deg(bullet.linear_velocity.angle_to(line))
+		assert_lte(angle, gun.accuracy.spread_for(0) + 0.01, "Inside the pistol's novice cone")
+		if angle > 0.01:
+			pistol_strays += 1
+		bullet.queue_free()
+	assert_gt(pistol_strays, 6, "A novice's pistol rounds wander off the crosshair line")
