@@ -307,3 +307,18 @@ func test_hovering_at_the_follow_distance_does_not_shuffle() -> void:
 	assert_lte(flips, 2, "The follow slack keeps it from stopping and starting every few frames")
 	assert_eq(blend_jumps, 0, "The blend eases; it never snaps")
 	assert_eq(archer.anim_state, "Locomotion")
+
+
+func test_a_round_on_the_head_kills_outright_while_a_body_shot_only_wounds() -> void:
+	var rifleman: EnemyNpc = _enemy("Rifleman")
+	var swordsman: EnemyNpc = _enemy("Swordsman")
+	watch_signals(swordsman)
+	var bullet: Projectile = preload("res://addons/3d_player_controller/scenes/bullet.tscn").instantiate()
+	add_child_autofree(bullet)
+	bullet.shooter = player
+	rifleman.register_projectile_hit(bullet, rifleman.global_position + Vector3(0.0, 1.0, 0.0), Vector3.FORWARD)
+	assert_false(rifleman.is_dead, "A chest hit wounds")
+	assert_eq(rifleman.health.health, rifleman.health.max_health - bullet.damage)
+	swordsman.register_projectile_hit(bullet, swordsman.head.global_position, Vector3.FORWARD)
+	assert_signal_emitted(swordsman, "headshot")
+	assert_true(swordsman.is_dead, "A head hit kills outright")
