@@ -206,3 +206,23 @@ func test_being_hunted_pauses_mana_regen_until_the_enemy_dies() -> void:
 	swordsman.take_hit(1000.0, player.global_position)
 	await wait_physics_frames(2)
 	assert_false(player.health.regen_paused, "The hunter is dead: mana regenerates again")
+
+
+func test_a_player_past_the_leash_resets_the_enemy_who_heals_at_its_post() -> void:
+	var swordsman: EnemyNpc = _enemy("Swordsman")
+	watch_signals(swordsman)
+	var home: Vector3 = swordsman.global_position
+	swordsman.take_hit(40.0, player.global_position)
+	_stand_near(swordsman, 3.0)
+	await wait_seconds(1.0)
+	assert_eq(swordsman.target, player)
+	# The Player respawns far away: past the leash, the hunt is over
+	player.warp_to(Transform3D(Basis(), home + Vector3(0.0, 0.0, swordsman.leash_distance + 5.0)))
+	await wait_physics_frames(2)
+	assert_null(swordsman.target, "Nobody is hunted past the leash")
+	assert_true(swordsman.is_returning_home)
+	assert_false(player.health.regen_paused, "The Player is out of combat again")
+	await wait_seconds(2.5)
+	assert_lt(swordsman.global_position.distance_to(home), 0.8, "Back at its post")
+	assert_signal_emitted(swordsman, "returned_home")
+	assert_eq(swordsman.health.health, swordsman.health.max_health, "Healed to full on the reset")

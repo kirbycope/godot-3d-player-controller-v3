@@ -2,8 +2,9 @@ class_name EnemyNpc
 extends FollowerNpc
 ## A hostile NPC: idles until the Player attacks it or steps within its aggro area, then chases over the
 ## navigation mesh and attacks in reach with a melee swing whose weapon hitbox must touch you, a projectile
-## weapon, or abilities cast in range with line of sight. When the hunted Player dies it turns on any other
-## living Player still inside its aggro area, or walks back to where it started and stands as it stood.
+## weapon, or abilities cast in range with line of sight. When the hunted Player dies, or strays further than
+## [member leash_distance] from the post (a respawn far away counts), it turns on any other living Player still
+## inside its aggro area or walks back to where it started, stands as it stood and heals to full.
 ## Health, death and the animation state replicate from the server; hits from clients relay.
 
 signal aggroed(target: Node3D)
@@ -23,6 +24,7 @@ const LOCOMOTION_STATES: Array[String] = ["Idle", "Walking", "Running"]
 @export var projectile_scene: PackedScene ## Archers and riflemen fire this; empty means melee.
 @export var projectile_speed: float = 30.0
 @export var melee_hit_damage: float = 25.0 ## Damage taken from one of the Player's melee swings.
+@export var leash_distance: float = 30.0 ## A target further than this from the post is given up on; the enemy resets.
 @export var footstep_sfx: AudioStream ## Played by the walk and run animations' method tracks.
 
 var target: Node3D ## The Player being hunted; abilities read it through [method Ability.get_target].
@@ -79,6 +81,13 @@ func _physics_process(delta: float) -> void:
 		_return_home(delta)
 		_update_locomotion()
 		return
+	if target and target.global_position.distance_to(_spawn_transform.origin) > leash_distance:
+		# Off the leash (a respawn at the far spawn point, or a chase that went too far): reset
+		_drop_target()
+		is_returning_home = true
+		_return_home(delta)
+		_update_locomotion()
+		return
 	super(delta)
 	_update_locomotion()
 	if target == null or target.get("is_stealthed") or not attack_timer.is_stopped():
@@ -107,8 +116,8 @@ func aggro(who: Node) -> void:
 	aggroed.emit(target)
 
 
-## The hunted Player died: turn on another living Player still inside the aggro area, or head home.
-func _on_target_died() -> void:
+## Gives up the hunt: the target died or went past the leash.
+func _drop_target() -> void:
 	if is_instance_valid(target):
 		target.health.died.disconnect(_on_target_died)
 		target.hunted_by(get_path(), false)
@@ -116,6 +125,11 @@ func _on_target_died() -> void:
 	player = null
 	caster.interrupt()
 	boss.disengage()
+
+
+## The hunted Player died: turn on another living Player still inside the aggro area, or head home.
+func _on_target_died() -> void:
+	_drop_target()
 	for body: Node3D in aggro_area.get_overlapping_bodies():
 		if body is Player and (body as Player).health.is_alive() and not (body as Player).is_stealthed:
 			aggro(body)
@@ -140,6 +154,9 @@ func _return_home(delta: float) -> void:
 	global_transform = global_transform.interpolate_with(facing, turn_speed * delta)
 	if global_transform.basis.z.angle_to(_spawn_transform.basis.z) < 0.05:
 		is_returning_home = false
+		# Back at the post: a full reset, as a WoW mob heals up after a leash
+		health.health = health.max_health
+		health.energy = health.max_energy
 		returned_home.emit()
 
 
