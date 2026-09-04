@@ -51,7 +51,7 @@ func test_a_hit_from_anywhere_starts_the_hunt() -> void:
 	rifleman.register_weapon_hit(player, null)
 	assert_eq(rifleman.target, player, "Being struck aggroes even from far away")
 	assert_lt(rifleman.health.health, rifleman.health.max_health, "The strike costs health")
-	assert_ne(rifleman.anim_state, "Idle", "A hit reaction plays")
+	assert_ne(rifleman.anim_state, "Locomotion", "A hit reaction plays")
 
 
 func test_swordsman_strikes_the_player_in_reach() -> void:
@@ -276,7 +276,34 @@ func test_enemies_move_by_root_motion_with_the_model_staying_on_its_body() -> vo
 	_stand_near(swordsman, 10.0)
 	swordsman.aggro(player)
 	await wait_seconds(0.8)
-	assert_eq(swordsman.anim_state, "Running")
+	assert_eq(swordsman.anim_state, "Locomotion")
+	assert_gt(swordsman.locomotion_blend, 0.9, "Full chase: the blend sits at run")
 	assert_gt(swordsman.animation_tree.get_root_motion_position().length(), 0.0, "The run clip's Root bone travel is extracted")
 	assert_gt(swordsman.global_position.distance_to(start), 0.5, "And it is what carries the body")
 	assert_lt(swordsman.mannequin.position.length(), 0.01, "The mesh stays on its body instead of walking away from it")
+
+
+func test_hovering_at_the_follow_distance_does_not_shuffle() -> void:
+	var archer: EnemyNpc = _enemy("Archer")
+	archer.attack_range = 0.0 # never shoots, so it only holds its follow distance
+	_stand_near(archer, archer.follow_distance + 0.3)
+	archer.aggro(player)
+	await wait_seconds(1.0)
+	# The Player backs away slowly: without slack the wish would flip between walk and stop every few frames
+	var flips: int = 0
+	var was_moving: bool = archer._control_speed > 0.05
+	var blend_jumps: int = 0
+	var last_blend: float = archer.locomotion_blend
+	for i in 60:
+		player.global_position += Vector3(0.0, 0.0, 0.6 / 60.0)
+		await wait_physics_frames(1)
+		var moving: bool = archer._control_speed > 0.05
+		if moving != was_moving:
+			flips += 1
+		was_moving = moving
+		if absf(archer.locomotion_blend - last_blend) > 0.3: # two ticks of the 8 per second ease
+			blend_jumps += 1
+		last_blend = archer.locomotion_blend
+	assert_lte(flips, 2, "The follow slack keeps it from stopping and starting every few frames")
+	assert_eq(blend_jumps, 0, "The blend eases; it never snaps")
+	assert_eq(archer.anim_state, "Locomotion")

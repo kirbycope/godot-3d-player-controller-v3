@@ -16,6 +16,7 @@ signal swimming_changed(is_swimming: bool) ## Emitted when the NPC enters or lea
 @export var walk_speed: float = 0.0 ## Speed used within 1.5 m of [member follow_distance]; 0 keeps [member move_speed] throughout.
 @export var turn_speed: float = 10.0 ## Speed at which the NPC turns
 @export var follow_distance: float = 2.0 ## Distance to maintain from the player
+@export var follow_slack: float = 0.5 ## Once stopped at follow_distance, the player must get this much further away before the NPC moves again, so it never shuffles at the boundary.
 @export var max_follow_distance: float = INF ## Maximum distance before the NPC stops following
 @export var follow_height_tolerance: float = 1.5 ## Height difference from the player still considered "close enough".
 @export var follow_while_driving: bool = false ## Keep following while the player drives.
@@ -35,6 +36,7 @@ var is_swimming: bool = false: ## Is the NPC below a water surface?
 		is_swimming = value
 		swimming_changed.emit(value)
 var knockback_velocity: Vector3 = Vector3.ZERO
+var _holding_distance: bool = false ## Stopped at follow_distance; released past follow_distance + follow_slack.
 var _was_colliding: bool = false
 
 @onready var navigation_agent_3d: NavigationAgent3D = $NavigationAgent3D
@@ -94,7 +96,11 @@ func _follow_player(delta: float) -> void:
 	navigation_agent_3d.target_position = player.global_position
 	var horizontal_distance: float = offset.slide(up_direction).length()
 	var vertical_distance: float = absf(up_direction.dot(offset))
-	var is_close_enough: bool = horizontal_distance <= follow_distance and vertical_distance < follow_height_tolerance
+	if horizontal_distance <= follow_distance:
+		_holding_distance = true
+	elif horizontal_distance > follow_distance + follow_slack:
+		_holding_distance = false
+	var is_close_enough: bool = _holding_distance and vertical_distance < follow_height_tolerance
 	# A swimming NPC keeps going until it climbs out after a player on land
 	if is_swimming and not player.is_swimming:
 		is_close_enough = false

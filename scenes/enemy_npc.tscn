@@ -329,20 +329,25 @@ advance_mode = 2
 [sub_resource type="SphereShape3D" id="SphereShape3D_aggro"]
 radius = 4.572
 
+[sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_locomotion"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_0afue")
+blend_point_0/pos = 0.0
+blend_point_1/node = SubResource("AnimationNodeAnimation_walk")
+blend_point_1/pos = 0.5
+blend_point_2/node = SubResource("AnimationNodeAnimation_run")
+blend_point_2/pos = 1.0
+min_space = 0.0
+
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_5xw05"]
 states/End/position = Vector2(701, 99)
 states/GettingHit/node = SubResource("AnimationNodeAnimation_ghhit")
 states/GettingHit/position = Vector2(600, -1)
-states/Idle/node = SubResource("AnimationNodeAnimation_0afue")
-states/Idle/position = Vector2(416, 99)
+states/Locomotion/node = SubResource("AnimationNodeBlendSpace1D_locomotion")
+states/Locomotion/position = Vector2(416, 99)
 states/ReactionHitOnLeftSide/node = SubResource("AnimationNodeAnimation_fahkb")
 states/ReactionHitOnLeftSide/position = Vector2(416, -1)
 states/ReactionHitOnRightSide/node = SubResource("AnimationNodeAnimation_n4cu0")
 states/ReactionHitOnRightSide/position = Vector2(416, 184)
-states/Walking/node = SubResource("AnimationNodeAnimation_walk")
-states/Walking/position = Vector2(200, 300)
-states/Running/node = SubResource("AnimationNodeAnimation_run")
-states/Running/position = Vector2(350, 300)
 states/SwordAttack/node = SubResource("AnimationNodeAnimation_sword")
 states/SwordAttack/position = Vector2(500, 300)
 states/CastAttack/node = SubResource("AnimationNodeAnimation_cast")
@@ -351,7 +356,7 @@ states/BowAttack/node = SubResource("AnimationNodeAnimation_bow")
 states/BowAttack/position = Vector2(800, 300)
 states/RifleAttack/node = SubResource("AnimationNodeAnimation_rifle")
 states/RifleAttack/position = Vector2(950, 300)
-transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition_7dlp2"), "Idle", "ReactionHitOnLeftSide", SubResource("AnimationNodeStateMachineTransition_ducsy"), "ReactionHitOnLeftSide", "Idle", SubResource("AnimationNodeStateMachineTransition_13xtl"), "ReactionHitOnRightSide", "Idle", SubResource("AnimationNodeStateMachineTransition_rfmtl"), "Idle", "ReactionHitOnRightSide", SubResource("AnimationNodeStateMachineTransition_8yijt"), "Idle", "GettingHit", SubResource("AnimationNodeStateMachineTransition_ghin"), "GettingHit", "Idle", SubResource("AnimationNodeStateMachineTransition_ghout"), "SwordAttack", "Idle", SubResource("AnimationNodeStateMachineTransition_sword_end"), "CastAttack", "Idle", SubResource("AnimationNodeStateMachineTransition_cast_end"), "BowAttack", "Idle", SubResource("AnimationNodeStateMachineTransition_bow_end"), "RifleAttack", "Idle", SubResource("AnimationNodeStateMachineTransition_rifle_end")]
+transitions = ["Start", "Locomotion", SubResource("AnimationNodeStateMachineTransition_7dlp2"), "Locomotion", "ReactionHitOnLeftSide", SubResource("AnimationNodeStateMachineTransition_ducsy"), "ReactionHitOnLeftSide", "Locomotion", SubResource("AnimationNodeStateMachineTransition_13xtl"), "ReactionHitOnRightSide", "Locomotion", SubResource("AnimationNodeStateMachineTransition_rfmtl"), "Locomotion", "ReactionHitOnRightSide", SubResource("AnimationNodeStateMachineTransition_8yijt"), "Locomotion", "GettingHit", SubResource("AnimationNodeStateMachineTransition_ghin"), "GettingHit", "Locomotion", SubResource("AnimationNodeStateMachineTransition_ghout"), "SwordAttack", "Locomotion", SubResource("AnimationNodeStateMachineTransition_sword_end"), "CastAttack", "Locomotion", SubResource("AnimationNodeStateMachineTransition_cast_end"), "BowAttack", "Locomotion", SubResource("AnimationNodeStateMachineTransition_bow_end"), "RifleAttack", "Locomotion", SubResource("AnimationNodeStateMachineTransition_rifle_end")]
 graph_offset = Vector2(-334.13638, -114)
 
 [node name="EnemyNpc" type="CharacterBody3D" groups=["Focusable"]]

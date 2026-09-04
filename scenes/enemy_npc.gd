@@ -6,8 +6,9 @@ extends FollowerNpc
 ## [member leash_distance] from the post (a respawn far away counts), it turns on any other living Player still
 ## inside its aggro area or walks back to where it started, stands as it stood and heals to full. A Player in a
 ## vehicle is never chased: it is attacked while inside attack range and given up on once it drives out of it.
-## Locomotion is root motion, as for the Player: the navigation decides where to face and whether to walk or
-## run, and the animation's Root bone carries the body. Health, death and the animation state replicate from
+## Locomotion is a blend space (Idle, Walk, Run) fed by a smoothed [member locomotion_blend], as LittleBuddy's is,
+## and root motion as for the Player: the navigation decides where to face and how fast it wants to go, and the
+## animation's Root bone carries the body. Health, death and the animation state replicate from
 ## the server; hits from clients relay.
 
 signal aggroed(target: Node3D)
@@ -16,7 +17,8 @@ signal struck(body: Node3D) ## The weapon hitbox connected.
 signal died
 signal returned_home ## Back at the spawn point after the hunted Player died.
 
-const LOCOMOTION_STATES: Array[String] = ["Idle", "Walking", "Running"]
+const LOCOMOTION_STATE: String = "Locomotion" ## The blend space state; attacks and hit reactions return to it.
+const LOCOMOTION_BLEND_PATH: String = "parameters/Locomotion/blend_position"
 
 @export var is_boss: bool = false ## Puts the name and health on the hunted player's HUD boss bar.
 @export var attack_range: float = 1.6 ## Distance the attack lands from: melee reach, or firing range for projectiles.
@@ -41,11 +43,16 @@ var is_dead: bool = false: ## Replicated; the setter drops the body into the rag
 		is_dead = value
 		if value and is_node_ready():
 			_apply_death()
-var anim_state: String = "Idle": ## Replicated AnimationTree state.
+var anim_state: String = LOCOMOTION_STATE: ## Replicated AnimationTree state.
 	set(value):
 		anim_state = value
 		if playback and String(playback.get_current_node()) != value:
 			playback.start(value)
+var locomotion_blend: float = 0.0: ## Replicated: 0 idle, 0.5 walk, 1 run, eased toward what the navigation asks for.
+	set(value):
+		locomotion_blend = value
+		if animation_tree:
+			animation_tree.set(LOCOMOTION_BLEND_PATH, value)
 
 @onready var mannequin: Node3D = $Mannequin_M ## The animated model; root motion is in its space.
 @onready var animation_tree: AnimationTree = $AnimationTree
@@ -268,7 +275,7 @@ func _fire() -> void:
 ## travel this frame becomes the velocity, so the feet never slide.
 func _move_with_control(control_velocity: Vector3) -> void:
 	_control_speed = control_velocity.slide(up_direction).length()
-	if is_on_floor() and not is_swimming and String(playback.get_current_node()) != "Idle":
+	if is_on_floor() and not is_swimming:
 		control_velocity = (mannequin.global_basis * animation_tree.get_root_motion_position() / get_physics_process_delta_time()).slide(up_direction)
 	super(control_velocity)
 
@@ -280,11 +287,18 @@ func sfx_footsteps_play() -> void:
 		footstep_audio.play()
 
 
-## Idle, walk or run to match what the navigation asked for, never cutting off a swing or a hit reaction.
+## Eases the blend toward what the navigation asked for (0 idle, 0.5 walk at walk_speed, 1 run at move_speed),
+## as LittleBuddy does, so a wish that flickers at the follow distance never restarts a clip.
 func _update_locomotion() -> void:
-	if String(playback.get_current_node()) not in LOCOMOTION_STATES:
-		return
-	anim_state = "Idle" if _control_speed < 0.2 else ("Walking" if _control_speed < move_speed * 0.6 else "Running")
+	var target: float = 0.0
+	if _control_speed > 0.05:
+		if _control_speed <= walk_speed:
+			target = _control_speed / maxf(walk_speed, 0.001) * 0.5
+		else:
+			target = 0.5 + clampf((_control_speed - walk_speed) / maxf(move_speed - walk_speed, 0.001), 0.0, 1.0) * 0.5
+	locomotion_blend = move_toward(locomotion_blend, target, (8.0 if target < locomotion_blend else 6.0) * get_physics_process_delta_time())
+	if String(playback.get_current_node()) != LOCOMOTION_STATE and playback.get_travel_path().is_empty() and not playback.is_playing():
+		anim_state = LOCOMOTION_STATE
 
 
 ## The ragdoll takes over and the enemy stops being a threat or a target.
