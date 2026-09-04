@@ -13,7 +13,7 @@ const WAVE_TIME_ROLLOVER: float = 3600.0 ## Shader TIME wraps at rendering/limit
 @export var water_mesh: MeshInstance3D ## Quad drawn with pond_water.gdshader; its height and wave uniforms define the surface.
 @export var weather: WeatherFX ## Source of the wind the shader reads from its globals; without it the shader's fallbacks apply.
 @export var buoyancy: float = 2.0 ## Lift at full submersion as a multiple of the body's weight; 2 floats a body half submerged.
-@export var probe_depth: float = 0.5 ## Metres below the surface at which a probe counts as fully submerged.
+@export var probe_depth: float = 0.5 ## Metres below the surface at which a probe counts as fully submerged; a body with its own `probe_depth` property overrides it.
 @export var drag: float = 8.0 ## Linear damping per unit of submersion, scaled by mass; settles a bob within a few swings.
 @export var angular_drag: float = 2.0 ## Angular damping per unit of submersion, scaled by mass.
 @export_group("Fishing")
@@ -59,9 +59,11 @@ func get_surface_height(point: Vector3) -> float:
 func _physics_process(_delta: float) -> void:
 	for body: RigidBody3D in bodies:
 		var probes: Array = bodies[body]
+		var own_depth: Variant = body.get("probe_depth")
+		var depth_scale: float = own_depth if own_depth != null else probe_depth
 		var submersion: float = 0.0
 		for probe: Node3D in probes:
-			var ratio: float = clampf((get_surface_height(probe.global_position) - probe.global_position.y) / probe_depth, 0.0, 1.0)
+			var ratio: float = clampf((get_surface_height(probe.global_position) - probe.global_position.y) / depth_scale, 0.0, 1.0)
 			submersion += ratio / probes.size()
 			body.apply_force(-body.get_gravity() * body.mass * buoyancy * ratio / probes.size(), probe.global_position - body.global_position)
 		body.apply_central_force(-body.linear_velocity * drag * submersion * body.mass)

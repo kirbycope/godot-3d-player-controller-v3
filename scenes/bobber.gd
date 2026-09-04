@@ -5,12 +5,14 @@ extends Projectile
 ## Spawned through the ProjectileSpawner, so every peer simulates its own copy from the same launch
 ## and sees the line, the dips and the catch. The line runs from the caster's rod tip when that peer
 ## has the rod, or from their left hand otherwise (equipment is not replicated). It never sweeps for
-## hits; its BuoyancyProbe child sits low so the float rides at the surface.
+## hits. Its lift saturates within a few centimetres ([member probe_depth]) and its centre of mass sits below
+## the probe, so it rights itself after the tumble of the cast and rides on the surface.
 
 signal landed_in_water(water: Area3D) ## Emitted once when the float first enters a "WATER" area.
 signal landed_dry ## Emitted when the float touches something before reaching water.
 
 @export var fish_scene: PackedScene ## Placeholder catch model for any [Fish] without one of its own.
+@export var probe_depth: float = 0.08 ## Read by [Buoyancy]: depth at which the float's lift is at full strength.
 
 var in_water: bool = false
 
