@@ -335,6 +335,7 @@ func test_a_pistol_round_sweeps_to_the_head_bone_behind_the_capsule() -> void:
 	world.get_node("JustCreate3D/Weapon_01").equip(player)
 	await wait_physics_frames(3)
 	var gun: Firearm = player.inventory.get_equipment_by_type(Equipment.EquipmentType.PISTOL)
+	gun.accuracy = null # This is an aim test: a novice's spread would miss the head
 	var head: Node3D = archer.get_node("Mannequin_M/Armature/GeneralSkeleton/BoneAttachment3D/Head/CollisionShape3D")
 	_aim(head.global_position)
 	await wait_physics_frames(3)
