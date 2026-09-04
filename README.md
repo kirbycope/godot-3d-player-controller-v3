@@ -29,6 +29,8 @@ Click [here](https://timothycope.com/godot-3d-player-controller-v3/) to play!
 
 Open the project in Godot 4.8+ and run `scenes/main.tscn`, or run the world directly with `scenes/world.tscn`.
 
+The project renders with D3D12 on Windows and sets `rendering/rendering_device/d3d12/max_resource_descriptors` to 131072 in `project.godot`. The default of 16384 is exhausted once the editor has the world, player and main scenes open, and every draw then fails with `Uniforms were never supplied for set (1)` spammed thousands of times in the Output panel. Raise it further if that error ever returns.
+
 Run the full GUT suite headless (all six test directories):
 
 ```powershell
