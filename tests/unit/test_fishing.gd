@@ -118,3 +118,15 @@ func test_catch_card_shows_name_and_length() -> void:
 	assert_false(card.hide_timer.is_stopped(), "The card hides itself after a while")
 	card.show_catch(BOOT, 0.0)
 	assert_eq(card.detail_label.text, "Junk")
+
+
+func test_bobber_splash_shows_droplets_and_a_ring() -> void:
+	var bobber: Bobber = BOBBER_SCENE.instantiate()
+	add_child_autofree(bobber)
+	await wait_physics_frames(1)
+	assert_false(bobber.ring.visible)
+	bobber.splash(1.0)
+	assert_true(bobber.ring.visible, "The ring appears at the float")
+	assert_true(bobber.splash_particles.emitting, "Droplets burst")
+	await wait_seconds(0.8)
+	assert_false(bobber.ring.visible, "The ring fades out and hides")

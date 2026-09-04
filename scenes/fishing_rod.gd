@@ -104,8 +104,8 @@ func hook() -> void:
 	if animation_player.has_animation("Take 001"):
 		animation_player.play("Take 001")
 	reel_timer.start(1.0 + hooked_length / 40.0)
-	if water.shadows and not hooked_fish.is_junk:
-		water.shadows.hook(bobber.global_position, reel_timer.wait_time)
+	bobber.splash.rpc(0.8)
+	bobber.thrash.rpc(reel_timer.wait_time)
 	_play(reel_sfx)
 	fish_hooked.emit(hooked_fish)
 
@@ -113,6 +113,8 @@ func hook() -> void:
 ## Brings the line back in with nothing on it.
 func retract() -> void:
 	var lost: Fish = hooked_fish if state == State.BITE or state == State.REELING else null
+	if water and water.shadows:
+		water.shadows.release()
 	_clear_line()
 	state = State.IDLE
 	if player.is_fishing:
@@ -192,6 +194,7 @@ func _adopt_bobber(float_node: Bobber) -> void:
 func _on_bobber_landed_in_water(area: Area3D) -> void:
 	water = area as Buoyancy
 	bobber.plunge.rpc(0.08, 0.5)
+	bobber.splash.rpc(0.6)
 	_play(splash_sfx)
 	hooked_fish = water.pick_fish() if water else null
 	if hooked_fish == null:
@@ -203,12 +206,17 @@ func _on_bobber_landed_in_water(area: Area3D) -> void:
 		wait *= 0.6
 	bite_timer.start(wait)
 	nibble_timer.start(randf_range(nibble_interval.x, nibble_interval.y))
+	if water.shadows:
+		water.shadows.attract(bobber.global_position)
 
 
 func _on_nibble_timer_timeout() -> void:
 	if state != State.WAITING or bite_timer.time_left < 0.6:
 		return
 	bobber.plunge.rpc(0.04, 0.4)
+	bobber.splash.rpc(0.25)
+	if water.shadows:
+		water.shadows.nibble(bobber.global_position)
 	_play(nibble_sfx)
 	nibble_timer.start(randf_range(nibble_interval.x, nibble_interval.y))
 
@@ -220,6 +228,9 @@ func _on_bite_timer_timeout() -> void:
 	nibble_timer.stop()
 	hooked_length = hooked_fish.roll_length()
 	bobber.plunge.rpc(0.35, 0.8)
+	bobber.splash.rpc(1.0)
+	if water.shadows:
+		water.shadows.dive(bobber.global_position)
 	_play(bite_sfx)
 	Input.start_joy_vibration(0, 0.5, 0.7, 0.3)
 	hook_timer.start(hook_window)
@@ -231,6 +242,7 @@ func _on_bite_timer_timeout() -> void:
 func _on_hook_timer_timeout() -> void:
 	if state != State.BITE:
 		return
+	bobber.splash.rpc(0.4)
 	if water.shadows:
 		water.shadows.scatter()
 	retract()
@@ -242,6 +254,7 @@ func _on_reel_timer_timeout() -> void:
 	var fish: Fish = hooked_fish
 	var length: float = hooked_length
 	# Every peer watches the catch arc out of the water; the card is the caster's alone
+	bobber.splash.rpc(1.0)
 	bobber.present_catch.rpc(fish.resource_path, length)
 	state = State.IDLE
 	_clear_line()

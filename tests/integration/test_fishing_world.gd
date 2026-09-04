@@ -51,10 +51,20 @@ func test_full_loop_catches_a_fish() -> void:
 	assert_eq(action.text, "Reel In", "A line in the water offers Reel In")
 	assert_not_null(rod.hooked_fish, "Landing picks what will bite")
 	assert_false(rod.bite_timer.is_stopped())
+	var shadows: FishShadows = rod.water.shadows
+	assert_not_null(shadows.interested, "A shadow takes an interest in the float")
+	var drawn: MeshInstance3D = shadows.interested
+	rod.bite_timer.start(30.0) # hold the bite off while the shadow swims over
+	await wait_seconds(2.5)
+	assert_lt(drawn.global_position.distance_to(rod.bobber.global_position), 1.2, "The interested shadow swims up beside the float")
 	rod.bite_timer.stop()
 	rod._on_bite_timer_timeout()
 	assert_eq(rod.state, FishingRod.State.BITE)
 	assert_eq(action.text, "Hook!", "The bite asks for the hook")
+	assert_null(shadows.interested, "The biting shadow dives under the float")
+	assert_true(rod.bobber.ring.visible, "The bite splashes")
+	await wait_seconds(0.5)
+	assert_false(drawn.visible, "The diving shadow disappears below")
 	assert_signal_emitted(rod, "bite")
 	rod.hook()
 	assert_eq(action.text, "", "Reeling has no Action prompt")

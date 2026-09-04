@@ -16,6 +16,8 @@ var in_water: bool = false
 
 @onready var float_mesh: Node3D = $Float ## Holds both halves of the float so plunges move them together.
 @onready var line: MeshInstance3D = $Line ## Top-level, so its vertices are world space.
+@onready var splash_particles: GPUParticles3D = $SplashParticles
+@onready var ring: MeshInstance3D = $Ring ## Top-level expanding ripple ring.
 
 
 func _init() -> void:
@@ -72,6 +74,33 @@ func plunge(depth: float, duration: float) -> void:
 	var tween: Tween = create_tween()
 	tween.tween_property(float_mesh, "position:y", -depth, duration * 0.3)
 	tween.tween_property(float_mesh, "position:y", 0.0, duration * 0.7).set_trans(Tween.TRANS_BOUNCE)
+
+
+## Droplets and an expanding ring at the float, on every peer; [param strength] sizes both.
+@rpc("any_peer", "call_local", "reliable")
+func splash(strength: float) -> void:
+	splash_particles.amount_ratio = clampf(strength, 0.2, 1.0)
+	splash_particles.restart()
+	ring.global_transform = Transform3D(Basis().scaled(Vector3(0.3, 1.0, 0.3)), global_position + Vector3.UP * 0.02)
+	ring.transparency = 0.2
+	ring.show()
+	var tween: Tween = create_tween()
+	tween.tween_property(ring, "scale", Vector3(0.8 + strength, 1.0, 0.8 + strength), 0.6)
+	tween.parallel().tween_property(ring, "transparency", 1.0, 0.6)
+	tween.tween_callback(ring.hide)
+
+
+## A hooked fish drags the float about for [param duration] seconds, on every peer.
+@rpc("any_peer", "call_local", "reliable")
+func thrash(duration: float) -> void:
+	var tween: Tween = create_tween().set_loops(maxi(1, int(duration / 0.15)))
+	tween.tween_callback(_thrash_step)
+	tween.tween_interval(0.15)
+	tween.finished.connect(func() -> void: create_tween().tween_property(float_mesh, "position", Vector3.ZERO, 0.2))
+
+
+func _thrash_step() -> void:
+	create_tween().tween_property(float_mesh, "position", Vector3(randf_range(-0.08, 0.08), randf_range(-0.28, -0.08), randf_range(-0.08, 0.08)), 0.14)
 
 
 ## Arcs the catch from the float into the caster's hands on every peer; an empty path shows nothing.
