@@ -10,8 +10,12 @@ func _init() -> void:
 
 
 ## Needs something to aim at.
-func activate(caster: Node3D) -> bool:
+func can_cast(caster: Node3D) -> bool:
 	return is_instance_valid(get_target(caster))
+
+
+func activate(caster: Node3D) -> bool:
+	return can_cast(caster)
 
 
 func impact(caster: Node3D, target: Node3D) -> void:
