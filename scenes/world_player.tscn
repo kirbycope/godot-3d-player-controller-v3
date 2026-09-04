@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/player.tscn" id="6_e6ckp"]
 [ext_resource type="PackedScene" path="res://scenes/paraglider.tscn" id="7_mvg0v"]
@@ -6,10 +6,17 @@
 [ext_resource type="PackedScene" path="res://addons/radi_ot/scenes/radi_ot_player_3d.tscn" id="9_mvg0v"]
 [ext_resource type="Resource" path="res://addons/radi_ot/resources/stations/seattle_stations_default.tres" id="345_5hhec"]
 [ext_resource type="PackedScene" uid="uid://c7fishcard0001" path="res://scenes/fish_card.tscn" id="fish_card"]
+[ext_resource type="Script" path="res://addons/3d_player_controller/scripts/ability.gd" id="ability"]
+[ext_resource type="Resource" path="res://addons/3d_player_controller/resources/abilities/stealth.tres" id="stealth"]
+[ext_resource type="Resource" path="res://addons/3d_player_controller/resources/abilities/heal.tres" id="heal"]
+[ext_resource type="Resource" path="res://resources/abilities/firebolt.tres" id="firebolt"]
 [node name="Player" unique_id=994458497 node_paths=PackedStringArray("animation_tree") instance=ExtResource("6_e6ckp")]
 animation_tree = NodePath("AnimationTree")
 paraglider_scene = ExtResource("7_mvg0v")
 skateboard_scene = ExtResource("8_h3odw")
+
+[node name="Abilities" parent="."]
+abilities = Array[ExtResource("ability")]([ExtResource("stealth"), ExtResource("heal"), ExtResource("firebolt")])
 
 [node name="GeneralSkeleton" parent="PlayerModel/Armature" parent_id_path=PackedInt32Array(994458497, 1771073607, 593250737) index="0" unique_id=1869115255]
 bones/1/rotation = Quaternion(-0.033859815, -0.04645934, -0.028143784, 0.99794936)
