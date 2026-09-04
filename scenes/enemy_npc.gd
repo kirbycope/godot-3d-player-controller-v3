@@ -4,7 +4,8 @@ extends FollowerNpc
 ## navigation mesh and attacks in reach with a melee swing whose weapon hitbox must touch you, a projectile
 ## weapon, or abilities cast in range with line of sight. When the hunted Player dies, or strays further than
 ## [member leash_distance] from the post (a respawn far away counts), it turns on any other living Player still
-## inside its aggro area or walks back to where it started, stands as it stood and heals to full.
+## inside its aggro area or walks back to where it started, stands as it stood and heals to full. A Player in a
+## vehicle is never chased: it is attacked while inside attack range and given up on once it drives out of it.
 ## Health, death and the animation state replicate from the server; hits from clients relay.
 
 signal aggroed(target: Node3D)
@@ -81,8 +82,9 @@ func _physics_process(delta: float) -> void:
 		_return_home(delta)
 		_update_locomotion()
 		return
-	if target and target.global_position.distance_to(_spawn_transform.origin) > leash_distance:
-		# Off the leash (a respawn at the far spawn point, or a chase that went too far): reset
+	var drove_off: bool = target != null and target.get("is_driving") and global_position.distance_to(target.global_position) > attack_range * 1.25
+	if target and (drove_off or target.global_position.distance_to(_spawn_transform.origin) > leash_distance):
+		# Off the leash (a respawn at the far spawn point, a chase that went too far) or driven out of reach: reset
 		_drop_target()
 		is_returning_home = true
 		_return_home(delta)
@@ -160,10 +162,11 @@ func _return_home(delta: float) -> void:
 		returned_home.emit()
 
 
-## Wired to the AggroArea's body_entered.
+## Wired to the AggroArea's body_entered: a Player on foot, or the driver of a vehicle passing through.
 func _on_aggro_area_body_entered(body: Node3D) -> void:
-	if body is Player and not (body as Player).is_stealthed:
-		aggro(body)
+	var who: Node = body if body is Player else body.get("player")
+	if who is Player and not (who as Player).is_stealthed and (who == body or (who as Player).is_driving_in == body):
+		aggro(who)
 
 
 ## Called by [HitDetection]; unarmed swings pass the Player itself as the equipment.

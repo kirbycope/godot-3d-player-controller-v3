@@ -22,6 +22,10 @@ func _enemy(name: String) -> EnemyNpc:
 	return world.get_node("Enemies/" + name)
 
 
+class Car extends StaticBody3D:
+	var player: Player
+
+
 func _stand_near(enemy: EnemyNpc, distance: float) -> void:
 	player.warp_to(Transform3D(Basis(), enemy.global_position + Vector3(0.0, 0.0, distance)))
 
@@ -226,3 +230,41 @@ func test_a_player_past_the_leash_resets_the_enemy_who_heals_at_its_post() -> vo
 	assert_lt(swordsman.global_position.distance_to(home), 0.8, "Back at its post")
 	assert_signal_emitted(swordsman, "returned_home")
 	assert_eq(swordsman.health.health, swordsman.health.max_health, "Healed to full on the reset")
+
+
+func test_a_driving_player_is_attacked_in_reach_but_never_chased_and_dropped_when_gone() -> void:
+	var swordsman: EnemyNpc = _enemy("Swordsman")
+	watch_signals(swordsman)
+	var post: Vector3 = swordsman.global_position
+	player.is_driving = true
+	_stand_near(swordsman, 1.2)
+	swordsman.aggro(player)
+	await wait_seconds(1.5)
+	assert_signal_emitted(swordsman, "attacked", "In reach, a driver still gets hit")
+	assert_lt(swordsman.global_position.distance_to(post), 0.3, "But the swordsman never leaves its post after a car")
+	_stand_near(swordsman, 5.0)
+	await wait_physics_frames(2)
+	assert_null(swordsman.target, "Driven out of reach: the hunt is dropped")
+	await wait_seconds(0.5)
+	assert_lt(swordsman.global_position.distance_to(post), 0.3, "It stays put instead of following the car")
+	player.is_driving = false
+
+
+func test_a_car_driving_through_the_aggro_area_gets_its_driver_hunted() -> void:
+	var archer: EnemyNpc = _enemy("Archer")
+	var car := Car.new()
+	var shape := CollisionShape3D.new()
+	shape.shape = BoxShape3D.new()
+	car.add_child(shape)
+	car.player = player
+	world.add_child(car)
+	player.is_driving = true
+	player.is_driving_in = car
+	car.global_position = archer.global_position + Vector3(0.0, 0.5, 3.0)
+	_stand_near(archer, 3.0)
+	await wait_physics_frames(3)
+	assert_eq(archer.target, player, "The driver of a car in the aggro area is hunted")
+	assert_true(archer.caster.has_line_of_sight(player), "The car around the driver does not block the shot")
+	player.is_driving = false
+	player.is_driving_in = null
+	car.free()
