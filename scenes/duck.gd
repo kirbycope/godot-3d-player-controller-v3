@@ -275,11 +275,12 @@ func _play_eating_animation() -> void:
 		_update_collision_shapes()
 	if not animation_player_eat.is_playing():
 		animation_player_eat.play(ANIMATION_NAME)
+	# Each quack is a lunge; the giant's knife lands StrikeTimer later, on the AttackQuackCooldown cadence
+	if attack_quack_cooldown.is_stopped():
+		audio_stream_player_3d.play()
+		attack_quack_cooldown.start()
 		if _is_giant and attack_strike_timer.is_stopped():
 			attack_strike_timer.start()
-		if attack_quack_cooldown.is_stopped():
-			audio_stream_player_3d.play()
-			attack_quack_cooldown.start()
 	animation_player_idle.stop()
 	animation_player_walk.pause()
 

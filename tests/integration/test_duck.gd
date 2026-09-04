@@ -283,8 +283,8 @@ func test_killing_the_duckling_brings_the_giant_boss_who_bites_and_falls_back_to
 
 	player.warp_to(Transform3D(Basis(), duck.global_position + Vector3(2.0, 0.0, 0.0)))
 	var before: float = player.health.health
-	await wait_seconds(2.0)
-	assert_lt(player.health.health, before, "The giant's bite costs the Player health")
+	await wait_seconds(3.2)
+	assert_lte(player.health.health, before - 2.0 * duck.giant_damage, "The giant keeps biting on its cadence while the Player stays in reach")
 
 	duck.take_hit(1000.0, player.global_position)
 	assert_false(duck._is_giant, "A dead giant falls back to the duckling")
