@@ -1,9 +1,9 @@
 shader_type spatial;
 render_mode unshaded, cull_disabled, depth_test_disabled;
 
-// Per-instance so each tree/ore tracks its own progress with a shared material.
+// Per-instance so every bar tracks its own progress and colour with one shared material.
 instance uniform float ratio : hint_range(0.0, 1.0) = 0.0;
-uniform vec4 fill_color : source_color = vec4(0.35, 0.85, 0.3, 1.0);
+instance uniform vec4 fill_color : source_color = vec4(0.35, 0.85, 0.3, 1.0);
 uniform vec4 background_color : source_color = vec4(0.1, 0.1, 0.1, 0.75);
 
 void vertex() {

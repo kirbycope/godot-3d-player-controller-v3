@@ -9,6 +9,7 @@ display_name = "Firebolt"
 cooldown = 4.0
 cast_time = 1.2
 cast_range = 12.0
+stamina_cost = 20.0
 target_mode = 1
 projectile_speed = 14.0
 projectile_homing = true

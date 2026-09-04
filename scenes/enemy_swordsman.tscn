@@ -9,3 +9,6 @@ attack_range = 1.8
 follow_distance = 1.2
 
 [node name="Weapon" parent="Mannequin_M/Armature/GeneralSkeleton/WeaponAttachment" instance=ExtResource("2_weapon")]
+
+[node name="Boss" parent="." index="0"]
+boss_name = "Swordsman"

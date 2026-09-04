@@ -10,7 +10,7 @@ signal died
 
 const LOCOMOTION_STATES: Array[String] = ["Idle", "Walking", "Running"]
 
-@export var max_health: float = 100.0
+@export var is_boss: bool = false ## Puts the name and health on the hunted player's HUD boss bar.
 @export var attack_range: float = 1.6 ## Distance the attack lands from: melee reach, or firing range for projectiles.
 @export var attack_damage: float = 15.0 ## Melee damage; projectiles carry their own.
 @export var attack_interval: float = 1.5 ## Seconds between attacks or ability casts.
@@ -22,11 +22,6 @@ const LOCOMOTION_STATES: Array[String] = ["Idle", "Walking", "Running"]
 @export var footstep_sfx: AudioStream ## Played by the walk and run animations' method tracks.
 
 var target: Node3D ## The Player being hunted; abilities read it through [method Ability.get_target].
-var health: float = 100.0:
-	set(value):
-		health = clampf(value, 0.0, max_health)
-		if health <= 0.0 and not is_dead and is_multiplayer_authority():
-			is_dead = true
 var is_dead: bool = false: ## Replicated; the setter drops the body into the ragdoll on every peer.
 	set(value):
 		if value == is_dead:
@@ -46,6 +41,8 @@ var anim_state: String = "Idle": ## Replicated AnimationTree state.
 @onready var strike_timer: Timer = $StrikeTimer ## Delay from the swing's start to its hit or shot.
 @onready var muzzle: Marker3D = $Muzzle ## Where projectiles leave.
 @onready var caster: NpcCaster = $NpcCaster
+@onready var health: Health = $Health
+@onready var boss: Boss = $Boss
 @onready var collision_shape: CollisionShape3D = $CollisionShape3D
 @onready var footstep_audio: AudioStreamPlayer3D = $FootstepAudio
 @onready var physical_bone_simulator: PhysicalBoneSimulator3D = $Mannequin_M/Armature/GeneralSkeleton/PhysicalBoneSimulator3D
@@ -54,7 +51,6 @@ var anim_state: String = "Idle": ## Replicated AnimationTree state.
 func _ready() -> void:
 	super()
 	animation_tree.active = true
-	health = max_health
 	attack_timer.wait_time = attack_interval
 	strike_timer.wait_time = strike_delay
 	if is_dead:
@@ -87,6 +83,8 @@ func aggro(who: Node) -> void:
 		return
 	target = who
 	player = who
+	if is_boss:
+		boss.engage(who.get_multiplayer_authority())
 	aggroed.emit(target)
 
 
@@ -117,8 +115,8 @@ func take_hit(damage: float, from: Vector3) -> void:
 	if not multiplayer.is_server():
 		_request_hit.rpc_id(1, damage, from)
 		return
-	health -= damage
-	if is_dead:
+	health.damage(damage, from)
+	if not health.is_alive():
 		return
 	caster.interrupt()
 	var side: float = global_transform.basis.x.dot(global_position.direction_to(from))
@@ -133,10 +131,13 @@ func _request_hit(damage: float, from: Vector3) -> void:
 
 ## Restores health; false when already full, so a heal ability is not wasted.
 func heal(amount: float) -> bool:
-	if health >= max_health:
-		return false
-	health += amount
-	return true
+	return health.heal(amount)
+
+
+## Wired to Health.died on every peer; only the authority flips the replicated flag.
+func _on_health_died() -> void:
+	if is_multiplayer_authority():
+		is_dead = true
 
 
 func _attack() -> void:
@@ -192,6 +193,7 @@ func _update_locomotion() -> void:
 ## The ragdoll takes over and the enemy stops being a threat or a target.
 func _apply_death() -> void:
 	caster.interrupt()
+	boss.disengage()
 	target = null
 	player = null
 	animation_tree.active = false

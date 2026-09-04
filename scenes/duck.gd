@@ -1,5 +1,6 @@
 extends FollowerNpc
-## A duck that follows the Player, quacks on impacts, and respawns as a knife-wielding giant if it falls out of the world.
+## A duck that follows the Player and quacks on impacts. Killing it, or letting it fall out of the world, brings it
+## back as a knife-wielding giant boss that hunts the Player; killing the giant returns the duckling.
 
 const GIANT_QUACK_BUS: StringName = &"GiantDuck"
 const GIANT_QUACK_BUS_LAYOUT: AudioBusLayout = preload("res://default_bus_layout.tres")
@@ -11,12 +12,16 @@ const ANIMATION_NAME: StringName = &"FBXExportClip_0_001"
 @export var giant_follow_distance: float = 4.0
 @export var giant_quack_pitch: float = 0.5
 @export var collision_quack_speed: float = 1.0 ## Minimum impact speed that triggers a quack.
+@export var giant_health: float = 400.0
+@export var giant_damage: float = 25.0 ## Health the giant's knife takes from the Player per bite.
+@export var melee_hit_damage: float = 25.0 ## Damage taken from one of the Player's melee swings.
 
 var _is_giant: bool = false
 var _model_collision_shapes: Array[CollisionShape3D] = [] ## Per-model shapes toggled with the visible model while giant.
 var _player_range_initialized: bool = false
 var _player_was_in_range: bool = false
 var _spawn_transform: Transform3D
+var _duckling: Dictionary = {} ## The small duck's tunables, restored when the giant falls.
 
 @onready var animation_player_eat: AnimationPlayer = $EAT2/AnimationPlayer
 @onready var eat_model: Node3D = $EAT2
@@ -32,6 +37,10 @@ var _spawn_transform: Transform3D
 @onready var knife_idle: Node3D = $IDLE2/IDLE/Skeleton3D/BoneAttachment3D/Knife
 @onready var knife_walk: Node3D = $WALK2/WALK/Skeleton3D/BoneAttachment3D/Knife
 @onready var knife_eat: Node3D = $EAT2/EAT/Skeleton3D/BoneAttachment3D/Knife
+@onready var health: Health = $Health
+@onready var boss: Boss = $Boss
+@onready var status_bars: StatusBars3D = $StatusBars3D
+@onready var attack_strike_timer: Timer = $AttackStrikeTimer ## The giant's bite lands on its timeout.
 
 
 func _ready() -> void:
@@ -39,6 +48,7 @@ func _ready() -> void:
 	if AudioServer.get_bus_index(GIANT_QUACK_BUS) < 0:
 		AudioServer.set_bus_layout(GIANT_QUACK_BUS_LAYOUT)
 	_spawn_transform = global_transform
+	_duckling = {"follow_distance": follow_distance, "follow_height_tolerance": follow_height_tolerance, "swim_climb_speed": swim_climb_speed, "max_health": health.max_health, "bus": audio_stream_player_3d.bus, "unit_size": audio_stream_player_3d.unit_size, "bars_y": status_bars.position.y}
 	navigation_agent_3d.path_desired_distance = 0.5
 	for shape: Node in find_children("*", "CollisionShape3D", true, false):
 		if shape != collision_shape:
@@ -58,6 +68,8 @@ func _physics_process(delta: float) -> void:
 		_respawn_as_giant()
 	if player:
 		_update_player_range(global_position.distance_to(player.global_position))
+		if _is_giant and boss.target_peer == 0:
+			boss.engage(player.get_multiplayer_authority())
 	super(delta)
 
 
@@ -82,6 +94,48 @@ func apply_impulse(impulse: Vector3, _position: Vector3 = Vector3.ZERO) -> void:
 ## Responds to physics props, such as the beach ball, registering a hit.
 func register_hit(_hit_node: Node = null) -> void:
 	_play_quack()
+
+
+## Called by [HitDetection]; unarmed swings pass the Player itself as the equipment.
+func register_weapon_hit(equipment: Node = null, _hit_node: Node = null) -> void:
+	var attacker: Node = (equipment as Equipment).player if equipment is Equipment else equipment
+	take_hit(melee_hit_damage, (attacker as Node3D).global_position if attacker is Node3D else global_position)
+
+
+## Called by a landing [Projectile].
+func register_projectile_hit(projectile: Projectile, point: Vector3, _normal: Vector3) -> void:
+	take_hit(projectile.damage, point)
+
+
+## Damage counts on the server; clients relay theirs.
+func take_hit(damage: float, from: Vector3) -> void:
+	if not multiplayer.is_server():
+		_request_hit.rpc_id(1, damage, from)
+		return
+	_play_quack()
+	health.damage(damage, from)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func _request_hit(damage: float, from: Vector3) -> void:
+	if multiplayer.is_server():
+		take_hit(damage, from)
+
+
+## Wired to Health.died: a dead duckling comes back as the giant, a dead giant as the duckling.
+func _on_health_died() -> void:
+	if not is_multiplayer_authority():
+		return
+	if _is_giant:
+		_become_duckling()
+	else:
+		_respawn_as_giant()
+
+
+## Wired to the AttackStrikeTimer: the giant's bite lands on a Player still within reach.
+func _on_attack_strike_timer_timeout() -> void:
+	if _is_giant and player and global_position.distance_to(player.global_position) <= follow_distance * 1.5:
+		player.take_hit(giant_damage, global_position)
 
 
 func _on_collided(impact_speed: float) -> void:
@@ -128,7 +182,44 @@ func _respawn_as_giant() -> void:
 	audio_stream_player_3d.unit_size *= giant_scale
 	audio_stream_player_3d.bus = GIANT_QUACK_BUS
 	_update_collision_shapes()
+	status_bars.position.y *= giant_scale
+	health.max_health = giant_health
+	health.health = giant_health
+	if player:
+		boss.engage(player.get_multiplayer_authority())
 	audio_stream_player_3d.play()
+
+
+## Undoes [method _respawn_as_giant]: the duckling is back at its spawn with its own health.
+func _become_duckling() -> void:
+	_is_giant = false
+	boss.disengage()
+	global_transform = _spawn_transform
+	velocity = Vector3.ZERO
+	knockback_velocity = Vector3.ZERO
+	idle_model.scale /= giant_scale
+	walk_model.scale /= giant_scale
+	eat_model.scale /= giant_scale
+	move_speed /= giant_move_speed_multiplier
+	follow_distance = _duckling["follow_distance"]
+	follow_height_tolerance = _duckling["follow_height_tolerance"]
+	follow_while_driving = false
+	max_follow_distance /= giant_scale
+	mass /= giant_scale * 10.0
+	swim_climb_speed = _duckling["swim_climb_speed"]
+	swimming_depth_offset /= giant_scale
+	navigation_agent_3d.target_desired_distance = follow_distance
+	knife.visible = false
+	knife_idle.visible = false
+	knife_walk.visible = false
+	knife_eat.visible = false
+	audio_stream_player_3d.pitch_scale = 1.0
+	audio_stream_player_3d.unit_size = _duckling["unit_size"]
+	audio_stream_player_3d.bus = _duckling["bus"]
+	_update_collision_shapes()
+	status_bars.position.y = _duckling["bars_y"]
+	health.max_health = _duckling["max_health"]
+	health.health = health.max_health
 
 
 func _play_quack() -> void:
@@ -184,6 +275,8 @@ func _play_eating_animation() -> void:
 		_update_collision_shapes()
 	if not animation_player_eat.is_playing():
 		animation_player_eat.play(ANIMATION_NAME)
+		if _is_giant and attack_strike_timer.is_stopped():
+			attack_strike_timer.start()
 		if attack_quack_cooldown.is_stopped():
 			audio_stream_player_3d.play()
 			attack_quack_cooldown.start()

@@ -253,3 +253,42 @@ func test_already_respawned_giant_duck_does_not_respawn_again() -> void:
 	assert_almost_eq(duck.global_position.x, 10.0, 0.01)
 	assert_almost_eq(duck.global_position.z, 15.0, 0.01)
 	assert_lt(duck.global_position.y, -40.0)
+
+
+func test_killing_the_duckling_brings_the_giant_boss_who_bites_and_falls_back_to_a_duckling() -> void:
+	var root := Node3D.new()
+	add_child_autofree(root)
+	var floor_body := StaticBody3D.new()
+	var floor_shape := CollisionShape3D.new()
+	floor_shape.shape = BoxShape3D.new()
+	floor_shape.shape.size = Vector3(60.0, 1.0, 60.0)
+	floor_body.add_child(floor_shape)
+	floor_body.position.y = -0.5
+	root.add_child(floor_body)
+	var player: Player = preload("res://addons/3d_player_controller/scenes/player.tscn").instantiate()
+	root.add_child(player)
+	var duck: CharacterBody3D = DUCK_SCENE.instantiate() as CharacterBody3D
+	duck.position = Vector3(2.0, 0.0, 0.0)
+	root.add_child(duck)
+	duck.player = player
+	await wait_physics_frames(2)
+	assert_eq(duck.health.max_health, 60.0)
+
+	duck.take_hit(1000.0, player.global_position)
+	assert_true(duck._is_giant, "A dead duckling comes back as the giant")
+	assert_eq(duck.health.health, 400.0, "The giant has its own health")
+	assert_eq(duck.boss.target_peer, 1, "The giant engages the Player it follows")
+	assert_true(player.controls.boss_bar.visible, "The boss bar shows on the Player's HUD")
+	assert_eq(player.controls.boss_name_label.text, "Giant Duck")
+
+	player.warp_to(Transform3D(Basis(), duck.global_position + Vector3(2.0, 0.0, 0.0)))
+	var before: float = player.health.health
+	await wait_seconds(2.0)
+	assert_lt(player.health.health, before, "The giant's bite costs the Player health")
+
+	duck.take_hit(1000.0, player.global_position)
+	assert_false(duck._is_giant, "A dead giant falls back to the duckling")
+	assert_eq(duck.idle_model.scale, Vector3.ONE)
+	assert_eq(duck.health.max_health, 60.0)
+	assert_false(duck.knife.visible)
+	assert_false(player.controls.boss_bar.visible, "The boss bar goes with the giant")

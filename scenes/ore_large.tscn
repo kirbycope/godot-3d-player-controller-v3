@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://cbmu644xoalkv" path="res://scenes/mineable.gd" id="1_a3hox"]
 [ext_resource type="PackedScene" uid="uid://htc1vgwmtfyb" path="res://assets/n_hance_studio/craft/ore/SM_G_Ore_07.fbx" id="2_itiyp"]
 [ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://scenes/action_prompt.tscn" id="3_itiyp"]
-[ext_resource type="PackedScene" uid="uid://dprg3ba60c1vw" path="res://scenes/progress_bar_3d.tscn" id="4_pb3d"]
+[ext_resource type="PackedScene" uid="uid://dprg3ba60c1vw" path="res://addons/3d_player_controller/scenes/progress_bar_3d.tscn" id="4_pb3d"]
 [ext_resource type="SceneReplicationConfig" path="res://scenes/harvestable_replication.tres" id="sync_config"]
 [ext_resource type="ParticleProcessMaterial" path="res://resources/vfx/rock_chips.tres" id="fx_process"]
 [ext_resource type="BoxMesh" path="res://resources/vfx/rock_chip_mesh.tres" id="fx_mesh"]

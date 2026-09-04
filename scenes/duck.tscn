@@ -14,6 +14,9 @@
 [ext_resource type="AudioStream" uid="uid://dw7jihkky3b17" path="res://assets/gravitysound/Animal SFX/Duck_5.ogg" id="10_t4sxs"]
 [ext_resource type="AudioStream" uid="uid://1tij4jh6i0jx" path="res://assets/gravitysound/Animal SFX/Duck_6.ogg" id="11_7o3gr"]
 [ext_resource type="SceneReplicationConfig" path="res://addons/3d_player_controller/resources/character_body_replication.tres" id="sync_config"]
+[ext_resource type="PackedScene" uid="uid://c7health000001" path="res://addons/3d_player_controller/scenes/health.tscn" id="health_scene"]
+[ext_resource type="PackedScene" uid="uid://c7statusbars01" path="res://addons/3d_player_controller/scenes/status_bars_3d.tscn" id="bars_scene"]
+[ext_resource type="PackedScene" uid="uid://c7boss00000001" path="res://addons/3d_player_controller/scenes/boss.tscn" id="boss_scene"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hwgnm"]
 resource_name = "Duck_White"
@@ -1095,7 +1098,24 @@ one_shot = true
 [node name="BodySynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = ExtResource("sync_config")
 
+[node name="Health" parent="." instance=ExtResource("health_scene")]
+max_health = 60.0
+
+[node name="StatusBars3D" parent="." instance=ExtResource("bars_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+
+[node name="Boss" parent="." node_paths=PackedStringArray("health") instance=ExtResource("boss_scene")]
+boss_name = "Giant Duck"
+health = NodePath("../Health")
+
+[node name="AttackStrikeTimer" type="Timer" parent="."]
+wait_time = 0.6
+one_shot = true
+
 [connection signal="collided" from="." to="." method="_on_collided"]
+[connection signal="health_changed" from="Health" to="StatusBars3D" method="set_health"]
+[connection signal="died" from="Health" to="." method="_on_health_died"]
+[connection signal="timeout" from="AttackStrikeTimer" to="." method="_on_attack_strike_timer_timeout"]
 
 [editable path="IDLE2"]
 [editable path="EAT2"]

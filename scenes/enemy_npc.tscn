@@ -15,6 +15,9 @@
 [ext_resource type="Script" path="res://scenes/npc_caster.gd" id="npc_caster_script"]
 [ext_resource type="SceneReplicationConfig" path="res://addons/3d_player_controller/resources/character_body_replication.tres" id="body_sync"]
 [ext_resource type="SceneReplicationConfig" path="res://resources/enemy_replication.tres" id="state_sync"]
+[ext_resource type="PackedScene" uid="uid://c7health000001" path="res://addons/3d_player_controller/scenes/health.tscn" id="health_scene"]
+[ext_resource type="PackedScene" uid="uid://c7statusbars01" path="res://addons/3d_player_controller/scenes/status_bars_3d.tscn" id="bars_scene"]
+[ext_resource type="PackedScene" uid="uid://c7boss00000001" path="res://addons/3d_player_controller/scenes/boss.tscn" id="boss_scene"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_nkhb5"]
 radius = 0.09180681
@@ -1375,9 +1378,20 @@ bus = &"SFX"
 [node name="FootstepAudio" type="AudioStreamPlayer3D" parent="."]
 bus = &"SFX"
 
-[node name="NpcCaster" type="Node3D" parent="." node_paths=PackedStringArray("caster", "fx_root", "audio")]
+[node name="Health" parent="." instance=ExtResource("health_scene")]
+max_health = 100.0
+
+[node name="StatusBars3D" parent="." instance=ExtResource("bars_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.05, 0)
+
+[node name="Boss" parent="." node_paths=PackedStringArray("health") instance=ExtResource("boss_scene")]
+boss_name = "Enemy"
+health = NodePath("../Health")
+
+[node name="NpcCaster" type="Node3D" parent="." node_paths=PackedStringArray("caster", "fx_root", "audio", "health")]
 script = ExtResource("npc_caster_script")
 caster = NodePath("..")
+health = NodePath("../Health")
 fx_root = NodePath("../FxRoot")
 audio = NodePath("../CastAudio")
 
@@ -1391,6 +1405,9 @@ replication_config = ExtResource("body_sync")
 replication_config = ExtResource("state_sync")
 
 [connection signal="body_entered" from="AggroArea" to="." method="_on_aggro_area_body_entered"]
+[connection signal="health_changed" from="Health" to="StatusBars3D" method="set_health"]
+[connection signal="energy_changed" from="Health" to="StatusBars3D" method="set_energy"]
+[connection signal="died" from="Health" to="." method="_on_health_died"]
 [connection signal="timeout" from="StrikeTimer" to="." method="_on_strike_timer_timeout"]
 [connection signal="cast_started" from="NpcCaster" to="." method="_on_cast_started"]
 [connection signal="timeout" from="NpcCaster/CastTimer" to="NpcCaster" method="_on_cast_timer_timeout"]

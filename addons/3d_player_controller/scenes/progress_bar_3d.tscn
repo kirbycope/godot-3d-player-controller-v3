@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dprg3ba60c1vw"]
 
-[ext_resource type="Script" uid="uid://bqf3chp7pr3nb" path="res://scenes/progress_bar_3d.gd" id="1_pb3d"]
-[ext_resource type="Shader" uid="uid://cwqv0kfxj8t2m" path="res://scenes/progress_bar_3d.gdshader" id="2_pb3d"]
+[ext_resource type="Script" uid="uid://bqf3chp7pr3nb" path="res://addons/3d_player_controller/scripts/progress_bar_3d.gd" id="1_pb3d"]
+[ext_resource type="Shader" uid="uid://cwqv0kfxj8t2m" path="res://addons/3d_player_controller/assets/shaders/progress_bar_3d.gdshader" id="2_pb3d"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_pb3d"]
 shader = ExtResource("2_pb3d")

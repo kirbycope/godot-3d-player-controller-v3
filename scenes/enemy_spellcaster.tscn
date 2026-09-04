@@ -7,8 +7,15 @@
 
 [node name="EnemySpellcaster" instance=ExtResource("1_base")]
 attack_animation = "CastAttack"
-max_health = 80.0
 follow_distance = 7.0
+
+[node name="Health" parent="." index="0"]
+max_health = 80.0
+max_energy = 100.0
+energy_regen = 8.0
 
 [node name="NpcCaster" parent="." index="0"]
 abilities = Array[ExtResource("4_ability")]([ExtResource("5_firebolt"), ExtResource("6_heal")])
+
+[node name="Boss" parent="." index="0"]
+boss_name = "Spellcaster"

@@ -14,3 +14,6 @@ follow_distance = 10.0
 projectile_scene = ExtResource("3_projectile")
 
 [node name="Weapon" parent="Mannequin_M/Armature/GeneralSkeleton/WeaponAttachment" instance=ExtResource("2_weapon")]
+
+[node name="Boss" parent="." index="0"]
+boss_name = "Rifleman"

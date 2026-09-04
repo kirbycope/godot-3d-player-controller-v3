@@ -7,7 +7,8 @@ extends Node3D
 signal cast_started(ability: Ability)
 signal ability_activated(ability: Ability)
 
-@export var caster: Node3D ## The NPC; abilities read its `target`, `health` and `max_health`.
+@export var caster: Node3D ## The NPC; abilities read its `target`.
+@export var health: Health ## The caster's pools: heals wait for low health, abilities spend energy.
 @export var abilities: Array[Ability] = []
 @export var fx_root: Node3D ## Phase VFX and bolts are instanced here.
 @export var audio: AudioStreamPlayer3D
@@ -43,7 +44,9 @@ func try_cast(target: Node3D) -> bool:
 	for ability: Ability in abilities:
 		if not is_ready(ability) or distance > ability.cast_range:
 			continue
-		if ability is HealAbility and caster.get("health") != null and caster.get("health") > caster.get("max_health") * 0.5:
+		if health and ability.stamina_cost > 0.0 and health.energy < ability.stamina_cost:
+			continue
+		if ability is HealAbility and health and health.health > health.max_health * 0.5:
 			continue
 		if ability.target_mode == Ability.Target.FOCUS and not has_line_of_sight(target):
 			continue
@@ -81,6 +84,8 @@ func _activate(ability: Ability) -> void:
 	if not ability.activate(caster):
 		return
 	_cooldown_ends[ability] = Time.get_ticks_msec() + int(ability.cooldown * 1000.0)
+	if health:
+		health.spend_energy(ability.stamina_cost)
 	var target: Node3D = ability.get_target(caster)
 	var target_path: NodePath = target.get_path() if is_instance_valid(target) else NodePath()
 	if ability.projectile_speed > 0.0:

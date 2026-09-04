@@ -46,7 +46,7 @@ func test_a_hit_from_anywhere_starts_the_hunt() -> void:
 	_stand_near(rifleman, 15.0)
 	rifleman.register_weapon_hit(player, null)
 	assert_eq(rifleman.target, player, "Being struck aggroes even from far away")
-	assert_lt(rifleman.health, rifleman.max_health, "The strike costs health")
+	assert_lt(rifleman.health.health, rifleman.health.max_health, "The strike costs health")
 	assert_ne(rifleman.anim_state, "Idle", "A hit reaction plays")
 
 
@@ -54,11 +54,11 @@ func test_swordsman_strikes_the_player_in_reach() -> void:
 	var swordsman: EnemyNpc = _enemy("Swordsman")
 	watch_signals(swordsman)
 	_stand_near(swordsman, 1.2)
-	player.stamina.regen_rate = 0.0 # so the drain is not refilled before the check
-	var before: float = player.stamina.stamina
+	var before: float = player.health.health
 	await wait_seconds(2.5)
 	assert_signal_emitted(swordsman, "attacked")
-	assert_lt(player.stamina.stamina, before, "A landed swing drains the Player's stamina")
+	assert_lt(player.health.health, before, "A landed swing costs the Player health")
+	assert_true(player.get_node("StatusBars3D/HealthBar").visible, "The Player's head bar shows the missing health")
 
 
 func test_archer_and_rifleman_shoot_with_line_of_sight() -> void:
@@ -106,17 +106,17 @@ func test_spellcaster_casts_firebolt_and_heals_when_low() -> void:
 	await wait_seconds(0.5)
 	assert_signal_emitted(caster.caster, "cast_started", "A target in range and sight starts a cast")
 	assert_eq(caster.caster.casting.display_name, "Firebolt")
-	player.stamina.regen_rate = 0.0
-	var before: float = player.stamina.stamina
+	var before: float = player.health.health
 	await wait_seconds(1.0)
 	assert_true(caster.get_node("FxRoot").get_children().any(func(n: Node) -> bool: return n is SpellProjectile), "The Firebolt flies as a bolt")
 	await wait_seconds(1.5)
 	assert_signal_emitted(caster.caster, "ability_activated")
-	assert_lt(player.stamina.stamina, before, "The bolt's impact drains the Player")
-	caster.health = 20.0
+	assert_lt(player.health.health, before, "The bolt's impact costs the Player health")
+	assert_lt(caster.health.energy, caster.health.max_energy, "Firebolt spends the caster's energy")
+	caster.health.health = 20.0
 	caster.caster.interrupt()
 	await wait_seconds(4.0)
-	assert_gt(caster.health, 20.0, "Below half health the spellcaster heals itself")
+	assert_gt(caster.health.health, 20.0, "Below half health the spellcaster heals itself")
 
 
 func test_enough_damage_drops_the_enemy_into_the_ragdoll() -> void:
@@ -139,3 +139,17 @@ func test_stealth_calls_off_the_attack() -> void:
 	swordsman.aggro(player)
 	await wait_seconds(2.0)
 	assert_signal_not_emitted(swordsman, "attacked", "A stealthed Player is not attacked")
+
+
+func test_a_boss_puts_its_name_and_health_on_the_hud() -> void:
+	var swordsman: EnemyNpc = _enemy("Swordsman")
+	swordsman.is_boss = true
+	var controls: Node = player.controls
+	assert_false(controls.boss_bar.visible)
+	swordsman.aggro(player)
+	assert_true(controls.boss_bar.visible, "Engaging a boss shows the bar")
+	assert_eq(controls.boss_name_label.text, "Swordsman")
+	swordsman.take_hit(50.0, player.global_position)
+	assert_almost_eq(controls.boss_health_bar.value, 0.5, 0.01, "The bar follows the boss's health")
+	swordsman.take_hit(500.0, player.global_position)
+	assert_false(controls.boss_bar.visible, "The bar goes when the boss falls")
