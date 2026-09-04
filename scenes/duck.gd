@@ -13,7 +13,7 @@ const ANIMATION_NAME: StringName = &"FBXExportClip_0_001"
 @export var giant_quack_pitch: float = 0.5
 @export var collision_quack_speed: float = 1.0 ## Minimum impact speed that triggers a quack.
 @export var giant_health: float = 400.0
-@export var giant_damage: float = 25.0 ## Health the giant's knife takes from the Player per bite.
+@export var giant_damage: float = 25.0 ## Health the giant's knife takes when it actually touches the Player.
 @export var melee_hit_damage: float = 25.0 ## Damage taken from one of the Player's melee swings.
 
 var _is_giant: bool = false
@@ -40,7 +40,7 @@ var _duckling: Dictionary = {} ## The small duck's tunables, restored when the g
 @onready var health: Health = $Health
 @onready var boss: Boss = $Boss
 @onready var status_bars: StatusBars3D = $StatusBars3D
-@onready var attack_strike_timer: Timer = $AttackStrikeTimer ## The giant's bite lands on its timeout.
+@onready var knife_hitbox: MeleeHitbox = $EAT2/EAT/Skeleton3D/BoneAttachment3D/KnifeHitbox ## On the beak; live for each bite of the giant's eating cadence.
 
 
 func _ready() -> void:
@@ -51,7 +51,7 @@ func _ready() -> void:
 	_duckling = {"follow_distance": follow_distance, "follow_height_tolerance": follow_height_tolerance, "swim_climb_speed": swim_climb_speed, "max_health": health.max_health, "bus": audio_stream_player_3d.bus, "unit_size": audio_stream_player_3d.unit_size, "bars_y": status_bars.position.y}
 	navigation_agent_3d.path_desired_distance = 0.5
 	for shape: Node in find_children("*", "CollisionShape3D", true, false):
-		if shape != collision_shape:
+		if shape != collision_shape and not shape.get_parent() is Area3D:
 			_model_collision_shapes.append(shape as CollisionShape3D)
 	knife.visible = _is_giant
 	knife_idle.visible = _is_giant
@@ -132,10 +132,8 @@ func _on_health_died() -> void:
 		_respawn_as_giant()
 
 
-## Wired to the AttackStrikeTimer: the giant's bite lands on a Player still within reach.
-func _on_attack_strike_timer_timeout() -> void:
-	if _is_giant and player and global_position.distance_to(player.global_position) <= follow_distance * 1.5:
-		player.take_hit(giant_damage, global_position)
+func _on_knife_hitbox_hit(_body: Node3D) -> void:
+	_play_quack()
 
 
 func _on_collided(impact_speed: float) -> void:
@@ -178,6 +176,7 @@ func _respawn_as_giant() -> void:
 	knife_idle.visible = true
 	knife_walk.visible = true
 	knife_eat.visible = true
+	knife_hitbox.damage = giant_damage
 	audio_stream_player_3d.pitch_scale = giant_quack_pitch
 	audio_stream_player_3d.unit_size *= giant_scale
 	audio_stream_player_3d.bus = GIANT_QUACK_BUS
@@ -275,12 +274,12 @@ func _play_eating_animation() -> void:
 		_update_collision_shapes()
 	if not animation_player_eat.is_playing():
 		animation_player_eat.play(ANIMATION_NAME)
-	# Each quack is a lunge; the giant's knife lands StrikeTimer later, on the AttackQuackCooldown cadence
+	# Each quack is a bite: the giant's beak stays live for the cadence and hurts whatever it slams into
 	if attack_quack_cooldown.is_stopped():
 		audio_stream_player_3d.play()
 		attack_quack_cooldown.start()
-		if _is_giant and attack_strike_timer.is_stopped():
-			attack_strike_timer.start()
+		if _is_giant:
+			knife_hitbox.swing()
 	animation_player_idle.stop()
 	animation_player_walk.pause()
 

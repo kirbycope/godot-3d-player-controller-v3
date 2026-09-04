@@ -281,10 +281,13 @@ func test_killing_the_duckling_brings_the_giant_boss_who_bites_and_falls_back_to
 	assert_true(player.controls.boss_bar.visible, "The boss bar shows on the Player's HUD")
 	assert_eq(player.controls.boss_name_label.text, "Giant Duck")
 
-	player.warp_to(Transform3D(Basis(), duck.global_position + Vector3(2.0, 0.0, 0.0)))
+	# Stand where the beak comes down: four metres in front of the giant
+	player.warp_to(Transform3D(Basis(), duck.global_position + Vector3(0.0, 0.0, 4.0)))
 	var before: float = player.health.health
-	await wait_seconds(3.2)
-	assert_lte(player.health.health, before - 2.0 * duck.giant_damage, "The giant keeps biting on its cadence while the Player stays in reach")
+	await wait_seconds(1.0)
+	assert_eq(player.health.health, before, "The head is still up: no bite until the beak actually lands")
+	await wait_seconds(3.0)
+	assert_lte(player.health.health, before - 2.0 * duck.giant_damage, "The beak slams down on the Player and keeps biting on its cadence while it rests on them")
 
 	duck.take_hit(1000.0, player.global_position)
 	assert_false(duck._is_giant, "A dead giant falls back to the duckling")

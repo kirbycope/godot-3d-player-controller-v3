@@ -17,6 +17,7 @@
 [ext_resource type="PackedScene" uid="uid://c7health000001" path="res://addons/3d_player_controller/scenes/health.tscn" id="health_scene"]
 [ext_resource type="PackedScene" uid="uid://c7statusbars01" path="res://addons/3d_player_controller/scenes/status_bars_3d.tscn" id="bars_scene"]
 [ext_resource type="PackedScene" uid="uid://c7boss00000001" path="res://addons/3d_player_controller/scenes/boss.tscn" id="boss_scene"]
+[ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/melee_hitbox.tscn" id="hitbox_scene"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hwgnm"]
 resource_name = "Duck_White"
@@ -861,6 +862,9 @@ points = PackedVector3Array(0.014901908, 0.50731206, 0.15381105, -0.016713247, 0
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_hxxp2"]
 points = PackedVector3Array(0.02425124, 0.36432815, 0.19373207, -0.005743631, 0.087448105, -0.12679869, -0.035065368, 0.09684918, -0.14648327, 0.057084676, 0.2647964, -0.33106855, -0.118390575, 0.2901688, -0.07811427, 0.12100869, 0.15560682, -0.009864944, -0.06349133, 0.14703797, 0.10481311, 0.028994115, 0.42400652, 0.08938654, -0.048296414, 0.2753527, -0.34159902, -0.07994975, 0.38075548, 0.11160144, 0.12009573, 0.30139175, 0.038023002, -0.09051015, 0.07513538, -0.03599237, 0.054178935, 0.20346782, 0.17216666, 0.08871015, 0.07513538, -0.03599237, -0.09378893, 0.2336367, 0.13698205, 0.013635817, 0.11727477, -0.21385787, -0.13165188, 0.23368356, -0.029744519, -0.031054465, 0.42582014, 0.09102429, 0.11807666, 0.29081103, -0.07811427, -0.046064537, 0.26355895, 0.19308539, 0.10132979, 0.23365709, 0.12630531, 0.0039935517, 0.13565528, 0.11774482, 0.067617215, 0.4019, 0.10107097, -0.026109936, 0.39510754, 0.18450905, -0.006138405, 0.23325555, -0.35212952, -0.06336101, 0.14722843, -0.20301186, -0.12016699, 0.1669431, -0.068580836, 0.1278132, 0.23375894, -0.07811427, 0.060573537, 0.1392006, -0.2010373, -0.12236378, 0.2627465, 0.06762402, 0.116468094, 0.15869491, -0.0687346, -0.12072839, 0.16660619, 0.008141234)
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_beak"]
+radius = 0.2
+
 [node name="Duck" type="CharacterBody3D" unique_id=875613134]
 script = ExtResource("1_kls7j")
 max_follow_distance = 10.0
@@ -962,6 +966,14 @@ bone_idx = 47
 [node name="Knife" parent="EAT2/EAT/Skeleton3D/BoneAttachment3D" unique_id=2056123491 instance=ExtResource("5_hwgnm")]
 transform = Transform3D(0.0690575, -0.48518103, -0.09914856, 0.4890894, 0.05113461, 0.09042758, -0.0776077, -0.10947435, 0.4816563, -0.012234449, -0.03757915, 0.071033224)
 visible = false
+
+[node name="KnifeHitbox" parent="EAT2/EAT/Skeleton3D/BoneAttachment3D" node_paths=PackedStringArray("attacker") instance=ExtResource("hitbox_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.03, 0.07)
+attacker = NodePath("../../../../..")
+active_seconds = 1.2
+
+[node name="CollisionShape3D" parent="EAT2/EAT/Skeleton3D/BoneAttachment3D/KnifeHitbox"]
+shape = SubResource("SphereShape3D_beak")
 
 [node name="WALK2" parent="." unique_id=293155050 instance=ExtResource("1_ql0qm")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
@@ -1108,14 +1120,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 boss_name = "Giant Duck"
 health = NodePath("../Health")
 
-[node name="AttackStrikeTimer" type="Timer" parent="."]
-wait_time = 0.6
-one_shot = true
-
 [connection signal="collided" from="." to="." method="_on_collided"]
+[connection signal="hit" from="EAT2/EAT/Skeleton3D/BoneAttachment3D/KnifeHitbox" to="." method="_on_knife_hitbox_hit"]
 [connection signal="health_changed" from="Health" to="StatusBars3D" method="set_health"]
 [connection signal="died" from="Health" to="." method="_on_health_died"]
-[connection signal="timeout" from="AttackStrikeTimer" to="." method="_on_attack_strike_timer_timeout"]
 
 [editable path="IDLE2"]
 [editable path="EAT2"]

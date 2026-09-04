@@ -18,6 +18,7 @@
 [ext_resource type="PackedScene" uid="uid://c7health000001" path="res://addons/3d_player_controller/scenes/health.tscn" id="health_scene"]
 [ext_resource type="PackedScene" uid="uid://c7statusbars01" path="res://addons/3d_player_controller/scenes/status_bars_3d.tscn" id="bars_scene"]
 [ext_resource type="PackedScene" uid="uid://c7boss00000001" path="res://addons/3d_player_controller/scenes/boss.tscn" id="boss_scene"]
+[ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/melee_hitbox.tscn" id="hitbox_scene"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_nkhb5"]
 radius = 0.09180681
@@ -1346,6 +1347,9 @@ anim_player = NodePath("../Mannequin_M/AnimationPlayer")
 [node name="WeaponAttachment" type="BoneAttachment3D" parent="Mannequin_M/Armature/GeneralSkeleton"]
 bone_name = "RightHand"
 
+[node name="WeaponHitbox" parent="Mannequin_M/Armature/GeneralSkeleton/WeaponAttachment" node_paths=PackedStringArray("attacker") instance=ExtResource("hitbox_scene")]
+attacker = NodePath("../../../../..")
+
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
 path_desired_distance = 0.5
 target_desired_distance = 1.2
@@ -1410,6 +1414,7 @@ replication_config = ExtResource("state_sync")
 [connection signal="died" from="Health" to="." method="_on_health_died"]
 [connection signal="timeout" from="StrikeTimer" to="." method="_on_strike_timer_timeout"]
 [connection signal="cast_started" from="NpcCaster" to="." method="_on_cast_started"]
+[connection signal="hit" from="Mannequin_M/Armature/GeneralSkeleton/WeaponAttachment/WeaponHitbox" to="." method="_on_weapon_hitbox_hit"]
 [connection signal="timeout" from="NpcCaster/CastTimer" to="NpcCaster" method="_on_cast_timer_timeout"]
 
 [editable path="Mannequin_M"]

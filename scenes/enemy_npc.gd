@@ -1,18 +1,19 @@
 class_name EnemyNpc
 extends FollowerNpc
 ## A hostile NPC: idles until the Player attacks it or steps within its aggro area, then chases over the
-## navigation mesh and attacks in reach with a melee swing, a projectile weapon, or abilities cast in range
-## with line of sight. Health, death and the animation state replicate from the server; hits from clients relay.
+## navigation mesh and attacks in reach with a melee swing whose weapon hitbox must touch you, a projectile
+## weapon, or abilities cast in range with line of sight. Health, death and the animation state replicate from the server; hits from clients relay.
 
 signal aggroed(target: Node3D)
 signal attacked(target: Node3D) ## A melee swing or a shot was started.
+signal struck(body: Node3D) ## The weapon hitbox connected.
 signal died
 
 const LOCOMOTION_STATES: Array[String] = ["Idle", "Walking", "Running"]
 
 @export var is_boss: bool = false ## Puts the name and health on the hunted player's HUD boss bar.
 @export var attack_range: float = 1.6 ## Distance the attack lands from: melee reach, or firing range for projectiles.
-@export var attack_damage: float = 15.0 ## Melee damage; projectiles carry their own.
+@export var attack_damage: float = 15.0 ## Melee damage dealt by the weapon hitbox; projectiles carry their own.
 @export var attack_interval: float = 1.5 ## Seconds between attacks or ability casts.
 @export var attack_animation: String = "SwordAttack" ## AnimationTree state played for each attack.
 @export var strike_delay: float = 0.45 ## Seconds into the attack animation when the hit or shot happens.
@@ -40,6 +41,7 @@ var anim_state: String = "Idle": ## Replicated AnimationTree state.
 @onready var attack_timer: Timer = $AttackTimer ## Cooldown between attacks.
 @onready var strike_timer: Timer = $StrikeTimer ## Delay from the swing's start to its hit or shot.
 @onready var muzzle: Marker3D = $Muzzle ## Where projectiles leave.
+@onready var weapon_hitbox: MeleeHitbox = $Mannequin_M/Armature/GeneralSkeleton/WeaponAttachment/WeaponHitbox ## Live during the swing's strike frames.
 @onready var caster: NpcCaster = $NpcCaster
 @onready var health: Health = $Health
 @onready var boss: Boss = $Boss
@@ -162,8 +164,14 @@ func _on_strike_timer_timeout() -> void:
 		return
 	if projectile_scene:
 		_fire()
-	elif global_position.distance_to(target.global_position) <= attack_range * 1.25:
-		target.call("take_hit", attack_damage, global_position)
+	else:
+		# The blade decides: only a body it overlaps during the active frames is hurt
+		weapon_hitbox.damage = attack_damage
+		weapon_hitbox.swing()
+
+
+func _on_weapon_hitbox_hit(body: Node3D) -> void:
+	struck.emit(body)
 
 
 ## Fires the projectile from the muzzle at the target's focus point, through the spawner when the scene has one.

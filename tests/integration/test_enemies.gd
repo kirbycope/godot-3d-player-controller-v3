@@ -57,6 +57,7 @@ func test_swordsman_strikes_the_player_in_reach() -> void:
 	var before: float = player.health.health
 	await wait_seconds(2.5)
 	assert_signal_emitted(swordsman, "attacked")
+	assert_signal_emitted(swordsman, "struck", "The blade connects with the Player standing in it")
 	assert_lt(player.health.health, before, "A landed swing costs the Player health")
 	assert_true(player.get_node("StatusBars3D/HealthBar").visible, "The Player's head bar shows the missing health")
 
@@ -153,3 +154,18 @@ func test_a_boss_puts_its_name_and_health_on_the_hud() -> void:
 	assert_almost_eq(controls.boss_health_bar.value, 0.5, 0.01, "The bar follows the boss's health")
 	swordsman.take_hit(500.0, player.global_position)
 	assert_false(controls.boss_bar.visible, "The bar goes when the boss falls")
+
+
+func test_a_swing_that_does_not_touch_the_player_costs_nothing() -> void:
+	var swordsman: EnemyNpc = _enemy("Swordsman")
+	watch_signals(swordsman)
+	swordsman.aggro(player)
+	# Stand clear behind the swordsman, outside the blade and every other aggro area, and swing anyway
+	player.warp_to(Transform3D(Basis(), swordsman.global_position + Vector3(0.0, 0.0, -4.0)))
+	swordsman.follow_distance = 10.0
+	var before: float = player.health.health
+	swordsman._attack()
+	await wait_seconds(1.2)
+	assert_signal_emitted(swordsman, "attacked")
+	assert_signal_not_emitted(swordsman, "struck", "The blade never touched the Player")
+	assert_eq(player.health.health, before, "No contact, no damage")
