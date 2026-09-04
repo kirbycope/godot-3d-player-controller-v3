@@ -10,6 +10,7 @@ const ANIMATION_NAME: StringName = &"FBXExportClip_0_001"
 @export var giant_scale: float = 10.0
 @export var giant_move_speed_multiplier: float = 2.0
 @export var giant_follow_distance: float = 4.0
+@export var leash_distance: float = 20.0 ## The giant gives up on a dead Player, or one further than this from its spawn, and walks home to heal; the Player's spawn point lies outside it.
 @export var giant_quack_pitch: float = 0.5
 @export var collision_quack_speed: float = 1.0 ## Minimum impact speed that triggers a quack.
 @export var giant_health: float = 400.0
@@ -21,6 +22,7 @@ var _model_collision_shapes: Array[CollisionShape3D] = [] ## Per-model shapes to
 var _player_range_initialized: bool = false
 var _player_was_in_range: bool = false
 var _spawn_transform: Transform3D
+var _leashed: bool = false ## The giant is walking home with nobody to hunt.
 var _duckling: Dictionary = {} ## The small duck's tunables, restored when the giant falls.
 
 @onready var animation_player_eat: AnimationPlayer = $EAT2/AnimationPlayer
@@ -68,9 +70,35 @@ func _physics_process(delta: float) -> void:
 		_respawn_as_giant()
 	if player:
 		_update_player_range(global_position.distance_to(player.global_position))
+		if _is_giant and (not player.health.is_alive() or player.global_position.distance_to(_spawn_transform.origin) > leash_distance):
+			# Nobody to hunt: give up, walk home and heal, like a leashed boss
+			if not _leashed:
+				_leashed = true
+				boss.disengage()
+				player.hunted_by(get_path(), false)
+			_return_home(delta)
+			return
+		_leashed = false
 		if _is_giant and boss.target_peer == 0:
 			boss.engage(player.get_multiplayer_authority())
+			player.hunted_by(get_path(), true)
 	super(delta)
+
+
+## Walks the navigation mesh back to the spawn point; once there it idles and heals to full.
+func _return_home(delta: float) -> void:
+	if not is_on_floor():
+		velocity += get_gravity() * delta
+	var home: Vector3 = _spawn_transform.origin
+	if (home - global_position).slide(up_direction).length() > 0.6:
+		navigation_agent_3d.target_position = home
+		var next: Vector3 = navigation_agent_3d.get_next_path_position() if navigation_agent_3d.is_target_reachable() else home
+		var direction: Vector3 = global_position.direction_to(next).slide(up_direction).normalized()
+		global_transform = global_transform.interpolate_with(global_transform.looking_at(global_position + direction, up_direction), turn_speed * delta)
+		_move_with_control(direction * move_speed)
+		return
+	_stop_moving()
+	health.health = health.max_health
 
 
 ## A giant mid-attack commits to it while the player stays near.
@@ -149,7 +177,7 @@ func _move_with_control(control_velocity: Vector3) -> void:
 
 func _stop_moving() -> void:
 	super()
-	if _is_giant and player and global_position.distance_to(player.global_position) <= follow_distance * 1.5:
+	if _is_giant and not _leashed and player and global_position.distance_to(player.global_position) <= follow_distance * 1.5:
 		_play_eating_animation()
 	else:
 		_play_idle_animation()
@@ -186,13 +214,17 @@ func _respawn_as_giant() -> void:
 	health.health = giant_health
 	if player:
 		boss.engage(player.get_multiplayer_authority())
+		player.hunted_by(get_path(), true)
 	audio_stream_player_3d.play()
 
 
 ## Undoes [method _respawn_as_giant]: the duckling is back at its spawn with its own health.
 func _become_duckling() -> void:
 	_is_giant = false
+	_leashed = false
 	boss.disengage()
+	if player:
+		player.hunted_by(get_path(), false)
 	global_transform = _spawn_transform
 	velocity = Vector3.ZERO
 	knockback_velocity = Vector3.ZERO

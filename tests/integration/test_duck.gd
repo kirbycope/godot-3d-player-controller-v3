@@ -295,3 +295,42 @@ func test_killing_the_duckling_brings_the_giant_boss_who_bites_and_falls_back_to
 	assert_eq(duck.health.max_health, 60.0)
 	assert_false(duck.knife.visible)
 	assert_false(player.controls.boss_bar.visible, "The boss bar goes with the giant")
+
+
+func test_the_giant_walks_home_and_heals_when_the_player_dies_or_runs_past_the_leash() -> void:
+	var root := Node3D.new()
+	add_child_autofree(root)
+	var floor_body := StaticBody3D.new()
+	var floor_shape := CollisionShape3D.new()
+	floor_shape.shape = BoxShape3D.new()
+	floor_shape.shape.size = Vector3(120.0, 1.0, 120.0)
+	floor_body.add_child(floor_shape)
+	floor_body.position.y = -0.5
+	root.add_child(floor_body)
+	var player: Player = preload("res://addons/3d_player_controller/scenes/player.tscn").instantiate()
+	root.add_child(player)
+	var duck: CharacterBody3D = DUCK_SCENE.instantiate() as CharacterBody3D
+	duck.position = Vector3(2.0, 0.0, 0.0)
+	root.add_child(duck)
+	duck.player = player
+	await wait_physics_frames(2)
+	duck.take_hit(1000.0, player.global_position)
+	await wait_physics_frames(2)
+	assert_true(player.controls.boss_bar.visible, "The giant is on the Player")
+	assert_true(player.health.regen_paused, "Being hunted by the giant is combat")
+	duck.take_hit(100.0, player.global_position)
+	player.take_hit(1000.0, duck.global_position)
+	await wait_physics_frames(2)
+	assert_true(duck._leashed, "A dead Player is nobody to hunt")
+	assert_false(player.controls.boss_bar.visible, "The boss bar goes with the hunt")
+	assert_false(player.health.regen_paused)
+	await wait_seconds(1.5)
+	assert_eq(duck.health.health, duck.health.max_health, "Home again, healed to full")
+	player.respawn() # back on its feet; a ragdoll cannot be warped
+	player.warp_to(Transform3D(Basis(), duck.global_position + Vector3(2.0, 0.0, 0.0)))
+	await wait_physics_frames(2)
+	assert_false(duck._leashed, "A living Player back in range is hunted again")
+	assert_true(player.controls.boss_bar.visible)
+	player.warp_to(Transform3D(Basis(), duck._spawn_transform.origin + Vector3(0.0, 0.0, duck.leash_distance + 5.0)))
+	await wait_physics_frames(2)
+	assert_true(duck._leashed, "Past the leash the giant gives up too")
