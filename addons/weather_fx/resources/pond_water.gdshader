@@ -20,7 +20,11 @@ uniform vec4 foam_color : source_color = vec4(1.0, 1.0, 1.0, 1.0);
 uniform float edge_foam_width : hint_range(0.02, 0.5) = 0.22;
 uniform float depth_foam_distance : hint_range(0.0, 2.0) = 0.30;
 uniform float foam_softness : hint_range(0.01, 1.0) = 0.15;
-uniform float edge_squareness : hint_range(0.0, 1.0) = 0.0; // 0 = round shoreline band, 1 = follows a rectangular mesh's sides
+
+// Caustics: a drifting light web on the surface, as sunlight focused through the waves
+uniform float caustic_strength : hint_range(0.0, 1.0) = 0.3;
+uniform float caustic_scale : hint_range(0.5, 20.0) = 6.0;
+uniform float caustic_speed : hint_range(0.0, 3.0) = 0.35;
 
 // Waves & Wind Reaction
 uniform float wave_amplitude : hint_range(0.0, 0.2) = 0.025;
@@ -40,6 +44,34 @@ uniform float swimmer_speed : hint_range(0.0, 10.0) = 0.0; // horizontal m/s
 
 varying vec3 v_world_pos;
 varying vec2 v_uv;
+
+vec2 hash22(vec2 p) {
+	p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
+	return fract(sin(p) * 43758.5453);
+}
+
+// Brightness of the cell edges of a drifting Voronoi web: thin where two cells meet, dark inside cells
+float caustic_web(vec2 uv, float t) {
+	vec2 cell = floor(uv);
+	vec2 f = fract(uv);
+	float nearest = 8.0;
+	float second = 8.0;
+	for (int y = -1; y <= 1; y++) {
+		for (int x = -1; x <= 1; x++) {
+			vec2 neighbour = vec2(float(x), float(y));
+			vec2 seed = hash22(cell + neighbour);
+			vec2 point = neighbour + 0.5 + 0.4 * sin(t + 6.2831 * seed);
+			float d = length(point - f);
+			if (d < nearest) {
+				second = nearest;
+				nearest = d;
+			} else if (d < second) {
+				second = d;
+			}
+		}
+	}
+	return 1.0 - smoothstep(0.0, 0.12, second - nearest);
+}
 
 float hash21(vec2 p) {
 	p = fract(p * vec2(123.34, 456.21));
@@ -178,10 +210,9 @@ void fragment() {
 		depth_foam = clamp(1.0 - (water_depth / depth_foam_distance), 0.0, 1.0);
 	}
 
-	// 2. Shoreline edge foam (mesh perimeter): round ponds use the radius, rectangular pools the nearest side
-	vec2 from_center = abs(UV - vec2(0.5)) * 2.0;
-	float dist_from_center = mix(length(from_center), max(from_center.x, from_center.y), edge_squareness);
-	float radial_edge_foam = smoothstep(1.0 - edge_foam_width, 1.0, dist_from_center);
+	// 2. Radial shoreline edge foam (mesh perimeter); a width of 0 leaves the rim to the contact foam
+	float dist_from_center = length(UV - vec2(0.5)) * 2.0;
+	float radial_edge_foam = edge_foam_width > 0.001 ? smoothstep(1.0 - edge_foam_width, 1.0, dist_from_center) : 0.0;
 
 	// Toon animated foam noise & wave contours
 	float foam_wave = sin(TIME * (2.6 + wind_spd * 0.2) + dist_from_center * 24.0 + v_uv.x * 16.0 + v_uv.y * 14.0) * 0.5 + 0.5;
@@ -196,7 +227,11 @@ void fragment() {
 	float depth_gradient = clamp(dist_from_center * 0.85, 0.0, 1.0);
 	vec4 water_col = mix(deep_color, shallow_color, depth_gradient);
 
+	// Caustics: two webs at different scales, brightest where they cross, hidden under foam
+	vec2 caustic_uv = v_world_pos.xz * (caustic_scale * 0.25);
+	float caustics = caustic_web(caustic_uv, TIME * caustic_speed) * caustic_web(caustic_uv * 1.7 + vec2(3.1, 1.7), TIME * caustic_speed * 1.3 + 2.0);
 	vec3 final_color = mix(water_col.rgb, foam_color.rgb, foam);
+	final_color += foam_color.rgb * caustics * caustic_strength * (1.0 - foam);
 	float final_alpha = mix(water_col.a, foam_color.a, foam);
 
 	ALBEDO = final_color;
