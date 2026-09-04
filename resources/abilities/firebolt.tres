@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="DamageAbility" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/damage_ability.gd" id="1_damage"]
+[ext_resource type="PackedScene" uid="uid://c7boltorb0001" path="res://scenes/vfx/bolt_orb.tscn" id="2_orb"]
+
+[resource]
+script = ExtResource("1_damage")
+display_name = "Firebolt"
+cooldown = 4.0
+cast_time = 1.2
+cast_range = 12.0
+target_mode = 1
+projectile_speed = 14.0
+projectile_homing = true
+casting_vfx = ExtResource("2_orb")
+impact_vfx = ExtResource("2_orb")
+fx_lifetime = 0.6
+damage = 20.0
