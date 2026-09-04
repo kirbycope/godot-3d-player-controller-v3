@@ -44,7 +44,7 @@ func try_cast(target: Node3D) -> bool:
 	for ability: Ability in abilities:
 		if not is_ready(ability) or distance > ability.cast_range:
 			continue
-		if health and ability.stamina_cost > 0.0 and health.energy < ability.stamina_cost:
+		if health and ability.energy_cost > 0.0 and health.energy < ability.energy_cost:
 			continue
 		if ability is HealAbility and health and health.health > health.max_health * 0.5:
 			continue
@@ -85,7 +85,7 @@ func _activate(ability: Ability) -> void:
 		return
 	_cooldown_ends[ability] = Time.get_ticks_msec() + int(ability.cooldown * 1000.0)
 	if health:
-		health.spend_energy(ability.stamina_cost)
+		health.spend_energy(ability.energy_cost)
 	var target: Node3D = ability.get_target(caster)
 	var target_path: NodePath = target.get_path() if is_instance_valid(target) else NodePath()
 	if ability.projectile_speed > 0.0:

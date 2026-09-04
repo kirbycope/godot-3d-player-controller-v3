@@ -169,3 +169,13 @@ func test_a_swing_that_does_not_touch_the_player_costs_nothing() -> void:
 	assert_signal_emitted(swordsman, "attacked")
 	assert_signal_not_emitted(swordsman, "struck", "The blade never touched the Player")
 	assert_eq(player.health.health, before, "No contact, no damage")
+
+
+func test_the_aim_ray_hits_the_enemy_not_its_aggro_sphere() -> void:
+	var swordsman: EnemyNpc = _enemy("Swordsman")
+	var ray: RayCast3D = player.projectile_raycast
+	ray.global_position = swordsman.global_position + Vector3(0.0, 1.0, 3.0)
+	ray.look_at(swordsman.global_position + Vector3(0.0, 1.0, 0.0))
+	ray.force_raycast_update()
+	assert_true(ray.is_colliding())
+	assert_eq(ray.get_collider(), swordsman, "Detection areas sit on no layer, so the crosshair lands on the body")

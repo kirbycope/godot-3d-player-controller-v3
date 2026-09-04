@@ -1357,6 +1357,7 @@ height = 1.8
 radius = 0.4
 
 [node name="AggroArea" type="Area3D" parent="."]
+collision_layer = 0
 monitorable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="AggroArea"]
