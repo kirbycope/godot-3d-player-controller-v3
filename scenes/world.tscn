@@ -3,7 +3,7 @@
 [ext_resource type="Material" path="res://assets/ambientcg_com/grass_001/Grass001_1K-JPG.tres" id="2_qg546"]
 [ext_resource type="Texture2D" path="res://assets/kenney_nl/Prototype Textures/Vector/texture_04.svg" id="3_pf35h"]
 [ext_resource type="Texture2D" path="res://assets/kenney_nl/Prototype Textures/Vector/texture_12.svg" id="4_iexy4"]
-[ext_resource type="Material" path="res://addons/weather_fx/resources/pond_water_material.tres" id="5_pondwater"]
+[ext_resource type="Material" path="res://resources/pool_water_material.tres" id="5_pondwater"]
 [ext_resource type="PackedScene" path="res://scenes/skateboard.tscn" id="8_h3odw"]
 [ext_resource type="PackedScene" path="res://scenes/little_buddy.tscn" id="9_5hl1e"]
 [ext_resource type="PackedScene" path="res://assets/justcreate3d/weapons_lite/Weapon_02.fbx" id="10_66tox"]

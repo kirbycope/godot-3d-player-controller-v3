@@ -1,0 +1,21 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3]
+
+[ext_resource type="Shader" path="res://addons/weather_fx/resources/pond_water.gdshader" id="1_water"]
+[ext_resource type="Texture2D" path="res://addons/weather_fx/assets/vfx/wind/textures/T_GW_WaterNormal_01_b.PNG" id="2_norm"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_water")
+shader_parameter/shallow_color = Color(0.28, 0.82, 0.92, 0.88)
+shader_parameter/deep_color = Color(0.06, 0.35, 0.6, 0.96)
+shader_parameter/foam_color = Color(1, 1, 1, 1)
+shader_parameter/edge_foam_width = 0.05
+shader_parameter/depth_foam_distance = 0.7
+shader_parameter/foam_softness = 0.35
+shader_parameter/edge_squareness = 1.0
+shader_parameter/wave_amplitude = 0.025
+shader_parameter/wave_frequency = 3.5
+shader_parameter/wave_speed = 2.0
+shader_parameter/normal_map = ExtResource("2_norm")
+shader_parameter/normal_scale = 0.35
+shader_parameter/uv_scale = Vector2(2.5, 2.5)

@@ -20,6 +20,7 @@ uniform vec4 foam_color : source_color = vec4(1.0, 1.0, 1.0, 1.0);
 uniform float edge_foam_width : hint_range(0.02, 0.5) = 0.22;
 uniform float depth_foam_distance : hint_range(0.0, 2.0) = 0.30;
 uniform float foam_softness : hint_range(0.01, 1.0) = 0.15;
+uniform float edge_squareness : hint_range(0.0, 1.0) = 0.0; // 0 = round shoreline band, 1 = follows a rectangular mesh's sides
 
 // Waves & Wind Reaction
 uniform float wave_amplitude : hint_range(0.0, 0.2) = 0.025;
@@ -177,8 +178,9 @@ void fragment() {
 		depth_foam = clamp(1.0 - (water_depth / depth_foam_distance), 0.0, 1.0);
 	}
 
-	// 2. Radial shoreline edge foam (mesh perimeter)
-	float dist_from_center = length(UV - vec2(0.5)) * 2.0;
+	// 2. Shoreline edge foam (mesh perimeter): round ponds use the radius, rectangular pools the nearest side
+	vec2 from_center = abs(UV - vec2(0.5)) * 2.0;
+	float dist_from_center = mix(length(from_center), max(from_center.x, from_center.y), edge_squareness);
 	float radial_edge_foam = smoothstep(1.0 - edge_foam_width, 1.0, dist_from_center);
 
 	// Toon animated foam noise & wave contours
