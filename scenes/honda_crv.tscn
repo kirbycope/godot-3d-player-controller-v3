@@ -34,6 +34,9 @@
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_sbl7x"]
 bounce = 0.0
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_detection"]
+radius = 3.0
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_chassis"]
 size = Vector3(1.85, 0.55, 4.3)
 
@@ -323,6 +326,13 @@ stream = SubResource("AudioStreamRandomizer_gda5q")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.5)
 stream = SubResource("AudioStreamRandomizer_j7eey")
 
+[node name="PlayerDetection" type="Area3D" parent="."]
+collision_layer = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PlayerDetection"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+shape = SubResource("SphereShape3D_detection")
+
 [node name="FlippedTimer" type="Timer" parent="."]
 wait_time = 5.0
 one_shot = true
@@ -352,3 +362,5 @@ one_shot = true
 
 [connection signal="timeout" from="FlippedTimer" to="." method="_on_flipped_timer_timeout"]
 [connection signal="timeout" from="FireTimer" to="." method="_on_fire_timer_timeout"]
+[connection signal="body_entered" from="PlayerDetection" to="." method="_on_player_detection_body_entered"]
+[connection signal="body_exited" from="PlayerDetection" to="." method="_on_player_detection_body_exited"]

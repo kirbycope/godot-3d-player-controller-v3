@@ -54,8 +54,8 @@ var is_flipped: bool = false
 var is_engine_started: bool = false
 var is_driving_this_car: bool = false ## True from the first drive input until the driver gets out.
 var look_angles: Vector2 = Vector2.ZERO
-var menu_displayed: bool = false
-var player: Player ## The driver, or the Player looking at the action prompt.
+var menu_displayed: bool = false ## The prompt is up for [member player], who is inside PlayerDetection.
+var player: Player ## The driver, or the Player standing by the car.
 var _accelerate: bool = false
 var _brake: bool = false
 var _handbrake: bool = false
@@ -163,6 +163,7 @@ func _input(event: InputEvent) -> void:
 		player.player_model.global_transform = enter_car.global_transform
 		player.velocity = Vector3.ZERO
 		player.state_machine.travel(player.current_state, NodeStateMachine.States.DRIVING)
+		_hide_prompt()
 		return
 
 	if is_driving_this_car and first_person_camera.current and event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
@@ -217,7 +218,7 @@ func _update_fire_state() -> void:
 			fire_sfx.play()
 		if not has_exploded and is_multiplayer_authority():
 			fire_timer.start()
-		hide_menu()
+		_hide_prompt()
 	else:
 		fire_sfx.stop()
 		fire_timer.stop()
@@ -236,7 +237,7 @@ func _on_fire_timer_timeout() -> void:
 	freeze = false
 	apply_impulse(-get_gravity().normalized() * explosion_impulse_force)
 	_apply_burned_material(self)
-	hide_menu()
+	_hide_prompt()
 
 
 func _physics_process(delta: float) -> void:
@@ -481,23 +482,42 @@ func _axle_grip(axle_z: float, wheel_yaw: float) -> float:
 	return lerpf(1.0, traction_curve_min, clampf((slip - traction_curve_lateral) / traction_curve_lateral, 0.0, 1.0))
 
 
-func display_menu(_player: Player) -> void:
+## Wired to PlayerDetection.body_entered: the Player who walked up gets the prompt and a "Get In" Action label, GTA style.
+func _on_player_detection_body_entered(body: Node3D) -> void:
+	if body is Player and body.is_multiplayer_authority() and not (body as Player).is_driving:
+		_show_prompt(body)
+
+
+## Wired to PlayerDetection.body_exited: walking away takes the prompt and the label with it.
+func _on_player_detection_body_exited(body: Node3D) -> void:
+	if body == player and menu_displayed:
+		_hide_prompt()
+
+
+func _show_prompt(_player: Player) -> void:
 	if is_on_fire or has_exploded:
-		hide_menu()
 		return
 	player = _player
 	if action_prompt:
 		action_prompt.update_text()
 		action_prompt.show_for(player)
+	player.controls.joypad_button_0_label.text = "Get In"
 	menu_displayed = true
 
 
-func hide_menu() -> void:
+## Hides the prompt and hands the Action label back to the Player's state; a driver keeps [member player].
+func _hide_prompt() -> void:
 	if action_prompt:
 		action_prompt.hide()
 	menu_displayed = false
-	if player and player.is_driving_in == self:
+	if player == null:
 		return
+	if player.is_driving_in == self:
+		return
+	player.controls.reset_labels()
+	var state_node: NodeStateMachine = player.state_machine.get_node_or_null(NodePath(NodeStateMachine.get_state_name(player.current_state))) as NodeStateMachine
+	if state_node:
+		state_node._on_input_type_changed(player.controls.current_input_type)
 	player = null
 
 

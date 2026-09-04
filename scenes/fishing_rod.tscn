@@ -10,6 +10,9 @@
 radius = 0.2
 height = 2.1
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_pickup"]
+radius = 0.5
+
 [node name="FishingRod" type="Node3D" unique_id=2053350041]
 script = ExtResource("1_1xn5j")
 bobber_scene = ExtResource("3_bobber")
@@ -21,12 +24,10 @@ is_exclusive = true
 [node name="Sketchfab_Scene" parent="." unique_id=1248994778 instance=ExtResource("1_g433l")]
 transform = Transform3D(0.100000024, -0.17320508, 3.4357992e-08, -0.17320508, -0.100000024, 6.1013936e-09, -1.18950405e-08, 3.2805595e-08, 0.2, -0.05, 0.35, 0.0)
 
-[node name="Area3D" type="Area3D" parent="." unique_id=526051848]
-transform = Transform3D(-4.1075268e-08, 0.34202012, -0.9396926, 1.4950174e-08, 0.9396926, 0.34202012, 1, 0, -4.371139e-08, -0.18015373, 0.12898993, 0.05000005)
+[node name="PlayerDetection" type="Area3D" parent="." unique_id=526051848]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=207113501]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0.65)
-shape = SubResource("CapsuleShape3D_1xn5j")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PlayerDetection"]
+shape = SubResource("SphereShape3D_pickup")
 
 [node name="RodTipBone" type="BoneAttachment3D" parent="Sketchfab_Scene/Sketchfab_model/rod06_FBX/Object_2/RootNode/Object_4/Skeleton3D"]
 bone_name = "Bone010_09"
@@ -34,9 +35,6 @@ bone_idx = 10
 
 [node name="RodTip" type="Marker3D" parent="Sketchfab_Scene/Sketchfab_model/rod06_FBX/Object_2/RootNode/Object_4/Skeleton3D/RodTipBone"]
 unique_name_in_owner = true
-
-[node name="ActionPrompt" parent="." unique_id=1664152999 instance=ExtResource("2_h4s14")]
-transform = Transform3D(0.34202003, -0.9396927, -4.1075268e-08, 0.9396927, 0.34202003, 1.495017e-08, -2.6865725e-16, -4.3711385e-08, 1, -1.1198463, 0.4710101, 0)
 
 [node name="Audio" type="AudioStreamPlayer3D" parent="."]
 bus = &"SFX"
@@ -63,4 +61,5 @@ one_shot = true
 [connection signal="timeout" from="HookTimer" to="." method="_on_hook_timer_timeout"]
 [connection signal="timeout" from="ReelTimer" to="." method="_on_reel_timer_timeout"]
 
+[connection signal="body_entered" from="PlayerDetection" to="." method="_on_player_detection_body_entered"]
 [editable path="Sketchfab_Scene"]
