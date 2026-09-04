@@ -32,7 +32,7 @@
 [ext_resource type="AudioStream" uid="uid://cqlbh8lf08661" path="res://assets/gravitysound/Car Sound Effects/Driving/Break_9.ogg" id="29_e2c2f"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_sbl7x"]
-bounce = 0.2
+bounce = 0.0
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_chassis"]
 size = Vector3(1.85, 0.55, 4.3)
@@ -146,8 +146,10 @@ properties/11/replication_mode = 2
 [node name="HondaCRV" type="VehicleBody3D" unique_id=863847759 node_paths=PackedStringArray("wheels")]
 mass = 1500.0
 physics_material_override = SubResource("PhysicsMaterial_sbl7x")
+linear_damp_mode = 1
+linear_damp = 0.0
 center_of_mass_mode = 1
-center_of_mass = Vector3(0, -0.05, -0.1)
+center_of_mass = Vector3(0, 0.45, -0.1)
 script = ExtResource("1_sbl7x")
 wheels = [NodePath("VehicleWheel3D"), NodePath("VehicleWheel3D2"), NodePath("VehicleWheel3D3"), NodePath("VehicleWheel3D4")]
 
@@ -176,13 +178,13 @@ transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.78153324, 0.3481807, 1.2197015)
 use_as_traction = true
 use_as_steering = true
-wheel_roll_influence = 0.01
+wheel_roll_influence = 0.05
 wheel_radius = 0.35
-wheel_friction_slip = 2.0
-suspension_stiffness = 45.0
+wheel_friction_slip = 1.15
+suspension_stiffness = 18.0
 suspension_max_force = 15000.0
-damping_compression = 1.8
-damping_relaxation = 2.4
+damping_compression = 0.7
+damping_relaxation = 1.0
 
 [node name="Wheel2" parent="VehicleWheel3D" unique_id=1078693087 instance=ExtResource("2_8d5p3")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
@@ -190,13 +192,13 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0
 [node name="VehicleWheel3D2" type="VehicleWheel3D" parent="." unique_id=186167499]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.78153324, 0.3481807, -1.4855552)
 use_as_traction = true
-wheel_roll_influence = 0.01
+wheel_roll_influence = 0.05
 wheel_radius = 0.35
-wheel_friction_slip = 2.0
-suspension_stiffness = 45.0
+wheel_friction_slip = 1.15
+suspension_stiffness = 18.0
 suspension_max_force = 15000.0
-damping_compression = 1.8
-damping_relaxation = 2.4
+damping_compression = 0.7
+damping_relaxation = 1.0
 
 [node name="Wheel2" parent="VehicleWheel3D2" unique_id=1396051292 instance=ExtResource("2_8d5p3")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
@@ -205,13 +207,13 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8091178, 0.3481807, 1.2197015)
 use_as_traction = true
 use_as_steering = true
-wheel_roll_influence = 0.01
+wheel_roll_influence = 0.05
 wheel_radius = 0.35
-wheel_friction_slip = 2.0
-suspension_stiffness = 45.0
+wheel_friction_slip = 1.15
+suspension_stiffness = 18.0
 suspension_max_force = 15000.0
-damping_compression = 1.8
-damping_relaxation = 2.4
+damping_compression = 0.7
+damping_relaxation = 1.0
 
 [node name="Wheel2" parent="VehicleWheel3D3" unique_id=54842894 instance=ExtResource("2_8d5p3")]
 transform = Transform3D(1, 0, 1.7484555e-07, 0, 1, 0, -1.7484555e-07, 0, 1, 0, 0, 0)
@@ -219,13 +221,13 @@ transform = Transform3D(1, 0, 1.7484555e-07, 0, 1, 0, -1.7484555e-07, 0, 1, 0, 0
 [node name="VehicleWheel3D4" type="VehicleWheel3D" parent="." unique_id=170868401]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8091178, 0.3481807, -1.4855552)
 use_as_traction = true
-wheel_roll_influence = 0.01
+wheel_roll_influence = 0.05
 wheel_radius = 0.35
-wheel_friction_slip = 2.0
-suspension_stiffness = 45.0
+wheel_friction_slip = 1.15
+suspension_stiffness = 18.0
 suspension_max_force = 15000.0
-damping_compression = 1.8
-damping_relaxation = 2.4
+damping_compression = 0.7
+damping_relaxation = 1.0
 
 [node name="Wheel2" parent="VehicleWheel3D4" unique_id=1721985110 instance=ExtResource("2_8d5p3")]
 transform = Transform3D(1, 0, 1.7484555e-07, 0, 1, 0, -1.7484555e-07, 0, 1, 0, 0, 0)
@@ -341,11 +343,11 @@ wait_time = 0.12
 one_shot = true
 
 [node name="ReverseHoldTimer" type="Timer" parent="."]
-wait_time = 0.6
+wait_time = 0.3
 one_shot = true
 
 [node name="ForwardHoldTimer" type="Timer" parent="."]
-wait_time = 0.6
+wait_time = 0.3
 one_shot = true
 
 [connection signal="timeout" from="FlippedTimer" to="." method="_on_flipped_timer_timeout"]

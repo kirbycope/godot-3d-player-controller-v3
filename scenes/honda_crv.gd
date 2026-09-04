@@ -10,13 +10,13 @@ const FLIPPED_DOT_THRESHOLD: float = 0.5 # dot product <= 0.5 means tilted >= 60
 const FLIPPED_VELOCITY_THRESHOLD: float = 2.0 # max linear/angular velocity to be considered settled
 const DOOR_OPEN_TIME: float = 1.1333 # seconds into the "Entering Car" animation when the door opens
 const DOOR_CLOSE_TIME: float = 3.7333 # seconds into the "Entering Car" animation when the door closes
-const GEAR_SPEEDS: Array[float] = [8.0, 16.0, 25.0, 36.0, 50.0] # top speed (m/s) of each forward gear
+const GEAR_SPEEDS: Array[float] = [7.0, 13.0, 20.0, 30.0, 45.0] # top speed (m/s) of each forward gear; drag caps the last one
 const GEAR_TORQUE_MULTS: Array[float] = [1.2, 1.0, 0.85, 0.7, 0.55] # engine force multiplier per forward gear
 const BURNED_MATERIAL: StandardMaterial3D = preload("res://materials/burned.tres")
 
-@export var max_acceleration_force: float = 4500.0
-@export var max_brake_force: float = 1800.0
-@export var max_reverse_force: float = -2500.0
+@export var max_acceleration_force: float = 7000.0 ## Total drive force at the wheels in first gear, split across the driven wheels once.
+@export var max_brake_force: float = 140.0 ## Per-wheel brake; about one g, so stops take real distance like GTA's fBrakeForce.
+@export var max_reverse_force: float = -3000.0
 @export var explosion_impulse_force: float = 6750.0
 @export var min_brake_sound_velocity: float = 6.0 ## Minimum speed required to trigger brake screech sound
 @export var brake_velocity_threshold: float = 14.0 ## Velocity threshold to switch between sfx_break_short and sfx_break_long
@@ -25,11 +25,17 @@ const BURNED_MATERIAL: StandardMaterial3D = preload("res://materials/burned.tres
 @export_group("GTA Handling & Transmission")
 @export var drive_bias_front: float = 0.5 ## AWD torque distribution (0.5 = 50% front / 50% rear)
 @export var brake_bias_front: float = 0.65 ## Brake bias (65% front, 35% rear)
-@export var handbrake_traction_loss: float = 0.82 ## Rear wheel traction multiplier during handbrake
-@export var downforce_coeff: float = 4.0 ## Downforce multiplier
-@export var anti_roll_force: float = 12000.0 ## Anti-roll bar force across axles
-@export var max_steering_angle: float = 30.0
-@export var steering_speed: float = 3.5
+@export var handbrake_traction_loss: float = 0.7 ## Rear wheel friction while the handbrake locks them: the GTA rear slide.
+@export var traction_curve_lateral: float = 14.0 ## Axle slip angle (degrees) where grip starts falling; gone to the minimum a further 14 degrees on.
+@export var traction_curve_min: float = 0.85 ## Grip left once an axle slides, as a fraction of its wheels' friction (GTA fTractionCurveMin/Max).
+@export var low_speed_traction_loss: float = 0.85 ## Driven-wheel friction under full throttle below 6 m/s in first: launch wheelspin.
+@export var drag_coeff: float = 2.0 ## Air drag in N per (m/s)^2; the top speed is where it meets the drive force.
+@export var downforce_coeff: float = 1.0 ## Downforce multiplier, capped at 2000 N.
+@export var anti_roll_force: float = 9000.0 ## Anti-roll bar: N per metre of compression difference across an axle.
+@export var max_steering_angle: float = 35.0 ## Lock at rest (GTA fSteeringLock); it shrinks to 30% by 40 m/s.
+@export var steer_time: float = 0.25 ## Seconds for the stick to reach full lock (input smoothing).
+@export var steering_speed: float = 6.0 ## Radians per second the wheels turn toward the smoothed target.
+@export var counter_steer_gain: float = 0.6 ## Fraction of the slip angle steered back into a slide (GTA V steer assist).
 
 @export var current_driver_peer_id: int = 1
 
@@ -54,6 +60,7 @@ var _accelerate: bool = false
 var _brake: bool = false
 var _handbrake: bool = false
 var _steer: float = 0.0
+var _steer_input: float = 0.0 ## The smoothed stick.
 var _revved_current_accel: bool = false
 
 @onready var action_prompt: Node3D = $ActionPrompt
@@ -268,7 +275,8 @@ func _physics_process(delta: float) -> void:
 		fire.global_transform.basis = Basis.looking_at(fwd, up_dir)
 
 
-## Transmission, RPM, wheel forces, speed-sensitive steering and downforce from the stored drive inputs.
+## Transmission, RPM, wheel forces through a traction curve, smoothed speed-sensitive steering with
+## counter-steer assist, air drag, anti-roll bars and downforce from the stored drive inputs.
 func _apply_drivetrain(delta: float) -> void:
 	var speed: float = linear_velocity.length()
 	var heading: Vector3 = Vector3(global_transform.basis.z.x, 0.0, global_transform.basis.z.z).normalized()
@@ -320,7 +328,7 @@ func _apply_drivetrain(delta: float) -> void:
 		target_rpm = 0.25 # Clutch dip on gear shift
 	current_rpm = lerpf(current_rpm, target_rpm, delta * 12.0)
 
-	# --- Force Calculation ---
+	# --- Force Calculation (engine force is the total at the wheels) ---
 	var target_engine_force: float = 0.0
 	var target_brake_front: float = 0.0
 	var target_brake_rear: float = 0.0
@@ -374,7 +382,7 @@ func _apply_drivetrain(delta: float) -> void:
 	else:
 		reverse_hold_timer.stop()
 
-	# 3. Handbrake (locks rear wheels only, enables progressive drift)
+	# 3. Handbrake (locks the rear wheels and cuts their grip, so the rear steps out)
 	if _handbrake:
 		target_brake_rear = max_brake_force * 1.5
 		rear_slip_multiplier = handbrake_traction_loss
@@ -382,6 +390,19 @@ func _apply_drivetrain(delta: float) -> void:
 			target_brake_front = 0.0
 		if _accelerate and forward_speed >= -0.4:
 			target_engine_force = max_acceleration_force * current_gear_mult
+
+	# --- Traction curve: an axle sliding past traction_curve_lateral loses grip, like GTA's fTractionCurve ---
+	var front_grip: float = _axle_grip(_axle_z(false), steering)
+	var rear_grip: float = _axle_grip(_axle_z(true), 0.0) * rear_slip_multiplier
+	var launch_loss: float = low_speed_traction_loss if _accelerate and current_gear == 1 and speed < 6.0 and is_grounded else 1.0
+	var driven_front: int = 0
+	var driven_rear: int = 0
+	for wheel: VehicleWheel3D in wheels:
+		if wheel.use_as_traction:
+			if wheel.position.z < 0.0:
+				driven_rear += 1
+			else:
+				driven_front += 1
 
 	# --- Apply Forces to Wheels ---
 	for wheel: VehicleWheel3D in wheels:
@@ -394,20 +415,70 @@ func _apply_drivetrain(delta: float) -> void:
 			if (_brake and forward_speed > 0.4 and not _accelerate) or (_accelerate and forward_speed < -0.4 and not _brake):
 				wheel.engine_force = 0.0
 			else:
-				# Distribute torque according to drive_bias_front
-				var wheel_torque_share: float = (1.0 - drive_bias_front) if is_rear else drive_bias_front
-				wheel.engine_force = lerpf(wheel.engine_force, target_engine_force * wheel_torque_share * 2.0, delta * 12.0)
+				# The axle's share of the total, split across that axle's driven wheels
+				var axle_share: float = (1.0 - drive_bias_front) / maxi(driven_rear, 1) if is_rear else drive_bias_front / maxi(driven_front, 1)
+				wheel.engine_force = lerpf(wheel.engine_force, target_engine_force * axle_share, delta * 12.0)
 
-		var target_slip: float = float(wheel.get_meta("default_friction")) * (rear_slip_multiplier if is_rear else 1.0)
+		var grip: float = rear_grip if is_rear else front_grip
+		if wheel.use_as_traction:
+			grip *= launch_loss
+		var target_slip: float = float(wheel.get_meta("default_friction")) * grip
 		wheel.wheel_friction_slip = lerpf(wheel.wheel_friction_slip, target_slip, delta * (12.0 if _handbrake else 25.0))
 
-	# --- Speed-Sensitive Steering ---
-	var steer_speed_factor: float = clampf(1.0 - (speed / 35.0) * 0.62, 0.35, 1.0)
-	steering = move_toward(steering, _steer * deg_to_rad(max_steering_angle * steer_speed_factor), delta * steering_speed)
+	# --- Steering: smoothed stick, lock shrinking with speed, counter-steer into a slide (GTA V) ---
+	_steer_input = move_toward(_steer_input, _steer, delta / steer_time)
+	var lock: float = deg_to_rad(max_steering_angle)
+	var target_steering: float = _steer_input * lock * lerpf(1.0, 0.3, clampf(speed / 40.0, 0.0, 1.0))
+	if is_grounded and forward_speed > 3.0:
+		var travel: Vector3 = Vector3(linear_velocity.x, 0.0, linear_velocity.z).normalized()
+		target_steering += clampf(heading.signed_angle_to(travel, Vector3.UP), -0.5, 0.5) * counter_steer_gain
+	steering = move_toward(steering, clampf(target_steering, -lock, lock), delta * steering_speed)
+
+	# --- Air drag: what caps the top speed ---
+	apply_central_force(-linear_velocity * speed * drag_coeff)
+
+	# --- Anti-roll bars: the more compressed side pushes the body back up, the other side pulls it down ---
+	if is_grounded:
+		for rear_axle: bool in [false, true]:
+			var left: VehicleWheel3D
+			var right: VehicleWheel3D
+			for wheel: VehicleWheel3D in wheels:
+				if (wheel.position.z < 0.0) == rear_axle:
+					if wheel.position.x > 0.0:
+						left = wheel
+					else:
+						right = wheel
+			if left and right and left.is_in_contact() and right.is_in_contact():
+				var bar: float = anti_roll_force * (left.position.y - right.position.y)
+				apply_force(global_transform.basis.y * bar, global_transform.basis * left.position)
+				apply_force(-global_transform.basis.y * bar, global_transform.basis * right.position)
 
 	# --- Aerodynamic Downforce Stabilization ---
 	if is_grounded:
-		apply_central_force(-global_transform.basis.y * clampf(ground_speed * ground_speed * downforce_coeff, 0.0, 4000.0))
+		apply_central_force(-global_transform.basis.y * clampf(ground_speed * ground_speed * downforce_coeff, 0.0, 2000.0))
+
+
+## Local Z of the front or rear axle, from the wheels.
+func _axle_z(rear: bool) -> float:
+	for wheel: VehicleWheel3D in wheels:
+		if (wheel.position.z < 0.0) == rear:
+			return wheel.position.z
+	return 0.0
+
+
+## Grip multiplier for an axle from its slip angle: 1.0 up to [member traction_curve_lateral], then falling to
+## [member traction_curve_min] over the same span again. [param wheel_yaw] is the steering angle on that axle.
+func _axle_grip(axle_z: float, wheel_yaw: float) -> float:
+	var axle_velocity: Vector3 = linear_velocity + angular_velocity.cross(global_transform.basis.z * axle_z)
+	axle_velocity.y = 0.0
+	if axle_velocity.length() < 2.0:
+		return 1.0
+	var wheel_direction: Vector3 = global_transform.basis.z.rotated(global_transform.basis.y, wheel_yaw)
+	wheel_direction.y = 0.0
+	var slip: float = rad_to_deg(wheel_direction.normalized().angle_to(axle_velocity.normalized()))
+	if slip > 90.0:
+		slip = 180.0 - slip # Rolling backwards
+	return lerpf(1.0, traction_curve_min, clampf((slip - traction_curve_lateral) / traction_curve_lateral, 0.0, 1.0))
 
 
 func display_menu(_player: Player) -> void:

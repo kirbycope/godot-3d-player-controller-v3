@@ -140,6 +140,68 @@ class TestCarActions:
 		assert_eq(car_instance.get_node("VehicleWheel3D2").engine_force, 0.0, "Rear engine force should be 0.0 when handbrake is held and not accelerating.")
 		sender.action_up(action)
 
+	## Test Case: The total drive force is split across the driven wheels once, never applied per wheel.
+	func test_engine_force_is_split_across_driven_wheels():
+		setup_player_driving()
+		var sender = InputSender.new(Input)
+		sender.set_auto_flush_input(true)
+		sender.action_down(driving_state.keyboard_accelerate_action)
+		await wait_seconds(0.6)
+		var total: float = 0.0
+		for wheel in car_instance.wheels:
+			total += wheel.engine_force
+		var expected: float = car_instance.max_acceleration_force * car_instance.GEAR_TORQUE_MULTS[0]
+		assert_almost_eq(total, expected, expected * 0.05, "First gear puts max_acceleration_force x gear torque on the road in total")
+		sender.action_up(driving_state.keyboard_accelerate_action)
+
+	## Test Case: The stick is smoothed into the wheels and the lock shrinks with speed.
+	func test_steering_is_smoothed_and_lock_shrinks_with_speed():
+		setup_player_driving()
+		var lock: float = deg_to_rad(car_instance.max_steering_angle)
+		var sender = InputSender.new(Input)
+		sender.set_auto_flush_input(true)
+		sender.action_down("move_left")
+		await wait_physics_frames(2)
+		assert_lt(car_instance.steering, lock * 0.5, "Two frames in, the wheels are still turning toward lock")
+		await wait_seconds(0.6)
+		assert_almost_eq(car_instance.steering, lock, 0.02, "Full lock at rest")
+		car_instance.linear_velocity = car_instance.global_transform.basis.z * 30.0
+		await wait_seconds(0.4)
+		assert_lt(car_instance.steering, lock * 0.65, "Less lock available at speed")
+		sender.action_up("move_left")
+
+	## Test Case: A rear slide steers itself back toward the direction of travel with no stick input.
+	func test_counter_steer_assist_steers_into_a_slide():
+		setup_player_driving()
+		car_instance.linear_velocity = car_instance.global_transform.basis.z.rotated(Vector3.UP, deg_to_rad(30.0)) * 12.0
+		await wait_physics_frames(6)
+		assert_gt(car_instance.steering, 0.02, "The wheels turn left, into a slide whose travel is left of the heading")
+
+	## Test Case: The handbrake and a full-throttle launch cut tyre grip so the car can actually slide.
+	func test_handbrake_and_launch_cut_grip():
+		setup_player_driving()
+		var rear: VehicleWheel3D = car_instance.wheels[1]
+		var front: VehicleWheel3D = car_instance.wheels[0]
+		var default_grip: float = rear.wheel_friction_slip
+		var sender = InputSender.new(Input)
+		sender.set_auto_flush_input(true)
+		sender.action_down(driving_state.keyboard_accelerate_action)
+		sender.action_down(driving_state.keyboard_handbrake_action)
+		await wait_seconds(0.5)
+		assert_lt(rear.wheel_friction_slip, default_grip * 0.7, "Locked rear tyres lose most of their grip")
+		assert_lt(front.wheel_friction_slip, default_grip, "Driven fronts spin up a little off the line")
+		assert_gt(front.wheel_friction_slip, rear.wheel_friction_slip, "But keep more grip than the locked rears")
+		sender.action_up(driving_state.keyboard_handbrake_action)
+		sender.action_up(driving_state.keyboard_accelerate_action)
+
+	## Test Case: Driving pulls the chase camera back and lets it pass through the car; leaving restores it.
+	func test_driving_uses_a_longer_chase_camera():
+		setup_player_driving()
+		var arm: SpringArm3D = player_instance.camera.camera_spring_arm
+		assert_almost_eq(arm.spring_length, driving_state.chase_distance, 0.001, "Seated: GTA chase distance")
+		player_instance.state_machine.travel(player_instance.current_state, NodeStateMachine.States.STANDING)
+		assert_almost_eq(arm.spring_length, 2.0, 0.001, "Out of the car: the walking spring length is back")
+
 	## Test Case: Testing the car steering left.
 	func test_car_steering_left():
 		setup_player_driving()
