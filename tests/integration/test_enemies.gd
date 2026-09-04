@@ -179,3 +179,21 @@ func test_the_aim_ray_hits_the_enemy_not_its_aggro_sphere() -> void:
 	ray.force_raycast_update()
 	assert_true(ray.is_colliding())
 	assert_eq(ray.get_collider(), swordsman, "Detection areas sit on no layer, so the crosshair lands on the body")
+
+
+func test_the_hunter_walks_home_when_its_player_dies() -> void:
+	var swordsman: EnemyNpc = _enemy("Swordsman")
+	watch_signals(swordsman)
+	var home: Vector3 = swordsman.global_position
+	_stand_near(swordsman, 3.5)
+	await wait_seconds(1.0)
+	assert_eq(swordsman.target, player, "Hunting")
+	assert_gt(swordsman.global_position.distance_to(home), 0.5, "It left its post to close in")
+	player.take_hit(1000.0, swordsman.global_position)
+	await wait_physics_frames(2)
+	assert_null(swordsman.target, "A dead Player is no target")
+	assert_true(swordsman.is_returning_home)
+	await wait_seconds(2.5)
+	assert_lt(swordsman.global_position.distance_to(home), 0.8, "Back at its post before the Player respawns")
+	assert_signal_emitted(swordsman, "returned_home")
+	assert_false(swordsman.is_returning_home)

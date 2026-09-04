@@ -2,12 +2,15 @@ class_name EnemyNpc
 extends FollowerNpc
 ## A hostile NPC: idles until the Player attacks it or steps within its aggro area, then chases over the
 ## navigation mesh and attacks in reach with a melee swing whose weapon hitbox must touch you, a projectile
-## weapon, or abilities cast in range with line of sight. Health, death and the animation state replicate from the server; hits from clients relay.
+## weapon, or abilities cast in range with line of sight. When the hunted Player dies it turns on any other
+## living Player still inside its aggro area, or walks back to where it started and stands as it stood.
+## Health, death and the animation state replicate from the server; hits from clients relay.
 
 signal aggroed(target: Node3D)
 signal attacked(target: Node3D) ## A melee swing or a shot was started.
 signal struck(body: Node3D) ## The weapon hitbox connected.
 signal died
+signal returned_home ## Back at the spawn point after the hunted Player died.
 
 const LOCOMOTION_STATES: Array[String] = ["Idle", "Walking", "Running"]
 
@@ -23,6 +26,8 @@ const LOCOMOTION_STATES: Array[String] = ["Idle", "Walking", "Running"]
 @export var footstep_sfx: AudioStream ## Played by the walk and run animations' method tracks.
 
 var target: Node3D ## The Player being hunted; abilities read it through [method Ability.get_target].
+var is_returning_home: bool = false ## Walking back to the spawn point with nobody to hunt.
+var _spawn_transform: Transform3D
 var is_dead: bool = false: ## Replicated; the setter drops the body into the ragdoll on every peer.
 	set(value):
 		if value == is_dead:
@@ -46,12 +51,14 @@ var anim_state: String = "Idle": ## Replicated AnimationTree state.
 @onready var health: Health = $Health
 @onready var boss: Boss = $Boss
 @onready var collision_shape: CollisionShape3D = $CollisionShape3D
+@onready var aggro_area: Area3D = $AggroArea
 @onready var footstep_audio: AudioStreamPlayer3D = $FootstepAudio
 @onready var physical_bone_simulator: PhysicalBoneSimulator3D = $Mannequin_M/Armature/GeneralSkeleton/PhysicalBoneSimulator3D
 
 
 func _ready() -> void:
 	super()
+	_spawn_transform = global_transform
 	animation_tree.active = true
 	attack_timer.wait_time = attack_interval
 	strike_timer.wait_time = strike_delay
@@ -68,6 +75,10 @@ func _physics_process(delta: float) -> void:
 			_face_player(delta)
 		_stop_moving()
 		return
+	if is_returning_home:
+		_return_home(delta)
+		_update_locomotion()
+		return
 	super(delta)
 	_update_locomotion()
 	if target == null or target.get("is_stealthed") or not attack_timer.is_stopped():
@@ -79,15 +90,54 @@ func _physics_process(delta: float) -> void:
 		_attack()
 
 
-## Hunts [param who]; only Players are worth chasing.
+## Hunts [param who]; only living Players are worth chasing.
 func aggro(who: Node) -> void:
-	if is_dead or not who is Player or target == who:
+	if is_dead or not who is Player or target == who or not (who as Player).health.is_alive():
 		return
+	if is_instance_valid(target):
+		target.health.died.disconnect(_on_target_died)
 	target = who
 	player = who
+	is_returning_home = false
+	target.health.died.connect(_on_target_died)
 	if is_boss:
 		boss.engage(who.get_multiplayer_authority())
 	aggroed.emit(target)
+
+
+## The hunted Player died: turn on another living Player still inside the aggro area, or head home.
+func _on_target_died() -> void:
+	if is_instance_valid(target):
+		target.health.died.disconnect(_on_target_died)
+	target = null
+	player = null
+	caster.interrupt()
+	boss.disengage()
+	for body: Node3D in aggro_area.get_overlapping_bodies():
+		if body is Player and (body as Player).health.is_alive() and not (body as Player).is_stealthed:
+			aggro(body)
+			return
+	is_returning_home = true
+
+
+## Walks the navigation mesh back to the spawn point, then turns to stand as it stood.
+func _return_home(delta: float) -> void:
+	if not is_on_floor():
+		velocity += get_gravity() * delta
+	var home: Vector3 = _spawn_transform.origin
+	if (home - global_position).slide(up_direction).length() > 0.5:
+		navigation_agent_3d.target_position = home
+		var next: Vector3 = navigation_agent_3d.get_next_path_position() if navigation_agent_3d.is_target_reachable() else home
+		var direction: Vector3 = global_position.direction_to(next).slide(up_direction).normalized()
+		global_transform = global_transform.interpolate_with(global_transform.looking_at(global_position + direction, up_direction), turn_speed * delta)
+		_move_with_control(direction * move_speed)
+		return
+	_stop_moving()
+	var facing: Transform3D = global_transform.looking_at(global_position - _spawn_transform.basis.z, up_direction)
+	global_transform = global_transform.interpolate_with(facing, turn_speed * delta)
+	if global_transform.basis.z.angle_to(_spawn_transform.basis.z) < 0.05:
+		is_returning_home = false
+		returned_home.emit()
 
 
 ## Wired to the AggroArea's body_entered.
