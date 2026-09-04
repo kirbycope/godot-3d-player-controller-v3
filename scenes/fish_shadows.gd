@@ -1,12 +1,18 @@
 class_name FishShadows
 extends Node3D
 ## Dark shapes wandering just under a water's surface. The fishing rod reads them for bite odds, draws the
-## nearest one to the float, bumps it on nibbles and sends it diving on the bite. Wandering runs on Tweens.
+## nearest one to the float, bumps it on nibbles and sends it diving on the bite. A Player in the water within
+## [member scare_distance] of one sends it fleeing: it darts away, sinks out of sight and comes back elsewhere
+## later. Wandering runs on Tweens; the scare is an Area3D on each shadow.
+
+signal scared(shadow: MeshInstance3D) ## A swimmer got too close.
 
 @export var water: Buoyancy ## The water the shadows swim in; its quad bounds them.
 @export var count: int = 4
 @export var speed: float = 0.7 ## Metres per second while wandering.
 @export var depth: float = -0.02 ## Height relative to the resting surface; just above it so the dark shape reads through the water shader.
+@export var scare_distance: float = 1.5 ## A Player this close in the water scares the shadow off.
+@export var hide_seconds: float = 8.0 ## How long a dived or scared shadow stays gone before it shows up elsewhere.
 
 const SHADOW_SCALE: Vector3 = Vector3(0.6, 0.08, 0.3)
 
@@ -70,9 +76,36 @@ func dive(point: Vector3) -> void:
 	tween.tween_property(shadow, "global_position", Vector3(point.x, shadow.global_position.y, point.z), 0.12)
 	tween.tween_property(shadow, "scale", SHADOW_SCALE * 0.1, 0.25)
 	tween.tween_callback(shadow.hide)
-	tween.tween_interval(8.0)
+	tween.tween_interval(hide_seconds)
 	tween.tween_callback(_respawn.bind(shadow))
 	_tweens[shadow] = tween
+
+
+## Wired to each shadow's ScareArea: a Player in the water sends it fleeing.
+func _on_scare_area_body_entered(body: Node3D, shadow: MeshInstance3D) -> void:
+	if body is Player and shadow.visible:
+		flee(shadow, body.global_position)
+
+
+## The shadow darts straight away from [param from], sinks out of sight and comes back elsewhere later.
+func flee(shadow: MeshInstance3D, from: Vector3) -> void:
+	if interested == shadow:
+		interested = null
+	_tweens[shadow].kill()
+	var away: Vector3 = (shadow.global_position - from).slide(Vector3.UP)
+	if away.length_squared() < 0.001:
+		away = Vector3.FORWARD.rotated(Vector3.UP, randf() * TAU)
+	var target: Vector3 = _clamp_to_water(shadow.global_position + away.normalized() * 3.0)
+	if shadow.global_position.distance_to(target) > 0.01:
+		shadow.look_at(target)
+	var tween: Tween = create_tween()
+	tween.tween_property(shadow, "global_position", target, shadow.global_position.distance_to(target) / (speed * 5.0))
+	tween.parallel().tween_property(shadow, "scale", SHADOW_SCALE * 0.1, 0.4).set_delay(0.2)
+	tween.tween_callback(shadow.hide)
+	tween.tween_interval(hide_seconds)
+	tween.tween_callback(_respawn.bind(shadow))
+	_tweens[shadow] = tween
+	scared.emit(shadow)
 
 
 ## Lets the interested shadow wander again.
@@ -99,6 +132,19 @@ func _spawn_shadow() -> void:
 	mesh.material = material
 	shadow.mesh = mesh
 	shadow.scale = SHADOW_SCALE
+	# The scare volume: a sphere around the shadow, counter-scaled so the flat shadow's scale does not squash it
+	var area: Area3D = Area3D.new()
+	area.name = "ScareArea"
+	area.collision_layer = 0
+	area.monitorable = false
+	area.scale = Vector3.ONE / SHADOW_SCALE
+	var shape: CollisionShape3D = CollisionShape3D.new()
+	var sphere: SphereShape3D = SphereShape3D.new()
+	sphere.radius = scare_distance
+	shape.shape = sphere
+	area.add_child(shape)
+	area.body_entered.connect(_on_scare_area_body_entered.bind(shadow))
+	shadow.add_child(area)
 	add_child(shadow)
 	shadow.global_position = _random_point()
 	shadows.append(shadow)
@@ -110,6 +156,15 @@ func _random_point() -> Vector3:
 	var point: Vector3 = water.water_mesh.to_global(Vector3(randf_range(-half.x, half.x), 0.0, randf_range(-half.y, half.y)))
 	point.y = _surface_y()
 	return point
+
+
+## Keeps [param point] inside the water quad, at the surface.
+func _clamp_to_water(point: Vector3) -> Vector3:
+	var half: Vector2 = (water.water_mesh.mesh as QuadMesh).size * 0.4
+	var local: Vector3 = water.water_mesh.to_local(point)
+	var clamped: Vector3 = water.water_mesh.to_global(Vector3(clampf(local.x, -half.x, half.x), 0.0, clampf(local.z, -half.y, half.y)))
+	clamped.y = _surface_y()
+	return clamped
 
 
 func _surface_y() -> float:

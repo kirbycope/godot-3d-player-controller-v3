@@ -55,7 +55,10 @@ func test_full_loop_catches_a_fish() -> void:
 	assert_not_null(shadows.interested, "A shadow takes an interest in the float")
 	var drawn: MeshInstance3D = shadows.interested
 	rod.bite_timer.start(30.0) # hold the bite off while the shadow swims over
-	await wait_seconds(2.5)
+	for i in 50: # the nearest shadow may start anywhere in the pool
+		await wait_physics_frames(6)
+		if drawn.global_position.distance_to(rod.bobber.global_position) < 1.2:
+			break
 	assert_lt(drawn.global_position.distance_to(rod.bobber.global_position), 1.2, "The interested shadow swims up beside the float")
 	rod.bite_timer.stop()
 	rod._on_bite_timer_timeout()
@@ -113,3 +116,27 @@ func test_unequipping_the_rod_hands_the_labels_back() -> void:
 	await wait_physics_frames(1)
 	assert_false(player.is_fishing)
 	assert_ne(action.text, "Cast", "The state's own labels return once the rod is put away")
+
+
+func test_swimming_up_to_a_fish_scares_it_off_until_it_returns_elsewhere() -> void:
+	var shadows: FishShadows = world.get_node("Pool/FishShadows")
+	shadows.hide_seconds = 0.5
+	watch_signals(shadows)
+	var fish: MeshInstance3D = shadows.shadows[0]
+	var start: Vector3 = fish.global_position
+	assert_true(fish.get_node("ScareArea") is Area3D, "Each shadow carries its scare volume")
+	# Swim right up to it
+	player.warp_to(Transform3D(Basis(), fish.global_position + Vector3(0.5, -0.3, 0.0)))
+	await wait_physics_frames(3)
+	assert_signal_emitted_with_parameters(shadows, "scared", [fish])
+	await wait_seconds(0.3)
+	assert_gt(fish.global_position.distance_to(start), 0.3, "It darts away from the swimmer")
+	assert_gt((fish.global_position - start).dot(start - player.global_position), 0.0, "Away, not toward")
+	for i in 30: # the dash takes up to a second
+		await wait_physics_frames(6)
+		if not fish.visible:
+			break
+	assert_false(fish.visible, "Then it hides")
+	await wait_seconds(0.8)
+	assert_true(fish.visible, "And turns up again somewhere else later")
+	assert_almost_eq(fish.scale, FishShadows.SHADOW_SCALE, Vector3.ONE * 0.001, "Back at full size")
