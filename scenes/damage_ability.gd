@@ -9,9 +9,9 @@ func _init() -> void:
 	target_mode = Target.FOCUS
 
 
-## Needs something to aim at.
+## A Player always fires forward, at whatever the crosshair finds or just ahead; an NPC needs its target.
 func can_cast(caster: Node3D) -> bool:
-	return is_instance_valid(get_target(caster))
+	return caster is Player or is_instance_valid(get_target(caster))
 
 
 func activate(caster: Node3D) -> bool:
