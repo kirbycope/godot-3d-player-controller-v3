@@ -1,26 +1,24 @@
-[gd_resource type="Resource" script_class="DamageAbility" load_steps=6 format=3]
+[gd_resource type="Resource" script_class="DamageAbility" format=3 uid="uid://vxyio2qd6nhi"]
 
-[ext_resource type="Script" path="res://scenes/damage_ability.gd" id="1_damage"]
+[ext_resource type="Script" uid="uid://cy4tkatxd8bhr" path="res://scenes/damage_ability.gd" id="1_damage"]
 [ext_resource type="PackedScene" uid="uid://c7boltorb0001" path="res://scenes/vfx/bolt_orb.tscn" id="2_orb"]
-[ext_resource type="AudioStream" path="res://addons/3d_player_controller/assets/tommusic/fantasy_sfx/Spells/Firebuff 1.ogg" id="3_channel"]
-[ext_resource type="AudioStream" path="res://addons/3d_player_controller/assets/tommusic/fantasy_sfx/Spells/Fireball 1.ogg" id="4_cast"]
-[ext_resource type="AudioStream" path="res://addons/3d_player_controller/assets/tommusic/fantasy_sfx/Spells/Spell Impact 1.ogg" id="5_impact"]
+[ext_resource type="AudioStream" uid="uid://4dogfllph4je" path="res://addons/3d_player_controller/assets/tommusic/fantasy_sfx/Spells/Firebuff 1.ogg" id="3_channel"]
+[ext_resource type="AudioStream" uid="uid://bs7c88oh6vty2" path="res://addons/3d_player_controller/assets/tommusic/fantasy_sfx/Spells/Fireball 1.ogg" id="4_cast"]
+[ext_resource type="AudioStream" uid="uid://cake8svtmtkxy" path="res://addons/3d_player_controller/assets/tommusic/fantasy_sfx/Spells/Spell Impact 1.ogg" id="5_impact"]
 
 [resource]
 script = ExtResource("1_damage")
 display_name = "Firebolt"
 cooldown = 4.0
 cast_time = 1.2
-cast_range = 12.0
 energy_cost = 20.0
+fx_lifetime = 0.6
 target_mode = 1
 cast_style = 1
+elements = 1
 projectile_speed = 14.0
-projectile_homing = true
 channeling_sfx = ExtResource("3_channel")
 casting_vfx = ExtResource("2_orb")
 casting_sfx = ExtResource("4_cast")
 impact_vfx = ExtResource("2_orb")
 impact_sfx = ExtResource("5_impact")
-fx_lifetime = 0.6
-damage = 20.0

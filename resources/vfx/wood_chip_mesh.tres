@@ -1,4 +1,4 @@
-[gd_resource type="BoxMesh" load_steps=2 format=3]
+[gd_resource type="BoxMesh" format=3 uid="uid://cpwh2y6rbxqnu"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_chip"]
 vertex_color_use_as_albedo = true

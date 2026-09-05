@@ -136,35 +136,13 @@ uv1_triplanar = true
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c3ehd"]
 albedo_color = Color(0.42352942, 0.7529412, 0.7294118, 1)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_senyo"]
-size = Vector3(1, 0.4, 0.2)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_k78ss"]
-size = Vector3(0.3, 0.2, 0.2)
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_fk680"]
-radius = 0.1
-height = 1.125
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_fk680"]
-size = Vector3(0.2, 1, 0.4)
+[sub_resource type="SphereShape3D" id="SphereShape3D_pickup"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hbax1"]
 size = Vector3(0.25, 0.15, 0.6)
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_senyo"]
-radius = 0.1
-height = 1.825
-
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_senyo"]
-height = 0.19999999
-radius = 0.4
-
 [sub_resource type="BoxShape3D" id="BoxShape3D_hbax2"]
 size = Vector3(0.35, 0.15, 0.8)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_5pyta"]
-size = Vector3(0.2, 0.5, 1.4)
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_5pyta"]
 height = 0.667
@@ -402,28 +380,8 @@ states/idle/position = Vector2(422, 101.11111)
 transitions = ["Start", "idle", SubResource("AnimationNodeStateMachineTransition_mc2jv"), "idle", "Pull_Start", SubResource("AnimationNodeStateMachineTransition_bo7i5"), "Pull_Start", "Pull", SubResource("AnimationNodeStateMachineTransition_4h6ng"), "Pull", "Pull_End", SubResource("AnimationNodeStateMachineTransition_o3ebs"), "Pull_End", "idle", SubResource("AnimationNodeStateMachineTransition_k83mh"), "Pull", "idle", SubResource("AnimationNodeStateMachineTransition_2f3dj"), "Pull_Start", "idle", SubResource("AnimationNodeStateMachineTransition_yq6so")]
 graph_offset = Vector2(-129.74506, -113.10916)
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5pyta"]
-radius = 0.1
-height = 0.90000004
-
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_fk680"]
-height = 0.15
-radius = 0.4
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_hxkk4"]
-radius = 0.1
-height = 2.1750002
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_jnf5c"]
-radius = 0.1
-height = 1.45
-
 [sub_resource type="BoxShape3D" id="BoxShape3D_cth4h"]
 size = Vector3(0.040100098, 0.14707032, 0.90000004)
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_0y3lt"]
-radius = 0.2
-height = 2.1
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hbsw2"]
 size = Vector3(0.06, 0.2, 1.3)
@@ -536,9 +494,6 @@ bounce = 0.15
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_killzone"]
 size = Vector3(2000, 20, 2000)
-
-[sub_resource type="SphereShape3D" id="SphereShape3D_pickup"]
-radius = 0.5
 
 [node name="World" type="Node3D" unique_id=336392758]
 script = ExtResource("1_5hglh")
@@ -760,7 +715,7 @@ visible = false
 
 [node name="PlayerDetection" type="Area3D" parent="JustCreate3D/Weapon_02" unique_id=1390449809]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="JustCreate3D/Weapon_02/PlayerDetection"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="JustCreate3D/Weapon_02/PlayerDetection" unique_id=1160603387]
 shape = SubResource("SphereShape3D_pickup")
 
 [node name="Weapon_01" parent="JustCreate3D" unique_id=1674455333 node_paths=PackedStringArray("muzzle", "fire_timer", "laser_sight") instance=ExtResource("14_myjip")]
@@ -792,7 +747,7 @@ visible = false
 
 [node name="PlayerDetection" type="Area3D" parent="JustCreate3D/Weapon_01" unique_id=1008708349]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="JustCreate3D/Weapon_01/PlayerDetection"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="JustCreate3D/Weapon_01/PlayerDetection" unique_id=1055319558]
 shape = SubResource("SphereShape3D_pickup")
 
 [node name="N_Hance_Studio_1" type="Node3D" parent="." unique_id=1622472344]
@@ -810,7 +765,7 @@ rotation_offset_degrees = Vector3(0, 90, 0)
 
 [node name="PlayerDetection" type="Area3D" parent="N_Hance_Studio_1/SK_Axe_1H_Newbie_01" unique_id=774331995]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Axe_1H_Newbie_01/PlayerDetection"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Axe_1H_Newbie_01/PlayerDetection" unique_id=1268185973]
 shape = SubResource("SphereShape3D_pickup")
 
 [node name="Hitbox" type="Area3D" parent="N_Hance_Studio_1/SK_Axe_1H_Newbie_01" unique_id=192042514]
@@ -833,7 +788,7 @@ rotation_offset_degrees = Vector3(0, 90, 0)
 
 [node name="PlayerDetection" type="Area3D" parent="N_Hance_Studio_1/SK_Axe_2HL_Newbie_01" unique_id=1317302899]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Axe_2HL_Newbie_01/PlayerDetection"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Axe_2HL_Newbie_01/PlayerDetection" unique_id=563205540]
 shape = SubResource("SphereShape3D_pickup")
 
 [node name="Hitbox" type="Area3D" parent="N_Hance_Studio_1/SK_Axe_2HL_Newbie_01" unique_id=94929940]
@@ -858,7 +813,7 @@ rotation_offset_degrees = Vector3(180, 90, 15)
 
 [node name="PlayerDetection" type="Area3D" parent="N_Hance_Studio_1/SK_Bow_Newbie_01" unique_id=326004096]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Bow_Newbie_01/PlayerDetection"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Bow_Newbie_01/PlayerDetection" unique_id=1544112683]
 shape = SubResource("SphereShape3D_pickup")
 
 [node name="Arrow" type="RigidBody3D" parent="N_Hance_Studio_1/SK_Bow_Newbie_01" unique_id=1811199221]
@@ -911,7 +866,7 @@ rotation_offset_degrees = Vector3(0, 90, 0)
 
 [node name="PlayerDetection" type="Area3D" parent="N_Hance_Studio_1/SK_Dagger_1H_Newbie_01" unique_id=1675766781]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Dagger_1H_Newbie_01/PlayerDetection"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Dagger_1H_Newbie_01/PlayerDetection" unique_id=1439696752]
 shape = SubResource("SphereShape3D_pickup")
 
 [node name="SK_Dagger_1H_Newbie_02" parent="N_Hance_Studio_1" unique_id=1026972564 instance=ExtResource("29_oexs8")]
@@ -926,7 +881,7 @@ rotation_offset_degrees = Vector3(0, 90, 0)
 
 [node name="PlayerDetection" type="Area3D" parent="N_Hance_Studio_1/SK_Dagger_1H_Newbie_02" unique_id=737885465]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Dagger_1H_Newbie_02/PlayerDetection"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Dagger_1H_Newbie_02/PlayerDetection" unique_id=1280307228]
 shape = SubResource("SphereShape3D_pickup")
 
 [node name="SK_Shield_Newbie_01" parent="N_Hance_Studio_1" unique_id=2039608327 instance=ExtResource("31_kcpaj")]
@@ -941,7 +896,7 @@ rotation_offset_degrees = Vector3(0, 180, 180)
 
 [node name="PlayerDetection" type="Area3D" parent="N_Hance_Studio_1/SK_Shield_Newbie_01" unique_id=376316930]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Shield_Newbie_01/PlayerDetection"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Shield_Newbie_01/PlayerDetection" unique_id=1011761332]
 shape = SubResource("SphereShape3D_pickup")
 
 [node name="SK_Staff_Newbie_01" parent="N_Hance_Studio_1" unique_id=906851320 instance=ExtResource("33_grmox")]
@@ -957,7 +912,7 @@ rotation_offset_degrees = Vector3(0, 90, 0)
 
 [node name="PlayerDetection" type="Area3D" parent="N_Hance_Studio_1/SK_Staff_Newbie_01" unique_id=604874034]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Staff_Newbie_01/PlayerDetection"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Staff_Newbie_01/PlayerDetection" unique_id=627836358]
 shape = SubResource("SphereShape3D_pickup")
 
 [node name="SK_Sword_1H_Newbie_01" parent="N_Hance_Studio_1" unique_id=13927276 instance=ExtResource("35_kvmu4")]
@@ -973,7 +928,7 @@ rotation_offset_degrees = Vector3(0, 90, 180)
 
 [node name="PlayerDetection" type="Area3D" parent="N_Hance_Studio_1/SK_Sword_1H_Newbie_01" unique_id=1871370711]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Sword_1H_Newbie_01/PlayerDetection"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Sword_1H_Newbie_01/PlayerDetection" unique_id=1248989220]
 shape = SubResource("SphereShape3D_pickup")
 
 [node name="Hitbox" type="Area3D" parent="N_Hance_Studio_1/SK_Sword_1H_Newbie_01" unique_id=598454094]
@@ -996,7 +951,7 @@ rotation_offset_degrees = Vector3(0, 90, 0)
 
 [node name="PlayerDetection" type="Area3D" parent="N_Hance_Studio_1/SK_Sword_2H_Newbie_01" unique_id=1329213807]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Sword_2H_Newbie_01/PlayerDetection"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Sword_2H_Newbie_01/PlayerDetection" unique_id=569813542]
 shape = SubResource("SphereShape3D_pickup")
 
 [node name="Hitbox" type="Area3D" parent="N_Hance_Studio_1/SK_Sword_2H_Newbie_01" unique_id=1218326031]
@@ -1053,7 +1008,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 mesh = SubResource("CylinderMesh_fk680")
 
 [node name="WarpZone2" type="Area3D" parent="." unique_id=1398560946]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -15)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0, -15)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WarpZone2" unique_id=1706037066]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
@@ -1224,15 +1179,15 @@ center_of_mass = Vector3(0, -0.05, -0.1)
 
 [node name="DateAndTime" type="Node" parent="." unique_id=98712301]
 script = ExtResource("55_dt")
-current_time = 3.8952701714734763
-day = 5
+current_time = 10.97860350480678
+day = 7
 
 [node name="TimeSynchronizer" type="MultiplayerSynchronizer" parent="DateAndTime" unique_id=2142557897]
 replication_config = SubResource("SceneReplicationConfig_time")
 
 [node name="WeatherFX" parent="." unique_id=98712302 node_paths=PackedStringArray("date_and_time_node") instance=ExtResource("56_wfx")]
 date_and_time_node = NodePath("../DateAndTime")
-manual_time_of_day = 3.8952701714734763
+manual_time_of_day = 10.97860350480678
 
 [node name="Zones" type="Node3D" parent="." unique_id=98712303]
 
@@ -1295,7 +1250,7 @@ offset_bottom = 0.0
 weather_fx = NodePath("../../../WeatherFX")
 
 [node name="Torch" parent="." unique_id=987654321 instance=ExtResource("63_torch")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 1.9000001, -7)
 physics_material_override = SubResource("PhysicsMaterial_torch")
 
 [node name="KillZone" type="Area3D" parent="." unique_id=1459251186]
@@ -1305,7 +1260,18 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -50, 0)
 shape = SubResource("BoxShape3D_killzone")
 
 [connection signal="local_player_spawned" from="PlayerSpawner" to="." method="_on_local_player_spawned"]
+[connection signal="body_entered" from="JustCreate3D/Weapon_02/PlayerDetection" to="JustCreate3D/Weapon_02" method="_on_player_detection_body_entered"]
+[connection signal="body_entered" from="JustCreate3D/Weapon_01/PlayerDetection" to="JustCreate3D/Weapon_01" method="_on_player_detection_body_entered"]
+[connection signal="body_entered" from="N_Hance_Studio_1/SK_Axe_1H_Newbie_01/PlayerDetection" to="N_Hance_Studio_1/SK_Axe_1H_Newbie_01" method="_on_player_detection_body_entered"]
+[connection signal="body_entered" from="N_Hance_Studio_1/SK_Axe_2HL_Newbie_01/PlayerDetection" to="N_Hance_Studio_1/SK_Axe_2HL_Newbie_01" method="_on_player_detection_body_entered"]
+[connection signal="body_entered" from="N_Hance_Studio_1/SK_Bow_Newbie_01/PlayerDetection" to="N_Hance_Studio_1/SK_Bow_Newbie_01" method="_on_player_detection_body_entered"]
 [connection signal="body_entered" from="N_Hance_Studio_1/SK_Bow_Newbie_01/Arrow" to="N_Hance_Studio_1/SK_Bow_Newbie_01/Arrow" method="_on_body_entered"]
+[connection signal="body_entered" from="N_Hance_Studio_1/SK_Dagger_1H_Newbie_01/PlayerDetection" to="N_Hance_Studio_1/SK_Dagger_1H_Newbie_01" method="_on_player_detection_body_entered"]
+[connection signal="body_entered" from="N_Hance_Studio_1/SK_Dagger_1H_Newbie_02/PlayerDetection" to="N_Hance_Studio_1/SK_Dagger_1H_Newbie_02" method="_on_player_detection_body_entered"]
+[connection signal="body_entered" from="N_Hance_Studio_1/SK_Shield_Newbie_01/PlayerDetection" to="N_Hance_Studio_1/SK_Shield_Newbie_01" method="_on_player_detection_body_entered"]
+[connection signal="body_entered" from="N_Hance_Studio_1/SK_Staff_Newbie_01/PlayerDetection" to="N_Hance_Studio_1/SK_Staff_Newbie_01" method="_on_player_detection_body_entered"]
+[connection signal="body_entered" from="N_Hance_Studio_1/SK_Sword_1H_Newbie_01/PlayerDetection" to="N_Hance_Studio_1/SK_Sword_1H_Newbie_01" method="_on_player_detection_body_entered"]
+[connection signal="body_entered" from="N_Hance_Studio_1/SK_Sword_2H_Newbie_01/PlayerDetection" to="N_Hance_Studio_1/SK_Sword_2H_Newbie_01" method="_on_player_detection_body_entered"]
 [connection signal="body_entered" from="WarpZone" to="." method="_on_warp_zone_body_entered" binds= [NodePath("WarpZone/Marker3D")]]
 [connection signal="body_entered" from="WarpZone2" to="." method="_on_warp_zone_body_entered" binds= [NodePath("WarpZone2/Marker3D")]]
 [connection signal="body_entered" from="WarpZone3" to="." method="_on_warp_zone_body_entered" binds= [NodePath("WarpZone3/Marker3D")]]
@@ -1314,14 +1280,3 @@ shape = SubResource("BoxShape3D_killzone")
 [connection signal="body_exited" from="Pool/WaterArea3D" to="Pool/WaterArea3D" method="_on_body_exited"]
 [connection signal="body_exited" from="Pool/WaterArea3D" to="." method="_on_water_area_3d_body_exited" binds= [NodePath("Pool/WaterArea3D")]]
 [connection signal="body_entered" from="KillZone" to="." method="_on_kill_zone_body_entered"]
-[connection signal="body_entered" from="JustCreate3D/Weapon_02/PlayerDetection" to="JustCreate3D/Weapon_02" method="_on_player_detection_body_entered"]
-[connection signal="body_entered" from="JustCreate3D/Weapon_01/PlayerDetection" to="JustCreate3D/Weapon_01" method="_on_player_detection_body_entered"]
-[connection signal="body_entered" from="N_Hance_Studio_1/SK_Axe_1H_Newbie_01/PlayerDetection" to="N_Hance_Studio_1/SK_Axe_1H_Newbie_01" method="_on_player_detection_body_entered"]
-[connection signal="body_entered" from="N_Hance_Studio_1/SK_Axe_2HL_Newbie_01/PlayerDetection" to="N_Hance_Studio_1/SK_Axe_2HL_Newbie_01" method="_on_player_detection_body_entered"]
-[connection signal="body_entered" from="N_Hance_Studio_1/SK_Bow_Newbie_01/PlayerDetection" to="N_Hance_Studio_1/SK_Bow_Newbie_01" method="_on_player_detection_body_entered"]
-[connection signal="body_entered" from="N_Hance_Studio_1/SK_Dagger_1H_Newbie_01/PlayerDetection" to="N_Hance_Studio_1/SK_Dagger_1H_Newbie_01" method="_on_player_detection_body_entered"]
-[connection signal="body_entered" from="N_Hance_Studio_1/SK_Dagger_1H_Newbie_02/PlayerDetection" to="N_Hance_Studio_1/SK_Dagger_1H_Newbie_02" method="_on_player_detection_body_entered"]
-[connection signal="body_entered" from="N_Hance_Studio_1/SK_Shield_Newbie_01/PlayerDetection" to="N_Hance_Studio_1/SK_Shield_Newbie_01" method="_on_player_detection_body_entered"]
-[connection signal="body_entered" from="N_Hance_Studio_1/SK_Staff_Newbie_01/PlayerDetection" to="N_Hance_Studio_1/SK_Staff_Newbie_01" method="_on_player_detection_body_entered"]
-[connection signal="body_entered" from="N_Hance_Studio_1/SK_Sword_1H_Newbie_01/PlayerDetection" to="N_Hance_Studio_1/SK_Sword_1H_Newbie_01" method="_on_player_detection_body_entered"]
-[connection signal="body_entered" from="N_Hance_Studio_1/SK_Sword_2H_Newbie_01/PlayerDetection" to="N_Hance_Studio_1/SK_Sword_2H_Newbie_01" method="_on_player_detection_body_entered"]
