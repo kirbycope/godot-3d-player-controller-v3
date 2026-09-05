@@ -63,3 +63,25 @@ func test_rifle_round_pushes_the_beach_ball() -> void:
 	assert_eq(hits.size(), 1, "The round reports exactly one hit")
 	assert_eq(hits[0], ball if hits.size() == 1 else null, "The hit lands on the beach ball")
 	assert_gt((ball.linear_velocity - before).length(), 0.3, "A round should knock the beach ball")
+
+
+func test_the_rifle_fires_without_its_firing_emote_while_moving() -> void:
+	var emote: AnimationNodeStateMachinePlayback = player.animation_tree.get(Player.EMOTE_STATE_PLAYBACK_PATH)
+	rifle.reserve_rounds = 999
+	Input.action_press("shoot")
+	await wait_physics_frames(3)
+	assert_true(player.is_shooting)
+	assert_eq(emote.get_current_node(), &"RifleFiringStanding", "Standing still the firing emote plays")
+	assert_eq(player.animation_tree.get("parameters/EmoteSpineBlend2/blend_amount"), 1.0)
+	var rounds_before: int = rifle.rounds
+	Input.action_press("move_up")
+	await wait_physics_frames(3)
+	assert_true(player.has_move_input)
+	assert_eq(emote.get_current_node(), &"Idle", "On the move the emote is dropped")
+	assert_eq(player.animation_tree.get("parameters/EmoteSpineBlend2/blend_amount"), 0.0)
+	await wait_seconds(0.3)
+	assert_lt(rifle.rounds, rounds_before, "It keeps firing while moving")
+	Input.action_release("move_up")
+	await wait_physics_frames(3)
+	assert_eq(emote.get_current_node(), &"RifleFiringStanding", "Standing still again brings the emote back")
+	Input.action_release("shoot")
