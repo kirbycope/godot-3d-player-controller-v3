@@ -1,0 +1,34 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://d2gthval3uxpf"]
+
+[ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/s_master_fire_OVERLAY_fresnel_add.tres" id="1_44jec"]
+[ext_resource type="Texture2D" uid="uid://bw86kohsh5kmy" path="res://Le_Lu/Fire_VFX/textures/T_VFX_Noise_4.PNG" id="2_sywhj"]
+[ext_resource type="Texture2D" uid="uid://3qsqjj5denl7" path="res://Le_Lu/Fire_VFX/textures/T_NJO1.png" id="3_8bdbu"]
+
+[sub_resource type="Gradient" id="Gradient_rud2f"]
+offsets = PackedFloat32Array(0, 0.270833, 0.34375, 0.370732, 0.411458, 0.447917, 0.505208, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0, 0.184, 0.48, 1, 0, 0.368, 0.69, 1, 0.31, 0.816, 1, 1, 0.2552, 0.515533, 0.88, 1, 0, 0.0311667, 0.11, 1, 0, 0.206833, 0.73, 1, 0.37, 0.4225, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_l7mc5"]
+gradient = SubResource("Gradient_rud2f")
+
+[resource]
+render_priority = 2
+shader = ExtResource("1_44jec")
+shader_parameter/Distortion_Scale_XY = Vector2(3, 3)
+shader_parameter/Distortion_Speed_XY = Vector2(0.1, 0.3)
+shader_parameter/distortion_strenght = 0.3
+shader_parameter/Scale_XY = Vector2(1, 1)
+shader_parameter/Speed_XY = Vector2(0.1, 0.3)
+shader_parameter/Fresnel_Invert = false
+shader_parameter/Fresnel_power = 1.05
+shader_parameter/Color_Intensity = 7.0
+shader_parameter/Disolver_Scale_XY = Vector2(1, 1)
+shader_parameter/Disolver_Speed_XY = Vector2(0, 0)
+shader_parameter/AlphaScissorThreshold = 0.864
+shader_parameter/triplanar_scale = Vector3(1, 1, 1)
+shader_parameter/triplanar_offset = null
+shader_parameter/triplanar_sharpness = 0.5
+shader_parameter/Texture_Distortion = ExtResource("3_8bdbu")
+shader_parameter/Base_noise_TP = ExtResource("2_sywhj")
+shader_parameter/Gradient_Color_1D = SubResource("GradientTexture1D_l7mc5")
+shader_parameter/TextureDisolver = ExtResource("3_8bdbu")

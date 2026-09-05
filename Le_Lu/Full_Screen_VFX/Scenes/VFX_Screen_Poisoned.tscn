@@ -1,0 +1,104 @@
+[gd_scene format=3 uid="uid://c7qkcfyimr17j"]
+
+[ext_resource type="Shader" path="res://Le_Lu/Full_Screen_VFX/shaders/s_fullscreen_polar.tres" id="1_wa5cp"]
+[ext_resource type="Texture2D" uid="uid://buta8yvas0y0p" path="res://Le_Lu/Full_Screen_VFX/textures/T_Noise_Wf4.png" id="2_kkvsw"]
+
+[sub_resource type="Gradient" id="Gradient_xunmq"]
+colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_krhge"]
+gradient = SubResource("Gradient_xunmq")
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="Gradient" id="Gradient_mirp7"]
+offsets = PackedFloat32Array(0, 0.30622, 0.818182, 0.899522)
+colors = PackedColorArray(0, 0.37, 0.160333, 0, 0, 0.310979, 0.0596321, 1, 0.35, 1, 0.415, 1, 0, 0.310979, 0.0596321, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_s8mjs"]
+gradient = SubResource("Gradient_mirp7")
+
+[sub_resource type="Gradient" id="Gradient_qo00u"]
+offsets = PackedFloat32Array(0.4689, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_8oow8"]
+gradient = SubResource("Gradient_qo00u")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_s2cm5"]
+render_priority = 0
+shader = ExtResource("1_wa5cp")
+shader_parameter/ColorIntensity = 1.0
+shader_parameter/Multiply_or_Substract = true
+shader_parameter/Speed = Vector2(0.3, 0.03)
+shader_parameter/Scale = Vector2(0.3, 1.5)
+shader_parameter/Substract_Speed = Vector2(0, 0)
+shader_parameter/Substract_Scale = Vector2(1, 1)
+shader_parameter/Texture_Noise = ExtResource("2_kkvsw")
+shader_parameter/Mask = SubResource("GradientTexture2D_8oow8")
+shader_parameter/Add_Texture = SubResource("GradientTexture2D_krhge")
+shader_parameter/Gradient_Color1D = SubResource("GradientTexture1D_s8mjs")
+
+[sub_resource type="QuadMesh" id="QuadMesh_dnupf"]
+size = Vector2(2, 2)
+
+[sub_resource type="Animation" id="Animation_5x1rr"]
+resource_name = "Start"
+length = 0.3333
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:material_override:shader_parameter/Mask:gradient:colors")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.0333333, 0.166667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [PackedColorArray(0, 0, 0, 1, 0, 0, 0, 1), PackedColorArray(0, 0, 0, 1, 1, 1, 1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:material_override:shader_parameter/Add_Texture:gradient:colors")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.0333333, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [PackedColorArray(0, 0, 0, 1, 0, 0, 0, 1), PackedColorArray(0, 0, 0, 1, 0.529067, 0.529067, 0.529067, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.0333333),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_dpip3"]
+_data = {
+"Start": SubResource("Animation_5x1rr")
+}
+
+[node name="VFX_Screen_Poisoned" type="MeshInstance3D"]
+visible = false
+layers = 4
+material_override = SubResource("ShaderMaterial_s2cm5")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_dnupf")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_dpip3")
+}

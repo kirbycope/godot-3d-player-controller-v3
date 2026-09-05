@@ -1,0 +1,74 @@
+[gd_scene format=3 uid="uid://la838nvxr1a5"]
+
+[ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/s_Disolver_Firex_p.tres" id="1_iqyeu"]
+[ext_resource type="Texture2D" uid="uid://b44akniah0svb" path="res://Le_Lu/Fire_VFX/textures/T_VFX_smoke_2.jpg" id="2_2urjs"]
+[ext_resource type="Texture2D" uid="uid://df1wsak3bk0m4" path="res://Le_Lu/Fire_VFX/textures/T_VFX_Noise_44xainv.png" id="3_mm38q"]
+
+
+[sub_resource type="Gradient" id="Gradient_ww5pr"]
+offsets = PackedFloat32Array(0, 0.120482, 1)
+colors = PackedColorArray(1, 0, 0, 0.0470588, 1, 0.1, 0, 1, 0.97, 0.61207, 0.1746, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_daun3"]
+gradient = SubResource("Gradient_ww5pr")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_r6op1"]
+render_priority = -2
+shader = ExtResource("1_iqyeu")
+shader_parameter/Scale = Vector2(1, 1)
+shader_parameter/Erosion_Scale = Vector2(1, 1)
+shader_parameter/Erosion_Speed = Vector2(0.1, 1)
+shader_parameter/Texture = ExtResource("2_2urjs")
+shader_parameter/Color_1D_Gradient = SubResource("GradientTexture1D_daun3")
+shader_parameter/substract_mask = ExtResource("3_mm38q")
+
+[sub_resource type="Curve" id="Curve_pau8i"]
+_data = [Vector2(0, 0.0653129), 0.0, -0.143374, 0, 0, Vector2(1, 1), 2.15768, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_amslt"]
+texture_mode = 1
+curve = SubResource("Curve_pau8i")
+
+[sub_resource type="Gradient" id="Gradient_vq44x"]
+offsets = PackedFloat32Array(0.489297, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0.212305, 0.212305, 0.212305, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_0asme"]
+gradient = SubResource("Gradient_vq44x")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_27qrh"]
+particle_flag_rotate_y = true
+emission_shape = 6
+emission_ring_axis = Vector3(0, 1, 0)
+emission_ring_height = 1.0
+emission_ring_radius = 0.2
+emission_ring_inner_radius = 0.0
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(0, 1, 0)
+spread = 15.0
+initial_velocity_min = 0.5
+initial_velocity_max = 2.5
+radial_velocity_min = -2.23517e-05
+radial_velocity_max = 0.499978
+gravity = Vector3(0, 0, 0)
+scale_min = 0.4
+scale_max = 0.8
+color = Color(2, 2, 2, 1)
+color_ramp = SubResource("GradientTexture1D_0asme")
+alpha_curve = SubResource("CurveTexture_amslt")
+
+[sub_resource type="QuadMesh" id="QuadMesh_80lqt"]
+
+[node name="VFX_FireDynamic_T1" type="Node3D"]
+
+[node name="firex" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, -7.45058e-09, 0, 1, 0, 7.45058e-09, 0, 1, 0, 0, 0)
+layers = 4
+material_override = SubResource("ShaderMaterial_r6op1")
+cast_shadow = 0
+amount = 20
+lifetime = 0.5
+process_material = SubResource("ParticleProcessMaterial_27qrh")
+draw_pass_1 = SubResource("QuadMesh_80lqt")

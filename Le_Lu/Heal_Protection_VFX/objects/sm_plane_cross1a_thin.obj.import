@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://brn7bgc6uffu5"
+path="res://.godot/imported/sm_plane_cross1a_thin.obj-41bf0c14c78a9ed44591eaf1c792de23.mesh"
+
+[deps]
+
+files=["res://.godot/imported/sm_plane_cross1a_thin.obj-41bf0c14c78a9ed44591eaf1c792de23.mesh"]
+
+source_file="res://Le_Lu/Heal_Protection_VFX/objects/sm_plane_cross1a_thin.obj"
+dest_files=["res://.godot/imported/sm_plane_cross1a_thin.obj-41bf0c14c78a9ed44591eaf1c792de23.mesh", "res://.godot/imported/sm_plane_cross1a_thin.obj-41bf0c14c78a9ed44591eaf1c792de23.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

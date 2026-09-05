@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="DamageAbility" format=3 uid="uid://c7fireball0001"]
+[gd_resource type="Resource" script_class="DamageAbility" format=3 uid="uid://dsb0mvbbhx42w"]
 
 [ext_resource type="Script" uid="uid://cy4tkatxd8bhr" path="res://scenes/damage_ability.gd" id="1_damage"]
 [ext_resource type="PackedScene" path="res://Le_Lu/Fire_VFX/Scenes/VFX_FireStatic_K1.tscn" id="2_charge"]

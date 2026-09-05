@@ -1,0 +1,41 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://coacx08q6cqk"]
+
+[ext_resource type="Shader" path="res://Le_Lu/Vertical_Beam_VFX/Shaders/s_dual_master_dis_fres_ds.tres" id="1_yrb4b"]
+[ext_resource type="Texture2D" uid="uid://dcvkxbljlyykn" path="res://Le_Lu/Vertical_Beam_VFX/Textures/T_NP41.PNG" id="2_fvqh0"]
+
+
+[sub_resource type="Gradient" id="Gradient_j3f8a"]
+offsets = PackedFloat32Array(0.477848, 0.953608, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.576923, 0.576923, 0.576923, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_dcjlq"]
+gradient = SubResource("Gradient_j3f8a")
+fill_to = Vector2(0, 1)
+
+[sub_resource type="Gradient" id="Gradient_0r8vc"]
+offsets = PackedFloat32Array(0.243671, 0.481013, 0.658228, 1)
+colors = PackedColorArray(0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_qt68u"]
+gradient = SubResource("Gradient_0r8vc")
+
+[sub_resource type="Gradient" id="Gradient_4y7yb"]
+offsets = PackedFloat32Array(0.537975, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_7io3i"]
+gradient = SubResource("Gradient_4y7yb")
+fill_from = Vector2(1, 1)
+
+[resource]
+render_priority = 1
+shader = ExtResource("1_yrb4b")
+shader_parameter/Color_Intensity = 1.0
+shader_parameter/Scale_XY = Vector2(1, 1)
+shader_parameter/Speed_XY = Vector2(0.1, 1.5)
+shader_parameter/Base_Texture = ExtResource("2_fvqh0")
+shader_parameter/Add_Texture = SubResource("GradientTexture2D_dcjlq")
+shader_parameter/Substract_Texture = SubResource("GradientTexture2D_7io3i")
+shader_parameter/Gradient_1D_Color = SubResource("GradientTexture1D_qt68u")
+shader_parameter/Dissolver_edge = 1.0
+shader_parameter/Fresnel_Invert = true
+shader_parameter/Fresnel_Power = 1.0

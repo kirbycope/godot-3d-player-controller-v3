@@ -1,0 +1,65 @@
+[gd_resource type="VisualShader" format=3]
+
+[ext_resource type="Texture2D" path="res://Le_Lu/Trails_VFX/textures/T_VFX_simple_1.png" id="2_syysr"]
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_byyc0"]
+expanded_output_ports = [0]
+input_name = "color"
+
+[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_17wqm"]
+operator = 2
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_043c8"]
+expanded_output_ports = [0]
+texture = ExtResource("2_syysr")
+texture_type = 1
+
+[sub_resource type="VisualShaderNodeProximityFade" id="VisualShaderNodeProximityFade_qoexi"]
+default_input_values = [0, 0.1]
+
+[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_qmqb4"]
+operator = 2
+
+[resource]
+code = "shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, cull_disabled, diffuse_lambert, specular_schlick_ggx, unshaded;
+
+uniform sampler2D tex_frg_5 : source_color;
+
+
+
+void fragment() {
+// Input:3
+	vec4 n_out3p0 = COLOR;
+	float n_out3p4 = n_out3p0.a;
+
+
+// Texture2D:5
+	vec4 n_out5p0 = texture(tex_frg_5, UV);
+	float n_out5p1 = n_out5p0.r;
+
+
+// FloatOp:4
+	float n_out4p0 = n_out5p1 * n_out3p4;
+
+
+// Output:0
+	ALBEDO = vec3(n_out3p0.xyz);
+	ALPHA = n_out4p0;
+
+
+}
+"
+modes/cull = 2
+flags/unshaded = true
+nodes/fragment/3/node = SubResource("VisualShaderNodeInput_byyc0")
+nodes/fragment/3/position = Vector2(-120, 60)
+nodes/fragment/4/node = SubResource("VisualShaderNodeFloatOp_17wqm")
+nodes/fragment/4/position = Vector2(0, 320)
+nodes/fragment/5/node = SubResource("VisualShaderNodeTexture_043c8")
+nodes/fragment/5/position = Vector2(-340, 340)
+nodes/fragment/6/node = SubResource("VisualShaderNodeProximityFade_qoexi")
+nodes/fragment/6/position = Vector2(0, 500)
+nodes/fragment/7/node = SubResource("VisualShaderNodeFloatOp_qmqb4")
+nodes/fragment/7/position = Vector2(209.23, 394.56)
+nodes/fragment/connections = PackedInt32Array(3, 0, 0, 0, 3, 4, 4, 1, 5, 1, 4, 0, 4, 0, 0, 1, 4, 0, 7, 0, 6, 0, 7, 1)

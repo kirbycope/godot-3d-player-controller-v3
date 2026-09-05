@@ -1,0 +1,56 @@
+[gd_scene format=3 uid="uid://fnv0ucah4mef"]
+
+[ext_resource type="Shader" path="res://Le_Lu/Elemental_VFX/shaders/s_basic_disolve2_ds.tres" id="1_h0tac"]
+[ext_resource type="Texture2D" uid="uid://p882hvpsbqve" path="res://Le_Lu/Elemental_VFX/textures/T_VFX_spark44.jpg" id="2_ptxmn"]
+[ext_resource type="ArrayMesh" uid="uid://br6ut6eugl76n" path="res://Le_Lu/Elemental_VFX/objects/sm_sparksphere.obj" id="3_2r25m"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7pc1x"]
+render_priority = 1
+shader = ExtResource("1_h0tac")
+shader_parameter/Texture = ExtResource("2_ptxmn")
+
+[sub_resource type="Curve" id="Curve_bbxhw"]
+_data = [Vector2(0.122449, 0), 0.0, 0.0, 0, 0, Vector2(0.295918, 0.107143), 0.0, 0.0, 0, 0, Vector2(0.442177, 1), 0.0, 0.0, 0, 0, Vector2(0.465986, 0), 0.0, 0.0, 0, 0, Vector2(0.523809, 0.410714), 0.0, 0.0, 0, 0, Vector2(1, 1), 2.40625, 0.0, 0, 0]
+point_count = 6
+
+[sub_resource type="CurveTexture" id="CurveTexture_rgg8w"]
+texture_mode = 1
+curve = SubResource("Curve_bbxhw")
+
+[sub_resource type="Curve" id="Curve_kk18v"]
+_data = [Vector2(0, 1), 0.0, -3.625, 0, 0, Vector2(1, 0.0892857), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_pai8c"]
+curve = SubResource("Curve_kk18v")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_l00ph"]
+particle_flag_align_y = true
+emission_shape = 1
+emission_sphere_radius = 0.5
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(0, 1, 0)
+radial_velocity_min = 0.999978
+radial_velocity_max = 3.99998
+radial_velocity_curve = SubResource("CurveTexture_pai8c")
+gravity = Vector3(0, 0, 0)
+scale_min = 0.5
+scale_max = 0.8
+color = Color(0.5, 1.5, 3, 1)
+alpha_curve = SubResource("CurveTexture_rgg8w")
+anim_speed_min = 2.0
+anim_speed_max = 2.0
+
+[node name="VFX_Sparks_Bk1" type="Node3D"]
+
+[node name="sparks3" type="GPUParticles3D" parent="."]
+material_override = SubResource("ShaderMaterial_7pc1x")
+cast_shadow = 0
+amount = 6
+lifetime = 0.25
+explosiveness = 0.9
+randomness = 0.5
+fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_l00ph")
+draw_pass_1 = ExtResource("3_2r25m")

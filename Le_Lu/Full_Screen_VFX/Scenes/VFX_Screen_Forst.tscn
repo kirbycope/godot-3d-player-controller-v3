@@ -1,0 +1,131 @@
+[gd_scene format=3 uid="uid://d4gn23nf10y4l"]
+
+[ext_resource type="Shader" path="res://Le_Lu/Full_Screen_VFX/shaders/s_fullscreen_mastershader_C.tres" id="1_d21h6"]
+[ext_resource type="Texture2D" uid="uid://c8pkeu0fsf1dx" path="res://Le_Lu/Full_Screen_VFX/textures/T_IceForst01.png" id="2_w6kyk"]
+
+[sub_resource type="Gradient" id="Gradient_tkdjn"]
+offsets = PackedFloat32Array(0, 0.574219, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.303233, 0.303233, 0.303233, 1, 0.552956, 0.552956, 0.552956, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_bcpn5"]
+gradient = SubResource("Gradient_tkdjn")
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="Gradient" id="Gradient_amqkh"]
+offsets = PackedFloat32Array(0, 0.756757, 0.869369, 1)
+colors = PackedColorArray(0.74558, 0.74558, 0.74558, 0, 0.56, 0.846, 1, 1, 0.665729, 0.985563, 0.886932, 0.458824, 0.5311, 0.517, 0.94, 0.721569)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_jsp71"]
+gradient = SubResource("Gradient_amqkh")
+
+[sub_resource type="Gradient" id="Gradient_yj0gc"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_s1xdg"]
+gradient = SubResource("Gradient_yj0gc")
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_u5ria"]
+render_priority = 0
+shader = ExtResource("1_d21h6")
+shader_parameter/Screen_distortioness = 0.0
+shader_parameter/Speed = Vector2(0.003, 0.004)
+shader_parameter/Scale = Vector2(1.5, 1)
+shader_parameter/DistortionPower = 1.005
+shader_parameter/ColorIntensity = 1.7
+shader_parameter/Mask_power = 1.0
+shader_parameter/Texture_Noise = ExtResource("2_w6kyk")
+shader_parameter/Mask = SubResource("GradientTexture2D_s1xdg")
+shader_parameter/Add_Texture = SubResource("GradientTexture2D_bcpn5")
+shader_parameter/Gradient_Color1D = SubResource("GradientTexture1D_jsp71")
+
+[sub_resource type="QuadMesh" id="QuadMesh_dnupf"]
+size = Vector2(2, 2)
+
+[sub_resource type="Animation" id="Animation_yoywr"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:material_override:shader_parameter/Screen_distortioness")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_uqu6j"]
+resource_name = "Start"
+length = 2.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:material_override:shader_parameter/Screen_distortioness")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.733333, 1.96667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 0.635]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:material_override:shader_parameter/Mask:gradient:colors")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.0666667, 1.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [PackedColorArray(0, 0, 0, 1, 0, 0, 0, 1), PackedColorArray(0, 0, 0, 1, 1, 1, 1, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:material_override:shader_parameter/Add_Texture:gradient:colors")
+tracks/2/interp = 2
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.9, 1.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [PackedColorArray(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1), PackedColorArray(0, 0, 0, 1, 0.303233, 0.303233, 0.303233, 1, 0.552956, 0.552956, 0.552956, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.0333333),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_db6i7"]
+_data = {
+"RESET": SubResource("Animation_yoywr"),
+"Start": SubResource("Animation_uqu6j")
+}
+
+[node name="VFX_Screen_Forst" type="MeshInstance3D"]
+visible = false
+layers = 4
+material_override = SubResource("ShaderMaterial_u5ria")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_dnupf")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_db6i7")
+}

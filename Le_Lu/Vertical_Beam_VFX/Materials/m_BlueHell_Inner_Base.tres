@@ -1,0 +1,18 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://ba7vs062ims8y"]
+
+[ext_resource type="Shader" path="res://Le_Lu/Vertical_Beam_VFX/Shaders/s_fresnel_laser1.tres" id="1_584tf"]
+
+[sub_resource type="Gradient" id="Gradient_4081s"]
+offsets = PackedFloat32Array(0, 0.908228, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.0876768, 0.32343, 0.358501, 1, 0.176471, 0.65098, 0.721569, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_5rflj"]
+gradient = SubResource("Gradient_4081s")
+
+[resource]
+render_priority = -1
+shader = ExtResource("1_584tf")
+shader_parameter/Fresnel_Invert = false
+shader_parameter/Fresnel_Power = 0.805
+shader_parameter/Vanishing = 1.0
+shader_parameter/Gradient_1D_Color = SubResource("GradientTexture2D_5rflj")

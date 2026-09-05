@@ -1,0 +1,49 @@
+[gd_scene format=3 uid="uid://b7okxb4mroq2r"]
+
+[ext_resource type="Shader" path="res://Le_Lu/Elemental_VFX/shaders/s_master_fire_treshold_dss.tres" id="1_0a2bg"]
+[ext_resource type="Texture2D" uid="uid://covtvml0csqrr" path="res://Le_Lu/Elemental_VFX/textures/T_MarbleNoise_tiled.png" id="2_0klp0"]
+[ext_resource type="ArrayMesh" uid="uid://cia45jxhcm45a" path="res://Le_Lu/Elemental_VFX/objects/sm_WallCurved916.obj" id="3_up2rb"]
+
+[sub_resource type="Gradient" id="Gradient_6rnx4"]
+offsets = PackedFloat32Array(0, 0.406475, 0.571942, 1)
+colors = PackedColorArray(0.07, 0.07, 0.07, 0, 0.23, 0.122667, 0.069, 1, 1, 0.139667, 0.11, 1, 0.96, 0.3328, 0.288, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_rxmjv"]
+gradient = SubResource("Gradient_6rnx4")
+
+[sub_resource type="Gradient" id="Gradient_rddit"]
+offsets = PackedFloat32Array(0, 0.863309)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_f4x3n"]
+gradient = SubResource("Gradient_rddit")
+fill_from = Vector2(1, 1)
+
+[sub_resource type="Gradient" id="Gradient_ee8s6"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_a70mr"]
+gradient = SubResource("Gradient_ee8s6")
+fill_to = Vector2(0, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vlf75"]
+render_priority = 0
+shader = ExtResource("1_0a2bg")
+shader_parameter/Speed_XY2 = Vector2(0, 0.4)
+shader_parameter/Scale_XY2 = Vector2(5, 0.3)
+shader_parameter/Color_Intensity2 = 2.1
+shader_parameter/Fill = 1.0
+shader_parameter/AlphaTreshold = 0.31
+shader_parameter/Base_noise2 = ExtResource("2_0klp0")
+shader_parameter/Texture_add = SubResource("GradientTexture2D_f4x3n")
+shader_parameter/Texture_substract = SubResource("GradientTexture2D_a70mr")
+shader_parameter/Gradient_Color_1D2 = SubResource("GradientTexture1D_rxmjv")
+
+[node name="VFX_FireWall_B1_Curved_Cheap" type="Node3D"]
+
+[node name="FireWall_B1_Curved" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.424673, 0, -0.724277, 0, 1, 0, 0.905347, 0, 0.339739, -19.4683, 0, 2.62651)
+material_override = SubResource("ShaderMaterial_vlf75")
+cast_shadow = 0
+mesh = ExtResource("3_up2rb")
+skeleton = NodePath("../..")

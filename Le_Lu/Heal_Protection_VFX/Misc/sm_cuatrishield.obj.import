@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://c82cjvvwgrt38"
+path="res://.godot/imported/sm_cuatrishield.obj-05b73fa1ae3152e12b6d296802a965ec.mesh"
+
+[deps]
+
+files=["res://.godot/imported/sm_cuatrishield.obj-05b73fa1ae3152e12b6d296802a965ec.mesh"]
+
+source_file="res://Le_Lu/Heal_Protection_VFX/Misc/sm_cuatrishield.obj"
+dest_files=["res://.godot/imported/sm_cuatrishield.obj-05b73fa1ae3152e12b6d296802a965ec.mesh", "res://.godot/imported/sm_cuatrishield.obj-05b73fa1ae3152e12b6d296802a965ec.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

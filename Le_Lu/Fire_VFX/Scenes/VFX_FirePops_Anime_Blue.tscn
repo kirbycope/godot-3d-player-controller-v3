@@ -1,0 +1,79 @@
+[gd_scene format=3 uid="uid://bd0isr001gq4r"]
+
+[ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/s_animated_ds_unlit_bw.gdshader" id="1_r0dek"]
+[ext_resource type="Texture2D" uid="uid://blyul2rws0dg2" path="res://Le_Lu/Fire_VFX/textures/T_firex_shot88_billboard_bw.png" id="2_7dlxu"]
+[ext_resource type="ArrayMesh" uid="uid://jlp4ta6eaw27" path="res://Le_Lu/Fire_VFX/objects/sm_plane_cross1a_thin.obj" id="3_vmxs2"]
+
+[sub_resource type="Gradient" id="Gradient_uch0h"]
+offsets = PackedFloat32Array(0, 0.325301, 0.807229, 1)
+colors = PackedColorArray(0, 0, 0, 0, 0.05, 0.05, 0.05, 0.32549, 0.310617, 0.310617, 0.310617, 0.807229, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_gu006"]
+gradient = SubResource("Gradient_uch0h")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_g3e5s"]
+render_priority = 1
+shader = ExtResource("1_r0dek")
+shader_parameter/frame_count = Vector2(8, 4)
+shader_parameter/is_loop = false
+shader_parameter/uv_offset = Vector2(0, 0.001)
+shader_parameter/sprite_sheet = ExtResource("2_7dlxu")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_gu006")
+
+[sub_resource type="Curve" id="Curve_1jeec"]
+_data = [Vector2(0, 0), 0.0, 1.0, 0, 0, Vector2(1, 1), 1.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_ihb07"]
+texture_mode = 1
+curve = SubResource("Curve_1jeec")
+
+[sub_resource type="Curve" id="Curve_hokll"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_5hk5j"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.449057, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_kdpwb"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveXYZTexture" id="CurveXYZTexture_p6iei"]
+curve_x = SubResource("Curve_hokll")
+curve_y = SubResource("Curve_5hk5j")
+curve_z = SubResource("Curve_kdpwb")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ixoqn"]
+particle_flag_rotate_y = true
+emission_shape = 6
+emission_ring_axis = Vector3(0, 1, 0)
+emission_ring_height = 0.0
+emission_ring_radius = 2.0
+emission_ring_inner_radius = 0.0
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(0, 1, 0)
+spread = 0.0
+radial_velocity_min = -2.23517e-05
+radial_velocity_max = -2.23517e-05
+gravity = Vector3(0, 0, 0)
+scale_min = 3.0
+scale_max = 4.0
+scale_curve = SubResource("CurveXYZTexture_p6iei")
+color = Color(0.3, 0.9, 2.5, 1)
+alpha_curve = SubResource("CurveTexture_ihb07")
+
+[node name="VFX_FirePops_Anime_Blue" type="Node3D"]
+
+[node name="Firepillars1b" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.558583, 0)
+layers = 4
+material_override = SubResource("ShaderMaterial_g3e5s")
+cast_shadow = 0
+amount = 3
+fixed_fps = 60
+visibility_aabb = AABB(-4, -0.72, -4, 8, 6.96, 8)
+process_material = SubResource("ParticleProcessMaterial_ixoqn")
+draw_pass_1 = ExtResource("3_vmxs2")

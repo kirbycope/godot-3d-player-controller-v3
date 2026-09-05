@@ -1,0 +1,157 @@
+[gd_scene format=3 uid="uid://deswf4w61kmp0"]
+
+[ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/s_master_fire_fresnel_add.tres" id="1_xxfa0"]
+[ext_resource type="Texture2D" uid="uid://sfqnk8pph4px" path="res://Le_Lu/Fire_VFX/textures/T_VFX_Noise_075.png" id="2_re2va"]
+[ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/s_Disolver_Treshold_p_fc.tres" id="3_33o2g"]
+[ext_resource type="Shader" path="res://addons/GPUTrail-main/shaders/trail.gdshader" id="4_xyejo"]
+[ext_resource type="Shader" path="res://addons/GPUTrail-main/shaders/trail_draw_pass.gdshader" id="5_rjq6w"]
+[ext_resource type="Texture2D" uid="uid://ct31fhxvcragr" path="res://addons/GPUTrail-main/defaults/curve.tres" id="6_nqxph"]
+[ext_resource type="Texture2D" uid="uid://d0ilo60b4vudy" path="res://Le_Lu/Fire_VFX/textures/T_FireTrail_Desat.PNG" id="7_qgkrc"]
+[ext_resource type="Script" uid="uid://000wyuy1u8wj" path="res://addons/GPUTrail-main/GPUTrail3D.gd" id="8_iydkn"]
+
+[sub_resource type="Gradient" id="Gradient_o61ut"]
+offsets = PackedFloat32Array(0.136585, 0.312195, 0.64878, 0.853659)
+colors = PackedColorArray(0.0646055, 0.000768059, 0, 1, 0.0646055, 0.000768059, 0, 1, 0.56, 0, 0.0280001, 1, 1, 0.43, 0.4395, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_nlyvg"]
+gradient = SubResource("Gradient_o61ut")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lnet3"]
+render_priority = 0
+shader = ExtResource("1_xxfa0")
+shader_parameter/Scale_XY = Vector2(1, 2)
+shader_parameter/Speed_XY = Vector2(1.5, 3)
+shader_parameter/Fresnel_Invert = false
+shader_parameter/Fresnel_power = 0.65
+shader_parameter/Color_Intensity = 7.0
+shader_parameter/Base_noise = ExtResource("2_re2va")
+shader_parameter/Gradient_Color_1D = SubResource("GradientTexture1D_nlyvg")
+
+[sub_resource type="SphereMesh" id="SphereMesh_tdu47"]
+radial_segments = 24
+rings = 15
+
+[sub_resource type="Gradient" id="Gradient_dc6oq"]
+offsets = PackedFloat32Array(0.712062, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_sstfb"]
+gradient = SubResource("Gradient_dc6oq")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.504274)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2i3d6"]
+render_priority = 0
+shader = ExtResource("3_33o2g")
+shader_parameter/Scale = Vector2(1, 1)
+shader_parameter/Texture = SubResource("GradientTexture2D_sstfb")
+
+[sub_resource type="Curve" id="Curve_itjen"]
+_data = [Vector2(0.698113, 0.0873635), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_2ohnh"]
+texture_mode = 1
+curve = SubResource("Curve_itjen")
+
+[sub_resource type="Curve" id="Curve_seejs"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_4100f"]
+curve = SubResource("Curve_seejs")
+
+[sub_resource type="Curve" id="Curve_26kin"]
+_data = [Vector2(0.257951, 1), 0.0, 0.0, 0, 0, Vector2(0.487632, 0.915827), 0.0, 0.0, 0, 0, Vector2(0.540636, 0), 0.0, 0.0, 0, 0, Vector2(0.565371, 0.859712), 0.0, 0.0, 0, 0, Vector2(0.621908, 1), 0.0, 0.0, 0, 0, Vector2(0.671378, 0.0460432), 0.0, 0.0, 0, 0, Vector2(0.70318, 0.81295), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 8
+
+[sub_resource type="CurveTexture" id="CurveTexture_xr6ot"]
+curve = SubResource("Curve_26kin")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_x8vhm"]
+emission_shape = 1
+emission_sphere_radius = 0.7
+direction = Vector3(0, 1, 0)
+spread = 0.0
+initial_velocity_min = 0.5
+initial_velocity_max = 1.0
+radial_velocity_min = 0.299978
+radial_velocity_max = 0.399978
+radial_velocity_curve = SubResource("CurveTexture_4100f")
+gravity = Vector3(0, 0, 0)
+scale_min = 0.04
+scale_max = 0.08
+scale_curve = SubResource("CurveTexture_xr6ot")
+color = Color(5, 0.7, 0.7, 1)
+alpha_curve = SubResource("CurveTexture_2ohnh")
+hue_variation_min = -2.23517e-08
+hue_variation_max = -2.23517e-08
+
+[sub_resource type="QuadMesh" id="QuadMesh_70ve1"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tyfmp"]
+shader = ExtResource("4_xyejo")
+
+[sub_resource type="Gradient" id="Gradient_3yosy"]
+offsets = PackedFloat32Array(0, 0.455696, 0.670886, 1)
+colors = PackedColorArray(20, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0.762, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_mcjnn"]
+gradient = SubResource("Gradient_3yosy")
+use_hdr = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_78qml"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("5_rjq6w")
+shader_parameter/uv_offset = Vector2(0.722447, 0)
+shader_parameter/emmission_transform = Projection(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
+shader_parameter/flags = 44
+shader_parameter/tex = ExtResource("7_qgkrc")
+shader_parameter/color_ramp = SubResource("GradientTexture1D_mcjnn")
+shader_parameter/curve = ExtResource("6_nqxph")
+
+[sub_resource type="QuadMesh" id="QuadMesh_3n28b"]
+material = SubResource("ShaderMaterial_78qml")
+
+[node name="VFX_FireBall_Stylized_Red_C" type="Node3D"]
+
+[node name="sphere2" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.48, 0, 0, 0, 0.48, 0, 0, 0, 0.48, 0, 0, 0)
+layers = 4
+material_override = SubResource("ShaderMaterial_lnet3")
+mesh = SubResource("SphereMesh_tdu47")
+skeleton = NodePath("../..")
+
+[node name="smallparticles_constant4" type="GPUParticles3D" parent="."]
+layers = 4
+material_override = SubResource("ShaderMaterial_2i3d6")
+cast_shadow = 0
+amount = 40
+fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_x8vhm")
+draw_pass_1 = SubResource("QuadMesh_70ve1")
+
+[node name="GPUTrail3D" type="GPUParticles3D" parent="."]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+layers = 4
+amount = 45
+lifetime = 45.0
+explosiveness = 1.0
+fixed_fps = 75
+process_material = SubResource("ShaderMaterial_tyfmp")
+draw_pass_1 = SubResource("QuadMesh_3n28b")
+script = ExtResource("8_iydkn")
+length = 45
+length_seconds = 0.6
+texture = ExtResource("7_qgkrc")
+scroll = Vector2(2, 0)
+color_ramp = SubResource("GradientTexture1D_mcjnn")
+curve = ExtResource("6_nqxph")
+billboard = true
+_defaults_have_been_set = true
+
+[node name="OmniLight3D24" type="OmniLight3D" parent="."]
+light_color = Color(1, 0.131269, 0.392319, 1)
+light_energy = 2.199

@@ -1,0 +1,578 @@
+[gd_scene format=3 uid="uid://cca5s78xkeme6"]
+
+[ext_resource type="PackedScene" uid="uid://7uoysd3bdu7m" path="res://Le_Lu/Full_Screen_VFX/objects/sm_broken_screen.glb" id="1_3he7c"]
+[ext_resource type="Script" uid="uid://b3lt2xhnittw6" path="res://Le_Lu/Full_Screen_VFX/scripts/scene_capturer.gd" id="2_a4svb"]
+[ext_resource type="PackedScene" uid="uid://ff5krwqyopd8" path="res://Le_Lu/Full_Screen_VFX/Scenes/VFX_Line_cut_flat.tscn" id="4_y54s6"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ot20p"]
+shading_mode = 0
+
+[sub_resource type="Animation" id="Animation_t85rh"]
+resource_name = "Init"
+length = 12.0
+tracks/0/type = "animation"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("sm_broken_screen/VFX_Lines/VFX_LinesCut_flat/AnimationPlayer")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"clips": PackedStringArray("Init"),
+"times": PackedFloat32Array(1.13333)
+}
+tracks/1/type = "animation"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("sm_broken_screen/VFX_Lines/VFX_LinesCut_flat2/AnimationPlayer")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"clips": PackedStringArray("Init"),
+"times": PackedFloat32Array(1.83333)
+}
+tracks/2/type = "animation"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("sm_broken_screen/VFX_Lines/VFX_LinesCut_flat3/AnimationPlayer")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"clips": PackedStringArray("Init"),
+"times": PackedFloat32Array(2.23333)
+}
+tracks/3/type = "animation"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("sm_broken_screen/VFX_Lines/VFX_LinesCut_flat4/AnimationPlayer")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"clips": PackedStringArray("Init"),
+"times": PackedFloat32Array(2.6)
+}
+tracks/4/type = "animation"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("sm_broken_screen/VFX_Lines/VFX_LinesCut_flat5/AnimationPlayer")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"clips": PackedStringArray("Init"),
+"times": PackedFloat32Array(2.8)
+}
+tracks/5/type = "animation"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("sm_broken_screen/VFX_Lines/VFX_LinesCut_flat6/AnimationPlayer")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"clips": PackedStringArray("Init"),
+"times": PackedFloat32Array(3)
+}
+tracks/6/type = "animation"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("sm_broken_screen/VFX_Lines/VFX_LinesCut_flat7/AnimationPlayer")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"clips": PackedStringArray("Init"),
+"times": PackedFloat32Array(3.2)
+}
+tracks/7/type = "animation"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("sm_broken_screen/VFX_Lines/VFX_LinesCut_flat9/AnimationPlayer")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"clips": PackedStringArray("Init"),
+"times": PackedFloat32Array(3.6)
+}
+tracks/8/type = "animation"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("sm_broken_screen/VFX_Lines/VFX_LinesCut_flat8/AnimationPlayer")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"clips": PackedStringArray("Init"),
+"times": PackedFloat32Array(3.9)
+}
+tracks/9/type = "animation"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("sm_broken_screen/AnimationPlayer")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"clips": PackedStringArray("Init"),
+"times": PackedFloat32Array(5.86667)
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("sm_broken_screen/Armature:visible")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(1.13333, 5.9),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("sm_broken_screen/VFX_Lines/VFX_LinesCut_flat:visible")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = {
+"times": PackedFloat32Array(1.1, 1.13333, 5.9),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [false, true, false]
+}
+tracks/12/type = "value"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("sm_broken_screen/VFX_Lines/VFX_LinesCut_flat2:visible")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = {
+"times": PackedFloat32Array(1.83333, 5.9),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/13/type = "value"
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/path = NodePath("sm_broken_screen/VFX_Lines/VFX_LinesCut_flat3:visible")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/keys = {
+"times": PackedFloat32Array(2.23333, 5.9),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/14/type = "value"
+tracks/14/imported = false
+tracks/14/enabled = true
+tracks/14/path = NodePath("sm_broken_screen/VFX_Lines/VFX_LinesCut_flat4:visible")
+tracks/14/interp = 1
+tracks/14/loop_wrap = true
+tracks/14/keys = {
+"times": PackedFloat32Array(2.63333, 5.9),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/15/type = "value"
+tracks/15/imported = false
+tracks/15/enabled = true
+tracks/15/path = NodePath("sm_broken_screen/VFX_Lines/VFX_LinesCut_flat5:visible")
+tracks/15/interp = 1
+tracks/15/loop_wrap = true
+tracks/15/keys = {
+"times": PackedFloat32Array(2.8, 5.9),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/16/type = "value"
+tracks/16/imported = false
+tracks/16/enabled = true
+tracks/16/path = NodePath("sm_broken_screen/VFX_Lines/VFX_LinesCut_flat6:visible")
+tracks/16/interp = 1
+tracks/16/loop_wrap = true
+tracks/16/keys = {
+"times": PackedFloat32Array(3, 5.9),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/17/type = "value"
+tracks/17/imported = false
+tracks/17/enabled = true
+tracks/17/path = NodePath("sm_broken_screen/VFX_Lines/VFX_LinesCut_flat7:visible")
+tracks/17/interp = 1
+tracks/17/loop_wrap = true
+tracks/17/keys = {
+"times": PackedFloat32Array(3.2, 5.9),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/18/type = "value"
+tracks/18/imported = false
+tracks/18/enabled = true
+tracks/18/path = NodePath("sm_broken_screen/VFX_Lines/VFX_LinesCut_flat8:visible")
+tracks/18/interp = 1
+tracks/18/loop_wrap = true
+tracks/18/keys = {
+"times": PackedFloat32Array(3.9, 5.9),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/19/type = "value"
+tracks/19/imported = false
+tracks/19/enabled = true
+tracks/19/path = NodePath("sm_broken_screen/VFX_Lines/VFX_LinesCut_flat9:visible")
+tracks/19/interp = 1
+tracks/19/loop_wrap = true
+tracks/19/keys = {
+"times": PackedFloat32Array(3.6, 5.9),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/20/type = "value"
+tracks/20/imported = false
+tracks/20/enabled = true
+tracks/20/path = NodePath("sm_broken_screen/background:visible")
+tracks/20/interp = 1
+tracks/20/loop_wrap = true
+tracks/20/keys = {
+"times": PackedFloat32Array(1.16667, 5.9),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+
+[sub_resource type="Animation" id="Animation_w8cwk"]
+resource_name = "RESET"
+length = 0.5
+tracks/0/type = "animation"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("sm_broken_screen/AnimationPlayer")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"clips": PackedStringArray("[stop]"),
+"times": PackedFloat32Array(0)
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("sm_broken_screen/Armature:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("sm_broken_screen/VFX_Lines/VFX_LinesCut_flat:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("sm_broken_screen/VFX_Lines/VFX_LinesCut_flat2:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("sm_broken_screen/VFX_Lines/VFX_LinesCut_flat3:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("sm_broken_screen/VFX_Lines/VFX_LinesCut_flat4:visible")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("sm_broken_screen/VFX_Lines/VFX_LinesCut_flat5:visible")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("sm_broken_screen/VFX_Lines/VFX_LinesCut_flat6:visible")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("sm_broken_screen/VFX_Lines/VFX_LinesCut_flat7:visible")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("sm_broken_screen/VFX_Lines/VFX_LinesCut_flat8:visible")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("sm_broken_screen/VFX_Lines/VFX_LinesCut_flat9:visible")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("sm_broken_screen/background:visible")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_a3xf6"]
+_data = {
+"Init": SubResource("Animation_t85rh"),
+"RESET": SubResource("Animation_w8cwk")
+}
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pnnkl"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_qm27j"]
+size = Vector2(6, 6)
+
+[node name="SubViewportContainer" type="SubViewportContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 2
+stretch = true
+script = ExtResource("2_a4svb")
+metadata/_edit_use_anchors_ = true
+
+[node name="SubViewport" type="SubViewport" parent="."]
+own_world_3d = true
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1152, 648)
+render_target_update_mode = 4
+
+[node name="Camera3D" type="Camera3D" parent="SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
+visible = false
+size = 2.08807
+
+[node name="sm_broken_screen" parent="SubViewport" instance=ExtResource("1_3he7c")]
+
+[node name="Armature" parent="SubViewport/sm_broken_screen" index="0"]
+visible = false
+
+[node name="Skeleton3D" parent="SubViewport/sm_broken_screen/Armature" index="0"]
+bones/1/position = Vector3(-1.32704, -6.45164, 0.0324622)
+bones/1/rotation = Quaternion(0.444391, 0.334289, -0.350834, 0.753448)
+bones/2/position = Vector3(1.37806, -7.44443, 0.229331)
+bones/2/rotation = Quaternion(-0.949659, 0.140097, -0.278905, 0.0270727)
+bones/3/position = Vector3(-1.22099, -2.40418, -0.141227)
+bones/3/rotation = Quaternion(-0.150497, 0.196158, 0.0136415, 0.968858)
+bones/4/position = Vector3(1.54034, -3.62422, 0.201474)
+bones/4/rotation = Quaternion(0.297176, -0.105552, -0.0150218, 0.948852)
+bones/5/position = Vector3(1.10714, -7.87115, -0.03249)
+bones/5/rotation = Quaternion(0.278373, -0.686116, -0.438624, 0.509276)
+bones/6/position = Vector3(-0.755307, -3.43116, 0.10449)
+bones/6/rotation = Quaternion(0.118353, 0.695132, -0.598702, 0.379921)
+bones/7/position = Vector3(0.522985, -7.05267, 0.277105)
+bones/7/rotation = Quaternion(-0.146426, 0.622223, 0.431258, 0.636722)
+bones/8/position = Vector3(-1.19475, -5.63692, -0.257591)
+bones/8/rotation = Quaternion(0.383798, 0.56667, -0.346037, 0.64175)
+bones/9/position = Vector3(-1.21337, -6.0684, -0.0961494)
+bones/9/rotation = Quaternion(0.0539591, 0.088933, -0.970566, 0.217212)
+bones/10/position = Vector3(0.860557, -5.62018, -0.0729914)
+bones/10/rotation = Quaternion(-0.606969, -0.195568, -0.138174, 0.757793)
+bones/11/position = Vector3(0.0845775, -4.0597, 0.220638)
+bones/11/rotation = Quaternion(0.114282, -0.406864, 0.439585, 0.792569)
+bones/12/position = Vector3(-0.525559, -7.22168, -0.230262)
+bones/12/rotation = Quaternion(0.0168128, 0.400083, -0.757658, 0.515368)
+bones/12/scale = Vector3(1.09381, 1.09381, 1.09381)
+bones/13/position = Vector3(-1.87248, -5.88502, -0.199674)
+bones/13/rotation = Quaternion(0.131771, -0.503599, 0.163562, 0.838017)
+bones/14/position = Vector3(-0.309318, -5.63882, 0.444939)
+bones/14/rotation = Quaternion(-0.1246, 0.0149564, -0.442692, 0.887848)
+bones/15/position = Vector3(1.15742, -2.40926, -0.115745)
+bones/15/rotation = Quaternion(0.00668273, 0.219309, -0.166975, 0.961238)
+bones/16/position = Vector3(0.640884, -7.70088, 0.332952)
+bones/16/rotation = Quaternion(0.377647, 0.355778, 0.800764, 0.299302)
+bones/17/position = Vector3(0.249564, -6.93663, -0.223952)
+bones/17/rotation = Quaternion(-0.129619, 0.182386, -0.963111, 0.149505)
+bones/18/position = Vector3(0.171612, -4.61681, -0.145859)
+bones/18/rotation = Quaternion(-0.227293, -0.236713, -0.114388, 0.937667)
+bones/19/position = Vector3(0.103316, -6.43553, -0.425608)
+bones/19/rotation = Quaternion(0.477661, -0.623376, -0.433424, 0.442024)
+bones/20/position = Vector3(0.315317, -5.529, 0.00432752)
+bones/20/rotation = Quaternion(-0.0798899, -0.360118, -0.590667, 0.717667)
+bones/21/position = Vector3(-0.0681927, -5.28478, 0.0892822)
+bones/21/rotation = Quaternion(-0.167476, -0.195041, -0.961024, 0.101698)
+bones/22/position = Vector3(-0.594436, -5.12469, 0.243051)
+bones/22/rotation = Quaternion(-0.297436, 0.463479, -0.21608, 0.806244)
+bones/23/position = Vector3(0.888321, -7.10153, -0.22622)
+bones/23/rotation = Quaternion(0.160191, -0.119708, 0.786677, 0.584079)
+bones/24/position = Vector3(-1.50832, -6.17576, 0.307652)
+bones/24/rotation = Quaternion(-0.0832864, 0.308111, 0.136705, 0.937786)
+bones/25/position = Vector3(-0.546904, -3.56337, -0.268662)
+bones/25/rotation = Quaternion(0.0597925, -0.134278, -0.0379469, 0.98841)
+bones/26/position = Vector3(-0.491143, -5.44251, 0.0699875)
+bones/26/rotation = Quaternion(-0.477108, 0.0291949, 0.790805, 0.382286)
+bones/27/position = Vector3(-1.13979, -5.86292, 0.281443)
+bones/27/rotation = Quaternion(0.0824627, 0.389182, 0.484826, 0.778898)
+bones/28/position = Vector3(-0.690139, -6.33877, -0.185032)
+bones/28/rotation = Quaternion(-0.0502552, 0.00667168, 0.47211, 0.880081)
+bones/29/position = Vector3(0.296186, -5.60843, -0.0560873)
+bones/29/rotation = Quaternion(-0.233457, -0.147486, 0.0267894, 0.960743)
+bones/30/position = Vector3(1.02262, -5.38054, -0.199614)
+bones/30/rotation = Quaternion(0.468766, 0.046533, -0.206392, 0.85761)
+bones/31/position = Vector3(-1.05029, -5.75892, -0.242339)
+bones/31/rotation = Quaternion(0.0103397, 0.349785, -0.621861, 0.700594)
+bones/32/position = Vector3(-0.904468, -5.71247, 0.0971074)
+bones/32/rotation = Quaternion(-0.556236, 0.339997, -0.153668, 0.742556)
+bones/33/position = Vector3(-0.0494031, -7.38128, 0.0680896)
+bones/33/rotation = Quaternion(0.0532724, 0.0374677, 0.435275, 0.897939)
+bones/34/position = Vector3(0.507417, -6.03613, 0.276522)
+bones/34/rotation = Quaternion(-0.532213, -0.141256, -0.574845, 0.605268)
+bones/35/position = Vector3(1.15141, -5.23265, 0.250057)
+bones/35/rotation = Quaternion(-0.0396553, 0.0765315, -0.326248, 0.941346)
+bones/36/position = Vector3(-0.117908, -7.30112, -0.119548)
+bones/36/rotation = Quaternion(-0.743046, 0.323113, 0.561708, 0.167224)
+bones/37/position = Vector3(0.496808, -6.91408, 0.0856985)
+bones/37/rotation = Quaternion(-0.238512, 0.144847, -0.639904, 0.715999)
+bones/38/position = Vector3(1.31803, -7.39929, -0.298992)
+bones/38/rotation = Quaternion(0.311859, 0.0940562, -0.508692, 0.79695)
+
+[node name="Glass_015" parent="SubViewport/sm_broken_screen/Armature/Skeleton3D" index="0"]
+material_override = SubResource("StandardMaterial3D_ot20p")
+cast_shadow = 0
+
+[node name="VFX_Lines" type="Node3D" parent="SubViewport/sm_broken_screen"]
+
+[node name="VFX_LinesCut_flat" parent="SubViewport/sm_broken_screen/VFX_Lines" instance=ExtResource("4_y54s6")]
+transform = Transform3D(0.778758, -0.627324, 0, 0.627324, 0.778758, 0, 0, 0, 1, 0.0453563, 0.0373857, 0)
+visible = false
+
+[node name="VFX_LinesCut_flat2" parent="SubViewport/sm_broken_screen/VFX_Lines" instance=ExtResource("4_y54s6")]
+transform = Transform3D(-0.785587, -0.618751, 0, 0.618751, -0.785587, 0, 0, 0, 1, 0.28709, -0.475396, 0)
+visible = false
+
+[node name="VFX_LinesCut_flat3" parent="SubViewport/sm_broken_screen/VFX_Lines" instance=ExtResource("4_y54s6")]
+transform = Transform3D(0.0652464, 0.997869, 0, -0.997869, 0.0652464, 0, 0, 0, 1, 0.0648768, 0.380137, 0)
+visible = false
+
+[node name="VFX_LinesCut_flat4" parent="SubViewport/sm_broken_screen/VFX_Lines" instance=ExtResource("4_y54s6")]
+transform = Transform3D(-0.961483, -0.274866, 0, 0.274866, -0.961483, 0, 0, 0, 1, 0.105873, -0.311602, 0)
+visible = false
+
+[node name="VFX_LinesCut_flat5" parent="SubViewport/sm_broken_screen/VFX_Lines" instance=ExtResource("4_y54s6")]
+transform = Transform3D(-0.844459, -0.535621, 0, 0.535621, -0.844459, 0, 0, 0, 1, -0.729328, 0.0508038, 0)
+visible = false
+
+[node name="VFX_LinesCut_flat6" parent="SubViewport/sm_broken_screen/VFX_Lines" instance=ExtResource("4_y54s6")]
+transform = Transform3D(-0.382522, 0.923946, 0, -0.923946, -0.382522, 0, 0, 0, 1, 0.0780098, -0.620423, 0)
+visible = false
+
+[node name="VFX_LinesCut_flat7" parent="SubViewport/sm_broken_screen/VFX_Lines" instance=ExtResource("4_y54s6")]
+transform = Transform3D(-0.985444, -0.170003, 0, 0.170003, -0.985444, 0, 0, 0, 1, -0.577575, -0.0624213, 0)
+visible = false
+
+[node name="VFX_LinesCut_flat8" parent="SubViewport/sm_broken_screen/VFX_Lines" instance=ExtResource("4_y54s6")]
+transform = Transform3D(-0.288998, 0.95733, 0, -0.95733, -0.288998, 0, 0, 0, 1, 0.0533131, -0.692714, 0)
+visible = false
+
+[node name="VFX_LinesCut_flat9" parent="SubViewport/sm_broken_screen/VFX_Lines" instance=ExtResource("4_y54s6")]
+transform = Transform3D(-0.580348, -0.814369, 0, 0.814369, -0.580348, 0, 0, 0, 1, -0.0579963, 0.251959, 0)
+visible = false
+
+[node name="AnimationPlayer2" type="AnimationPlayer" parent="SubViewport/sm_broken_screen"]
+root_node = NodePath("../..")
+libraries = {
+"": SubResource("AnimationLibrary_a3xf6")
+}
+
+[node name="background" type="MeshInstance3D" parent="SubViewport/sm_broken_screen"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.8985)
+visible = false
+layers = 4
+material_override = SubResource("StandardMaterial3D_pnnkl")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_qm27j")
+skeleton = NodePath("../..")
+
+[editable path="SubViewport/sm_broken_screen"]
+[editable path="SubViewport/sm_broken_screen/VFX_Lines/VFX_LinesCut_flat"]
+[editable path="SubViewport/sm_broken_screen/VFX_Lines/VFX_LinesCut_flat2"]
+[editable path="SubViewport/sm_broken_screen/VFX_Lines/VFX_LinesCut_flat3"]
+[editable path="SubViewport/sm_broken_screen/VFX_Lines/VFX_LinesCut_flat4"]
+[editable path="SubViewport/sm_broken_screen/VFX_Lines/VFX_LinesCut_flat5"]
+[editable path="SubViewport/sm_broken_screen/VFX_Lines/VFX_LinesCut_flat6"]
+[editable path="SubViewport/sm_broken_screen/VFX_Lines/VFX_LinesCut_flat7"]
+[editable path="SubViewport/sm_broken_screen/VFX_Lines/VFX_LinesCut_flat8"]
+[editable path="SubViewport/sm_broken_screen/VFX_Lines/VFX_LinesCut_flat9"]

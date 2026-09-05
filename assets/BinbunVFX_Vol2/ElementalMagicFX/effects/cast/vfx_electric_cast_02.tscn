@@ -1,0 +1,190 @@
+[gd_scene format=3 uid="uid://bo5bl66mn6i2o"]
+
+[ext_resource type="Script" uid="uid://5omh5e4bi5hw" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/script/VFXElementalCastBB.gd" id="1_i5ik0"]
+[ext_resource type="Shader" uid="uid://bxrddnxxbn5ea" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/shader/cast_flare.gdshader" id="2_3oghb"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_koipl"]
+noise_type = 2
+seed = 10
+fractal_octaves = 1
+fractal_gain = 1.0
+fractal_weighted_strength = 1.0
+fractal_ping_pong_strength = 1.13
+cellular_distance_function = 2
+cellular_return_type = 6
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_i5ik0"]
+noise = SubResource("FastNoiseLite_koipl")
+seamless = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_no0h2"]
+noise_type = 2
+seed = 10
+fractal_octaves = 1
+fractal_gain = 1.0
+fractal_weighted_strength = 1.0
+fractal_ping_pong_strength = 1.13
+cellular_distance_function = 2
+cellular_return_type = 6
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_3oghb"]
+noise = SubResource("FastNoiseLite_no0h2")
+seamless = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cvcoa"]
+render_priority = 0
+shader = ExtResource("2_3oghb")
+shader_parameter/primary_color = Color(1, 0.7294118, 0.15686275, 1)
+shader_parameter/secondary_color = Color(0.6509804, 0.3882353, 0, 1)
+shader_parameter/emission = 4.0
+shader_parameter/color_curve = 25.106676
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_3oghb")
+shader_parameter/noise_scale = Vector2(4, 2)
+shader_parameter/noise_scroll = Vector2(0, 0.2)
+shader_parameter/shape_curve = 0.4
+shader_parameter/grow_amount = 0.0
+shader_parameter/edge_hardness = 0.5
+shader_parameter/edge_position = 0.2
+
+[sub_resource type="SphereMesh" id="SphereMesh_53tjo"]
+radius = 2.0
+height = 3.0
+radial_segments = 24
+rings = 16
+
+[sub_resource type="SphereMesh" id="SphereMesh_4ftjk"]
+radius = 1.8
+height = 6.0
+radial_segments = 24
+rings = 24
+
+[sub_resource type="SphereMesh" id="SphereMesh_6ayff"]
+radius = 1.4
+height = 10.0
+radial_segments = 24
+rings = 24
+
+[sub_resource type="SphereMesh" id="SphereMesh_3lcmg"]
+radius = 0.8
+height = 16.0
+radial_segments = 24
+rings = 24
+
+[sub_resource type="Animation" id="Animation_5b247"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Flare_01:material_override:shader_parameter/grow_amount")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AudioStreamPlayer3D:playing")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_5dgfd"]
+resource_name = "main"
+length = 0.8
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Flare_01:material_override:shader_parameter/grow_amount")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.8),
+"transitions": PackedFloat32Array(2, 0.5, 2, 1),
+"update": 0,
+"values": [0.0, 0.29615822, 0.6040890011936426, 1.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AudioStreamPlayer3D:playing")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.1),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_5hfv4"]
+resource_name = "stop"
+length = 0.8
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Flare_01:material_override:shader_parameter/grow_amount")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(2),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_4w020"]
+_data = {
+&"RESET": SubResource("Animation_5b247"),
+&"main": SubResource("Animation_5dgfd"),
+&"stop": SubResource("Animation_5hfv4")
+}
+
+[node name="VFXElectricCast_02" type="Node3D" unique_id=1438869197]
+script = ExtResource("1_i5ik0")
+primary_color = Color(1, 0.7294118, 0.15686275, 1)
+secondary_color = Color(0.6509804, 0.3882353, 0, 1)
+emission = 4.0
+color_curve = 25.106676
+noise_texture = SubResource("NoiseTexture2D_i5ik0")
+noise_scale = Vector2(4, 2)
+noise_scroll = Vector2(0, 0.2)
+shape_curve = 0.4
+edge_hardness = 0.5
+one_shot = true
+
+[node name="Flare_01" type="MeshInstance3D" parent="." unique_id=1017224574]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 1.5, 0, 0)
+material_override = SubResource("ShaderMaterial_cvcoa")
+mesh = SubResource("SphereMesh_53tjo")
+
+[node name="Flare_02" type="MeshInstance3D" parent="." unique_id=928683935]
+transform = Transform3D(-4.371139e-08, 1, 0, -0.49999997, -2.1855692e-08, -0.86602545, -0.86602545, -3.7855173e-08, 0.49999997, 3, 0, 0)
+material_override = SubResource("ShaderMaterial_cvcoa")
+mesh = SubResource("SphereMesh_4ftjk")
+
+[node name="Flare_03" type="MeshInstance3D" parent="." unique_id=265862186]
+transform = Transform3D(-4.371139e-08, 1, 0, 0.50000006, 2.1855696e-08, -0.8660254, -0.8660254, -3.7855173e-08, -0.50000006, 5, 0, 0)
+material_override = SubResource("ShaderMaterial_cvcoa")
+mesh = SubResource("SphereMesh_6ayff")
+
+[node name="Flare_04" type="MeshInstance3D" parent="." unique_id=60010517]
+transform = Transform3D(-3.1998958e-08, 1, 4.3711392e-08, -0.50000006, 2.1855696e-08, -0.8660254, -0.8660254, -4.9567603e-08, 0.50000006, 8, 0, 0)
+material_override = SubResource("ShaderMaterial_cvcoa")
+mesh = SubResource("SphereMesh_3lcmg")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=107697674]
+max_distance = 3.0
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1379765318]
+libraries/ = SubResource("AnimationLibrary_4w020")

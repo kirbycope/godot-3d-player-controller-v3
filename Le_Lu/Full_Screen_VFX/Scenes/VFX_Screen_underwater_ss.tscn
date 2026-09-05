@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://cdcvidx4u2wtw"]
+
+[ext_resource type="Shader" path="res://Le_Lu/Full_Screen_VFX/shaders/ss_fullscreen_underwater.gdshader" id="1_l3poo"]
+[ext_resource type="Texture2D" uid="uid://c0awlx26qatxa" path="res://Le_Lu/Full_Screen_VFX/textures/T_GW_WaterNormal_01_b.PNG" id="2_1fqhm"]
+
+
+[sub_resource type="Gradient" id="Gradient_pkvmh"]
+offsets = PackedFloat32Array(0.583051, 1)
+colors = PackedColorArray(0.1682, 0.26361, 0.29, 0, 0.165055, 0.258273, 0.285074, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_0vm81"]
+gradient = SubResource("Gradient_pkvmh")
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="Gradient" id="Gradient_xemgu"]
+offsets = PackedFloat32Array(0, 0.301695, 0.535593, 1)
+colors = PackedColorArray(0.42, 0.806667, 1, 0, 0.3, 0.79, 1, 0.490196, 0.259806, 0.654965, 1, 0.660956, 0.18, 0.549, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_m3tky"]
+gradient = SubResource("Gradient_xemgu")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lcayl"]
+render_priority = 0
+shader = ExtResource("1_l3poo")
+shader_parameter/distortion_speed = Vector2(0.1, 0.1)
+shader_parameter/distortion_scale = Vector2(1, 1)
+shader_parameter/distortion_strength = 0.065
+shader_parameter/distortion_normal_map = ExtResource("2_1fqhm")
+shader_parameter/depth_fog_distance = 20.0
+shader_parameter/depth_1D_color_gradient = SubResource("GradientTexture1D_m3tky")
+shader_parameter/border_distortion_blend = 0.457
+shader_parameter/border_mask = SubResource("GradientTexture2D_0vm81")
+
+[sub_resource type="QuadMesh" id="QuadMesh_dnupf"]
+size = Vector2(2, 2)
+
+[node name="VFX_Screen_underwater_ss" type="MeshInstance3D"]
+visible = false
+layers = 4
+material_override = SubResource("ShaderMaterial_lcayl")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_dnupf")

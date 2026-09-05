@@ -1,0 +1,432 @@
+[gd_scene format=3 uid="uid://d3y373k5uiqbv"]
+
+[ext_resource type="PackedScene" uid="uid://dngmodoavm1r3" path="res://Le_Lu/Loot_Drop_VFX/Scenes/VFX_Loot_drop_A_white.tscn" id="1_acu85"]
+[ext_resource type="Shader" path="res://Le_Lu/Loot_Drop_VFX/Shaders/s_Special_Material_ITEM.tres" id="2_fkojq"]
+[ext_resource type="Texture2D" uid="uid://ditkbwngi2lqv" path="res://Le_Lu/Loot_Drop_VFX/Misc/T_mysterybox_col7.jpg" id="3_a1moq"]
+[ext_resource type="Texture2D" uid="uid://q5n3ae1qgi16" path="res://Le_Lu/Loot_Drop_VFX/Misc/T_mysterybox_col1.png" id="4_p54v4"]
+[ext_resource type="ArrayMesh" uid="uid://btjh7tdxty3tb" path="res://Le_Lu/Loot_Drop_VFX/Misc/sm_box.obj" id="5_b8kdr"]
+[ext_resource type="PackedScene" uid="uid://d0me6gn18cg0g" path="res://Le_Lu/Loot_Drop_VFX/Scenes/VFX_Loot_drop_A_blue.tscn" id="6_rxkwt"]
+[ext_resource type="PackedScene" uid="uid://xgpmx3hxww3g" path="res://Le_Lu/Loot_Drop_VFX/Scenes/VFX_Loot_drop_A_golden.tscn" id="7_gq64n"]
+[ext_resource type="PackedScene" uid="uid://dua7gcibl3i76" path="res://Le_Lu/Loot_Drop_VFX/Scenes/VFX_Loot_drop_B_white.tscn" id="8_y6xsd"]
+[ext_resource type="Texture2D" uid="uid://cd8x82y60qaf2" path="res://Le_Lu/Loot_Drop_VFX/Misc/T_shield_BaseColor.png" id="9_dfi70"]
+[ext_resource type="Shader" path="res://Le_Lu/Loot_Drop_VFX/Shaders/s_outliner.tres" id="10_m4und"]
+[ext_resource type="ArrayMesh" uid="uid://cy74mx51tvn6t" path="res://Le_Lu/Loot_Drop_VFX/Misc/shield.obj" id="11_nv1hu"]
+[ext_resource type="PackedScene" uid="uid://ryliywyiaphc" path="res://Le_Lu/Loot_Drop_VFX/Scenes/VFX_Loot_drop_B_green.tscn" id="12_b0oar"]
+[ext_resource type="Texture2D" uid="uid://b8u5nehe36443" path="res://Le_Lu/Loot_Drop_VFX/Misc/T_crossbow_BaseColor.png" id="13_wqex2"]
+[ext_resource type="ArrayMesh" uid="uid://1ceegbikx6rn" path="res://Le_Lu/Loot_Drop_VFX/Misc/crossbow.obj" id="14_ktthi"]
+[ext_resource type="PackedScene" uid="uid://ypyqav1rtr04" path="res://Le_Lu/Loot_Drop_VFX/Scenes/VFX_Loot_drop_B_blue.tscn" id="15_1nnda"]
+[ext_resource type="Texture2D" uid="uid://dsy84wwwv7u3a" path="res://Le_Lu/Loot_Drop_VFX/Misc/T_knife_BaseColor.png" id="16_0wsph"]
+[ext_resource type="ArrayMesh" uid="uid://dbbt35i81jaf4" path="res://Le_Lu/Loot_Drop_VFX/Misc/knife.obj" id="17_vvpa2"]
+[ext_resource type="PackedScene" uid="uid://defxm4re80123" path="res://Le_Lu/Loot_Drop_VFX/Scenes/VFX_Loot_drop_B_purple.tscn" id="18_kw4tl"]
+[ext_resource type="Texture2D" uid="uid://b53n1hexrrh85" path="res://Le_Lu/Loot_Drop_VFX/Misc/T_sword1_BaseColor.png" id="19_lyoj8"]
+[ext_resource type="ArrayMesh" uid="uid://c3oel8n3es1wk" path="res://Le_Lu/Loot_Drop_VFX/Misc/sword1.obj" id="20_wqowu"]
+[ext_resource type="PackedScene" uid="uid://c3yxi585o57r2" path="res://Le_Lu/Loot_Drop_VFX/Scenes/VFX_Loot_drop_B_golden.tscn" id="21_2i74k"]
+[ext_resource type="Texture2D" uid="uid://bg47pwobx6hny" path="res://Le_Lu/Loot_Drop_VFX/Misc/T_axe_BaseColor.png" id="22_fgf7c"]
+[ext_resource type="ArrayMesh" uid="uid://b3s0ocvckkoto" path="res://Le_Lu/Loot_Drop_VFX/Misc/axe.obj" id="23_8g8mu"]
+[ext_resource type="PackedScene" uid="uid://4sdmh8ja062i" path="res://Le_Lu/Loot_Drop_VFX/Scenes/VFX_Loot_drop_C.tscn" id="24_qns5k"]
+[ext_resource type="ArrayMesh" uid="uid://c5moqbppxkg4h" path="res://Le_Lu/Loot_Drop_VFX/Misc/sm_potion_2.obj" id="25_6fwn7"]
+[ext_resource type="PackedScene" uid="uid://bpyucc60pgywb" path="res://Le_Lu/Loot_Drop_VFX/Scenes/VFX_Loot_drop_D.tscn" id="26_7yvpa"]
+[ext_resource type="ArrayMesh" uid="uid://bvridnjdhiyju" path="res://Le_Lu/Loot_Drop_VFX/Misc/sm_potion_1.obj" id="27_cfhg4"]
+[ext_resource type="PackedScene" uid="uid://c800eia6ef02p" path="res://Le_Lu/Loot_Drop_VFX/Scenes/VFX_Loot_drop_G.tscn" id="28_4w5ie"]
+[ext_resource type="Shader" path="res://Le_Lu/Loot_Drop_VFX/Shaders/s_Standar_Material_ITEM.tres" id="29_4v444"]
+[ext_resource type="ArrayMesh" uid="uid://d7bcwob36wte" path="res://Le_Lu/Loot_Drop_VFX/Misc/sm_pistol3.obj" id="30_wui08"]
+[ext_resource type="Texture2D" uid="uid://4kmsymo1eygv" path="res://Le_Lu/Loot_Drop_VFX/Misc/T_UNC0MM0N.png" id="31_xf27f"]
+[ext_resource type="Texture2D" uid="uid://ckoeg8ifcx3mx" path="res://Le_Lu/Loot_Drop_VFX/Misc/T_C0MM0N.png" id="32_khi4x"]
+[ext_resource type="Texture2D" uid="uid://c2rpdx3k4ppef" path="res://Le_Lu/Loot_Drop_VFX/Misc/T_R4R3.png" id="33_q0sxd"]
+[ext_resource type="Texture2D" uid="uid://c23kfichqkh48" path="res://Le_Lu/Loot_Drop_VFX/Misc/T_3P1C.png" id="34_6o1bt"]
+[ext_resource type="Texture2D" uid="uid://soapwwjmouth" path="res://Le_Lu/Loot_Drop_VFX/Misc/T_L3G3ND4RY.png" id="35_5afum"]
+
+[sub_resource type="GDScript" id="GDScript_upb2r"]
+resource_name = "showcase_VFX_realtime"
+script/source = "@tool
+extends Node
+
+enum {ANTICIPATION, HIT}
+
+@export var my_bool:bool = false:
+	set(new_my_bool):
+		my_bool = new_my_bool
+		self.play_all_animations(my_bool)
+
+func _ready() -> void:
+	$Misc/AnimationPlayer.play("Init")
+	
+func _run():
+	$Misc/AnimationPlayer.play("Init")
+	
+func play_all_animations(_type:bool)->void:
+	
+	match _type:
+		true:
+			$VFX_LootDrop_A_white.find_child("AnimationPlayer").play("Init")
+			$VFX_LootDrop_A_blue.find_child("AnimationPlayer").play("Init")
+			$VFX_LootDrop_A_gold.find_child("AnimationPlayer").play("Init")
+
+		false:
+			pass;
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_laqgk"]
+render_priority = 0
+shader = ExtResource("2_fkojq")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/intensity_add = 1.0
+shader_parameter/point_size = 0.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
+shader_parameter/time = 0.0
+shader_parameter/upscale_speed = 10.0
+shader_parameter/upscale_max_range = 0.3
+shader_parameter/rotation_speed = 2.0
+shader_parameter/rotation_axis = Vector3(0.3, 1, 0)
+shader_parameter/Blinking_speed = 5.0
+shader_parameter/min_brightness = 0.5
+shader_parameter/max_brightness2 = 8.0
+shader_parameter/texture_albedo = ExtResource("4_p54v4")
+shader_parameter/texture_add = ExtResource("3_a1moq")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cba3q"]
+render_priority = 0
+shader = ExtResource("2_fkojq")
+shader_parameter/albedo = Color(0.5, 1, 3, 1)
+shader_parameter/intensity_add = 1.0
+shader_parameter/point_size = 0.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
+shader_parameter/time = 0.0
+shader_parameter/upscale_speed = 10.0
+shader_parameter/upscale_max_range = 0.3
+shader_parameter/rotation_speed = 2.0
+shader_parameter/rotation_axis = Vector3(0.3, 1, 0)
+shader_parameter/Blinking_speed = 5.0
+shader_parameter/min_brightness = 0.5
+shader_parameter/max_brightness2 = 8.0
+shader_parameter/texture_albedo = ExtResource("4_p54v4")
+shader_parameter/texture_add = ExtResource("3_a1moq")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bu4ed"]
+render_priority = 0
+shader = ExtResource("2_fkojq")
+shader_parameter/albedo = Color(2, 1, 0.2, 1)
+shader_parameter/intensity_add = 1.0
+shader_parameter/point_size = 0.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
+shader_parameter/time = 0.0
+shader_parameter/upscale_speed = 10.0
+shader_parameter/upscale_max_range = 0.3
+shader_parameter/rotation_speed = 2.0
+shader_parameter/rotation_axis = Vector3(0.3, 1, 0)
+shader_parameter/Blinking_speed = 5.0
+shader_parameter/min_brightness = 0.5
+shader_parameter/max_brightness2 = 8.0
+shader_parameter/texture_albedo = ExtResource("4_p54v4")
+shader_parameter/texture_add = ExtResource("3_a1moq")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ykbb4"]
+albedo_texture = ExtResource("9_dfi70")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_u7oyo"]
+render_priority = 0
+shader = ExtResource("10_m4und")
+shader_parameter/Size = Vector3(1.08, 1.08, 1.12)
+shader_parameter/Offset = Vector3(0, -0.015, -0.015)
+shader_parameter/Color = null
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_81yl8"]
+albedo_texture = ExtResource("13_wqex2")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0ap20"]
+render_priority = 0
+shader = ExtResource("10_m4und")
+shader_parameter/Size = Vector3(1.05, 1.05, 1.265)
+shader_parameter/Offset = Vector3(0, -0.03, -0.01)
+shader_parameter/Color = null
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_br3cm"]
+albedo_texture = ExtResource("16_0wsph")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_eayio"]
+render_priority = 0
+shader = ExtResource("10_m4und")
+shader_parameter/Size = Vector3(1.1, 1.05, 1.1)
+shader_parameter/Offset = Vector3(0, -0.015, 0)
+shader_parameter/Color = null
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vww7p"]
+albedo_texture = ExtResource("19_lyoj8")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dc4fl"]
+render_priority = 0
+shader = ExtResource("10_m4und")
+shader_parameter/Size = Vector3(1.1, 1.05, 1.3)
+shader_parameter/Offset = Vector3(0, 0, 0)
+shader_parameter/Color = null
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l4jxx"]
+albedo_texture = ExtResource("22_fgf7c")
+roughness = 0.64
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dc8sx"]
+render_priority = -5
+shader = ExtResource("10_m4und")
+shader_parameter/Size = Vector3(1.03, 1.03, 1.4)
+shader_parameter/Offset = Vector3(0, -0.03, 0)
+shader_parameter/Color = null
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ai26u"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0nv1v"]
+render_priority = 0
+shader = ExtResource("10_m4und")
+shader_parameter/Size = Vector3(1.15, 1.05, 1.15)
+shader_parameter/Offset = Vector3(0, -0.025, 0)
+shader_parameter/Color = null
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kvoxa"]
+render_priority = 2
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_y0x4t"]
+render_priority = 0
+shader = ExtResource("10_m4und")
+shader_parameter/Size = Vector3(1.2, 1.05, 1.2)
+shader_parameter/Offset = Vector3(0, 0, 0)
+shader_parameter/Color = null
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ga8go"]
+render_priority = 0
+shader = ExtResource("29_4v444")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/point_size = null
+shader_parameter/roughness = null
+shader_parameter/metallic_texture_channel = null
+shader_parameter/specular = null
+shader_parameter/metallic = null
+shader_parameter/uv1_scale = null
+shader_parameter/uv1_offset = null
+shader_parameter/uv2_scale = null
+shader_parameter/uv2_offset = null
+shader_parameter/time = null
+shader_parameter/upscale_speed = 1.0
+shader_parameter/upscale_max_range = 1.0
+shader_parameter/rotation_speed = 1.0
+shader_parameter/rotation_axis = Vector3(0, 1, 0)
+
+[sub_resource type="Animation" id="Animation_as6tx"]
+resource_name = "Init"
+length = 7.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:my_bool")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(6),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_uhifs"]
+length = 0.001
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_rwh1t"]
+_data = {
+"Init": SubResource("Animation_as6tx"),
+"RESET": SubResource("Animation_uhifs")
+}
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o2dv4"]
+albedo_color = Color(0.194349, 0.194349, 0.194349, 1)
+uv1_scale = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_fqca6"]
+size = Vector2(300, 300)
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_8pukg"]
+sky_top_color = Color(0.0605303, 0.0605303, 0.0605303, 1)
+sky_horizon_color = Color(0.31802, 0.31802, 0.31802, 1)
+ground_bottom_color = Color(0.162066, 0.162066, 0.162066, 1)
+ground_horizon_color = Color(0.347817, 0.347817, 0.347817, 1)
+
+[sub_resource type="Sky" id="Sky_odupo"]
+sky_material = SubResource("ProceduralSkyMaterial_8pukg")
+
+[sub_resource type="Environment" id="Environment_aegsq"]
+background_mode = 2
+sky = SubResource("Sky_odupo")
+glow_enabled = true
+fog_enabled = true
+fog_light_color = Color(0.335706, 0.365333, 0.411903, 1)
+
+[node name="map1" type="Node"]
+script = SubResource("GDScript_upb2r")
+my_bool = true
+
+[node name="VFX_LootDrop_A_white" parent="." instance=ExtResource("1_acu85")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 0)
+
+[node name="---box_item_1" type="MeshInstance3D" parent="VFX_LootDrop_A_white"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.536, 0)
+material_override = SubResource("ShaderMaterial_laqgk")
+cast_shadow = 0
+mesh = ExtResource("5_b8kdr")
+skeleton = NodePath("../../..")
+
+[node name="VFX_LootDrop_A_blue" parent="." instance=ExtResource("6_rxkwt")]
+
+[node name="---box_item_2" type="MeshInstance3D" parent="VFX_LootDrop_A_blue"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.536, 0)
+material_override = SubResource("ShaderMaterial_cba3q")
+cast_shadow = 0
+mesh = ExtResource("5_b8kdr")
+skeleton = NodePath("../../..")
+
+[node name="VFX_LootDrop_A_gold" parent="." instance=ExtResource("7_gq64n")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 0)
+
+[node name="---box_item_3" type="MeshInstance3D" parent="VFX_LootDrop_A_gold"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.536, 0)
+material_override = SubResource("ShaderMaterial_bu4ed")
+cast_shadow = 0
+mesh = ExtResource("5_b8kdr")
+skeleton = NodePath("../../..")
+
+[node name="VFX_LootDrop_B_white" parent="." instance=ExtResource("8_y6xsd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, -8)
+
+[node name="---Shield_item" type="MeshInstance3D" parent="VFX_LootDrop_B_white"]
+transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, 0, 0, 0.7, 0, 1.354, -0.0408741)
+material_override = SubResource("StandardMaterial3D_ykbb4")
+material_overlay = SubResource("ShaderMaterial_u7oyo")
+cast_shadow = 0
+mesh = ExtResource("11_nv1hu")
+skeleton = NodePath("../..")
+
+[node name="VFX_LootDrop_B_green" parent="." instance=ExtResource("12_b0oar")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, -8)
+
+[node name="Crossbow" type="MeshInstance3D" parent="VFX_LootDrop_B_green"]
+transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0, 1.31717, 0)
+material_override = SubResource("StandardMaterial3D_81yl8")
+material_overlay = SubResource("ShaderMaterial_0ap20")
+cast_shadow = 0
+mesh = ExtResource("14_ktthi")
+skeleton = NodePath("../..")
+
+[node name="VFX_LootDrop_B_blue" parent="." instance=ExtResource("15_1nnda")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8)
+
+[node name="Knife" type="MeshInstance3D" parent="VFX_LootDrop_B_blue"]
+transform = Transform3D(1, 0, 0, 0, 0.8, 0, 0, 0, 1, 0, 1.38335, 0)
+material_override = SubResource("StandardMaterial3D_br3cm")
+material_overlay = SubResource("ShaderMaterial_eayio")
+cast_shadow = 0
+mesh = ExtResource("17_vvpa2")
+skeleton = NodePath("../..")
+
+[node name="VFX_LootDrop_B_purple" parent="." instance=ExtResource("18_kw4tl")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, -8)
+
+[node name="Sword1" type="MeshInstance3D" parent="VFX_LootDrop_B_purple"]
+transform = Transform3D(1, 0, 0, 0, 0.9, 0, 0, 0, 1, 0, 1.31705, 0)
+material_override = SubResource("StandardMaterial3D_vww7p")
+material_overlay = SubResource("ShaderMaterial_dc4fl")
+cast_shadow = 0
+mesh = ExtResource("20_wqowu")
+skeleton = NodePath("../..")
+
+[node name="VFX_LootDrop_B_golden" parent="." instance=ExtResource("21_2i74k")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, -8)
+
+[node name="Axe" type="MeshInstance3D" parent="VFX_LootDrop_B_golden"]
+transform = Transform3D(1, 0, 0, 0, 0.8, 0, 0, 0, 1, 0, 1.23051, 0)
+material_override = SubResource("StandardMaterial3D_l4jxx")
+material_overlay = SubResource("ShaderMaterial_dc8sx")
+cast_shadow = 0
+mesh = ExtResource("23_8g8mu")
+skeleton = NodePath("../..")
+
+[node name="VFX_LootDrop_C" parent="." instance=ExtResource("24_qns5k")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 6)
+
+[node name="SmPotion2" type="MeshInstance3D" parent="VFX_LootDrop_C"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, -0.242675, 0)
+material_override = SubResource("StandardMaterial3D_ai26u")
+material_overlay = SubResource("ShaderMaterial_0nv1v")
+cast_shadow = 0
+mesh = ExtResource("25_6fwn7")
+skeleton = NodePath("../..")
+
+[node name="VFX_LootDrop_D" parent="." instance=ExtResource("26_7yvpa")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1, 6)
+
+[node name="SmPotion1" type="MeshInstance3D" parent="VFX_LootDrop_D"]
+transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_kvoxa")
+material_overlay = SubResource("ShaderMaterial_y0x4t")
+cast_shadow = 0
+mesh = ExtResource("27_cfhg4")
+skeleton = NodePath("../..")
+
+[node name="VFX_LootDrop_G" parent="." instance=ExtResource("28_4w5ie")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1, 6)
+
+[node name="SmPistol3" type="MeshInstance3D" parent="VFX_LootDrop_G"]
+material_override = SubResource("ShaderMaterial_ga8go")
+cast_shadow = 0
+mesh = ExtResource("30_wui08")
+skeleton = NodePath("../..")
+
+[node name="Misc" type="Node" parent="."]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Misc"]
+root_node = NodePath("../..")
+libraries = {
+"": SubResource("AnimationLibrary_rwh1t")
+}
+autoplay = "Init"
+
+[node name="floor" type="MeshInstance3D" parent="Misc"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.00626147, 0)
+material_override = SubResource("StandardMaterial3D_o2dv4")
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_fqca6")
+skeleton = NodePath("../..")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Misc"]
+environment = SubResource("Environment_aegsq")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Misc"]
+transform = Transform3D(-0.914671, -0.403717, -0.0197536, 0.345182, -0.805611, 0.481498, -0.210303, 0.433594, 0.876225, 0, 7.18185, 0)
+light_energy = 0.5
+shadow_enabled = true
+
+[node name="text_uncommon" type="Sprite3D" parent="Misc"]
+transform = Transform3D(0.3, 0, 0, 0, 0.212421, 0.211843, 0, -0.211843, 0.212421, 8, 0.547485, -6.17784)
+texture = ExtResource("31_xf27f")
+
+[node name="text_common" type="Sprite3D" parent="Misc"]
+transform = Transform3D(0.3, 0, 0, 0, 0.212421, 0.211843, 0, -0.211843, 0.212421, 4, 0.547485, -6.17784)
+texture = ExtResource("32_khi4x")
+
+[node name="text_rare" type="Sprite3D" parent="Misc"]
+transform = Transform3D(0.3, 0, 0, 0, 0.212421, 0.211843, 0, -0.211843, 0.212421, 0, 0.547485, -6.17784)
+texture = ExtResource("33_q0sxd")
+
+[node name="text_epic" type="Sprite3D" parent="Misc"]
+transform = Transform3D(0.3, 0, 0, 0, 0.212421, 0.211843, 0, -0.211843, 0.212421, -4, 0.547485, -6.17784)
+texture = ExtResource("34_6o1bt")
+
+[node name="text_legendary" type="Sprite3D" parent="Misc"]
+transform = Transform3D(0.3, 0, 0, 0, 0.212421, 0.211843, 0, -0.211843, 0.212421, -8, 0.547485, -6.17784)
+texture = ExtResource("35_5afum")

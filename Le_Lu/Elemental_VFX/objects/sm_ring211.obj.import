@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://b18oh0krlikc"
+path="res://.godot/imported/sm_ring211.obj-a3c8f897650ef203d3ebf1d1f965ea8f.mesh"
+
+[deps]
+
+files=["res://.godot/imported/sm_ring211.obj-a3c8f897650ef203d3ebf1d1f965ea8f.mesh"]
+
+source_file="res://Le_Lu/Elemental_VFX/objects/sm_ring211.obj"
+dest_files=["res://.godot/imported/sm_ring211.obj-a3c8f897650ef203d3ebf1d1f965ea8f.mesh", "res://.godot/imported/sm_ring211.obj-a3c8f897650ef203d3ebf1d1f965ea8f.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

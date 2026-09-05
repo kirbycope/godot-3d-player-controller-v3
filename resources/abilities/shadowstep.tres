@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ShadowstepAbility" format=3 uid="uid://c7shadowstep01"]
+[gd_resource type="Resource" script_class="ShadowstepAbility" format=3 uid="uid://bum070844yb5"]
 
 [ext_resource type="Script" path="res://scenes/shadowstep_ability.gd" id="1_step"]
 [ext_resource type="PackedScene" uid="uid://ctxdbwha5sf47" path="res://assets/BinbunVFX/smoke_effects/effects/smoke/smoke_vfx_01.tscn" id="2_puff"]

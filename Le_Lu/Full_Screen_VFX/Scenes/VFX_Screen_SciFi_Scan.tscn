@@ -1,0 +1,55 @@
+[gd_scene format=3 uid="uid://13mwl12xa4pi"]
+
+[ext_resource type="Shader" path="res://Le_Lu/Full_Screen_VFX/shaders/s_fullscreen_binary.tres" id="1_e35p3"]
+[ext_resource type="Texture2D" uid="uid://bkpvow5cr5y64" path="res://Le_Lu/Full_Screen_VFX/textures/T_Hex1_inv.jpg" id="2_0dh8a"]
+[ext_resource type="Texture2D" uid="uid://d1creearqaous" path="res://Le_Lu/Full_Screen_VFX/textures/T_VFX_HitHex1.jpg" id="3_au0pe"]
+
+[sub_resource type="Gradient" id="Gradient_r1fo2"]
+offsets = PackedFloat32Array(0.942584, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.374139, 0.374139, 0.374139, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_gwy02"]
+gradient = SubResource("Gradient_r1fo2")
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="Gradient" id="Gradient_yiy2d"]
+offsets = PackedFloat32Array(0, 0.210526, 0.334928)
+colors = PackedColorArray(0, 0.533333, 1, 0, 0.28, 0.34, 1, 1, 0.25, 0.575, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_fmrg6"]
+gradient = SubResource("Gradient_yiy2d")
+
+[sub_resource type="Gradient" id="Gradient_tq8fl"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_4qob3"]
+gradient = SubResource("Gradient_tq8fl")
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.715)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ndttx"]
+render_priority = 0
+shader = ExtResource("1_e35p3")
+shader_parameter/ColorIntensity = 3.0
+shader_parameter/Speed = Vector2(0, -1)
+shader_parameter/Scale = Vector2(3, 1)
+shader_parameter/Mask_Speed = Vector2(0, 0)
+shader_parameter/Mask_Scale = Vector2(3, 1)
+shader_parameter/Texture_Noise = ExtResource("3_au0pe")
+shader_parameter/Add_Texture = SubResource("GradientTexture2D_gwy02")
+shader_parameter/Mask = ExtResource("2_0dh8a")
+shader_parameter/Mask2_texture = SubResource("GradientTexture2D_4qob3")
+shader_parameter/Gradient_Color1D = SubResource("GradientTexture1D_fmrg6")
+
+[sub_resource type="QuadMesh" id="QuadMesh_dnupf"]
+size = Vector2(2, 2)
+
+[node name="VFX_Screen_SciFi_Scan" type="MeshInstance3D"]
+visible = false
+layers = 4
+material_override = SubResource("ShaderMaterial_ndttx")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_dnupf")

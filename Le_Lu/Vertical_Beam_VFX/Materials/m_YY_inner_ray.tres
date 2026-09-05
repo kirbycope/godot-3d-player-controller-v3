@@ -1,0 +1,23 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://rmnc0adpriso"]
+
+[ext_resource type="Shader" path="res://Le_Lu/Vertical_Beam_VFX/Shaders/s_simple_pY_B2.tres" id="1_k1810"]
+
+[sub_resource type="Gradient" id="Gradient_k5xm1"]
+offsets = PackedFloat32Array(0, 0.0459364)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_liqll"]
+gradient = SubResource("Gradient_k5xm1")
+fill_from = Vector2(1, 1)
+
+[sub_resource type="Gradient" id="Gradient_gvs6e"]
+offsets = PackedFloat32Array(0, 0.154639, 0.453608, 0.510309, 0.57732, 0.865979, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.828947, 0.828947, 0.828947, 1, 1, 1, 1, 1, 0.255659, 0.255659, 0.255659, 1, 1, 1, 1, 1, 0.797468, 0.797468, 0.797468, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_gl6lc"]
+gradient = SubResource("Gradient_gvs6e")
+
+[resource]
+render_priority = 1
+shader = ExtResource("1_k1810")
+shader_parameter/Alpha_Texture = SubResource("GradientTexture2D_gl6lc")
+shader_parameter/Alpha_2_Texture = SubResource("GradientTexture2D_liqll")

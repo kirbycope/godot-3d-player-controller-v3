@@ -1,0 +1,155 @@
+[gd_scene format=3 uid="uid://c3w3impjjuw5e"]
+
+[ext_resource type="Script" uid="uid://cgl11a6yuuxsx" path="res://assets/BinbunVFX_Vol2/BattleFX/script/VFXBattleSwingBB.gd" id="1_pcwlp"]
+[ext_resource type="Shader" uid="uid://bp0qgsf40g6nt" path="res://assets/BinbunVFX_Vol2/BattleFX/shader/swing.gdshader" id="2_wu88b"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_impk2"]
+noise_type = 2
+seed = 2
+fractal_type = 3
+fractal_octaves = 2
+fractal_weighted_strength = 1.0
+cellular_distance_function = 1
+cellular_return_type = 3
+domain_warp_enabled = true
+domain_warp_amplitude = 100.0
+domain_warp_frequency = 0.01
+domain_warp_fractal_octaves = 1
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_pcwlp"]
+noise = SubResource("FastNoiseLite_impk2")
+seamless = true
+seamless_blend_skirt = 0.2
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fps6j"]
+render_priority = 0
+shader = ExtResource("2_wu88b")
+shader_parameter/primary_color = Color(1, 1, 1, 1)
+shader_parameter/secondary_color = Color(0.3764706, 0.56078434, 0.54901963, 1)
+shader_parameter/tertiary_color = Color(0.34117648, 0.3882353, 0.42352942, 1)
+shader_parameter/emission = 2.0
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_pcwlp")
+shader_parameter/noise_scale = Vector2(1, 3)
+shader_parameter/noise_scroll = Vector2(0.5, 0)
+shader_parameter/noise_shape = 1.0
+shader_parameter/swing_center = 0.9
+shader_parameter/edge_position = 0.1
+shader_parameter/edge_hardness = 0.8
+shader_parameter/swing_factor = 0.0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_wwd8k"]
+size = Vector2(3, 3)
+
+[sub_resource type="Animation" id="Animation_nc3hy"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MeshInstance3D:material_override:shader_parameter/swing_factor")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AudioStreamPlayer3D:playing")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_2yv60"]
+resource_name = "main"
+length = 0.5
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MeshInstance3D:material_override:shader_parameter/swing_factor")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(0.5, 1),
+"update": 0,
+"values": [0.0, 0.999999977648]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AudioStreamPlayer3D:playing")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_pcwlp"]
+resource_name = "stop"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MeshInstance3D:material_override:shader_parameter/swing_factor")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AudioStreamPlayer3D:playing")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_civrm"]
+_data = {
+&"RESET": SubResource("Animation_nc3hy"),
+&"main": SubResource("Animation_2yv60"),
+&"stop": SubResource("Animation_pcwlp")
+}
+
+[node name="VFXWindSwing" type="Node3D" unique_id=852351070]
+script = ExtResource("1_pcwlp")
+primary_color = Color(1, 1, 1, 1)
+secondary_color = Color(0.3764706, 0.56078434, 0.54901963, 1)
+tertiary_color = Color(0.34117648, 0.3882353, 0.42352942, 1)
+emission = 2.0
+noise_texture = SubResource("NoiseTexture2D_pcwlp")
+noise_scale = Vector2(1, 3)
+noise_scroll = Vector2(0.5, 0)
+edge_position = 0.1
+edge_hardness = 0.8
+autoplay = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=821726857]
+material_override = SubResource("ShaderMaterial_fps6j")
+mesh = SubResource("PlaneMesh_wwd8k")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1403630488]
+libraries/ = SubResource("AnimationLibrary_civrm")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=1026949254]
+max_distance = 3.0

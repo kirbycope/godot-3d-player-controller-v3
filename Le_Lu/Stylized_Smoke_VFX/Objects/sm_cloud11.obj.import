@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://hplb2st8mitb"
+path="res://.godot/imported/sm_cloud11.obj-88403bbb73733cb1535f492e83f08196.mesh"
+
+[deps]
+
+files=["res://.godot/imported/sm_cloud11.obj-88403bbb73733cb1535f492e83f08196.mesh"]
+
+source_file="res://Le_Lu/Stylized_Smoke_VFX/Objects/sm_cloud11.obj"
+dest_files=["res://.godot/imported/sm_cloud11.obj-88403bbb73733cb1535f492e83f08196.mesh", "res://.godot/imported/sm_cloud11.obj-88403bbb73733cb1535f492e83f08196.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

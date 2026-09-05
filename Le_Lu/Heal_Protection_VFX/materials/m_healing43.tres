@@ -1,0 +1,59 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://lhotu1tsydst"]
+
+[ext_resource type="Shader" path="res://Le_Lu/Wind_VFX/shaders/s_master_fire2_fresnel_ds.tres" id="1_hkjgm"]
+[ext_resource type="Texture2D" uid="uid://bi58oq2oh63dp" path="res://Le_Lu/Heal_Protection_VFX/textures/T_NHU85.png" id="2_g61bq"]
+
+
+
+[sub_resource type="Gradient" id="Gradient_x3epj"]
+offsets = PackedFloat32Array(0, 0.918919, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.659459, 0.659459, 0.659459, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_qx41o"]
+gradient = SubResource("Gradient_x3epj")
+
+[sub_resource type="Gradient" id="Gradient_njwoi"]
+offsets = PackedFloat32Array(0.45614, 0.832432, 1)
+colors = PackedColorArray(0.552, 0.69, 0, 0, 0.532053, 0.64, 0.3584, 1, 0.65, 1, 0.4, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_6e1wj"]
+gradient = SubResource("Gradient_njwoi")
+
+[sub_resource type="Gradient" id="Gradient_b6fjh"]
+interpolation_color_space = 2
+offsets = PackedFloat32Array(0.419118, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_j78xm"]
+gradient = SubResource("Gradient_b6fjh")
+fill_to = Vector2(0, 1)
+
+[sub_resource type="Gradient" id="Gradient_slbtn"]
+offsets = PackedFloat32Array(1)
+colors = PackedColorArray(1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_wwf8h"]
+gradient = SubResource("Gradient_slbtn")
+
+[sub_resource type="Gradient" id="Gradient_0lki7"]
+interpolation_color_space = 2
+offsets = PackedFloat32Array(0, 0.943522, 0.973422, 1)
+colors = PackedColorArray(0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_co8hk"]
+gradient = SubResource("Gradient_0lki7")
+fill_to = Vector2(0, 1)
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_hkjgm")
+shader_parameter/Speed_XY2 = Vector2(0, 1)
+shader_parameter/Scale_XY2 = Vector2(2, 1)
+shader_parameter/Fresnel_Invert = true
+shader_parameter/Fresnel_power = 1.0
+shader_parameter/Color_Intensity2 = 1.45
+shader_parameter/Base_noise2 = ExtResource("2_g61bq")
+shader_parameter/Fresnel_Gradient_Color_1D = SubResource("GradientTexture1D_qx41o")
+shader_parameter/Texture_substract = SubResource("GradientTexture2D_wwf8h")
+shader_parameter/Texture_add = SubResource("GradientTexture2D_j78xm")
+shader_parameter/Gradient_Color_1D2 = SubResource("GradientTexture1D_6e1wj")
+shader_parameter/Texture_substract_end = SubResource("GradientTexture2D_co8hk")

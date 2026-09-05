@@ -1,0 +1,221 @@
+[gd_scene format=3 uid="uid://6pcia2lyj3we"]
+
+[ext_resource type="Texture2D" uid="uid://dgptdu8p2bg27" path="res://Le_Lu/Explosions_VFX/misc/textures/T_checker21.jpg" id="1_co6w6"]
+[ext_resource type="Texture2D" uid="uid://ol4ehra5j1xn" path="res://Le_Lu/Explosions_VFX/misc/textures/T_exp_a.png" id="2_yfsu7"]
+[ext_resource type="Texture2D" uid="uid://bduei5vbjfwho" path="res://Le_Lu/Explosions_VFX/misc/textures/T_exp_b.png" id="3_dicy3"]
+[ext_resource type="Texture2D" uid="uid://bvedwunu40csu" path="res://Le_Lu/Explosions_VFX/misc/textures/T_exp_c.png" id="4_hel1j"]
+[ext_resource type="PackedScene" uid="uid://d2wccndn1if2p" path="res://Le_Lu/Explosions_VFX/Scenes/VFX_Explosion_A.tscn" id="4_wvq8e"]
+[ext_resource type="PackedScene" uid="uid://bwlhnbmg4j1i3" path="res://Le_Lu/Explosions_VFX/Scenes/VFX_Explosion_B.tscn" id="5_avtvd"]
+[ext_resource type="Texture2D" uid="uid://dxtrsk3r1emt8" path="res://Le_Lu/Explosions_VFX/misc/textures/T_mini_exp_1.png" id="5_wyja7"]
+[ext_resource type="Texture2D" uid="uid://cl7ipsla4fdd5" path="res://Le_Lu/Explosions_VFX/misc/textures/T_mini_exp_2.png" id="6_me0q2"]
+[ext_resource type="PackedScene" uid="uid://dh4j5ox5dh47g" path="res://Le_Lu/Explosions_VFX/Scenes/VFX_Explosion_C.tscn" id="6_s55xp"]
+[ext_resource type="PackedScene" uid="uid://ch6kqo2qu7mhf" path="res://Le_Lu/Explosions_VFX/Scenes/VFX_mini_explosion_1.tscn" id="7_87xvt"]
+[ext_resource type="Texture2D" uid="uid://camid5iqsj7lc" path="res://Le_Lu/Explosions_VFX/misc/textures/T_mini_exp_soil.png" id="7_xgxv2"]
+[ext_resource type="PackedScene" uid="uid://yrbt0hx220ou" path="res://Le_Lu/Explosions_VFX/Scenes/VFX_mini_explosion_2.tscn" id="8_4b6gw"]
+[ext_resource type="PackedScene" uid="uid://bh35xsk4f8kg0" path="res://Le_Lu/Explosions_VFX/Scenes/VFX_mini_explosion_soil_1.tscn" id="9_j3lsp"]
+
+[sub_resource type="GDScript" id="GDScript_bvcii"]
+resource_name = "preload_presentation"
+script/source = "@tool
+extends Node
+
+
+@export var my_bool:bool = false:
+	set(new_my_bool):
+		my_bool = new_my_bool
+		self.play_all_animations(my_bool)
+
+var number = 0;
+
+var anim_p : Array[AnimationPlayer] = [null,null,null,null,null,null];
+
+func _ready() -> void:
+	$map_stuff/AnimationPlayer.play("Init")
+	
+	anim_p[0] = $explosion_A.find_child("AnimationPlayer");
+	anim_p[1] = $explosion_B.find_child("AnimationPlayer");
+	anim_p[2] = $explosion_C.find_child("AnimationPlayer");
+	anim_p[3] = $mini_explosion_1.find_child("AnimationPlayer");
+	anim_p[4] = $mini_explosion_2.find_child("AnimationPlayer");
+	anim_p[5] = $mini_explosion_soil_1.find_child("AnimationPlayer");
+	
+	
+func _run() -> void:
+	$map_stuff/AnimationPlayer.play("Init")
+	
+	anim_p[0] = $explosion_A.find_child("AnimationPlayer");
+	anim_p[1] = $explosion_B.find_child("AnimationPlayer");
+	anim_p[2] = $explosion_C.find_child("AnimationPlayer");
+	anim_p[3] = $mini_explosion_1.find_child("AnimationPlayer");
+	anim_p[4] = $mini_explosion_2.find_child("AnimationPlayer");
+	anim_p[5] = $mini_explosion_soil_1.find_child("AnimationPlayer");
+
+func play_all_animations(_type:bool)->void:
+	
+	anim_p[0] = $explosion_A.find_child("AnimationPlayer");
+	anim_p[1] = $explosion_B.find_child("AnimationPlayer");
+	anim_p[2] = $explosion_C.find_child("AnimationPlayer");
+	anim_p[3] = $mini_explosion_1.find_child("AnimationPlayer");
+	anim_p[4] = $mini_explosion_2.find_child("AnimationPlayer");
+	anim_p[5] = $mini_explosion_soil_1.find_child("AnimationPlayer");
+	
+	match _type:
+		true:
+			if anim_p[number].is_playing()==false:
+				anim_p[number].play("Init");
+			number += 1;
+			if number > 5:
+				number = 0;
+"
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_y7rnt"]
+sky_top_color = Color(0.266575, 0.266575, 0.266575, 1)
+sky_horizon_color = Color(0.654232, 0.654232, 0.654232, 1)
+ground_bottom_color = Color(0.314316, 0.314316, 0.314316, 1)
+ground_horizon_color = Color(0.381703, 0.381703, 0.381703, 1)
+
+[sub_resource type="Sky" id="Sky_jx0kq"]
+sky_material = SubResource("ProceduralSkyMaterial_y7rnt")
+
+[sub_resource type="Environment" id="Environment_4f8yv"]
+background_mode = 2
+sky = SubResource("Sky_jx0kq")
+tonemap_mode = 2
+glow_enabled = true
+fog_enabled = true
+fog_light_color = Color(0.160364, 0.177871, 0.205393, 1)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_87yf2"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e6n4x"]
+albedo_color = Color(0.6237, 0.71064, 0.81, 1)
+albedo_texture = ExtResource("1_co6w6")
+normal_texture = SubResource("CompressedTexture2D_87yf2")
+uv1_scale = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_f8ahm"]
+size = Vector2(500, 500)
+
+[sub_resource type="Animation" id="Animation_8n0bh"]
+resource_name = "Init"
+length = 0.28
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:my_bool")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.0333333, 0.0666667, 0.1, 0.133333, 0.2, 0.233333),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [true, false, true, false, true, false]
+}
+
+[sub_resource type="Animation" id="Animation_r30f8"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:my_bool")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_5btlp"]
+_data = {
+"Init": SubResource("Animation_8n0bh"),
+"RESET": SubResource("Animation_r30f8")
+}
+
+[node name="map1" type="Node"]
+script = SubResource("GDScript_bvcii")
+
+[node name="map_stuff" type="Node" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="map_stuff"]
+environment = SubResource("Environment_4f8yv")
+
+[node name="floor" type="MeshInstance3D" parent="map_stuff"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0304239, 0)
+material_override = SubResource("StandardMaterial3D_e6n4x")
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_f8ahm")
+skeleton = NodePath("../..")
+
+[node name="SpotLight3D" type="SpotLight3D" parent="map_stuff"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 13.9646, -2.29847)
+light_energy = 13.601
+shadow_enabled = true
+spot_range = 79.614
+spot_angle = 53.2
+spot_angle_attenuation = 0.37893
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="map_stuff"]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+light_energy = 0.0
+shadow_enabled = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="map_stuff"]
+root_node = NodePath("../..")
+libraries = {
+"": SubResource("AnimationLibrary_5btlp")
+}
+autoplay = "Init"
+
+[node name="text" type="Node" parent="map_stuff"]
+
+[node name="expA" type="Sprite3D" parent="map_stuff/text"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -10.1768, 5.74672, -5.68828)
+billboard = 2
+texture = ExtResource("2_yfsu7")
+
+[node name="expB" type="Sprite3D" parent="map_stuff/text"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0.0956163, 5.74672, -5.68828)
+billboard = 2
+texture = ExtResource("3_dicy3")
+
+[node name="expC" type="Sprite3D" parent="map_stuff/text"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 13.2195, 5.74672, -5.68828)
+billboard = 2
+texture = ExtResource("4_hel1j")
+
+[node name="mini1" type="Sprite3D" parent="map_stuff/text"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -8.58919, 2.87874, 3.88075)
+billboard = 2
+texture = ExtResource("5_wyja7")
+
+[node name="mini2" type="Sprite3D" parent="map_stuff/text"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 8.56033, 2.87874, 3.88075)
+billboard = 2
+texture = ExtResource("6_me0q2")
+
+[node name="mini_soil" type="Sprite3D" parent="map_stuff/text"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 2.87874, 3.88075)
+billboard = 2
+texture = ExtResource("7_xgxv2")
+
+[node name="explosion_A" parent="." instance=ExtResource("4_wvq8e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.779, 0, -5.87132)
+
+[node name="explosion_B" parent="." instance=ExtResource("5_avtvd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5.40663)
+
+[node name="explosion_C" parent="." instance=ExtResource("6_s55xp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.3882, 0, -6.25482)
+
+[node name="mini_explosion_1" parent="." instance=ExtResource("7_87xvt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.77441, 1.18916, 4.50468)
+
+[node name="mini_explosion_2" parent="." instance=ExtResource("8_4b6gw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.27682, 1.18916, 4.50468)
+
+[node name="mini_explosion_soil_1" parent="." instance=ExtResource("9_j3lsp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00881767, 0, 4.50468)

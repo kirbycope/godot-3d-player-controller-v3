@@ -1,0 +1,237 @@
+[gd_scene format=3 uid="uid://bl0dcwc1fnxo0"]
+
+[ext_resource type="Texture2D" uid="uid://ckvx34gs4lmmm" path="res://assets/Misc/Floor/pavement_05_diff_4k.jpg" id="1_6igcc"]
+[ext_resource type="Texture2D" uid="uid://bdbbutdkcu7ib" path="res://assets/Misc/Floor/pavement_05_ao_4k.jpg" id="2_3bfcl"]
+[ext_resource type="Texture2D" uid="uid://bopsq1q28v7cu" path="res://assets/Misc/Floor/pavement_05_nor_dx_4k.jpg" id="3_vj4dy"]
+[ext_resource type="Texture2D" uid="uid://d0fcgbxok3iwi" path="res://assets/Misc/Floor/pavement_05_rough_4k.jpg" id="4_x5g5b"]
+[ext_resource type="PackedScene" uid="uid://081ilq2h8k5i" path="res://Le_Lu/Magic_Area_VFX/Scenes/VFX_Area_HealingFlower.tscn" id="5_q7feo"]
+[ext_resource type="PackedScene" uid="uid://it6nw8wyb1hv" path="res://Le_Lu/Magic_Area_VFX/Scenes/VFX_Area_NumbersBlue.tscn" id="6_mqx4a"]
+[ext_resource type="PackedScene" uid="uid://bssynd4m0y66" path="res://assets/Character/char1.tscn" id="22_eaphg"]
+[ext_resource type="Shader" path="res://Le_Lu/Magic_Area_VFX/Shaders/s_added.tres" id="23_bbxlo"]
+[ext_resource type="Shader" path="res://Le_Lu/Magic_Area_VFX/Shaders/s_bar_shader.tres" id="24_5nh7j"]
+[ext_resource type="Texture2D" uid="uid://hjybfn8goton" path="res://Le_Lu/Magic_Area_VFX/Textures/Misc/T_text1.png" id="25_6y1wl"]
+
+[sub_resource type="Environment" id="Environment_gcr42"]
+background_energy_multiplier = 0.3
+glow_enabled = true
+glow_blend_mode = 1
+fog_enabled = true
+fog_light_energy = 0.1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ccpkt"]
+albedo_texture = ExtResource("1_6igcc")
+roughness_texture = ExtResource("4_x5g5b")
+normal_enabled = true
+normal_texture = ExtResource("3_vj4dy")
+ao_enabled = true
+ao_light_affect = 0.51
+ao_texture = ExtResource("2_3bfcl")
+uv1_scale = Vector3(5, 5, 5)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_rni72"]
+size = Vector2(30, 30)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_42p78"]
+render_priority = 0
+shader = ExtResource("23_bbxlo")
+shader_parameter/ColorParameter = Color(0.5, 1.8, 1.2, 1)
+shader_parameter/Fresnel_Opacity = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yix0u"]
+render_priority = 0
+shader = ExtResource("24_5nh7j")
+shader_parameter/Healing = true
+shader_parameter/FloatParameter = 0.012
+
+[sub_resource type="QuadMesh" id="QuadMesh_xf0pq"]
+
+[sub_resource type="GDScript" id="GDScript_area_showcase"]
+resource_name = "MagicAreaShowcase"
+script/source = "@tool
+extends Node
+
+@export_enum("Healing Flower", "Blue Mana Area", "Both Areas") var selected_area: int = 0:
+	set(val):
+		selected_area = val
+		if is_inside_tree():
+			apply_selection(selected_area)
+
+func _ready() -> void:
+	_setup_camera_and_ui()
+	apply_selection(selected_area)
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.keycode == KEY_1:
+			set_area(0)
+		elif event.keycode == KEY_2:
+			set_area(1)
+		elif event.keycode == KEY_3:
+			set_area(2)
+		elif event.keycode == KEY_4:
+			toggle_character()
+
+func set_area(idx: int) -> void:
+	selected_area = idx
+	apply_selection(idx)
+
+func toggle_character() -> void:
+	var root_node := get_node_or_null("root")
+	if root_node:
+		root_node.visible = not root_node.visible
+
+func apply_selection(idx: int) -> void:
+	if not is_inside_tree():
+		return
+	
+	var flower_area := get_node_or_null("VFX Flower Healing Area")
+	var blue_area := get_node_or_null("Blue Arua")
+	
+	match idx:
+		0: # Healing Flower
+			if flower_area:
+				flower_area.visible = true
+				flower_area.position = Vector3(-1.94, 0, 0)
+			if blue_area:
+				blue_area.visible = false
+		1: # Blue Mana Area
+			if flower_area:
+				flower_area.visible = false
+			if blue_area:
+				blue_area.visible = true
+				blue_area.position = Vector3(-1.94, 0, 0)
+		2: # Both Areas side by side
+			if flower_area:
+				flower_area.visible = true
+				flower_area.position = Vector3(-5.0, 0, 0)
+			if blue_area:
+				blue_area.visible = true
+				blue_area.position = Vector3(2.5, 0, 0)
+
+func _setup_camera_and_ui() -> void:
+	if Engine.is_editor_hint():
+		return
+	
+	if not get_node_or_null("ShowcaseCamera"):
+		var cam := Camera3D.new()
+		cam.name = "ShowcaseCamera"
+		cam.current = true
+		cam.position = Vector3(0, 4.5, 9.0)
+		cam.rotation_degrees = Vector3(-18, 0, 0)
+		add_child(cam)
+	
+	if not get_node_or_null("ShowcaseUI"):
+		var canvas := CanvasLayer.new()
+		canvas.name = "ShowcaseUI"
+		canvas.layer = 10
+		add_child(canvas)
+		
+		var panel := PanelContainer.new()
+		panel.anchors_preset = Control.PRESET_BOTTOM_WIDE
+		panel.anchor_top = 1.0
+		panel.anchor_bottom = 1.0
+		panel.offset_top = -65.0
+		panel.offset_bottom = -15.0
+		panel.offset_left = 20.0
+		panel.offset_right = -20.0
+		canvas.add_child(panel)
+		
+		var style := StyleBoxFlat.new()
+		style.bg_color = Color(0.1, 0.12, 0.18, 0.9)
+		style.set_corner_radius_all(10)
+		style.set_content_margin_all(8)
+		panel.add_theme_stylebox_override("panel", style)
+		
+		var hbox := HBoxContainer.new()
+		hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+		hbox.add_theme_constant_override("separation", 12)
+		panel.add_child(hbox)
+		
+		var label := Label.new()
+		label.text = "Magic Area Selectors:"
+		label.add_theme_font_size_override("font_size", 14)
+		hbox.add_child(label)
+		
+		var btn_flower := Button.new()
+		btn_flower.text = "Healing Flower (1)"
+		btn_flower.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		btn_flower.pressed.connect(func(): set_area(0))
+		hbox.add_child(btn_flower)
+		
+		var btn_blue := Button.new()
+		btn_blue.text = "Blue Mana Area (2)"
+		btn_blue.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		btn_blue.pressed.connect(func(): set_area(1))
+		hbox.add_child(btn_blue)
+		
+		var btn_both := Button.new()
+		btn_both.text = "Both Areas (3)"
+		btn_both.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		btn_both.pressed.connect(func(): set_area(2))
+		hbox.add_child(btn_both)
+		
+		var btn_char := Button.new()
+		btn_char.text = "Toggle Character (4)"
+		btn_char.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		btn_char.pressed.connect(toggle_character)
+		hbox.add_child(btn_char)
+"
+
+[node name="map1" type="Node"]
+script = SubResource("GDScript_area_showcase")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_gcr42")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0429483, 0)
+material_override = SubResource("StandardMaterial3D_ccpkt")
+mesh = SubResource("PlaneMesh_rni72")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -9.66092)
+material_override = SubResource("StandardMaterial3D_ccpkt")
+mesh = SubResource("PlaneMesh_rni72")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 13.6188, 0, 1.45393)
+material_override = SubResource("StandardMaterial3D_ccpkt")
+mesh = SubResource("PlaneMesh_rni72")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="."]
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, -13.2729, 0, 1.45393)
+material_override = SubResource("StandardMaterial3D_ccpkt")
+mesh = SubResource("PlaneMesh_rni72")
+
+[node name="VFX Flower Healing Area" parent="." instance=ExtResource("5_q7feo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.94461, 0, 0)
+
+[node name="Blue Arua" parent="." instance=ExtResource("6_mqx4a")]
+visible = false
+
+[node name="root" parent="." instance=ExtResource("22_eaphg")]
+
+[node name="armor-1_003" parent="root/FIN/Skeleton3D" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0465547, 0)
+material_overlay = SubResource("ShaderMaterial_42p78")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="root"]
+transform = Transform3D(0.766224, 0, 0, 0, 0.114333, 0, 0, 0, 1.00484, -0.104584, 2.00073, 0)
+material_override = SubResource("ShaderMaterial_yix0u")
+mesh = SubResource("QuadMesh_xf0pq")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.47929, 2.56154, 0)
+
+[node name="OmniLight3D3" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.23981, 2.56154, -5.98134)
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.44546, 1.42614, 0)
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, -0.815948, 2.39929, 0)
+texture = ExtResource("25_6y1wl")
+
+[editable path="VFX Flower Healing Area"]
+[editable path="root"]

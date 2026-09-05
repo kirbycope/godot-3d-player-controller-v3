@@ -1,0 +1,25 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://kqmvhtgd6ok5"]
+
+[ext_resource type="Shader" path="res://Le_Lu/Vertical_Beam_VFX/Shaders/s_YingYang_Treshold_A.tres" id="1_mu6sa"]
+[ext_resource type="Texture2D" uid="uid://cuewtha68nhd7" path="res://Le_Lu/Vertical_Beam_VFX/Textures/T_YingYangx1.png" id="2_byrcy"]
+[ext_resource type="Texture2D" uid="uid://cda3bjkwmcmad" path="res://Le_Lu/Vertical_Beam_VFX/Textures/T_VFX_WindNoise1.png" id="3_gr82u"]
+
+[sub_resource type="Gradient" id="Gradient_vgja0"]
+colors = PackedColorArray(0.678944, 0.678944, 0.678944, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_kgs2m"]
+gradient = SubResource("Gradient_vgja0")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.482906)
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_mu6sa")
+shader_parameter/Color_Intensity = 3.0
+shader_parameter/Scale_XY = Vector2(1, 1)
+shader_parameter/Speed_XY = Vector2(0, 0)
+shader_parameter/Base_Texture = ExtResource("2_byrcy")
+shader_parameter/Disolver_Texture = ExtResource("3_gr82u")
+shader_parameter/Disolver_Add_Texture = SubResource("GradientTexture2D_kgs2m")
+shader_parameter/Alpha_Treshold = 0.03

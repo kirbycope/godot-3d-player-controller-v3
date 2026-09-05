@@ -1,0 +1,76 @@
+[gd_scene format=3 uid="uid://nx8mmvtef04c"]
+
+[ext_resource type="Texture2D" uid="uid://yyhxvy2wfomg" path="res://Le_Lu/Fire_VFX/textures/T_smoke_bb4.png" id="1_k37ux"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_112i8"]
+transparency = 2
+alpha_scissor_threshold = 0.148
+alpha_antialiasing_mode = 0
+shading_mode = 0
+vertex_color_use_as_albedo = true
+vertex_color_is_srgb = true
+albedo_texture = ExtResource("1_k37ux")
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="Curve" id="Curve_apikv"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.30566, 1), -0.191943, -0.191943, 0, 0, Vector2(1, 0), -1.60079, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_g3ns6"]
+texture_mode = 1
+curve = SubResource("Curve_apikv")
+
+[sub_resource type="Gradient" id="Gradient_vppwy"]
+interpolation_color_space = 1
+offsets = PackedFloat32Array(0, 0.105485, 0.700422)
+colors = PackedColorArray(1, 1, 1, 1, 0.716935, 0.716935, 0.716935, 1, 0.233926, 0.233925, 0.233925, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_t7a5n"]
+gradient = SubResource("Gradient_vppwy")
+
+[sub_resource type="Curve" id="Curve_8qdbs"]
+_data = [Vector2(0, 0.401716), 0.0, 1.84746, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_ubkrb"]
+curve = SubResource("Curve_8qdbs")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_fp1dy"]
+particle_flag_rotate_y = true
+emission_shape = 1
+emission_sphere_radius = 0.33
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(0, 1, 0)
+spread = 13.767
+initial_velocity_min = 0.5
+initial_velocity_max = 2.5
+angular_velocity_min = -322.0
+angular_velocity_max = 222.0
+radial_velocity_min = -2.23517e-05
+radial_velocity_max = 0.499978
+gravity = Vector3(0, 0, 0)
+scale_min = 0.4
+scale_max = 0.8
+scale_curve = SubResource("CurveTexture_ubkrb")
+color = Color(2.5, 1.5, 1, 1)
+color_ramp = SubResource("GradientTexture1D_t7a5n")
+alpha_curve = SubResource("CurveTexture_g3ns6")
+
+[sub_resource type="QuadMesh" id="QuadMesh_80lqt"]
+
+[node name="VFX_FireDynamic_Anime_C" type="Node3D"]
+
+[node name="firex4" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, -7.45058e-09, 0, 1, 0, 7.45058e-09, 0, 1, 0, 0, 0)
+layers = 4
+material_override = SubResource("StandardMaterial3D_112i8")
+cast_shadow = 0
+amount = 50
+lifetime = 0.7
+process_material = SubResource("ParticleProcessMaterial_fp1dy")
+draw_pass_1 = SubResource("QuadMesh_80lqt")

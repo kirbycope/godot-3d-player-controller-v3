@@ -1,0 +1,229 @@
+[gd_scene format=3 uid="uid://cmtfjfxicqomp"]
+
+[ext_resource type="Script" uid="uid://cgl11a6yuuxsx" path="res://assets/BinbunVFX_Vol2/BattleFX/script/VFXBattleSwingBB.gd" id="1_yl3dt"]
+[ext_resource type="Shader" uid="uid://bp0qgsf40g6nt" path="res://assets/BinbunVFX_Vol2/BattleFX/shader/swing.gdshader" id="2_dp40t"]
+[ext_resource type="Shader" uid="uid://biniuh72eqnpg" path="res://assets/BinbunVFX_Vol2/BattleFX/shader/claw.gdshader" id="3_mosyg"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_5gaam"]
+noise_type = 2
+frequency = 0.02
+fractal_octaves = 2
+cellular_distance_function = 2
+cellular_jitter = 10.0
+cellular_return_type = 0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_0nt80"]
+generate_mipmaps = false
+noise = SubResource("FastNoiseLite_5gaam")
+seamless = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8ngpj"]
+render_priority = 0
+shader = ExtResource("2_dp40t")
+shader_parameter/primary_color = Color(0.26666668, 1, 0.5411765, 1)
+shader_parameter/secondary_color = Color(0, 0.6117647, 0.43529412, 1)
+shader_parameter/tertiary_color = Color(0, 0.3019608, 0.33333334, 1)
+shader_parameter/emission = 3.0
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_0nt80")
+shader_parameter/noise_scale = Vector2(1, 1)
+shader_parameter/noise_scroll = Vector2(1, 0)
+shader_parameter/noise_shape = 1.0
+shader_parameter/swing_center = 0.9
+shader_parameter/edge_position = 0.1
+shader_parameter/edge_hardness = 0.8
+shader_parameter/swing_factor = 0.0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_dxyee"]
+size = Vector2(3, 3)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cjxtt"]
+render_priority = 0
+shader = ExtResource("3_mosyg")
+shader_parameter/primary_color = Color(0.26666668, 1, 0.5411765, 1)
+shader_parameter/secondary_color = Color(0, 0.6117647, 0.43529412, 1)
+shader_parameter/emission = 3.0
+shader_parameter/claw_factor = 0.0
+
+[sub_resource type="TorusMesh" id="TorusMesh_ww0he"]
+inner_radius = 1.3
+outer_radius = 1.5
+
+[sub_resource type="Animation" id="Animation_tg7e8"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Claw1:material_override:shader_parameter/claw_factor")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Swing1:material_override:shader_parameter/swing_factor")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("AudioStreamPlayer3D:playing")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_648cl"]
+resource_name = "main"
+length = 0.6
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Claw1:material_override:shader_parameter/claw_factor")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(0.4, 1),
+"update": 0,
+"values": [0.0, 0.999999977648]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Swing1:material_override:shader_parameter/swing_factor")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(0.6, 1),
+"update": 0,
+"values": [0.0, 0.999999977648]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("AudioStreamPlayer3D:playing")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_m33aw"]
+resource_name = "stop"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Claw1:material_override:shader_parameter/claw_factor")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Swing1:material_override:shader_parameter/swing_factor")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("AudioStreamPlayer3D:playing")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_tj6cp"]
+_data = {
+&"RESET": SubResource("Animation_tg7e8"),
+&"main": SubResource("Animation_648cl"),
+&"stop": SubResource("Animation_m33aw")
+}
+
+[node name="VFXDataClaw" type="Node3D" unique_id=925690568]
+script = ExtResource("1_yl3dt")
+primary_color = Color(0.26666668, 1, 0.5411765, 1)
+secondary_color = Color(0, 0.6117647, 0.43529412, 1)
+tertiary_color = Color(0, 0.3019608, 0.33333334, 1)
+emission = 3.0
+noise_texture = SubResource("NoiseTexture2D_0nt80")
+edge_position = 0.1
+edge_hardness = 0.8
+
+[node name="Swing1" type="MeshInstance3D" parent="." unique_id=983178190]
+transform = Transform3D(0.9396926, 0, 0.34202012, 0.34202012, -4.371139e-08, -0.9396926, 1.4950174e-08, 1, -4.1075268e-08, 0, 0, 0)
+rotation_order = 1
+material_override = SubResource("ShaderMaterial_8ngpj")
+mesh = SubResource("PlaneMesh_dxyee")
+
+[node name="Swing2" type="MeshInstance3D" parent="." unique_id=1885728218]
+transform = Transform3D(0.84572333, 0, 0.3078181, 0.3078181, -3.934025e-08, -0.84572333, 1.3455157e-08, 0.9, -3.696774e-08, 0, 0, 0.3)
+rotation_order = 1
+material_override = SubResource("ShaderMaterial_8ngpj")
+mesh = SubResource("PlaneMesh_dxyee")
+
+[node name="Swing3" type="MeshInstance3D" parent="." unique_id=765665452]
+transform = Transform3D(0.84572333, 0, 0.3078181, 0.3078181, -3.934025e-08, -0.84572333, 1.3455157e-08, 0.9, -3.696774e-08, 0, 0, -0.3)
+rotation_order = 1
+material_override = SubResource("ShaderMaterial_8ngpj")
+mesh = SubResource("PlaneMesh_dxyee")
+
+[node name="Claw1" type="MeshInstance3D" parent="." unique_id=503433511]
+transform = Transform3D(0.8660254, 0, 0.5, 0.5, -4.371139e-08, -0.8660254, 2.1855694e-08, 1, -3.7855173e-08, 0, 0, 0)
+rotation_order = 1
+material_override = SubResource("ShaderMaterial_cjxtt")
+mesh = SubResource("TorusMesh_ww0he")
+
+[node name="Claw2" type="MeshInstance3D" parent="." unique_id=21267129]
+transform = Transform3D(0.7794228, 0, 0.45, 0.45, -3.934025e-08, -0.7794228, 1.9670125e-08, 0.9, -3.4069654e-08, 0, 0, 0.3)
+rotation_order = 1
+material_override = SubResource("ShaderMaterial_cjxtt")
+mesh = SubResource("TorusMesh_ww0he")
+
+[node name="Claw3" type="MeshInstance3D" parent="." unique_id=88406930]
+transform = Transform3D(0.7794228, 0, 0.45, 0.45, -3.934025e-08, -0.7794228, 1.9670125e-08, 0.9, -3.4069654e-08, 0, 0, -0.3)
+rotation_order = 1
+material_override = SubResource("ShaderMaterial_cjxtt")
+mesh = SubResource("TorusMesh_ww0he")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=193394932]
+libraries/ = SubResource("AnimationLibrary_tj6cp")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=1864206215]
+max_distance = 3.0

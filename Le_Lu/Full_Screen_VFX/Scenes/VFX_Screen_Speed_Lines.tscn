@@ -1,0 +1,82 @@
+[gd_scene format=3 uid="uid://cjw53y12uhrpw"]
+
+[ext_resource type="Shader" path="res://Le_Lu/Full_Screen_VFX/shaders/s_fullscreen_polar.tres" id="1_le7gr"]
+[ext_resource type="Texture2D" uid="uid://djlb0gep2whiy" path="res://Le_Lu/Full_Screen_VFX/textures/T_VFX_WindNoise1.png" id="2_7lgmk"]
+
+
+[sub_resource type="Gradient" id="Gradient_xhdr2"]
+colors = PackedColorArray(0.633757, 0.633757, 0.633757, 0, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_wvya5"]
+gradient = SubResource("Gradient_xhdr2")
+
+[sub_resource type="Gradient" id="Gradient_jauk2"]
+offsets = PackedFloat32Array(0.411483, 0.91866)
+colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_lj0tj"]
+gradient = SubResource("Gradient_jauk2")
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ca0dy"]
+render_priority = 0
+shader = ExtResource("1_le7gr")
+shader_parameter/ColorIntensity = 1.0
+shader_parameter/Multiply_or_Substract = true
+shader_parameter/Speed = Vector2(-4, 0.03)
+shader_parameter/Scale = Vector2(0.1, 5)
+shader_parameter/Substract_Speed = Vector2(0, 0)
+shader_parameter/Substract_Scale = Vector2(1, 1)
+shader_parameter/Texture_Noise = ExtResource("2_7lgmk")
+shader_parameter/Mask = SubResource("GradientTexture2D_lj0tj")
+shader_parameter/Gradient_Color1D = SubResource("GradientTexture1D_wvya5")
+
+[sub_resource type="QuadMesh" id="QuadMesh_dnupf"]
+size = Vector2(2, 2)
+
+[sub_resource type="Animation" id="Animation_0pm7b"]
+resource_name = "Start"
+length = 0.2333
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:material_override:shader_parameter/Mask:gradient:colors")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.0333333, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [PackedColorArray(0, 0, 0, 1, 0, 0, 0, 1), PackedColorArray(0, 0, 0, 1, 1, 1, 1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.0333333),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ai4bl"]
+_data = {
+"Start": SubResource("Animation_0pm7b")
+}
+
+[node name="VFX_Screen_Speed_Lines" type="MeshInstance3D"]
+visible = false
+layers = 4
+material_override = SubResource("ShaderMaterial_ca0dy")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_dnupf")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_ai4bl")
+}

@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://c7dmgzone0001"]
+[gd_scene format=3 uid="uid://c7dmg0one0001"]
 
 [ext_resource type="Script" path="res://scenes/damage_zone.gd" id="1_zone"]
 

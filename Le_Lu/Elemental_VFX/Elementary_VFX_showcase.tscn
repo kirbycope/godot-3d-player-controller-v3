@@ -1,0 +1,288 @@
+[gd_scene format=3 uid="uid://dkuhfdmtwdiup"]
+
+[ext_resource type="PackedScene" uid="uid://bw84oyjp44jwg" path="res://Le_Lu/Elemental_VFX/Scenes/VFX_MagicCircle_Pi1.tscn" id="3_wkl0x"]
+[ext_resource type="PackedScene" uid="uid://0syfi6mplmd0" path="res://Le_Lu/Elemental_VFX/Scenes/VFX_HitMagic_Pk1.tscn" id="8_2w5y2"]
+[ext_resource type="PackedScene" uid="uid://b7okxb4mroq2r" path="res://Le_Lu/Elemental_VFX/Scenes/VFX_FireWall_B1_Curved.tscn" id="10_7uehq"]
+[ext_resource type="PackedScene" uid="uid://0sdopkp8d0dq" path="res://Le_Lu/Elemental_VFX/Scenes/VFX_AcidWall_K1_AlphaClipped.tscn" id="11_ns2ak"]
+[ext_resource type="PackedScene" uid="uid://bomsoicetwrmy" path="res://Le_Lu/Elemental_VFX/Scenes/VFX_AcidWall_K1.tscn" id="19_ajq7k"]
+[ext_resource type="Texture2D" uid="uid://bws5lxbkxyk2e" path="res://Le_Lu/Elemental_VFX/Misc/textures/T_4C1DW4LL.png" id="19_pmpnr"]
+[ext_resource type="Texture2D" uid="uid://bno4x7s2omqy6" path="res://Le_Lu/Elemental_VFX/Misc/textures/T_4C1DW4LLop.png" id="20_jsy6t"]
+[ext_resource type="Texture2D" uid="uid://b04g0fd80ldw6" path="res://Le_Lu/Elemental_VFX/Misc/textures/T_3XPL0510N3L3CTR1CB.png" id="21_p4a0k"]
+[ext_resource type="PackedScene" uid="uid://bo775j57yrjpm" path="res://Le_Lu/Elemental_VFX/Scenes/VFX_FireWall_A1_AlphaClipped.tscn" id="21_sxssk"]
+[ext_resource type="PackedScene" uid="uid://cyl12uhlgqys0" path="res://Le_Lu/Elemental_VFX/Scenes/VFX_FireWall_A1_.tscn" id="22_ekkon"]
+[ext_resource type="Texture2D" uid="uid://cswj67dglmm5l" path="res://Le_Lu/Elemental_VFX/Misc/textures/T_D4RKSH4D0WR1NG.png" id="22_hj3s7"]
+[ext_resource type="Texture2D" uid="uid://i6eab2dlcj4v" path="res://Le_Lu/Elemental_VFX/Misc/textures/T_F1R3GR4V1TYR1NG.png" id="23_akiav"]
+[ext_resource type="PackedScene" uid="uid://bigntste8bjik" path="res://Le_Lu/Elemental_VFX/Scenes/VFX_FireWall_B1_AlphaClipped.tscn" id="23_yvkcd"]
+[ext_resource type="Texture2D" uid="uid://bjswm6nkxcu7o" path="res://Le_Lu/Elemental_VFX/Misc/textures/T_F1R3R1NG.png" id="24_ncgb2"]
+[ext_resource type="Texture2D" uid="uid://cn2bx8rh2cyqi" path="res://Le_Lu/Elemental_VFX/Misc/textures/T_F1R3W4LL_A1.png" id="25_42gdm"]
+[ext_resource type="Texture2D" uid="uid://gmayljthpk72" path="res://Le_Lu/Elemental_VFX/Misc/textures/T_F1R3W4LL_A1op.png" id="26_cmydm"]
+[ext_resource type="Texture2D" uid="uid://cdw0y21tvuqd6" path="res://Le_Lu/Elemental_VFX/Misc/textures/T_F1R3W4LL_B1op.png" id="27_s1y6y"]
+[ext_resource type="Texture2D" uid="uid://3myng2mvolbh" path="res://Le_Lu/Elemental_VFX/Misc/textures/T_M4G1C_H1T_P.png" id="28_aecun"]
+[ext_resource type="Texture2D" uid="uid://bbw8ats31txd0" path="res://Le_Lu/Elemental_VFX/Misc/textures/T_M4G1CC1RCL3P1.png" id="29_hurq3"]
+[ext_resource type="Texture2D" uid="uid://bwx0yyogixvy7" path="res://Le_Lu/Elemental_VFX/Misc/textures/T_M4G1CC1RCL3PK.png" id="30_cv67b"]
+[ext_resource type="Texture2D" uid="uid://ceuld66kidj5g" path="res://Le_Lu/Elemental_VFX/Misc/textures/T_3XPL0510N3L3CTR1CY.png" id="31_bax7f"]
+[ext_resource type="Texture2D" uid="uid://bvtq2oup4njk5" path="res://Le_Lu/Elemental_VFX/Misc/textures/T_3XPL0510NL0V3P0P.png" id="32_o847i"]
+[ext_resource type="PackedScene" uid="uid://dkxwcmt6qufdp" path="res://Le_Lu/Elemental_VFX/Scenes/VFX_Explosion_Electric_B.tscn" id="32_rmya2"]
+[ext_resource type="PackedScene" uid="uid://b6qcbcarc4tcp" path="res://Le_Lu/Elemental_VFX/Scenes/VFX_Explosion_Electric_Y.tscn" id="33_sydix"]
+[ext_resource type="Texture2D" uid="uid://rthosbphsjke" path="res://Le_Lu/Elemental_VFX/Misc/textures/T_5P4RK5Y.png" id="33_w3na0"]
+[ext_resource type="PackedScene" uid="uid://brwyquscr4t85" path="res://Le_Lu/Elemental_VFX/Scenes/VFX_Explosion_LovePop.tscn" id="34_2rbc4"]
+[ext_resource type="Texture2D" uid="uid://bsrbt7d3wv5un" path="res://Le_Lu/Elemental_VFX/Misc/textures/T_5PRK5BL1NK1NG.png" id="34_3befi"]
+[ext_resource type="PackedScene" uid="uid://fnv0ucah4mef" path="res://Le_Lu/Elemental_VFX/Scenes/VFX_Sparks_Bk1.tscn" id="43_dqt7o"]
+[ext_resource type="PackedScene" uid="uid://cw2720gv02yqy" path="res://Le_Lu/Elemental_VFX/Scenes/VFX_MagicCircle_Pk1.tscn" id="44_ucm61"]
+[ext_resource type="PackedScene" uid="uid://bamfl7lddpkrn" path="res://Le_Lu/Elemental_VFX/Scenes/VFX_Fire_GravityRing.tscn" id="45_sv7uh"]
+[ext_resource type="PackedScene" uid="uid://brl4b1upuf5nw" path="res://Le_Lu/Elemental_VFX/Scenes/VFX_Sparks_Yk1.tscn" id="56_hcdto"]
+[ext_resource type="PackedScene" uid="uid://pjhrq8ilhqlg" path="res://Le_Lu/Elemental_VFX/Scenes/VFX_Dark_ShadowRing.tscn" id="68_3asea"]
+[ext_resource type="PackedScene" uid="uid://d3f21ouc8inds" path="res://Le_Lu/Elemental_VFX/Scenes/VFX_Fire_Ring_OC.tscn" id="82_ky61c"]
+
+[sub_resource type="GDScript" id="GDScript_wgxxi"]
+resource_name = "VFX_Showcaser"
+script/source = "@tool
+extends Node
+
+@export var my_num:int = 0:
+	set(new_my_num):
+		my_num = new_my_num
+		self.play_all_animations(my_num)
+
+func _ready() -> void:
+	$misc/AnimationPlayer.play("Init")
+	
+func _run():
+	$misc/AnimationPlayer.play("Init")
+
+func play_all_animations(_num:int)->void:
+	
+	match _num:
+		1:
+			$VFX_Dark_ShadowRing.find_child("AnimationPlayer").play("Init")
+			$VFX_Explosion_Electric_B.find_child("AnimationPlayer").play("Init")
+		2:
+			$VFX_HitMagic_Pk1.find_child("AnimationPlayer").play("Init")
+			$VFX_Explosion_LovePop.find_child("AnimationPlayer").play("Init")
+			$VFX_Explosion_electric_y.find_child("AnimationPlayer").play("Init")
+		3:
+			$VFX_Fire_Ring_Oc.find_child("AnimationPlayer").play("Init")
+			$VFX_Fire_GravityRing.find_child("AnimationPlayer").play("Init")
+			$VFX_MagicCircle_Pi1.find_child("AnimationPlayer").play("Init")
+		
+		4:
+			$VFX_MagicCircle_Pk1.find_child("AnimationPlayer").play("Init")
+"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_erues"]
+albedo_color = Color(0.462291, 0.462291, 0.462291, 1)
+metallic_specular = 0.0
+uv1_scale = Vector3(0.3, 0.3, 0.3)
+uv1_triplanar = true
+uv1_world_triplanar = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_8vr5q"]
+lightmap_size_hint = Vector2i(402, 402)
+add_uv2 = true
+size = Vector2(80, 80)
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_nsh52"]
+sky_top_color = Color(0.099986, 0.099986, 0.099986, 1)
+sky_horizon_color = Color(0.466181, 0.466181, 0.466181, 1)
+sky_curve = 0.0530331
+ground_bottom_color = Color(0.151276, 0.151276, 0.151276, 1)
+ground_horizon_color = Color(0.497474, 0.497473, 0.497473, 1)
+
+[sub_resource type="Sky" id="Sky_v1lyq"]
+sky_material = SubResource("ProceduralSkyMaterial_nsh52")
+
+[sub_resource type="Environment" id="Environment_gq2iv"]
+background_mode = 2
+sky = SubResource("Sky_v1lyq")
+tonemap_mode = 2
+glow_enabled = true
+glow_blend_mode = 1
+fog_light_color = Color(0.289729, 0.316568, 0.358757, 1)
+
+[sub_resource type="Animation" id="Animation_5614f"]
+resource_name = "Init"
+length = 5.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("..:my_num")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.133333, 0.3, 0.5, 0.733333, 1.33333, 1.7, 2.06667, 2.86667, 3.3, 3.66667, 4.23333, 4.53333, 4.83333),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 4, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_6u7us"]
+_data = {
+"Init": SubResource("Animation_5614f")
+}
+
+[node name="map1" type="Node"]
+script = SubResource("GDScript_wgxxi")
+my_num = 1
+
+[node name="VFX_FireWall_B1_Curved_Cheap" parent="." instance=ExtResource("10_7uehq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30.0261, 0, -22.2525)
+
+[node name="VFX_AcidWall_K1_Cheap_AlphaClipped" parent="." instance=ExtResource("11_ns2ak")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0129766, 1.90735e-06, -21.3993)
+
+[node name="VFX_FireWall_A1_Cheap_AlphaClipped" parent="." instance=ExtResource("21_sxssk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.8484, 0, -21.7108)
+
+[node name="VFX_FireWall_A1_" parent="." instance=ExtResource("22_ekkon")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.8876, 0, -10.5278)
+
+[node name="VFX_FireWall_B1_Cheap_AlphaClipped" parent="." instance=ExtResource("23_yvkcd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.6833, 0, -9.94711)
+
+[node name="VFX_AcidWall_K1_" parent="." instance=ExtResource("19_ajq7k")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.104541, 0, -10.3033)
+
+[node name="VFX_Sparks_Bk1" parent="." instance=ExtResource("43_dqt7o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.18024, 0.857553, 16.0372)
+
+[node name="VFX_Sparks_Yk1" parent="." instance=ExtResource("56_hcdto")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.84737, 1.04786, 16.267)
+
+[node name="VFX_Dark_ShadowRing" parent="." instance=ExtResource("68_3asea")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.4111, 0, -0.00475526)
+
+[node name="VFX_MagicCircle_Pk1" parent="." instance=ExtResource("44_ucm61")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00849783, 0, 0.00796747)
+
+[node name="VFX_HitMagic_Pk1" parent="." instance=ExtResource("8_2w5y2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.7457, 1.17734, -0.0261035)
+
+[node name="VFX_Explosion_LovePop" parent="." instance=ExtResource("34_2rbc4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.9546, 0.745869, 8.35231)
+
+[node name="VFX_Fire_Ring_Oc" parent="." instance=ExtResource("82_ky61c")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.8227, 0.695064, 0.080781)
+
+[node name="VFX_Fire_GravityRing" parent="." instance=ExtResource("45_sv7uh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.0043, 0, 8.38402)
+
+[node name="VFX_Explosion_Electric_B" parent="." instance=ExtResource("32_rmya2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.93202, 0.680891, 8.39187)
+
+[node name="VFX_Explosion_electric_y" parent="." instance=ExtResource("33_sydix")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.32291, 1.1137, 8.3902)
+
+[node name="VFX_MagicCircle_Pi1" parent="." instance=ExtResource("3_wkl0x")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.195, 0, -0.029614)
+
+[node name="misc" type="Node" parent="."]
+
+[node name="floor" type="MeshInstance3D" parent="misc"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.00839758, -16.7379)
+layers = 33
+material_override = SubResource("StandardMaterial3D_erues")
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_8vr5q")
+skeleton = NodePath("../..")
+metadata/_edit_lock_ = true
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="misc"]
+transform = Transform3D(-0.866024, -0.433016, 0.25, 0, 0.499998, 0.866027, -0.500003, 0.75, -0.43301, 38.011, 16.4629, -21.6491)
+light_energy = 0.1
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="misc"]
+environment = SubResource("Environment_gq2iv")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="misc"]
+libraries = {
+"": SubResource("AnimationLibrary_6u7us")
+}
+autoplay = "Init"
+
+[node name="SpotLight3D" type="SpotLight3D" parent="misc"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 28.8399, -6.35928)
+light_energy = 5.0
+spot_range = 989.006
+spot_attenuation = 0.6
+
+[node name="Text3D_1" type="Sprite3D" parent="misc"]
+transform = Transform3D(0.6, 0, 0, 0, 0.424264, 0.424264, 0, -0.424264, 0.424264, 0.0362661, 0.217779, -6.68973)
+cast_shadow = 0
+texture = ExtResource("19_pmpnr")
+
+[node name="Text3D_2" type="Sprite3D" parent="misc"]
+transform = Transform3D(0.6, 0, 0, 0, 0.424264, 0.424264, 0, -0.424264, 0.424264, 0.00290489, 0.217779, -18.3006)
+cast_shadow = 0
+texture = ExtResource("20_jsy6t")
+
+[node name="Text3D_6" type="Sprite3D" parent="misc"]
+transform = Transform3D(0.6, 0, 0, 0, 0.424264, 0.424264, 0, -0.424264, 0.424264, -4.97002, 0.217779, 11.7141)
+cast_shadow = 0
+texture = ExtResource("21_p4a0k")
+
+[node name="Text3D_8" type="Sprite3D" parent="misc"]
+transform = Transform3D(0.6, 0, 0, 0, 0.424264, 0.424264, 0, -0.424264, 0.424264, -10.4482, 0.217779, 3.35751)
+cast_shadow = 0
+texture = ExtResource("22_hj3s7")
+
+[node name="Text3D_9" type="Sprite3D" parent="misc"]
+transform = Transform3D(0.6, 0, 0, 0, 0.424264, 0.424264, 0, -0.424264, 0.424264, -16.0085, 0.217779, 11.6448)
+cast_shadow = 0
+texture = ExtResource("23_akiav")
+
+[node name="Text3D_10" type="Sprite3D" parent="misc"]
+transform = Transform3D(0.6, 0, 0, 0, 0.424264, 0.424264, 0, -0.424264, 0.424264, -22.8376, 0.217781, 3.25419)
+cast_shadow = 0
+texture = ExtResource("24_ncgb2")
+
+[node name="Text3D_11" type="Sprite3D" parent="misc"]
+transform = Transform3D(0.6, 0, 0, 0, 0.424264, 0.424264, 0, -0.424264, 0.424264, -17.7902, 0.217781, -6.6819)
+cast_shadow = 0
+texture = ExtResource("25_42gdm")
+
+[node name="Text3D_12" type="Sprite3D" parent="misc"]
+transform = Transform3D(0.6, 0, 0, 0, 0.424264, 0.424264, 0, -0.424264, 0.424264, -17.8256, 0.217781, -17.6938)
+cast_shadow = 0
+texture = ExtResource("26_cmydm")
+
+[node name="Text3D_13" type="Sprite3D" parent="misc"]
+transform = Transform3D(0.6, 0, 0, 0, 0.424264, 0.424264, 0, -0.424264, 0.424264, 16.682, 0.217781, -6.65559)
+cast_shadow = 0
+texture = ExtResource("27_s1y6y")
+
+[node name="Text3D_14" type="Sprite3D" parent="misc"]
+transform = Transform3D(0.6, 0, 0, 0, 0.424264, 0.424264, 0, -0.424264, 0.424264, 21.7289, 0.217781, 3.32223)
+cast_shadow = 0
+texture = ExtResource("28_aecun")
+
+[node name="Text3D_16" type="Sprite3D" parent="misc"]
+transform = Transform3D(0.6, 0, 0, 0, 0.424264, 0.424264, 0, -0.424264, 0.424264, -0.0471296, 0.217781, 3.42838)
+cast_shadow = 0
+texture = ExtResource("29_hurq3")
+
+[node name="Text3D_15" type="Sprite3D" parent="misc"]
+transform = Transform3D(0.6, 0, 0, 0, 0.424264, 0.424264, 0, -0.424264, 0.424264, 12.193, 0.217781, 3.32223)
+cast_shadow = 0
+texture = ExtResource("30_cv67b")
+
+[node name="Text3D_7" type="Sprite3D" parent="misc"]
+transform = Transform3D(0.6, 0, 0, 0, 0.424264, 0.424264, 0, -0.424264, 0.424264, 5.39089, 0.217779, 11.6788)
+cast_shadow = 0
+texture = ExtResource("31_bax7f")
+
+[node name="Text3D_3" type="Sprite3D" parent="misc"]
+transform = Transform3D(0.6, 0, 0, 0, 0.424264, 0.424264, 0, -0.424264, 0.424264, 16.1712, 0.217779, 11.616)
+cast_shadow = 0
+texture = ExtResource("32_o847i")
+
+[node name="Text3D_4" type="Sprite3D" parent="misc"]
+transform = Transform3D(0.6, 0, 0, 0, 0.424264, 0.424264, 0, -0.424264, 0.424264, 2.86731, 0.217781, 18.3301)
+cast_shadow = 0
+texture = ExtResource("33_w3na0")
+
+[node name="Text3D_5" type="Sprite3D" parent="misc"]
+transform = Transform3D(0.6, 0, 0, 0, 0.424264, 0.424264, 0, -0.424264, 0.424264, -4.19433, 0.217781, 18.3655)
+cast_shadow = 0
+texture = ExtResource("34_3befi")

@@ -1,0 +1,112 @@
+[gd_scene format=3 uid="uid://do3ogy3puc8kq"]
+
+[ext_resource type="Material" uid="uid://dl7bp7amy7g7t" path="res://Le_Lu/Fire_VFX/materials/m_firetorch44.tres" id="1_s0mq8"]
+[ext_resource type="ArrayMesh" uid="uid://dlwx0ortvlt74" path="res://Le_Lu/Fire_VFX/objects/sm_teardrop2_high.obj" id="2_jj641"]
+[ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/s_Disolver_Treshold_p_fc.tres" id="3_0qqdo"]
+
+[sub_resource type="Gradient" id="Gradient_dc6oq"]
+offsets = PackedFloat32Array(0.712062, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_sstfb"]
+gradient = SubResource("Gradient_dc6oq")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.504274)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2i3d6"]
+render_priority = 0
+shader = ExtResource("3_0qqdo")
+shader_parameter/Scale = Vector2(1, 1)
+shader_parameter/Texture = SubResource("GradientTexture2D_sstfb")
+
+[sub_resource type="Curve" id="Curve_48445"]
+_data = [Vector2(0.698113, 0.0873635), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_kkgs4"]
+texture_mode = 1
+curve = SubResource("Curve_48445")
+
+[sub_resource type="Curve" id="Curve_vcvcc"]
+max_value = 2.0
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0]
+point_count = 1
+
+[sub_resource type="Curve" id="Curve_plrvl"]
+max_value = 2.0
+_data = [Vector2(0, 0.597122), 0.0, 0.0, 0, 0, Vector2(1, 0.166907), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_uy2g2"]
+max_value = 2.0
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0]
+point_count = 1
+
+[sub_resource type="CurveXYZTexture" id="CurveXYZTexture_5jtkh"]
+curve_x = SubResource("Curve_vcvcc")
+curve_y = SubResource("Curve_plrvl")
+curve_z = SubResource("Curve_uy2g2")
+
+[sub_resource type="Curve" id="Curve_c7hve"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_xxh7a"]
+curve = SubResource("Curve_c7hve")
+
+[sub_resource type="Curve" id="Curve_f67w2"]
+_data = [Vector2(0.257951, 1), 0.0, 0.0, 0, 0, Vector2(0.487632, 0.915827), 0.0, 0.0, 0, 0, Vector2(0.540636, 0), 0.0, 0.0, 0, 0, Vector2(0.565371, 0.859712), 0.0, 0.0, 0, 0, Vector2(0.621908, 1), 0.0, 0.0, 0, 0, Vector2(0.671378, 0.0460432), 0.0, 0.0, 0, 0, Vector2(0.70318, 0.81295), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 8
+
+[sub_resource type="CurveTexture" id="CurveTexture_kne11"]
+curve = SubResource("Curve_f67w2")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_xvpqc"]
+emission_shape = 6
+emission_ring_axis = Vector3(0, 1, 0)
+emission_ring_height = 0.8
+emission_ring_radius = 0.35
+emission_ring_inner_radius = 0.15
+direction = Vector3(0, 1, 0)
+spread = 0.0
+initial_velocity_min = 0.5
+initial_velocity_max = 1.0
+orbit_velocity_min = 0.3
+orbit_velocity_max = 0.5
+orbit_velocity_curve = SubResource("CurveXYZTexture_5jtkh")
+radial_velocity_min = 0.299978
+radial_velocity_max = 0.399978
+radial_velocity_curve = SubResource("CurveTexture_xxh7a")
+gravity = Vector3(0, 0, 0)
+scale_min = 0.02
+scale_max = 0.04
+scale_curve = SubResource("CurveTexture_kne11")
+color = Color(5, 0.6, 0.4, 1)
+alpha_curve = SubResource("CurveTexture_kkgs4")
+hue_variation_min = -2.23517e-08
+hue_variation_max = -2.23517e-08
+
+[sub_resource type="QuadMesh" id="QuadMesh_70ve1"]
+
+[node name="VFX_FireStatic_K1" type="Node3D"]
+
+[node name="FireTorch_AC" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.18, 0, 0, 0, 0.24, 0, 0, 0, 0.18, 0, 0, 0)
+layers = 4
+material_override = ExtResource("1_s0mq8")
+cast_shadow = 0
+mesh = ExtResource("2_jj641")
+skeleton = NodePath("../..")
+
+[node name="smallparticles_constant" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.109389, 0)
+layers = 4
+material_override = SubResource("ShaderMaterial_2i3d6")
+cast_shadow = 0
+amount = 15
+fixed_fps = 60
+visibility_aabb = AABB(-1.685, -1.075, -1.68, 3.29, 3.57, 3.34)
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_xvpqc")
+draw_pass_1 = SubResource("QuadMesh_70ve1")

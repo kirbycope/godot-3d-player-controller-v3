@@ -1,0 +1,36 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://dkojoeba2blyb"]
+
+[ext_resource type="Shader" uid="uid://d3ndm7fohb1tm" path="res://assets/BinbunVFX/hologram/src/shader/hologram_volume.gdshader" id="1_ll6gt"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_rikge"]
+noise_type = 2
+fractal_octaves = 2
+cellular_distance_function = 2
+cellular_return_type = 6
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_iftg2"]
+noise = SubResource("FastNoiseLite_rikge")
+seamless = true
+invert = true
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_ll6gt")
+shader_parameter/primary_color = Color(0, 0.47252446, 0.62488866, 1)
+shader_parameter/secondary_color = Color(0.96788365, 0.6063294, 0.46841693, 1)
+shader_parameter/density = 6.0
+shader_parameter/effect_strength = 1.0
+shader_parameter/wipe_scale = 3.0
+shader_parameter/wipe_speed = 0.5
+shader_parameter/wipe_blend = 0.7
+shader_parameter/signal_scale = 40.0
+shader_parameter/signal_speed = 1.0
+shader_parameter/signal_random_scale = 0.3
+shader_parameter/signal_blend = 0.999999977648
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_iftg2")
+shader_parameter/noise_distort_amount = 0.999999977648
+shader_parameter/noise_amount = 0.78999998234192
+shader_parameter/grain_amount = 0.4
+shader_parameter/displacement_amount = 0.499999988824
+shader_parameter/flicker_amount = 0.3
+shader_parameter/flicker_speed = 10.0

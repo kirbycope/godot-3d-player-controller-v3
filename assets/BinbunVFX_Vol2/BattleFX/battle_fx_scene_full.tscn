@@ -1,0 +1,550 @@
+[gd_scene format=3 uid="uid://chwwk5xq5cnmu"]
+
+[ext_resource type="Texture2D" uid="uid://ed44j8f3a8us" path="res://assets/BinbunVFX_Vol2/shared/story_studio_02_1k.hdr" id="1_1e2qh"]
+[ext_resource type="Shader" uid="uid://mvwi25cb826n" path="res://assets/BinbunVFX_Vol2/shared/shader/checker.gdshader" id="2_acxmc"]
+[ext_resource type="PackedScene" uid="uid://cv0onfdnndpvd" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/shield/vfx_ice_shield_01.tscn" id="3_2e71s"]
+[ext_resource type="PackedScene" uid="uid://dc5tgwcm5wcjv" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/shield/vfx_ice_shield_02.tscn" id="4_wd2uv"]
+[ext_resource type="PackedScene" uid="uid://b5v252exijr6q" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/shield/vfx_fire_shield_01.tscn" id="5_ci53c"]
+[ext_resource type="PackedScene" uid="uid://33njj45vimdx" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/shield/vfx_fire_shield_02.tscn" id="6_33erj"]
+[ext_resource type="PackedScene" uid="uid://dk6sqkacwmupf" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/shield/vfx_nature_shield_01.tscn" id="7_wo0ur"]
+[ext_resource type="PackedScene" uid="uid://caqlq5dig73p1" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/shield/vfx_nature_shield_02.tscn" id="8_gt5fo"]
+[ext_resource type="PackedScene" uid="uid://40r1ha5xgauu" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/shield/vfx_wind_shield_01.tscn" id="9_xkql5"]
+[ext_resource type="PackedScene" uid="uid://doa4a0a7tdj8x" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/shield/vfx_wind_shield_02.tscn" id="10_wk1ma"]
+[ext_resource type="PackedScene" uid="uid://doonf7y8srcfu" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/shield/vfx_dark_shield_01.tscn" id="11_s7ajo"]
+[ext_resource type="PackedScene" uid="uid://yasc0cv0dlfx" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/shield/vfx_plasma_shield_02.tscn" id="12_2327v"]
+[ext_resource type="PackedScene" uid="uid://brdpvmpi522yg" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/shield/vfx_data_shield_01.tscn" id="13_bbtaq"]
+[ext_resource type="PackedScene" uid="uid://br54r2dwha87n" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/shield/vfx_data_shield_02.tscn" id="14_yuyff"]
+[ext_resource type="PackedScene" uid="uid://68dyc4lhgujh" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/slash/vfx_ice_slash.tscn" id="15_wmuue"]
+[ext_resource type="PackedScene" uid="uid://bq65nqv887ggv" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/slash/vfx_fire_slash.tscn" id="16_ej88l"]
+[ext_resource type="PackedScene" uid="uid://butj4dydbjuxm" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/slash/vfx_nature_slash.tscn" id="17_vnmvh"]
+[ext_resource type="PackedScene" uid="uid://dgn7ems3aj7bi" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/slash/vfx_wind_slash.tscn" id="18_5ipll"]
+[ext_resource type="PackedScene" uid="uid://bq761b7bikwh5" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/slash/vfx_dark_slash.tscn" id="19_vuuyg"]
+[ext_resource type="PackedScene" uid="uid://ceqfevcqenwu2" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/slash/vfx_data_slash.tscn" id="20_1vxiu"]
+[ext_resource type="PackedScene" uid="uid://bccsfgeccmat8" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/swing/vfx_ice_swing.tscn" id="21_nedo2"]
+[ext_resource type="PackedScene" uid="uid://cudcfo30owuyy" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/swing/vfx_fire_swing.tscn" id="22_dbn2g"]
+[ext_resource type="PackedScene" uid="uid://dg6ep8xn0bgtp" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/swing/vfx_nature_swing.tscn" id="23_aen1e"]
+[ext_resource type="PackedScene" uid="uid://c3w3impjjuw5e" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/swing/vfx_wind_swing.tscn" id="24_jo1ln"]
+[ext_resource type="PackedScene" uid="uid://c6ky20vni2spt" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/swing/vfx_dark_swing.tscn" id="25_o62oe"]
+[ext_resource type="PackedScene" uid="uid://23vd1mgb2qcu" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/swing/vfx_data_swing.tscn" id="26_wt7aj"]
+[ext_resource type="PackedScene" uid="uid://bw15igah24l4c" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/claw/vfx_ice_claw.tscn" id="27_vyxwn"]
+[ext_resource type="PackedScene" uid="uid://cgjo7v4i2w1ht" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/claw/vfx_fire_claw.tscn" id="28_nql66"]
+[ext_resource type="PackedScene" uid="uid://deiekao0ic7et" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/claw/vfx_nature_claw.tscn" id="29_1cu7t"]
+[ext_resource type="PackedScene" uid="uid://ch3qokftpopjw" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/claw/vfx_wind_claw.tscn" id="30_jwfww"]
+[ext_resource type="PackedScene" uid="uid://csccmc3mbte1c" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/claw/vfx_dark_claw.tscn" id="31_r8qcj"]
+[ext_resource type="PackedScene" uid="uid://cmtfjfxicqomp" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/claw/vfx_data_claw.tscn" id="32_qochj"]
+[ext_resource type="PackedScene" uid="uid://b3fw708tfssgs" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/charge/vfx_ice_charge.tscn" id="33_w4y0q"]
+[ext_resource type="PackedScene" uid="uid://dsakuwre3qone" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/charge/vfx_fire_charge.tscn" id="34_yibtl"]
+[ext_resource type="PackedScene" uid="uid://bw1jyskvhomt7" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/charge/vfx_nature_charge.tscn" id="35_o85ty"]
+[ext_resource type="PackedScene" uid="uid://c4x4dcr1q4qgc" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/charge/vfx_wind_charge.tscn" id="36_8yt11"]
+[ext_resource type="PackedScene" uid="uid://d1pawjb7c2agl" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/charge/vfx_dark_charge.tscn" id="37_0hxfh"]
+[ext_resource type="PackedScene" uid="uid://la0wvtbja7ll" path="res://assets/BinbunVFX_Vol2/BattleFX/effects/charge/vfx_data_charge.tscn" id="38_llsty"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ip3vt"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_0ykfm"]
+noise = SubResource("FastNoiseLite_ip3vt")
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_1aiyq"]
+panorama = ExtResource("1_1e2qh")
+energy_multiplier = 0.5
+
+[sub_resource type="Sky" id="Sky_3i3oo"]
+sky_material = SubResource("PanoramaSkyMaterial_1aiyq")
+radiance_size = 6
+
+[sub_resource type="Environment" id="Environment_ip3vt"]
+background_mode = 2
+sky = SubResource("Sky_3i3oo")
+sky_rotation = Vector3(0, 1.5707964, 0)
+ambient_light_source = 3
+reflected_light_source = 2
+tonemap_mode = 3
+ssr_enabled = true
+ssao_enabled = true
+ssao_intensity = 4.0
+ssil_enabled = true
+ssil_radius = 7.0
+sdfgi_enabled = true
+sdfgi_use_occlusion = true
+sdfgi_min_cell_size = 0.1
+sdfgi_y_scale = 0
+glow_enabled = true
+glow_bloom = 0.2
+glow_blend_mode = 0
+glow_map = SubResource("NoiseTexture2D_0ykfm")
+fog_light_color = Color(0, 0, 0, 1)
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.03
+volumetric_fog_albedo = Color(0, 0, 0, 1)
+volumetric_fog_emission_energy = 288.1
+volumetric_fog_gi_inject = 0.01
+volumetric_fog_length = 256.0
+adjustment_enabled = true
+
+[sub_resource type="Gradient" id="Gradient_ip3vt"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_3i3oo"]
+noise_type = 2
+frequency = 0.002
+fractal_octaves = 1
+cellular_jitter = 0.0
+cellular_return_type = 0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_3i3oo"]
+noise = SubResource("FastNoiseLite_3i3oo")
+color_ramp = SubResource("Gradient_ip3vt")
+
+[sub_resource type="Gradient" id="Gradient_3i3oo"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_0ykfm"]
+noise_type = 2
+frequency = 0.002
+fractal_octaves = 1
+cellular_jitter = 0.0
+cellular_return_type = 0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_wejg2"]
+noise = SubResource("FastNoiseLite_0ykfm")
+color_ramp = SubResource("Gradient_3i3oo")
+as_normal_map = true
+normalize = false
+bump_strength = 2.0
+
+[sub_resource type="Gradient" id="Gradient_0ykfm"]
+colors = PackedColorArray(0.49354547, 0.49354553, 0.49354535, 1, 0.52906674, 0.5290667, 0.5290667, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_wejg2"]
+seed = 3
+frequency = 0.02
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_2ukpv"]
+noise = SubResource("FastNoiseLite_wejg2")
+color_ramp = SubResource("Gradient_0ykfm")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3i3oo"]
+render_priority = 0
+shader = ExtResource("2_acxmc")
+shader_parameter/primary_color = Color(0.12, 0.12, 0.12, 1)
+shader_parameter/secondary_color = Color(0.05, 0.05, 0.05, 1)
+shader_parameter/checker_texture = SubResource("NoiseTexture2D_3i3oo")
+shader_parameter/roughness_texture = SubResource("NoiseTexture2D_2ukpv")
+shader_parameter/normal_texture = SubResource("NoiseTexture2D_wejg2")
+
+[sub_resource type="BoxMesh" id="BoxMesh_0ykfm"]
+size = Vector3(1000, 4, 1000)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wejg2"]
+size = Vector3(200, 4, 200)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_knvvm"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_u3lwf"]
+noise_type = 2
+fractal_octaves = 2
+fractal_gain = 3.0
+fractal_weighted_strength = 1.0
+cellular_distance_function = 1
+cellular_return_type = 6
+domain_warp_enabled = true
+domain_warp_type = 1
+domain_warp_amplitude = 20.0
+domain_warp_frequency = 0.01
+domain_warp_fractal_octaves = 1
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_to6d6"]
+generate_mipmaps = false
+noise = SubResource("FastNoiseLite_u3lwf")
+seamless = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_witvp"]
+noise_type = 2
+fractal_octaves = 2
+fractal_gain = 3.0
+fractal_weighted_strength = 1.0
+cellular_distance_function = 1
+cellular_return_type = 6
+domain_warp_enabled = true
+domain_warp_type = 1
+domain_warp_amplitude = 20.0
+domain_warp_frequency = 0.01
+domain_warp_fractal_octaves = 1
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ay6cf"]
+generate_mipmaps = false
+noise = SubResource("FastNoiseLite_witvp")
+seamless = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_2eyrc"]
+noise_type = 0
+frequency = 0.008
+fractal_type = 2
+fractal_octaves = 2
+fractal_gain = 3.0
+fractal_weighted_strength = 1.0
+cellular_distance_function = 1
+cellular_return_type = 6
+domain_warp_enabled = true
+domain_warp_type = 1
+domain_warp_amplitude = 20.0
+domain_warp_frequency = 0.01
+domain_warp_fractal_octaves = 1
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_4ib6p"]
+generate_mipmaps = false
+noise = SubResource("FastNoiseLite_2eyrc")
+seamless = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_e445d"]
+noise_type = 2
+seed = 2
+fractal_type = 3
+fractal_octaves = 2
+fractal_weighted_strength = 1.0
+cellular_distance_function = 3
+cellular_return_type = 6
+domain_warp_enabled = true
+domain_warp_amplitude = 100.0
+domain_warp_frequency = 0.01
+domain_warp_fractal_octaves = 1
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_e83jq"]
+noise = SubResource("FastNoiseLite_e445d")
+seamless = true
+invert = true
+seamless_blend_skirt = 0.2
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_4ybqs"]
+noise_type = 2
+seed = 2
+fractal_type = 3
+fractal_octaves = 2
+fractal_weighted_strength = 1.0
+cellular_distance_function = 3
+cellular_return_type = 6
+domain_warp_enabled = true
+domain_warp_amplitude = 100.0
+domain_warp_frequency = 0.01
+domain_warp_fractal_octaves = 1
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_etk7l"]
+noise = SubResource("FastNoiseLite_4ybqs")
+seamless = true
+invert = true
+seamless_blend_skirt = 0.2
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_tfeme"]
+noise_type = 0
+frequency = 0.008
+fractal_type = 2
+fractal_octaves = 2
+fractal_gain = 3.0
+fractal_weighted_strength = 1.0
+cellular_distance_function = 1
+cellular_return_type = 6
+domain_warp_enabled = true
+domain_warp_type = 1
+domain_warp_amplitude = 20.0
+domain_warp_frequency = 0.01
+domain_warp_fractal_octaves = 1
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_5hj2w"]
+generate_mipmaps = false
+noise = SubResource("FastNoiseLite_tfeme")
+seamless = true
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_1mit2"]
+noise = SubResource("FastNoiseLite_e445d")
+seamless = true
+invert = true
+seamless_blend_skirt = 0.2
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_nmgfr"]
+noise_type = 2
+fractal_octaves = 2
+fractal_gain = 3.0
+fractal_weighted_strength = 1.0
+cellular_distance_function = 1
+cellular_return_type = 6
+domain_warp_enabled = true
+domain_warp_type = 1
+domain_warp_amplitude = 20.0
+domain_warp_frequency = 0.01
+domain_warp_fractal_octaves = 1
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ptf65"]
+generate_mipmaps = false
+noise = SubResource("FastNoiseLite_nmgfr")
+seamless = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_jejd3"]
+noise_type = 0
+frequency = 0.008
+fractal_type = 2
+fractal_octaves = 2
+fractal_gain = 3.0
+fractal_weighted_strength = 1.0
+cellular_distance_function = 1
+cellular_return_type = 6
+domain_warp_enabled = true
+domain_warp_type = 1
+domain_warp_amplitude = 20.0
+domain_warp_frequency = 0.01
+domain_warp_fractal_octaves = 1
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_7s570"]
+generate_mipmaps = false
+noise = SubResource("FastNoiseLite_jejd3")
+seamless = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_m72vj"]
+noise_type = 2
+seed = 2
+fractal_type = 3
+fractal_octaves = 2
+fractal_weighted_strength = 1.0
+cellular_distance_function = 3
+cellular_return_type = 6
+domain_warp_enabled = true
+domain_warp_amplitude = 100.0
+domain_warp_frequency = 0.01
+domain_warp_fractal_octaves = 1
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_1uuw4"]
+noise = SubResource("FastNoiseLite_m72vj")
+seamless = true
+invert = true
+seamless_blend_skirt = 0.2
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_q4kwp"]
+noise_type = 2
+seed = 2
+fractal_type = 3
+fractal_octaves = 2
+fractal_weighted_strength = 1.0
+cellular_distance_function = 1
+cellular_return_type = 3
+domain_warp_enabled = true
+domain_warp_amplitude = 100.0
+domain_warp_frequency = 0.01
+domain_warp_fractal_octaves = 1
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_2k0y8"]
+noise = SubResource("FastNoiseLite_q4kwp")
+seamless = true
+seamless_blend_skirt = 0.2
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_537yy"]
+noise_type = 2
+seed = 2
+fractal_type = 3
+fractal_octaves = 2
+fractal_weighted_strength = 1.0
+cellular_distance_function = 1
+cellular_return_type = 3
+domain_warp_enabled = true
+domain_warp_amplitude = 100.0
+domain_warp_frequency = 0.01
+domain_warp_fractal_octaves = 1
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_6criy"]
+noise = SubResource("FastNoiseLite_537yy")
+seamless = true
+invert = true
+seamless_blend_skirt = 0.2
+
+[node name="Node3D" type="Node3D" unique_id=1052593402]
+
+[node name="Environment" type="Node3D" parent="." unique_id=1231126225]
+metadata/_edit_lock_ = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Environment" unique_id=467657209]
+environment = SubResource("Environment_ip3vt")
+
+[node name="Ground" type="StaticBody3D" parent="Environment" unique_id=468866569]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
+metadata/_edit_lock_ = true
+
+[node name="GroundMesh" type="MeshInstance3D" parent="Environment/Ground" unique_id=1705852002]
+material_override = SubResource("ShaderMaterial_3i3oo")
+mesh = SubResource("BoxMesh_0ykfm")
+metadata/_edit_lock_ = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Environment/Ground" unique_id=500792976]
+shape = SubResource("BoxShape3D_wejg2")
+metadata/_edit_lock_ = true
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment" unique_id=405547945]
+transform = Transform3D(0.7071068, 0.5, -0.5, 0, 0.7071068, 0.7071068, 0.7071068, -0.5, 0.5, 0, 0, 0)
+light_energy = 0.5
+shadow_enabled = true
+directional_shadow_blend_splits = true
+
+[node name="Lights" type="Node3D" parent="." unique_id=895534136]
+
+[node name="SpotLight3D" type="SpotLight3D" parent="Lights" unique_id=537973113]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 5, 0)
+light_energy = 4.0
+shadow_enabled = true
+spot_range = 10.0
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="Lights" unique_id=497025712]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 3, 5, 0)
+light_energy = 4.0
+shadow_enabled = true
+spot_range = 10.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1980924100]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_knvvm")
+
+[node name="Shield" type="Node3D" parent="." unique_id=1141879317]
+
+[node name="VFXIceShield_01" parent="Shield" unique_id=1474724523 instance=ExtResource("3_2e71s")]
+primary_color = Color(0.89968324, 0.92417026, 1, 1)
+secondary_color = Color(0.6958187, 0.32475263, 1, 1)
+tertiary_color = Color(0.7974854, 0, 0.116785966, 1)
+noise_texture = SubResource("NoiseTexture2D_to6d6")
+particle_local_coords = false
+particle_fps = 30
+
+[node name="VFXIceShield_02" parent="Shield" unique_id=20012177 instance=ExtResource("4_wd2uv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -6)
+noise_texture = SubResource("NoiseTexture2D_ay6cf")
+
+[node name="VFXFireShield_01" parent="Shield" unique_id=1942542410 instance=ExtResource("5_ci53c")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 0)
+primary_color = Color(1, 0.8235294, 0.4392157, 1)
+secondary_color = Color(0.96862745, 0, 0, 1)
+noise_texture = SubResource("NoiseTexture2D_4ib6p")
+
+[node name="VFXFireShield_02" parent="Shield" unique_id=130318084 instance=ExtResource("6_33erj")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 6, 1, -6)
+
+[node name="VFXNatureShield_01" parent="Shield" unique_id=761521577 instance=ExtResource("7_wo0ur")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 0)
+noise_texture = SubResource("NoiseTexture2D_e83jq")
+
+[node name="VFXNatureShield_02" parent="Shield" unique_id=1185671179 instance=ExtResource("8_gt5fo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 1, -6)
+noise_texture = SubResource("NoiseTexture2D_e83jq")
+
+[node name="VFXWindShield_01" parent="Shield" unique_id=1016094436 instance=ExtResource("9_xkql5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 0)
+secondary_color = Color(0.3764706, 0.56078434, 0.54901963, 1)
+tertiary_color = Color(0.34117648, 0.3882353, 0.42352942, 1)
+
+[node name="VFXWindShield_02" parent="Shield" unique_id=134890751 instance=ExtResource("10_wk1ma")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1, -6)
+
+[node name="VFXDarkShield_01" parent="Shield" unique_id=366873728 instance=ExtResource("11_s7ajo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 0, 0)
+secondary_color = Color(0.09411765, 0, 0.8784314, 1)
+
+[node name="VFXDarkShield_02" parent="Shield" unique_id=210891923 instance=ExtResource("12_2327v")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 1, -6)
+
+[node name="VFXDataShield_01" parent="Shield" unique_id=2032913032 instance=ExtResource("13_bbtaq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 0, 0)
+primary_color = Color(0.26666668, 1, 0.5411765, 1)
+secondary_color = Color(0, 0.6117647, 0.43529412, 1)
+tertiary_color = Color(0, 0.3019608, 0.33333334, 1)
+
+[node name="VFXDataShield_02" parent="Shield" unique_id=562879473 instance=ExtResource("14_yuyff")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 1, -6)
+
+[node name="Slash" type="Node3D" parent="." unique_id=788214911]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5.5)
+
+[node name="VFXIceSlash" parent="Slash" unique_id=1526062663 instance=ExtResource("15_wmuue")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0)
+
+[node name="VFXFireSlash" parent="Slash" unique_id=848397648 instance=ExtResource("16_ej88l")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 1, 0)
+
+[node name="VFXNatureSlash" parent="Slash" unique_id=57357230 instance=ExtResource("17_vnmvh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 1, 0)
+noise_texture = SubResource("NoiseTexture2D_etk7l")
+
+[node name="VFXWindSlash" parent="Slash" unique_id=1100783368 instance=ExtResource("18_5ipll")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19, 1, 0)
+
+[node name="VFXDarkSlash" parent="Slash" unique_id=926772538 instance=ExtResource("19_vuuyg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 1, 0)
+
+[node name="VFXDataSlash" parent="Slash" unique_id=2032657617 instance=ExtResource("20_1vxiu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31, 1, 0)
+
+[node name="Swing" type="Node3D" parent="." unique_id=266034274]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 9)
+
+[node name="VFXIceSwing" parent="Swing" unique_id=884438057 instance=ExtResource("21_nedo2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1, 0)
+
+[node name="VFXFireSwing" parent="Swing" unique_id=735719924 instance=ExtResource("22_dbn2g")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1, 0)
+noise_texture = SubResource("NoiseTexture2D_5hj2w")
+
+[node name="VFXNatureSwing" parent="Swing" unique_id=1005614413 instance=ExtResource("23_aen1e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 1, 0)
+noise_texture = SubResource("NoiseTexture2D_1mit2")
+
+[node name="VFXWindSwing" parent="Swing" unique_id=852351070 instance=ExtResource("24_jo1ln")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17, 1, 0)
+
+[node name="VFXDarkSwing" parent="Swing" unique_id=365386421 instance=ExtResource("25_o62oe")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 1, 0)
+autoplay = true
+
+[node name="VFXDataSwing" parent="Swing" unique_id=906477847 instance=ExtResource("26_wt7aj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 29, 1, 0)
+autoplay = true
+
+[node name="Claw" type="Node3D" parent="." unique_id=311119563]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8)
+
+[node name="VFXIceClaw" parent="Claw" unique_id=969106183 instance=ExtResource("27_vyxwn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 2, 0)
+
+[node name="VFXFireClaw" parent="Claw" unique_id=1170062239 instance=ExtResource("28_nql66")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 0)
+noise_texture = SubResource("NoiseTexture2D_5hj2w")
+
+[node name="VFXNatureClaw" parent="Claw" unique_id=993532244 instance=ExtResource("29_1cu7t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 2, 0)
+
+[node name="VFXWindClaw" parent="Claw" unique_id=1717872941 instance=ExtResource("30_jwfww")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 2, 0)
+
+[node name="VFXDarkClaw" parent="Claw" unique_id=852075206 instance=ExtResource("31_r8qcj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 2, 0)
+autoplay = true
+
+[node name="VFXDataClaw" parent="Claw" unique_id=925690568 instance=ExtResource("32_qochj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32, 2, 0)
+autoplay = true
+
+[node name="Charge" type="Node3D" parent="." unique_id=756277910]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 13)
+
+[node name="VFXIceCharge" parent="Charge" unique_id=1611203441 instance=ExtResource("33_w4y0q")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+noise_texture = SubResource("NoiseTexture2D_ptf65")
+
+[node name="VFXFireCharge" parent="Charge" unique_id=189854918 instance=ExtResource("34_yibtl")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 1, 0)
+noise_texture = SubResource("NoiseTexture2D_7s570")
+
+[node name="VFXNatureCharge" parent="Charge" unique_id=1093346014 instance=ExtResource("35_o85ty")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 1, 0)
+noise_texture = SubResource("NoiseTexture2D_1uuw4")
+
+[node name="VFXWindCharge" parent="Charge" unique_id=2046950215 instance=ExtResource("36_8yt11")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1, 0)
+noise_texture = SubResource("NoiseTexture2D_2k0y8")
+
+[node name="VFXDarkCharge" parent="Charge" unique_id=585378658 instance=ExtResource("37_0hxfh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 1, 0)
+noise_texture = SubResource("NoiseTexture2D_6criy")
+
+[node name="VFXDataCharge" parent="Charge" unique_id=965582620 instance=ExtResource("38_llsty")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 1, 0)

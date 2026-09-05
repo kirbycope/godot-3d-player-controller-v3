@@ -1,0 +1,37 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://ptoe2qpolu5u"]
+
+[ext_resource type="Shader" uid="uid://dtvdi31o1l24p" path="res://assets/BinbunVFX_Vol2/StatusFX/shader/status_overlay.gdshader" id="1_3x6fw"]
+
+[sub_resource type="Gradient" id="Gradient_duluk"]
+offsets = PackedFloat32Array(0.21031746, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_k4vjf"]
+noise_type = 0
+fractal_octaves = 2
+fractal_gain = 1.0
+cellular_distance_function = 2
+cellular_return_type = 2
+domain_warp_enabled = true
+domain_warp_type = 1
+domain_warp_frequency = 0.01
+domain_warp_fractal_octaves = 3
+domain_warp_fractal_lacunarity = 2.0
+domain_warp_fractal_gain = 10.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_3x6fw"]
+noise = SubResource("FastNoiseLite_k4vjf")
+color_ramp = SubResource("Gradient_duluk")
+seamless = true
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_3x6fw")
+shader_parameter/effect_amount = 1.0
+shader_parameter/primary_color = Color(0.47058824, 0.99607843, 1, 1)
+shader_parameter/secondary_color = Color(0, 0.4862745, 0.9411765, 1)
+shader_parameter/emission = 2.0
+shader_parameter/color_curve = 1.0
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_3x6fw")
+shader_parameter/noise_scale = Vector2(0.5, 0.5)
+shader_parameter/noise_scroll = Vector2(0, 0.1)
+shader_parameter/offset = 0.02

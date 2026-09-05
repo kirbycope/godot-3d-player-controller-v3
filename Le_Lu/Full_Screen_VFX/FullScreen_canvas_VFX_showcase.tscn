@@ -1,0 +1,253 @@
+[gd_scene format=3 uid="uid://m858uncgivsg"]
+
+[ext_resource type="Shader" path="res://Le_Lu/Full_Screen_VFX/shaders/ss_fullscreen_snowdrops_canvas.gdshader" id="2_nu8ra"]
+[ext_resource type="Texture2D" uid="uid://cyx5u12037pwy" path="res://Le_Lu/Full_Screen_VFX/textures/T_NoiseW142.png" id="3_d584x"]
+[ext_resource type="Texture2D" uid="uid://bbhfm3reauyqr" path="res://Le_Lu/Full_Screen_VFX/textures/T_BloodMask1.PNG" id="4_n1opl"]
+[ext_resource type="Texture2D" uid="uid://bbbldf7bpkc0q" path="res://Le_Lu/Full_Screen_VFX/textures/T_NoiseNormal_A.PNG" id="5_hi1tl"]
+[ext_resource type="Shader" path="res://Le_Lu/Full_Screen_VFX/shaders/ss_fullscreen_raindrops_canvas.gdshader" id="6_tfenp"]
+[ext_resource type="Shader" path="res://Le_Lu/Full_Screen_VFX/shaders/ss_fullscreen_glitch_canvas.gdshader" id="7_vipd8"]
+[ext_resource type="Shader" path="res://Le_Lu/Full_Screen_VFX/shaders/ss_fullscreen_hyperspeed_canvas.gdshader" id="8_1i4wl"]
+[ext_resource type="Texture2D" uid="uid://djlb0gep2whiy" path="res://Le_Lu/Full_Screen_VFX/textures/T_VFX_WindNoise1.png" id="9_rymgh"]
+[ext_resource type="Shader" path="res://Le_Lu/Full_Screen_VFX/shaders/s_fullscreen_polar_2D.tres" id="10_3uc62"]
+[ext_resource type="Texture2D" uid="uid://drd5cabdks7hv" path="res://Le_Lu/Full_Screen_VFX/textures/T_Noise_6Yu1.png" id="11_pm50e"]
+[ext_resource type="Shader" path="res://Le_Lu/Full_Screen_VFX/shaders/ss_fullscreen_mastershader_C_2D.gdshader" id="12_wxiom"]
+[ext_resource type="Texture2D" uid="uid://c8pkeu0fsf1dx" path="res://Le_Lu/Full_Screen_VFX/textures/T_IceForst01.png" id="13_k2grt"]
+
+
+[sub_resource type="Curve" id="Curve_c4mel"]
+_data = [Vector2(0.21, 1), 0.0, -5.6013, 0, 0, Vector2(1, 0), -2.85523, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_s7mpi"]
+texture_mode = 1
+curve = SubResource("Curve_c4mel")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_itj81"]
+shader = ExtResource("2_nu8ra")
+shader_parameter/melt_amount = 0.538
+shader_parameter/blue_amount = 1.0
+shader_parameter/scale_1 = Vector2(1.65, 1.42)
+shader_parameter/offset_1 = Vector2(6.825, 3.41)
+shader_parameter/slush_base = ExtResource("3_d584x")
+shader_parameter/scale_normal = Vector2(0.2, 0.2)
+shader_parameter/offset_normal = Vector2(0, 0)
+shader_parameter/refraction_strength = 0.024
+shader_parameter/slush_normal = ExtResource("5_hi1tl")
+shader_parameter/enable_mask = false
+shader_parameter/scale_mask = Vector2(1, 1)
+shader_parameter/offset_mask = Vector2(0, 0)
+shader_parameter/slush_mask = ExtResource("4_n1opl")
+shader_parameter/blur_intensity = 3.997
+shader_parameter/curve_blur = SubResource("CurveTexture_s7mpi")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mh75y"]
+shader = ExtResource("6_tfenp")
+shader_parameter/frequency = -1.9
+shader_parameter/size = 0.014
+shader_parameter/refraction_strength = 0.028
+shader_parameter/speed = 0.15
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cqvj3"]
+shader = ExtResource("7_vipd8")
+shader_parameter/shake_power = 0.03
+shader_parameter/shake_rate = 0.2
+shader_parameter/shake_speed = 5.0
+shader_parameter/shake_block_size = 30.5
+shader_parameter/shake_color_rate = 0.01
+
+[sub_resource type="Gradient" id="Gradient_suuf3"]
+colors = PackedColorArray(0.6, 0.6, 0.6, 0, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_pfi40"]
+gradient = SubResource("Gradient_suuf3")
+
+[sub_resource type="Gradient" id="Gradient_3ulft"]
+offsets = PackedFloat32Array(0.411483, 0.876847, 0.975369)
+colors = PackedColorArray(0, 0, 0, 1, 0.644346, 0.644346, 0.644346, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_5jwgv"]
+gradient = SubResource("Gradient_3ulft")
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gmik2"]
+shader = ExtResource("8_1i4wl")
+shader_parameter/ColorIntensity = 1.0
+shader_parameter/Speed = Vector2(-2, 0.03)
+shader_parameter/Scale = Vector2(0.1, 5)
+shader_parameter/blur_intensity = 1.349
+shader_parameter/blur_falloff = 0.329
+shader_parameter/blur_samples = 12
+shader_parameter/blur_center = Vector2(0.5, 0.5)
+shader_parameter/Texture_Noise = ExtResource("9_rymgh")
+shader_parameter/Mask = SubResource("GradientTexture2D_5jwgv")
+shader_parameter/Gradient_Color1D = SubResource("GradientTexture1D_pfi40")
+
+[sub_resource type="Gradient" id="Gradient_3gc4e"]
+colors = PackedColorArray(0, 0, 0, 1, 0.439049, 0.439049, 0.439049, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_jrpwn"]
+gradient = SubResource("Gradient_3gc4e")
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="Gradient" id="Gradient_2mabp"]
+offsets = PackedFloat32Array(0, 0.754902, 1)
+colors = PackedColorArray(0, 0.51, 0.221, 0, 0.279, 0.9, 0.64125, 0.713726, 0.523264, 1, 0.547314, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_qgnxt"]
+gradient = SubResource("Gradient_2mabp")
+
+[sub_resource type="Gradient" id="Gradient_ulpkq"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_00w3w"]
+gradient = SubResource("Gradient_ulpkq")
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="Gradient" id="Gradient_j1ghm"]
+interpolation_color_space = 1
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_1mi3w"]
+gradient = SubResource("Gradient_j1ghm")
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hmng4"]
+shader = ExtResource("10_3uc62")
+shader_parameter/is_UVPolar = true
+shader_parameter/zoom = 0.2
+shader_parameter/Repeat = 1.0
+shader_parameter/Speed = Vector2(0.07, 0)
+shader_parameter/Scale = Vector2(1, 1)
+shader_parameter/Substract_Speed = Vector2(0, 0)
+shader_parameter/Substract_Scale = Vector2(1, 1)
+shader_parameter/Opacity = 1.0
+shader_parameter/Texture_Noise = ExtResource("11_pm50e")
+shader_parameter/Mask = SubResource("GradientTexture2D_00w3w")
+shader_parameter/Add_Texture = SubResource("GradientTexture2D_jrpwn")
+shader_parameter/Substract_Texture = SubResource("GradientTexture2D_1mi3w")
+shader_parameter/Gradient_Color1D = SubResource("GradientTexture1D_qgnxt")
+
+[sub_resource type="Gradient" id="Gradient_ldqy2"]
+offsets = PackedFloat32Array(0, 0.580645, 0.906158, 0.994135)
+colors = PackedColorArray(0, 0, 0, 1, 0.0784314, 0.0784314, 0.0784314, 1, 0.160784, 0.160784, 0.160784, 1, 0.364706, 0.364706, 0.364706, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ba0g1"]
+gradient = SubResource("Gradient_ldqy2")
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="Gradient" id="Gradient_1g6hj"]
+offsets = PackedFloat32Array(0, 0.756757, 0.947214)
+colors = PackedColorArray(0.796078, 0.854902, 0.85098, 0, 0.56, 0.846, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_gmwpj"]
+gradient = SubResource("Gradient_1g6hj")
+
+[sub_resource type="Gradient" id="Gradient_m7uar"]
+offsets = PackedFloat32Array(0.256158, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_5ed3j"]
+gradient = SubResource("Gradient_m7uar")
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_uliug"]
+shader = ExtResource("12_wxiom")
+shader_parameter/Screen_distortioness = 0.1
+shader_parameter/Speed = Vector2(0.003, 0.004)
+shader_parameter/Scale = Vector2(1.5, 1)
+shader_parameter/DistortionPower = 1.0
+shader_parameter/ColorIntensity = 1.0
+shader_parameter/Mask_power = 1.0
+shader_parameter/Texture_Noise = ExtResource("13_k2grt")
+shader_parameter/Mask = SubResource("GradientTexture2D_5ed3j")
+shader_parameter/Add_Texture = SubResource("GradientTexture2D_ba0g1")
+shader_parameter/Gradient_Color1D = SubResource("GradientTexture1D_gmwpj")
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SnowScreen" type="ColorRect" parent="."]
+visible = false
+material = SubResource("ShaderMaterial_itj81")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="RainScreen" type="ColorRect" parent="."]
+visible = false
+material = SubResource("ShaderMaterial_mh75y")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="Glitch" type="ColorRect" parent="."]
+visible = false
+material = SubResource("ShaderMaterial_cqvj3")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="HyperSpeed" type="ColorRect" parent="."]
+visible = false
+material = SubResource("ShaderMaterial_gmik2")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="healing2" type="ColorRect" parent="."]
+visible = false
+material = SubResource("ShaderMaterial_hmng4")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="Frost" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_uliug")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true

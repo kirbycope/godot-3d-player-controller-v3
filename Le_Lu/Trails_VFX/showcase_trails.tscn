@@ -1,0 +1,205 @@
+[gd_scene load_steps=11 format=3]
+
+[ext_resource type="PackedScene" uid="uid://cgubqwqq31hkk" path="res://Le_Lu/Trails_VFX/waifu_1.tscn" id="1_waifu"]
+[ext_resource type="PackedScene" path="res://Le_Lu/Trails_VFX/oni.tscn" id="2_oni"]
+[ext_resource type="PackedScene" path="res://Le_Lu/Trails_VFX/himi_curado.tscn" id="3_himi"]
+[ext_resource type="PackedScene" path="res://Le_Lu/Trails_VFX/fire_sword.tscn" id="4_sword"]
+[ext_resource type="Texture2D" uid="uid://ckvx34gs4lmmm" path="res://assets/Misc/Floor/pavement_05_diff_4k.jpg" id="5_diff"]
+[ext_resource type="Texture2D" uid="uid://bopsq1q28v7cu" path="res://assets/Misc/Floor/pavement_05_nor_dx_4k.jpg" id="6_nor"]
+
+[sub_resource type="GDScript" id="GDScript_trails_showcase"]
+resource_name = "TrailsShowcase"
+script/source = "@tool
+extends Node
+
+@export_enum("Waifu Dual Katana", "Cyborg Oni Slash", "Himi Curado", "Fire & Blue Sword", "All Characters") var selected_trail: int = 0:
+	set(val):
+		selected_trail = val
+		if is_inside_tree():
+			apply_selection(selected_trail)
+
+var is_autoplay: bool = false
+var cycle_timer: float = 0.0
+
+func _ready() -> void:
+	_setup_camera_and_ui()
+	apply_selection(selected_trail)
+
+func _process(delta: float) -> void:
+	if Engine.is_editor_hint():
+		return
+	if is_autoplay:
+		cycle_timer += delta
+		if cycle_timer >= 4.0:
+			cycle_timer = 0.0
+			var next_idx = (selected_trail + 1) % 4
+			set_trail(next_idx)
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.keycode == KEY_1:
+			set_trail(0)
+		elif event.keycode == KEY_2:
+			set_trail(1)
+		elif event.keycode == KEY_3:
+			set_trail(2)
+		elif event.keycode == KEY_4:
+			set_trail(3)
+		elif event.keycode == KEY_5:
+			set_trail(4)
+
+func set_trail(idx: int) -> void:
+	selected_trail = idx
+	apply_selection(idx)
+
+func apply_selection(idx: int) -> void:
+	if not is_inside_tree():
+		return
+	
+	var waifu := get_node_or_null("Waifu")
+	var oni := get_node_or_null("Oni")
+	var himi := get_node_or_null("Himi")
+	var sword := get_node_or_null("FireSword")
+	var cam := get_node_or_null("ShowcaseCamera") as Camera3D
+	
+	match idx:
+		0: # Waifu
+			if waifu: waifu.visible = true; waifu.position = Vector3(0, 0, 0)
+			if oni: oni.visible = false
+			if himi: himi.visible = false
+			if sword: sword.visible = false
+			if cam: cam.position = Vector3(0, 1.6, 3.8); cam.rotation_degrees = Vector3(-10, 0, 0)
+		1: # Oni
+			if waifu: waifu.visible = false
+			if oni: oni.visible = true; oni.position = Vector3(0, 0, 0)
+			if himi: himi.visible = false
+			if sword: sword.visible = false
+			if cam: cam.position = Vector3(0, 1.8, 4.2); cam.rotation_degrees = Vector3(-10, 0, 0)
+		2: # Himi
+			if waifu: waifu.visible = false
+			if oni: oni.visible = false
+			if himi: himi.visible = true; himi.position = Vector3(0, 0, 0)
+			if sword: sword.visible = false
+			if cam: cam.position = Vector3(0, 1.5, 3.6); cam.rotation_degrees = Vector3(-10, 0, 0)
+		3: # Sword
+			if waifu: waifu.visible = false
+			if oni: oni.visible = false
+			if himi: himi.visible = false
+			if sword: sword.visible = true; sword.position = Vector3(0, 0.4, 0)
+			if cam: cam.position = Vector3(0, 1.0, 2.4); cam.rotation_degrees = Vector3(-12, 0, 0)
+		4: # All characters side-by-side
+			if waifu: waifu.visible = true; waifu.position = Vector3(-4.5, 0, 0)
+			if oni: oni.visible = true; oni.position = Vector3(-1.5, 0, 0)
+			if himi: himi.visible = true; himi.position = Vector3(1.5, 0, 0)
+			if sword: sword.visible = true; sword.position = Vector3(4.5, 0.4, 0)
+			if cam: cam.position = Vector3(0, 2.5, 7.5); cam.rotation_degrees = Vector3(-14, 0, 0)
+
+func _setup_camera_and_ui() -> void:
+	if Engine.is_editor_hint():
+		return
+	
+	if not get_node_or_null("ShowcaseCamera"):
+		var cam := Camera3D.new()
+		cam.name = "ShowcaseCamera"
+		cam.current = true
+		cam.position = Vector3(0, 1.6, 3.8)
+		cam.rotation_degrees = Vector3(-10, 0, 0)
+		add_child(cam)
+	
+	if not get_node_or_null("ShowcaseUI"):
+		var canvas := CanvasLayer.new()
+		canvas.name = "ShowcaseUI"
+		canvas.layer = 10
+		add_child(canvas)
+		
+		var panel := PanelContainer.new()
+		panel.anchors_preset = Control.PRESET_BOTTOM_WIDE
+		panel.anchor_top = 1.0
+		panel.anchor_bottom = 1.0
+		panel.offset_top = -65.0
+		panel.offset_bottom = -15.0
+		panel.offset_left = 20.0
+		panel.offset_right = -20.0
+		canvas.add_child(panel)
+		
+		var style := StyleBoxFlat.new()
+		style.bg_color = Color(0.1, 0.12, 0.18, 0.9)
+		style.set_corner_radius_all(10)
+		style.set_content_margin_all(8)
+		panel.add_theme_stylebox_override("panel", style)
+		
+		var hbox := HBoxContainer.new()
+		hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+		hbox.add_theme_constant_override("separation", 10)
+		panel.add_child(hbox)
+		
+		var label := Label.new()
+		label.text = "Trail VFX Selectors:"
+		label.add_theme_font_size_override("font_size", 14)
+		hbox.add_child(label)
+		
+		var names = ["Waifu Katana (1)", "Cyborg Oni (2)", "Himi Curado (3)", "Fire Sword (4)", "All (5)"]
+		for i in range(names.size()):
+			var btn := Button.new()
+			btn.text = names[i]
+			btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+			var idx = i
+			btn.pressed.connect(func(): set_trail(idx))
+			hbox.add_child(btn)
+		
+		var auto_btn := Button.new()
+		auto_btn.text = "Auto-Cycle: OFF"
+		auto_btn.toggle_mode = true
+		auto_btn.button_pressed = false
+		auto_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		auto_btn.toggled.connect(func(pressed: bool):
+			is_autoplay = pressed
+			cycle_timer = 0.0
+			auto_btn.text = "Auto-Cycle: ON" if pressed else "Auto-Cycle: OFF"
+		)
+		hbox.add_child(auto_btn)
+"
+
+[sub_resource type="Environment" id="Environment_trails"]
+background_mode = 2
+ambient_light_source = 2
+ambient_light_color = Color(0.65, 0.65, 0.75, 1)
+ambient_light_energy = 0.6
+glow_enabled = true
+glow_strength = 0.9
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_floor"]
+albedo_texture = ExtResource("5_diff")
+normal_enabled = true
+normal_texture = ExtResource("6_nor")
+uv1_scale = Vector3(6, 6, 6)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_floor"]
+size = Vector2(40, 40)
+
+[node name="TrailsShowcase" type="Node3D"]
+script = SubResource("GDScript_trails_showcase")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_trails")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.25, 0.433013, 0, 0.866025, 0.5, -0.5, -0.433013, 0.75, 0, 5, 0)
+light_energy = 0.7
+shadow_enabled = true
+
+[node name="Floor" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_floor")
+mesh = SubResource("PlaneMesh_floor")
+
+[node name="Waifu" parent="." instance=ExtResource("1_waifu")]
+
+[node name="Oni" parent="." instance=ExtResource("2_oni")]
+visible = false
+
+[node name="Himi" parent="." instance=ExtResource("3_himi")]
+visible = false
+
+[node name="FireSword" parent="." instance=ExtResource("4_sword")]
+visible = false

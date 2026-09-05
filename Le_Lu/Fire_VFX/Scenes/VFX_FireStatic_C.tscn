@@ -1,0 +1,112 @@
+[gd_scene format=3 uid="uid://c30xcn2t2xn6y"]
+
+[ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/s_Disolver_Firex_p.tres" id="1_s45nx"]
+[ext_resource type="Texture2D" uid="uid://d146nw08uassy" path="res://Le_Lu/Fire_VFX/textures/T_smoke_bb1fa_b.png" id="2_l4j5t"]
+[ext_resource type="Texture2D" uid="uid://df1wsak3bk0m4" path="res://Le_Lu/Fire_VFX/textures/T_VFX_Noise_44xainv.png" id="3_5sts0"]
+[ext_resource type="Shader" uid="uid://bi6l8s1d6kmo6" path="res://Le_Lu/Fire_VFX/shaders/s_animated_ds_unlit_bw_aT.gdshader" id="4_yi6dq"]
+[ext_resource type="Texture2D" uid="uid://dwb175ljxympu" path="res://Le_Lu/Fire_VFX/textures/T_firex342_bw_billboard.png" id="5_wh0jl"]
+[ext_resource type="ArrayMesh" uid="uid://jlp4ta6eaw27" path="res://Le_Lu/Fire_VFX/objects/sm_plane_cross1a_thin.obj" id="6_cqopf"]
+
+
+[sub_resource type="Gradient" id="Gradient_mgik2"]
+interpolation_color_space = 1
+offsets = PackedFloat32Array(0, 0.136546, 0.883534)
+colors = PackedColorArray(0.919441, 0.526677, 1.92523e-07, 0.184314, 0.86705, 0.331074, 0.177345, 1, 1, 0.19, 0.1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ckbpn"]
+gradient = SubResource("Gradient_mgik2")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_s6mtg"]
+render_priority = -2
+shader = ExtResource("1_s45nx")
+shader_parameter/Scale = Vector2(1, 1)
+shader_parameter/Erosion_Scale = Vector2(1, 1)
+shader_parameter/Erosion_Speed = Vector2(0.1, 1)
+shader_parameter/Texture = ExtResource("2_l4j5t")
+shader_parameter/Color_1D_Gradient = SubResource("GradientTexture1D_ckbpn")
+shader_parameter/substract_mask = ExtResource("3_5sts0")
+
+[sub_resource type="Curve" id="Curve_7c6h8"]
+_data = [Vector2(0, 0.0670826), 0.0, -0.143374, 0, 0, Vector2(1, 1), 3.63563, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_8gm5c"]
+texture_mode = 1
+curve = SubResource("Curve_7c6h8")
+
+[sub_resource type="Gradient" id="Gradient_p00sf"]
+interpolation_color_space = 1
+offsets = PackedFloat32Array(0.151899, 0.236287, 0.375527, 0.64135, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0.54, 0.5076, 0.5076, 1, 0.368514, 0.336018, 0.336274, 1, 0.13, 0.0533, 0.0558567, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_5thh7"]
+gradient = SubResource("Gradient_p00sf")
+
+[sub_resource type="Curve" id="Curve_a5t4j"]
+_data = [Vector2(0, 0.330733), 0.0, 2.30332, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_fcfyj"]
+curve = SubResource("Curve_a5t4j")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_tcfy4"]
+particle_flag_rotate_y = true
+emission_shape = 1
+emission_sphere_radius = 0.1
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(0, 1, 0)
+spread = 10.068
+initial_velocity_min = 0.5
+initial_velocity_max = 2.5
+radial_velocity_min = -2.23517e-05
+radial_velocity_max = 0.499978
+gravity = Vector3(0, 0, 0)
+scale_min = 0.8
+scale_max = 1.2
+scale_curve = SubResource("CurveTexture_fcfyj")
+color = Color(2.2, 1.8, 0.5, 1)
+color_ramp = SubResource("GradientTexture1D_5thh7")
+alpha_curve = SubResource("CurveTexture_8gm5c")
+
+[sub_resource type="QuadMesh" id="QuadMesh_80lqt"]
+
+[sub_resource type="Gradient" id="Gradient_b1xyt"]
+offsets = PackedFloat32Array(0.0328638, 0.232932, 0.401606, 1)
+colors = PackedColorArray(0, 0, 0, 0, 0.31, 0.0155, 0, 0.372549, 2.108, 0.1, 0, 0.643, 3.5, 0.5, 0.05, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ky8mw"]
+gradient = SubResource("Gradient_b1xyt")
+use_hdr = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_831el"]
+render_priority = 0
+shader = ExtResource("4_yi6dq")
+shader_parameter/frame_count = Vector2(8, 4)
+shader_parameter/is_loop = true
+shader_parameter/uv_offset = Vector2(0, 0.001)
+shader_parameter/alpha_scissor_treshold = 0.33
+shader_parameter/sprite_sheet = ExtResource("5_wh0jl")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_ky8mw")
+
+[node name="VFX_FireStatic_C" type="Node3D"]
+
+[node name="firex10" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, -7.45058e-09, 0, 1, 0, 7.45058e-09, 0, 1, 0, 0, 0)
+layers = 4
+material_override = SubResource("ShaderMaterial_s6mtg")
+cast_shadow = 0
+amount = 3
+lifetime = 0.65
+visibility_aabb = AABB(-1.44, -0.875, -1.42, 2.885, 3.55, 2.835)
+draw_order = 1
+process_material = SubResource("ParticleProcessMaterial_tcfy4")
+draw_pass_1 = SubResource("QuadMesh_80lqt")
+
+[node name="SmPlaneCross1aThin" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.3, 0, 0, 0, 1, 0, 0, 0, 1.3, 0, 0, 0)
+layers = 4
+material_override = SubResource("ShaderMaterial_831el")
+cast_shadow = 0
+mesh = ExtResource("6_cqopf")
+skeleton = NodePath("../..")

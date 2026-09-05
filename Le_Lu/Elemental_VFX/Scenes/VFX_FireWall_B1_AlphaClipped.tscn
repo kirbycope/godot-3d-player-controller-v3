@@ -1,0 +1,49 @@
+[gd_scene format=3 uid="uid://bigntste8bjik"]
+
+[ext_resource type="Shader" path="res://Le_Lu/Elemental_VFX/shaders/s_master_fire_treshold_dss.tres" id="1_sgwpy"]
+[ext_resource type="Texture2D" uid="uid://covtvml0csqrr" path="res://Le_Lu/Elemental_VFX/textures/T_MarbleNoise_tiled.png" id="2_11qiq"]
+[ext_resource type="ArrayMesh" uid="uid://c2xuglijffsu3" path="res://Le_Lu/Elemental_VFX/objects/sm_WallBased4929.obj" id="3_3dx1q"]
+
+[sub_resource type="Gradient" id="Gradient_3fke8"]
+offsets = PackedFloat32Array(0, 0.406475, 0.571942, 1)
+colors = PackedColorArray(0.07, 0.07, 0.07, 0, 0.23, 0.122667, 0.069, 1, 1, 0.139667, 0.11, 1, 0.96, 0.3328, 0.288, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_gfsf3"]
+gradient = SubResource("Gradient_3fke8")
+
+[sub_resource type="Gradient" id="Gradient_ir8lf"]
+offsets = PackedFloat32Array(0, 0.863309)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_whbsc"]
+gradient = SubResource("Gradient_ir8lf")
+fill_from = Vector2(1, 1)
+
+[sub_resource type="Gradient" id="Gradient_s2roo"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_eckid"]
+gradient = SubResource("Gradient_s2roo")
+fill_to = Vector2(0, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ccocd"]
+render_priority = 0
+shader = ExtResource("1_sgwpy")
+shader_parameter/Speed_XY2 = Vector2(0, 0.5)
+shader_parameter/Scale_XY2 = Vector2(1, 0.5)
+shader_parameter/Color_Intensity2 = 2.1
+shader_parameter/Fill = 1.0
+shader_parameter/AlphaTreshold = 0.317
+shader_parameter/Base_noise2 = ExtResource("2_11qiq")
+shader_parameter/Texture_add = SubResource("GradientTexture2D_whbsc")
+shader_parameter/Texture_substract = SubResource("GradientTexture2D_eckid")
+shader_parameter/Gradient_Color_1D2 = SubResource("GradientTexture1D_gfsf3")
+
+[node name="VFX_FireWall_B1_Cheap_AlphaClipped" type="Node3D"]
+
+[node name="FireWall_B1_Cheap" type="MeshInstance3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, 0.7, 0, 1, 0, -1, 0, -3.0598e-08, 0, 0, 0)
+material_override = SubResource("ShaderMaterial_ccocd")
+cast_shadow = 0
+mesh = ExtResource("3_3dx1q")
+skeleton = NodePath("../..")

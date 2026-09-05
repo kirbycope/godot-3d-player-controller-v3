@@ -1,0 +1,106 @@
+[gd_resource type="VisualShader" load_steps=8 format=3]
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_yshfn"]
+parameter_name = "power"
+default_value_enabled = true
+default_value = 1.0
+
+[sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_xvv27"]
+parameter_name = "Alpha_Texture"
+texture_type = 1
+texture_filter = 2
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_wvhfo"]
+expanded_output_ports = [0]
+source = 5
+texture_type = 1
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_e71wk"]
+expanded_output_ports = [0]
+input_name = "color"
+
+[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_qiqjw"]
+operator = 2
+
+[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_lr8se"]
+operator = 5
+
+[sub_resource type="VisualShaderNodeBillboard" id="VisualShaderNodeBillboard_vwkct"]
+billboard_type = 3
+keep_scale = true
+
+[resource]
+code = "shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx, unshaded;
+
+uniform sampler2D Alpha_Texture : source_color, filter_linear;
+uniform float power = 1;
+
+
+
+void vertex() {
+	mat4 n_out2p0;
+// GetBillboardMatrix:2
+	{
+		mat4 __wm = mat4(normalize(INV_VIEW_MATRIX[0]), normalize(INV_VIEW_MATRIX[1]), normalize(INV_VIEW_MATRIX[2]), MODEL_MATRIX[3]);
+		__wm = __wm * mat4(vec4(cos(INSTANCE_CUSTOM.x), -sin(INSTANCE_CUSTOM.x), 0.0, 0.0), vec4(sin(INSTANCE_CUSTOM.x), cos(INSTANCE_CUSTOM.x), 0.0, 0.0), vec4(0.0, 0.0, 1.0, 0.0), vec4(0.0, 0.0, 0.0, 1.0));
+		__wm = __wm * mat4(vec4(length(MODEL_MATRIX[0].xyz), 0.0, 0.0, 0.0), vec4(0.0, length(MODEL_MATRIX[1].xyz), 0.0, 0.0), vec4(0.0, 0.0, length(MODEL_MATRIX[2].xyz), 0.0), vec4(0.0, 0.0, 0.0, 1.0));
+		n_out2p0 = VIEW_MATRIX * __wm;
+	}
+
+
+// Output:0
+	MODELVIEW_MATRIX = n_out2p0;
+
+
+}
+
+void fragment() {
+// Input:4
+	vec4 n_out4p0 = COLOR;
+	float n_out4p4 = n_out4p0.a;
+
+
+	vec4 n_out3p0;
+// Texture2D:3
+	n_out3p0 = texture(Alpha_Texture, UV);
+	float n_out3p1 = n_out3p0.r;
+
+
+// FloatOp:8
+	float n_out8p0 = n_out4p4 * n_out3p1;
+
+
+// FloatParameter:10
+	float n_out10p0 = power;
+
+
+// FloatOp:9
+	float n_out9p0 = pow(n_out8p0, n_out10p0);
+
+
+// Output:0
+	ALBEDO = vec3(n_out4p0.xyz);
+	ALPHA = n_out9p0;
+
+
+}
+"
+flags/unshaded = true
+nodes/vertex/2/node = SubResource("VisualShaderNodeBillboard_vwkct")
+nodes/vertex/2/position = Vector2(-20.0464, 308.174)
+nodes/vertex/connections = PackedInt32Array(2, 0, 0, 10)
+nodes/fragment/0/position = Vector2(820, 120)
+nodes/fragment/2/node = SubResource("VisualShaderNodeTexture2DParameter_xvv27")
+nodes/fragment/2/position = Vector2(-620, 460)
+nodes/fragment/3/node = SubResource("VisualShaderNodeTexture_wvhfo")
+nodes/fragment/3/position = Vector2(-220, 420)
+nodes/fragment/4/node = SubResource("VisualShaderNodeInput_e71wk")
+nodes/fragment/4/position = Vector2(-320, 80)
+nodes/fragment/8/node = SubResource("VisualShaderNodeFloatOp_qiqjw")
+nodes/fragment/8/position = Vector2(180, 380)
+nodes/fragment/9/node = SubResource("VisualShaderNodeFloatOp_lr8se")
+nodes/fragment/9/position = Vector2(500, 380)
+nodes/fragment/10/node = SubResource("VisualShaderNodeFloatParameter_yshfn")
+nodes/fragment/10/position = Vector2(200, 700)
+nodes/fragment/connections = PackedInt32Array(2, 0, 3, 2, 4, 0, 0, 0, 4, 4, 8, 0, 3, 1, 8, 1, 8, 0, 9, 0, 10, 0, 9, 1, 9, 0, 0, 1)

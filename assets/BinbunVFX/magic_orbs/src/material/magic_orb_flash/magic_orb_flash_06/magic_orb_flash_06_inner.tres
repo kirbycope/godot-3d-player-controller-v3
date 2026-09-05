@@ -1,0 +1,31 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://cijoy1l8wg8k2"]
+
+[ext_resource type="Shader" uid="uid://w5tmfpx1lqg1" path="res://assets/BinbunVFX/shared/shader/glow_fresnel.gdshader" id="1_xpp0m"]
+
+[sub_resource type="Gradient" id="Gradient_e5m0a"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_adqvy"]
+gradient = SubResource("Gradient_e5m0a")
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_xpp0m")
+shader_parameter/fresnel_amount = 0.7
+shader_parameter/fresnel_exponent = 2.0
+shader_parameter/fresnel_gradient = SubResource("GradientTexture1D_adqvy")
+shader_parameter/enable_mask = false
+shader_parameter/mask_scroll = Vector2(0, 0)
+shader_parameter/mask_scale = Vector2(1, 1)
+shader_parameter/mask_blend_mode = 0
+shader_parameter/mask_blend = 0.0
+shader_parameter/emission_strength = 3.0
+shader_parameter/primary_color = Color(0.99607843, 0.8, 0.49803922, 1)
+shader_parameter/secondary_color = Color(0.9764706, 0.74509805, 0.8862745, 1)
+shader_parameter/tertiary_color = Color(0.8378515, 0.39691475, 0.48690587, 1)
+shader_parameter/proximity_fade = false
+shader_parameter/proximity_fade_distance = 1.0
+shader_parameter/alpha_multiplier = 1.0
+shader_parameter/alpha_mode = 0
+shader_parameter/alpha_cutoff = 0.02
+shader_parameter/dither_cutoff = 0.8
