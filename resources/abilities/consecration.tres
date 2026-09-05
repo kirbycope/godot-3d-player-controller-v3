@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="AreaDamageAbility" format=3 uid="uid://c7consecrate01"]
+
+[ext_resource type="Script" path="res://scenes/area_damage_ability.gd" id="1_area"]
+[ext_resource type="PackedScene" uid="uid://c3vt8iy21j1w8" path="res://assets/BinbunVFX/magic_areas/effects/pulse_area/pulse_area_vfx_04.tscn" id="2_ground"]
+[ext_resource type="AudioStream" uid="uid://dfwxqmkd8yrbl" path="res://addons/3d_player_controller/assets/tommusic/fantasy_sfx/Spells/Firespray 1.ogg" id="4_cast"]
+[ext_resource type="AudioStream" uid="uid://c6tgg81dqic26" path="res://addons/3d_player_controller/assets/tommusic/fantasy_sfx/Spells/Rock Wall 1.ogg" id="5_impact"]
+
+[resource]
+script = ExtResource("1_area")
+display_name = "Consecration"
+cooldown = 8.0
+energy_cost = 35.0
+fx_lifetime = 8.0
+cast_style = 5
+casting_sfx = ExtResource("4_cast")
+impact_vfx = ExtResource("2_ground")
+impact_sfx = ExtResource("5_impact")
+radius = 4.0
+duration = 8.0
+total_damage = 64.0

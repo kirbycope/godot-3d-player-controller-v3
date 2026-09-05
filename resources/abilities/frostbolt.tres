@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="DamageAbility" format=3 uid="uid://c7frostbolt001"]
+
+[ext_resource type="Script" uid="uid://cy4tkatxd8bhr" path="res://scenes/damage_ability.gd" id="1_damage"]
+[ext_resource type="PackedScene" uid="uid://b0yhsfcg8tlak" path="res://assets/BinbunVFX/magic_orbs/effects/magic_orb_small/magic_orb_small_vfx_02.tscn" id="2_charge"]
+[ext_resource type="PackedScene" uid="uid://df117erh12c0l" path="res://assets/BinbunVFX/ice_effects/effects/ice_ball/ice_ball_vfx_01.tscn" id="2_bolt"]
+[ext_resource type="PackedScene" uid="uid://dn5m5aagok8qu" path="res://assets/BinbunVFX/ice_effects/effects/ice_cloud/ice_cloud_vfx_01.tscn" id="2_hit"]
+[ext_resource type="AudioStream" uid="uid://cx58w5r1jp8ev" path="res://addons/3d_player_controller/assets/tommusic/fantasy_sfx/Spells/Ice Freeze 2.ogg" id="3_channel"]
+[ext_resource type="AudioStream" uid="uid://k0ef5bcp2hg1" path="res://addons/3d_player_controller/assets/tommusic/fantasy_sfx/Spells/Ice Throw 1.ogg" id="4_cast"]
+[ext_resource type="AudioStream" uid="uid://dfc131kfjuyog" path="res://addons/3d_player_controller/assets/tommusic/fantasy_sfx/Spells/Ice Barrage 1.ogg" id="5_impact"]
+
+[resource]
+script = ExtResource("1_damage")
+display_name = "Frostbolt"
+cooldown = 5.0
+cast_time = 1.5
+energy_cost = 25.0
+fx_lifetime = 3.0
+target_mode = 1
+cast_style = 1
+elements = 2
+projectile_speed = 16.0
+channeling_vfx = ExtResource("2_charge")
+channeling_sfx = ExtResource("3_channel")
+casting_vfx = ExtResource("2_bolt")
+casting_sfx = ExtResource("4_cast")
+impact_vfx = ExtResource("2_hit")
+impact_sfx = ExtResource("5_impact")
+damage = 18.0
+slow_factor = 0.6
+slow_duration = 5.0

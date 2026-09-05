@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="DamageAbility" format=3 uid="uid://c7fireball0001"]
+
+[ext_resource type="Script" uid="uid://cy4tkatxd8bhr" path="res://scenes/damage_ability.gd" id="1_damage"]
+[ext_resource type="PackedScene" path="res://Le_Lu/Fire_VFX/Scenes/VFX_FireStatic_K1.tscn" id="2_charge"]
+[ext_resource type="PackedScene" path="res://Le_Lu/Fire_VFX/Scenes/VFX_FireBall_K1.tscn" id="2_bolt"]
+[ext_resource type="PackedScene" path="res://Le_Lu/Fire_VFX/Scenes/VFX_FirExplosion.tscn" id="2_hit"]
+[ext_resource type="AudioStream" uid="uid://dwrjur46y2cdt" path="res://addons/3d_player_controller/assets/tommusic/fantasy_sfx/Spells/Firebuff 2.ogg" id="3_channel"]
+[ext_resource type="AudioStream" uid="uid://dfmxxacggqxn4" path="res://addons/3d_player_controller/assets/tommusic/fantasy_sfx/Spells/Fireball 2.ogg" id="4_cast"]
+[ext_resource type="AudioStream" uid="uid://cmtq1735xeno6" path="res://addons/3d_player_controller/assets/tommusic/fantasy_sfx/Spells/Spell Impact 2.ogg" id="5_impact"]
+
+[resource]
+script = ExtResource("1_damage")
+display_name = "Fireball"
+cooldown = 6.0
+cast_time = 1.5
+energy_cost = 30.0
+fx_lifetime = 5.0
+target_mode = 1
+cast_style = 1
+elements = 1
+element_radius = 3.0
+projectile_speed = 14.0
+channeling_vfx = ExtResource("2_charge")
+channeling_sfx = ExtResource("3_channel")
+casting_vfx = ExtResource("2_bolt")
+casting_sfx = ExtResource("4_cast")
+impact_vfx = ExtResource("2_hit")
+impact_sfx = ExtResource("5_impact")
+damage = 25.0
+over_time_damage = 8.0
+over_time_duration = 4.0

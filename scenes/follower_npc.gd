@@ -136,6 +136,8 @@ func _follow_player(delta: float) -> void:
 		# Walk when close to the player, run when farther away
 		speed = lerpf(walk_speed, move_speed, clampf((horizontal_distance - follow_distance) / 1.5, 0.0, 1.0))
 
+	speed *= movement_scale
+
 	if navigation_agent_3d.avoidance_enabled:
 		# With avoidance, movement happens in _on_velocity_computed
 		navigation_agent_3d.set_velocity(direction * speed)
@@ -155,6 +157,31 @@ func _stop_moving() -> void:
 	if navigation_agent_3d.avoidance_enabled:
 		navigation_agent_3d.set_velocity(Vector3.ZERO)
 	_move_with_control(Vector3.ZERO)
+
+
+var movement_scale: float = 1.0 ## Fraction of normal speed the navigation asks for; [method slow] lowers it for a while.
+var _slow_timer: SceneTreeTimer
+
+
+## Slows to [param factor] of normal speed for [param seconds]; counts on the server, clients relay theirs.
+func slow(factor: float, seconds: float) -> void:
+	if not multiplayer.is_server():
+		_request_slow.rpc_id(1, factor, seconds)
+		return
+	movement_scale = clampf(factor, 0.0, 1.0)
+	_slow_timer = get_tree().create_timer(seconds)
+	_slow_timer.timeout.connect(_end_slow.bind(_slow_timer))
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func _request_slow(factor: float, seconds: float) -> void:
+	if multiplayer.is_server():
+		slow(factor, seconds)
+
+
+func _end_slow(timer: SceneTreeTimer) -> void:
+	if timer == _slow_timer: # A newer slow runs on its own timer
+		movement_scale = 1.0
 
 
 ## Moves with the given control velocity on top of knockback and vertical motion.

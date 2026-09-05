@@ -163,7 +163,7 @@ func _return_home(delta: float) -> void:
 		var next: Vector3 = navigation_agent_3d.get_next_path_position() if navigation_agent_3d.is_target_reachable() else home
 		var direction: Vector3 = global_position.direction_to(next).slide(up_direction).normalized()
 		global_transform = global_transform.interpolate_with(global_transform.looking_at(global_position + direction, up_direction), turn_speed * delta)
-		_move_with_control(direction * move_speed)
+		_move_with_control(direction * move_speed * movement_scale)
 		return
 	_stop_moving()
 	var facing: Transform3D = global_transform.looking_at(global_position - _spawn_transform.basis.z, up_direction)
