@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="DamageAbility" format=3 uid="uid://dsb0mvbbhx42w"]
 
+[ext_resource type="Texture2D" path="res://addons/3d_player_controller/assets/game_icons/fireball.svg" id="spell_icon"]
 [ext_resource type="Script" uid="uid://cy4tkatxd8bhr" path="res://scenes/damage_ability.gd" id="1_damage"]
 [ext_resource type="PackedScene" path="res://Le_Lu/Fire_VFX/Scenes/VFX_FireStatic_K1.tscn" id="2_charge"]
 [ext_resource type="PackedScene" path="res://Le_Lu/Fire_VFX/Scenes/VFX_FireBall_K1.tscn" id="2_bolt"]
@@ -11,6 +12,8 @@
 [resource]
 script = ExtResource("1_damage")
 display_name = "Fireball"
+icon = ExtResource("spell_icon")
+icon_color = Color(1, 0.27, 0, 1)
 cooldown = 6.0
 cast_time = 1.5
 energy_cost = 30.0

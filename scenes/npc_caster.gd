@@ -34,7 +34,7 @@ func has_line_of_sight(target: Node3D) -> bool:
 		query.exclude = [(caster as CollisionObject3D).get_rid()]
 	var hit: Dictionary = caster.get_world_3d().direct_space_state.intersect_ray(query)
 	# The car a target is driving counts as the target: its body is what the ray can reach
-	return hit.is_empty() or hit["collider"] == target or target.is_ancestor_of(hit["collider"]) or hit["collider"] == target.get("is_driving_in")
+	return hit.is_empty() or hit["collider"] == target or target.is_ancestor_of(hit["collider"]) or hit["collider"] == target.get("riding")
 
 
 ## Starts the first usable ability against [param target]; false when none applies right now.

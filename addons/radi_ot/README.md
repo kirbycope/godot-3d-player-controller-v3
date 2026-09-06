@@ -1,10 +1,10 @@
-# radi-ot (Radio + Godot) 📻
+# radi-ot (Radio + Godot)
 
 **radi-ot** is a feature-packed 3D audio streaming addon for **Godot 4.8** that streams real live Seattle radio stations over the internet. Built for both **Steam (Forward+)** and **Web (Compatibility)**, it features positional 3D audio, an in-game retro-modern CanvasLayer HUD, procedural FM tuning static, and an `urgent_bulletin()` API designed for in-game narrative progression and emergency broadcasts.
 
 ---
 
-## ✨ Features
+## Features
 
 - **3D Positional Spatial Audio:** `RadiOtPlayer3D` extends `AudioStreamPlayer3D`, offering realistic distance attenuation, unit size, and panning attached to any in-game object (vehicles, radios, boomboxes, storefronts).
 - **Curated Seattle Radio Presets (.tres):**
@@ -28,7 +28,7 @@
 
 ---
 
-## 📦 Installation
+## Installation
 
 ### Option 1: Manual Installation (Recommended)
 
@@ -66,7 +66,7 @@ git submodule add https://github.com/kirbycope/radi-ot.git addons/radi_ot
 
 ---
 
-## 📻 Interactive Demo Scene
+## Interactive Demo Scene
 
 Open and run **`res://addons/radi_ot/scenes/demo/demo.tscn`** to experience live 3D positional radio streaming:
 - **Live Seattle Streams**: Stream real audio from KEXP, C89.5, KNKX, KUOW, KING-FM, and KMGP.
@@ -76,7 +76,7 @@ Open and run **`res://addons/radi_ot/scenes/demo/demo.tscn`** to experience live
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Add to Your Scene
 
@@ -106,7 +106,44 @@ radio.get_hud().hint_text = "[J] Prev Station   [L] Next Station   [M] Power"
 
 ---
 
-## 🎮 Narrative Story Bulletins (`urgent_bulletin`)
+## How to Use
+
+### Nodes to add and where
+
+| Node | Where it goes | Set in the Inspector |
+|---|---|---|
+| `RadiOtPlayer3D` (instance `scenes/radi_ot_player_3d.tscn`) | Under the mesh of the radio prop, so it moves with the prop and sounds from it | `station_collection` (defaults to `seattle_stations_default.tres`), `auto_play_on_ready` to tune in as soon as the scene runs, `play_static_while_buffering`; the inherited `AudioStreamPlayer3D` `max_distance` / `unit_size` for how far the radio carries |
+| `RadiOtHUD` (already inside the player scene) | Nothing to add; it is the `CanvasLayer` child of the player | `toast_hide` (auto-hide the panel after `toast_hide_seconds`), `hint_text`; or `enable_hud = false` on the player to drop it |
+| `RadioStation` and `RadioStationCollection` resources | `.tres` files anywhere in your project | Station fields, then assign the collection to `station_collection` |
+
+Minimum scene:
+
+```text
+World (Node3D)
+└── RadioMesh (MeshInstance3D)
+    └── RadiOtPlayer3D (radi_ot_player_3d.tscn)        <- the only node you add
+        ├── RadiOtStreamer                              (inside the scene)
+        ├── StaticPlayer3D, BulletinPlayer3D, BulletinTimer
+        └── RadiOtHUD
+```
+
+Nothing else is required: the scene wires its own children. Drive it from buttons connected in the editor or from your own input code with `tune_next_station()`, `tune_previous_station()`, `toggle_power()` and `urgent_bulletin()`.
+
+### How `demo.tscn` does it
+
+| Demo node | What it demonstrates |
+|---|---|
+| `RadioMesh/RadiOtPlayer3D` | The player scene instanced under the radio mesh with `auto_play_on_ready = true`, so it tunes to the first station on start. On the web the `ClickToStart` layer waits for a click first, because browsers block audio until then. |
+| `RadioMesh/RadiOtPlayer3D/RadiOtHUD` | `toast_hide = false` keeps the panel on screen; `demo.gd` sets `hint_text` in `_ready()`. |
+| `RadiOtDemo` (root, `demo.gd`) | Holds the `radio_player` export (a NodePath to the player) and the J / L / M keys in `_unhandled_input`. |
+| `UI/PreviousStation`, `UI/NextStation` (and their `TouchScreenButton`s) | `pressed` is connected in the scene to `_on_previous_station_pressed` / `_on_next_station_pressed`, which call the tune methods. |
+| `UI/VBoxContainer/BulletinBtn1`, `BulletinBtn2`, `CancelBulletinBtn` | `pressed` is connected in the scene to handlers that call `urgent_bulletin(stream, text)` and `cancel_bulletin()`. |
+| `Camera3D` | Orbited by `demo.gd` so you hear the positional attenuation and panning. |
+| `Retro Radio` | A cosmetic GLB model; the sound comes from `RadiOtPlayer3D`. |
+
+---
+
+## Narrative Story Bulletins (`urgent_bulletin`)
 
 Trigger emergency announcements, breaking news alerts, or story events that temporarily override the live stream:
 
@@ -133,7 +170,7 @@ radio.cancel_bulletin()
 
 ---
 
-## 📻 Custom Stations & Collections (`.tres`)
+## Custom Stations & Collections (`.tres`)
 
 ### Creating a New Station
 
@@ -155,7 +192,7 @@ Group your stations into a `RadioStationCollection` resource (`.tres`) and assig
 
 ---
 
-## 🛠️ Public API Reference
+## Public API Reference
 
 ### `RadiOtPlayer3D`
 
@@ -184,7 +221,7 @@ Group your stations into a `RadioStationCollection` resource (`.tres`) and assig
 
 ---
 
-## 🧪 Testing
+## Testing
 
 Run the automated [GUT (Godot Unit Test)](https://github.com/bitwes/Gut) suite via the command line or the in-editor GUT panel:
 
@@ -208,7 +245,7 @@ godot --headless -s addons/gut/gut_cmdln.gd
 
 ---
 
-## 🖼️ Assets
+## Assets
 
 - `assets/models/retro-radio-boombox` — Retro Radio model and textures. Source and license not recorded — fill in.
 - `assets/audio/eleven_labs` — Bulletin voice clips generated with [ElevenLabs](https://elevenlabs.io).
@@ -218,6 +255,6 @@ godot --headless -s addons/gut/gut_cmdln.gd
 
 ---
 
-## 📄 License
+## License
 
 Code is licensed under the MIT License.

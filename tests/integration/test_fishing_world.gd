@@ -1,7 +1,8 @@
 extends GutTest
 
 ## Purpose: The world's rod runs the whole loop at the pool: cast lands the float on the pool, the bite
-## opens the hook window, hooking reels the fish in and shows the card, and a missed window lets it escape.
+## opens the hook window, hooking reels the fish in, shows the card and puts the fish in the inventory, a missed
+## window lets it escape, and a lure used from the inventory goes on the line.
 
 const WORLD_SCENE: PackedScene = preload("res://scenes/world.tscn")
 
@@ -73,9 +74,12 @@ func test_full_loop_catches_a_fish() -> void:
 	assert_eq(action.text, "", "Reeling has no Action prompt")
 	assert_eq(rod.state, FishingRod.State.REELING)
 	assert_signal_emitted(rod, "fish_hooked")
+	var fish: Fish = rod.hooked_fish
 	rod.reel_timer.stop()
 	rod._on_reel_timer_timeout()
 	assert_signal_emitted(rod, "fish_caught")
+	assert_eq(player.inventory.count_of(fish), 1, "The catch is in the inventory")
+	assert_eq(player.inventory.get_slot(fish.category, 0).item, fish, "On the fish's own tab")
 	assert_eq(rod.state, FishingRod.State.IDLE)
 	assert_eq(action.text, "Cast", "Back to Cast after the catch")
 	assert_null(rod.bobber, "The line is back in")
@@ -84,6 +88,18 @@ func test_full_loop_catches_a_fish() -> void:
 	var card: FishCard = player.controls.get_node("FishCard")
 	assert_true(card.visible, "The catch card is up")
 	assert_ne(card.name_label.text, "", "The card names the catch")
+
+
+func test_a_lure_used_from_the_inventory_goes_on_the_line() -> void:
+	var worm: Lure = load("res://resources/lures/worm.tres")
+	assert_null(rod.lure, "A bare hook to start")
+	var worms: int = player.inventory.count_of(worm) # the QA kit hands out ten on spawn
+	assert_gt(worms, 0, "The QA world spawns the player with worms")
+	watch_signals(rod)
+	player.inventory.use_slot(worm.category, 0)
+	assert_eq(rod.lure, worm, "Using the worm puts it on the line")
+	assert_signal_emitted_with_parameters(rod, "lure_changed", [worm])
+	assert_eq(player.inventory.count_of(worm), worms, "Lures are not used up")
 
 
 func test_missing_the_hook_window_loses_the_fish() -> void:

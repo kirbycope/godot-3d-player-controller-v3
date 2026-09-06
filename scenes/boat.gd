@@ -4,11 +4,16 @@ extends AnimatableBody3D
 @export var water: Buoyancy ## The water the boat floats on; without it the boat sits still.
 @export var hull_length: float = 2.0 ## Bow-to-stern distance (m) the waves are sampled over for pitch.
 @export var hull_width: float = 1.0 ## Port-to-starboard distance (m) sampled for roll.
-@export var rock_multiplier: float = 3.0 ## Exaggerates the tilt so pool-sized waves still read as rocking.
+@export var rock_multiplier: float = 1.0 ## Exaggerates the tilt.
+@export var response_time: float = 1.0 ## Seconds the hull takes to settle onto a wave; the heft of the boat. Longer shrugs off more of the chop.
 
 var player: Player ## The Player looking at the boat or seated in it.
 var _seated: bool = false
 var _mooring: Transform3D ## Placement in the scene; the wave motion is applied on top each frame.
+var _heave: float = 0.0 ## Current lift above the mooring (m).
+var _heave_velocity: float = 0.0
+var _tilt: Vector2 = Vector2.ZERO ## Current pitch and roll (rad).
+var _tilt_velocity: Vector2 = Vector2.ZERO
 
 @onready var action_prompt: ActionPrompt = $ActionPrompt
 @onready var seat_01: Marker3D = $Seat01
@@ -58,9 +63,9 @@ func _on_player_state_changed(_from_state: int, to_state: int) -> void:
 
 
 ## Rides the waves (they have no signal) and keeps a seated Player on the seat.
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	if water:
-		_ride_waves()
+		_ride_waves(delta)
 	if not _seated:
 		return
 	player.global_position = seat_01.global_position
@@ -70,13 +75,21 @@ func _physics_process(_delta: float) -> void:
 	player.velocity = Vector3.ZERO
 
 
-## Bobs on the mean wave height under the hull and tilts toward the higher end and side.
-func _ride_waves() -> void:
+## Eases toward the mean wave height under the hull and the tilt toward the higher end and side.
+## The hull is a critically damped spring on each axis, so it has the heft to ignore ripples shorter
+## than its own swing and never overshoots the swell it follows.
+func _ride_waves(delta: float) -> void:
 	var origin: Vector3 = _mooring.origin
 	var bow: float = water.get_wave_offset(origin + _mooring.basis.z * hull_length * 0.5)
 	var stern: float = water.get_wave_offset(origin - _mooring.basis.z * hull_length * 0.5)
 	var starboard: float = water.get_wave_offset(origin + _mooring.basis.x * hull_width * 0.5)
 	var port: float = water.get_wave_offset(origin - _mooring.basis.x * hull_width * 0.5)
-	var pitch: float = -atan2(bow - stern, hull_length) * rock_multiplier
-	var roll: float = atan2(starboard - port, hull_width) * rock_multiplier
-	global_transform = Transform3D(_mooring.basis * Basis.from_euler(Vector3(pitch, 0.0, roll)), origin + Vector3.UP * (bow + stern + starboard + port) * 0.25)
+	var target_heave: float = (bow + stern + starboard + port) * 0.25
+	var target_tilt: Vector2 = Vector2(-atan2(bow - stern, hull_length), atan2(starboard - port, hull_width)) * rock_multiplier
+	var stiffness: float = pow(TAU / maxf(response_time, 0.01), 2.0)
+	var damping: float = 2.0 * sqrt(stiffness)
+	_heave_velocity += ((target_heave - _heave) * stiffness - _heave_velocity * damping) * delta
+	_heave += _heave_velocity * delta
+	_tilt_velocity += ((target_tilt - _tilt) * stiffness - _tilt_velocity * damping) * delta
+	_tilt += _tilt_velocity * delta
+	global_transform = Transform3D(_mooring.basis * Basis.from_euler(Vector3(_tilt.x, 0.0, _tilt.y)), origin + Vector3.UP * _heave)

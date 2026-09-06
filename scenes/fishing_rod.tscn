@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://cgev2p5iv6fpj" path="res://scenes/fishing_rod.gd" id="1_1xn5j"]
 [ext_resource type="PackedScene" uid="uid://dhm8x5m0ev4jv" path="res://assets/sketchfab/fishing_rod/fishing_rod_rigged_and_animated.glb" id="1_g433l"]
 [ext_resource type="Texture2D" uid="uid://cxepvualva35x" path="res://addons/3d_player_controller/assets/game_icons/fishing-pole.svg" id="2_binnr"]
-[ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://scenes/action_prompt.tscn" id="2_h4s14"]
+[ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://addons/3d_player_controller/scenes/action_prompt.tscn" id="2_h4s14"]
 [ext_resource type="PackedScene" uid="uid://c7bobber00001" path="res://scenes/bobber.tscn" id="3_bobber"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1xn5j"]

@@ -236,7 +236,7 @@ func test_a_driving_player_is_attacked_in_reach_but_never_chased_and_dropped_whe
 	var swordsman: EnemyNpc = _enemy("Swordsman")
 	watch_signals(swordsman)
 	var post: Vector3 = swordsman.global_position
-	player.is_driving = true
+	player.is_riding = true
 	_stand_near(swordsman, 1.2)
 	swordsman.aggro(player)
 	await wait_seconds(1.5)
@@ -247,7 +247,7 @@ func test_a_driving_player_is_attacked_in_reach_but_never_chased_and_dropped_whe
 	assert_null(swordsman.target, "Driven out of reach: the hunt is dropped")
 	await wait_seconds(0.5)
 	assert_lt(swordsman.global_position.distance_to(post), 0.3, "It stays put instead of following the car")
-	player.is_driving = false
+	player.is_riding = false
 
 
 func test_a_car_driving_through_the_aggro_area_gets_its_driver_hunted() -> void:
@@ -258,15 +258,15 @@ func test_a_car_driving_through_the_aggro_area_gets_its_driver_hunted() -> void:
 	car.add_child(shape)
 	car.player = player
 	world.add_child(car)
-	player.is_driving = true
-	player.is_driving_in = car
+	player.is_riding = true
+	player.riding = car
 	car.global_position = archer.global_position + Vector3(0.0, 0.5, 3.0)
 	_stand_near(archer, 3.0)
 	await wait_physics_frames(3)
 	assert_eq(archer.target, player, "The driver of a car in the aggro area is hunted")
 	assert_true(archer.caster.has_line_of_sight(player), "The car around the driver does not block the shot")
-	player.is_driving = false
-	player.is_driving_in = null
+	player.is_riding = false
+	player.riding = null
 	car.free()
 
 

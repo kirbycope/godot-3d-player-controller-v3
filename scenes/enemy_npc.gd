@@ -96,7 +96,7 @@ func _physics_process(delta: float) -> void:
 		_return_home(delta)
 		_update_locomotion()
 		return
-	var drove_off: bool = target != null and target.get("is_driving") and global_position.distance_to(target.global_position) > attack_range * 1.25
+	var drove_off: bool = target != null and target.get("is_riding") and global_position.distance_to(target.global_position) > attack_range * 1.25
 	if target and (drove_off or target.global_position.distance_to(_spawn_transform.origin) > leash_distance):
 		# Off the leash (a respawn at the far spawn point, a chase that went too far) or driven out of reach: reset
 		_drop_target()
@@ -179,7 +179,7 @@ func _return_home(delta: float) -> void:
 ## Wired to the AggroArea's body_entered: a Player on foot, or the driver of a vehicle passing through.
 func _on_aggro_area_body_entered(body: Node3D) -> void:
 	var who: Node = body if body is Player else body.get("player")
-	if who is Player and not (who as Player).is_stealthed and (who == body or (who as Player).is_driving_in == body):
+	if who is Player and not (who as Player).is_stealthed and (who == body or (who as Player).riding == body):
 		aggro(who)
 
 

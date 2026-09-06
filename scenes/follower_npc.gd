@@ -79,7 +79,7 @@ func _physics_process(delta: float) -> void:
 
 	knockback_velocity = knockback_velocity.move_toward(Vector3.ZERO, knockback_damping * delta)
 
-	if not player or player.is_stealthed or (player.is_driving and not follow_while_driving):
+	if not player or player.is_stealthed or (player.riding_blocks_hands() and not follow_while_driving):
 		_stop_moving()
 		return
 	up_direction = player.up_direction

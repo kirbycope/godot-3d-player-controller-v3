@@ -1,6 +1,6 @@
 extends GutTest
 
-const PARAGLIDER_SCENE = preload("res://scenes/paraglider.tscn")
+const PARAGLIDER_SCENE = preload("res://addons/3d_player_controller/scenes/paraglider.tscn")
 
 
 func test_paraglider_mesh_surface_materials() -> void:

@@ -78,6 +78,6 @@ func test_pressing_action_by_the_car_gets_in() -> void:
 	release.physical_keycode = KEY_E
 	Input.parse_input_event(release)
 	await wait_physics_frames(2)
-	assert_true(player.is_driving, "Action by the car gets in")
+	assert_true(player.is_riding, "Action by the car gets in")
 	assert_eq(car.player, player, "The driver stays the car's Player")
 	assert_false(car.get_node("ActionPrompt").visible, "The prompt is gone once inside")

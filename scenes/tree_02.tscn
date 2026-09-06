@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://brc1errfocr3v" path="res://assets/quaternius/logs/Tree_Bark_2.gltf" id="1_oowod"]
 [ext_resource type="PackedScene" uid="uid://cr84aje5t8j5t" path="res://assets/quaternius/logs/Tree_Log_2.gltf" id="2_fidi7"]
 [ext_resource type="PackedScene" uid="uid://gwgy7yhx2f21" path="res://assets/quaternius/nature/CommonTree_5.gltf" id="3_f8uj6"]
-[ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://scenes/action_prompt.tscn" id="4_ap"]
+[ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://addons/3d_player_controller/scenes/action_prompt.tscn" id="4_ap"]
 [ext_resource type="PackedScene" uid="uid://dprg3ba60c1vw" path="res://addons/3d_player_controller/scenes/progress_bar_3d.tscn" id="5_pb3d"]
 [ext_resource type="Material" uid="uid://cy88j74yep2kd" path="res://addons/weather_fx/resources/tree_bark_material.tres" id="6_bark"]
 [ext_resource type="Material" uid="uid://b7vswk0jfeq7b" path="res://addons/weather_fx/resources/tree_leaves_material.tres" id="7_leaves"]

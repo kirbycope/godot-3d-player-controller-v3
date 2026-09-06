@@ -37,13 +37,32 @@ All demo UI signals are wired in `demo.tscn`; the script only handles camera inp
 ## How to Add to Your Scene
 
 ### Scene Setup
-1. (Optional) Enable `Date and Time` in **Project Settings > Plugins**.
-2. Add a `DateAndTime` node to your scene (e.g. as a child of your root `Main` node).
-3. In the Inspector:
-   - **`Minutes Per Day`**: Adjust the length of a full 24-hour cycle in real minutes (e.g., `24.0` minutes means 1 real minute = 1 in-game hour).
-   - **`Current Time`**: Set the starting hour (e.g. `8.0` for 8:00 AM, `12.0` for noon).
-   - **`Is Running`**: Check to start the clock running.
-4. (Optional) Instantiate `res://addons/date_and_time/scenes/date_and_time_display.tscn` under your HUD `CanvasLayer` and assign its `date_and_time_node` export.
+
+| Node | Where it goes | Set in the Inspector |
+|---|---|---|
+| `DateAndTime` (add a `Node`, attach `scripts/date_and_time.gd`, or pick it from Create New Node once the plugin is enabled) | Once per level, as a child of the level root | `minutes_per_day` (real minutes for a 24 h day), `time_scale`, `current_time` (start hour, `8.0` is 8:00), `day` / `month` / `year`, `is_running`, `system_sync` to mirror the OS clock, `editor_time_enabled` to let it tick in the editor |
+| `DateAndTimeDisplay` (instance `scenes/date_and_time_display.tscn`) | Under your HUD `CanvasLayer` | `date_and_time_node` -> the `DateAndTime` node; `botw_style`, `use_12_hour`, `show_date`, `show_seconds`, `minute_increment` |
+
+Minimum scene:
+
+```text
+Level (Node3D)
+├── DateAndTime                                   minutes_per_day, current_time, is_running
+└── HUD (CanvasLayer)
+    └── DateAndTimeDisplay (date_and_time_display.tscn)   date_and_time_node
+```
+
+Anything that should react to the clock (lighting, weather, shops) connects to the `DateAndTime` signals, in the editor or in code. The Weather FX addon's `WeatherFX` node takes it directly through its `date_and_time_node` export.
+
+### How `demo.tscn` does it
+
+| Demo node | What it demonstrates |
+|---|---|
+| `DateAndTime` | The script on a plain `Node` with `minutes_per_day = 1.0`, so a whole day passes in one real minute. `demo.gd` reads its `day`, `month` and `year` into the spin boxes in `_ready()`. |
+| `HUD/BottomRight/DateAndTimeDisplay` | `date_and_time_display.tscn` instanced with `date_and_time_node` pointing at `../../../DateAndTime`. |
+| `DateAndTime` signals -> root | `time_changed`, `day_changed`, `month_changed`, `year_changed`, `clock_paused` and `clock_resumed` are connected in the scene to handlers that move the slider, the spin boxes and the status label. |
+| `DirectionalLight3D` and `Sundial` | `_on_time_changed` rotates the sun with the hour and dims it at night, so the gnomon's shadow reads the time. |
+| `HUD/ControlPanel/...` | The time slider, speed dropdown, play/pause button, date spin boxes, format / date / rounding toggles and OS sync button are connected in the scene to handlers that set `current_time`, `time_scale`, `is_running`, `day` / `month` / `year`, `system_sync` and the display's `use_12_hour`, `show_date` and `minute_increment`. |
 
 ### GDScript API Examples
 

@@ -4,14 +4,17 @@ extends Equipment
 ## inside the hook window hooks the fish, reeling plays out on its own and the catch lands on the HUD card.
 ##
 ## Timing runs on the Timer nodes wired in the scene; the fish table and shadows come from the [Buoyancy]
-## water the float lands in. The float goes through the ProjectileSpawner when the scene has one, so every
-## peer sees the float, its line, the dips and the catch; the rod itself only runs on its owner.
+## water the float lands in, filtered by the [member lure] on the line (a [Lure] item used from the inventory
+## goes on the line). A landed fish is a GARP [Item], so it goes into the Player's inventory. The float goes
+## through the ProjectileSpawner when the scene has one, so every peer sees the float, its line, the dips and
+## the catch; the rod itself only runs on its owner.
 
 signal line_cast ## The float has left the rod.
 signal bite(fish: Fish) ## The hook window is open.
 signal fish_hooked(fish: Fish)
 signal fish_caught(fish: Fish, length_cm: float)
 signal fish_escaped(fish: Fish) ## The hook window closed, or the line was pulled while a fish was on.
+signal lure_changed(lure: Item) ## Something else is on the line (null for a bare hook).
 
 enum State { IDLE, CASTING, WAITING, BITE, REELING }
 
@@ -22,6 +25,10 @@ const CAST_ANIMATION: StringName = &"Fishing Cast/mixamo_com"
 
 @export var fishing_action: StringName = &"action"
 @export var bobber_scene: PackedScene
+@export var lure: Item: ## What is on the line; a [Lure] used from the inventory replaces it.
+	set(value):
+		lure = value
+		lure_changed.emit(lure)
 @export var max_cast_distance: float = 12.0
 @export var cast_release: float = 1.5 ## Seconds into the cast animation at which the float leaves the rod.
 @export var bite_wait: Vector2 = Vector2(3.0, 8.0) ## Seconds before the bite, before the rain and shadow bonuses.
@@ -62,6 +69,7 @@ func _ready() -> void:
 		return
 	emote_state = player.animation_tree.get(Player.EMOTE_STATE_PLAYBACK_PATH)
 	player.inventory.equipment_changed.connect(_on_equipment_changed)
+	player.inventory.item_used.connect(_on_item_used)
 	player.animation_tree.animation_finished.connect(_on_animation_finished)
 	player.state_changed.connect(_on_player_state_changed)
 	player.controls.input_type_changed.connect(_on_input_type_changed)
@@ -196,7 +204,7 @@ func _on_bobber_landed_in_water(area: Area3D) -> void:
 	bobber.plunge.rpc(0.08, 0.5)
 	bobber.splash.rpc(0.6)
 	_play(splash_sfx)
-	hooked_fish = water.pick_fish() if water else null
+	hooked_fish = water.pick_fish(lure) if water else null
 	if hooked_fish == null:
 		return
 	var wait: float = randf_range(bite_wait.x, bite_wait.y)
@@ -264,6 +272,7 @@ func _on_reel_timer_timeout() -> void:
 	if card:
 		card.show_catch(fish, length)
 	_play(catch_sfx)
+	player.inventory.add_item(fish) # a full tab leaves it on the card only
 	fish_caught.emit(fish, length)
 
 
@@ -277,6 +286,12 @@ func update_labels() -> void:
 
 func _on_input_type_changed(_input_type: int) -> void:
 	update_labels()
+
+
+## Using a [Lure] from the inventory puts it on the line.
+func _on_item_used(item: Item, _count: int) -> void:
+	if item is Lure:
+		lure = item
 
 
 func _play(stream: AudioStream) -> void:

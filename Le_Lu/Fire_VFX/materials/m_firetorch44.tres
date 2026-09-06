@@ -1,8 +1,8 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://dl7bp7amy7g7t"]
 
-[ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/ss_fireTorch_T1.gdshader" id="1_kge2c"]
+[ext_resource type="Shader" uid="uid://c0ttl1lh1c302" path="res://Le_Lu/Fire_VFX/shaders/ss_fireTorch_T1.gdshader" id="1_kge2c"]
 [ext_resource type="Texture2D" uid="uid://bw86kohsh5kmy" path="res://Le_Lu/Fire_VFX/textures/T_VFX_Noise_4.PNG" id="2_hocft"]
-[ext_resource type="Texture2D" uid="uid://dkujiwg37cnsk" path="res://Le_Lu/Fire_VFX/textures/T_NHU85.png" id="3_k0wos"]
+[ext_resource type="Texture2D" uid="uid://dkujiwg37cnsk" path="res://Le_Lu/Elemental_VFX/textures/T_NHU85.png" id="3_k0wos"]
 
 [sub_resource type="Gradient" id="Gradient_baq7u"]
 interpolation_color_space = 1
@@ -40,16 +40,16 @@ render_priority = 0
 shader = ExtResource("1_kge2c")
 shader_parameter/speed = 0.1
 shader_parameter/wobble_strength = 0.5
+shader_parameter/noise_texture = ExtResource("3_k0wos")
 shader_parameter/noise_scale_xy = Vector2(3, 0.5)
 shader_parameter/Scale_XY2 = Vector2(1.5, 2)
 shader_parameter/Speed_XY2 = Vector2(0.2, 1.3)
-shader_parameter/substract_Speed_XY = null
-shader_parameter/Color_Intensity2 = 3.0
-shader_parameter/Fill = 1.0
-shader_parameter/enable_vertex_movement = true
-shader_parameter/noise_texture = ExtResource("3_k0wos")
+shader_parameter/substract_Speed_XY = Vector2(0, 0)
 shader_parameter/Base_noise2 = ExtResource("2_hocft")
 shader_parameter/Texture_add = SubResource("GradientTexture2D_pl3kh")
 shader_parameter/Texture_substract = SubResource("GradientTexture2D_7p24k")
 shader_parameter/Gradient_Color_1D2 = SubResource("GradientTexture1D_qagw2")
+shader_parameter/Color_Intensity2 = 3.0
+shader_parameter/Fill = 1.0
 shader_parameter/tex_frg_58 = SubResource("GradientTexture2D_r1eix")
+shader_parameter/enable_vertex_movement = true

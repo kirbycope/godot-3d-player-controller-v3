@@ -9,6 +9,16 @@ extends Area3D
 ## The water also owns what can be fished out of it: [member fish], picked by the in-game hour and rain.
 
 const WAVE_TIME_ROLLOVER: float = 3600.0 ## Shader TIME wraps at rendering/limits/time/time_rollover_secs.
+const WAVE_GRAVITY: float = 9.8 ## Deep-water dispersion in the shader: a wave's angular speed is sqrt(g * k).
+## The shader's wave table: angle from the wind (rad), wave number as a multiple of wave_frequency, share of wave_amplitude.
+const WAVES: Array[Vector3] = [
+	Vector3(0.0, 0.5, 0.30),
+	Vector3(0.35, 0.8, 0.22),
+	Vector3(-0.45, 1.1, 0.18),
+	Vector3(0.9, 1.7, 0.12),
+	Vector3(-1.1, 2.3, 0.10),
+	Vector3(0.2, 3.2, 0.08),
+]
 
 @export var water_mesh: MeshInstance3D ## Quad drawn with pond_water.gdshader; its height and wave uniforms define the surface.
 @export var weather: WeatherFX ## Source of the wind the shader reads from its globals; without it the shader's fallbacks apply.
@@ -30,25 +40,50 @@ func _ready() -> void:
 	set_physics_process(false)
 
 
-## Wave height above the resting surface at [param point], matching pond_water.gdshader's vertex waves.
+## Wave height above the resting surface at [param point], matching pond_water.gdshader's Gerstner waves.
+## The waves move the surface sideways as well as up, so the parameter point whose displaced position
+## lands on [param point] is found by a few fixed-point steps before its height is read.
 func get_wave_offset(point: Vector3) -> float:
+	var local: Vector3 = water_mesh.to_local(point)
+	var xz: Vector2 = Vector2(local.x, local.z)
+	var parameter: Vector2 = xz
+	for i: int in 3:
+		var displacement: Vector3 = get_wave_displacement(parameter)
+		parameter = xz - Vector2(displacement.x, displacement.z)
+	return get_wave_displacement(parameter).y
+
+
+## Where the wave surface carries the water that rests at mesh-local [param xz]: sideways toward the
+## nearest crest and up, summed over the shader's wave table and damped toward the pond edge.
+func get_wave_displacement(xz: Vector2) -> Vector3:
 	# Reading the shader globals back is editor-only, so the wind comes from WeatherFX itself
 	var wind: Vector3 = weather.wind_direction if weather else Vector3.RIGHT
 	var wind_dir: Vector2 = Vector2(wind.x, wind.z)
 	wind_dir = wind_dir.normalized() if wind_dir.length() >= 0.001 else Vector2.RIGHT
 	var wind_speed: float = maxf(0.1, weather.current_wind_strength if weather else 0.0)
-	var speed: float = _material.get_shader_parameter("wave_speed") * (1.0 + wind_speed * 0.15)
-	var amplitude: float = _material.get_shader_parameter("wave_amplitude") * (0.6 + clampf(wind_speed * 0.1, 0.0, 2.0))
-	var frequency: float = _material.get_shader_parameter("wave_frequency")
+	var tempo: float = _wave_parameter("wave_speed", 1.0) * (1.0 + wind_speed * 0.15)
+	var amplitude: float = _wave_parameter("wave_amplitude", 0.04) * (0.6 + clampf(wind_speed * 0.1, 0.0, 2.0))
+	var frequency: float = _wave_parameter("wave_frequency", 3.5)
+	var steepness: float = _wave_parameter("wave_steepness", 0.85)
 	var time: float = fmod(Time.get_ticks_msec() / 1000.0, WAVE_TIME_ROLLOVER)
-	var local: Vector3 = water_mesh.to_local(point)
-	var xz: Vector2 = Vector2(local.x, local.z)
-	var wave1: float = sin(xz.dot(wind_dir) * frequency + time * speed)
-	var wave2: float = cos(xz.dot(Vector2(-wind_dir.y, wind_dir.x)) * frequency * 1.5 + time * speed * 1.3)
+	var displacement: Vector3 = Vector3.ZERO
+	for wave: Vector3 in WAVES:
+		var direction: Vector2 = wind_dir.rotated(wave.x)
+		var k: float = frequency * wave.y
+		var a: float = amplitude * wave.z
+		var q: float = steepness / (k * a * WAVES.size() + 0.0001)
+		var phase: float = k * direction.dot(xz) - sqrt(WAVE_GRAVITY * k) * tempo * time
+		displacement += Vector3(q * a * direction.x * cos(phase), a * sin(phase), q * a * direction.y * cos(phase))
 	# Waves fade toward the edges so the water stays sealed in the pond
 	var size: Vector2 = (water_mesh.mesh as QuadMesh).size
-	var edge_mask: float = smoothstep(0.0, 0.35, clampf(1.0 - Vector2(local.x / size.x, local.z / size.y).length() * 2.0, 0.0, 1.0))
-	return (wave1 * 0.7 + wave2 * 0.3) * amplitude * edge_mask
+	var edge_mask: float = smoothstep(0.0, 0.35, clampf(1.0 - Vector2(xz.x / size.x, xz.y / size.y).length() * 2.0, 0.0, 1.0))
+	return displacement * edge_mask
+
+
+## A wave uniform of the water material, or the shader's default when the material leaves it unset.
+func _wave_parameter(name: String, default: float) -> float:
+	var value: Variant = _material.get_shader_parameter(name)
+	return value if value != null else default
 
 
 ## World height of the wave surface at [param point].
@@ -92,11 +127,11 @@ func is_raining() -> bool:
 	return WeatherFX.get_precipitation_strength() > 0.0
 
 
-## Weighted pick among the fish available at the current hour and weather; null when nothing bites.
-func pick_fish() -> Fish:
+## Weighted pick among the fish available at the current hour, weather and [param lure]; null when nothing bites.
+func pick_fish(lure: Item = null) -> Fish:
 	var hour: int = clock.get_hour() if clock else 12
 	var raining: bool = is_raining()
-	var available: Array[Fish] = fish.filter(func(candidate: Fish) -> bool: return candidate.is_available(hour, raining))
+	var available: Array[Fish] = fish.filter(func(candidate: Fish) -> bool: return candidate.is_available(hour, raining, lure))
 	if available.is_empty():
 		return null
 	var total: float = 0.0

@@ -1,0 +1,187 @@
+extends GutTest
+
+## Purpose: the Pause menu shows an Inventory button only when its screen path is set, the screen opens from it
+## and Back returns, tabs switch with the bumper actions, confirm lifts and places stacks, Use and Drop act on the
+## stack under the cursor, and the equipment tab equips and stows.
+
+const PLAYER_SCENE: PackedScene = preload("res://addons/3d_player_controller/scenes/player.tscn")
+const PAUSE_SCENE: PackedScene = preload("res://addons/3d_player_controller/scenes/pause.tscn")
+const APPLE: Item = preload("res://addons/garp/resources/items/apple.tres")
+const ORE: Item = preload("res://addons/garp/resources/items/iron_ore.tres")
+const SWORD: Item = preload("res://addons/garp/resources/items/wooden_sword.tres")
+
+var root: Node3D
+var player: Player
+var inventory: Inventory
+var pause: Node
+var screen: InventoryScreen
+var sender
+
+
+func before_each() -> void:
+	root = Node3D.new()
+	add_child_autofree(root)
+	var floor_body := StaticBody3D.new()
+	var floor_shape := CollisionShape3D.new()
+	floor_shape.shape = BoxShape3D.new()
+	floor_shape.shape.size = Vector3(20.0, 1.0, 20.0)
+	floor_body.add_child(floor_shape)
+	floor_body.position.y = -0.5
+	root.add_child(floor_body)
+	player = PLAYER_SCENE.instantiate()
+	root.add_child(player)
+	player.controls.current_input_type = Controls.InputType.KEYBOARD_MOUSE
+	inventory = player.inventory
+	pause = player.pause
+	sender = InputSender.new(Input)
+	sender.set_auto_flush_input(true)
+	await wait_physics_frames(3)
+	screen = pause.inventory_screen as InventoryScreen
+
+
+func after_each() -> void:
+	sender.release_all()
+	sender.clear()
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+
+
+func _open() -> void:
+	pause.show_menu()
+	pause._on_inventory_pressed()
+	await wait_physics_frames(1)
+
+
+func test_pause_shows_the_inventory_button_when_a_screen_is_set() -> void:
+	assert_true(pause.inventory_button.visible, "player.tscn sets the GARP screen path")
+	assert_not_null(screen, "The screen is instanced")
+	assert_eq(screen.get_parent(), player, "As a sibling menu on the Player")
+	assert_false(screen.visible)
+
+
+func test_pause_hides_the_button_when_no_screen_is_set() -> void:
+	var bare: Node = PAUSE_SCENE.instantiate()
+	bare.inventory_screen_scene = ""
+	bare.player = player
+	root.add_child(bare)
+	await wait_physics_frames(1)
+	assert_false(bare.inventory_button.visible, "No path, no button")
+	assert_null(bare.inventory_screen)
+	bare.queue_free()
+
+
+func test_inventory_opens_from_pause_and_back_returns_to_it() -> void:
+	await _open()
+	assert_true(screen.visible, "The inventory screen is up")
+	assert_false(pause.visible, "In place of the pause menu")
+	assert_true(player.is_paused, "Still paused")
+	assert_true(screen.get_viewport().gui_get_focus_owner() is InventorySlotButton, "A slot has focus for pad and keyboard")
+	screen._on_back_pressed()
+	await wait_physics_frames(1)
+	assert_false(screen.visible)
+	assert_true(pause.visible, "Back returns to the pause menu")
+	assert_true(player.is_paused)
+	pause.hide_menu()
+	assert_false(player.is_paused)
+
+
+func test_the_start_action_closes_the_inventory_and_unpauses() -> void:
+	await _open()
+	sender.action_down("start")
+	await wait_physics_frames(1)
+	sender.action_up("start")
+	await wait_physics_frames(1)
+	assert_false(screen.visible)
+	assert_false(pause.visible)
+	assert_false(player.is_paused, "Start closes everything, like the other menus")
+
+
+func test_bumper_actions_switch_tabs() -> void:
+	await _open()
+	assert_eq(screen.tab, Item.Category.EQUIPMENT, "Opens on equipment")
+	sender.action_down(screen.next_tab_action)
+	await wait_physics_frames(1)
+	sender.action_up(screen.next_tab_action)
+	await wait_physics_frames(1)
+	assert_eq(screen.tab, Item.Category.MATERIALS)
+	assert_true(screen.tab_buttons[1].button_pressed, "The tab button shows it")
+	sender.action_down(screen.previous_tab_action)
+	await wait_physics_frames(1)
+	sender.action_up(screen.previous_tab_action)
+	await wait_physics_frames(1)
+	assert_eq(screen.tab, Item.Category.EQUIPMENT)
+	screen._select_tab(Item.Category.KEY_ITEMS)
+	assert_true(screen.tab_buttons[3].button_pressed)
+	pause.hide_menu()
+
+
+func test_confirm_lifts_a_stack_and_places_it_on_another_slot() -> void:
+	inventory.add_item(APPLE, 5)
+	var mushroom: Item = load("res://addons/garp/resources/items/mushroom.tres")
+	inventory.add_item(mushroom, 2)
+	await _open()
+	screen._select_tab(Item.Category.FOOD)
+	assert_eq(screen._slots[0].icon, APPLE.icon, "The grid shows the stacks")
+	assert_eq(screen._slots[0].count_label.text, "5")
+	screen._slots[0].grab_focus()
+	sender.action_down("ui_accept")
+	await wait_physics_frames(1)
+	sender.action_up("ui_accept")
+	await wait_physics_frames(1)
+	assert_eq(screen.held_index, 0, "Confirm on a stack lifts it")
+	assert_true(screen.held_icon.visible, "It rides on the cursor")
+	assert_eq(screen.detail_name.text, "Apple", "The details follow the held stack")
+	screen._slots[3].grab_focus()
+	sender.action_down("ui_accept")
+	await wait_physics_frames(1)
+	sender.action_up("ui_accept")
+	await wait_physics_frames(1)
+	assert_eq(screen.held_index, -1, "Confirm on a slot drops it")
+	assert_eq(inventory.get_slot(Item.Category.FOOD, 3).count, 5, "Into that slot")
+	assert_null(inventory.get_slot(Item.Category.FOOD, 0))
+	screen._on_slot_pressed(3)
+	screen._on_slot_pressed(1)
+	assert_eq(inventory.get_slot(Item.Category.FOOD, 1).item, APPLE, "Onto another item it swaps")
+	assert_eq(inventory.get_slot(Item.Category.FOOD, 3).item, mushroom)
+	screen._on_slot_pressed(1)
+	sender.action_down("ui_cancel")
+	await wait_physics_frames(1)
+	sender.action_up("ui_cancel")
+	await wait_physics_frames(1)
+	assert_eq(screen.held_index, -1, "Cancel puts a held stack back")
+	assert_true(screen.visible, "Without leaving the screen")
+	pause.hide_menu()
+
+
+func test_use_and_drop_act_on_the_focused_stack() -> void:
+	inventory.add_item(APPLE, 3)
+	await _open()
+	screen._select_tab(Item.Category.FOOD)
+	screen._slots[0].grab_focus()
+	watch_signals(inventory)
+	screen._on_use_pressed()
+	assert_signal_emitted_with_parameters(inventory, "item_used", [APPLE, 1])
+	assert_eq(inventory.count_of(APPLE), 2)
+	screen._on_drop_pressed()
+	assert_signal_emitted(inventory, "item_dropped")
+	assert_eq(inventory.count_of(APPLE), 1)
+	assert_eq(screen._slots[0].count_label.text, "", "A single apple shows no count")
+	assert_eq(screen.detail_count.text, "x1")
+	pause.hide_menu()
+
+
+func test_the_equipment_tab_stows_and_equips() -> void:
+	inventory.add_item(SWORD)
+	await _open()
+	assert_eq(screen.use_button.text, "Equip")
+	assert_eq(screen._slots[0].equipment, inventory.get_equipment_by_type(Equipment.EquipmentType.SWORD_1H))
+	assert_true(screen._slots[0].equipped_mark.visible, "Marked as in hand")
+	screen._on_slot_pressed(0)
+	assert_false(inventory.has_equipment(Equipment.EquipmentType.SWORD_1H), "Confirm on an equipped weapon stows it")
+	assert_false(screen._slots[0].equipped_mark.visible)
+	assert_eq(screen.detail_count.text, "Stowed")
+	screen._on_slot_pressed(0)
+	assert_true(inventory.has_equipment(Equipment.EquipmentType.SWORD_1H), "And again equips it")
+	screen._on_drop_pressed()
+	await wait_physics_frames(1)
+	assert_eq(inventory.get_all_weapons().size(), 0, "Drop puts it back in the world")
+	pause.hide_menu()

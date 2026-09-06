@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="AreaDamageAbility" format=3 uid="uid://dphv1ydg5ri2w"]
 
+[ext_resource type="Texture2D" path="res://addons/3d_player_controller/assets/game_icons/fire-zone.svg" id="spell_icon"]
 [ext_resource type="Script" path="res://scenes/area_damage_ability.gd" id="1_area"]
 [ext_resource type="PackedScene" uid="uid://c3vt8iy21j1w8" path="res://assets/BinbunVFX/magic_areas/effects/pulse_area/pulse_area_vfx_04.tscn" id="2_ground"]
 [ext_resource type="AudioStream" uid="uid://dfwxqmkd8yrbl" path="res://addons/3d_player_controller/assets/tommusic/fantasy_sfx/Spells/Firespray 1.ogg" id="4_cast"]
@@ -8,6 +9,8 @@
 [resource]
 script = ExtResource("1_area")
 display_name = "Consecration"
+icon = ExtResource("spell_icon")
+icon_color = Color(1, 0.55, 0, 1)
 cooldown = 8.0
 energy_cost = 35.0
 fx_lifetime = 8.0

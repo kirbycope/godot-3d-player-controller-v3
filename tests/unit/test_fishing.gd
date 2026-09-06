@@ -1,7 +1,7 @@
 extends GutTest
 
-## Purpose: Fish tables read the hour and rain, waters pick only what is available, the float lands on
-## water and floats, and the catch card fills in.
+## Purpose: Fish are inventory items; fish tables read the hour, the rain and the lure, waters pick only what is
+## available, the float lands on water and floats, and the catch card fills in.
 
 const CARP: Fish = preload("res://resources/fish/carp.tres")
 const PERCH: Fish = preload("res://resources/fish/perch.tres")
@@ -9,6 +9,8 @@ const CATFISH: Fish = preload("res://resources/fish/catfish.tres")
 const TROUT: Fish = preload("res://resources/fish/rainbow_trout.tres")
 const KOI: Fish = preload("res://resources/fish/koi.tres")
 const BOOT: Fish = preload("res://resources/fish/old_boot.tres")
+const WORM: Lure = preload("res://resources/lures/worm.tres")
+const FLY: Lure = preload("res://resources/lures/fly.tres")
 const POND_MATERIAL: Material = preload("res://addons/weather_fx/resources/pond_water_material.tres")
 const BOBBER_SCENE: PackedScene = preload("res://scenes/bobber.tscn")
 const CARD_SCENE: PackedScene = preload("res://scenes/fish_card.tscn")
@@ -18,11 +20,11 @@ func test_fish_availability_follows_hours_and_rain() -> void:
 	assert_true(CARP.is_available(3, false), "Carp bite all day")
 	assert_true(PERCH.is_available(12, false))
 	assert_false(PERCH.is_available(22, false), "Perch stop at 20:00")
-	assert_true(CATFISH.is_available(23, false), "Catfish hours wrap past midnight")
-	assert_true(CATFISH.is_available(2, false))
-	assert_false(CATFISH.is_available(12, false))
-	assert_false(TROUT.is_available(12, false), "Trout only bite in the rain")
-	assert_true(TROUT.is_available(12, true))
+	assert_true(CATFISH.is_available(23, false, WORM), "Catfish hours wrap past midnight")
+	assert_true(CATFISH.is_available(2, false, WORM))
+	assert_false(CATFISH.is_available(12, false, WORM))
+	assert_false(TROUT.is_available(12, false, FLY), "Trout only bite in the rain")
+	assert_true(TROUT.is_available(12, true, FLY))
 	assert_true(KOI.is_available(6, false))
 	assert_false(KOI.is_available(9, false))
 	assert_eq(BOOT.roll_length(), 0.0, "Junk has no length")
@@ -61,6 +63,28 @@ func _make_water() -> Buoyancy:
 	return water
 
 
+func test_fish_are_inventory_items() -> void:
+	assert_true(CARP is Item, "A Fish is a GARP Item")
+	assert_eq(CARP.category, Item.Category.FOOD, "Fish go on the Food tab")
+	assert_true(CARP.consumable)
+	assert_eq(BOOT.category, Item.Category.MATERIALS, "Junk is a material")
+	assert_false(BOOT.consumable)
+	assert_not_null(CARP.icon, "Every fish has the shared icon")
+	assert_eq(CARP.get_icon_color(), CARP.color, "Tinted with the species' colour in the grid")
+	assert_eq(CARP.get_id(), &"carp")
+	assert_true(WORM is Item and WORM is Lure, "A lure is an Item the rod recognises")
+
+
+func test_lures_gate_the_bite() -> void:
+	assert_true(CATFISH.is_available(23, false, WORM), "Catfish take a worm")
+	assert_false(CATFISH.is_available(23, false), "But not a bare hook")
+	assert_false(CATFISH.is_available(23, false, FLY), "Nor a fly")
+	assert_true(TROUT.is_available(12, true, FLY), "Trout rise to a fly in the rain")
+	assert_false(TROUT.is_available(12, true, WORM))
+	assert_true(CARP.is_available(12, false), "Carp bite on nothing at all")
+	assert_true(CARP.is_available(12, false, FLY), "And on anything")
+
+
 func test_water_picks_only_fish_available_now() -> void:
 	var water := _make_water()
 	water.fish = [CARP, PERCH, CATFISH, TROUT, KOI, BOOT]
@@ -71,7 +95,10 @@ func test_water_picks_only_fish_available_now() -> void:
 	WeatherFX.active_precipitation_strength = 0.0 # a world test in the same run may have left it raining
 	for i in 40:
 		var pick: Fish = water.pick_fish()
-		assert_true(pick in [CARP, CATFISH, BOOT], "At 23:00 without rain only carp, catfish and junk bite, got %s" % pick.display_name)
+		assert_true(pick in [CARP, BOOT], "At 23:00 without rain and no lure only carp and junk bite, got %s" % pick.display_name)
+	for i in 40:
+		var pick: Fish = water.pick_fish(WORM)
+		assert_true(pick in [CARP, CATFISH, BOOT], "A worm adds the catfish, got %s" % pick.display_name)
 	water.fish = []
 	assert_null(water.pick_fish(), "Empty water never bites")
 

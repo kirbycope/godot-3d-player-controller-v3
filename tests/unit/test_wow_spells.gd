@@ -66,6 +66,11 @@ func test_the_shipped_spells_load_with_their_effects_vfx_and_sounds() -> void:
 	assert_true(load(SPELL_DIR + "flash_of_light.tres") is HealAbility)
 	for name: String in ["firebolt", "fireball", "frostbolt", "lightning_bolt", "flash_of_light", "consecration", "shadowstep"]:
 		var spell: Ability = load(SPELL_DIR + name + ".tres")
+		assert_not_null(spell.icon, name + " has its game-icons.net icon")
+		assert_true(spell.icon.resource_path.begins_with("res://addons/3d_player_controller/assets/game_icons/"), name + "'s icon lives with the other game-icons")
+		assert_ne(spell.icon_color, Color.WHITE, name + " is tinted like aethereal tinted it")
+	for name: String in ["firebolt", "fireball", "frostbolt", "lightning_bolt", "flash_of_light", "consecration", "shadowstep"]:
+		var spell: Ability = load(SPELL_DIR + name + ".tres")
 		assert_false(spell.display_name.is_empty(), name + " is named")
 		assert_true(spell.casting_sfx != null or spell.impact_sfx != null, name + " has a sound")
 		assert_true(spell.casting_vfx != null or spell.impact_vfx != null, name + " has VFX")
@@ -148,3 +153,49 @@ func test_shadowstep_lands_behind_the_target_facing_it_and_needs_a_target() -> v
 	var to_target: Vector3 = (dummy.global_position - player.global_position).slide(Vector3.UP).normalized()
 	assert_gt(player.orientation.basis.z.normalized().dot(to_target), 0.95, "facing the target")
 	assert_almost_eq(step.get_impact_position(player), expected, Vector3.ONE * 0.05, "The puff plays where the Player appears")
+
+
+# --- Elements: fire lights the weather_fx grass, water douses it ---
+
+const GRASS_FIELD_SCENE: PackedScene = preload("res://addons/weather_fx/scenes/grass_field.tscn")
+
+
+func _field_under_the_player() -> GrassField:
+	var field: GrassField = GRASS_FIELD_SCENE.instantiate()
+	field.field_size = Vector2(20.0, 20.0)
+	field.instance_count = 400
+	player.get_parent().add_child(field)
+	field.global_position = Vector3(player.global_position.x, 0.0, player.global_position.z)
+	return field
+
+
+func test_a_fire_spell_lights_the_grass_where_it_lands_and_a_water_spell_douses_it() -> void:
+	var field: GrassField = _field_under_the_player()
+	await wait_physics_frames(2)
+	var fire := Ability.new()
+	fire.elements = Ability.Element.FIRE
+	fire.element_radius = 2.0
+	abilities.abilities.append(fire)
+	abilities.cast(fire) # SELF: lands on the caster, on the field
+	await wait_physics_frames(1)
+	assert_gt(field._burning_cells.size(), 0, "The impact lights the grass under the Player")
+	var lit: int = field._burning_cells.size()
+	var water := Ability.new()
+	water.elements = Ability.Element.WATER
+	water.element_radius = 4.0
+	abilities.abilities.append(water)
+	abilities.cast(water)
+	await wait_physics_frames(1)
+	assert_eq(field._burning_cells.size(), 0, "Water douses the fire where it lands")
+	assert_eq(field._burnt_cells.size(), lit, "What was lit is ash")
+	var plain := Ability.new()
+	abilities.abilities.append(plain)
+	abilities.cast(plain)
+	await wait_physics_frames(1)
+	assert_eq(field._burning_cells.size(), 0, "A spell without elements leaves the world alone")
+
+
+func test_firebolt_carries_fire() -> void:
+	var firebolt: Ability = load(SPELL_DIR + "firebolt.tres")
+	assert_true(bool(firebolt.elements & Ability.Element.FIRE))
+	assert_false(bool(firebolt.elements & Ability.Element.WATER))

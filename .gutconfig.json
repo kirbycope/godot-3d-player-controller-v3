@@ -3,6 +3,9 @@
 	"compact_mode": false,
 	"configured_dirs": [
 		"res://addons/3d_player_controller/tests",
+		"res://addons/garp/tests",
+		"res://addons/gta/tests",
+		"res://addons/tcps/tests",
 		"res://addons/date_and_time/tests",
 		"res://addons/radi_ot/tests",
 		"res://addons/weather_fx/tests",
@@ -11,6 +14,9 @@
 	],
 	"dirs": [
 		"res://addons/3d_player_controller/tests",
+		"res://addons/garp/tests",
+		"res://addons/gta/tests",
+		"res://addons/tcps/tests",
 		"res://addons/date_and_time/tests",
 		"res://addons/radi_ot/tests",
 		"res://addons/weather_fx/tests",
@@ -38,7 +44,7 @@
 	"opacity": 100.0,
 	"paint_after": 0.1,
 	"post_run_script": "",
-	"pre_run_script": "",
+	"pre_run_script": "res://tests/gut_pre_run.gd",
 	"prefix": "test_",
 	"should_exit": false,
 	"should_exit_on_success": true,

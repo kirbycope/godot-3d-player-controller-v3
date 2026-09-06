@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="ShadowstepAbility" format=3 uid="uid://bum070844yb5"]
 
+[ext_resource type="Texture2D" path="res://addons/3d_player_controller/assets/game_icons/shadow-follower.svg" id="spell_icon"]
 [ext_resource type="Script" path="res://scenes/shadowstep_ability.gd" id="1_step"]
 [ext_resource type="PackedScene" uid="uid://ctxdbwha5sf47" path="res://assets/BinbunVFX/smoke_effects/effects/smoke/smoke_vfx_01.tscn" id="2_puff"]
 [ext_resource type="AudioStream" uid="uid://dy8l7h4tijw3q" path="res://addons/3d_player_controller/assets/tommusic/fantasy_sfx/Spells/Wave Attack 2.ogg" id="5_impact"]
@@ -7,6 +8,8 @@
 [resource]
 script = ExtResource("1_step")
 display_name = "Shadowstep"
+icon = ExtResource("spell_icon")
+icon_color = Color(0.7, 0.45, 1, 1)
 cooldown = 20.0
 energy_cost = 10.0
 fx_lifetime = 1.5

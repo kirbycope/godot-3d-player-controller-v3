@@ -1,6 +1,7 @@
 extends GutTest
 
-## Purpose: World wiring — pool signals set NPC water areas, driving powers the radio, warp zones teleport the player.
+## Purpose: World wiring: pool signals set NPC water areas, driving powers the radio, warp zones teleport the
+## player, and the QA kit is in the spawned player's inventory.
 
 const WORLD_SCENE: PackedScene = preload("res://scenes/world.tscn")
 
@@ -29,16 +30,31 @@ func test_pool_sets_follower_npc_water_area() -> void:
 	assert_null(buddy.in_water_area, "Leaving the pool should clear in_water_area")
 
 
+func test_the_spawned_player_carries_the_qa_kit() -> void:
+	var player: Player = world.get_node("Players/1") as Player
+	var kit: Dictionary[Item, int] = world.STARTING_ITEMS
+	assert_eq(kit.size(), 4, "Worms, rifle clips, a pistol magazine and arrows")
+	for item: Item in kit:
+		assert_eq(player.inventory.count_of(item), kit[item], "%d x %s on spawn" % [kit[item], item.get_display_name()])
+	assert_eq(player.inventory.count_of(load("res://resources/lures/worm.tres")), 10)
+	assert_eq(player.inventory.count_of(load("res://resources/items/arrow.tres")), 20)
+	player.inventory.remove_item(kit.keys()[0], 3)
+	world._grant_starting_items(player)
+	assert_eq(player.inventory.count_of(kit.keys()[0]), kit[kit.keys()[0]], "Granting again tops up rather than stacking on")
+
+
 func test_driving_state_powers_radio_and_radial_menu() -> void:
 	var player: Player = world.get_node("Players/1") as Player
 	var radio: RadiOtPlayer3D = world.get_node("Players/1/RadiOtPlayer3D") as RadiOtPlayer3D
 	assert_false(radio.is_power_on())
 
-	player.current_state = NodeStateMachine.States.DRIVING
+	player.riding = world.get_node("HondaCRV")
+	player.current_state = NodeStateMachine.States.RIDING
 	assert_true(radio.is_power_on(), "Radio should power on when the player starts driving")
 	assert_true(player.radial_menu.custom_item_provider.is_valid())
 
 	player.current_state = NodeStateMachine.States.STANDING
+	player.riding = null
 	assert_false(radio.is_power_on(), "Radio should power off when the player stops driving")
 	assert_false(player.radial_menu.custom_item_provider.is_valid())
 

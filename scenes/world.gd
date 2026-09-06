@@ -5,6 +5,14 @@ extends Node3D
 ## through [ProjectileSpawner].
 
 const RADIO_OFF_ICON: Texture2D = preload("res://addons/radi_ot/assets/icons/stop_icon.svg")
+## The QA kit: what a freshly spawned local player carries, topped up to these counts (a saved inventory keeps
+## whatever else it holds). This world is the test bed, so nothing has to be found first.
+const STARTING_ITEMS: Dictionary[Item, int] = {
+	preload("res://resources/lures/worm.tres"): 10,
+	preload("res://resources/items/rifle_clip.tres"): 2,
+	preload("res://resources/items/pistol_magazine.tres"): 1,
+	preload("res://resources/items/arrow.tres"): 20,
+}
 
 ## GodotSteam constant mirrors (the Steam class is absent on web exports).
 const STEAM_RESULT_OK: int = 1
@@ -29,12 +37,21 @@ func _ready() -> void:
 	_apply_network_roles()
 
 
+## Tops the player's inventory up to the [constant STARTING_ITEMS] counts.
+func _grant_starting_items(target: Player) -> void:
+	for item: Item in STARTING_ITEMS:
+		var missing: int = STARTING_ITEMS[item] - target.inventory.count_of(item)
+		if missing > 0:
+			target.inventory.add_item(item, missing)
+
+
 ## Binds the world to the player this peer controls (connected in the scene to PlayerSpawner.local_player_spawned).
 func _on_local_player_spawned(local_player: Player) -> void:
 	player = local_player
 	player.enable_paraglider = true
 	player.enable_stamina = true
 	player.state_changed.connect(_on_player_state_changed)
+	_grant_starting_items(player)
 	radi_ot_player = player.get_node("RadiOtPlayer3D")
 	radi_ot_player.auto_play_on_ready = false
 	radi_ot_player.set_power(false)
@@ -82,14 +99,14 @@ func _sync_weather(biome: ClimateData.BiomeZone, weather: ClimateData.WeatherTyp
 
 ## Powers the car radio and its radial-menu stations while the local Player drives.
 func _on_player_state_changed(from_state: int, to_state: int) -> void:
-	if to_state == NodeStateMachine.States.DRIVING:
+	if to_state == NodeStateMachine.States.RIDING and player.riding is Vehicle:
 		radi_ot_player.set_power(true)
 		radi_ot_player.get_hud().show_toast(5.0)
 		player.radial_menu.custom_item_provider = _provide_radio_items
 		player.radial_menu.custom_item_selected = _on_radio_item_selected
 		player.radial_menu.custom_item_is_equipped = _is_radio_item_equipped
 		player.inventory.custom_cycle_handler = _on_cycle_radio_station
-	elif from_state == NodeStateMachine.States.DRIVING:
+	elif from_state == NodeStateMachine.States.RIDING:
 		radi_ot_player.set_power(false)
 		radi_ot_player.get_hud().hide_toast()
 		player.radial_menu.custom_item_provider = Callable()
@@ -105,7 +122,7 @@ func _on_warp_zone_body_entered(body: Node3D, marker_path: NodePath) -> void:
 
 ## Respawns a Player that fell out of the world at their starting position.
 func _on_kill_zone_body_entered(body: Node3D) -> void:
-	if body is Player and (body as Player).is_multiplayer_authority() and not (body as Player).is_driving and not (body as Player).is_flying:
+	if body is Player and (body as Player).is_multiplayer_authority() and not (body as Player).is_riding and not (body as Player).is_flying:
 		(body as Player).warp_to((body as Player).initial_transform)
 
 
@@ -171,12 +188,12 @@ func _on_cycle_radio_station(direction: int) -> void:
 
 
 func _on_radio_station_changed(_station: RadioStation) -> void:
-	if player.current_state == NodeStateMachine.States.DRIVING:
+	if player.riding is Vehicle:
 		radi_ot_player.get_hud().show_toast(5.0)
 
 
 func _on_radio_toggled(_is_playing: bool) -> void:
-	if player.current_state == NodeStateMachine.States.DRIVING:
+	if player.riding is Vehicle:
 		radi_ot_player.get_hud().show_toast(5.0)
 
 

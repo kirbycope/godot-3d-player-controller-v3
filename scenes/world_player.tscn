@@ -1,8 +1,7 @@
 [gd_scene load_steps=11 format=3]
 
 [ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/player.tscn" id="6_e6ckp"]
-[ext_resource type="PackedScene" path="res://scenes/paraglider.tscn" id="7_mvg0v"]
-[ext_resource type="PackedScene" path="res://scenes/skateboard.tscn" id="8_h3odw"]
+[ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/paraglider.tscn" id="7_mvg0v"]
 [ext_resource type="PackedScene" path="res://addons/radi_ot/scenes/radi_ot_player_3d.tscn" id="9_mvg0v"]
 [ext_resource type="Resource" path="res://addons/radi_ot/resources/stations/seattle_stations_default.tres" id="345_5hhec"]
 [ext_resource type="PackedScene" uid="uid://c7fishcard0001" path="res://scenes/fish_card.tscn" id="fish_card"]
@@ -15,13 +14,20 @@
 [ext_resource type="Resource" path="res://resources/abilities/lightning_bolt.tres" id="lightning_bolt"]
 [ext_resource type="Resource" path="res://resources/abilities/consecration.tres" id="consecration"]
 [ext_resource type="Resource" path="res://resources/abilities/shadowstep.tres" id="shadowstep"]
+[ext_resource type="Resource" path="res://resources/spells/qa_tree.tres" id="qa_tree"]
 [node name="Player" unique_id=994458497 node_paths=PackedStringArray("animation_tree") instance=ExtResource("6_e6ckp")]
 animation_tree = NodePath("AnimationTree")
 paraglider_scene = ExtResource("7_mvg0v")
-skateboard_scene = ExtResource("8_h3odw")
 
 [node name="Abilities" parent="."]
-abilities = Array[ExtResource("ability")]([ExtResource("stealth"), ExtResource("flash_of_light"), ExtResource("firebolt"), ExtResource("fireball"), ExtResource("frostbolt"), ExtResource("lightning_bolt"), ExtResource("consecration"), ExtResource("shadowstep")])
+abilities = Array[ExtResource("ability")]([ExtResource("stealth"), ExtResource("flash_of_light")])
+
+[node name="Inventory" parent="."]
+persist = true
+
+[node name="Spellbook" parent="Inventory"]
+tree = ExtResource("qa_tree")
+skill_points = 6
 
 [node name="GeneralSkeleton" parent="PlayerModel/Armature" parent_id_path=PackedInt32Array(994458497, 1771073607, 593250737) index="0" unique_id=1869115255]
 bones/1/rotation = Quaternion(-0.033859815, -0.04645934, -0.028143784, 0.99794936)
@@ -304,9 +310,6 @@ body_offset = Transform3D(0.9987095, -0.04328452, -0.026572138, -0.0034529567, 0
 transform = Transform3D(-0.7299183, -0.52678645, 0.43556324, -0.62245166, 0.7755689, -0.10510457, -0.28244165, -0.34783483, -0.89400095, -0.18116727, 0.0384835, 0.12978125)
 joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000157575, -0.0001972352, 0.050523404)
 body_offset = Transform3D(-0.779299, -0.62648916, -0.014323711, -0.0034145415, 0.027102381, -0.999627, 0.6266434, -0.77895904, -0.02325996, 0.00072291493, 0.050510436, 0.0009227907)
-
-[node name="DrivingUI" parent="." index="19" unique_id=1110728206]
-layer = -1
 
 [node name="HeldObject" parent="." index="31" unique_id=194795531]
 connector_scene = "uid://cp8l5m7auhh4p"

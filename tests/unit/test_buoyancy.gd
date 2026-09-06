@@ -86,6 +86,42 @@ func test_wave_offset_mirrors_the_pond_shader() -> void:
 	assert_almost_eq(water.get_surface_height(Vector3.ZERO), water.get_wave_offset(Vector3.ZERO), 0.0001, "The surface sits on the water mesh")
 
 
+func test_waves_carry_the_water_sideways_toward_the_crests() -> void:
+	var amplitude: float = POND_MATERIAL.get_shader_parameter("wave_amplitude")
+	var max_offset: float = amplitude * (0.6 + clampf(0.1 * 0.1, 0.0, 2.0))
+	var sideways: float = 0.0
+	for i in 6:
+		var displacement: Vector3 = water.get_wave_displacement(Vector2(1.0, -0.5))
+		sideways = maxf(sideways, Vector2(displacement.x, displacement.z).length())
+		assert_lte(absf(displacement.y), max_offset + 0.0001, "The lift never exceeds the shader's active amplitude")
+		assert_lt(Vector2(displacement.x, displacement.z).length(), 1.0, "The sideways travel stays under the shortest crest spacing")
+		await wait_seconds(0.1)
+	assert_gt(sideways, 0.001, "Gerstner waves shift the water horizontally as well as up, which is what pinches the crests")
+	assert_lt(water.get_wave_displacement(Vector2(9.9, 0.0)).length(), 0.001, "Nothing moves at the pond edge")
+
+	# The height at a world point belongs to the parameter point the waves carried onto it
+	var point := Vector3(1.0, 0.0, -0.5)
+	var parameter := Vector2(point.x, point.z)
+	for i in 3:
+		var carried: Vector3 = water.get_wave_displacement(parameter)
+		parameter = Vector2(point.x, point.z) - Vector2(carried.x, carried.z)
+	assert_almost_eq(water.get_wave_offset(point), water.get_wave_displacement(parameter).y, 0.0005, "get_wave_offset undoes the sideways travel before reading the height")
+
+
+func test_the_wave_table_matches_the_shader() -> void:
+	var code: String = (POND_MATERIAL as ShaderMaterial).shader.code
+	var table_start: int = code.find("WAVES[WAVE_COUNT] = {")
+	var table_end: int = code.find("};", table_start)
+	assert_true(table_start > 0 and table_end > table_start, "The shader declares its wave table")
+	var shader_waves: Array[Vector3] = []
+	var pattern := RegEx.create_from_string("vec3\\(([-0-9.]+), ([-0-9.]+), ([-0-9.]+)\\)")
+	for entry: RegExMatch in pattern.search_all(code.substr(table_start, table_end - table_start)):
+		shader_waves.append(Vector3(float(entry.get_string(1)), float(entry.get_string(2)), float(entry.get_string(3))))
+	assert_eq(shader_waves.size(), Buoyancy.WAVES.size(), "Buoyancy carries every wave the shader draws")
+	for i: int in shader_waves.size():
+		assert_lt(shader_waves[i].distance_to(Buoyancy.WAVES[i]), 0.0001, "Wave %d matches the shader" % i)
+
+
 func test_an_offset_probe_rolls_the_body() -> void:
 	var raft := RigidBody3D.new()
 	raft.mass = 1.0
@@ -118,3 +154,44 @@ func test_the_boat_rides_the_waves_in_place() -> void:
 		assert_almost_eq(boat.global_position.z, 1.0, 0.001)
 		assert_lt(absf(boat.rotation.x) + absf(boat.rotation.z), 0.3, "Rocking stays gentle")
 	assert_gt(heights.max() - heights.min(), 0.002, "The boat bobs with the waves")
+
+
+func test_the_boat_has_heft_and_eases_onto_the_waves() -> void:
+	var boat: AnimatableBody3D = BOAT_SCENE.instantiate()
+	boat.water = water
+	boat.response_time = 1.0
+	root.add_child(boat)
+	await get_tree().physics_frame
+	assert_almost_eq(boat.rotation.x, 0.0, 0.01, "The hull starts at rest instead of snapping onto the first wave sample")
+	var last: Vector3 = boat.rotation
+	var max_rate: float = 0.0
+	for i in 120:
+		await get_tree().physics_frame
+		max_rate = maxf(max_rate, (boat.rotation - last).length() * Engine.physics_ticks_per_second)
+		last = boat.rotation
+	assert_lt(rad_to_deg(max_rate), 30.0, "Inertia keeps the rocking rate calm")
+	assert_gt(max_rate, 0.0, "The boat still moves with the swell")
+
+
+func test_a_longer_response_time_rocks_less() -> void:
+	var heavy: AnimatableBody3D = BOAT_SCENE.instantiate()
+	heavy.water = water
+	heavy.response_time = 3.0
+	heavy.position = Vector3(-3.0, 0.0, 0.0)
+	root.add_child(heavy)
+	var light: AnimatableBody3D = BOAT_SCENE.instantiate()
+	light.water = water
+	light.response_time = 0.3
+	light.position = Vector3(3.0, 0.0, 0.0)
+	root.add_child(light)
+	var heavy_travel: float = 0.0
+	var light_travel: float = 0.0
+	var heavy_last: Vector3 = heavy.rotation
+	var light_last: Vector3 = light.rotation
+	for i in 180:
+		await get_tree().physics_frame
+		heavy_travel += (heavy.rotation - heavy_last).length()
+		light_travel += (light.rotation - light_last).length()
+		heavy_last = heavy.rotation
+		light_last = light.rotation
+	assert_lt(heavy_travel, light_travel, "The heftier hull turns less over the same waves")

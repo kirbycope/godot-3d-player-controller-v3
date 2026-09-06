@@ -34,57 +34,24 @@ class CarTestBase:
 			main_instance.add_child(player_instance)
 
 		player_instance.controls.current_input_type = 0
-		player_instance.is_driving_in = car_instance
-		car_instance.set_driver(player_instance)
-		player_instance.state_machine.travel(player_instance.current_state, NodeStateMachine.States.DRIVING)
-		player_instance.is_entering_vehicle = false
+		player_instance.mount(car_instance)
+		player_instance.is_mounting = false
 		for child in car_instance.get_children():
 			if child is VehicleWheel3D:
 				child.brake = 0.0
 
-	## Helper getter to access the Driving state node on the player instance.
-	var driving_state: Driving:
-		get:
-			return player_instance.state_machine.get_node("Driving") as Driving if player_instance and player_instance.state_machine else null
 
 
 ## Tests related to the function performed by an action.
 class TestCarActions:
 	extends CarTestBase
 
-	## Test Case: The Driving state only forwards inputs; a mock vehicle receives them.
-	func test_driving_passes_inputs_to_vehicle():
-		var mock = MockVehicle.new()
-		main_instance.add_child(mock)
-		player_instance = PlayerScene.instantiate()
-		main_instance.add_child(player_instance)
-		player_instance.controls.current_input_type = 0
-		player_instance.is_driving_in = mock
-		player_instance.state_machine.travel(player_instance.current_state, NodeStateMachine.States.DRIVING)
-		player_instance.is_entering_vehicle = false
-
-		var sender = InputSender.new(Input)
-		sender.set_auto_flush_input(true)
-		sender.action_down(driving_state.keyboard_accelerate_action)
-		sender.action_down("move_left")
-		await wait_physics_frames(3)
-
-		assert_true(mock.accelerate, "Accelerate input should reach the vehicle.")
-		assert_false(mock.brake_input, "Brake input should be false when not pressed.")
-		assert_gt(mock.steer, 0.0, "Steer input should be positive when steering left.")
-		assert_eq(player_instance.global_position, mock.get_node("DriverSeat").global_position, "Player should sit on the DriverSeat marker.")
-		sender.action_up(driving_state.keyboard_accelerate_action)
-		sender.action_up("move_left")
-
-		player_instance.state_machine.travel(NodeStateMachine.States.DRIVING, NodeStateMachine.States.STANDING)
-		assert_null(mock.driver, "Stopping the state hands set_driver(null) to the vehicle.")
-
 	## Test Case: Testing the car being driven forward.
 	func test_car_driven_forward():
 		setup_player_driving()
 		assert_eq(car_instance.get_node("VehicleWheel3D").engine_force, 0.0, "Car engine force should be 0.0 initially.")
 
-		var action: StringName = driving_state.keyboard_accelerate_action
+		var action: StringName = car_instance.keyboard_accelerate_action
 		var sender = InputSender.new(Input)
 		sender.set_auto_flush_input(true)
 		sender.action_down(action)
@@ -101,7 +68,7 @@ class TestCarActions:
 		car_instance.angular_velocity = Vector3.ZERO
 		assert_eq(car_instance.get_node("VehicleWheel3D").engine_force, 0.0, "Car engine force should be 0.0 initially.")
 
-		var action: StringName = driving_state.keyboard_brake_action
+		var action: StringName = car_instance.keyboard_brake_action
 		var sender = InputSender.new(Input)
 		sender.set_auto_flush_input(true)
 		sender.action_down(action)
@@ -116,7 +83,7 @@ class TestCarActions:
 		car_instance.linear_velocity = Vector3(0.0, 0.0, 5.0)
 		assert_eq(car_instance.get_node("VehicleWheel3D").brake, 0.0, "Car brake should be 0.0 initially.")
 
-		var action: StringName = driving_state.keyboard_brake_action
+		var action: StringName = car_instance.keyboard_brake_action
 		var sender = InputSender.new(Input)
 		sender.set_auto_flush_input(true)
 		sender.action_down(action)
@@ -130,7 +97,7 @@ class TestCarActions:
 		setup_player_driving()
 		assert_eq(car_instance.get_node("VehicleWheel3D2").brake, 0.0, "Rear brake should be 0.0 initially.")
 
-		var action: StringName = driving_state.keyboard_handbrake_action
+		var action: StringName = car_instance.keyboard_handbrake_action
 		var sender = InputSender.new(Input)
 		sender.set_auto_flush_input(true)
 		sender.action_down(action)
@@ -145,14 +112,14 @@ class TestCarActions:
 		setup_player_driving()
 		var sender = InputSender.new(Input)
 		sender.set_auto_flush_input(true)
-		sender.action_down(driving_state.keyboard_accelerate_action)
+		sender.action_down(car_instance.keyboard_accelerate_action)
 		await wait_seconds(0.6)
 		var total: float = 0.0
 		for wheel in car_instance.wheels:
 			total += wheel.engine_force
 		var expected: float = car_instance.max_acceleration_force * car_instance.GEAR_TORQUE_MULTS[0]
 		assert_almost_eq(total, expected, expected * 0.05, "First gear puts max_acceleration_force x gear torque on the road in total")
-		sender.action_up(driving_state.keyboard_accelerate_action)
+		sender.action_up(car_instance.keyboard_accelerate_action)
 
 	## Test Case: The stick is smoothed into the wheels and the lock shrinks with speed.
 	func test_steering_is_smoothed_and_lock_shrinks_with_speed():
@@ -185,22 +152,23 @@ class TestCarActions:
 		var default_grip: float = rear.wheel_friction_slip
 		var sender = InputSender.new(Input)
 		sender.set_auto_flush_input(true)
-		sender.action_down(driving_state.keyboard_accelerate_action)
-		sender.action_down(driving_state.keyboard_handbrake_action)
+		sender.action_down(car_instance.keyboard_accelerate_action)
+		sender.action_down(car_instance.keyboard_handbrake_action)
 		await wait_seconds(0.5)
 		assert_lt(rear.wheel_friction_slip, default_grip * 0.7, "Locked rear tyres lose most of their grip")
 		assert_lt(front.wheel_friction_slip, default_grip, "Driven fronts spin up a little off the line")
 		assert_gt(front.wheel_friction_slip, rear.wheel_friction_slip, "But keep more grip than the locked rears")
-		sender.action_up(driving_state.keyboard_handbrake_action)
-		sender.action_up(driving_state.keyboard_accelerate_action)
+		sender.action_up(car_instance.keyboard_handbrake_action)
+		sender.action_up(car_instance.keyboard_accelerate_action)
 
 	## Test Case: Driving pulls the chase camera back and lets it pass through the car; leaving restores it.
-	func test_driving_uses_a_longer_chase_camera():
+	func test_driving_uses_the_cars_chase_camera():
 		setup_player_driving()
-		var arm: SpringArm3D = player_instance.camera.camera_spring_arm
-		assert_almost_eq(arm.spring_length, driving_state.chase_distance, 0.001, "Seated: GTA chase distance")
-		player_instance.state_machine.travel(player_instance.current_state, NodeStateMachine.States.STANDING)
-		assert_almost_eq(arm.spring_length, 2.0, 0.001, "Out of the car: the walking spring length is back")
+		assert_true(car_instance.chase_camera.camera.current, "Seated: the car's GTA chase camera is the view")
+		assert_false(player_instance.camera.current)
+		player_instance.dismount(true)
+		assert_true(player_instance.camera.current, "Out of the car: the Player's camera is back")
+		assert_false(car_instance.chase_camera.camera.current)
 
 	## Test Case: Testing the car steering left.
 	func test_car_steering_left():
@@ -233,11 +201,11 @@ class TestCarActions:
 		setup_player_driving()
 		player_instance.controls.current_input_type = 0
 
-		var action: StringName = driving_state.keyboard_accelerate_action
+		var action: StringName = car_instance.keyboard_accelerate_action
 		var sender = InputSender.new(Input)
 		sender.set_auto_flush_input(true)
 		sender.action_down(action)
-		await wait_physics_frames(5)
+		await wait_seconds(0.2) # the engine SFX starts in _process, which a batch of physics steps can skip under load
 
 		var is_accel_sfx_playing: bool = car_instance.sfx_engine_speed_up_outside.playing or car_instance.sfx_engine_speed_up_inside.playing
 		assert_true(is_accel_sfx_playing, "Acceleration engine SFX should play when holding keyboard accelerate action.")
@@ -248,11 +216,11 @@ class TestCarActions:
 		setup_player_driving()
 		player_instance.controls.current_input_type = 1
 
-		var action: StringName = driving_state.pad_accelerate_action
+		var action: StringName = car_instance.pad_accelerate_action
 		var sender = InputSender.new(Input)
 		sender.set_auto_flush_input(true)
 		sender.action_down(action)
-		await wait_physics_frames(5)
+		await wait_seconds(0.2) # the engine SFX starts in _process, which a batch of physics steps can skip under load
 
 		var is_accel_sfx_playing: bool = car_instance.sfx_engine_speed_up_outside.playing or car_instance.sfx_engine_speed_up_inside.playing
 		assert_true(is_accel_sfx_playing, "Acceleration engine SFX should play when holding pad accelerate action.")
@@ -263,19 +231,19 @@ class TestCarActions:
 		setup_player_driving()
 		car_instance.linear_velocity = Vector3.ZERO
 
-		var brake_action: StringName = driving_state.keyboard_brake_action
-		var accel_action: StringName = driving_state.keyboard_accelerate_action
+		var brake_action: StringName = car_instance.keyboard_brake_action
+		var accel_action: StringName = car_instance.keyboard_accelerate_action
 		var sender = InputSender.new(Input)
 		sender.set_auto_flush_input(true)
 		sender.action_down(brake_action)
 		sender.action_down(accel_action)
-		await wait_physics_frames(5)
+		await wait_seconds(0.2) # the engine SFX starts in _process, which a batch of physics steps can skip under load
 
 		assert_true(car_instance._revved_current_accel, "Car should register rev state for current acceleration press.")
 
 		if car_instance.sfx_engine_rev.playing:
 			car_instance.sfx_engine_rev.stop()
-		await wait_physics_frames(5)
+		await wait_seconds(0.2) # the engine SFX starts in _process, which a batch of physics steps can skip under load
 
 		assert_false(car_instance.sfx_engine_rev.playing, "Rev SFX should not re-trigger after finishing.")
 		assert_true(car_instance.sfx_engine_running_outside.playing or car_instance.sfx_engine_running_inside.playing, "Engine should revert to running SFX after rev finishes.")
@@ -292,30 +260,6 @@ class TestCarActions:
 
 
 ## Minimal vehicle implementing the Driving state's contract.
-class MockVehicle extends RigidBody3D:
-	var driver: Player
-	var accelerate: bool = false
-	var brake_input: bool = false
-	var handbrake: bool = false
-	var steer: float = 0.0
-
-	func _init() -> void:
-		freeze = true
-		var seat = Marker3D.new()
-		seat.name = "DriverSeat"
-		seat.position = Vector3(0.5, 0.2, 0.0)
-		add_child(seat)
-
-	func set_driver(p: Player) -> void:
-		driver = p
-
-	func set_drive_input(accelerate_in: bool, brake_in: bool, handbrake_in: bool, steer_in: float) -> void:
-		accelerate = accelerate_in
-		brake_input = brake_in
-		handbrake = handbrake_in
-		steer = steer_in
-
-
 ## Tests related to the function performed by an event.
 class TestCarEvents:
 	extends CarTestBase
