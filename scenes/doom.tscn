@@ -1,0 +1,45 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/doom.gd" id="1_doom"]
+
+[sub_resource type="SystemFont" id="SystemFont_dos"]
+font_names = PackedStringArray("Consolas", "Courier New", "monospace")
+antialiasing = 0
+subpixel_positioning = 0
+
+[node name="Doom" type="Control"]
+clip_contents = true
+custom_minimum_size = Vector2(320, 200)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 320.0
+offset_bottom = 200.0
+script = ExtResource("1_doom")
+
+[node name="BootLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 316.0
+offset_bottom = 196.0
+theme_override_colors/font_color = Color(0.75, 0.75, 0.75, 1)
+theme_override_fonts/font = SubResource("SystemFont_dos")
+theme_override_font_sizes/font_size = 9
+text = "C:\\>_"
+
+[node name="BootTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="BlinkTimer" type="Timer" parent="."]
+wait_time = 0.5
+autostart = true
+
+[node name="FaceTimer" type="Timer" parent="."]
+wait_time = 1.5
+autostart = true
+
+[node name="Sound" type="AudioStreamPlayer" parent="."]
+
+[connection signal="timeout" from="BootTimer" to="." method="_on_boot_timer_timeout"]
+[connection signal="timeout" from="BlinkTimer" to="." method="_on_blink_timer_timeout"]
+[connection signal="timeout" from="FaceTimer" to="." method="_on_face_timer_timeout"]

@@ -87,6 +87,7 @@
 [ext_resource type="Texture2D" uid="uid://dba30et81gi40" path="res://addons/3d_player_controller/assets/game_icons/mp5.svg" id="r_mp5svg"]
 [ext_resource type="Script" uid="uid://7e2gpht4wap6" path="res://addons/3d_player_controller/scripts/rifle.gd" id="r_riflegd"]
 [ext_resource type="PackedScene" path="res://addons/weather_fx/scenes/water_ripples.tscn" id="water_ripples_scene"]
+[ext_resource type="PackedScene" path="res://scenes/retro_computer.tscn" id="88_retro"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -1266,6 +1267,10 @@ shape = SubResource("BoxShape3D_killzone")
 
 [node name="Horse" parent="." unique_id=780231883 instance=ExtResource("87_xgy6y")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 8)
+
+[node name="RetroComputer" parent="." instance=ExtResource("88_retro")]
+transform = Transform3D(0.9028605, 0, 0.4299335, 0, 1, 0, -0.4299335, 0, 0.9028605, 2, 0, -4.2)
+hidden_while_in_use = Array[NodePath]([NodePath("../HUD")])
 
 [connection signal="local_player_spawned" from="PlayerSpawner" to="." method="_on_local_player_spawned"]
 [connection signal="body_entered" from="JustCreate3D/Weapon_02/PlayerDetection" to="JustCreate3D/Weapon_02" method="_on_player_detection_body_entered"]
