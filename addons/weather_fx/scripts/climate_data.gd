@@ -251,16 +251,25 @@ const BIOME_DEFINITIONS: Dictionary = {
 }
 
 # ------------------------------------------------------------------------------
-# Icon Paths
+# Weather Tables
 # ------------------------------------------------------------------------------
-const WEATHER_ICON_PATHS: Dictionary = {
-	WeatherType.BLUE_SKY: "res://addons/weather_fx/assets/icons/bluesky.svg",
-	WeatherType.CLOUDY: "res://addons/weather_fx/assets/icons/cloudy.svg",
-	WeatherType.RAIN: "res://addons/weather_fx/assets/icons/rain.svg",
-	WeatherType.HEAVY_RAIN: "res://addons/weather_fx/assets/icons/heavy_rain.svg",
-	WeatherType.STORM: "res://addons/weather_fx/assets/icons/storm.svg",
-	WeatherType.SNOW: "res://addons/weather_fx/assets/icons/snow.svg",
-	WeatherType.HEAVY_SNOW: "res://addons/weather_fx/assets/icons/heavy_snow.svg",
+const WEATHER_ICONS: Dictionary = {
+	WeatherType.BLUE_SKY: preload("res://addons/weather_fx/assets/icons/bluesky.svg"),
+	WeatherType.CLOUDY: preload("res://addons/weather_fx/assets/icons/cloudy.svg"),
+	WeatherType.RAIN: preload("res://addons/weather_fx/assets/icons/rain.svg"),
+	WeatherType.HEAVY_RAIN: preload("res://addons/weather_fx/assets/icons/heavy_rain.svg"),
+	WeatherType.STORM: preload("res://addons/weather_fx/assets/icons/storm.svg"),
+	WeatherType.SNOW: preload("res://addons/weather_fx/assets/icons/snow.svg"),
+	WeatherType.HEAVY_SNOW: preload("res://addons/weather_fx/assets/icons/heavy_snow.svg"),
+}
+
+## Wetness / precipitation intensity per weather type (0.0 = dry).
+const PRECIPITATION_STRENGTH: Dictionary = {
+	WeatherType.RAIN: 0.5,
+	WeatherType.SNOW: 0.5,
+	WeatherType.HEAVY_RAIN: 1.0,
+	WeatherType.HEAVY_SNOW: 1.0,
+	WeatherType.STORM: 1.2,
 }
 
 # ------------------------------------------------------------------------------
@@ -273,44 +282,27 @@ static func get_biome_data(zone: BiomeZone) -> Dictionary:
 
 ## Returns the enum string name of the biome zone.
 static func get_biome_name(zone: BiomeZone) -> String:
-	var data = get_biome_data(zone)
-	return data.get("name", "UNKNOWN_BIOME")
+	return get_biome_data(zone).get("name", "UNKNOWN_BIOME")
 
 
 ## Returns a human-friendly display name of the biome zone.
 static func get_biome_display_name(zone: BiomeZone) -> String:
-	var data = get_biome_data(zone)
-	return data.get("display_name", "Unknown Biome")
+	return get_biome_data(zone).get("display_name", "Unknown Biome")
 
 
 ## Returns the characteristic foliage/tree canopy color tint for a biome.
 static func get_biome_foliage_tint(zone: BiomeZone) -> Color:
-	var data = get_biome_data(zone)
-	return data.get("foliage_tint", Color(0.48, 0.78, 0.30))
+	return get_biome_data(zone).get("foliage_tint", Color(0.48, 0.78, 0.30))
 
 
 ## Returns the characteristic grass color tint for a biome.
 static func get_biome_grass_tint(zone: BiomeZone) -> Color:
-	var data = get_biome_data(zone)
-	return data.get("grass_tint", Color(0.55, 0.85, 0.35))
+	return get_biome_data(zone).get("grass_tint", Color(0.55, 0.85, 0.35))
 
 
 ## Returns true if the specified biome naturally features trees and foliage.
 static func biome_has_trees(zone: BiomeZone) -> bool:
-	match zone:
-		BiomeZone.TEMPERATE_PLAINS, \
-		BiomeZone.NORTHERN_PLAINS, \
-		BiomeZone.AUTUMN_HIGHLANDS, \
-		BiomeZone.WETLANDS_VALLEY, \
-		BiomeZone.COASTAL_PLAINS, \
-		BiomeZone.TROPICAL_RAINFOREST, \
-		BiomeZone.HUMID_COAST, \
-		BiomeZone.SHADOW_WOODS, \
-		BiomeZone.MISTY_WOODS, \
-		BiomeZone.ANCIENT_FOREST:
-			return true
-		_:
-			return false
+	return zone in [BiomeZone.TEMPERATE_PLAINS, BiomeZone.NORTHERN_PLAINS, BiomeZone.AUTUMN_HIGHLANDS, BiomeZone.WETLANDS_VALLEY, BiomeZone.COASTAL_PLAINS, BiomeZone.TROPICAL_RAINFOREST, BiomeZone.HUMID_COAST, BiomeZone.SHADOW_WOODS, BiomeZone.MISTY_WOODS, BiomeZone.ANCIENT_FOREST]
 
 
 ## Returns string name of a WeatherType enum.
@@ -326,9 +318,14 @@ static func get_weather_name(type: WeatherType) -> String:
 		_: return "Unknown Weather"
 
 
-## Returns icon resource path for a WeatherType.
-static func get_weather_icon_path(type: WeatherType) -> String:
-	return WEATHER_ICON_PATHS.get(type, "res://addons/weather_fx/assets/icons/bluesky.svg")
+## Returns the preloaded icon texture for a WeatherType.
+static func get_weather_icon(type: WeatherType) -> Texture2D:
+	return WEATHER_ICONS.get(type, WEATHER_ICONS[WeatherType.BLUE_SKY])
+
+
+## Returns the precipitation strength (0.0 dry .. 1.2 storm) for a WeatherType.
+static func get_precipitation_strength(type: WeatherType) -> float:
+	return PRECIPITATION_STRENGTH.get(type, 0.0)
 
 
 ## Returns true if temperature is at or below freezing (0°C).
@@ -339,29 +336,23 @@ static func is_freezing(temperature: float) -> bool:
 ## Calculates interpolated temperature for a given biome, altitude, and is_day flag.
 ## Altitudes are in meters (0 to 1000m curve). Values below 0 clamp to 0; above 1000 clamp to 1000.
 static func get_temperature(zone: BiomeZone, altitude: float, is_day: bool) -> float:
-	var data = get_biome_data(zone)
+	var data: Dictionary = get_biome_data(zone)
 	var temps: Array = data["day_temps"] if is_day else data["night_temps"]
-	
-	var clamped_alt = clampf(altitude, 0.0, 1000.0)
-	var index_float = clamped_alt / 100.0
-	var low_idx = int(floor(index_float))
-	var high_idx = int(ceil(index_float))
-	
+	var index_float: float = clampf(altitude, 0.0, 1000.0) / 100.0
+	var low_idx: int = int(floor(index_float))
+	var high_idx: int = int(ceil(index_float))
 	if low_idx >= temps.size() - 1:
 		return float(temps[-1])
 	if low_idx == high_idx:
 		return float(temps[low_idx])
-		
-	var fraction = index_float - float(low_idx)
-	return lerpf(float(temps[low_idx]), float(temps[high_idx]), fraction)
+	return lerpf(float(temps[low_idx]), float(temps[high_idx]), index_float - float(low_idx))
 
 
 ## Calculates diurnal temperature smoothly cycling between coldest night trough (04:00) and peak afternoon (16:00).
 static func get_smooth_temperature(zone: BiomeZone, altitude: float, time_hours: float) -> float:
-	var day_temp = get_temperature(zone, altitude, true)
-	var night_temp = get_temperature(zone, altitude, false)
-	var phase = (time_hours - 4.0) / 24.0 * TAU
-	var day_factor = (1.0 - cos(phase)) * 0.5
+	var day_temp: float = get_temperature(zone, altitude, true)
+	var night_temp: float = get_temperature(zone, altitude, false)
+	var day_factor: float = (1.0 - cos((time_hours - 4.0) / 24.0 * TAU)) * 0.5
 	return lerpf(night_temp, day_temp, day_factor)
 
 
@@ -373,4 +364,3 @@ static func celsius_to_fahrenheit(celsius: float) -> float:
 ## Converts Fahrenheit temperature to Celsius.
 static func fahrenheit_to_celsius(fahrenheit: float) -> float:
 	return (fahrenheit - 32.0) * 5.0 / 9.0
-

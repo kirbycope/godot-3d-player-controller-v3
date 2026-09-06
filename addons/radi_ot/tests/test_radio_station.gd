@@ -78,18 +78,12 @@ func test_default_station_collection() -> void:
 	assert_eq(first_station.call_sign, "KEXP", "First station in collection should be KEXP")
 
 
-func test_collection_wrap_around_indexing() -> void:
+func test_collection_out_of_range_indexing() -> void:
 	var collection: RadioStationCollection = load(DEFAULT_COLLECTION_PATH) as RadioStationCollection
-	assert_not_null(collection, "Collection should not be null")
-
 	var count: int = collection.get_station_count()
-	var station_0: RadioStation = collection.get_station_at(0)
-	var station_wrapped: RadioStation = collection.get_station_at(count)
-	assert_eq(station_wrapped, station_0, "Index count should wrap around to index 0")
-
-	var last_station: RadioStation = collection.get_station_at(count - 1)
-	var station_neg: RadioStation = collection.get_station_at(-1)
-	assert_eq(station_neg, last_station, "Index -1 should wrap around to the last station")
+	assert_null(collection.get_station_at(count), "Index count is out of range (RadiOtPlayer3D wraps indices)")
+	assert_null(collection.get_station_at(-1), "Negative index is out of range")
+	assert_not_null(collection.get_station_at(count - 1), "Last index is valid")
 
 
 func test_collection_find_by_call_sign() -> void:

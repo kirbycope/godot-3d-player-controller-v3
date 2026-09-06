@@ -13,7 +13,9 @@ points = PackedVector3Array(0.33254772, 0.031766612, 0.0028405786, 0.30956042, 0
 script = ExtResource("1_xv408")
 with_nodes = NodePath("WithNodes")
 without_nodes = NodePath("WithoutNodes")
-hits_to_mine = 2
+hits_to_finish = 2
+capability = &"can_mine"
+harvest_animation = "Mining"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1045666063]
 shape = SubResource("ConvexPolygonShape3D_qkfi3")

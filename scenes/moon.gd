@@ -1,40 +1,22 @@
 extends StaticBody3D
+## A small planetoid whose gravity well points nearby characters' up direction away from its centre.
 
-var bodies_in_range: Array[Node3D] = []
-
-@onready var player_detection: Area3D = $PlayerDetection
-
-
-func _ready() -> void:
-	for body in player_detection.get_overlapping_bodies():
-		if "up_direction" in body and not bodies_in_range.has(body):
-			bodies_in_range.append(body)
+var bodies_in_range: Array[CharacterBody3D] = []
 
 
 func _physics_process(_delta: float) -> void:
-	for i: int in range(bodies_in_range.size() - 1, -1, -1):
-		var body: Node3D = bodies_in_range[i]
-		if is_instance_valid(body) and body.is_inside_tree() and player_detection.overlaps_body(body):
-			var dir: Vector3 = global_position.direction_to(body.global_position)
-			if dir.length_squared() > 0.0001:
-				if body.has_method("set_up_direction"):
-					body.set_up_direction(dir)
-				else:
-					body.up_direction = dir
-		else:
-			bodies_in_range.remove_at(i)
+	for body: CharacterBody3D in bodies_in_range:
+		var dir: Vector3 = global_position.direction_to(body.global_position)
+		if dir.length_squared() > 0.0001:
+			body.up_direction = dir
 
 
 func _on_player_detection_body_entered(body: Node3D) -> void:
-	if "up_direction" in body and not bodies_in_range.has(body):
-		bodies_in_range.append(body)
+	if body is CharacterBody3D and not bodies_in_range.has(body):
+		bodies_in_range.append(body as CharacterBody3D)
 
 
 func _on_player_detection_body_exited(body: Node3D) -> void:
-	if "up_direction" in body:
+	if body is CharacterBody3D:
 		bodies_in_range.erase(body)
-		if is_instance_valid(body):
-			if body.has_method("set_up_direction"):
-				body.set_up_direction(Vector3.UP)
-			else:
-				body.up_direction = Vector3.UP
+		(body as CharacterBody3D).up_direction = Vector3.UP

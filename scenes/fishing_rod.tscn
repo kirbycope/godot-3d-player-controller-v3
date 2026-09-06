@@ -28,3 +28,9 @@ shape = SubResource("CapsuleShape3D_1xn5j")
 
 [node name="ActionPrompt" parent="." unique_id=1664152999 instance=ExtResource("2_h4s14")]
 transform = Transform3D(0.34202003, -0.9396927, -4.1075268e-08, 0.9396927, 0.34202003, 1.495017e-08, -2.6865725e-16, -4.3711385e-08, 1, -1.1198463, 0.4710101, 0.14999989)
+
+[node name="ReelTimer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[connection signal="timeout" from="ReelTimer" to="." method="_on_reel_timer_timeout"]

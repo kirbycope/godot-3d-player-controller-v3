@@ -8,14 +8,16 @@ script = ExtResource("1_m4jgv")
 play = false
 show_balloon_string = false
 
-[node name="RedBallon" parent="." unique_id=1230963 instance=ExtResource("1_jbvwr")]
+[node name="Pivot" type="Node3D" parent="."]
+
+[node name="RedBallon" parent="Pivot" unique_id=1230963 instance=ExtResource("1_jbvwr")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 
-[node name="RedBallon2" parent="." unique_id=2004981309 instance=ExtResource("1_jbvwr")]
+[node name="RedBallon2" parent="Pivot" unique_id=2004981309 instance=ExtResource("1_jbvwr")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0, 0)
 
-[node name="RedBallon3" parent="." unique_id=296713869 instance=ExtResource("1_jbvwr")]
+[node name="RedBallon3" parent="Pivot" unique_id=296713869 instance=ExtResource("1_jbvwr")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 0)
 
-[node name="RedBallon4" parent="." unique_id=1360320078 instance=ExtResource("1_jbvwr")]
+[node name="RedBallon4" parent="Pivot" unique_id=1360320078 instance=ExtResource("1_jbvwr")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, 0)

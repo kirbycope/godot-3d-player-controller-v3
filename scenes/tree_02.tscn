@@ -42,6 +42,11 @@ message_end = "to cut tree"
 [node name="ProgressBar3D" parent="." instance=ExtResource("5_pb3d")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
 
+[node name="LogCollisionTimer" type="Timer" parent="."]
+wait_time = 0.5
+
+[connection signal="timeout" from="LogCollisionTimer" to="." method="_on_log_collision_timer_timeout"]
+
 [editable path="Tree_Bark_22"]
 [editable path="Tree_Log_22"]
 [editable path="CommonTree_52"]

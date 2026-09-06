@@ -42,7 +42,7 @@ func test_all_biome_tints_are_valid_colors() -> void:
 
 func test_tints_lerp_toward_active_biome_targets() -> void:
 	wfx.enable_biome_tinting = true
-	wfx.set_biome(ClimateData.BiomeZone.AUTUMN_HIGHLANDS)
+	wfx.current_biome = ClimateData.BiomeZone.AUTUMN_HIGHLANDS
 	# Large delta clamps to a full lerp step
 	wfx._update_biome_tinting(10.0)
 	var target_foliage: Color = wfx.get_target_foliage_tint()
@@ -55,7 +55,7 @@ func test_tints_lerp_toward_active_biome_targets() -> void:
 
 func test_temperate_plains_tint_is_identity() -> void:
 	wfx.enable_biome_tinting = true
-	wfx.set_biome(ClimateData.BiomeZone.TEMPERATE_PLAINS)
+	wfx.current_biome = ClimateData.BiomeZone.TEMPERATE_PLAINS
 	var target: Color = wfx.get_target_grass_tint()
 	# Materials are authored in temperate colors, so the default biome must render untinted
 	assert_almost_eq(target.r, 1.0, 0.001, "Temperate grass tint should be identity (white)")
@@ -66,7 +66,7 @@ func test_temperate_plains_tint_is_identity() -> void:
 
 func test_normalized_tints_shift_hue_not_just_darken() -> void:
 	wfx.enable_biome_tinting = true
-	wfx.set_biome(ClimateData.BiomeZone.AUTUMN_HIGHLANDS)
+	wfx.current_biome = ClimateData.BiomeZone.AUTUMN_HIGHLANDS
 	var autumn: Color = wfx.get_target_grass_tint()
 	assert_gt(autumn.r, 1.0, "Autumn grass should push the red channel above identity (warm shift)")
 	assert_lt(autumn.g, 1.0, "Autumn grass should pull the green channel below identity")
@@ -75,7 +75,7 @@ func test_normalized_tints_shift_hue_not_just_darken() -> void:
 func test_tint_transition_is_gradual() -> void:
 	wfx.enable_biome_tinting = true
 	wfx.current_grass_tint = Color(1.0, 1.0, 1.0, 1.0)
-	wfx.set_biome(ClimateData.BiomeZone.AUTUMN_HIGHLANDS)
+	wfx.current_biome = ClimateData.BiomeZone.AUTUMN_HIGHLANDS
 	wfx._update_biome_tinting(0.05)
 	var target: Color = wfx.get_target_grass_tint()
 	assert_ne(wfx.current_grass_tint, target, "A single small step should not snap to the target")
@@ -84,7 +84,7 @@ func test_tint_transition_is_gradual() -> void:
 
 func test_disabled_tinting_blends_back_to_white() -> void:
 	wfx.enable_biome_tinting = false
-	wfx.set_biome(ClimateData.BiomeZone.AUTUMN_HIGHLANDS)
+	wfx.current_biome = ClimateData.BiomeZone.AUTUMN_HIGHLANDS
 	wfx._update_biome_tinting(10.0)
 	assert_almost_eq(wfx.current_foliage_tint.r, 1.0, 0.001, "Disabled tinting should return foliage tint to white")
 	assert_almost_eq(wfx.current_grass_tint.r, 1.0, 0.001, "Disabled tinting should return grass tint to white")

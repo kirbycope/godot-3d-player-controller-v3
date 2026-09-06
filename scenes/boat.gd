@@ -1,81 +1,55 @@
 extends StaticBody3D
+## A boat the Player sits in with the "action" interaction while looking at it.
 
-var menu_displayed: bool = false
-var player: Player
+var player: Player ## The Player looking at the boat or seated in it.
 
-@onready var action_prompt: Node3D = $ActionPrompt
+@onready var action_prompt: ActionPrompt = $ActionPrompt
 @onready var seat_01: Marker3D = $Seat01
+@onready var seat_01_dummy: Node3D = $Seat01/y_bot_root ## Placeholder passenger hidden while the Player is seated.
 
 
+## Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass
+	set_physics_process(false)
 
 
+## Called when there is an input event.
 func _input(event: InputEvent) -> void:
 	if not is_multiplayer_authority(): return
 
-	if player:
-		if event.is_action_pressed("action"):
-			if menu_displayed and not player.is_sitting:
-				_sit_player()
-
-
-func display_menu(_player: Player) -> void:
-	if _player and _player.is_sitting:
+	if player and action_prompt.visible and not player.is_sitting and event.is_action_pressed("action"):
+		player.state_changed.connect(_on_player_state_changed)
+		player.state_machine.travel(player.current_state, NodeStateMachine.States.SITTING)
 		hide_menu()
+
+
+## Called by [Camera] while the player looks at the boat.
+func display_menu(_player: Player) -> void:
+	if _player.is_sitting:
 		return
 	player = _player
-	if action_prompt:
-		action_prompt.show()
-		action_prompt.update_text()
-		action_prompt.get_node("KeyboardMouse").hide()
-		action_prompt.get_node("Microsoft").hide()
-		action_prompt.get_node("Nintendo").hide()
-		action_prompt.get_node("Sony").hide()
-		if player.controls.current_input_type == player.controls.InputType.KEYBOARD_MOUSE:
-			action_prompt.get_node("KeyboardMouse").show()
-		elif player.controls.current_input_type == player.controls.InputType.MICROSOFT:
-			action_prompt.get_node("Microsoft").show()
-		elif player.controls.current_input_type == player.controls.InputType.NINTENDO:
-			action_prompt.get_node("Nintendo").show()
-		elif player.controls.current_input_type == player.controls.InputType.SONY:
-			action_prompt.get_node("Sony").show()
-	menu_displayed = true
+	action_prompt.show_for(player)
 
 
+## Called by [Camera] when the player looks away from the boat.
 func hide_menu() -> void:
-	if action_prompt:
-		action_prompt.hide()
-	menu_displayed = false
-	if player and player.is_sitting:
-		return
-	player = null
-
-
-func _sit_player() -> void:
-	if not player or not seat_01: return
-	_update_player_seat_transform()
-	if player.state_machine:
-		player.state_machine.travel(player.current_state, NodeStateMachine.States.SITTING)
-	hide_menu()
-
-
-func _physics_process(_delta: float) -> void:
-	if not is_multiplayer_authority(): return
-
-	var is_sitting_in_this_boat: bool = player != null and player.is_sitting
-
-	var y_bot = seat_01.get_node_or_null("y_bot_root") if seat_01 else null
-	if y_bot:
-		y_bot.visible = not is_sitting_in_this_boat
-
-	if is_sitting_in_this_boat:
-		_update_player_seat_transform()
-	elif not menu_displayed and player != null and not player.is_sitting:
+	action_prompt.hide()
+	if player and not player.is_sitting:
 		player = null
 
 
-func _update_player_seat_transform() -> void:
+## Pins the Player to the seat while sitting and releases the boat once they stand up.
+func _on_player_state_changed(_from_state: int, to_state: int) -> void:
+	var is_seated: bool = to_state == NodeStateMachine.States.SITTING
+	seat_01_dummy.visible = not is_seated
+	set_physics_process(is_seated)
+	if not is_seated:
+		player.state_changed.disconnect(_on_player_state_changed)
+		player = null
+
+
+## Called every physics frame while the Player is seated.
+func _physics_process(_delta: float) -> void:
 	player.global_position = seat_01.global_position
 	player.orientation = seat_01.global_transform
 	player.orientation.origin = Vector3.ZERO

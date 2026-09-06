@@ -1,6 +1,11 @@
 class_name Player
 extends CharacterBody3D
 
+signal state_changed(from_state: int, to_state: int) ## Emitted when [member current_state] changes.
+signal locomotion_node_changed(state_path: String) ## Emitted when the locomotion path ("Group/Node" or "Node") changes; on puppets this follows replication.
+signal exhausted_changed(is_exhausted: bool) ## Emitted when [member is_exhausted] changes.
+signal navigating_changed(is_navigating: bool) ## Emitted when click-to-move navigation starts or stops.
+
 const EMOTE_STATE_PLAYBACK_PATH: String = "parameters/EmoteStateMachine/playback"
 const LOCOMOTION_STATE_PLAYBACK_PATH: String = "parameters/LocomotionStateMachine/playback"
 const ARCHERY_LOCOMOTION_BLEND_POSITION_PATH: String = "parameters/LocomotionStateMachine/Bow/ArcheryLocomotion/blend_position"
@@ -37,7 +42,13 @@ const LOCOMOTION_GROUPS: Array[String] = ["Bow", "Boxing", "GreatSword", "Pistol
 @export var push_force: float = 1.0
 @export var mass: float = 80.0
 
-var current_state: int = -1 ## The current state of the Player (from the Node/Code [NodeStateMachine], not the AnimationTree NodeStateMachine).
+var current_state: int = -1: ## The current state of the Player (from the Node/Code [NodeStateMachine], not the AnimationTree NodeStateMachine).
+	set(value):
+		if value == current_state:
+			return
+		var previous_state: int = current_state
+		current_state = value
+		state_changed.emit(previous_state, value)
 var locomotion_state: ## Gets the [NodeStateMachine] "LocomotionStateMachine"
 	get:
 		return animation_tree.get(LOCOMOTION_STATE_PLAYBACK_PATH)
@@ -58,6 +69,17 @@ var current_locomotion_node: String: ## The deepest current locomotion state nam
 		if playback == null:
 			return ""
 		return String(playback.get_current_node())
+var current_locomotion_path: String: ## The current locomotion state path ("Group/Node" or "Node"), as accepted by [method travel_locomotion].
+	get:
+		if animation_tree == null:
+			return ""
+		var root_playback: AnimationNodeStateMachinePlayback = locomotion_state
+		if root_playback == null:
+			return ""
+		var root_node: String = String(root_playback.get_current_node())
+		if root_node in LOCOMOTION_GROUPS:
+			return root_node + "/" + current_locomotion_node
+		return root_node
 var equipped_axe_1h: bool:
 	get:
 		return inventory != null and inventory.has_equipment(Equipment.EquipmentType.AXE_1H)
@@ -107,9 +129,6 @@ var uses_equipment_jump_variants: bool:
 			or equipped_staff \
 			or equipped_sword_1h \
 			or equipped_sword_2h
-var is_hanging: bool:
-	get:
-		return is_hanging_braced or is_hanging_free
 var is_boxing: bool = false
 
 # Attack Sequence
@@ -157,7 +176,11 @@ var is_hanging_free: bool = false ## Is the Player currently hanging (free)?
 var is_crouching: bool = false ## Is the Player currently crouching?
 var is_emoting: bool = false ## Is the Player currently emoting?
 var has_started_emoting: bool = false ## Has the player's emote animation transitioned away from Idle yet?
-var is_exhausted: bool = false ## Is the Player currently exhausted?
+var is_exhausted: bool = false: ## Is the Player currently exhausted?
+	set(value):
+		if value != is_exhausted:
+			is_exhausted = value
+			exhausted_changed.emit(value)
 var is_falling: bool = false ## Is the Player currently falling?
 var is_fishing: bool = false ## Is the Player currently fishing (has a rod equipped)?
 var is_casting_line: bool = false ## Is the Player currently casting a fishing line?
@@ -232,7 +255,11 @@ var is_logging: bool: ## Is the Player currently logging?
 		if not is_multiplayer_authority() or animation_tree == null:
 			return false
 		return is_locomotion_state_active_or_queued("Logging")
-var is_navigating: bool = false ## Is the Player currently navigating (click to move)?
+var is_navigating: bool = false: ## Is the Player currently navigating (click to move)?
+	set(value):
+		if value != is_navigating:
+			is_navigating = value
+			navigating_changed.emit(value)
 var is_paragliding: bool = false ## Is the Player currently paragliding?
 var is_paused: bool = false ## Is the Player currently paused?
 var is_pushing: bool = false ## Is the Player currently pushing?
@@ -268,7 +295,6 @@ var drawn_weapon_group: String = "" ## Locomotion group whose draw animation alr
 var last_fall_speed: float = 0.0 ## The downward vertical fall speed right before movement update.
 var initial_collision_shape_height: float
 var initial_collision_shape_position: Vector3
-var initial_parent: Node
 var orientation := Transform3D()
 var root_motion := Transform3D()
 var smoothed_motion: Vector2 = Vector2.ZERO
@@ -282,15 +308,15 @@ var skateboard: Node3D
 @onready var initial_separation_ray_transform: Transform3D = separation_ray_shape.transform
 @onready var controls: CanvasLayer = $Controls
 @onready var crosshair: TextureRect = $Crosshair
-@onready var debug: CanvasLayer = $Debug
+@onready var debug: Debug = $Debug
 @onready var inventory: Inventory = $Inventory
 @onready var radial_menu: RadialMenu = $Inventory/RadialMenu
 @onready var navigation_agent: NavigationAgent3D = $NavigationAgent3D
-@onready var pause: CanvasLayer = $Pause
-@onready var settings: CanvasLayer = $Settings
-@onready var audio_settings: CanvasLayer = $AudioSettings
-@onready var video_settings: CanvasLayer = $VideoSettings
-@onready var lobby_manager: CanvasLayer = get_node_or_null("LobbyManager") as CanvasLayer
+@onready var pause: PlayerMenuLayer = $Pause
+@onready var settings: PlayerMenuLayer = $Settings
+@onready var audio_settings: PlayerMenuLayer = $AudioSettings
+@onready var video_settings: PlayerMenuLayer = $VideoSettings
+@onready var lobby_manager: PlayerMenuLayer = get_node_or_null("LobbyManager") as PlayerMenuLayer
 @onready var stamina: TextureProgressBar = $Stamina
 @onready var initial_transform: Transform3D = global_transform
 @onready var falling_raycast: RayCast3D = $FallingRaycast
@@ -323,9 +349,12 @@ var skateboard: Node3D
 
 @export var sync_locomotion_node: String = "":
 	set(value):
+		if value == sync_locomotion_node:
+			return
 		sync_locomotion_node = value
 		if not is_multiplayer_authority() and animation_tree and is_node_ready():
 			_apply_synced_locomotion_node(value)
+		locomotion_node_changed.emit(value)
 
 @export var sync_blend_position: Vector2 = Vector2.ZERO:
 	set(value):
@@ -365,8 +394,6 @@ func _ready() -> void:
 	initial_collision_shape_height = collision_shape.shape.height
 	initial_collision_shape_position = collision_shape.position
 
-	# Record the initial parent for re-parenting after driving.
-	initial_parent = get_parent()
 
 	# Improve traction on spheres/slopes
 	floor_snap_length = 0.5
@@ -452,7 +479,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 	# Toggle mouse capture
-	if event.is_action_pressed("ui_cancel") and not pause.visible and not settings.visible and not audio_settings.visible and not video_settings.visible:
+	if event.is_action_pressed("ui_cancel"):
 		# Check if the mouse is currently captured
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			# Set the mouse mode to visible to show the mouse cursor
@@ -462,20 +489,10 @@ func _unhandled_input(event: InputEvent) -> void:
 			# Set the mouse mode to captured to hide the mouse cursor
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
-	## DEBUG: [N] toggles the cursor visibility for testing click-to-move navigation.
-	if event is InputEventKey and event.pressed and not event.echo \
-			and event.keycode == KEY_N \
-			and not pause.visible and not settings.visible and not audio_settings.visible and not video_settings.visible:
-		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-		else:
-			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-
 	# [Left Mouse Button] pressed while the cursor is visible -> Start "navigating"
 	if event is InputEventMouse \
 			and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) \
-			and Input.mouse_mode == Input.MOUSE_MODE_VISIBLE \
-			and not pause.visible and not settings.visible and not audio_settings.visible and not video_settings.visible:
+			and Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
 		# Find out where the click lands on the player's movement plane
 		var mouse_event: InputEventMouse = event
 		var from: Vector3 = camera.project_ray_origin(mouse_event.position)
@@ -489,7 +506,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				debug.draw_navigation_marker(cursor_position)
 
 	# Push-to-talk voice broadcasting (action="broadcast", key="T")
-	if event.is_action_pressed("broadcast") and not pause.visible and not settings.visible and not audio_settings.visible and not video_settings.visible:
+	if event.is_action_pressed("broadcast"):
 		start_broadcasting()
 	elif event.is_action_released("broadcast"):
 		stop_broadcasting()
@@ -497,8 +514,6 @@ func _unhandled_input(event: InputEvent) -> void:
 
 ## Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
-	_update_updraft_vfx()
-
 	var steam: Object = _get_steam_running() if is_multiplayer_authority() and is_broadcasting else null
 	if steam:
 		var available_voice: Dictionary = steam.getAvailableVoice()
@@ -540,7 +555,7 @@ func _physics_process(delta: float) -> void:
 
 	# Update network animation sync properties on authority
 	if is_multiplayer_authority():
-		var curr_loco := current_locomotion_node
+		var curr_loco: String = current_locomotion_path
 		if curr_loco != sync_locomotion_node and not curr_loco.is_empty():
 			sync_locomotion_node = curr_loco
 		var blend_to_sync := Vector2(0.0, smoothed_motion.length())
@@ -548,16 +563,6 @@ func _physics_process(delta: float) -> void:
 			blend_to_sync = smoothed_motion
 		if blend_to_sync != sync_blend_position:
 			sync_blend_position = blend_to_sync
-
-	## DEBUG: Toggle emote state for testing purposes.
-	if not is_paused and not is_ragdolling and Input.is_action_just_pressed("emote"):
-		var emote_state = animation_tree.get(EMOTE_STATE_PLAYBACK_PATH)
-		if emote_state.get_current_node() != "Waving":
-			animation_tree.set("parameters/EmoteSpineBlend2/blend_amount", 1.0)
-			emote_state.travel("Waving")
-			is_emoting = true
-			has_started_emoting = false
-
 
 # https://github.com/godotengine/tps-demo/blob/master/player/gd#L86
 func apply_input(delta: float) -> void:
@@ -750,9 +755,7 @@ func detect_ledge() -> bool:
 		ledge_detection_horizontal.show()
 		ledge_detection_marker.show()
 	else:
-		ledge_detection_vertical.position = Vector3(0, 0, -1) # Reset to default
-		ledge_detection_horizontal.hide()
-		ledge_detection_marker.hide()
+		clear_ledge_visuals()
 
 	return ledge_detected
 
@@ -840,10 +843,6 @@ func execute_throw() -> void:
 	if held_object:
 		held_object.execute_throw()
 
-
-## Alias for animation call tracks that expect a throw-named method.
-func throw_held_object() -> void:
-	execute_throw()
 
 
 ## Gets the grounded locomotion state that matches the current equipment and intent.
@@ -1145,13 +1144,6 @@ func update_sfx_volume(value: float) -> void:
 func update_music_volume(value: float) -> void:
 	if audio:
 		audio.set_music_volume(value)
-	else:
-		var db = linear_to_db(value / 100.0) if value > 0.0 else -80.0
-		var radio = get_node_or_null("RadiOtPlayer3D")
-		if not radio:
-			radio = find_child("RadiOtPlayer3D", true, false)
-		if radio and "volume_db" in radio:
-			radio.volume_db = db
 
 
 const STEAM_VOICE_RESULT_OK: int = 0 ## Mirrors Steam.VOICE_RESULT_OK (Steam class is absent on web exports).
@@ -1232,49 +1224,72 @@ func _set_voice_indicator(is_speaking: bool) -> void:
 		voice_chat_indicator.visible = is_speaking
 
 
-## Applies synchronized locomotion state name on puppet AnimationTree
-func _apply_synced_locomotion_node(node_name: String) -> void:
-	if node_name.is_empty() or animation_tree == null:
+## Applies the synchronized locomotion path ("Group/Node" or "Node") to a puppet's AnimationTree.
+func _apply_synced_locomotion_node(state_path: String) -> void:
+	var root_playback: AnimationNodeStateMachinePlayback = locomotion_state
+	if state_path.is_empty() or root_playback == null:
 		return
-	var root_playback: AnimationNodeStateMachinePlayback = animation_tree.get(LOCOMOTION_STATE_PLAYBACK_PATH)
-	if root_playback == null:
-		return
-	for group in LOCOMOTION_GROUPS:
-		var inner_playback: AnimationNodeStateMachinePlayback = animation_tree.get("parameters/LocomotionStateMachine/" + group + "/playback")
-		if inner_playback:
-			if root_playback.get_current_node() != group:
-				root_playback.travel(group)
-			if inner_playback.get_current_node() != node_name:
-				inner_playback.travel(node_name)
-			return
-	if root_playback.get_current_node() != node_name:
-		root_playback.travel(node_name)
+	var parts: PackedStringArray = state_path.split("/")
+	if String(root_playback.get_current_node()) != parts[0]:
+		root_playback.travel(parts[0])
+	if parts.size() > 1:
+		var group_playback: AnimationNodeStateMachinePlayback = animation_tree.get("parameters/LocomotionStateMachine/" + parts[0] + "/playback")
+		if group_playback and String(group_playback.get_current_node()) != parts[1]:
+			group_playback.travel(parts[1])
 
 
-## Applies synchronized blend coordinates to puppet AnimationTree blend spaces
+## Applies the synchronized blend position to the puppet's current locomotion blend space (1D spaces take the forward axis).
 func _apply_synced_blend_position(blend_pos: Vector2) -> void:
-	if animation_tree == null:
+	if sync_locomotion_node.is_empty():
 		return
-	if is_crouching:
-		animation_tree.set(CROUCHING_LOCOMOTION_BLEND_POSITION_PATH, blend_pos)
-	elif inventory and inventory.has_equipment(Equipment.EquipmentType.BOW):
-		if is_shooting:
-			animation_tree.set(ARCHERY_LOCOMOTION_BLEND_POSITION_PATH, blend_pos)
-		else:
-			animation_tree.set(BOW_LOCOMOTION_BLEND_POSITION_PATH, blend_pos)
-	elif inventory and inventory.has_one_handed_or_shield_equipped():
-		animation_tree.set(SHIELD_LOCOMOTION_BLEND_POSITION_PATH, blend_pos)
-	elif inventory and inventory.has_heavy_weapon_equipped():
-		animation_tree.set(GREATSWORD_LOCOMOTION_BLEND_POSITION_PATH, blend_pos)
-	elif inventory and inventory.has_equipment(Equipment.EquipmentType.PISTOL):
-		animation_tree.set(PISTOL_LOCOMOTION_BLEND_POSITION_PATH, blend_pos)
-	elif inventory and inventory.has_equipment(Equipment.EquipmentType.RIFLE):
-		animation_tree.set(RIFLE_LOCOMOTION_BLEND_POSITION_PATH, blend_pos)
-	elif inventory and inventory.is_unarmed() and is_boxing:
-		animation_tree.set(BOXING_LOCOMOTION_BLEND_POSITION_PATH, blend_pos)
-	elif is_swimming:
-		animation_tree.set(SWIMMING_LOCOMOTION_BLEND_POSITION_PATH, blend_pos.y if blend_pos.y != 0.0 else blend_pos.length())
-	elif is_skateboarding:
-		animation_tree.set(SKATEBOARDING_LOCOMOTION_BLEND_POSITION_PATH, blend_pos.y)
-	else:
-		animation_tree.set(STANDING_LOCOMOTION_BLEND_POSITION_PATH, blend_pos)
+	var path: String = "parameters/LocomotionStateMachine/" + sync_locomotion_node + "/blend_position"
+	var current: Variant = animation_tree.get(path)
+	if current is Vector2:
+		animation_tree.set(path, blend_pos)
+	elif current is float:
+		animation_tree.set(path, blend_pos.y if blend_pos.y != 0.0 else blend_pos.length())
+
+
+## Points the spine [LookAtModifier3D] at [param target], or clears it when [param target] is null.
+## [HeldObject] (carried body) and [Bow] (crosshair while aiming) are the only callers.
+func set_look_at_target(target: Node3D) -> void:
+	var modifier: LookAtModifier3D = look_at_modifier as LookAtModifier3D
+	if modifier == null:
+		return
+	modifier.target_node = modifier.get_path_to(target) if target else NodePath("")
+	modifier.active = target != null
+
+
+@export_category("Traversal")
+@export var lethal_fall_speed: float = 15.0 ## Landing at or above this downward speed (m/s) ragdolls the player.
+@export var wall_leap_horizontal_speed: float = 5.0 ## Horizontal impulse away from the wall on a climbing/hanging back-eject.
+@export var wall_leap_vertical_speed: float = 3.5 ## Vertical impulse on a climbing/hanging back-eject.
+
+
+## Smoothly turns the model to face the wall hit by the horizontal ledge raycast.
+func face_wall(delta: float) -> void:
+	if ledge_detection_horizontal.is_colliding():
+		turn_model_toward_direction(-ledge_detection_horizontal.get_collision_normal(), delta)
+
+
+## Launches the player away from the wall they are facing (climbing/hanging back-eject).
+func leap_off_wall() -> void:
+	var wall_normal: Vector3 = player_model.global_transform.basis.z.slide(up_direction).normalized()
+	velocity = (wall_normal * wall_leap_horizontal_speed) + (up_direction * wall_leap_vertical_speed)
+
+
+## Hides the ledge detection gizmos and resets the vertical probe to its default offset.
+func clear_ledge_visuals() -> void:
+	ledge_detection_vertical.position = Vector3(0, 0, -1)
+	ledge_detection_horizontal.hide()
+	ledge_detection_marker.hide()
+
+
+## Teleports the Player to the given transform, clearing motion and restoring the model and collision poses.
+func warp_to(target: Transform3D) -> void:
+	global_transform = target
+	velocity = Vector3.ZERO
+	up_direction = target.basis.y.normalized()
+	orientation = Transform3D(target.basis, Vector3.ZERO)
+	player_model.transform = initial_player_model_transform
+	collision_shape.transform = initial_collision_shape_transform

@@ -1,5 +1,7 @@
 @tool
+class_name ActionPrompt
 extends Node3D
+## World-space "Press [button] to ..." prompt with one child per input type (KeyboardMouse, Microsoft, Nintendo, Sony).
 
 var _message_begin: String = "Press"
 var _message_end: String = "to interact"
@@ -34,6 +36,21 @@ func _ready() -> void:
 	if not Engine.is_editor_hint():
 		hide()
 	update_text()
+
+
+## Shows only the sub-prompt matching the player's current input type (child names mirror `Controls.InputType` keys in PascalCase).
+func show_for(player: Player) -> void:
+	var type_name: String = String(player.controls.InputType.keys()[player.controls.current_input_type]).to_pascal_case()
+	for child: Node3D in get_children():
+		child.visible = child.name == type_name
+	show()
+
+
+## Hides the prompt and every sub-prompt.
+func hide_all() -> void:
+	for child: Node3D in get_children():
+		child.hide()
+	hide()
 
 
 func update_text() -> void:

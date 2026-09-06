@@ -1,5 +1,3 @@
-![Preview](/radi-ot.png)
-
 # radi-ot (Radio + Godot) 📻
 
 **radi-ot** is a feature-packed 3D audio streaming addon for **Godot 4.8** that streams real live Seattle radio stations over the internet. Built for both **Steam (Forward+)** and **Web (Compatibility)**, it features positional 3D audio, an in-game retro-modern CanvasLayer HUD, procedural FM tuning static, and an `urgent_bulletin()` API designed for in-game narrative progression and emergency broadcasts.
@@ -13,15 +11,16 @@
   - **88.5 FM — KNKX:** Jazz, Blues, and NPR News
   - **89.5 FM — C89.5 (KNHC):** Student-run Electronic, Dance, and House
   - **90.3 FM — KEXP:** World-renowned Independent, Alternative, and Eclectic
-  - **91.3 FM — KBCS:** Community radio and diverse global sounds
   - **94.9 FM — KUOW:** Puget Sound NPR News and Information
   - **98.1 FM — KING-FM:** Classical Seattle
+  - **101.1 FM — KMGP (Space 101.1 FM):** Indie, Local Seattle, and Eclectic community radio
 - **Urgent Bulletin System (`urgent_bulletin`):** Seamlessly interrupt live radio broadcasts with custom story audio (emergency broadcasts, story alerts, news flashes). When the bulletin finishes, live radio automatically resumes.
-- **Retro-Modern CanvasLayer HUD:** Displays current frequency, call sign, genre, live signal indicator, animated dial bar, keyboard hints, and emergency alert banners.
+- **Retro-Modern CanvasLayer HUD:** Displays current frequency, call sign, genre, live signal indicator, a Tween-animated dial bar, optional key hints (`hint_text`), and emergency alert banners. The panel auto-hides through its `AutoHideTimer` child and fades out with a Tween.
 - **Procedural FM Static:** Realistic white/pink noise static plays seamlessly while buffering or switching between stations.
 - **Dual-Platform Streaming Engine:**
-  - **Steam / Desktop (Forward+):** High-performance chunk-buffered HTTP client with automatic redirect handling (HTTP 301/302/307), MP3 frame-sync alignment, and persistent stream connection management.
-  - **Web (HTML5 / Compatibility):** Native Web Audio API / HTML5 Audio integration with 3D camera-listener distance attenuation and volume tracking.
+  - **Desktop:** `HTTPClient` stream with automatic redirect handling (up to 4 hops), chunks cut on validated MPEG frame headers (version, layer, bitrate and sample-rate fields checked), and two ping-pong `AudioStreamPlayer3D` channels swapped by their `finished` signals. A 10 s Timer (`RadiOtStreamer.STREAM_TIMEOUT_SECONDS`) covers connect, first byte and stalls and reports `stream_playback_failed` when it expires.
+  - **Web (HTML5):** HTML5 Audio element whose volume mirrors the player's attenuation model, refreshed by a 10 Hz Timer and only when the value changes. `auto_play_on_ready` is ignored on web because browsers block autoplay until the page is clicked.
+- **"radio" group:** The player scene is in the `radio` group and exposes `set_volume(linear: float)`, which sets the stream channels, the bulletin player and the node itself. Audio settings menus can call `get_tree().call_group("radio", "set_volume", value)`.
 - **Interactive Demo Keyboard Controls:**
   - `[L]` — Tune to Next Station
   - `[J]` — Tune to Previous Station
@@ -70,7 +69,7 @@ git submodule add https://github.com/kirbycope/radi-ot.git addons/radi_ot
 ## 📻 Interactive Demo Scene
 
 Open and run **`res://addons/radi_ot/scenes/demo/demo.tscn`** to experience live 3D positional radio streaming:
-- **Live Seattle Streams**: Stream real audio from KEXP, C89.5, KNKX, KUOW, KBCS, and KING-FM.
+- **Live Seattle Streams**: Stream real audio from KEXP, C89.5, KNKX, KUOW, KING-FM, and KMGP.
 - **Narrative Story Bulletins**: Trigger simulated emergency broadcasts with voiceovers that interrupt the live broadcast.
 - **Spatial Orbit Camera**: Orbits around the 3D radio to showcase distance attenuation and positional panning.
 - **Tuning Controls**: Switch stations (`J`/`L` keys or on-screen buttons) and toggle power (`M`).
@@ -81,10 +80,16 @@ Open and run **`res://addons/radi_ot/scenes/demo/demo.tscn`** to experience live
 
 ### 1. Add to Your Scene
 
-Add a `RadiOtPlayer3D` node to your 3D world, or instantiate the ready-to-use scene:
+Instantiate the player scene in your 3D world (the script requires its children, so a bare `RadiOtPlayer3D` node is not supported):
 
 ```text
 res://addons/radi_ot/scenes/radi_ot_player_3d.tscn
+```
+
+Its children are the `RadiOtStreamer`, the static and bulletin `AudioStreamPlayer3D`s, the `BulletinTimer` and the `RadiOtHUD`; all signals between them are wired in the scene. Set `hint_text` on the HUD from the scene that binds the keys:
+
+```gdscript
+radio.get_hud().hint_text = "[J] Prev Station   [L] Next Station   [M] Power"
 ```
 
 ### 2. Configure & Tune
@@ -93,9 +98,9 @@ res://addons/radi_ot/scenes/radi_ot_player_3d.tscn
 - In the Inspector, verify that `station_collection` is set to `seattle_stations_default.tres` (or assign your own custom collection).
 - Run the scene (`F5` or `F6`).
 - Call `tune_next_station()` to go to the Next Station
-  - The demo uses the [J] key to tune next station.
+  - The demo uses the [L] key to tune next station.
 - Call `tune_previous_station()` to go to the Previous Station
-  - The demo uses the [L] key to tune previous station.
+  - The demo uses the [J] key to tune previous station.
 - Call `toggle_power()` to turn the radio on or off
   - The demo uses the [M] key to toggle power.
 
@@ -163,6 +168,9 @@ Group your stations into a `RadioStationCollection` resource (`.tres`) and assig
 - `urgent_bulletin(stream: AudioStream, text: String, duration: float = 0.0)` — Broadcasts a narrative alert.
 - `cancel_bulletin()` — Cancels the current bulletin and resumes the live station.
 - `get_current_station() -> RadioStation` — Returns the currently tuned `RadioStation` resource.
+- `get_station_count() -> int` — Number of stations in the collection.
+- `get_hud() -> RadiOtHUD` — The HUD child (`show_toast(seconds)`, `hide_toast()`, `hide_hud()`, `hint_text`, `toast_hide`, `toast_hide_seconds`).
+- `set_volume(linear: float)` — Linear volume for the stream channels, the bulletin player and the node (also reachable through the `radio` group).
 
 ### Signals
 
@@ -200,7 +208,16 @@ godot --headless -s addons/gut/gut_cmdln.gd
 
 ---
 
-## 📄 License & Credits
+## 🖼️ Assets
 
-- Code is licensed under the [MIT License](LICENSE).
-- Third-party assets and model attributions are documented in [credits.md](../../credits.md).
+- `assets/models/retro-radio-boombox` — Retro Radio model and textures. Source and license not recorded — fill in.
+- `assets/audio/eleven_labs` — Bulletin voice clips generated with [ElevenLabs](https://elevenlabs.io).
+- `assets/logos` — Station logos are trademarks of the respective stations.
+- `assets/icons` — HUD and editor icons. Source not recorded — fill in.
+- Radio static is generated procedurally by `RadiOtStaticGenerator` (no asset).
+
+---
+
+## 📄 License
+
+Code is licensed under the MIT License.

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://addons/date_and_time/scenes/demo/demo.gd" id="1_demogd"]
 [ext_resource type="Script" path="res://addons/date_and_time/scripts/date_and_time.gd" id="2_dtd"]
-[ext_resource type="Script" path="res://addons/date_and_time/scripts/date_and_time_display.gd" id="3_dtdisplay"]
+[ext_resource type="PackedScene" path="res://addons/date_and_time/scenes/date_and_time_display.tscn" id="3_dtdisplay"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_demo"]
 sky_horizon_color = Color(0.65, 0.72, 0.8, 1)
@@ -57,8 +57,6 @@ corner_radius_bottom_left = 12
 shadow_color = Color(0, 0, 0, 0.4)
 shadow_size = 8
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hud"]
-
 [node name="DateAndTimeDemo" type="Node3D"]
 script = ExtResource("1_demogd")
 
@@ -97,7 +95,7 @@ current = true
 
 [node name="DateAndTime" type="Node" parent="."]
 script = ExtResource("2_dtd")
-current_time = 12.0
+minutes_per_day = 1.0
 
 [node name="HUD" type="CanvasLayer" parent="."]
 
@@ -156,6 +154,18 @@ text = "Pace:"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+selected = 2
+item_count = 5
+popup/item_0/text = "1x (24 min/day)"
+popup/item_0/id = 1
+popup/item_1/text = "5x (4.8 min/day)"
+popup/item_1/id = 5
+popup/item_2/text = "24x (1 min/day)"
+popup/item_2/id = 24
+popup/item_3/text = "60x (24 sec/day)"
+popup/item_3/id = 60
+popup/item_4/text = "300x (5 sec/day)"
+popup/item_4/id = 300
 
 [node name="PlayPauseButton" type="Button" parent="HUD/ControlPanel/VBox/SpeedRow"]
 unique_name_in_owner = true
@@ -258,11 +268,26 @@ offset_bottom = -16.0
 grow_horizontal = 0
 grow_vertical = 0
 
-[node name="DateAndTimeDisplay" type="PanelContainer" parent="HUD/BottomRight" node_paths=PackedStringArray("date_and_time_node")]
+[node name="DateAndTimeDisplay" parent="HUD/BottomRight" node_paths=PackedStringArray("date_and_time_node") instance=ExtResource("3_dtdisplay")]
 unique_name_in_owner = true
 layout_mode = 0
 offset_top = -38.0
-offset_right = 48.0
-theme_override_styles/panel = SubResource("StyleBoxEmpty_hud")
-script = ExtResource("3_dtdisplay")
 date_and_time_node = NodePath("../../../DateAndTime")
+offset_bottom = 0.0
+
+[connection signal="clock_paused" from="DateAndTime" to="." method="_update_status_display"]
+[connection signal="clock_resumed" from="DateAndTime" to="." method="_update_status_display"]
+[connection signal="day_changed" from="DateAndTime" to="." method="_on_day_changed"]
+[connection signal="month_changed" from="DateAndTime" to="." method="_on_month_changed"]
+[connection signal="time_changed" from="DateAndTime" to="." method="_on_time_changed"]
+[connection signal="year_changed" from="DateAndTime" to="." method="_on_year_changed"]
+[connection signal="value_changed" from="HUD/ControlPanel/VBox/TimeRow/TimeSlider" to="." method="_on_time_slider_changed"]
+[connection signal="item_selected" from="HUD/ControlPanel/VBox/SpeedRow/SpeedOptionButton" to="." method="_on_speed_selected"]
+[connection signal="pressed" from="HUD/ControlPanel/VBox/SpeedRow/PlayPauseButton" to="." method="_on_play_pause_pressed"]
+[connection signal="value_changed" from="HUD/ControlPanel/VBox/DateRow/DaySpinBox" to="." method="_on_day_spin_box_value_changed"]
+[connection signal="value_changed" from="HUD/ControlPanel/VBox/DateRow/MonthSpinBox" to="." method="_on_month_spin_box_value_changed"]
+[connection signal="value_changed" from="HUD/ControlPanel/VBox/DateRow/YearSpinBox" to="." method="_on_year_spin_box_value_changed"]
+[connection signal="pressed" from="HUD/ControlPanel/VBox/ToggleRow/FormatButton" to="." method="_on_format_pressed"]
+[connection signal="pressed" from="HUD/ControlPanel/VBox/ToggleRow/ShowDateButton" to="." method="_on_show_date_pressed"]
+[connection signal="pressed" from="HUD/ControlPanel/VBox/ToggleRow/RoundingButton" to="." method="_on_rounding_pressed"]
+[connection signal="pressed" from="HUD/ControlPanel/VBox/SyncRow/SyncOSButton" to="." method="_on_sync_os_pressed"]

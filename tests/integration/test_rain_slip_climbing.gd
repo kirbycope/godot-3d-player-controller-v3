@@ -32,19 +32,18 @@ func after_each() -> void:
 
 
 func test_dry_wall_does_not_slip() -> void:
-	var start_y: float = player.global_position.y
-	for i in range(15):
-		climbing_node._physics_process(0.2)
-	assert_almost_eq(player.global_position.y, start_y, 0.01, "Player should not slide down a dry wall")
+	climbing_node._physics_process(0.2)
+	assert_true(climbing_node.rain_slip_timer.is_stopped(), "A dry wall should not start the slip timer")
 
 
 func test_wet_wall_slips_player_down() -> void:
 	WeatherFX.active_precipitation_strength = 0.8
 	var start_y: float = player.global_position.y
-	# 3.0 simulated seconds > rain_slip_interval (1.6s)
-	for i in range(15):
-		climbing_node._physics_process(0.2)
-	assert_lt(player.global_position.y, start_y - climbing_node.rain_slip_distance * 0.9, "Heavy rain should periodically slide the climber down the wall")
+	climbing_node._physics_process(0.2)
+	assert_false(climbing_node.rain_slip_timer.is_stopped(), "Heavy rain should start the slip timer")
+	assert_almost_eq(climbing_node.rain_slip_timer.wait_time, climbing_node.rain_slip_interval, 0.001, "Slips repeat every rain_slip_interval")
+	climbing_node._on_rain_slip_timer_timeout()
+	assert_almost_eq(player.global_position.y, start_y - climbing_node.rain_slip_distance, 0.01, "Each slip slides the climber down by rain_slip_distance")
 
 
 func test_wet_wall_blocks_sprint_climbing_and_slows_climb() -> void:
@@ -58,7 +57,5 @@ func test_wet_wall_blocks_sprint_climbing_and_slows_climb() -> void:
 
 func test_light_drizzle_below_threshold_does_not_slip() -> void:
 	WeatherFX.active_precipitation_strength = 0.2
-	var start_y: float = player.global_position.y
-	for i in range(15):
-		climbing_node._physics_process(0.2)
-	assert_almost_eq(player.global_position.y, start_y, 0.01, "Precipitation below the slip threshold should not cause slipping")
+	climbing_node._physics_process(0.2)
+	assert_true(climbing_node.rain_slip_timer.is_stopped(), "Precipitation below the slip threshold should not start the slip timer")

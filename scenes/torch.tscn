@@ -93,3 +93,9 @@ max_distance = 15.0
 stream = ExtResource("4_audio_impact")
 volume_db = -2.0
 max_distance = 20.0
+
+[node name="ImpactCooldownTimer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
