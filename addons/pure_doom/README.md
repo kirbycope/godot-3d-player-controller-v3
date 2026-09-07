@@ -64,7 +64,7 @@ node can run in a process and it initialises once; `stop()` and `start()` pause 
 
 ## Building
 
-Prebuilt binaries are in `bin/`. To rebuild, clone godot-cpp into this folder (it is git-ignored) and dump
+Prebuilt binaries for Windows, macOS and the web are in `bin/`. To rebuild, clone godot-cpp into this folder (it is git-ignored) and dump
 the extension API from the Godot build you run, so the bindings match it:
 
 ```powershell
@@ -74,6 +74,17 @@ cd addons/pure_doom
 scons platform=windows target=template_debug custom_api_file=..\..\extension_api.json
 scons platform=windows target=template_release custom_api_file=..\..\extension_api.json
 scons platform=web threads=no target=template_release custom_api_file=..\..\extension_api.json
+```
+
+On macOS the same steps with `brew install scons` and the Xcode Command Line Tools produce a universal
+(arm64 and x86_64) framework:
+
+```sh
+git clone --depth 1 https://github.com/godotengine/godot-cpp.git addons/pure_doom/godot-cpp
+/Applications/Godot.app/Contents/MacOS/Godot --headless --dump-extension-api   # writes extension_api.json
+cd addons/pure_doom
+scons platform=macos arch=universal target=template_debug custom_api_file=../../extension_api.json
+scons platform=macos arch=universal target=template_release custom_api_file=../../extension_api.json
 ```
 
 Windows needs Visual Studio 2022 with the C++ workload, Python and SCons. The web build needs the
