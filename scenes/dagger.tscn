@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="PackedScene" uid="uid://blo6m8lpjri0d" path="res://assets/n_hance_studio/weapons/SK_Dagger_1H_Newbie_01.fbx" id="1_model"]
+[ext_resource type="Script" uid="uid://d0u7oh1rirfy4" path="res://addons/3d_player_controller/scripts/equipment.gd" id="2_equipment"]
+[ext_resource type="Texture2D" uid="uid://boo50abhv7hgk" path="res://addons/3d_player_controller/assets/game_icons/plain-dagger.svg" id="3_icon"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_pickup"]
+
+[node name="Dagger" instance=ExtResource("1_model")]
+script = ExtResource("2_equipment")
+bone_attachment_bone_name = "RightHand"
+can_attack = true
+display_name = "Dagger"
+description = "A short blade for the right hand. Equipped, hold Throw and let go to hurl it."
+equipment_type = 3
+icon = ExtResource("3_icon")
+is_throwable = true
+throw_damage = 10.0
+position_offset = Vector3(0, 0.1, 0.025)
+rotation_offset_degrees = Vector3(0, 90, 0)
+
+[node name="PlayerDetection" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PlayerDetection"]
+shape = SubResource("SphereShape3D_pickup")
+
+[connection signal="body_entered" from="PlayerDetection" to="." method="_on_player_detection_body_entered"]

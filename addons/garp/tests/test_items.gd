@@ -211,6 +211,48 @@ func test_persistence_can_be_switched_off_for_every_inventory() -> void:
 	assert_true(FileAccess.file_exists(TEST_SAVE))
 
 
+func test_throwables_are_listed_and_use_item_uses_the_first_stack() -> void:
+	assert_false(Item.new().throwable, "Nothing is throwable unless the resource says so")
+	assert_eq(Item.new().throw_damage, 0.0)
+	var stone: Item = Item.new()
+	stone.id = &"stone"
+	stone.throwable = true
+	inventory.add_item(APPLE, 3)
+	inventory.add_item(ORE, 5)
+	inventory.add_item(stone, 4)
+	assert_eq(inventory.get_throwable_items(), [stone] as Array[Item], "Only the flagged kind, once")
+	watch_signals(inventory)
+	inventory.use_item(APPLE)
+	assert_signal_emitted_with_parameters(inventory, "item_used", [APPLE, 1]) # use_item finds the stack and uses it as use_slot does
+	assert_eq(inventory.count_of(APPLE), 2)
+	inventory.use_item(Item.new())
+	assert_signal_emit_count(inventory, "item_used", 1, "An item that is not carried uses nothing")
+
+
+func test_forget_equipment_drops_nothing_and_add_equipment_scene_brings_it_back() -> void:
+	assert_eq(inventory.add_item(SWORD), 0)
+	var sword: Equipment = inventory.get_equipment_by_type(Equipment.EquipmentType.SWORD_1H)
+	var bare: Equipment = Equipment.new()
+	bare.equipment_type = Equipment.EquipmentType.DAGGER
+	bare.bone_attachment_bone_name = "LeftHand"
+	root.add_child(bare)
+	var dagger: Equipment = inventory.equip_pickup(bare)
+	assert_eq(inventory.forget_equipment(dagger), "", "Equipment from no scene cannot be forgotten: there is nothing to bring it back from")
+	assert_true(inventory.equipment.has(dagger), "so it stays")
+	watch_signals(inventory)
+	var children_before: int = root.get_child_count()
+	assert_eq(inventory.forget_equipment(sword), "res://addons/garp/scenes/demo/wooden_sword.tscn", "The scene path the sword can come back from")
+	assert_false(inventory.has_equipment(Equipment.EquipmentType.SWORD_1H))
+	assert_eq(inventory.get_all_weapons().filter(func(item: Equipment) -> bool: return item.equipment_type == Equipment.EquipmentType.SWORD_1H).size(), 0, "Out of the backpack")
+	assert_eq(root.get_child_count(), children_before, "and no pickup in the world")
+	assert_signal_emitted(inventory, "items_changed")
+	var copy: Equipment = inventory.add_equipment_scene(SWORD.equipment_scene)
+	assert_not_null(copy, "add_equipment_scene equips a fresh copy from the scene")
+	assert_true(inventory.has_equipment(Equipment.EquipmentType.SWORD_1H))
+	assert_eq(copy.scene_file_path, "res://addons/garp/scenes/demo/wooden_sword.tscn")
+	assert_eq(copy.position, copy.position_offset, "with the hand offsets, as a walk-over pickup gets them")
+
+
 func test_the_ninth_weapon_is_refused() -> void:
 	assert_eq(inventory.max_equipment, 8, "BOTW's eight weapon slots by default")
 	inventory.max_equipment = 2

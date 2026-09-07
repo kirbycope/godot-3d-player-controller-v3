@@ -1,9 +1,13 @@
 extends GutTest
 
-## Purpose: End-to-end shooting in world.tscn — the rifle equips with its muzzle, timer and laser sight,
-## a round fired at the balloon circle pops a balloon, and a round pushes the beach ball.
+## Purpose: End-to-end shooting in world.tscn: the rifle equips with its muzzle, timer and laser sight,
+## a round fired at the balloon circle pops a balloon, and a round pushes the beach ball. The bow pickup equips with
+## its template arrow, nocks the kind of arrow it will fire, and an ice arrow shot at the pool freezes it under the
+## crosshair.
 
 const WORLD_SCENE: PackedScene = preload("res://scenes/world.tscn")
+const FIRE_ARROWS: AmmoItem = preload("res://resources/items/fire_arrow.tres")
+const ICE_ARROWS: AmmoItem = preload("res://resources/items/ice_arrow.tres")
 
 var world: Node
 var player: Player
@@ -110,3 +114,63 @@ func test_firing_shows_the_flash_and_it_fades_by_itself() -> void:
 	assert_true(flash.animation_player.is_playing())
 	await wait_seconds(0.4)
 	assert_false(flash.vfx.visible, "The flash is gone a moment later")
+
+
+## The world's bow pickup, equipped (it is exclusive, so the rifle goes on the back).
+func _bow() -> Bow:
+	var pickup: Equipment = world.get_node("N_Hance_Studio_1/SK_Bow_Newbie_01")
+	pickup.equip(player)
+	await wait_physics_frames(1)
+	return player.inventory.get_equipment_by_type(Equipment.EquipmentType.BOW) as Bow
+
+
+## Use on the Materials stack holding [param item], the way the inventory screen does it.
+func _use(item: Item) -> void:
+	var slots: Array = player.inventory.get_slots(Item.Category.MATERIALS)
+	for i: int in slots.size():
+		if slots[i] and slots[i].item.is_same(item):
+			player.inventory.use_slot(Item.Category.MATERIALS, i)
+			return
+	fail_test("%s is not carried" % item.display_name)
+
+
+func test_the_equipped_bow_nocks_the_arrows_it_will_fire() -> void:
+	var bow: Bow = await _bow()
+	assert_not_null(bow, "The bow pickup equips a Bow copy")
+	assert_not_null(bow.arrow_node, "with its template arrow")
+	assert_null(bow.nocked_arrow, "The world Player carries regular arrows: the plain template is on the string")
+	player.inventory.add_item(FIRE_ARROWS, 2)
+	_use(FIRE_ARROWS)
+	var nocked: FireArrow = bow.nocked_arrow as FireArrow
+	assert_not_null(nocked, "Use on fire arrows nocks the kind the next shot takes")
+	assert_eq(nocked.get_parent(), bow)
+	assert_eq(nocked.transform, bow.arrow_node.transform, "where the plain template sits on the string")
+	assert_true(nocked.is_template and nocked.freeze, "frozen on the string")
+	assert_false(nocked.visible, "hidden like the template until the Player aims")
+	assert_true((nocked.flame.get_node("FlameParticles") as GPUParticles3D).emitting, "and burning")
+
+
+func test_an_ice_arrow_freezes_the_pool_under_the_crosshair() -> void:
+	var bow: Bow = await _bow()
+	player.skill_level = 100 # an expert: the spread is next to nothing
+	for area: Node in world.get_node("Pool/FishShadows").find_children("*", "Area3D", true, false):
+		(area as Area3D).collision_layer = 0 # the fish wander under the surface; neither the crosshair nor the arrow should find one
+	player.inventory.add_item(ICE_ARROWS, 1)
+	_use(ICE_ARROWS)
+	assert_true(bow.nocked_arrow is IceArrow, "An ice arrow is nocked")
+	await _aim_at(Vector3(8.0, 0.0, -24.0), Vector3(0.0, 0.0, 14.0)) # on the pool, from the bank
+	var ray: RayCast3D = player.projectile_raycast
+	ray.force_raycast_update()
+	assert_true(ray.is_colliding(), "The crosshair is on the water")
+	var aim: Vector3 = ray.get_collision_point()
+	assert_almost_eq(aim.y, 0.0, 0.1, "at the surface")
+	var carried: int = player.inventory.count_of(ICE_ARROWS)
+	assert_true(bow.fire_arrow(), "The shot takes the ice arrow")
+	assert_eq(player.inventory.count_of(ICE_ARROWS), carried - 1)
+	await wait_physics_frames(60)
+	var blocks: Array[Node] = get_tree().get_nodes_in_group(&"IceBlock")
+	assert_eq(blocks.size(), 1, "One slab")
+	if blocks.is_empty():
+		return
+	var at: Vector3 = (blocks[0] as Node3D).global_position
+	assert_lt(Vector2(at.x - aim.x, at.z - aim.z).length(), 1.0, "The pool freezes within a metre of where the crosshair pointed (the arrow breaks the surface a little past the aim point on its arc): %s for %s" % [at, aim])

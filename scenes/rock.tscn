@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" uid="uid://d22poxmh11w50" path="res://assets/n_hance_studio/craft/ore/SM_G_Ore_05.fbx" id="1_ore"]
+
+[node name="Rock" type="Node3D"]
+
+[node name="SM_G_Ore_05" parent="." instance=ExtResource("1_ore")]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, -0.07, 0)

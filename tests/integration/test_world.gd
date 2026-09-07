@@ -33,14 +33,28 @@ func test_pool_sets_follower_npc_water_area() -> void:
 func test_the_spawned_player_carries_the_qa_kit() -> void:
 	var player: Player = world.get_node("Players/1") as Player
 	var kit: Dictionary[Item, int] = world.STARTING_ITEMS
-	assert_eq(kit.size(), 7, "Worms, rifle clips, an incendiary clip, a pistol magazine, arrows, fire arrows and ice arrows")
+	assert_eq(kit.size(), 10, "Worms, rifle clips, an incendiary clip, a pistol magazine, arrows, fire arrows, ice arrows, rocks, apples and a dagger")
 	for item: Item in kit:
+		if item.category == Item.Category.EQUIPMENT:
+			continue
 		assert_eq(player.inventory.count_of(item), kit[item], "%d x %s on spawn" % [kit[item], item.get_display_name()])
 	assert_eq(player.inventory.count_of(load("res://resources/lures/worm.tres")), 10)
 	assert_eq(player.inventory.count_of(load("res://resources/items/arrow.tres")), 20)
+	var rock: Item = load("res://resources/items/rock.tres")
+	var apple: Item = load("res://resources/items/apple.tres")
+	assert_true(rock.throwable and rock.throw_damage > 0.0, "The rock is the throwable that hurts")
+	assert_true(apple.throwable and apple.consumable, "The apple is the throwable food")
+	for ammo: Item in kit:
+		if ammo is AmmoItem or ammo is Lure:
+			assert_false(ammo.throwable, "%s is not thrown by hand" % ammo.get_display_name())
+	var daggers: Array[Equipment] = player.inventory.get_all_weapons().filter(func(weapon: Equipment) -> bool: return weapon.scene_file_path == "res://scenes/dagger.tscn")
+	assert_eq(daggers.size(), 1, "One dagger from its scene is in the backpack")
+	assert_true(daggers[0].is_throwable, "and it is the throwable equipment")
+	assert_true(player.inventory.is_unarmed(), "stowed, so the player spawns unarmed")
 	player.inventory.remove_item(kit.keys()[0], 3)
 	world._grant_starting_items(player)
 	assert_eq(player.inventory.count_of(kit.keys()[0]), kit[kit.keys()[0]], "Granting again tops up rather than stacking on")
+	assert_eq(player.inventory.get_all_weapons().size(), 1, "and hands out no second dagger")
 
 
 func test_driving_state_powers_radio_and_radial_menu() -> void:

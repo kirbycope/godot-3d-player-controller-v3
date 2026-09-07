@@ -184,6 +184,27 @@ func use_slot(category: Item.Category, index: int, count: int = 1) -> void:
 	item_used.emit(item, used)
 
 
+## Uses [param count] of [param item] from the first stack that holds it, as [method use_slot] does.
+func use_item(item: Item, count: int = 1) -> void:
+	if item == null:
+		return
+	var slots: Array = get_slots(item.category)
+	for i: int in slots.size():
+		if slots[i] and slots[i].item.is_same(item):
+			use_slot(item.category, i, count)
+			return
+
+
+## Every carried [Item] with [member Item.throwable] set, in tab and slot order, each kind once.
+func get_throwable_items() -> Array[Item]:
+	var found: Array[Item] = []
+	for category: Item.Category in ITEM_TABS:
+		for slot: ItemSlot in get_slots(category):
+			if slot and slot.item.throwable and not found.any(func(item: Item) -> bool: return item.is_same(slot.item)):
+				found.append(slot.item)
+	return found
+
+
 ## Drops [param count] from the stack at [param index] on the ground in front of the Player as an [ItemPickup].
 func drop_slot(category: Item.Category, index: int, count: int = 1) -> Node3D:
 	var slot: ItemSlot = get_slot(category, index)
@@ -203,27 +224,48 @@ func drop_slot(category: Item.Category, index: int, count: int = 1) -> Node3D:
 ## Drops an equipped or stowed [Equipment] back into the world (its scene, in front of the Player) and forgets it.
 ## Equipment that was not instanced from a scene cannot be dropped; it stays.
 func drop_equipment(item: Equipment) -> Node3D:
-	if item == null or player == null or not _is_scene_path(item.scene_file_path):
+	if player == null:
 		return null
-	var scene: PackedScene = load(item.scene_file_path) as PackedScene
-	if scene == null:
+	var scene_path: String = forget_equipment(item)
+	if scene_path.is_empty():
 		return null
-	var attachment: BoneAttachment3D = item.get_parent() as BoneAttachment3D
-	if equipment.has(item):
-		_stow_attachment(attachment)
-	var pickup: Node3D = scene.instantiate() as Node3D
+	var pickup: Node3D = (load(scene_path) as PackedScene).instantiate() as Node3D
 	_place_in_front(pickup)
 	# A walk-over pickup lands inside its own reach; it ignores the Player who dropped it until they step away
 	pickup.set_meta("dropped_by", player)
 	var detection: Area3D = pickup.get_node_or_null("PlayerDetection") as Area3D
 	if detection:
 		detection.body_exited.connect(_on_dropped_equipment_body_exited.bind(pickup))
+	return pickup
+
+
+## Forgets an equipped or stowed [Equipment] without putting anything in the world (it was thrown, it broke) and
+## returns the scene path it can be re-created from. Empty, and nothing happens, for equipment that was not
+## instanced from a scene.
+func forget_equipment(item: Equipment) -> String:
+	if item == null or not _is_scene_path(item.scene_file_path):
+		return ""
+	var scene_path: String = item.scene_file_path
+	var attachment: BoneAttachment3D = item.get_parent() as BoneAttachment3D
+	if equipment.has(item):
+		_stow_attachment(attachment)
 	var gone: Node = attachment if attachment else item
 	if gone.get_parent():
 		gone.get_parent().remove_child(gone) # out of the backpack now, freed at the end of the frame
 	gone.queue_free()
 	_items_changed()
-	return pickup
+	return scene_path
+
+
+## Equips a fresh instance of [param scene] (an [Equipment] scene) as walking over it would; returns the copy on
+## the skeleton, or null when the equip was refused. An equipment [Item] comes through here when it is added.
+func add_equipment_scene(scene: PackedScene) -> Equipment:
+	if scene == null or player == null:
+		return null
+	var pickup: Equipment = scene.instantiate() as Equipment
+	if pickup == null:
+		return null
+	return _equip_instance(pickup)
 
 
 ## Puts [param item] back in the backpack without dropping it.
@@ -545,12 +587,7 @@ func _empty_tab() -> Array:
 
 ## An equipment item is picked up by instancing its scene and equipping it, as a walk-over pickup would.
 func _add_equipment_item(item: Item) -> bool:
-	if item.equipment_scene == null or player == null:
-		return false
-	var pickup: Equipment = item.equipment_scene.instantiate() as Equipment
-	if pickup == null:
-		return false
-	return _equip_instance(pickup) != null
+	return add_equipment_scene(item.equipment_scene) != null
 
 
 ## Equips a freshly instanced [param pickup] the way walking over it would: on the Player for the moment it

@@ -6,7 +6,8 @@ extends Node3D
 
 const RADIO_OFF_ICON: Texture2D = preload("res://addons/radi_ot/assets/icons/stop_icon.svg")
 ## The QA kit: what a freshly spawned local player carries, topped up to these counts (a saved inventory keeps
-## whatever else it holds). This world is the test bed, so nothing has to be found first.
+## whatever else it holds). This world is the test bed, so nothing has to be found first. Equipment items go in
+## the backpack stowed, one each, unless a copy from their scene is carried already.
 const STARTING_ITEMS: Dictionary[Item, int] = {
 	preload("res://resources/lures/worm.tres"): 10,
 	preload("res://resources/items/rifle_clip.tres"): 2,
@@ -15,6 +16,9 @@ const STARTING_ITEMS: Dictionary[Item, int] = {
 	preload("res://resources/items/fire_arrow.tres"): 5,
 	preload("res://resources/items/ice_arrow.tres"): 5,
 	preload("res://resources/items/rifle_clip_incendiary.tres"): 1,
+	preload("res://resources/items/rock.tres"): 5,
+	preload("res://resources/items/apple.tres"): 3,
+	preload("res://resources/items/dagger.tres"): 1,
 }
 
 ## GodotSteam constant mirrors (the Steam class is absent on web exports).
@@ -43,9 +47,25 @@ func _ready() -> void:
 ## Tops the player's inventory up to the [constant STARTING_ITEMS] counts.
 func _grant_starting_items(target: Player) -> void:
 	for item: Item in STARTING_ITEMS:
+		if item.category == Item.Category.EQUIPMENT:
+			_grant_starting_equipment(target, item)
+			continue
 		var missing: int = STARTING_ITEMS[item] - target.inventory.count_of(item)
 		if missing > 0:
 			target.inventory.add_item(item, missing)
+
+
+## Puts one of an equipment item's scene in the backpack, stowed so the player still spawns unarmed, unless a copy
+## from that scene is carried already.
+func _grant_starting_equipment(target: Player, item: Item) -> void:
+	if item.equipment_scene == null:
+		return
+	for carried: Equipment in target.inventory.get_all_weapons():
+		if carried.scene_file_path == item.equipment_scene.resource_path:
+			return
+	var copy: Equipment = target.inventory.add_equipment_scene(item.equipment_scene)
+	if copy:
+		target.inventory.stow_equipment(copy)
 
 
 ## Binds the world to the player this peer controls (connected in the scene to PlayerSpawner.local_player_spawned).

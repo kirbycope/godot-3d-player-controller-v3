@@ -41,7 +41,7 @@ func test_walking_over_a_weapon_equips_a_copy_once_and_spends_the_pickup() -> vo
 func test_every_world_pickup_has_a_detection_area_and_no_prompt() -> void:
 	var count: int = 0
 	for item: Node in world.find_children("*", "Node3D", true, false):
-		if item is Equipment and item.get_node_or_null("PlayerDetection"):
+		if item is Equipment and item.get_node_or_null("PlayerDetection") and (item as Equipment).player == null: # not a copy the kit put in the Player's backpack
 			count += 1
 			assert_true((item as Equipment).player_detection.body_entered.is_connected(item._on_player_detection_body_entered), item.name + " is wired in the scene")
 			assert_null(item.get_node_or_null("ActionPrompt"), item.name + " has no prompt")
