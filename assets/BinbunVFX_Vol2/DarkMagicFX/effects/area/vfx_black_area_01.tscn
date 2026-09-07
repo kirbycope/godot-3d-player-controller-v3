@@ -1,0 +1,293 @@
+[gd_scene format=3 uid="uid://caadrfdlbsudw"]
+
+[ext_resource type="Script" uid="uid://bs4f8ei0avvv4" path="res://assets/BinbunVFX_Vol2/DarkMagicFX/script/VFXDarkAreaBB.gd" id="1_vhduf"]
+[ext_resource type="Shader" uid="uid://b2v6ty6lfvw7q" path="res://assets/BinbunVFX_Vol2/DarkMagicFX/shader/dark_lift.gdshader" id="2_epyuh"]
+[ext_resource type="Shader" uid="uid://bb53a0jss6n04" path="res://assets/BinbunVFX_Vol2/DarkMagicFX/shader/dark_ring.gdshader" id="3_2gfyv"]
+[ext_resource type="Shader" uid="uid://s4o4j48gdsfr" path="res://assets/BinbunVFX_Vol2/DarkMagicFX/shader/area_dark.gdshader" id="4_h50ke"]
+[ext_resource type="Script" uid="uid://bwmucxp58uvvt" path="res://assets/BinbunVFX_Vol2/shared/script/VFXOmniLightBB.gd" id="5_7e3j1"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_gnlsk"]
+noise_type = 2
+seed = 3
+fractal_type = 3
+fractal_octaves = 2
+fractal_lacunarity = 1.5
+fractal_weighted_strength = 1.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_vhduf"]
+generate_mipmaps = false
+noise = SubResource("FastNoiseLite_gnlsk")
+seamless = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7xuby"]
+render_priority = 0
+shader = ExtResource("2_epyuh")
+shader_parameter/effect_decay = 0.0
+shader_parameter/primary_color = Color(0, 0, 0, 1)
+shader_parameter/secondary_color = Color(1, 1, 1, 1)
+shader_parameter/emission = 4.0
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_vhduf")
+shader_parameter/noise_scale = Vector2(2, 1)
+shader_parameter/noise_scroll = Vector2(0, 0.2)
+shader_parameter/noise_shape = 2.0
+shader_parameter/wave_strength = 0.5
+shader_parameter/wave_frequency = 5.0
+shader_parameter/edge_position = 0.05
+shader_parameter/edge_hardness = 0.0
+shader_parameter/speed_scale = 1.0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_wcho4"]
+top_radius = 1.2
+bottom_radius = 1.0
+height = 3.0
+cap_top = false
+cap_bottom = false
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_p5bul"]
+flip_faces = true
+top_radius = 2.0
+bottom_radius = 1.0
+height = 1.6
+cap_top = false
+cap_bottom = false
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4k4wt"]
+render_priority = 0
+shader = ExtResource("3_2gfyv")
+shader_parameter/effect_decay = 0.0
+shader_parameter/primary_color = Color(0, 0, 0, 1)
+shader_parameter/secondary_color = Color(1, 1, 1, 1)
+shader_parameter/emission = 4.0
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_vhduf")
+shader_parameter/noise_scale = Vector2(2, 1)
+shader_parameter/noise_scroll = Vector2(0, 0.2)
+shader_parameter/noise_shape = 2.0
+shader_parameter/edge_position = 0.05
+shader_parameter/edge_hardness = 0.0
+shader_parameter/speed_scale = 1.0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_w67vw"]
+size = Vector2(4, 4)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_myg8a"]
+render_priority = 0
+shader = ExtResource("4_h50ke")
+shader_parameter/effect_decay = 0.0
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_vhduf")
+shader_parameter/noise_scale = Vector2(2, 1)
+shader_parameter/noise_scroll = Vector2(0, 0.2)
+shader_parameter/noise_shape = 2.0
+shader_parameter/wave_strength = 0.5
+shader_parameter/wave_frequency = 5.0
+shader_parameter/edge_position = 0.05
+shader_parameter/edge_hardness = 0.0
+shader_parameter/speed_scale = 1.0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_xjyxh"]
+size = Vector2(4, 4)
+subdivide_width = 32
+subdivide_depth = 32
+
+[sub_resource type="Animation" id="Animation_j041t"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Lift1:material_override:shader_parameter/effect_decay")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Ring:material_override:shader_parameter/effect_decay")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Mist:material_override:shader_parameter/effect_decay")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("VFXOmniLightBB:light_mult")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [1.0]
+}
+
+[sub_resource type="Animation" id="Animation_7qjya"]
+resource_name = "close"
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Lift1:material_override:shader_parameter/effect_decay")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.8),
+"transitions": PackedFloat32Array(1, 0.2),
+"update": 0,
+"values": [0.0, 0.999999977648]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Ring:material_override:shader_parameter/effect_decay")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.8),
+"transitions": PackedFloat32Array(1, 0.3),
+"update": 0,
+"values": [0.0, 0.999999977648]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Mist:material_override:shader_parameter/effect_decay")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.8),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 0.999999977648]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("VFXOmniLightBB:light_mult")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.8),
+"transitions": PackedFloat32Array(1, 0.5),
+"update": 0,
+"values": [1.0, 0.0]
+}
+
+[sub_resource type="Animation" id="Animation_uvgax"]
+resource_name = "open"
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Lift1:material_override:shader_parameter/effect_decay")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.8),
+"transitions": PackedFloat32Array(0.2, 1),
+"update": 0,
+"values": [0.999999977648, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Ring:material_override:shader_parameter/effect_decay")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.8),
+"transitions": PackedFloat32Array(0.3, 1),
+"update": 0,
+"values": [0.999999977648, 0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Mist:material_override:shader_parameter/effect_decay")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.8),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.999999977648, 0.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("VFXOmniLightBB:light_mult")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.8),
+"transitions": PackedFloat32Array(0.5, 1),
+"update": 0,
+"values": [0.0, 1.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_xu0n4"]
+_data = {
+&"RESET": SubResource("Animation_j041t"),
+&"close": SubResource("Animation_7qjya"),
+&"open": SubResource("Animation_uvgax")
+}
+
+[node name="VFXBlackArea_01" type="Node3D" unique_id=1381583469]
+script = ExtResource("1_vhduf")
+secondary_color = Color(1, 1, 1, 1)
+emission = 4.0
+light_color = Color(1, 1, 1, 1)
+noise_texture = SubResource("NoiseTexture2D_vhduf")
+noise_scale = Vector2(2, 1)
+noise_shape = 2.0
+
+[node name="Lift1" type="MeshInstance3D" parent="." unique_id=95990786]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+material_override = SubResource("ShaderMaterial_7xuby")
+mesh = SubResource("CylinderMesh_wcho4")
+
+[node name="Lift2" type="MeshInstance3D" parent="." unique_id=406270891]
+transform = Transform3D(-0.4999999, 0, -0.86602545, 0, 1, 0, 0.86602545, 0, -0.4999999, 0, 0.8, 0)
+material_override = SubResource("ShaderMaterial_7xuby")
+mesh = SubResource("CylinderMesh_p5bul")
+
+[node name="Ring" type="MeshInstance3D" parent="." unique_id=503684568]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+material_override = SubResource("ShaderMaterial_4k4wt")
+mesh = SubResource("PlaneMesh_w67vw")
+
+[node name="Mist" type="MeshInstance3D" parent="." unique_id=1585438035]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
+material_override = SubResource("ShaderMaterial_myg8a")
+mesh = SubResource("PlaneMesh_xjyxh")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=661140374]
+libraries/ = SubResource("AnimationLibrary_xu0n4")
+
+[node name="VFXOmniLightBB" type="OmniLight3D" parent="." unique_id=1583056057]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+light_energy = 4.0
+script = ExtResource("5_7e3j1")
+vfx_light_energy = 4.0
+metadata/_custom_type_script = "uid://bwmucxp58uvvt"
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=1703271125]
+max_distance = 3.0

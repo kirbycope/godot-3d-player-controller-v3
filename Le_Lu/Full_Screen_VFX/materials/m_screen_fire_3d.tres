@@ -1,0 +1,48 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://ctbpkwqc3p5mr"]
+
+[ext_resource type="Shader" path="res://Le_Lu/Full_Screen_VFX/shaders/s_fullscreen_mastershader_B.tres" id="1_2js2s"]
+[ext_resource type="Texture2D" uid="uid://m7cytvq02ebx" path="res://Le_Lu/Heal_Protection_VFX/textures/T_GW_WaterNormal_01_b.PNG" id="2_bitld"]
+[ext_resource type="Texture2D" uid="uid://djlb0gep2whiy" path="res://Le_Lu/Full_Screen_VFX/textures/T_VFX_WindNoise1.png" id="3_o4pxg"]
+
+
+[sub_resource type="Gradient" id="Gradient_tg16x"]
+offsets = PackedFloat32Array(0.816406, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.796243, 0.796243, 0.796243, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_wmc3d"]
+gradient = SubResource("Gradient_tg16x")
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="Gradient" id="Gradient_677si"]
+offsets = PackedFloat32Array(0, 0.457627, 1)
+colors = PackedColorArray(0.75, 0.75, 0.75, 0, 0.837288, 0.303935, 0.159667, 0.457627, 1, 0.664155, 0.348902, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_mu5qw"]
+gradient = SubResource("Gradient_677si")
+
+[sub_resource type="Gradient" id="Gradient_6e0cj"]
+offsets = PackedFloat32Array(0.449612, 0.802326)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_r536f"]
+gradient = SubResource("Gradient_6e0cj")
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_2js2s")
+shader_parameter/Screen_Distortion_Speed = Vector2(0, -1)
+shader_parameter/Screen_Distortion_Scale = Vector2(1, 1)
+shader_parameter/Screen_distortioness = 0.02
+shader_parameter/ColorIntensity = 2.0
+shader_parameter/EnableTexOverDistortion = true
+shader_parameter/Speed = Vector2(0.1, 1)
+shader_parameter/Scale = Vector2(1, 1)
+shader_parameter/Screen_Normal_Map_DIstortion = ExtResource("2_bitld")
+shader_parameter/Texture_Noise = ExtResource("3_o4pxg")
+shader_parameter/Mask = SubResource("GradientTexture2D_r536f")
+shader_parameter/Add_Texture = SubResource("GradientTexture2D_wmc3d")
+shader_parameter/Gradient_Color1D = SubResource("GradientTexture1D_mu5qw")

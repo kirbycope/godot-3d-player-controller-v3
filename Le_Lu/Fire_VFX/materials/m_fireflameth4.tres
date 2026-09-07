@@ -1,0 +1,48 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://c71paj8n8xlpw"]
+
+[ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/ss_fireTorch_T1_ds.gdshader" id="1_g8wbo"]
+[ext_resource type="Texture2D" uid="uid://sfqnk8pph4px" path="res://Le_Lu/Fire_VFX/textures/T_VFX_Noise_075.png" id="2_2e3nw"]
+[ext_resource type="Texture2D" uid="uid://bjp6yrlyaujbl" path="res://Le_Lu/Fire_VFX/textures/T_VFX_KFiRE5.png" id="3_wj22x"]
+[ext_resource type="Texture2D" uid="uid://kmkp2rkelvxw" path="res://Le_Lu/Fire_VFX/textures/T_Noise1_tiled.png" id="4_26qk2"]
+
+[sub_resource type="Gradient" id="Gradient_g2iv4"]
+interpolation_color_space = 1
+offsets = PackedFloat32Array(0, 0.140845, 0.302817, 0.730924, 0.875502, 0.955399)
+colors = PackedColorArray(0, 0, 0, 0, 0, 0, 0, 1, 0.14, 0.02429, 0.0182, 1, 0.44, 0.17468, 0.1452, 1, 0.82, 0.334833, 0.2378, 1, 1, 0.55, 0.5, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_atgby"]
+gradient = SubResource("Gradient_g2iv4")
+
+[sub_resource type="Gradient" id="Gradient_ty01m"]
+interpolation_color_space = 1
+offsets = PackedFloat32Array(0.253521, 0.995305, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0.568508, 0.568508, 0.568508, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_pc2aw"]
+gradient = SubResource("Gradient_ty01m")
+fill_from = Vector2(1, 1)
+
+[sub_resource type="Gradient" id="Gradient_pme2q"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_id45s"]
+gradient = SubResource("Gradient_pme2q")
+fill_from = Vector2(1, 1)
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_g8wbo")
+shader_parameter/speed = 0.1
+shader_parameter/wobble_strength = 1.615
+shader_parameter/noise_scale_xy = Vector2(3, 0.5)
+shader_parameter/Scale_XY2 = Vector2(1.5, 2)
+shader_parameter/Speed_XY2 = Vector2(0.2, 3)
+shader_parameter/substract_Speed_XY = Vector2(0.2, 0)
+shader_parameter/Color_Intensity2 = 3.0
+shader_parameter/Fill = 1.0
+shader_parameter/enable_vertex_movement = true
+shader_parameter/noise_texture = ExtResource("4_26qk2")
+shader_parameter/Base_noise2 = ExtResource("2_2e3nw")
+shader_parameter/Texture_add = SubResource("GradientTexture2D_pc2aw")
+shader_parameter/Texture_substract = ExtResource("3_wj22x")
+shader_parameter/Gradient_Color_1D2 = SubResource("GradientTexture1D_atgby")
+shader_parameter/tex_frg_58 = SubResource("GradientTexture2D_id45s")

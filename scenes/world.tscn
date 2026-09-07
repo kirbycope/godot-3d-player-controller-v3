@@ -1,31 +1,27 @@
-[gd_scene format=3 uid="uid://dp8wr2samvwac"]
+[gd_scene format=3 uid="uid://b210r8mt68io7"]
 
 [ext_resource type="Script" uid="uid://d36641fe4vthp" path="res://scenes/world.gd" id="1_5hglh"]
 [ext_resource type="Material" uid="uid://smkievpeajs3" path="res://assets/ambientcg_com/grass_001/Grass001_1K-JPG.tres" id="2_qg546"]
 [ext_resource type="Texture2D" uid="uid://ceiimv767w1ec" path="res://assets/kenney_nl/Prototype Textures/Vector/texture_04.svg" id="3_pf35h"]
 [ext_resource type="Texture2D" uid="uid://bx5wuwx7autid" path="res://assets/kenney_nl/Prototype Textures/Vector/texture_12.svg" id="4_iexy4"]
-[ext_resource type="Shader" uid="uid://c5ati1mmy6d7m" path="res://assets/godotshaders/wind_waker_2d_water_shader.gdshader" id="5_npbic"]
-[ext_resource type="PackedScene" uid="uid://ct7n8imyllhbo" path="res://addons/3d_player_controller/player.tscn" id="6_e6ckp"]
-[ext_resource type="PackedScene" uid="uid://bra3khigbuanl" path="res://scenes/paraglider.tscn" id="7_mvg0v"]
-[ext_resource type="PackedScene" uid="uid://drmvyehu4dq43" path="res://scenes/skateboard.tscn" id="8_h3odw"]
+[ext_resource type="Material" uid="uid://7exgwucpa2xq" path="res://resources/pool_water_material.tres" id="5_pondwater"]
+[ext_resource type="PackedScene" uid="uid://drmvyehu4dq43" path="res://addons/tcps/scenes/skateboard.tscn" id="8_h3odw"]
 [ext_resource type="PackedScene" uid="uid://b55kg5055u1k8" path="res://scenes/little_buddy.tscn" id="9_5hl1e"]
 [ext_resource type="PackedScene" uid="uid://dl71nqjm2psik" path="res://assets/justcreate3d/weapons_lite/Weapon_02.fbx" id="10_66tox"]
-[ext_resource type="Script" uid="uid://7e2gpht4wap6" path="res://addons/3d_player_controller/rifle.gd" id="11_pq8jk"]
-[ext_resource type="Texture2D" uid="uid://dba30et81gi40" path="res://addons/3d_player_controller/assets/game_icons/mp5.svg" id="12_q57r8"]
-[ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://scenes/action_prompt.tscn" id="13_4kmvx"]
+[ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://addons/3d_player_controller/scenes/action_prompt.tscn" id="13_4kmvx"]
 [ext_resource type="PackedScene" uid="uid://b3tb2j1pwgw3u" path="res://assets/justcreate3d/weapons_lite/Weapon_01.fbx" id="14_myjip"]
-[ext_resource type="Script" uid="uid://d0u7oh1rirfy4" path="res://addons/3d_player_controller/equipment.gd" id="15_5nedk"]
+[ext_resource type="Script" uid="uid://d0u7oh1rirfy4" path="res://addons/3d_player_controller/scripts/equipment.gd" id="15_5nedk"]
+[ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/bullet.tscn" id="15_bullet"]
+[ext_resource type="Script" uid="uid://cdjlwlo8bl8d5" path="res://addons/3d_player_controller/scripts/firearm.gd" id="15_firearm"]
+[ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/laser_sight.tscn" id="15_laser"]
 [ext_resource type="Texture2D" uid="uid://p600xet6ykq7" path="res://addons/3d_player_controller/assets/game_icons/pistol-gun.svg" id="16_40xph"]
 [ext_resource type="PackedScene" uid="uid://d2e1lgjtlptk8" path="res://assets/n_hance_studio/weapons/SK_Axe_1H_Newbie_01.fbx" id="17_8lgfd"]
 [ext_resource type="Texture2D" uid="uid://detj70cxgb1i5" path="res://addons/3d_player_controller/assets/game_icons/war-pick.svg" id="18_dyafi"]
 [ext_resource type="PackedScene" uid="uid://3fgjoqwcbivx" path="res://assets/n_hance_studio/weapons/SK_Axe_2HL_Newbie_01.fbx" id="19_r5yoc"]
 [ext_resource type="Texture2D" uid="uid://pcypw62urbyw" path="res://addons/3d_player_controller/assets/game_icons/battle-axe.svg" id="20_1m1ue"]
 [ext_resource type="PackedScene" uid="uid://bsybqxf7immya" path="res://assets/n_hance_studio/weapons/SK_Bow_Newbie_01.fbx" id="21_ntuqo"]
-[ext_resource type="Script" uid="uid://7r16fm6kmk1p" path="res://addons/3d_player_controller/bow.gd" id="22_ca4ee"]
-[ext_resource type="Texture2D" uid="uid://dqhgd83i0432v" path="res://addons/3d_player_controller/assets/game_icons/bow-arrow.svg" id="23_qaasp"]
-[ext_resource type="Script" uid="uid://b03h8ijilon1x" path="res://addons/3d_player_controller/arrow.gd" id="24_1v02h"]
-[ext_resource type="AudioStream" uid="uid://bxuo1psaadb7n" path="res://assets/pixabay/djartmusic-arrow-swish_03-306040.mp3" id="25_shehe"]
-[ext_resource type="AudioStream" uid="uid://14v2pascfajw" path="res://assets/pixabay/djartmusic-arrow-twang_01-306041.mp3" id="26_l137e"]
+[ext_resource type="AudioStream" uid="uid://bxuo1psaadb7n" path="res://addons/3d_player_controller/assets/pixabay/djartmusic-arrow-swish_03-306040.mp3" id="25_shehe"]
+[ext_resource type="AudioStream" uid="uid://14v2pascfajw" path="res://addons/3d_player_controller/assets/pixabay/djartmusic-arrow-twang_01-306041.mp3" id="26_l137e"]
 [ext_resource type="AudioStream" uid="uid://bo6duef7adfmo" path="res://assets/pixabay/freesound_community-bow-loading-38752.mp3" id="27_ygn2i"]
 [ext_resource type="AudioStream" uid="uid://diys7xvxwcdj" path="res://assets/pixabay/freesound_community-bow-release-bow-and-arrow-4-101936.mp3" id="28_swu3i"]
 [ext_resource type="PackedScene" uid="uid://blo6m8lpjri0d" path="res://assets/n_hance_studio/weapons/SK_Dagger_1H_Newbie_01.fbx" id="29_oexs8"]
@@ -51,23 +47,48 @@
 [ext_resource type="PackedScene" uid="uid://bsuh86cuoff0k" path="res://scenes/guy_number_one.tscn" id="50_7b7y8"]
 [ext_resource type="Texture2D" uid="uid://byprefppdk7bt" path="res://assets/sketchfab/bowling_pin/Dimensions-Sports-Bowling-Ten-Pin-Pin.svg" id="51_wui3h"]
 [ext_resource type="PackedScene" uid="uid://clhihxvn4uh1b" path="res://scenes/bowling_pin.tscn" id="52_qetcs"]
-[ext_resource type="Script" uid="uid://cw6owek74g7hc" path="res://scenes/push_buttton.gd" id="53_gw1vw"]
+[ext_resource type="Script" uid="uid://cw6owek74g7hc" path="res://scenes/push_button.gd" id="53_gw1vw"]
 [ext_resource type="PackedScene" uid="uid://b72r5jskemotf" path="res://scenes/honda_crv.tscn" id="54_5hglh"]
 [ext_resource type="PackedScene" uid="uid://ci146l3tivu1p" path="res://scenes/duck.tscn" id="54_xiw03"]
-[ext_resource type="Script" path="res://addons/date_and_time/date_and_time.gd" id="55_dt"]
-[ext_resource type="PackedScene" path="res://addons/weather_fx/weather_fx.tscn" id="56_wfx"]
-[ext_resource type="Script" path="res://addons/weather_fx/weather_zone.gd" id="57_wzone"]
-[ext_resource type="Script" path="res://addons/date_and_time/date_and_time_display.gd" id="58_dtdisplay"]
-[ext_resource type="Script" path="res://addons/weather_fx/weather_forecast_display.gd" id="59_wfdisplay"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_plains_zone"]
-size = Vector3(40, 20, 40)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_mountain_zone"]
-size = Vector3(40, 20, 40)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_desert_zone"]
-size = Vector3(40, 20, 40)
+[ext_resource type="Script" uid="uid://b5icexjxoi6mg" path="res://addons/date_and_time/scripts/date_and_time.gd" id="55_dt"]
+[ext_resource type="PackedScene" uid="uid://do6j5qhjt8bsf" path="res://addons/weather_fx/scenes/weather_fx.tscn" id="56_wfx"]
+[ext_resource type="Script" uid="uid://bhmeif0ssxubk" path="res://addons/weather_fx/scripts/weather_zone.gd" id="57_wzone"]
+[ext_resource type="PackedScene" path="res://addons/date_and_time/scenes/date_and_time_display.tscn" id="58_dtdisplay"]
+[ext_resource type="PackedScene" path="res://addons/weather_fx/scenes/weather_forecast_display.tscn" id="59_wfdisplay"]
+[ext_resource type="PackedScene" path="res://addons/weather_fx/scenes/temperature_gauge_display.tscn" id="60_tgdisplay"]
+[ext_resource type="PackedScene" uid="uid://decgf2x3tagdu" path="res://addons/weather_fx/scenes/grass_field.tscn" id="61_grassfield"]
+[ext_resource type="Material" uid="uid://dnb46gq1n57a5" path="res://addons/weather_fx/resources/grass_material.tres" id="62_grassmat"]
+[ext_resource type="PackedScene" path="res://scenes/torch.tscn" id="63_torch"]
+[ext_resource type="PackedScene" path="res://scenes/horse.tscn" id="87_xgy6y"]
+[ext_resource type="Resource" path="res://addons/3d_player_controller/resources/accuracy/bow.tres" id="accuracy_bow"]
+[ext_resource type="Resource" path="res://addons/3d_player_controller/resources/accuracy/pistol.tres" id="accuracy_pistol"]
+[ext_resource type="Resource" path="res://addons/3d_player_controller/resources/accuracy/rifle.tres" id="accuracy_rifle"]
+[ext_resource type="Script" uid="uid://co2i2r08w3qms" path="res://scenes/buoyancy.gd" id="buoyancy_script"]
+[ext_resource type="PackedScene" uid="uid://drgmvkbg7fitw" path="res://scenes/enemy_archer.tscn" id="enemy_archer"]
+[ext_resource type="PackedScene" uid="uid://drgmvkr7bji2w" path="res://scenes/enemy_rifleman.tscn" id="enemy_rifleman"]
+[ext_resource type="PackedScene" uid="uid://drgmvkcyor42w" path="res://scenes/enemy_spellcaster.tscn" id="enemy_spellcaster"]
+[ext_resource type="PackedScene" uid="uid://drgmvktmkph2w" path="res://scenes/enemy_swordsman.tscn" id="enemy_swordsman"]
+[ext_resource type="Resource" path="res://resources/fish/old_boot.tres" id="fish_boot"]
+[ext_resource type="Resource" path="res://resources/fish/carp.tres" id="fish_carp"]
+[ext_resource type="Resource" path="res://resources/fish/catfish.tres" id="fish_catfish"]
+[ext_resource type="Resource" path="res://resources/fish/koi.tres" id="fish_koi"]
+[ext_resource type="Resource" path="res://resources/fish/perch.tres" id="fish_perch"]
+[ext_resource type="Script" uid="uid://d1uyxp1uskyes" path="res://scenes/fish.gd" id="fish_script"]
+[ext_resource type="Script" uid="uid://bknwbf0toy4wv" path="res://scenes/fish_shadows.gd" id="fish_shadows_script"]
+[ext_resource type="Resource" path="res://resources/fish/rainbow_trout.tres" id="fish_trout"]
+[ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/arrow.tscn" id="mp_arrow"]
+[ext_resource type="Script" uid="uid://b0h23y2uet4r" path="res://addons/3d_player_controller/scripts/player_spawner.gd" id="mp_player_spawner"]
+[ext_resource type="Script" uid="uid://d4lqkvawlhhn1" path="res://addons/3d_player_controller/scripts/projectile_spawner.gd" id="mp_projectile_spawner"]
+[ext_resource type="Script" uid="uid://dgk0123inqplm" path="res://addons/3d_player_controller/scripts/steam_peer.gd" id="mp_steam_peer"]
+[ext_resource type="PackedScene" path="res://scenes/world_player.tscn" id="mp_world_player"]
+[ext_resource type="Script" uid="uid://b03h8ijilon1x" path="res://addons/3d_player_controller/scripts/arrow.gd" id="r_arrowgd"]
+[ext_resource type="Texture2D" uid="uid://dqhgd83i0432v" path="res://addons/3d_player_controller/assets/game_icons/bow-arrow.svg" id="r_bowarrowsvg"]
+[ext_resource type="Script" uid="uid://7r16fm6kmk1p" path="res://addons/3d_player_controller/scripts/bow.gd" id="r_bowgd"]
+[ext_resource type="Texture2D" uid="uid://dba30et81gi40" path="res://addons/3d_player_controller/assets/game_icons/mp5.svg" id="r_mp5svg"]
+[ext_resource type="Script" uid="uid://7e2gpht4wap6" path="res://addons/3d_player_controller/scripts/rifle.gd" id="r_riflegd"]
+[ext_resource type="PackedScene" path="res://addons/weather_fx/scenes/water_ripples.tscn" id="water_ripples_scene"]
+[ext_resource type="PackedScene" path="res://scenes/retro_computer.tscn" id="88_retro"]
+[ext_resource type="Resource" path="res://resources/lures/chum.tres" id="lure_chum"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -79,7 +100,6 @@ sky_material = SubResource("ProceduralSkyMaterial_fj7yv")
 [sub_resource type="Environment" id="Environment_aqk2v"]
 background_mode = 2
 sky = SubResource("Sky_tlwt5")
-glow_enabled = true
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_senyo"]
 vertices = PackedVector3Array(-15.599998, 0.19999981, -15.799999, -5.0999985, 0.19999981, -9, -4.200001, 0.19999981, -9.5, -2.8999977, 0.19999981, -9.5, -2.8999977, 0.09999943, -31.5, -15.5, 0.09999943, -31.5, -0.29999924, 0.19999981, -7.5, -0.099998474, 0.19999981, -7, 0.10000229, 0.19999981, -7, 0.29999924, 0.19999981, -7.5, -1.7999992, 0.19999981, -9, 1.2000008, 0.19999981, -8.4, 2.2000008, 0.19999981, -8.5, 2.2000008, 0.09999943, -31.5, 1, 0.19999981, -7.6000004, -1.2999992, 0.19999981, -8.4, -1.0999985, 0.19999981, -7.699999, 7.4000015, 0.19999981, -8.299999, 15.799999, 0.19999981, -15.6, 15.5, 0.19999981, -15.9, 7.200001, 0.19999981, -8.5, 15.5, 0.09999943, -31.5, -15.299999, -6.3000007, -31.4, -15.299999, -6.3000007, -16.599998, 15.400002, -6.3000007, -16.599998, 15.400002, -6.3000007, -31.4, -5.700001, 0.19999981, -8.299999, -15.799999, 0.19999981, -15.6, -6, 0.19999981, -7.699999, -6, 0.19999981, -6.299999, -5.700001, 0.19999981, -5.6000004, -4.8999977, 0.19999981, -4.799999, -47.5, 0.19999981, -15.5, -47.5, 0.19999981, 31.5, -3.5, 0.19999981, 31.5, -3.5, 0.19999981, -4.3999996, 4, 1.6999993, -7.5, 4, 1.6999993, -6, 4.4000015, 1.6999993, -6.3999996, 7.200001, 0.39999962, -7.5, 7.200001, 0.39999962, -6.3999996, 5.0666656, 1.5999999, -7.5, 4.960003, 1.6999993, -6.3999996, 7.5, 0.19999981, -5.699999, 5, 0.19999981, -2.5, 5, 0.19999981, 31.5, 47.5, 0.19999981, 31.5, 47.5, 0.19999981, -15.5, 7.5, 0.2999997, -7.799999, 7.5, 0.2999997, -6.1000004, 7.200001, 0.19999981, -5.3999996, 5.1000023, 0.19999981, -5.3999996, -2.7000008, 10.200001, -5.6000004, -2.2999992, 10.200001, -5.8999996, -2, 10.200001, -6.5, -2.0999985, 10.200001, -7.799999, -2.3999977, 10.200001, -8.199999, -3, 10.200001, -8.5, -4.299999, 10.200001, -8.4, -4.700001, 10.200001, -8.1, -5, 10.200001, -7.5, -4.8999977, 10.200001, -6.199999, -4.299999, 10.200001, -5.6000004, -4.799999, 0.19999981, -6.299999, -4.5, 0.19999981, -5.8999996, -3.8999977, 0.19999981, -5.6000004, -2.7999992, 0.19999981, -5.699999, -2.3999977, 0.19999981, -6, -2.0999985, 0.19999981, -6.6000004, -2.2000008, 0.19999981, -7.699999, -2.5, 0.19999981, -8.1, -3.0999985, 0.19999981, -8.4, -4.200001, 0.19999981, -8.299999, -4.5999985, 0.19999981, -8, -4.8999977, 0.19999981, -7.3999996, 2.1000023, 1.6999993, -7.5, 2.1000023, 1.6999993, -6.3999996, 2.9000015, 1.6999993, -6.3999996, 2.9000015, 1.6999993, -7.5, 2.5, 1.7999997, -7.5, 2.5, 1.7999997, -6.3999996, 0.29999924, 0.19999981, -6.5, -0.29999924, 0.19999981, -6.5, 3.1000023, 0.19999981, -2.5, 3, 0.19999981, -5.3999996, 1.2000008, 0.19999981, -5.5, -1.7999992, 0.19999981, -5, -2.5, 0.19999981, -4.6000004, 1, 0.19999981, -5.799999, 1, 0.19999981, -6.3999996, -1.2999992, 0.19999981, -5.6000004, -1.0999985, 0.19999981, -6.299999, 3.1000023, 0.19999981, 31.5, 4.200001, 0.2999997, -2.5, 4, 0.5999994, -3.1999989, 3.9000015, 0.2999997, -2.5, 4.0999985, 0.49999952, -2.8499985, 3.9500008, 0.49999952, -2.8499985)
@@ -120,53 +140,13 @@ uv1_triplanar = true
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c3ehd"]
 albedo_color = Color(0.42352942, 0.7529412, 0.7294118, 1)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_hxkk4"]
-size = Vector3(32, 6.6, 16)
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_1i6q1"]
-render_priority = 0
-shader = ExtResource("5_npbic")
-shader_parameter/WATER_COL = Color(0.176471, 0.635294, 0.85098, 1)
-shader_parameter/WATER2_COL = Color(0.0588235, 0.529412, 0.776471, 1)
-shader_parameter/FOAM_COL = Color(0.87451, 0.988235, 1, 1)
-shader_parameter/distortion_speed = 2.0
-shader_parameter/tile = Vector2(5, 5)
-shader_parameter/wave_speed = 1.5
-
-[sub_resource type="QuadMesh" id="QuadMesh_hxkk4"]
-material = SubResource("ShaderMaterial_1i6q1")
-size = Vector2(32, 16)
-orientation = 1
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_senyo"]
-size = Vector3(1, 0.4, 0.2)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_k78ss"]
-size = Vector3(0.3, 0.2, 0.2)
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_fk680"]
-radius = 0.1
-height = 1.125
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_fk680"]
-size = Vector3(0.2, 1, 0.4)
+[sub_resource type="SphereShape3D" id="SphereShape3D_pickup"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hbax1"]
 size = Vector3(0.25, 0.15, 0.6)
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_senyo"]
-radius = 0.1
-height = 1.825
-
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_senyo"]
-height = 0.19999999
-radius = 0.4
-
 [sub_resource type="BoxShape3D" id="BoxShape3D_hbax2"]
 size = Vector3(0.35, 0.15, 0.8)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_5pyta"]
-size = Vector3(0.2, 0.5, 1.4)
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_5pyta"]
 height = 0.667
@@ -404,28 +384,8 @@ states/idle/position = Vector2(422, 101.11111)
 transitions = ["Start", "idle", SubResource("AnimationNodeStateMachineTransition_mc2jv"), "idle", "Pull_Start", SubResource("AnimationNodeStateMachineTransition_bo7i5"), "Pull_Start", "Pull", SubResource("AnimationNodeStateMachineTransition_4h6ng"), "Pull", "Pull_End", SubResource("AnimationNodeStateMachineTransition_o3ebs"), "Pull_End", "idle", SubResource("AnimationNodeStateMachineTransition_k83mh"), "Pull", "idle", SubResource("AnimationNodeStateMachineTransition_2f3dj"), "Pull_Start", "idle", SubResource("AnimationNodeStateMachineTransition_yq6so")]
 graph_offset = Vector2(-129.74506, -113.10916)
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5pyta"]
-radius = 0.1
-height = 0.90000004
-
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_fk680"]
-height = 0.15
-radius = 0.4
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_hxkk4"]
-radius = 0.1
-height = 2.1750002
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_jnf5c"]
-radius = 0.1
-height = 1.45
-
 [sub_resource type="BoxShape3D" id="BoxShape3D_cth4h"]
 size = Vector3(0.040100098, 0.14707032, 0.90000004)
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_0y3lt"]
-radius = 0.2
-height = 2.1
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hbsw2"]
 size = Vector3(0.06, 0.2, 1.3)
@@ -440,6 +400,20 @@ albedo_color = Color(0.34509805, 1, 1, 0.18039216)
 [sub_resource type="CylinderMesh" id="CylinderMesh_fk680"]
 material = SubResource("StandardMaterial3D_fuf3a")
 height = 1.8
+
+[sub_resource type="QuadMesh" id="QuadMesh_hxkk4"]
+material = ExtResource("5_pondwater")
+size = Vector2(32, 16)
+subdivide_width = 255
+subdivide_depth = 127
+orientation = 1
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hxkk4"]
+size = Vector3(32, 6.6, 16)
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_beach"]
+friction = 0.3
+bounce = 0.75
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o7ddy"]
 albedo_texture = ExtResource("51_wui3h")
@@ -499,6 +473,32 @@ _data = {
 &"push": SubResource("Animation_o7ddy")
 }
 
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_sbl7x"]
+bounce = 0.2
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_time"]
+properties/0/path = NodePath(".:current_time")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_plains_zone"]
+size = Vector3(40, 20, 40)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_mountain_zone"]
+size = Vector3(40, 20, 40)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_desert_zone"]
+size = Vector3(40, 20, 40)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_panel"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_torch"]
+friction = 0.7
+bounce = 0.15
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_killzone"]
+size = Vector3(2000, 20, 2000)
+
 [node name="World" type="Node3D" unique_id=336392758]
 script = ExtResource("1_5hglh")
 
@@ -522,6 +522,14 @@ mesh = SubResource("BoxMesh_senyo")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/Ground" unique_id=753789842]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8)
 shape = SubResource("BoxShape3D_jnf5c")
+
+[node name="GrassField" parent="NavigationRegion3D" unique_id=1300405907 instance=ExtResource("61_grassfield")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8)
+material_override = ExtResource("62_grassmat")
+cast_shadow = 0
+instance_count = 10000
+min_scale = 0.1
+max_scale = 0.25
 
 [node name="Silo" type="CSGCylinder3D" parent="NavigationRegion3D" unique_id=1827711804 groups=["WOOD"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 5, -7)
@@ -596,17 +604,6 @@ use_collision = true
 size = Vector3(0.1, 6.5, 15.8)
 material = SubResource("StandardMaterial3D_c3ehd")
 
-[node name="PlayerDetection" type="Area3D" parent="NavigationRegion3D/Pool" unique_id=320977462 groups=["WATER"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.099999905, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/Pool/PlayerDetection" unique_id=1235206536]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.3, 0)
-shape = SubResource("BoxShape3D_hxkk4")
-
-[node name="Water" type="MeshInstance3D" parent="NavigationRegion3D/Pool" unique_id=1636934661]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.5, 0)
-mesh = SubResource("QuadMesh_hxkk4")
-
 [node name="Stairs" type="Node3D" parent="NavigationRegion3D" unique_id=1061546804]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0, -2.5)
 
@@ -670,10 +667,22 @@ use_collision = true
 size = Vector3(1, 0.15, 0.35)
 material = SubResource("StandardMaterial3D_dwbse")
 
-[node name="Player" parent="." unique_id=994458497 instance=ExtResource("6_e6ckp")]
-transform = Transform3D(1, 0, 1.7484555e-07, 0, 1, 0, -1.7484555e-07, 0, 1, 0, 0, 0)
-paraglider_scene = ExtResource("7_mvg0v")
-skateboard_scene = ExtResource("8_h3odw")
+[node name="SteamPeer" type="Node" parent="." unique_id=38257544]
+script = ExtResource("mp_steam_peer")
+
+[node name="Players" type="Node3D" parent="." unique_id=839194789]
+
+[node name="Projectiles" type="Node3D" parent="." unique_id=618184642]
+
+[node name="PlayerSpawner" type="MultiplayerSpawner" parent="." unique_id=1708759852]
+_spawnable_scenes = PackedStringArray("res://scenes/world_player.tscn")
+spawn_path = NodePath("../Players")
+script = ExtResource("mp_player_spawner")
+player_scene = ExtResource("mp_world_player")
+
+[node name="ProjectileSpawner" type="MultiplayerSpawner" parent="." unique_id=629412626 groups=["ProjectileSpawner"]]
+spawn_path = NodePath("../Projectiles")
+script = ExtResource("mp_projectile_spawner")
 
 [node name="LittleBuddy" parent="." unique_id=174060025 instance=ExtResource("9_5hl1e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 2)
@@ -681,49 +690,69 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 2)
 [node name="JustCreate3D" type="Node3D" parent="." unique_id=647333121]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 5, 0, 0)
 
-[node name="Weapon_02" parent="JustCreate3D" unique_id=1867527010 instance=ExtResource("10_66tox")]
+[node name="Weapon_02" parent="JustCreate3D" unique_id=1867527010 node_paths=PackedStringArray("muzzle", "fire_timer", "laser_sight") instance=ExtResource("10_66tox")]
 transform = Transform3D(-8.742278e-08, -4.3711395e-08, 1, 1, -4.371139e-08, 8.742278e-08, 4.3711385e-08, 1, 4.3711395e-08, 0.5, 0.322, 0.5)
-script = ExtResource("11_pq8jk")
+script = ExtResource("r_riflegd")
+projectile_scene = ExtResource("15_bullet")
+muzzle = NodePath("Muzzle")
+fire_timer = NodePath("FireTimer")
+laser_sight = NodePath("LaserSight")
 bone_attachment_bone_name = "RightHand"
 can_attack = true
 can_shoot = true
 equipment_type = 6
-icon = ExtResource("12_q57r8")
+icon = ExtResource("r_mp5svg")
 is_exclusive = true
+projectile_speed = 120.0
+accuracy = ExtResource("accuracy_rifle")
 position_offset = Vector3(0, 0.09, 0.025)
 rotation_offset_degrees = Vector3(0, 180, 80)
 
-[node name="Area3D" type="Area3D" parent="JustCreate3D/Weapon_02" unique_id=1390449809]
+[node name="Muzzle" type="Marker3D" parent="JustCreate3D/Weapon_02" unique_id=281785659]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0.66, 0.04, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="JustCreate3D/Weapon_02/Area3D" unique_id=1525970693]
-transform = Transform3D(1, 0, -1.9106853e-15, 0, 1, 0, -1.9106853e-15, 0, 1, 0.17785323, 1.5869063e-08, 0)
-shape = SubResource("BoxShape3D_senyo")
+[node name="FireTimer" type="Timer" parent="JustCreate3D/Weapon_02" unique_id=1718678155]
+one_shot = true
 
-[node name="ActionPrompt" parent="JustCreate3D/Weapon_02" unique_id=308729938 instance=ExtResource("13_4kmvx")]
-transform = Transform3D(8.742278e-08, 1, -2.1855693e-07, -1, 8.742276e-08, -8.742276e-08, -8.742275e-08, 2.1855695e-07, 1, 0.1999999, 0, 0.099999905)
+[node name="LaserSight" parent="JustCreate3D/Weapon_02" unique_id=652437950 instance=ExtResource("15_laser")]
 visible = false
 
-[node name="Weapon_01" parent="JustCreate3D" unique_id=1674455333 instance=ExtResource("14_myjip")]
+[node name="PlayerDetection" type="Area3D" parent="JustCreate3D/Weapon_02" unique_id=1390449809]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="JustCreate3D/Weapon_02/PlayerDetection" unique_id=1160603387]
+shape = SubResource("SphereShape3D_pickup")
+
+[node name="Weapon_01" parent="JustCreate3D" unique_id=1674455333 node_paths=PackedStringArray("muzzle", "fire_timer", "laser_sight") instance=ExtResource("14_myjip")]
 transform = Transform3D(1.9106855e-15, 4.371139e-08, 1, 1, -4.371139e-08, 0, 4.371139e-08, 1, -4.371139e-08, 0.5, 0.5, -0.5)
-script = ExtResource("15_5nedk")
+script = ExtResource("15_firearm")
+projectile_scene = ExtResource("15_bullet")
+muzzle = NodePath("Muzzle")
+fire_timer = NodePath("FireTimer")
+laser_sight = NodePath("LaserSight")
 bone_attachment_bone_name = "RightHand"
 can_attack = true
 can_shoot = true
 equipment_type = 5
 icon = ExtResource("16_40xph")
 is_exclusive = true
+projectile_speed = 80.0
+accuracy = ExtResource("accuracy_pistol")
 position_offset = Vector3(0, 0.09, 0.025)
 rotation_offset_degrees = Vector3(-10, 180, 80)
 
-[node name="Area3D" type="Area3D" parent="JustCreate3D/Weapon_01" unique_id=1008708349]
+[node name="Muzzle" type="Marker3D" parent="JustCreate3D/Weapon_01" unique_id=271581943]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0.19, 0.08, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="JustCreate3D/Weapon_01/Area3D" unique_id=1751054153]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.027853012, 0.019995153, 2.9802322e-07)
-shape = SubResource("BoxShape3D_k78ss")
+[node name="FireTimer" type="Timer" parent="JustCreate3D/Weapon_01" unique_id=41256008]
+one_shot = true
 
-[node name="ActionPrompt" parent="JustCreate3D/Weapon_01" unique_id=1216637783 instance=ExtResource("13_4kmvx")]
-transform = Transform3D(1.7484552e-07, 1, -4.3711385e-08, -1, 1.7484552e-07, 0, 0, 4.371138e-08, 1, 0.20000008, 0, 0.099999905)
+[node name="LaserSight" parent="JustCreate3D/Weapon_01" unique_id=1387924823 instance=ExtResource("15_laser")]
 visible = false
+
+[node name="PlayerDetection" type="Area3D" parent="JustCreate3D/Weapon_01" unique_id=1008708349]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="JustCreate3D/Weapon_01/PlayerDetection" unique_id=1055319558]
+shape = SubResource("SphereShape3D_pickup")
 
 [node name="N_Hance_Studio_1" type="Node3D" parent="." unique_id=1622472344]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 0)
@@ -738,19 +767,10 @@ icon = ExtResource("18_dyafi")
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(0, 90, 0)
 
-[node name="Area3D" type="Area3D" parent="N_Hance_Studio_1/SK_Axe_1H_Newbie_01" unique_id=774331995]
+[node name="PlayerDetection" type="Area3D" parent="N_Hance_Studio_1/SK_Axe_1H_Newbie_01" unique_id=774331995]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Axe_1H_Newbie_01/Area3D" unique_id=1909958052]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0.06250006)
-shape = SubResource("CapsuleShape3D_fk680")
-
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Axe_1H_Newbie_01/Area3D" unique_id=728295275]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.40000015)
-shape = SubResource("BoxShape3D_fk680")
-
-[node name="ActionPrompt" parent="N_Hance_Studio_1/SK_Axe_1H_Newbie_01" unique_id=1664152999 instance=ExtResource("13_4kmvx")]
-transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0.099999905, 0, 0)
-visible = false
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Axe_1H_Newbie_01/PlayerDetection" unique_id=1268185973]
+shape = SubResource("SphereShape3D_pickup")
 
 [node name="Hitbox" type="Area3D" parent="N_Hance_Studio_1/SK_Axe_1H_Newbie_01" unique_id=192042514]
 
@@ -770,19 +790,10 @@ is_exclusive = true
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(0, 90, 0)
 
-[node name="Area3D" type="Area3D" parent="N_Hance_Studio_1/SK_Axe_2HL_Newbie_01" unique_id=1317302899]
+[node name="PlayerDetection" type="Area3D" parent="N_Hance_Studio_1/SK_Axe_2HL_Newbie_01" unique_id=1317302899]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Axe_2HL_Newbie_01/Area3D" unique_id=117128859]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0.0124999285)
-shape = SubResource("CapsuleShape3D_senyo")
-
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Axe_2HL_Newbie_01/Area3D" unique_id=726383303]
-transform = Transform3D(-4.371139e-08, -1, -4.371139e-08, 1, -4.3711385e-08, -4.371139e-08, 4.371139e-08, -4.371139e-08, 1, 0, 0, 0.75)
-shape = SubResource("CylinderShape3D_senyo")
-
-[node name="ActionPrompt" parent="N_Hance_Studio_1/SK_Axe_2HL_Newbie_01" unique_id=843371138 instance=ExtResource("13_4kmvx")]
-transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0.099999905, 0, 0)
-visible = false
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Axe_2HL_Newbie_01/PlayerDetection" unique_id=563205540]
+shape = SubResource("SphereShape3D_pickup")
 
 [node name="Hitbox" type="Area3D" parent="N_Hance_Studio_1/SK_Axe_2HL_Newbie_01" unique_id=94929940]
 
@@ -792,30 +803,27 @@ shape = SubResource("BoxShape3D_hbax2")
 
 [node name="SK_Bow_Newbie_01" parent="N_Hance_Studio_1" unique_id=1222899704 instance=ExtResource("21_ntuqo")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 1.5)
-script = ExtResource("22_ca4ee")
+script = ExtResource("r_bowgd")
+arrow_scene = ExtResource("mp_arrow")
 bone_attachment_bone_name = "LeftHand"
 can_attack = true
 can_shoot = true
 equipment_type = 2
-icon = ExtResource("23_qaasp")
+icon = ExtResource("r_bowarrowsvg")
 is_exclusive = true
+accuracy = ExtResource("accuracy_bow")
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(180, 90, 15)
 
-[node name="Area3D" type="Area3D" parent="N_Hance_Studio_1/SK_Bow_Newbie_01" unique_id=326004096]
+[node name="PlayerDetection" type="Area3D" parent="N_Hance_Studio_1/SK_Bow_Newbie_01" unique_id=326004096]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Bow_Newbie_01/Area3D" unique_id=711169504]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1500001, -4.7683716e-07)
-shape = SubResource("BoxShape3D_5pyta")
-
-[node name="ActionPrompt" parent="N_Hance_Studio_1/SK_Bow_Newbie_01" unique_id=932364194 instance=ExtResource("13_4kmvx")]
-transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0.099999905, 0, 0)
-visible = false
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Bow_Newbie_01/PlayerDetection" unique_id=1544112683]
+shape = SubResource("SphereShape3D_pickup")
 
 [node name="Arrow" type="RigidBody3D" parent="N_Hance_Studio_1/SK_Bow_Newbie_01" unique_id=1811199221]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.099999964)
 visible = false
-script = ExtResource("24_1v02h")
+script = ExtResource("r_arrowgd")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Bow_Newbie_01/Arrow" unique_id=1539438757]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.20000005, 4.7683716e-07)
@@ -860,15 +868,10 @@ icon = ExtResource("30_n78cu")
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(0, 90, 0)
 
-[node name="Area3D" type="Area3D" parent="N_Hance_Studio_1/SK_Dagger_1H_Newbie_01" unique_id=1675766781]
+[node name="PlayerDetection" type="Area3D" parent="N_Hance_Studio_1/SK_Dagger_1H_Newbie_01" unique_id=1675766781]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Dagger_1H_Newbie_01/Area3D" unique_id=505536662]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -2.3841858e-07, 0.2500003)
-shape = SubResource("CapsuleShape3D_5pyta")
-
-[node name="ActionPrompt" parent="N_Hance_Studio_1/SK_Dagger_1H_Newbie_01" unique_id=755666406 instance=ExtResource("13_4kmvx")]
-transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0.099999905, 0, 0.29999995)
-visible = false
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Dagger_1H_Newbie_01/PlayerDetection" unique_id=1439696752]
+shape = SubResource("SphereShape3D_pickup")
 
 [node name="SK_Dagger_1H_Newbie_02" parent="N_Hance_Studio_1" unique_id=1026972564 instance=ExtResource("29_oexs8")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -0.5, 1, 0.5)
@@ -880,15 +883,10 @@ icon = ExtResource("30_n78cu")
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(0, 90, 0)
 
-[node name="Area3D" type="Area3D" parent="N_Hance_Studio_1/SK_Dagger_1H_Newbie_02" unique_id=737885465]
+[node name="PlayerDetection" type="Area3D" parent="N_Hance_Studio_1/SK_Dagger_1H_Newbie_02" unique_id=737885465]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Dagger_1H_Newbie_02/Area3D" unique_id=1628504248]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -2.3841858e-07, 0.2500003)
-shape = SubResource("CapsuleShape3D_5pyta")
-
-[node name="ActionPrompt" parent="N_Hance_Studio_1/SK_Dagger_1H_Newbie_02" unique_id=1743477583 instance=ExtResource("13_4kmvx")]
-transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0.099999905, 0, 0.29999995)
-visible = false
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Dagger_1H_Newbie_02/PlayerDetection" unique_id=1280307228]
+shape = SubResource("SphereShape3D_pickup")
 
 [node name="SK_Shield_Newbie_01" parent="N_Hance_Studio_1" unique_id=2039608327 instance=ExtResource("31_kcpaj")]
 transform = Transform3D(-1, 8.742278e-08, 3.821371e-15, 0, -4.371139e-08, 1, 8.742278e-08, 1, 4.371139e-08, 0, 1, -0.5)
@@ -900,15 +898,10 @@ icon = ExtResource("32_c15v2")
 position_offset = Vector3(-0.035, 0.1, 0)
 rotation_offset_degrees = Vector3(0, 180, 180)
 
-[node name="Area3D" type="Area3D" parent="N_Hance_Studio_1/SK_Shield_Newbie_01" unique_id=376316930]
+[node name="PlayerDetection" type="Area3D" parent="N_Hance_Studio_1/SK_Shield_Newbie_01" unique_id=376316930]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Shield_Newbie_01/Area3D" unique_id=461190870]
-transform = Transform3D(-4.371139e-08, 1, 4.371139e-08, -1, -4.37116e-08, -4.371139e-08, -4.371139e-08, -4.371117e-08, 1, -0.053, -0.05, 0)
-shape = SubResource("CylinderShape3D_fk680")
-
-[node name="ActionPrompt" parent="N_Hance_Studio_1/SK_Shield_Newbie_01" unique_id=875530410 instance=ExtResource("13_4kmvx")]
-transform = Transform3D(8.742278e-08, -7.374084e-15, -1, -1, 0, -8.742278e-08, 0, 1, -3.821371e-15, -0.125, 0, 0)
-visible = false
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Shield_Newbie_01/PlayerDetection" unique_id=1011761332]
+shape = SubResource("SphereShape3D_pickup")
 
 [node name="SK_Staff_Newbie_01" parent="N_Hance_Studio_1" unique_id=906851320 instance=ExtResource("33_grmox")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1.1, -1.5)
@@ -921,15 +914,10 @@ is_exclusive = true
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(0, 90, 0)
 
-[node name="Area3D" type="Area3D" parent="N_Hance_Studio_1/SK_Staff_Newbie_01" unique_id=604874034]
+[node name="PlayerDetection" type="Area3D" parent="N_Hance_Studio_1/SK_Staff_Newbie_01" unique_id=604874034]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Staff_Newbie_01/Area3D" unique_id=158341563]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0.012499809)
-shape = SubResource("CapsuleShape3D_hxkk4")
-
-[node name="ActionPrompt" parent="N_Hance_Studio_1/SK_Staff_Newbie_01" unique_id=1329713778 instance=ExtResource("13_4kmvx")]
-transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0.099999905, 0, 0)
-visible = false
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Staff_Newbie_01/PlayerDetection" unique_id=627836358]
+shape = SubResource("SphereShape3D_pickup")
 
 [node name="SK_Sword_1H_Newbie_01" parent="N_Hance_Studio_1" unique_id=13927276 instance=ExtResource("35_kvmu4")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0.3, -2.5)
@@ -942,16 +930,10 @@ icon = ExtResource("36_5p8eo")
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(0, 90, 180)
 
-[node name="Area3D" type="Area3D" parent="N_Hance_Studio_1/SK_Sword_1H_Newbie_01" unique_id=1871370711]
-visible = false
+[node name="PlayerDetection" type="Area3D" parent="N_Hance_Studio_1/SK_Sword_1H_Newbie_01" unique_id=1871370711]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Sword_1H_Newbie_01/Area3D" unique_id=2089109079]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0.42499998)
-shape = SubResource("CapsuleShape3D_jnf5c")
-
-[node name="ActionPrompt" parent="N_Hance_Studio_1/SK_Sword_1H_Newbie_01" unique_id=2088748174 instance=ExtResource("13_4kmvx")]
-transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0.099999905, 0, 0.5)
-visible = false
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Sword_1H_Newbie_01/PlayerDetection" unique_id=1248989220]
+shape = SubResource("SphereShape3D_pickup")
 
 [node name="Hitbox" type="Area3D" parent="N_Hance_Studio_1/SK_Sword_1H_Newbie_01" unique_id=598454094]
 
@@ -971,11 +953,10 @@ is_exclusive = true
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(0, 90, 0)
 
-[node name="Area3D" type="Area3D" parent="N_Hance_Studio_1/SK_Sword_2H_Newbie_01" unique_id=1329213807]
+[node name="PlayerDetection" type="Area3D" parent="N_Hance_Studio_1/SK_Sword_2H_Newbie_01" unique_id=1329213807]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Sword_2H_Newbie_01/Area3D" unique_id=2090209578]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0.65)
-shape = SubResource("CapsuleShape3D_0y3lt")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Sword_2H_Newbie_01/PlayerDetection" unique_id=569813542]
+shape = SubResource("SphereShape3D_pickup")
 
 [node name="Hitbox" type="Area3D" parent="N_Hance_Studio_1/SK_Sword_2H_Newbie_01" unique_id=1218326031]
 
@@ -983,13 +964,8 @@ shape = SubResource("CapsuleShape3D_0y3lt")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.85)
 shape = SubResource("BoxShape3D_hbsw2")
 
-[node name="ActionPrompt" parent="N_Hance_Studio_1/SK_Sword_2H_Newbie_01" unique_id=1977469190 instance=ExtResource("13_4kmvx")]
-transform = Transform3D(3.5527137e-15, 3.5527137e-15, 1, 1, -8.742278e-08, -3.5527137e-15, 8.742278e-08, 1, -1.5529405e-22, 0.099999905, 0, 0.99999994)
-visible = false
-
 [node name="BallonCircle4" parent="." unique_id=1064612835 instance=ExtResource("39_mlb8o")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -3.5, 12, 0)
-play = true
 
 [node name="Pinwheel" parent="." unique_id=1441062047 instance=ExtResource("40_ebmc1")]
 transform = Transform3D(0.033, 0, 0, 0, 0.03187555, -0.008541028, 0, 0.008541028, 0.03187555, -3.5, 10.3, -4.9)
@@ -1036,7 +1012,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 mesh = SubResource("CylinderMesh_fk680")
 
 [node name="WarpZone2" type="Area3D" parent="." unique_id=1398560946]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -15)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0, -15)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WarpZone2" unique_id=1706037066]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
@@ -1081,8 +1057,37 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.049, 4)
 [node name="FishingRod" parent="." unique_id=2053350041 instance=ExtResource("47_ce70q")]
 transform = Transform3D(-1.4950176e-08, -4.1075268e-08, -1, -0.9396926, 0.34202015, 0, 0.34202015, 0.9396926, -4.371139e-08, 4.4, 0.10000001, 1.8999999)
 
-[node name="Boat" parent="." unique_id=1834386809 instance=ExtResource("48_odf6h")]
+[node name="Pool" type="Node3D" parent="." unique_id=98712399]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -24)
+
+[node name="Water" type="MeshInstance3D" parent="Pool" unique_id=98712398]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.01, 0)
+mesh = SubResource("QuadMesh_hxkk4")
+
+[node name="WaterArea3D" type="Area3D" parent="Pool" unique_id=98712397 node_paths=PackedStringArray("water_mesh", "weather", "clock", "shadows", "biome_zone") groups=["WATER"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.3, 0)
+script = ExtResource("buoyancy_script")
+water_mesh = NodePath("../Water")
+weather = NodePath("../../WeatherFX")
+fish = Array[ExtResource("fish_script")]([ExtResource("fish_carp"), ExtResource("fish_perch"), ExtResource("fish_catfish"), ExtResource("fish_trout"), ExtResource("fish_koi"), ExtResource("fish_boot")])
+clock = NodePath("../../DateAndTime")
+shadows = NodePath("../FishShadows")
+biome_zone = NodePath("../../Zones/PlainsZone")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Pool/WaterArea3D" unique_id=98712396]
+shape = SubResource("BoxShape3D_hxkk4")
+
+[node name="WaterRipples" parent="Pool" unique_id=142724450 node_paths=PackedStringArray("water_mesh") instance=ExtResource("water_ripples_scene")]
+water_mesh = NodePath("../Water")
+
+[node name="FishShadows" type="Node3D" parent="Pool" unique_id=30355662 node_paths=PackedStringArray("water")]
+script = ExtResource("fish_shadows_script")
+water = NodePath("../WaterArea3D")
+chum = ExtResource("lure_chum")
+
+[node name="Boat" parent="." unique_id=1834386809 node_paths=PackedStringArray("water") instance=ExtResource("48_odf6h")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, -18)
+water = NodePath("../Pool/WaterArea3D")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=1342249458]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -4)
@@ -1090,9 +1095,25 @@ use_collision = true
 
 [node name="BeachBall" parent="." unique_id=1694960044 instance=ExtResource("49_mu18u")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -4)
+physics_material_override = SubResource("PhysicsMaterial_beach")
 
-[node name="GuyNumberOne" parent="." unique_id=1077715446 groups=["Target"] instance=ExtResource("50_7b7y8")]
+[node name="GuyNumberOne" parent="." unique_id=1077715446 groups=["Focusable"] instance=ExtResource("50_7b7y8")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3)
+
+[node name="Enemies" type="Node3D" parent="." unique_id=404075503]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40, 0, 20)
+
+[node name="Swordsman" parent="Enemies" unique_id=1288165293 instance=ExtResource("enemy_swordsman")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 0)
+
+[node name="Archer" parent="Enemies" unique_id=1639908838 instance=ExtResource("enemy_archer")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
+
+[node name="Rifleman" parent="Enemies" unique_id=503988547 instance=ExtResource("enemy_rifleman")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 0)
+
+[node name="Spellcaster" parent="Enemies" unique_id=81393849 instance=ExtResource("enemy_spellcaster")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 0)
 
 [node name="BowlingAlley" type="Node3D" parent="." unique_id=1646603174]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 32, 0, 13)
@@ -1132,29 +1153,29 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.4250011, 0, -2.8000002)
 [node name="BowlingPin10" parent="BowlingAlley" unique_id=1034166867 instance=ExtResource("52_qetcs")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.05, 0, -2.8)
 
-[node name="PushButtton" type="StaticBody3D" parent="." unique_id=1589196424]
+[node name="PushButton" type="StaticBody3D" parent="." unique_id=1589196424]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -2, 0.4, 2)
 script = ExtResource("53_gw1vw")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="PushButtton" unique_id=958608677]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="PushButton" unique_id=958608677]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.20000002, 0)
 mesh = SubResource("BoxMesh_5xw05")
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="PushButtton" unique_id=44354960]
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="PushButton" unique_id=44354960]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
 mesh = SubResource("CylinderMesh_cth4h")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="PushButtton" unique_id=1073553450]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PushButton" unique_id=1073553450]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.9802322e-08, 0.20000002, 0)
 shape = SubResource("BoxShape3D_5xw05")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="PushButtton" unique_id=652363871]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="PushButton" unique_id=652363871]
 libraries/ = SubResource("AnimationLibrary_0loja")
 
-[node name="ActionPrompt" parent="PushButtton" unique_id=2090560719 instance=ExtResource("13_4kmvx")]
+[node name="ActionPrompt" parent="PushButton" unique_id=2090560719 instance=ExtResource("13_4kmvx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.1, 1.1, 0)
 
-[node name="IKTarget" type="Marker3D" parent="PushButtton" unique_id=1423986701]
+[node name="IKTarget" type="Marker3D" parent="PushButton" unique_id=1423986701]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92, 0)
 
 [node name="Duck" parent="." unique_id=875613134 instance=ExtResource("54_xiw03")]
@@ -1162,16 +1183,20 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -18,
 
 [node name="HondaCRV" parent="." unique_id=863847759 instance=ExtResource("54_5hglh")]
 transform = Transform3D(1.1920929e-07, 0, -1, 0, 1, 0, 1, 0, 1.1920929e-07, 0, 0, -12)
+physics_material_override = SubResource("PhysicsMaterial_sbl7x")
+center_of_mass = Vector3(0, -0.05, -0.1)
 
 [node name="DateAndTime" type="Node" parent="." unique_id=98712301]
 script = ExtResource("55_dt")
-minutes_per_day = 24.0
-current_time = 10.0
+current_time = 16.04527017147361
+day = 8
 
-[node name="WeatherFX" parent="." unique_id=98712302 instance=ExtResource("56_wfx")]
-target_node = NodePath("../Player")
+[node name="TimeSynchronizer" type="MultiplayerSynchronizer" parent="DateAndTime" unique_id=2142557897]
+replication_config = SubResource("SceneReplicationConfig_time")
+
+[node name="WeatherFX" parent="." unique_id=98712302 node_paths=PackedStringArray("date_and_time_node") instance=ExtResource("56_wfx")]
 date_and_time_node = NodePath("../DateAndTime")
-world_environment = NodePath("../WorldEnvironment")
+manual_time_of_day = 16.04527017147361
 
 [node name="Zones" type="Node3D" parent="." unique_id=98712303]
 
@@ -1200,35 +1225,76 @@ shape = SubResource("BoxShape3D_desert_zone")
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=98712310]
 
-[node name="DateAndTimeDisplay" type="PanelContainer" parent="HUD" unique_id=98712311]
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -220.0
-offset_top = 16.0
-offset_right = -16.0
-offset_bottom = 56.0
-grow_horizontal = 0
-script = ExtResource("58_dtdisplay")
-date_and_time_node = NodePath("../../DateAndTime")
-
-[node name="WeatherForecastDisplay" type="PanelContainer" parent="HUD" unique_id=98712312]
+[node name="BottomRight" type="Control" parent="HUD" unique_id=98712311]
+layout_mode = 3
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -260.0
+offset_left = -441.0
 offset_top = -80.0
-offset_right = -16.0
+offset_right = -257.0
 offset_bottom = -16.0
 grow_horizontal = 0
 grow_vertical = 0
-script = ExtResource("59_wfdisplay")
-weather_fx_node = NodePath("../../WeatherFX")
 
-[connection signal="body_entered" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_entered"]
-[connection signal="body_exited" from="NavigationRegion3D/Pool/PlayerDetection" to="." method="_on_player_detection_body_exited"]
-[connection signal="body_entered" from="WarpZone" to="." method="_on_warp_zone_body_entered"]
-[connection signal="body_entered" from="WarpZone2" to="." method="_on_warp_zone_2_body_entered"]
-[connection signal="body_entered" from="WarpZone3" to="." method="_on_warp_zone_3_body_entered"]
+[node name="DateAndTimeDisplay" parent="HUD/BottomRight" unique_id=98712313 node_paths=PackedStringArray("date_and_time_node") instance=ExtResource("58_dtdisplay")]
+layout_mode = 0
+offset_top = -38.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_panel")
+date_and_time_node = NodePath("../../../DateAndTime")
+
+[node name="WeatherForecastDisplay" parent="HUD/BottomRight" unique_id=98712314 node_paths=PackedStringArray("weather_fx") instance=ExtResource("59_wfdisplay")]
+layout_mode = 0
+weather_fx = NodePath("../../../WeatherFX")
+temperature_unit = 1
+
+[node name="TemperatureGaugeDisplay" parent="HUD/BottomRight" unique_id=98712312 node_paths=PackedStringArray("weather_fx") instance=ExtResource("60_tgdisplay")]
+anchors_preset = 0
+offset_left = 100.0
+offset_top = -36.0
+offset_right = 136.0
+offset_bottom = 0.0
+weather_fx = NodePath("../../../WeatherFX")
+
+[node name="Torch" parent="." unique_id=987654321 instance=ExtResource("63_torch")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 1.9000001, -7)
+physics_material_override = SubResource("PhysicsMaterial_torch")
+
+[node name="KillZone" type="Area3D" parent="." unique_id=1459251186]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -50, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="KillZone" unique_id=1729524154]
+shape = SubResource("BoxShape3D_killzone")
+
+[node name="Horse" parent="." unique_id=780231883 instance=ExtResource("87_xgy6y")]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 8)
+
+[node name="RetroComputer" parent="." instance=ExtResource("88_retro")]
+transform = Transform3D(0.9028605, 0, -0.4299335, 0, 1, 0, 0.4299335, 0, 0.9028605, 2, 0, -4.2)
+hidden_while_in_use = Array[NodePath]([NodePath("../HUD")])
+
+[connection signal="local_player_spawned" from="PlayerSpawner" to="." method="_on_local_player_spawned"]
+[connection signal="body_entered" from="JustCreate3D/Weapon_02/PlayerDetection" to="JustCreate3D/Weapon_02" method="_on_player_detection_body_entered"]
+[connection signal="body_entered" from="JustCreate3D/Weapon_01/PlayerDetection" to="JustCreate3D/Weapon_01" method="_on_player_detection_body_entered"]
+[connection signal="body_entered" from="N_Hance_Studio_1/SK_Axe_1H_Newbie_01/PlayerDetection" to="N_Hance_Studio_1/SK_Axe_1H_Newbie_01" method="_on_player_detection_body_entered"]
+[connection signal="body_entered" from="N_Hance_Studio_1/SK_Axe_2HL_Newbie_01/PlayerDetection" to="N_Hance_Studio_1/SK_Axe_2HL_Newbie_01" method="_on_player_detection_body_entered"]
+[connection signal="body_entered" from="N_Hance_Studio_1/SK_Bow_Newbie_01/PlayerDetection" to="N_Hance_Studio_1/SK_Bow_Newbie_01" method="_on_player_detection_body_entered"]
+[connection signal="body_entered" from="N_Hance_Studio_1/SK_Bow_Newbie_01/Arrow" to="N_Hance_Studio_1/SK_Bow_Newbie_01/Arrow" method="_on_body_entered"]
+[connection signal="body_entered" from="N_Hance_Studio_1/SK_Dagger_1H_Newbie_01/PlayerDetection" to="N_Hance_Studio_1/SK_Dagger_1H_Newbie_01" method="_on_player_detection_body_entered"]
+[connection signal="body_entered" from="N_Hance_Studio_1/SK_Dagger_1H_Newbie_02/PlayerDetection" to="N_Hance_Studio_1/SK_Dagger_1H_Newbie_02" method="_on_player_detection_body_entered"]
+[connection signal="body_entered" from="N_Hance_Studio_1/SK_Shield_Newbie_01/PlayerDetection" to="N_Hance_Studio_1/SK_Shield_Newbie_01" method="_on_player_detection_body_entered"]
+[connection signal="body_entered" from="N_Hance_Studio_1/SK_Staff_Newbie_01/PlayerDetection" to="N_Hance_Studio_1/SK_Staff_Newbie_01" method="_on_player_detection_body_entered"]
+[connection signal="body_entered" from="N_Hance_Studio_1/SK_Sword_1H_Newbie_01/PlayerDetection" to="N_Hance_Studio_1/SK_Sword_1H_Newbie_01" method="_on_player_detection_body_entered"]
+[connection signal="body_entered" from="N_Hance_Studio_1/SK_Sword_2H_Newbie_01/PlayerDetection" to="N_Hance_Studio_1/SK_Sword_2H_Newbie_01" method="_on_player_detection_body_entered"]
+[connection signal="body_entered" from="WarpZone" to="." method="_on_warp_zone_body_entered" binds= [NodePath("WarpZone/Marker3D")]]
+[connection signal="body_entered" from="WarpZone2" to="." method="_on_warp_zone_body_entered" binds= [NodePath("WarpZone2/Marker3D")]]
+[connection signal="body_entered" from="WarpZone3" to="." method="_on_warp_zone_body_entered" binds= [NodePath("WarpZone3/Marker3D")]]
+[connection signal="body_entered" from="Pool/WaterArea3D" to="Pool/WaterArea3D" method="_on_body_entered"]
+[connection signal="body_entered" from="Pool/WaterArea3D" to="Pool/WaterRipples" method="_on_body_entered"]
+[connection signal="body_entered" from="Pool/WaterArea3D" to="." method="_on_water_area_3d_body_entered" binds= [NodePath("Pool/WaterArea3D")]]
+[connection signal="body_exited" from="Pool/WaterArea3D" to="Pool/WaterArea3D" method="_on_body_exited"]
+[connection signal="body_exited" from="Pool/WaterArea3D" to="Pool/WaterRipples" method="_on_body_exited"]
+[connection signal="body_exited" from="Pool/WaterArea3D" to="." method="_on_water_area_3d_body_exited" binds= [NodePath("Pool/WaterArea3D")]]
+[connection signal="body_entered" from="KillZone" to="." method="_on_kill_zone_body_entered"]

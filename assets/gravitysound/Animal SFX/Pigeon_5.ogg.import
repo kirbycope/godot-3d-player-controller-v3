@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dp7mn6f6fcv5n"
+path="res://.godot/imported/Pigeon_5.ogg-f99fe4712dc6c6f49239b1359be5654b.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Pigeon_5.ogg"
+dest_files=["res://.godot/imported/Pigeon_5.ogg-f99fe4712dc6c6f49239b1359be5654b.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

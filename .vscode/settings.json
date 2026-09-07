@@ -1,10 +1,11 @@
 {
-  "godotTools.editorPath.godot4": "c:\\Godot\\godot.exe",
+  "godotTools.editorPath.godot4": "/Applications/Godot.app",
   "gut-extension.additionalOptions": "-d --headless",
   "cSpell.words": [
     "clampf",
     "deadzone",
     "elif",
+    "focusable",
     "GREATSWORD",
     "hitbox",
     "Joypad",
@@ -19,6 +20,7 @@
     "stylebox",
     "styleboxes",
     "tscn",
-    "unequip"
+    "unequip",
+    "Webfix"
   ]
 }

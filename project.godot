@@ -11,9 +11,23 @@ config_version=5
 [application]
 
 config/name="Godot 3D Player Controller v3"
+config/version="3.0.14"
 run/main_scene="uid://dtnxqy114fjc1"
 config/features=PackedStringArray("4.8", "Forward Plus")
 config/icon="res://icon.svg"
+
+[audio]
+
+buses/default_bus_layout="uid://kfdo4yimvqd0"
+driver/enable_input=true
+
+[autoload]
+
+Steamworks="*res://addons/godotsteamkit/autoloads/steamworks.gd"
+
+[debug]
+
+file_logging/enable_file_logging=true
 
 [display]
 
@@ -23,14 +37,14 @@ window/stretch/mode="canvas_items"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/date_and_time/plugin.cfg", "res://addons/gut/plugin.cfg", "res://addons/weather_fx/plugin.cfg")
+enabled=PackedStringArray("res://addons/3d_player_controller/plugin.cfg", "res://addons/date_and_time/plugin.cfg", "res://addons/godotsteam/plugin.cfg", "res://addons/gut/plugin.cfg", "res://addons/midi/plugin.cfg", "res://addons/radi_ot/plugin.cfg", "res://addons/weather_fx/plugin.cfg")
 
 [importer_defaults]
 
 texture={
 &"compress/mode": 1,
-&"detect_3d/compress_to": 2,
-&"process/size_limit": 1024
+&"detect_3d/compress_to": 0,
+&"process/size_limit": 512
 }
 
 [input_devices]
@@ -44,6 +58,7 @@ pointing/emulate_mouse_from_touch=false
 
 [rendering]
 
+rendering_device/d3d12/max_resource_descriptors=1000000
 rendering_device/driver.windows="d3d12"
 
 [shader_globals]
@@ -60,3 +75,15 @@ weather_precipitation_strength={
 "type": "float",
 "value": 0.0
 }
+weather_foliage_tint={
+"type": "color",
+"value": Color(1, 1, 1, 1)
+}
+weather_grass_tint={
+"type": "color",
+"value": Color(1, 1, 1, 1)
+}
+
+[steam]
+
+initialization/app_data/app_id=480

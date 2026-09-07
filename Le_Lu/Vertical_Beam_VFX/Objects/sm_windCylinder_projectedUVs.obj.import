@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://dgxqt6dqw0hen"
+path="res://.godot/imported/sm_windCylinder_projectedUVs.obj-b6abaf970db7c045f07f168cd892d446.mesh"
+
+[deps]
+
+files=["res://.godot/imported/sm_windCylinder_projectedUVs.obj-b6abaf970db7c045f07f168cd892d446.mesh"]
+
+source_file="res://Le_Lu/Vertical_Beam_VFX/Objects/sm_windCylinder_projectedUVs.obj"
+dest_files=["res://.godot/imported/sm_windCylinder_projectedUVs.obj-b6abaf970db7c045f07f168cd892d446.mesh", "res://.godot/imported/sm_windCylinder_projectedUVs.obj-b6abaf970db7c045f07f168cd892d446.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

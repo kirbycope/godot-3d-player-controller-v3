@@ -1,0 +1,77 @@
+[gd_scene format=3 uid="uid://c800eia6ef02p"]
+
+[ext_resource type="Shader" path="res://Le_Lu/Loot_Drop_VFX/Shaders/s_fresnel_ds.tres" id="1_uxmuv"]
+[ext_resource type="ArrayMesh" uid="uid://dj1aj7w7nh66f" path="res://Le_Lu/Loot_Drop_VFX/Objects/sm_cylinder_T1.obj" id="2_xsnka"]
+[ext_resource type="Shader" path="res://Le_Lu/Loot_Drop_VFX/Shaders/s_simple_blink_unlit_fc.tres" id="3_cojlr"]
+[ext_resource type="Texture2D" path="res://Le_Lu/Loot_Drop_VFX/Textures/T_VFX_Flare_678.png" id="CompressedTexture2D_n15si"]
+
+[sub_resource type="Gradient" id="Gradient_q2xgw"]
+offsets = PackedFloat32Array(0, 0.313305, 0.695279, 1)
+colors = PackedColorArray(0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_8qgev"]
+gradient = SubResource("Gradient_q2xgw")
+fill_from = Vector2(1, 1)
+
+[sub_resource type="Gradient" id="Gradient_o555l"]
+offsets = PackedFloat32Array(0, 0.377682, 0.459227, 0.553648, 0.922747, 1)
+colors = PackedColorArray(0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_xu80q"]
+gradient = SubResource("Gradient_o555l")
+fill_from = Vector2(1, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_aaeaf"]
+render_priority = 0
+shader = ExtResource("1_uxmuv")
+shader_parameter/Color = Color(1, 0.397456, 0.671458, 1)
+shader_parameter/Enable_Proximity_Fade = true
+shader_parameter/Scale = Vector2(1, 1)
+shader_parameter/Speed = Vector2(0, 0.5)
+shader_parameter/Fresnel_invert = true
+shader_parameter/Fresnel_power = 1.0
+shader_parameter/Proximity_Fade = 1.0
+shader_parameter/Texture_Base = SubResource("GradientTexture2D_xu80q")
+shader_parameter/Mask_Texture = SubResource("GradientTexture2D_8qgev")
+
+[sub_resource type="Gradient" id="Gradient_i262b"]
+colors = PackedColorArray(0.856067, 0.856067, 0.856067, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_8lgk4"]
+gradient = SubResource("Gradient_i262b")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.542735)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xag12"]
+render_priority = 0
+shader = ExtResource("3_cojlr")
+shader_parameter/Color = Color(1.5, 0.6, 0.9, 1)
+shader_parameter/Use_Proximity_Fade = true
+shader_parameter/Scale = Vector2(0.74, 1)
+shader_parameter/Offset = Vector2(0.13, 0)
+shader_parameter/Blinking_speed = 8.0
+shader_parameter/min_brightness = 0.5
+shader_parameter/max_brightness2 = 1.0
+shader_parameter/opacity = 1.0
+shader_parameter/Proximity_Fade = 0.5
+shader_parameter/Texture = ExtResource("CompressedTexture2D_n15si")
+shader_parameter/Texture_Add = SubResource("GradientTexture2D_8lgk4")
+
+[sub_resource type="QuadMesh" id="QuadMesh_hgqme"]
+size = Vector2(2, 2)
+
+[node name="VFX_LootDrop_G" type="Node3D"]
+
+[node name="SmCylinderT2" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.7, 0, 0, 0, 1, 0, 0, 0, 0.7, 0, 0, 0)
+material_override = SubResource("ShaderMaterial_aaeaf")
+cast_shadow = 0
+mesh = ExtResource("2_xsnka")
+skeleton = NodePath("../..")
+
+[node name="white_Line_horizontal" type="MeshInstance3D" parent="."]
+material_override = SubResource("ShaderMaterial_xag12")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_hgqme")
+skeleton = NodePath("../../..")

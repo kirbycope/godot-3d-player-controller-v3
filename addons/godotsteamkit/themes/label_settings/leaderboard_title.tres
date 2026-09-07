@@ -1,0 +1,7 @@
+[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://bpr00dfhc336p"]
+
+[ext_resource type="FontFile" uid="uid://c3e1tjlxv4ka5" path="res://addons/godotsteamkit/fonts/Inter-Bold.otf" id="1_1uyrm"]
+
+[resource]
+font = ExtResource("1_1uyrm")
+font_size = 45

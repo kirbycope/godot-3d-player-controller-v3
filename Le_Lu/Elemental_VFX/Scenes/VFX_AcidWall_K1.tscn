@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://bomsoicetwrmy"]
+
+[ext_resource type="Shader" path="res://Le_Lu/Elemental_VFX/shaders/s_master_firewall_ds.tres" id="1_77g3u"]
+[ext_resource type="Texture2D" uid="uid://yhjcyu7ajofq" path="res://Le_Lu/Elemental_VFX/textures/T_VFX_Noise_j035.png" id="2_vq8pd"]
+[ext_resource type="ArrayMesh" uid="uid://c2xuglijffsu3" path="res://Le_Lu/Elemental_VFX/objects/sm_WallBased4929.obj" id="3_4gibi"]
+
+
+[sub_resource type="Gradient" id="Gradient_xwn7r"]
+offsets = PackedFloat32Array(0, 0.446043, 0.517986, 0.622302, 0.946043, 1)
+colors = PackedColorArray(0.0546, 0.07, 0.0566533, 0, 0.069, 0.23, 0.07705, 1, 0.0940313, 0.283398, 0.0924806, 1, 0.130327, 0.360826, 0.114855, 1, 0.242968, 0.601117, 0.184293, 1, 0.4112, 0.96, 0.288, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_qprb2"]
+gradient = SubResource("Gradient_xwn7r")
+
+[sub_resource type="Gradient" id="Gradient_xm4ri"]
+offsets = PackedFloat32Array(0.0935252, 0.593525, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0.634921, 0.634921, 0.634921, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_hkds8"]
+gradient = SubResource("Gradient_xm4ri")
+fill_from = Vector2(1, 1)
+
+[sub_resource type="Gradient" id="Gradient_4s5xo"]
+offsets = PackedFloat32Array(0, 0.100719)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_yt104"]
+gradient = SubResource("Gradient_4s5xo")
+fill_to = Vector2(0, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3gihs"]
+render_priority = 0
+shader = ExtResource("1_77g3u")
+shader_parameter/Speed_XY2 = Vector2(0.1, 0.5)
+shader_parameter/Scale_XY2 = Vector2(2.3, 0.6)
+shader_parameter/Color_Intensity2 = 2.2
+shader_parameter/Fill = 1.0
+shader_parameter/Base_noise2 = ExtResource("2_vq8pd")
+shader_parameter/Texture_add = SubResource("GradientTexture2D_hkds8")
+shader_parameter/Texture_substract = SubResource("GradientTexture2D_yt104")
+shader_parameter/Gradient_Color_1D2 = SubResource("GradientTexture1D_qprb2")
+
+[node name="VFX_AcidWall_K1_" type="Node3D"]
+
+[node name="AcidWall_K1_" type="MeshInstance3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, 0.800001, 0, 1, 0, -1, 0, -3.49692e-08, 0, 0, 0)
+material_override = SubResource("ShaderMaterial_3gihs")
+cast_shadow = 0
+mesh = ExtResource("3_4gibi")
+skeleton = NodePath("../..")

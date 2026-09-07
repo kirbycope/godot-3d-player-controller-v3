@@ -1,0 +1,115 @@
+[gd_scene format=3 uid="uid://c7bobber00001"]
+
+[ext_resource type="Script" path="res://scenes/bobber.gd" id="1_bobber"]
+[ext_resource type="PackedScene" uid="uid://c7fishmodel001" path="res://scenes/fish_model.tscn" id="2_fish"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_bobber"]
+radius = 0.06
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_top"]
+albedo_color = Color(0.9, 0.12, 0.1, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bottom"]
+albedo_color = Color(0.95, 0.95, 0.9, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_top"]
+material = SubResource("StandardMaterial3D_top")
+radius = 0.06
+height = 0.12
+
+[sub_resource type="SphereMesh" id="SphereMesh_bottom"]
+material = SubResource("StandardMaterial3D_bottom")
+radius = 0.05
+height = 0.1
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_sensor"]
+radius = 0.05
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ring"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.95, 1, 1, 0.8)
+
+[sub_resource type="TorusMesh" id="TorusMesh_ring"]
+material = SubResource("StandardMaterial3D_ring")
+inner_radius = 0.16
+outer_radius = 0.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_drop"]
+shading_mode = 0
+vertex_color_use_as_albedo = true
+
+[sub_resource type="SphereMesh" id="SphereMesh_drop"]
+material = SubResource("StandardMaterial3D_drop")
+radius = 0.02
+height = 0.04
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_splash"]
+direction = Vector3(0, 1, 0)
+spread = 50.0
+initial_velocity_min = 1.2
+initial_velocity_max = 2.8
+gravity = Vector3(0, -9.8, 0)
+scale_min = 0.5
+scale_max = 1.2
+color = Color(0.85, 0.95, 1, 0.9)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_line"]
+shading_mode = 0
+albedo_color = Color(0.9, 0.9, 0.85, 1)
+cull_mode = 2
+
+[node name="Bobber" type="RigidBody3D"]
+mass = 0.05
+center_of_mass_mode = 1
+center_of_mass = Vector3(0, -0.05, 0)
+continuous_cd = true
+contact_monitor = true
+max_contacts_reported = 2
+script = ExtResource("1_bobber")
+fish_scene = ExtResource("2_fish")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_bobber")
+
+[node name="Float" type="Node3D" parent="."]
+
+[node name="Top" type="MeshInstance3D" parent="Float"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, 0)
+mesh = SubResource("SphereMesh_top")
+
+[node name="Bottom" type="MeshInstance3D" parent="Float"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.04, 0)
+mesh = SubResource("SphereMesh_bottom")
+
+[node name="BuoyancyProbe" type="Marker3D" parent="." groups=["BuoyancyProbe"]]
+
+[node name="WaterSensor" type="Area3D" parent="."]
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WaterSensor"]
+shape = SubResource("SphereShape3D_sensor")
+
+[node name="SplashParticles" type="GPUParticles3D" parent="."]
+emitting = false
+amount = 30
+lifetime = 0.6
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_splash")
+draw_pass_1 = SubResource("SphereMesh_drop")
+
+[node name="Ring" type="MeshInstance3D" parent="."]
+top_level = true
+visible = false
+transform = Transform3D(0.3, 0, 0, 0, 1, 0, 0, 0, 0.3, 0, 0.02, 0)
+cast_shadow = 0
+mesh = SubResource("TorusMesh_ring")
+
+[node name="Line" type="MeshInstance3D" parent="."]
+top_level = true
+cast_shadow = 0
+material_override = SubResource("StandardMaterial3D_line")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="area_entered" from="WaterSensor" to="." method="_on_water_sensor_area_entered"]

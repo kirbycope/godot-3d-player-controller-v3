@@ -1,0 +1,64 @@
+[gd_scene format=3 uid="uid://bvtl3k8f3snqw"]
+
+[ext_resource type="Shader" path="res://Le_Lu/Trails_VFX/shaders/magic_aura.tres" id="1_q5684"]
+[ext_resource type="Texture2D" uid="uid://bbltihik6p6px" path="res://Le_Lu/Trails_VFX/textures/PerlinNoise_Tiled.png" id="2_jead2"]
+[ext_resource type="ArrayMesh" uid="uid://ktvjti6ttc2a" path="res://Le_Lu/Trails_VFX/Objects/sword_model.res" id="3_2agtp"]
+[ext_resource type="Texture2D" uid="uid://bijf7tw5qels5" path="res://Le_Lu/Trails_VFX/Objects/sword_mask.jpg" id="3_ereuq"]
+[ext_resource type="Texture2D" uid="uid://d3rx634c4sisv" path="res://Le_Lu/Trails_VFX/textures/T_VFX_gas12.png" id="5_trr52"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gtbsj"]
+render_priority = 0
+shader = ExtResource("1_q5684")
+shader_parameter/Aura_Color = Color(0.996078, 0.32549, 0.192157, 1)
+shader_parameter/Aura_Divide = Vector2(0.8, 0.8)
+shader_parameter/Speed = Vector2(0.1, -0.8)
+shader_parameter/Has_mask = true
+shader_parameter/Aura_Texture = ExtResource("2_jead2")
+shader_parameter/Mask = ExtResource("3_ereuq")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_defc0"]
+blend_mode = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("5_trr52")
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 4
+particles_anim_v_frames = 4
+particles_anim_loop = false
+proximity_fade_enabled = true
+proximity_fade_distance = 0.05
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_vov0o"]
+emission_shape = 3
+emission_box_extents = Vector3(0.015, 0.15, 0.005)
+angle_min = -180.0
+angle_max = 180.0
+angular_velocity_max = 5.0
+radial_velocity_min = 0.04
+radial_velocity_max = 0.06
+gravity = Vector3(0, 0, 0)
+scale_min = 0.1
+scale_max = 0.15
+color = Color(1, 0.168627, 0, 1)
+anim_speed_min = 1.0
+anim_speed_max = 1.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_qr6wn"]
+
+[node name="fire sword" type="Node3D"]
+
+[node name="SwordModel" type="MeshInstance3D" parent="."]
+transform = Transform3D(-0.0186913, 0, 0.999825, 0, 1, 0, -0.999825, 0, -0.0186913, -0.279839, 0.143069, -0.0283552)
+material_overlay = SubResource("ShaderMaterial_gtbsj")
+mesh = ExtResource("3_2agtp")
+skeleton = NodePath("../..")
+
+[node name="Fire" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00723344, 0.320316, 0)
+material_override = SubResource("StandardMaterial3D_defc0")
+amount = 30
+fixed_fps = 60
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_vov0o")
+draw_pass_1 = SubResource("QuadMesh_qr6wn")

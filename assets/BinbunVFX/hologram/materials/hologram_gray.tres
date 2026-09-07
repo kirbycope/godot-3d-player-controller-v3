@@ -1,0 +1,36 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://4w8egs6wigvf"]
+
+[ext_resource type="Shader" uid="uid://d3ndm7fohb1tm" path="res://assets/BinbunVFX/hologram/src/shader/hologram_volume.gdshader" id="1_vuv7r"]
+
+[sub_resource type="Gradient" id="Gradient_bjn28"]
+offsets = PackedFloat32Array(0, 0.25, 0.5, 0.75, 1)
+colors = PackedColorArray(0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1)
+metadata/_snap_enabled = true
+metadata/_snap_count = 8
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_nxvlm"]
+gradient = SubResource("Gradient_bjn28")
+fill_from = Vector2(0, 1)
+fill_to = Vector2(0.5, 0)
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_vuv7r")
+shader_parameter/primary_color = Color(0.52204496, 0.51838386, 0.4948905, 1)
+shader_parameter/secondary_color = Color(0.95229846, 0.96375054, 0.95839626, 1)
+shader_parameter/density = 1.0
+shader_parameter/effect_strength = 4.0
+shader_parameter/wipe_scale = 0.999999977648
+shader_parameter/wipe_speed = 0.1999999955296
+shader_parameter/wipe_blend = 0.7
+shader_parameter/signal_scale = 1.0
+shader_parameter/signal_speed = 0.5
+shader_parameter/signal_random_scale = 0.999999977648
+shader_parameter/signal_blend = 0.23999999463552
+shader_parameter/noise_texture = SubResource("GradientTexture2D_nxvlm")
+shader_parameter/noise_distort_amount = 0.499999988824
+shader_parameter/noise_amount = 0.80999998189488
+shader_parameter/grain_amount = 0.5999999865888
+shader_parameter/displacement_amount = 0.499999988824
+shader_parameter/flicker_amount = 0.3
+shader_parameter/flicker_speed = 10.0

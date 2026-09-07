@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://bgoa4vdnswegu"]
+
+[ext_resource type="Material" uid="uid://c71paj8n8xlpw" path="res://Le_Lu/Fire_VFX/materials/m_fireflameth4.tres" id="1_jefjp"]
+[ext_resource type="ArrayMesh" uid="uid://odpd6yp10lun" path="res://Le_Lu/Fire_VFX/objects/sm_flamethrower_l2.obj" id="2_bmnch"]
+
+[node name="VFX_Flamethrower_Static_A" type="Node3D"]
+
+[node name="FireTorch_AC9" type="MeshInstance3D" parent="."]
+transform = Transform3D(-0.654, -4.37737e-07, 4.31655e-15, 0, -1.26719e-07, -0.654, 9.87513e-08, -2.899, 2.85872e-08, 0, 0, 0)
+layers = 4
+material_override = ExtResource("1_jefjp")
+cast_shadow = 0
+mesh = ExtResource("2_bmnch")
+skeleton = NodePath("../..")

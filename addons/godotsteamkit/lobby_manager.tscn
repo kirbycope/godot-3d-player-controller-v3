@@ -1,0 +1,65 @@
+[gd_scene format=3 uid="uid://ctbj3ttu6tq0x"]
+
+[ext_resource type="Theme" uid="uid://dlt46qyemf6cj" path="res://addons/godotsteamkit/themes/godotsteam.tres" id="1_u6ycp"]
+[ext_resource type="Script" uid="uid://lbv78gd5dx2m" path="res://addons/godotsteamkit/lobby_manager.gd" id="1_vcaep"]
+
+[node name="SteamLobbyManager" type="Control" unique_id=1080078957]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_u6ycp")
+script = ExtResource("1_vcaep")
+metadata/_edit_lock_ = true
+
+[node name="Margin" type="MarginContainer" parent="." unique_id=859762299]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+metadata/_edit_lock_ = true
+
+[node name="VFrame" type="VBoxContainer" parent="Margin" unique_id=1258985622]
+layout_mode = 2
+metadata/_edit_lock_ = true
+
+[node name="Scene" type="Control" parent="Margin/VFrame" unique_id=265134178]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+metadata/_edit_lock_ = true
+
+[node name="Controls" type="HBoxContainer" parent="Margin/VFrame" unique_id=798552890]
+layout_mode = 2
+theme_override_constants/separation = 50
+alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="Host" type="Button" parent="Margin/VFrame/Controls" unique_id=195622566]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(250, 75)
+layout_mode = 2
+text = "Host"
+metadata/_edit_lock_ = true
+
+[node name="Join" type="Button" parent="Margin/VFrame/Controls" unique_id=54185939]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(250, 75)
+layout_mode = 2
+text = "Join"
+metadata/_edit_lock_ = true
+
+[node name="Exit" type="Button" parent="Margin/VFrame/Controls" unique_id=2080309898]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(250, 75)
+layout_mode = 2
+text = "Exit"
+metadata/_edit_lock_ = true

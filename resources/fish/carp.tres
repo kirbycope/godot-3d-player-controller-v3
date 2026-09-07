@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="Fish" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scenes/fish.gd" id="1_fish"]
+[ext_resource type="Texture2D" path="res://resources/fish/fish.svg" id="2_icon"]
+[ext_resource type="PackedScene" path="res://scenes/fish_models/carp.tscn" id="9_model"]
+
+[resource]
+script = ExtResource("1_fish")
+id = &"carp"
+display_name = "Carp"
+description = "Fat and patient, bites on anything at any hour."
+icon = ExtResource("2_icon")
+category = 2
+max_stack = 10
+consumable = true
+color = Color(0.45, 0.5, 0.3, 1)
+min_length_cm = 25.0
+max_length_cm = 60.0
+weight = 5.0
+from_hour = 0
+to_hour = 24
+rain = 0
+is_junk = false
+shadow_scale = 1.2
+attract_range = 1.0
+biomes = Array[int]([0, 9, 10])
+model_scene = ExtResource("9_model")

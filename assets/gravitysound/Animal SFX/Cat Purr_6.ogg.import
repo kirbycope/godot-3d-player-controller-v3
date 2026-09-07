@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://btuekk1kcukpp"
+path="res://.godot/imported/Cat Purr_6.ogg-05eb7fae746b9ce11c91fe9126059526.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Cat Purr_6.ogg"
+dest_files=["res://.godot/imported/Cat Purr_6.ogg-05eb7fae746b9ce11c91fe9126059526.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

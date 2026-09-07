@@ -1,0 +1,21 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/cgtrader/remofair/Fish/Fish_23.fbx" id="1_model"]
+[ext_resource type="Texture2D" path="res://assets/cgtrader/remofair/Textures/Fish_23_diffuse.png" id="2_diffuse"]
+[ext_resource type="Texture2D" path="res://assets/cgtrader/remofair/Textures/Fish_23_normal.png" id="3_normal"]
+[ext_resource type="Texture2D" path="res://assets/cgtrader/remofair/Textures/Fish_23_Roughness.png" id="4_roughness"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_skin"]
+albedo_texture = ExtResource("2_diffuse")
+roughness_texture = ExtResource("4_roughness")
+normal_enabled = true
+normal_texture = ExtResource("3_normal")
+
+[node name="PerchModel" type="Node3D"]
+
+[node name="Fish_23" parent="." instance=ExtResource("1_model")]
+
+[node name="Fish_23" parent="Fish_23/Armature_Fish/Skeleton3D"]
+material_override = SubResource("StandardMaterial3D_skin")
+
+[editable path="Fish_23"]

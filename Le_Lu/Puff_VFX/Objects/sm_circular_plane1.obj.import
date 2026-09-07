@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://cy3yjp7gqf50v"
+path="res://.godot/imported/sm_circular_plane1.obj-dbe7ff2ff9da9f4aa0ff3a3566faa3eb.mesh"
+
+[deps]
+
+files=["res://.godot/imported/sm_circular_plane1.obj-dbe7ff2ff9da9f4aa0ff3a3566faa3eb.mesh"]
+
+source_file="res://Le_Lu/Puff_VFX/Objects/sm_circular_plane1.obj"
+dest_files=["res://.godot/imported/sm_circular_plane1.obj-dbe7ff2ff9da9f4aa0ff3a3566faa3eb.mesh", "res://.godot/imported/sm_circular_plane1.obj-dbe7ff2ff9da9f4aa0ff3a3566faa3eb.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

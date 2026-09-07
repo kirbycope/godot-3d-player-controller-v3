@@ -1,0 +1,67 @@
+[gd_scene format=3 uid="uid://ban1g0iix18vl"]
+
+[ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/ss_fireTorch_T1_ds.gdshader" id="1_712np"]
+[ext_resource type="Texture2D" uid="uid://sfqnk8pph4px" path="res://Le_Lu/Fire_VFX/textures/T_VFX_Noise_075.png" id="2_5few7"]
+[ext_resource type="Texture2D" uid="uid://kmkp2rkelvxw" path="res://Le_Lu/Fire_VFX/textures/T_Noise1_tiled.png" id="3_oaweq"]
+[ext_resource type="ArrayMesh" uid="uid://hyyrbtkk2wf7" path="res://Le_Lu/Fire_VFX/objects/sm_cylindrfirecx.obj" id="4_k08qx"]
+
+[sub_resource type="Gradient" id="Gradient_ohipf"]
+interpolation_color_space = 1
+offsets = PackedFloat32Array(0, 0.115023, 0.760563, 0.835681, 0.967136, 1)
+colors = PackedColorArray(0, 0, 0, 0, 0.18, 0.021, 0, 1, 0.482882, 0.131019, 0.0502195, 1, 0.7, 0.208367, 0.098, 1, 0.663479, 0.248892, 0.102311, 1, 1, 0.488667, 0.41, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ytqab"]
+gradient = SubResource("Gradient_ohipf")
+
+[sub_resource type="Gradient" id="Gradient_rwgin"]
+offsets = PackedFloat32Array(0, 0.28169, 0.591549, 0.924883)
+colors = PackedColorArray(0, 0, 0, 1, 0.230541, 0.230541, 0.230541, 1, 0.829949, 0.829949, 0.829949, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_g48j1"]
+gradient = SubResource("Gradient_rwgin")
+fill_to = Vector2(0, 1)
+
+[sub_resource type="Gradient" id="Gradient_2nrt1"]
+offsets = PackedFloat32Array(0.0892019, 0.239437, 0.875587, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_sduxo"]
+gradient = SubResource("Gradient_2nrt1")
+fill_to = Vector2(0, 1)
+
+[sub_resource type="Gradient" id="Gradient_8nu1q"]
+offsets = PackedFloat32Array(0, 0.946009, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.974178, 0.974178, 0.974178, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_imjqs"]
+gradient = SubResource("Gradient_8nu1q")
+fill_from = Vector2(1, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cs15l"]
+render_priority = 0
+shader = ExtResource("1_712np")
+shader_parameter/speed = 0.22
+shader_parameter/wobble_strength = 0.58
+shader_parameter/noise_scale_xy = Vector2(3, 0.5)
+shader_parameter/Scale_XY2 = Vector2(1.5, 2)
+shader_parameter/Speed_XY2 = Vector2(0.2, 2.2)
+shader_parameter/substract_Speed_XY = Vector2(0, 0)
+shader_parameter/Color_Intensity2 = 3.0
+shader_parameter/Fill = 1.0
+shader_parameter/enable_vertex_movement = true
+shader_parameter/noise_texture = ExtResource("3_oaweq")
+shader_parameter/Base_noise2 = ExtResource("2_5few7")
+shader_parameter/Texture_add = SubResource("GradientTexture2D_g48j1")
+shader_parameter/Texture_substract = SubResource("GradientTexture2D_sduxo")
+shader_parameter/Gradient_Color_1D2 = SubResource("GradientTexture1D_ytqab")
+shader_parameter/tex_frg_58 = SubResource("GradientTexture2D_imjqs")
+
+[node name="VFX_FireRing_static" type="Node3D"]
+
+[node name="FireRing_static" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.491, 0, 0, 0, 1.677, 0, 0, 0, 1.519, 0, -0.059306, 0)
+layers = 4
+material_override = SubResource("ShaderMaterial_cs15l")
+cast_shadow = 0
+mesh = ExtResource("4_k08qx")
+skeleton = NodePath("../..")

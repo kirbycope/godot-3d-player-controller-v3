@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://c3288x6l58nc"
+path="res://.godot/imported/axe.obj-05efd38bb7fb19c7be313127e3fc8e9d.mesh"
+
+[deps]
+
+files=["res://.godot/imported/axe.obj-05efd38bb7fb19c7be313127e3fc8e9d.mesh"]
+
+source_file="res://Le_Lu/Wind_VFX/Misc/axe.obj"
+dest_files=["res://.godot/imported/axe.obj-05efd38bb7fb19c7be313127e3fc8e9d.mesh", "res://.godot/imported/axe.obj-05efd38bb7fb19c7be313127e3fc8e9d.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

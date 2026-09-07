@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://ck007b4du5rmq"]
+
+[ext_resource type="Shader" path="res://Le_Lu/Full_Screen_VFX/shaders/ss_fullscreen_glitch.gdshader" id="1_gqi4l"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qn15v"]
+render_priority = 0
+shader = ExtResource("1_gqi4l")
+shader_parameter/shake_power = 0.03
+shader_parameter/shake_rate = 0.2
+shader_parameter/shake_speed = 5.0
+shader_parameter/shake_block_size = 30.5
+shader_parameter/shake_color_rate = 0.011
+
+[sub_resource type="QuadMesh" id="QuadMesh_ociuy"]
+size = Vector2(2, 2)
+
+[node name="VFX_Screen_Glitch" type="MeshInstance3D"]
+visible = false
+layers = 4
+material_override = SubResource("ShaderMaterial_qn15v")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_ociuy")

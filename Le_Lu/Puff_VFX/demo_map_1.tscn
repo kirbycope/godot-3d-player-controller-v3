@@ -1,0 +1,118 @@
+[gd_scene format=3 uid="uid://cluu7ga6806tw"]
+
+[ext_resource type="PackedScene" uid="uid://e4rptlxq4tyk" path="res://Le_Lu/Puff_VFX/scene stuff/Objects/aqua_edit_rig.tscn" id="1_qddfw"]
+[ext_resource type="Texture2D" uid="uid://ddb8aqqg2t173" path="res://Le_Lu/Puff_VFX/scene stuff/Textures/playthescene1111.png" id="2_xwbct"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jvghd"]
+albedo_color = Color(0.46229, 0.462291, 0.46229, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_tljoj"]
+size = Vector2(20, 20)
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_prx7c"]
+sky_top_color = Color(0, 0, 0, 1)
+sky_horizon_color = Color(0.462291, 0.462291, 0.462291, 1)
+sky_curve = 0.0861524
+sky_energy_multiplier = 1.59
+ground_bottom_color = Color(0.2, 0.2, 0.2, 1)
+ground_horizon_color = Color(0.465096, 0.474972, 0.490563, 1)
+
+[sub_resource type="Sky" id="Sky_evx6q"]
+sky_material = SubResource("ProceduralSkyMaterial_prx7c")
+
+[sub_resource type="Environment" id="Environment_m6mxa"]
+background_mode = 2
+sky = SubResource("Sky_evx6q")
+sky_rotation = Vector3(-0.172788, 0, 0)
+ambient_light_source = 2
+ambient_light_color = Color(0.296072, 0.322914, 0.374825, 1)
+glow_enabled = true
+
+[sub_resource type="Animation" id="Animation_8wqyk"]
+resource_name = "sequence1"
+length = 5.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("scene stuff/Camera3D:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(3.8, 4.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 1.28341, 2.8015), Vector3(0, 0.879499, 1.53654)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("scene stuff/Camera3D:rotation")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(3.8, 4.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(-0.159628, 0, 0), Vector3(-0.0950855, 0, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("scene stuff/Sprite3D:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_vftps"]
+_data = {
+"sequence1": SubResource("Animation_8wqyk")
+}
+
+[node name="map1" type="Node"]
+
+[node name="scene stuff" type="Node3D" parent="."]
+
+[node name="floor" type="MeshInstance3D" parent="scene stuff"]
+material_override = SubResource("StandardMaterial3D_jvghd")
+mesh = SubResource("PlaneMesh_tljoj")
+skeleton = NodePath("../..")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="scene stuff"]
+transform = Transform3D(-0.866024, -0.433016, 0.250001, 0, 0.499998, 0.866026, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+light_energy = 0.5
+shadow_enabled = true
+
+[node name="Camera3D" type="Camera3D" parent="scene stuff"]
+transform = Transform3D(1, 0, 0, 0, 0.987287, 0.158951, 0, -0.158951, 0.987287, 0, 1.28341, 2.8015)
+fov = 60.0
+
+[node name="OmniLight3D" type="OmniLight3D" parent="scene stuff"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.685725, 1.65688, 0.450561)
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="scene stuff"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.654936, 1.65688, 0.826637)
+light_energy = 0.5
+
+[node name="Sprite3D" type="Sprite3D" parent="scene stuff"]
+transform = Transform3D(0.09, 0, 0, 0, 0.09, 0, 0, 0, 0.09, 0, 2.09119, 0)
+cast_shadow = 0
+modulate = Color(0.580041, 0.799693, 0.864596, 1)
+billboard = 1
+texture = ExtResource("2_xwbct")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_m6mxa")
+
+[node name="aqua_edit_rig" parent="." instance=ExtResource("1_qddfw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00649655, 0, -0.0323887)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_vftps")
+}
+autoplay = "sequence1"

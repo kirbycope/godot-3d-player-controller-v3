@@ -1,0 +1,62 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://bygt48ollkenn"]
+
+[ext_resource type="Shader" uid="uid://ctc5s68igpvj6" path="res://assets/BinbunVFX/shared/shader/transparent.gdshader" id="1_t2qeb"]
+[ext_resource type="Texture2D" uid="uid://dau0lhbgg12nk" path="res://assets/BinbunVFX/magic_orbs/src/06_noise.tres" id="2_wcekx"]
+[ext_resource type="Texture2D" path="res://assets/BinbunVFX/shared/texture/spirals/spirals_04.png" id="CompressedTexture2D_wcekx"]
+
+[sub_resource type="Gradient" id="Gradient_3ncnd"]
+offsets = PackedFloat32Array(0, 0.25, 1)
+colors = PackedColorArray(0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1)
+metadata/_snap_enabled = true
+metadata/_snap_count = 8
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_moccu"]
+gradient = SubResource("Gradient_3ncnd")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0)
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_t2qeb")
+shader_parameter/mask1_texture = ExtResource("CompressedTexture2D_wcekx")
+shader_parameter/mask1_scroll = Vector2(0, 0)
+shader_parameter/mask1_scale = Vector2(1, 1)
+shader_parameter/mask1_radial = false
+shader_parameter/mask1_rotation = -0.3
+shader_parameter/use_mask2 = true
+shader_parameter/mask2_texture = ExtResource("2_wcekx")
+shader_parameter/mask2_scroll = Vector2(0.05, -0.05)
+shader_parameter/mask2_scale = Vector2(1, 0.5)
+shader_parameter/mask2_strength = 1.0
+shader_parameter/mask2_blend_mode = 5
+shader_parameter/mask2_radial = true
+shader_parameter/mask2_rotation = 0.0
+shader_parameter/use_mask3 = true
+shader_parameter/mask3_texture = SubResource("GradientTexture2D_moccu")
+shader_parameter/mask3_scroll = Vector2(0, 0)
+shader_parameter/mask3_scale = Vector2(1, 1)
+shader_parameter/mask3_strength = 1.0
+shader_parameter/mask3_blend_mode = 2
+shader_parameter/mask3_radial = false
+shader_parameter/mask3_rotation = 0.0
+shader_parameter/primary_color = Color(0.99607843, 0.8, 0.49803922, 1)
+shader_parameter/secondary_color = Color(0.9764706, 0.74509805, 0.8862745, 1)
+shader_parameter/tertiary_color = Color(0.8378515, 0.39691475, 0.48690587, 1)
+shader_parameter/use_tertiary = false
+shader_parameter/color_smoothness = 0.5
+shader_parameter/billboard = true
+shader_parameter/displacement_scale = 0.0
+shader_parameter/displacement_offset = 0.5
+shader_parameter/time_scale = 1.0
+shader_parameter/texture_scale = Vector2(1, 1)
+shader_parameter/uv_alignment = 0
+shader_parameter/emission_strength = 2.0
+shader_parameter/proximity_fade = false
+shader_parameter/proximity_fade_distance = 1.0
+shader_parameter/edge_cutoff = Vector4(0, 0, 0, 0)
+shader_parameter/alpha_smoothness = 0.954
+shader_parameter/alpha_multiplier = 1.0
+shader_parameter/alpha_mode = 0
+shader_parameter/alpha_cutoff = 0.02
+shader_parameter/dither_cutoff = 0.8

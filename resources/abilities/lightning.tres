@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="LightningAbility" load_steps=8 format=3]
+
+[ext_resource type="Texture2D" path="res://addons/3d_player_controller/assets/game_icons/lightning-storm.svg" id="spell_icon"]
+[ext_resource type="Script" path="res://scenes/lightning_ability.gd" id="1_lightning"]
+[ext_resource type="PackedScene" path="res://Le_Lu/Elemental_VFX/Scenes/VFX_Sparks_Yk1.tscn" id="2_charge"]
+[ext_resource type="PackedScene" path="res://Le_Lu/Elemental_VFX/Scenes/VFX_Explosion_Electric_B.tscn" id="2_hit"]
+[ext_resource type="AudioStream" path="res://addons/3d_player_controller/assets/tommusic/fantasy_sfx/Spells/Rock Meteor Swarm 1.ogg" id="3_channel"]
+[ext_resource type="AudioStream" path="res://addons/3d_player_controller/assets/tommusic/fantasy_sfx/Spells/Rock Meteor Throw 1.ogg" id="4_cast"]
+[ext_resource type="AudioStream" path="res://addons/3d_player_controller/assets/tommusic/fantasy_sfx/Spells/Spell Impact 3.ogg" id="5_impact"]
+
+[resource]
+script = ExtResource("1_lightning")
+display_name = "Lightning"
+icon = ExtResource("spell_icon")
+icon_color = Color(0.6, 0.8, 1, 1)
+cooldown = 8.0
+cast_time = 1.5
+energy_cost = 35.0
+fx_lifetime = 2.0
+target_mode = 1
+cast_range = 30.0
+cast_style = 2
+projectile_speed = 0.0
+channeling_vfx = ExtResource("2_charge")
+channeling_sfx = ExtResource("3_channel")
+casting_sfx = ExtResource("4_cast")
+impact_vfx = ExtResource("2_hit")
+impact_sfx = ExtResource("5_impact")
+damage = 45.0

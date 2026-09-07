@@ -1,0 +1,35 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://bve0qldjct8qx"]
+
+[ext_resource type="Shader" uid="uid://dtvdi31o1l24p" path="res://assets/BinbunVFX_Vol2/StatusFX/shader/status_overlay.gdshader" id="1_4874f"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ev5ic"]
+noise_type = 2
+seed = 2
+fractal_type = 3
+fractal_octaves = 2
+fractal_weighted_strength = 1.0
+cellular_distance_function = 3
+cellular_return_type = 6
+domain_warp_enabled = true
+domain_warp_amplitude = 100.0
+domain_warp_frequency = 0.01
+domain_warp_fractal_octaves = 1
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_4874f"]
+noise = SubResource("FastNoiseLite_ev5ic")
+seamless = true
+invert = true
+seamless_blend_skirt = 0.2
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_4874f")
+shader_parameter/effect_amount = 1.0
+shader_parameter/primary_color = Color(0.5764706, 0.8745098, 0, 1)
+shader_parameter/secondary_color = Color(0.17254902, 0.7411765, 0, 1)
+shader_parameter/emission = 2.0
+shader_parameter/color_curve = 1.0
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_4874f")
+shader_parameter/noise_scale = Vector2(0.5, 0.5)
+shader_parameter/noise_scroll = Vector2(0, 0.1)
+shader_parameter/offset = 0.02

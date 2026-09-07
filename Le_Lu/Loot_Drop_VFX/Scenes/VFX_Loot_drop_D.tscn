@@ -1,0 +1,87 @@
+[gd_scene format=3 uid="uid://bpyucc60pgywb"]
+
+[ext_resource type="Shader" path="res://Le_Lu/Loot_Drop_VFX/Shaders/s_fresnel_blink_unlit.tres" id="1_i5wq5"]
+[ext_resource type="Texture2D" uid="uid://ohya0mffk8p1" path="res://Le_Lu/Loot_Drop_VFX/Textures/T_VFX_Noise_7.PNG" id="2_tlrs6"]
+
+[sub_resource type="Gradient" id="Gradient_v7oyg"]
+offsets = PackedFloat32Array(0.150215, 0.244635, 0.579399, 0.922747, 1)
+colors = PackedColorArray(0, 0, 0, 0, 0.164706, 0, 0, 0.670588, 1, 0, 0.270588, 1, 1, 0, 0, 1, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ecrhj"]
+gradient = SubResource("Gradient_v7oyg")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_uqdx8"]
+render_priority = 0
+shader = ExtResource("1_i5wq5")
+shader_parameter/Scale = Vector2(3, 0.5)
+shader_parameter/Velocity = Vector2(0, 0.5)
+shader_parameter/Texture_Power = 0.415
+shader_parameter/Enable_BLinking = false
+shader_parameter/Blinking_speed = 2.0
+shader_parameter/min_brightness = 0.5
+shader_parameter/max_brightness2 = 1.0
+shader_parameter/invert_fresnel = true
+shader_parameter/fresnel_power = 4.7
+shader_parameter/Intensity = 1.0
+shader_parameter/Enable_Proximity_Fade = true
+shader_parameter/Proximity_Fade = 0.5
+shader_parameter/Texture = ExtResource("2_tlrs6")
+shader_parameter/Color_1D_Gradient = SubResource("GradientTexture1D_ecrhj")
+
+[sub_resource type="SphereMesh" id="SphereMesh_3yb40"]
+radius = 0.8
+height = 1.6
+radial_segments = 24
+rings = 12
+
+[sub_resource type="Gradient" id="Gradient_oc4m1"]
+offsets = PackedFloat32Array(0, 0.669528, 0.83691, 1)
+colors = PackedColorArray(0.713726, 0, 0, 0, 0.712827, 2.55374e-06, 5.02375e-07, 0.869809, 0.371817, 7.731e-07, 0, 0.939394, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_5g0ei"]
+gradient = SubResource("Gradient_oc4m1")
+
+[sub_resource type="Gradient" id="Gradient_kbgjf"]
+offsets = PackedFloat32Array(1)
+colors = PackedColorArray(1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_5agdp"]
+gradient = SubResource("Gradient_kbgjf")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nevl3"]
+render_priority = -1
+shader = ExtResource("1_i5wq5")
+shader_parameter/Scale = Vector2(3, 0.5)
+shader_parameter/Velocity = Vector2(0, 0)
+shader_parameter/Texture_Power = 1.0
+shader_parameter/Enable_BLinking = false
+shader_parameter/Blinking_speed = 3.0
+shader_parameter/min_brightness = 0.7
+shader_parameter/max_brightness2 = 1.0
+shader_parameter/invert_fresnel = true
+shader_parameter/fresnel_power = 3.435
+shader_parameter/Intensity = 1.0
+shader_parameter/Enable_Proximity_Fade = true
+shader_parameter/Proximity_Fade = 0.5
+shader_parameter/Texture = SubResource("GradientTexture2D_5agdp")
+shader_parameter/Color_1D_Gradient = SubResource("GradientTexture1D_5g0ei")
+
+[sub_resource type="SphereMesh" id="SphereMesh_xfdcu"]
+radius = 0.7
+height = 1.4
+radial_segments = 24
+rings = 12
+
+[node name="VFX_LootDrop_D" type="Node3D"]
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
+material_override = SubResource("ShaderMaterial_uqdx8")
+cast_shadow = 0
+mesh = SubResource("SphereMesh_3yb40")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="."]
+material_override = SubResource("ShaderMaterial_nevl3")
+cast_shadow = 0
+mesh = SubResource("SphereMesh_xfdcu")
+skeleton = NodePath("../..")

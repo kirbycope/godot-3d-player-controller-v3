@@ -205,8 +205,8 @@ def main():
     parser.add_argument(
         "--max-size",
         type=int,
-        default=1024,
-        help="Maximum size in pixels for the largest image edge (default: 1024)",
+        default=512,
+        help="Maximum size in pixels for the largest image edge (default: 512)",
     )
     parser.add_argument(
         "--engine",
@@ -236,5 +236,5 @@ if __name__ == "__main__":
 # Example:
 # pip install Pillow tinify
 # python3 tools/optimize_png.py
-# python3 tools/optimize_png.py . --max-size 1024
+# python3 tools/optimize_png.py . --max-size 512
 # python3 tools/optimize_png.py --engine tinypng

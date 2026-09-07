@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://t2rhqqkhivev"]
+
+[ext_resource type="PackedScene" uid="uid://d1maseg83c11b" path="res://Le_Lu/Puff_VFX/scene stuff/Objects/weaver_2_edit.tscn" id="1_ooa0j"]
+[ext_resource type="PackedScene" path="res://VFX_Puff premium pack/VFX/Scenes/VFX_Puff_style_colored.tscn" id="2_6lmuy"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mkl73"]
+albedo_color = Color(0.314316, 0.314316, 0.314316, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_tljoj"]
+size = Vector2(20, 20)
+
+[sub_resource type="Environment" id="Environment_m6mxa"]
+background_energy_multiplier = 0.3
+ambient_light_source = 2
+ambient_light_color = Color(0.296072, 0.322914, 0.374825, 1)
+tonemap_mode = 2
+glow_enabled = true
+fog_enabled = true
+fog_light_color = Color(0.0995547, 0.112246, 0.132199, 1)
+volumetric_fog_enabled = true
+
+[node name="map1" type="Node"]
+
+[node name="floor" type="MeshInstance3D" parent="."]
+material_override = SubResource("StandardMaterial3D_mkl73")
+mesh = SubResource("PlaneMesh_tljoj")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+visible = false
+light_energy = 0.4
+shadow_enabled = true
+directional_shadow_max_distance = 35.6
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 2, -2)
+light_color = Color(0.478431, 0.596078, 1, 1)
+shadow_enabled = true
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.38934, 2, 1.68731)
+light_color = Color(0.478431, 0.596078, 1, 1)
+
+[node name="OmniLight3D3" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.38934, 2, -1.80441)
+light_color = Color(1, 0.388268, 0.445186, 1)
+shadow_enabled = true
+
+[node name="OmniLight3D4" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.73142, 2, 2.16622)
+light_color = Color(1, 0.388268, 0.445186, 1)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_m6mxa")
+
+[node name="weaver_2_edit" parent="." instance=ExtResource("1_ooa0j")]
+
+[node name="VFX_Puff_StyleColored" parent="." instance=ExtResource("2_6lmuy")]

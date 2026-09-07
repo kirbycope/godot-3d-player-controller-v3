@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="HealAbility" format=3 uid="uid://dsei12l7cfx2w"]
+
+[ext_resource type="Script" uid="uid://bq81ijeojwmhx" path="res://addons/3d_player_controller/scripts/heal_ability.gd" id="1_heal"]
+[ext_resource type="Texture2D" path="res://addons/3d_player_controller/assets/game_icons/glowing-hands.svg" id="2_icon"]
+[ext_resource type="PackedScene" uid="uid://b5bt32jcigrqa" path="res://assets/BinbunVFX/magic_orbs/effects/magic_orb_small/magic_orb_small_vfx_01.tscn" id="2_charge"]
+[ext_resource type="PackedScene" path="res://Le_Lu/Heal_Protection_VFX/Scenes/VFX_Healing_W1.tscn" id="2_glow"]
+[ext_resource type="AudioStream" uid="uid://c7sxbwb3b7jeh" path="res://addons/3d_player_controller/assets/tommusic/fantasy_sfx/Spells/Waterspray 2.ogg" id="3_channel"]
+[ext_resource type="AudioStream" uid="uid://cy3vp1g1d2uk5" path="res://addons/3d_player_controller/assets/tommusic/fantasy_sfx/Spells/Wave Attack 1.ogg" id="4_cast"]
+
+[resource]
+script = ExtResource("1_heal")
+display_name = "Flash of Light"
+icon = ExtResource("2_icon")
+icon_color = Color(1, 0.84, 0, 1)
+cooldown = 6.0
+cast_time = 1.5
+energy_cost = 35.0
+fx_lifetime = 3.0
+cast_style = 2
+channeling_vfx = ExtResource("2_charge")
+channeling_sfx = ExtResource("3_channel")
+casting_sfx = ExtResource("4_cast")
+impact_vfx = ExtResource("2_glow")
+amount = 60.0

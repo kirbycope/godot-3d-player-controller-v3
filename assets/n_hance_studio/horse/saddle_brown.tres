@@ -1,0 +1,9 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://bef5c2gdae2we"]
+
+[ext_resource type="Texture2D" uid="uid://ceqg6kvjorltw" path="res://assets/n_hance_studio/horse/Textures/Saddle/T_Horse_Saddle_Br_D.png" id="1_o8x8d"]
+[ext_resource type="Texture2D" uid="uid://dhamjsegu2ain" path="res://assets/n_hance_studio/horse/Textures/Saddle/T_Horse_Saddle_N.png" id="2_hggs7"]
+
+[resource]
+albedo_texture = ExtResource("1_o8x8d")
+normal_enabled = true
+normal_texture = ExtResource("2_hggs7")

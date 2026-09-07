@@ -1,0 +1,295 @@
+[gd_scene format=3 uid="uid://bxitv5lxgjtnf"]
+
+[ext_resource type="Texture2D" uid="uid://c4tn6qvn7h7tl" path="res://Le_Lu/Vertical_Beam_VFX/Misc/textures/T_checker21.jpg" id="1_ekbpq"]
+[ext_resource type="PackedScene" uid="uid://dbao5jssqbscy" path="res://Le_Lu/Vertical_Beam_VFX/Scenes/VFX_PlasmaBeam_Blue.tscn" id="2_sgkft"]
+[ext_resource type="PackedScene" uid="uid://hrq135cn61ai" path="res://Le_Lu/Vertical_Beam_VFX/Scenes/VFX_PlasmaBeam_Red.tscn" id="3_7n5hu"]
+[ext_resource type="PackedScene" uid="uid://dm2psl30o4130" path="res://Le_Lu/Vertical_Beam_VFX/Scenes/VFX_Vertical_Hell_beam_blue.tscn" id="4_gjjim"]
+[ext_resource type="PackedScene" uid="uid://rw525wy6163u" path="res://Le_Lu/Vertical_Beam_VFX/Scenes/VFX_Vertical_Hell_beam_red.tscn" id="5_og0qi"]
+[ext_resource type="PackedScene" uid="uid://db3qe3ovsucd4" path="res://Le_Lu/Vertical_Beam_VFX/Scenes/VFX_YinYang_beam.tscn" id="6_7rx8v"]
+[ext_resource type="Texture2D" uid="uid://bvimqm3uf8gny" path="res://Le_Lu/Vertical_Beam_VFX/Textures/T_Pentagram1.png" id="7_p4ijd"]
+
+[sub_resource type="GDScript" id="GDScript_beq87"]
+resource_name = "laser_activator"
+script/source = "@tool
+extends Node
+
+@export var my_num:int = 0:
+	set(new_my_num):
+		my_num = new_my_num
+		if is_inside_tree():
+			play_all_animations(my_num)
+
+var is_autoplay: bool = true
+
+func _ready() -> void:
+	_setup_camera_and_ui()
+	_run()
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.keycode == KEY_1:
+			trigger_group(1)
+		elif event.keycode == KEY_2:
+			trigger_group(2)
+		elif event.keycode == KEY_3:
+			trigger_group(3)
+		elif event.keycode == KEY_4:
+			trigger_group(4)
+		elif event.keycode == KEY_5:
+			trigger_group(5)
+		elif event.keycode == KEY_SPACE:
+			trigger_all()
+
+func _run() -> void:
+	if not is_inside_tree():
+		return
+	
+	if is_autoplay:
+		var misc_anim := get_node_or_null("misc/AnimationPlayer") as AnimationPlayer
+		if misc_anim:
+			misc_anim.play("Init")
+
+func trigger_group(num: int) -> void:
+	my_num = num
+	play_all_animations(num)
+
+func trigger_all() -> void:
+	for i in range(1, 6):
+		play_all_animations(i)
+
+func play_all_animations(_num:int) -> void:
+	if not is_inside_tree():
+		return
+	var vfx_names: Array[String] = []
+	match _num:
+		1:
+			vfx_names = ["VFX_PlasmaBeam_Blue"]
+		2:
+			vfx_names = ["VFX_PlasmaBeam_RED"]
+		3:
+			vfx_names = ["VFX_Vertical_Hell_Beam_Blue"]
+		4:
+			vfx_names = ["VFX_Vertical_Hell_Beam_Red"]
+		5:
+			vfx_names = ["VFX_YinYang_Beam"]
+	
+	for vname in vfx_names:
+		var node := get_node_or_null(vname)
+		if node:
+			var anim = node.find_child("AnimationPlayer")
+			if anim and anim is AnimationPlayer:
+				anim.stop()
+				anim.play("Init")
+
+func _setup_camera_and_ui() -> void:
+	if Engine.is_editor_hint():
+		return
+	
+	# Add Camera3D if none exists
+	if not get_node_or_null("ShowcaseCamera"):
+		var cam := Camera3D.new()
+		cam.name = "ShowcaseCamera"
+		cam.current = true
+		cam.position = Vector3(0, 12, 22)
+		cam.rotation_degrees = Vector3(-18, 0, 0)
+		add_child(cam)
+	
+	# Add on-screen Showcase UI overlay
+	if not get_node_or_null("ShowcaseUI"):
+		var canvas := CanvasLayer.new()
+		canvas.name = "ShowcaseUI"
+		canvas.layer = 10
+		add_child(canvas)
+		
+		var panel := PanelContainer.new()
+		panel.anchors_preset = Control.PRESET_BOTTOM_WIDE
+		panel.anchor_top = 1.0
+		panel.anchor_bottom = 1.0
+		panel.offset_top = -65.0
+		panel.offset_bottom = -15.0
+		panel.offset_left = 20.0
+		panel.offset_right = -20.0
+		canvas.add_child(panel)
+		
+		var style := StyleBoxFlat.new()
+		style.bg_color = Color(0.1, 0.12, 0.18, 0.9)
+		style.set_corner_radius_all(10)
+		style.set_content_margin_all(8)
+		panel.add_theme_stylebox_override("panel", style)
+		
+		var hbox := HBoxContainer.new()
+		hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+		hbox.add_theme_constant_override("separation", 10)
+		panel.add_child(hbox)
+		
+		var label := Label.new()
+		label.text = "Beam VFX Selectors:"
+		label.add_theme_font_size_override("font_size", 14)
+		hbox.add_child(label)
+		
+		var beams = ["Plasma Blue (1)", "Plasma Red (2)", "Hell Blue (3)", "Hell Red (4)", "YinYang (5)"]
+		for i in range(beams.size()):
+			var btn := Button.new()
+			btn.text = beams[i]
+			btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+			var beam_idx = i + 1
+			btn.pressed.connect(func():
+				trigger_group(beam_idx)
+			)
+			hbox.add_child(btn)
+		
+		var all_btn := Button.new()
+		all_btn.text = "Play All (Space)"
+		all_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		all_btn.pressed.connect(trigger_all)
+		hbox.add_child(all_btn)
+		
+		var auto_btn := Button.new()
+		auto_btn.text = "Auto-Cycle: ON"
+		auto_btn.toggle_mode = true
+		auto_btn.button_pressed = true
+		auto_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		auto_btn.toggled.connect(func(pressed: bool):
+			is_autoplay = pressed
+			auto_btn.text = "Auto-Cycle: ON" if pressed else "Auto-Cycle: OFF"
+			var misc_anim := get_node_or_null("misc/AnimationPlayer") as AnimationPlayer
+			if misc_anim:
+				if pressed:
+					misc_anim.play("Init")
+				else:
+					misc_anim.pause()
+		)
+		hbox.add_child(auto_btn)
+"
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_5ejys"]
+sky_top_color = Color(0.560955, 0.560955, 0.560955, 1)
+sky_horizon_color = Color(0.54099, 0.54099, 0.54099, 1)
+sky_energy_multiplier = 0.2
+ground_bottom_color = Color(0.125911, 0.125911, 0.125911, 1)
+ground_horizon_color = Color(0.259294, 0.259294, 0.259294, 1)
+
+[sub_resource type="Sky" id="Sky_24cyc"]
+sky_material = SubResource("ProceduralSkyMaterial_5ejys")
+
+[sub_resource type="Environment" id="Environment_3e2s5"]
+background_mode = 2
+background_energy_multiplier = 0.0
+sky = SubResource("Sky_24cyc")
+tonemap_mode = 2
+glow_enabled = true
+fog_enabled = true
+fog_light_color = Color(0.116499, 0.138213, 0.140188, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r1w28"]
+albedo_texture = ExtResource("1_ekbpq")
+uv1_scale = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ulry2"]
+size = Vector2(1000, 1000)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fw6om"]
+diffuse_mode = 3
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 0.2
+
+[sub_resource type="SphereMesh" id="SphereMesh_tqjw2"]
+radius = 0.4
+height = 0.8
+
+[sub_resource type="Animation" id="Animation_0ny6j"]
+resource_name = "Init"
+length = 12.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../..:my_num")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.633333, 1.43333, 3.96667, 6.43333, 9.06667, 11.5333),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_54wr8"]
+_data = {
+"Init": SubResource("Animation_0ny6j")
+}
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qxbwe"]
+blend_mode = 1
+diffuse_mode = 3
+specular_mode = 1
+disable_ambient_light = true
+disable_fog = true
+albedo_texture = ExtResource("7_p4ijd")
+metallic_specular = 1.0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_w7y76"]
+size = Vector2(25, 25)
+
+[node name="Map1_vertical_beam_showcase" type="Node"]
+script = SubResource("GDScript_beq87")
+my_num = 5
+
+[node name="misc" type="Node" parent="."]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="misc"]
+transform = Transform3D(-0.789168, -0.613928, -0.0174937, -0.0312845, 0.0117356, 0.999442, -0.61338, 0.789275, -0.0284678, 0, 0, 0)
+light_energy = 0.02
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="misc"]
+environment = SubResource("Environment_3e2s5")
+
+[node name="Floor" type="MeshInstance3D" parent="misc"]
+material_override = SubResource("StandardMaterial3D_r1w28")
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_ulry2")
+skeleton = NodePath("../..")
+
+[node name="sphere1" type="MeshInstance3D" parent="misc"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.23215, 0)
+material_override = SubResource("StandardMaterial3D_fw6om")
+mesh = SubResource("SphereMesh_tqjw2")
+skeleton = NodePath("../..")
+
+[node name="SpotLight3D" type="SpotLight3D" parent="misc/sphere1"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 5.09488, 1.3168e-08)
+light_energy = 2.0
+shadow_enabled = true
+spot_range = 10.0
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="misc"]
+libraries = {
+"": SubResource("AnimationLibrary_54wr8")
+}
+autoplay = "Init"
+
+[node name="pentagram" type="MeshInstance3D" parent="misc"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.000445366, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_qxbwe")
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_w7y76")
+skeleton = NodePath("../..")
+
+[node name="VFX_PlasmaBeam_Blue" parent="." instance=ExtResource("2_sgkft")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.105, -4.76837e-07, -3.46303)
+
+[node name="VFX_PlasmaBeam_RED" parent="." instance=ExtResource("3_7n5hu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00824624, -4.76837e-07, -11.8519)
+
+[node name="VFX_Vertical_Hell_Beam_Blue" parent="." instance=ExtResource("4_gjjim")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 11.0733, 1.90735e-06, -3.60004)
+
+[node name="VFX_Vertical_Hell_Beam_Red" parent="." instance=ExtResource("5_og0qi")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -7.18988, 1.90735e-06, 9.55066)
+
+[node name="VFX_YinYang_Beam" parent="." instance=ExtResource("6_7rx8v")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.92378, 0, 9.59743)

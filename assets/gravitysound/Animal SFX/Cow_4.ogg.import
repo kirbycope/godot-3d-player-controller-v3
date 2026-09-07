@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dvu3n8gbs81e8"
+path="res://.godot/imported/Cow_4.ogg-d6680422047673f8f5e63e3882101d8e.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Cow_4.ogg"
+dest_files=["res://.godot/imported/Cow_4.ogg-d6680422047673f8f5e63e3882101d8e.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

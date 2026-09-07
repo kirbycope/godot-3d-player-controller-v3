@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="Lure" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/lure.gd" id="1_lure"]
+[ext_resource type="Texture2D" path="res://resources/lures/worm.svg" id="2_icon"]
+
+[resource]
+script = ExtResource("1_lure")
+id = &"worm"
+display_name = "Worm"
+description = "Wriggles on the hook. Catfish cannot resist it; use it from the inventory to put it on the line."
+icon = ExtResource("2_icon")
+category = 1
+max_stack = 99
+consumable = false

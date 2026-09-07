@@ -1,0 +1,12 @@
+godot-cpp/
+*.obj
+*.os
+*.o
+.sconsign.dblite
+bin/*.exp
+bin/*.lib
+bin/*.pdb
+bin/*.ilk
+__pycache__/
+compile_commands.json
+*.pdb

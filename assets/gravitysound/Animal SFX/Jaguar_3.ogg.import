@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dcfpafbc78r8m"
+path="res://.godot/imported/Jaguar_3.ogg-5b0cab63bdfcd3af7dd0e08bfdf7380a.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Jaguar_3.ogg"
+dest_files=["res://.godot/imported/Jaguar_3.ogg-5b0cab63bdfcd3af7dd0e08bfdf7380a.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

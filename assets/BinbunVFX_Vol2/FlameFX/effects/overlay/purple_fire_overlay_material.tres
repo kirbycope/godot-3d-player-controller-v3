@@ -1,0 +1,46 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://drrt7ilws5lj"]
+
+[ext_resource type="Shader" uid="uid://bnlfad3bgnecr" path="res://assets/BinbunVFX_Vol2/FlameFX/shader/fire_overlay.gdshader" id="1_dfqwy"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_rpn5q"]
+noise_type = 2
+seed = 10
+frequency = 0.008
+fractal_type = 2
+fractal_octaves = 1
+fractal_lacunarity = 1.1
+fractal_weighted_strength = 1.0
+cellular_return_type = 6
+domain_warp_type = 1
+domain_warp_amplitude = 40.0
+domain_warp_frequency = 0.01
+domain_warp_fractal_type = 2
+domain_warp_fractal_octaves = 2
+domain_warp_fractal_lacunarity = 1.5
+domain_warp_fractal_gain = 2.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_dfqwy"]
+noise = SubResource("FastNoiseLite_rpn5q")
+seamless = true
+invert = true
+seamless_blend_skirt = 0.2
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_dfqwy")
+shader_parameter/primary_color = Color(0.7764706, 0.7137255, 1, 1)
+shader_parameter/secondary_color = Color(0.0627451, 0, 0.972549, 1)
+shader_parameter/emission = 4.0
+shader_parameter/color_curve = 1.0
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_dfqwy")
+shader_parameter/noise_scale = Vector2(1.5, 1.5)
+shader_parameter/noise_scroll = Vector2(0, 0.3)
+shader_parameter/edge_bottom = 0.1
+shader_parameter/edge_top = 0.9
+shader_parameter/wobble_amount = 0.3
+shader_parameter/wobble_frequency = 24.0
+shader_parameter/wobble_scroll = 10.0
+shader_parameter/grow_offset = 0.03
+shader_parameter/offset_animation = 0.02
+shader_parameter/effect_amount = 1.0
+shader_parameter/speed_scale = 1.0

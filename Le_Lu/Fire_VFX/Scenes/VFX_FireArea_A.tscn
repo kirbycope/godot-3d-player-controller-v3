@@ -1,0 +1,90 @@
+[gd_scene format=3 uid="uid://xkju7gsgmw57"]
+
+[ext_resource type="Texture2D" uid="uid://ddh1e1v3ep343" path="res://Le_Lu/Fire_VFX/textures/T_FireBblunt5_Flipbook.png" id="1_cka4f"]
+[ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/s_distortion_FC.tres" id="2_rwycj"]
+[ext_resource type="Texture2D" uid="uid://c0awlx26qatxa" path="res://Le_Lu/Fire_VFX/textures/T_GW_WaterNormal_01_b.PNG" id="3_jk5im"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sk5yv"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+vertex_color_is_srgb = true
+albedo_texture = ExtResource("1_cka4f")
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 8
+particles_anim_v_frames = 8
+particles_anim_loop = true
+proximity_fade_enabled = true
+proximity_fade_distance = 0.3
+
+[sub_resource type="Curve" id="Curve_k18k0"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.156109, 1), 0.0, 0.0, 0, 0, Vector2(0.816742, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="CurveTexture" id="CurveTexture_cgrgh"]
+texture_mode = 1
+curve = SubResource("Curve_k18k0")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_psgf0"]
+emission_shape = 6
+emission_ring_axis = Vector3(0, 1, 0)
+emission_ring_height = 0.0
+emission_ring_radius = 1.56
+emission_ring_inner_radius = 0.0
+gravity = Vector3(0, 0, 0)
+scale_min = 3.0
+scale_max = 4.3
+color = Color(1.1, 1.1, 1.1, 1)
+alpha_curve = SubResource("CurveTexture_cgrgh")
+anim_speed_min = 2.0
+anim_speed_max = 2.2
+
+[sub_resource type="QuadMesh" id="QuadMesh_akros"]
+center_offset = Vector3(0, 0.4, 0)
+
+[sub_resource type="Gradient" id="Gradient_pc8hf"]
+interpolation_color_space = 1
+offsets = PackedFloat32Array(0.270833, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_wf2oc"]
+gradient = SubResource("Gradient_pc8hf")
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.508547)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nyj7h"]
+render_priority = -2
+shader = ExtResource("2_rwycj")
+shader_parameter/Soft_Distortion = false
+shader_parameter/Scale_Water = Vector2(1, 1)
+shader_parameter/Speed_X_Y = Vector2(0.1, 0.5)
+shader_parameter/RefStregnht = 0.035
+shader_parameter/NORMAL_MAP_WATER = ExtResource("3_jk5im")
+shader_parameter/Texture_mask = SubResource("GradientTexture2D_wf2oc")
+
+[sub_resource type="QuadMesh" id="QuadMesh_uxq3h"]
+size = Vector2(4.5, 4.5)
+
+[node name="VFX_FireArea_A" type="Node3D"]
+
+[node name="FireArea_A" type="GPUParticles3D" parent="."]
+layers = 4
+material_override = SubResource("StandardMaterial3D_sk5yv")
+cast_shadow = 0
+amount = 10
+lifetime = 4.0
+fixed_fps = 60
+visibility_aabb = AABB(-2.975, -0.805, -2.945, 6.38, 4.315, 5.805)
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_psgf0")
+draw_pass_1 = SubResource("QuadMesh_akros")
+
+[node name="distortionPlanc" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0643845, 2.92171, 0)
+layers = 4
+material_override = SubResource("ShaderMaterial_nyj7h")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_uxq3h")
+skeleton = NodePath("../..")

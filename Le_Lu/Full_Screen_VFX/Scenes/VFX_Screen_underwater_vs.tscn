@@ -1,0 +1,45 @@
+[gd_scene format=3 uid="uid://dj114tiqqph0u"]
+
+[ext_resource type="Shader" path="res://Le_Lu/Full_Screen_VFX/shaders/s_fullscreen_underwater.tres" id="1_4nfvs"]
+[ext_resource type="Texture2D" uid="uid://c0awlx26qatxa" path="res://Le_Lu/Full_Screen_VFX/textures/T_GW_WaterNormal_01_b.PNG" id="2_gax8x"]
+
+
+[sub_resource type="Gradient" id="Gradient_w5hjr"]
+interpolation_color_space = 1
+offsets = PackedFloat32Array(0.840678, 1)
+colors = PackedColorArray(0, 0, 0, 0, 0.2322, 0.275057, 0.43, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_6qa5s"]
+gradient = SubResource("Gradient_w5hjr")
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="Gradient" id="Gradient_u0e5v"]
+offsets = PackedFloat32Array(0, 0.301695, 0.535593, 1)
+colors = PackedColorArray(0.42, 0.806667, 1, 0, 0.3, 0.79, 1, 0.490196, 0.259806, 0.654965, 1, 0.660956, 0.18, 0.549, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_cbgdq"]
+gradient = SubResource("Gradient_u0e5v")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jaqoa"]
+render_priority = 0
+shader = ExtResource("1_4nfvs")
+shader_parameter/Screen_Distortion_Speed = Vector2(0.2, 0.2)
+shader_parameter/Screen_Distortion_Scale = Vector2(1, 1)
+shader_parameter/Screen_distortioness = 0.065
+shader_parameter/DepthFog2 = 20.0
+shader_parameter/Border_distortionness = 0.651
+shader_parameter/Screen_Normal_Map_DIstortion = ExtResource("2_gax8x")
+shader_parameter/Gradient_Color1D2 = SubResource("GradientTexture1D_cbgdq")
+shader_parameter/Border_Mask = SubResource("GradientTexture2D_6qa5s")
+
+[sub_resource type="QuadMesh" id="QuadMesh_dnupf"]
+size = Vector2(2, 2)
+
+[node name="VFX_Screen_underwater_vs" type="MeshInstance3D"]
+visible = false
+layers = 4
+material_override = SubResource("ShaderMaterial_jaqoa")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_dnupf")

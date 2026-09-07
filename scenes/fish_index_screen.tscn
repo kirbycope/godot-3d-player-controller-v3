@@ -1,0 +1,136 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://scenes/fish_index_screen.gd" id="1_screen"]
+[ext_resource type="PackedScene" path="res://scenes/fish_model.tscn" id="2_model"]
+[ext_resource type="Resource" path="res://resources/fish/carp.tres" id="3_carp"]
+[ext_resource type="Resource" path="res://resources/fish/perch.tres" id="4_perch"]
+[ext_resource type="Resource" path="res://resources/fish/catfish.tres" id="5_catfish"]
+[ext_resource type="Resource" path="res://resources/fish/rainbow_trout.tres" id="6_trout"]
+[ext_resource type="Resource" path="res://resources/fish/koi.tres" id="7_koi"]
+[ext_resource type="Resource" path="res://resources/fish/old_boot.tres" id="8_boot"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+content_margin_left = 16.0
+content_margin_top = 12.0
+content_margin_right = 16.0
+content_margin_bottom = 12.0
+bg_color = Color(0.06, 0.08, 0.1, 0.92)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 0.85, 0.35, 0.7)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="LabelSettings" id="LabelSettings_title"]
+font_size = 22
+outline_size = 3
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_record"]
+font_size = 14
+font_color = Color(1, 0.85, 0.35, 1)
+
+[node name="FishIndexScreen" type="CanvasLayer"]
+visible = false
+script = ExtResource("1_screen")
+species = Array[Resource]([ExtResource("3_carp"), ExtResource("4_perch"), ExtResource("5_catfish"), ExtResource("6_trout"), ExtResource("7_koi"), ExtResource("8_boot")])
+placeholder_model = ExtResource("2_model")
+
+[node name="Panel" type="PanelContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -340.0
+offset_top = -220.0
+offset_right = 340.0
+offset_bottom = 220.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+label_settings = SubResource("LabelSettings_title")
+text = "Fish Index"
+horizontal_alignment = 1
+
+[node name="Body" type="HBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 16
+
+[node name="Scroll" type="ScrollContainer" parent="Panel/VBox/Body"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="List" type="VBoxContainer" parent="Panel/VBox/Body/Scroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[node name="Details" type="VBoxContainer" parent="Panel/VBox/Body"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="Preview" type="SubViewportContainer" parent="Panel/VBox/Body/Details"]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 2
+size_flags_horizontal = 4
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="Panel/VBox/Body/Details/Preview"]
+own_world_3d = true
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(200, 200)
+render_target_update_mode = 4
+
+[node name="ModelPivot" type="Node3D" parent="Panel/VBox/Body/Details/Preview/SubViewport"]
+unique_name_in_owner = true
+
+[node name="ModelCamera" type="Camera3D" parent="Panel/VBox/Body/Details/Preview/SubViewport"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 0.866, 0.5, 0, -0.5, 0.866, 0, 1, 1.732)
+projection = 1
+size = 0.5
+
+[node name="Light" type="DirectionalLight3D" parent="Panel/VBox/Body/Details/Preview/SubViewport"]
+transform = Transform3D(0.86603, -0.38302, 0.32139, 0, 0.64279, 0.76604, -0.5, -0.66341, 0.55667, 0, 2, 2)
+
+[node name="NameLabel" type="Label" parent="Panel/VBox/Body/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+label_settings = SubResource("LabelSettings_title")
+horizontal_alignment = 1
+
+[node name="RecordLabel" type="Label" parent="Panel/VBox/Body/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+label_settings = SubResource("LabelSettings_record")
+horizontal_alignment = 1
+
+[node name="ConditionsLabel" type="Label" parent="Panel/VBox/Body/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+autowrap_mode = 3
+
+[node name="Back" type="Button" parent="Panel/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(96, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Back"

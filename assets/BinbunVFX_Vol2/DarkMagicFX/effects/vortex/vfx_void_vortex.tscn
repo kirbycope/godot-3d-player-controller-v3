@@ -1,0 +1,174 @@
+[gd_scene format=3 uid="uid://cpxrcbj1nka86"]
+
+[ext_resource type="Script" uid="uid://bgn2iqm866w2o" path="res://assets/BinbunVFX_Vol2/DarkMagicFX/script/VFXDarkVortexBB.gd" id="1_uc16k"]
+[ext_resource type="Shader" uid="uid://cad00j0afue5o" path="res://assets/BinbunVFX_Vol2/DarkMagicFX/shader/dark_vortex.gdshader" id="2_vuol6"]
+[ext_resource type="Shader" uid="uid://s4o4j48gdsfr" path="res://assets/BinbunVFX_Vol2/DarkMagicFX/shader/area_dark.gdshader" id="3_mn202"]
+[ext_resource type="Script" uid="uid://bwmucxp58uvvt" path="res://assets/BinbunVFX_Vol2/shared/script/VFXOmniLightBB.gd" id="4_443o3"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_eiw7b"]
+seed = 3
+fractal_type = 2
+fractal_octaves = 2
+fractal_lacunarity = 1.5
+fractal_weighted_strength = 1.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_uc16k"]
+generate_mipmaps = false
+noise = SubResource("FastNoiseLite_eiw7b")
+seamless = true
+invert = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jengk"]
+render_priority = 0
+shader = ExtResource("2_vuol6")
+shader_parameter/effect_decay = 0.0
+shader_parameter/primary_color = Color(0.9372549, 0.10980392, 1, 1)
+shader_parameter/secondary_color = Color(0, 0.3019608, 0.78431374, 1)
+shader_parameter/emission = 4.0
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_uc16k")
+shader_parameter/noise_scale = Vector2(1, 1)
+shader_parameter/noise_scroll = Vector2(0, 0.2)
+shader_parameter/noise_shape = 1.0
+shader_parameter/wave_strength = 0.5
+shader_parameter/wave_frequency = 5.0
+shader_parameter/edge_position = 0.05
+shader_parameter/edge_hardness = 0.0
+shader_parameter/speed_scale = 1.0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_xxuge"]
+size = Vector2(3.2, 3.2)
+subdivide_width = 32
+subdivide_depth = 32
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sucbf"]
+render_priority = 0
+shader = ExtResource("3_mn202")
+shader_parameter/effect_decay = 0.0
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_uc16k")
+shader_parameter/noise_scale = Vector2(1, 1)
+shader_parameter/noise_scroll = Vector2(0, 0.2)
+shader_parameter/noise_shape = 1.0
+shader_parameter/wave_strength = 0.5
+shader_parameter/wave_frequency = 5.0
+shader_parameter/edge_position = 0.05
+shader_parameter/edge_hardness = 0.0
+shader_parameter/speed_scale = 1.0
+
+[sub_resource type="Animation" id="Animation_o06rl"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Mist:material_override:shader_parameter/effect_decay")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Vortex:material_override:shader_parameter/effect_decay")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("VFXOmniLightBB:light_mult")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_vwh8n"]
+resource_name = "open"
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Mist:material_override:shader_parameter/effect_decay")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(0.6, 1),
+"update": 0,
+"values": [0.999999977648, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Vortex:material_override:shader_parameter/effect_decay")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.59999996),
+"transitions": PackedFloat32Array(0.4, 1),
+"update": 0,
+"values": [0.999999977648, 0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("VFXOmniLightBB:light_mult")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(0.5, 1),
+"update": 0,
+"values": [0.0, 1.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_5y53p"]
+_data = {
+&"RESET": SubResource("Animation_o06rl"),
+&"open": SubResource("Animation_vwh8n")
+}
+
+[node name="VFXVoidVortex" type="Node3D" unique_id=2117634650]
+script = ExtResource("1_uc16k")
+primary_color = Color(0.9372549, 0.10980392, 1, 1)
+secondary_color = Color(0, 0.3019608, 0.78431374, 1)
+light_color = Color(0.9372549, 0.10980392, 1, 1)
+noise_texture = SubResource("NoiseTexture2D_uc16k")
+
+[node name="Vortex" type="MeshInstance3D" parent="." unique_id=1559370183]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+material_override = SubResource("ShaderMaterial_jengk")
+mesh = SubResource("PlaneMesh_xxuge")
+
+[node name="Mist" type="MeshInstance3D" parent="." unique_id=782545075]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
+material_override = SubResource("ShaderMaterial_sucbf")
+mesh = SubResource("PlaneMesh_xxuge")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1319466010]
+libraries/ = SubResource("AnimationLibrary_5y53p")
+
+[node name="VFXOmniLightBB" type="OmniLight3D" parent="." unique_id=294597232]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
+light_color = Color(0.9372549, 0.10980392, 1, 1)
+light_energy = 0.0
+light_indirect_energy = 0.0
+light_volumetric_fog_energy = 0.0
+script = ExtResource("4_443o3")
+light_mult = 0.0
+vfx_light_energy = 4.0
+metadata/_custom_type_script = "uid://bwmucxp58uvvt"
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=703179107]
+max_distance = 3.0

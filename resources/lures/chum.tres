@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="Lure" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/lure.gd" id="1_lure"]
+[ext_resource type="Texture2D" path="res://resources/lures/worm.svg" id="2_icon"]
+
+[resource]
+script = ExtResource("1_lure")
+id = &"chum"
+display_name = "Chum"
+description = "A fish ruined by a bullet, good only for the smell. Anything bites on it, sooner, and from further off, and every bite eats a piece."
+icon = ExtResource("2_icon")
+icon_color = Color(0.7, 0.25, 0.2, 1)
+category = 1
+max_stack = 99
+consumable = true
+bite_time_scale = 0.5
+attract_range_bonus = 1.5

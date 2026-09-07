@@ -1,0 +1,167 @@
+[gd_scene format=3 uid="uid://2xsgo4hsluck"]
+
+[ext_resource type="Script" uid="uid://5omh5e4bi5hw" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/script/VFXElementalCastBB.gd" id="1_fge3s"]
+[ext_resource type="Shader" uid="uid://bxrddnxxbn5ea" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/shader/cast_flare.gdshader" id="2_8a88a"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_vgu1i"]
+noise_type = 2
+seed = 2
+fractal_type = 3
+fractal_octaves = 2
+fractal_weighted_strength = 1.0
+cellular_distance_function = 3
+cellular_return_type = 6
+domain_warp_enabled = true
+domain_warp_amplitude = 100.0
+domain_warp_frequency = 0.01
+domain_warp_fractal_octaves = 1
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_fge3s"]
+noise = SubResource("FastNoiseLite_vgu1i")
+seamless = true
+invert = true
+seamless_blend_skirt = 0.2
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6c80k"]
+render_priority = 0
+shader = ExtResource("2_8a88a")
+shader_parameter/primary_color = Color(0.74509805, 0.8352941, 0, 1)
+shader_parameter/secondary_color = Color(0.17254902, 0.7411765, 0, 1)
+shader_parameter/emission = 4.0
+shader_parameter/color_curve = 1.0
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_fge3s")
+shader_parameter/noise_scale = Vector2(1, 4)
+shader_parameter/noise_scroll = Vector2(0.1, 0.3)
+shader_parameter/shape_curve = 0.5
+shader_parameter/grow_amount = 0.0
+shader_parameter/edge_hardness = 0.5
+shader_parameter/edge_position = 0.2
+
+[sub_resource type="SphereMesh" id="SphereMesh_ppcxl"]
+radius = 1.6
+height = 3.0
+radial_segments = 24
+rings = 16
+
+[sub_resource type="SphereMesh" id="SphereMesh_i12ct"]
+radius = 1.4
+height = 5.0
+radial_segments = 24
+rings = 24
+
+[sub_resource type="SphereMesh" id="SphereMesh_5xhmx"]
+radius = 1.2
+height = 8.0
+radial_segments = 24
+rings = 24
+
+[sub_resource type="Animation" id="Animation_5b247"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Flare_01:material_override:shader_parameter/grow_amount")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AudioStreamPlayer3D:playing")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_5dgfd"]
+resource_name = "main"
+length = 0.8
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Flare_01:material_override:shader_parameter/grow_amount")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.8),
+"transitions": PackedFloat32Array(2, 0.5, 2, 1),
+"update": 0,
+"values": [0.0, 0.29615822, 0.6040890011936426, 1.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AudioStreamPlayer3D:playing")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.1),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_5hfv4"]
+resource_name = "stop"
+length = 0.8
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Flare_01:material_override:shader_parameter/grow_amount")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(2),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_oo3fn"]
+_data = {
+&"RESET": SubResource("Animation_5b247"),
+&"main": SubResource("Animation_5dgfd"),
+&"stop": SubResource("Animation_5hfv4")
+}
+
+[node name="VFXNatureCast_01" type="Node3D" unique_id=1999681067]
+script = ExtResource("1_fge3s")
+primary_color = Color(0.74509805, 0.8352941, 0, 1)
+secondary_color = Color(0.17254902, 0.7411765, 0, 1)
+emission = 4.0
+noise_texture = SubResource("NoiseTexture2D_fge3s")
+noise_scale = Vector2(1, 4)
+shape_curve = 0.5
+edge_hardness = 0.5
+
+[node name="Flare_01" type="MeshInstance3D" parent="." unique_id=672088028]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 1.5, 0, 0)
+material_override = SubResource("ShaderMaterial_6c80k")
+mesh = SubResource("SphereMesh_ppcxl")
+
+[node name="Flare_02" type="MeshInstance3D" parent="." unique_id=104275189]
+transform = Transform3D(-4.371139e-08, 1, 0, -0.49999997, -2.1855692e-08, -0.86602545, -0.86602545, -3.7855173e-08, 0.49999997, 2.5, 0, 0)
+material_override = SubResource("ShaderMaterial_6c80k")
+mesh = SubResource("SphereMesh_i12ct")
+
+[node name="Flare_03" type="MeshInstance3D" parent="." unique_id=1309226392]
+transform = Transform3D(-4.371139e-08, 1, 0, 0.50000006, 2.1855696e-08, -0.8660254, -0.8660254, -3.7855173e-08, -0.50000006, 4, 0, 0)
+material_override = SubResource("ShaderMaterial_6c80k")
+mesh = SubResource("SphereMesh_5xhmx")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=2084087267]
+max_distance = 3.0
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1347219445]
+libraries/ = SubResource("AnimationLibrary_oo3fn")

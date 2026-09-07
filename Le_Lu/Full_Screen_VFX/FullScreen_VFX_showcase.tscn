@@ -1,0 +1,851 @@
+[gd_scene format=3 uid="uid://cyxfqt4p63fad"]
+
+[ext_resource type="ArrayMesh" uid="uid://bse4r7ane1sm" path="res://Le_Lu/Full_Screen_VFX/Misc/sm_cubex_city.obj" id="1_3sejg"]
+[ext_resource type="Texture2D" uid="uid://7i52d7wddjmx" path="res://Le_Lu/Full_Screen_VFX/Misc/textures/T_cubex_city_atlas.png" id="1_opu52"]
+[ext_resource type="Texture2D" uid="uid://su80ghyglreo" path="res://Le_Lu/Full_Screen_VFX/Misc/cracked_concrete_wall_nor_gl_1k.jpg" id="2_uw4dj"]
+[ext_resource type="Texture2D" uid="uid://dxto7tyd0q71m" path="res://Le_Lu/Full_Screen_VFX/Misc/cracked_concrete_wall_rough_1k.jpg" id="3_gyskb"]
+[ext_resource type="Shader" path="res://Le_Lu/Full_Screen_VFX/shaders/s_animated_ds_unlit_bw_aT_instanced.gdshader" id="5_4k3pf"]
+[ext_resource type="Texture2D" uid="uid://dbtonqfugetlp" path="res://Le_Lu/Full_Screen_VFX/Misc/textures/T_T3xt_5CR33N.png" id="6_xx6v1"]
+[ext_resource type="PackedScene" uid="uid://dygfvjn4u3hi7" path="res://Le_Lu/Full_Screen_VFX/Scenes/VFX_Screen_Bloody.tscn" id="7_2qg0t"]
+[ext_resource type="PackedScene" uid="uid://bq45fs7vnmvgn" path="res://Le_Lu/Full_Screen_VFX/Scenes/VFX_Screen_Burning_A.tscn" id="8_qfaya"]
+[ext_resource type="PackedScene" uid="uid://rvquptv7uiru" path="res://Le_Lu/Full_Screen_VFX/Scenes/VFX_Screen_Burning_B.tscn" id="9_nwfwc"]
+[ext_resource type="PackedScene" uid="uid://bynrdrbcw10ke" path="res://Le_Lu/Full_Screen_VFX/Scenes/VFX_Screen_Electrified.tscn" id="10_67v8o"]
+[ext_resource type="PackedScene" uid="uid://d4gn23nf10y4l" path="res://Le_Lu/Full_Screen_VFX/Scenes/VFX_Screen_Forst.tscn" id="11_crl8m"]
+[ext_resource type="PackedScene" uid="uid://c8vaikb16if1x" path="res://Le_Lu/Full_Screen_VFX/Scenes/VFX_Screen_GlassCut.tscn" id="12_jiav2"]
+[ext_resource type="PackedScene" uid="uid://ck007b4du5rmq" path="res://Le_Lu/Full_Screen_VFX/Scenes/VFX_Screen_Glitch.tscn" id="13_kd3w7"]
+[ext_resource type="PackedScene" uid="uid://6xagxp3mhphd" path="res://Le_Lu/Full_Screen_VFX/Scenes/VFX_Screen_Healing.tscn" id="14_rebfp"]
+[ext_resource type="PackedScene" uid="uid://dfu4uenwcfxwh" path="res://Le_Lu/Full_Screen_VFX/Scenes/VFX_Screen_Matrix.tscn" id="15_4bb6r"]
+[ext_resource type="PackedScene" uid="uid://bah06ppliaf10" path="res://Le_Lu/Full_Screen_VFX/Scenes/VFX_Screen_Moody.tscn" id="16_yecy7"]
+[ext_resource type="PackedScene" uid="uid://c7qkcfyimr17j" path="res://Le_Lu/Full_Screen_VFX/Scenes/VFX_Screen_Poisoned.tscn" id="17_t3v7j"]
+[ext_resource type="PackedScene" uid="uid://dfld6bgi1lt6r" path="res://Le_Lu/Full_Screen_VFX/Scenes/VFX_Screen_RainDrops.tscn" id="18_883cu"]
+[ext_resource type="PackedScene" uid="uid://13mwl12xa4pi" path="res://Le_Lu/Full_Screen_VFX/Scenes/VFX_Screen_SciFi_Scan.tscn" id="19_nh12a"]
+[ext_resource type="PackedScene" uid="uid://rjvh30enneit" path="res://Le_Lu/Full_Screen_VFX/Scenes/VFX_Screen_Smug.tscn" id="20_xacy1"]
+[ext_resource type="PackedScene" uid="uid://dq0opfhyrbv5p" path="res://Le_Lu/Full_Screen_VFX/Scenes/VFX_Screen_Snowdrop.tscn" id="21_opriq"]
+[ext_resource type="PackedScene" uid="uid://cjw53y12uhrpw" path="res://Le_Lu/Full_Screen_VFX/Scenes/VFX_Screen_Speed_Lines.tscn" id="22_nhwsv"]
+[ext_resource type="PackedScene" uid="uid://dgoayxf340awt" path="res://Le_Lu/Full_Screen_VFX/Scenes/VFX_Screen_Speed_Lines_w_radial_blur.tscn" id="23_ak8ux"]
+[ext_resource type="PackedScene" uid="uid://dghndlpwqvevq" path="res://Le_Lu/Full_Screen_VFX/Scenes/VFX_Screen_underwater_blur_ss.tscn" id="24_ayf2s"]
+[ext_resource type="ArrayMesh" uid="uid://bivaq234c7m1x" path="res://Le_Lu/Full_Screen_VFX/Misc/sm_text_frame_scrn.obj" id="25_ejdd7"]
+
+[sub_resource type="GDScript" id="GDScript_3pnxd"]
+resource_name = "vfx_showcaser_screeneffects"
+script/source = "@tool
+extends Node
+
+
+@export var my_num:int = 0:
+	set(new_my_num):
+		my_num = new_my_num
+		self.play_all_animations(my_num)
+
+@export var screen_vfx :Array[MeshInstance3D]
+
+func _ready() -> void:
+	$map_stuff/AnimationPlayer.play("Init")
+
+func _run():
+	$map_stuff/AnimationPlayer.play("Init")
+
+func play_all_animations(_num:int)->void:
+	
+	match _num:
+		1:
+			screen_vfx[0].find_child("AnimationPlayer").play("Start")
+			screen_vfx[1].find_child("AnimationPlayer").play("Start")
+			screen_vfx[2].find_child("AnimationPlayer").play("Start")
+			screen_vfx[3].find_child("AnimationPlayer").play("Start")
+		2:
+			screen_vfx[4].visible = true
+			screen_vfx[5].find_child("AnimationPlayer").play("Start")
+			screen_vfx[6].find_child("AnimationPlayer").play("Start")
+			screen_vfx[7].find_child("AnimationPlayer").play("Start")
+		3:
+			screen_vfx[8].visible = true
+			screen_vfx[9].find_child("AnimationPlayer").play("Start")
+			screen_vfx[10].find_child("AnimationPlayer").play("Start")
+			screen_vfx[11].find_child("AnimationPlayer").play("Start")
+		4:
+			screen_vfx[12].find_child("AnimationPlayer").play("Start")
+			screen_vfx[13].find_child("AnimationPlayer").play("Start")
+			screen_vfx[14].find_child("AnimationPlayer").play("Start")
+		5:
+			screen_vfx[15].find_child("AnimationPlayer").play("Start")
+			screen_vfx[16].find_child("AnimationPlayer").play("Start")
+			screen_vfx[17].visible = true
+"
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_r5n87"]
+sky_top_color = Color(0, 0, 0, 1)
+sky_horizon_color = Color(0.4, 0.466667, 0.5, 1)
+ground_bottom_color = Color(0.4158, 0.49239, 0.54, 1)
+ground_horizon_color = Color(0.1326, 0.17, 0.16065, 1)
+
+[sub_resource type="Sky" id="Sky_0yoww"]
+sky_material = SubResource("ProceduralSkyMaterial_r5n87")
+
+[sub_resource type="Environment" id="Environment_332l5"]
+background_mode = 2
+background_color = Color(0.197937, 0.197937, 0.197937, 1)
+sky = SubResource("Sky_0yoww")
+ssr_max_steps = 134
+glow_enabled = true
+glow_blend_mode = 0
+fog_light_color = Color(0.6942, 0.805153, 0.89, 1)
+fog_aerial_perspective = 0.308
+fog_sky_affect = 0.0
+fog_height_density = 0.8793
+fog_depth_begin = 0.0
+fog_depth_end = 184.2
+
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_l2ftk"]
+operator = 2
+
+[sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_il4rc"]
+parameter_name = "add_Color"
+default_value_enabled = true
+
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_lasa2"]
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_1yv3t"]
+source = 5
+texture_type = 1
+
+[sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_h6mhi"]
+parameter_name = "Normal_Texture"
+texture_type = 2
+texture_repeat = 1
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_cki6v"]
+parameter_name = "Normal_INtensity"
+default_value_enabled = true
+default_value = 1.0
+
+[sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_jyjrq"]
+parameter_name = "Base_Texture"
+texture_type = 1
+texture_repeat = 1
+
+[sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_fccq0"]
+parameter_name = "Rought_Texture"
+texture_repeat = 1
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_vc8uf"]
+output_port_for_preview = 0
+expanded_output_ports = [0]
+source = 5
+texture_type = 1
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_vjgal"]
+parameter_name = "specular"
+hint = 1
+default_value_enabled = true
+default_value = 0.5
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_j4jr6"]
+output_port_for_preview = 0
+expanded_output_ports = [0]
+source = 5
+texture_type = 1
+
+[sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_dbh0d"]
+parameter_name = "Rought_gradient_1D"
+texture_repeat = 1
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_vh86o"]
+source = 5
+texture_type = 1
+
+[sub_resource type="VisualShaderNodeUVFunc" id="VisualShaderNodeUVFunc_4f5kb"]
+
+[sub_resource type="VisualShaderNodeUVFunc" id="VisualShaderNodeUVFunc_sgdkh"]
+function = 1
+
+[sub_resource type="VisualShaderNodeVec2Parameter" id="VisualShaderNodeVec2Parameter_pim8n"]
+parameter_name = "offset"
+
+[sub_resource type="VisualShaderNodeVec2Parameter" id="VisualShaderNodeVec2Parameter_i7kqd"]
+parameter_name = "scale"
+default_value_enabled = true
+default_value = Vector2(1, 1)
+
+[sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_5n0xj"]
+parameter_name = "add_Texture"
+texture_type = 1
+texture_repeat = 2
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_efkvg"]
+expanded_output_ports = [0]
+source = 5
+texture_type = 1
+
+[sub_resource type="VisualShader" id="VisualShader_r6ij3"]
+code = "shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;
+
+uniform vec2 offset;
+uniform vec2 scale = vec2(1.000000, 1.000000);
+uniform sampler2D Base_Texture : source_color, repeat_enable;
+uniform sampler2D add_Texture : source_color, repeat_disable;
+uniform vec4 add_Color : source_color = vec4(1.000000, 1.000000, 1.000000, 1.000000);
+uniform sampler2D Rought_Texture : repeat_enable;
+uniform sampler2D Rought_gradient_1D : repeat_enable;
+uniform float specular : hint_range(0, 1) = 0.5;
+uniform sampler2D Normal_Texture : hint_normal, repeat_enable;
+uniform float Normal_INtensity = 1;
+
+
+
+void fragment() {
+// Vector2Parameter:6
+	vec2 n_out6p0 = offset;
+
+
+// UVFunc:4
+	vec2 n_in4p1 = vec2(1.00000, 1.00000);
+	vec2 n_out4p0 = n_out6p0 * n_in4p1 + UV;
+
+
+// Vector2Parameter:7
+	vec2 n_out7p0 = scale;
+
+
+// UVFunc:5
+	vec2 n_in5p2 = vec2(0.00000, 0.00000);
+	vec2 n_out5p0 = (n_out4p0 - n_in5p2) * n_out7p0 + n_in5p2;
+
+
+	vec4 n_out3p0;
+// Texture2D:3
+	n_out3p0 = texture(Base_Texture, n_out5p0);
+
+
+	vec4 n_out9p0;
+// Texture2D:9
+	n_out9p0 = texture(add_Texture, UV);
+
+
+// ColorParameter:11
+	vec4 n_out11p0 = add_Color;
+
+
+// VectorOp:10
+	vec3 n_out10p0 = vec3(n_out9p0.xyz) * vec3(n_out11p0.xyz);
+
+
+// VectorOp:12
+	vec3 n_out12p0 = vec3(n_out3p0.xyz) + n_out10p0;
+
+
+	vec4 n_out21p0;
+// Texture2D:21
+	n_out21p0 = texture(Rought_Texture, n_out5p0);
+	float n_out21p1 = n_out21p0.r;
+
+
+	vec4 n_out23p0;
+// Texture2D:23
+	n_out23p0 = texture(Rought_gradient_1D, vec2(n_out21p1));
+	float n_out23p1 = n_out23p0.r;
+
+
+// FloatParameter:22
+	float n_out22p0 = specular;
+
+
+	vec4 n_out17p0;
+// Texture2D:17
+	n_out17p0 = texture(Normal_Texture, n_out5p0);
+
+
+// FloatParameter:19
+	float n_out19p0 = Normal_INtensity;
+
+
+// Output:0
+	ALBEDO = n_out12p0;
+	ROUGHNESS = n_out23p1;
+	SPECULAR = n_out22p0;
+	NORMAL_MAP = vec3(n_out17p0.xyz);
+	NORMAL_MAP_DEPTH = n_out19p0;
+
+
+}
+"
+nodes/fragment/0/position = Vector2(520, 300)
+nodes/fragment/2/node = SubResource("VisualShaderNodeTexture2DParameter_jyjrq")
+nodes/fragment/2/position = Vector2(-780, 440)
+nodes/fragment/3/node = SubResource("VisualShaderNodeTexture_vh86o")
+nodes/fragment/3/position = Vector2(-760, 240)
+nodes/fragment/4/node = SubResource("VisualShaderNodeUVFunc_4f5kb")
+nodes/fragment/4/position = Vector2(-1440, 240)
+nodes/fragment/5/node = SubResource("VisualShaderNodeUVFunc_sgdkh")
+nodes/fragment/5/position = Vector2(-1140, 240)
+nodes/fragment/6/node = SubResource("VisualShaderNodeVec2Parameter_pim8n")
+nodes/fragment/6/position = Vector2(-1660, 500)
+nodes/fragment/7/node = SubResource("VisualShaderNodeVec2Parameter_i7kqd")
+nodes/fragment/7/position = Vector2(-1280, 500)
+nodes/fragment/8/node = SubResource("VisualShaderNodeTexture2DParameter_5n0xj")
+nodes/fragment/8/position = Vector2(-760, -440)
+nodes/fragment/9/node = SubResource("VisualShaderNodeTexture_efkvg")
+nodes/fragment/9/position = Vector2(-740, -640)
+nodes/fragment/10/node = SubResource("VisualShaderNodeVectorOp_l2ftk")
+nodes/fragment/10/position = Vector2(-360, -720)
+nodes/fragment/11/node = SubResource("VisualShaderNodeColorParameter_il4rc")
+nodes/fragment/11/position = Vector2(-360, -420)
+nodes/fragment/12/node = SubResource("VisualShaderNodeVectorOp_lasa2")
+nodes/fragment/12/position = Vector2(-40, 220)
+nodes/fragment/17/node = SubResource("VisualShaderNodeTexture_1yv3t")
+nodes/fragment/17/position = Vector2(-840, 1000)
+nodes/fragment/18/node = SubResource("VisualShaderNodeTexture2DParameter_h6mhi")
+nodes/fragment/18/position = Vector2(-860, 1200)
+nodes/fragment/19/node = SubResource("VisualShaderNodeFloatParameter_cki6v")
+nodes/fragment/19/position = Vector2(60, 980)
+nodes/fragment/20/node = SubResource("VisualShaderNodeTexture2DParameter_fccq0")
+nodes/fragment/20/position = Vector2(-840, 1740)
+nodes/fragment/21/node = SubResource("VisualShaderNodeTexture_vc8uf")
+nodes/fragment/21/position = Vector2(-820, 1540)
+nodes/fragment/22/node = SubResource("VisualShaderNodeFloatParameter_vjgal")
+nodes/fragment/22/position = Vector2(72.17, 503.43)
+nodes/fragment/23/node = SubResource("VisualShaderNodeTexture_j4jr6")
+nodes/fragment/23/position = Vector2(-200, 1520)
+nodes/fragment/24/node = SubResource("VisualShaderNodeTexture2DParameter_dbh0d")
+nodes/fragment/24/position = Vector2(-220, 1720)
+nodes/fragment/connections = PackedInt32Array(2, 0, 3, 2, 4, 0, 5, 0, 5, 0, 3, 0, 6, 0, 4, 2, 7, 0, 5, 1, 8, 0, 9, 2, 9, 0, 10, 0, 11, 0, 10, 1, 3, 0, 12, 0, 10, 0, 12, 1, 18, 0, 17, 2, 5, 0, 17, 0, 17, 0, 0, 9, 19, 0, 0, 10, 20, 0, 21, 2, 5, 0, 21, 0, 22, 0, 0, 4, 24, 0, 23, 2, 21, 1, 23, 0, 23, 1, 0, 3, 12, 0, 0, 0)
+
+[sub_resource type="Gradient" id="Gradient_gyhod"]
+offsets = PackedFloat32Array(0.987755)
+colors = PackedColorArray(0.63, 0.676667, 0.7, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_en66q"]
+gradient = SubResource("Gradient_gyhod")
+
+[sub_resource type="Gradient" id="Gradient_pinv1"]
+colors = PackedColorArray(0.172833, 0.172833, 0.172833, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_mi37e"]
+gradient = SubResource("Gradient_pinv1")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yhk4d"]
+render_priority = 0
+shader = SubResource("VisualShader_r6ij3")
+shader_parameter/offset = null
+shader_parameter/scale = Vector2(60, 60)
+shader_parameter/add_Color = Color(1, 1, 1, 1)
+shader_parameter/specular = 0.588
+shader_parameter/Normal_INtensity = -1.0
+shader_parameter/Base_Texture = SubResource("GradientTexture1D_en66q")
+shader_parameter/add_Texture = ExtResource("1_opu52")
+shader_parameter/Rought_Texture = ExtResource("3_gyskb")
+shader_parameter/Rought_gradient_1D = SubResource("GradientTexture1D_mi37e")
+shader_parameter/Normal_Texture = ExtResource("2_uw4dj")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fbg16"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_k1ywb"]
+
+[sub_resource type="Gradient" id="Gradient_aeh0v"]
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_1w06r"]
+gradient = SubResource("Gradient_aeh0v")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jx7bd"]
+render_priority = 0
+shader = ExtResource("5_4k3pf")
+shader_parameter/frame_count = Vector2(1, 19)
+shader_parameter/uv_offset = Vector2(-0.015, -0.95)
+shader_parameter/alpha_scissor_treshold = 0.25
+shader_parameter/sprite_sheet = ExtResource("6_xx6v1")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_1w06r")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sswf3"]
+render_priority = 0
+shader = ExtResource("5_4k3pf")
+shader_parameter/frame_count = Vector2(1, 19)
+shader_parameter/uv_offset = Vector2(0, 1.105)
+shader_parameter/alpha_scissor_treshold = 0.25
+shader_parameter/sprite_sheet = ExtResource("6_xx6v1")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_1w06r")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_c4aof"]
+render_priority = 0
+shader = ExtResource("5_4k3pf")
+shader_parameter/frame_count = Vector2(1, 19)
+shader_parameter/uv_offset = Vector2(-0.075, -0.05)
+shader_parameter/alpha_scissor_treshold = 0.25
+shader_parameter/sprite_sheet = ExtResource("6_xx6v1")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_1w06r")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_q5wrp"]
+render_priority = 0
+shader = ExtResource("5_4k3pf")
+shader_parameter/frame_count = Vector2(1, 19)
+shader_parameter/uv_offset = Vector2(-0.075, 0.48)
+shader_parameter/alpha_scissor_treshold = 0.25
+shader_parameter/sprite_sheet = ExtResource("6_xx6v1")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_1w06r")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_81q87"]
+render_priority = 0
+shader = ExtResource("5_4k3pf")
+shader_parameter/frame_count = Vector2(1, 19)
+shader_parameter/uv_offset = Vector2(-0.01, 0.9)
+shader_parameter/alpha_scissor_treshold = 0.25
+shader_parameter/sprite_sheet = ExtResource("6_xx6v1")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_1w06r")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mjubs"]
+render_priority = 0
+shader = ExtResource("5_4k3pf")
+shader_parameter/frame_count = Vector2(1, 19)
+shader_parameter/uv_offset = Vector2(-0.075, 0.215)
+shader_parameter/alpha_scissor_treshold = 0.25
+shader_parameter/sprite_sheet = ExtResource("6_xx6v1")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_1w06r")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jrpa4"]
+render_priority = 0
+shader = ExtResource("5_4k3pf")
+shader_parameter/frame_count = Vector2(1, 19)
+shader_parameter/uv_offset = Vector2(-0.05, 0.16)
+shader_parameter/alpha_scissor_treshold = 0.25
+shader_parameter/sprite_sheet = ExtResource("6_xx6v1")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_1w06r")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hcoi8"]
+render_priority = 0
+shader = ExtResource("5_4k3pf")
+shader_parameter/frame_count = Vector2(1, 19)
+shader_parameter/uv_offset = Vector2(-0.075, 0.425)
+shader_parameter/alpha_scissor_treshold = 0.25
+shader_parameter/sprite_sheet = ExtResource("6_xx6v1")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_1w06r")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nbut5"]
+render_priority = 0
+shader = ExtResource("5_4k3pf")
+shader_parameter/frame_count = Vector2(1, 19)
+shader_parameter/uv_offset = Vector2(-0.04, 0.16)
+shader_parameter/alpha_scissor_treshold = 0.25
+shader_parameter/sprite_sheet = ExtResource("6_xx6v1")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_1w06r")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wy083"]
+render_priority = 0
+shader = ExtResource("5_4k3pf")
+shader_parameter/frame_count = Vector2(1, 19)
+shader_parameter/uv_offset = Vector2(-0.075, 0.32)
+shader_parameter/alpha_scissor_treshold = 0.25
+shader_parameter/sprite_sheet = ExtResource("6_xx6v1")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_1w06r")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mboyp"]
+render_priority = 0
+shader = ExtResource("5_4k3pf")
+shader_parameter/frame_count = Vector2(1, 19)
+shader_parameter/uv_offset = Vector2(-0.015, 0.585)
+shader_parameter/alpha_scissor_treshold = 0.25
+shader_parameter/sprite_sheet = ExtResource("6_xx6v1")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_1w06r")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wxhie"]
+render_priority = 0
+shader = ExtResource("5_4k3pf")
+shader_parameter/frame_count = Vector2(1, 19)
+shader_parameter/uv_offset = Vector2(-0.02, 0.745)
+shader_parameter/alpha_scissor_treshold = 0.25
+shader_parameter/sprite_sheet = ExtResource("6_xx6v1")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_1w06r")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_srij7"]
+render_priority = 0
+shader = ExtResource("5_4k3pf")
+shader_parameter/frame_count = Vector2(1, 19)
+shader_parameter/uv_offset = Vector2(-0.035, 0.265)
+shader_parameter/alpha_scissor_treshold = 0.25
+shader_parameter/sprite_sheet = ExtResource("6_xx6v1")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_1w06r")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_r3y7b"]
+render_priority = 0
+shader = ExtResource("5_4k3pf")
+shader_parameter/frame_count = Vector2(1, 19)
+shader_parameter/uv_offset = Vector2(-0.045, 0.795)
+shader_parameter/alpha_scissor_treshold = 0.25
+shader_parameter/sprite_sheet = ExtResource("6_xx6v1")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_1w06r")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wu0bb"]
+render_priority = 0
+shader = ExtResource("5_4k3pf")
+shader_parameter/frame_count = Vector2(1, 19)
+shader_parameter/uv_offset = Vector2(-0.035, 0.53)
+shader_parameter/alpha_scissor_treshold = 0.25
+shader_parameter/sprite_sheet = ExtResource("6_xx6v1")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_1w06r")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yc0ss"]
+render_priority = 0
+shader = ExtResource("5_4k3pf")
+shader_parameter/frame_count = Vector2(1, 19)
+shader_parameter/uv_offset = Vector2(-0.075, 0.37)
+shader_parameter/alpha_scissor_treshold = 0.25
+shader_parameter/sprite_sheet = ExtResource("6_xx6v1")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_1w06r")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nhls3"]
+render_priority = 0
+shader = ExtResource("5_4k3pf")
+shader_parameter/frame_count = Vector2(1, 19)
+shader_parameter/uv_offset = Vector2(-0.105, 0.69)
+shader_parameter/alpha_scissor_treshold = 0.25
+shader_parameter/sprite_sheet = ExtResource("6_xx6v1")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_1w06r")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mva83"]
+render_priority = 0
+shader = ExtResource("5_4k3pf")
+shader_parameter/frame_count = Vector2(1, 19)
+shader_parameter/uv_offset = Vector2(-0.045, 1.85)
+shader_parameter/alpha_scissor_treshold = 0.25
+shader_parameter/sprite_sheet = ExtResource("6_xx6v1")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_1w06r")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5nyyt"]
+render_priority = 0
+shader = ExtResource("5_4k3pf")
+shader_parameter/frame_count = Vector2(1, 19)
+shader_parameter/uv_offset = Vector2(-0.065, 2)
+shader_parameter/alpha_scissor_treshold = 0.25
+shader_parameter/sprite_sheet = ExtResource("6_xx6v1")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_1w06r")
+
+[sub_resource type="Animation" id="Animation_7mdyf"]
+resource_name = "Init"
+length = 3.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("..:my_num")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.366667, 0.966667, 1.46667, 2, 2.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5]
+}
+
+[sub_resource type="Animation" id="Animation_rs2w6"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("..:my_num")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_tl4ce"]
+_data = {
+"Init": SubResource("Animation_7mdyf"),
+"RESET": SubResource("Animation_rs2w6")
+}
+
+[node name="FullScreen_VFX_showcase" type="Node" node_paths=PackedStringArray("screen_vfx")]
+script = SubResource("GDScript_3pnxd")
+screen_vfx = [NodePath("VFX_Screen_Burning_A"), NodePath("VFX_Screen_Burning_B"), NodePath("VFX_Screen_Bloody"), NodePath("VFX_Screen_Moody"), NodePath("VFX_Screen_underwater_blur_ss"), NodePath("VFX_Screen_Forst"), NodePath("VFX_Screen_Electrified"), NodePath("VFX_Screen_Matrix"), NodePath("VFX_Screen_SciFi_Scan"), NodePath("VFX_Screen_Speed_Lines"), NodePath("VFX_Screen_Poisoned"), NodePath("VFX_Screen_Healing"), NodePath("VFX_Screen_Speed_Lines_w_radial_blur"), NodePath("VFX_Screen_Smug"), NodePath("VFX_Screen_GlassCut"), NodePath("VFX_Screen_Snowdrop"), NodePath("VFX_Screen_RainDrops"), NodePath("VFX_Screen_Glitch")]
+
+[node name="VFX_Screen_Burning_A" parent="." instance=ExtResource("8_qfaya")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -12, 3, -15)
+visible = true
+metadata/_edit_lock_ = true
+
+[node name="VFX_Screen_Burning_B" parent="." instance=ExtResource("9_nwfwc")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -6, 3, -15)
+metadata/_edit_lock_ = true
+
+[node name="VFX_Screen_Bloody" parent="." instance=ExtResource("7_2qg0t")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 3, -15)
+visible = true
+metadata/_edit_lock_ = true
+
+[node name="VFX_Screen_Moody" parent="." instance=ExtResource("16_yecy7")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 6, 3, -15)
+visible = true
+metadata/_edit_lock_ = true
+
+[node name="VFX_Screen_underwater_blur_ss" parent="." instance=ExtResource("24_ayf2s")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 12, 3, -15)
+visible = true
+metadata/_edit_lock_ = true
+
+[node name="VFX_Screen_Forst" parent="." instance=ExtResource("11_crl8m")]
+transform = Transform3D(-8.74228e-08, 0, -2, 0, 2, 0, 2, 0, -8.74228e-08, 16, 3, -11)
+visible = true
+metadata/_edit_lock_ = true
+
+[node name="VFX_Screen_Electrified" parent="." instance=ExtResource("10_67v8o")]
+transform = Transform3D(-8.74228e-08, 0, -2, 0, 2, 0, 2, 0, -8.74228e-08, 16, 3, -4)
+visible = true
+metadata/_edit_lock_ = true
+
+[node name="VFX_Screen_Matrix" parent="." instance=ExtResource("15_4bb6r")]
+transform = Transform3D(-8.74228e-08, 0, -2, 0, 2, 0, 2, 0, -8.74228e-08, 16, 3, 3)
+visible = true
+metadata/_edit_lock_ = true
+
+[node name="VFX_Screen_SciFi_Scan" parent="." instance=ExtResource("19_nh12a")]
+transform = Transform3D(-8.74228e-08, 0, -2, 0, 2, 0, 2, 0, -8.74228e-08, 16, 3, 10)
+visible = true
+metadata/_edit_lock_ = true
+
+[node name="VFX_Screen_Speed_Lines" parent="." instance=ExtResource("22_nhwsv")]
+transform = Transform3D(-2, 0, 1.74846e-07, 0, 2, 0, -1.74846e-07, 0, -2, 12, 3, 15)
+visible = true
+metadata/_edit_lock_ = true
+
+[node name="VFX_Screen_Poisoned" parent="." instance=ExtResource("17_t3v7j")]
+transform = Transform3D(-2, 0, 1.74846e-07, 0, 2, 0, -1.74846e-07, 0, -2, 6, 3, 15)
+visible = true
+metadata/_edit_lock_ = true
+
+[node name="VFX_Screen_Healing" parent="." instance=ExtResource("14_rebfp")]
+transform = Transform3D(-2, 0, 1.74846e-07, 0, 2, 0, -1.74846e-07, 0, -2, 0, 3, 15)
+metadata/_edit_lock_ = true
+
+[node name="VFX_Screen_Speed_Lines_w_radial_blur" parent="." instance=ExtResource("23_ak8ux")]
+transform = Transform3D(-2, 0, 1.74846e-07, 0, 2, 0, -1.74846e-07, 0, -2, -12, 3, 15)
+metadata/_edit_lock_ = true
+
+[node name="VFX_Screen_Smug" parent="." instance=ExtResource("20_xacy1")]
+transform = Transform3D(-2, 0, 1.74846e-07, 0, 2, 0, -1.74846e-07, 0, -2, -6, 3, 15)
+visible = true
+metadata/_edit_lock_ = true
+
+[node name="VFX_Screen_GlassCut" parent="." instance=ExtResource("12_jiav2")]
+transform = Transform3D(-8.74228e-08, 0, 2, 0, 2, 0, -2, 0, -8.74228e-08, -16, 3, -11)
+visible = true
+metadata/_edit_lock_ = true
+
+[node name="VFX_Screen_Snowdrop" parent="." instance=ExtResource("21_opriq")]
+transform = Transform3D(-8.74228e-08, 0, 2, 0, 2, 0, -2, 0, -8.74228e-08, -16, 3, -4)
+visible = true
+metadata/_edit_lock_ = true
+
+[node name="VFX_Screen_RainDrops" parent="." instance=ExtResource("18_883cu")]
+transform = Transform3D(-8.74228e-08, 0, 2, 0, 2, 0, -2, 0, -8.74228e-08, -16, 3, 3)
+metadata/_edit_lock_ = true
+
+[node name="VFX_Screen_Glitch" parent="." instance=ExtResource("13_kd3w7")]
+transform = Transform3D(-8.74228e-08, 0, 2, 0, 2, 0, -2, 0, -8.74228e-08, -16, 3, 10)
+visible = true
+metadata/_edit_lock_ = true
+
+[node name="map_stuff" type="Node" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="map_stuff"]
+environment = SubResource("Environment_332l5")
+
+[node name="DirectionalLight3D2" type="DirectionalLight3D" parent="map_stuff"]
+transform = Transform3D(0.852395, 0.34839, -0.389932, 0.472913, -0.195459, 0.859156, 0.223106, -0.916744, -0.331367, 6.52207, 2.39706, 0.935756)
+visible = false
+light_color = Color(0.85, 0.9025, 1, 1)
+light_energy = 0.0
+shadow_blur = 0.275
+metadata/_edit_lock_ = true
+
+[node name="OmniLight3D" type="OmniLight3D" parent="map_stuff"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5473, 12.9796, 0)
+light_color = Color(1, 0.934, 0.88, 1)
+light_energy = 11.7
+shadow_enabled = true
+omni_range = 59.1407
+metadata/_edit_lock_ = true
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="map_stuff"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.6542, 10.3743, -6.88344)
+light_color = Color(0.85, 0.93, 1, 1)
+light_energy = 10.0
+shadow_enabled = true
+omni_range = 119.22
+metadata/_edit_lock_ = true
+
+[node name="SmCubexCity" type="MeshInstance3D" parent="map_stuff"]
+material_override = SubResource("ShaderMaterial_yhk4d")
+mesh = ExtResource("1_3sejg")
+skeleton = NodePath("../..")
+metadata/_edit_lock_ = true
+
+[node name="cube2" type="MeshInstance3D" parent="map_stuff"]
+transform = Transform3D(1, 0, 0, 0, 0.772224, 0.635351, 0, -0.635351, 0.772224, -21, 4.94184, 21)
+material_override = SubResource("StandardMaterial3D_fbg16")
+mesh = SubResource("BoxMesh_k1ywb")
+metadata/_edit_lock_ = true
+
+[node name="texts" type="Node" parent="map_stuff"]
+
+[node name="SmTextFrameScrn" type="MeshInstance3D" parent="map_stuff/texts"]
+transform = Transform3D(1.05, 0, 0, 0, -4.5897e-08, -1.05, 0, 1.05, -4.5897e-08, -12, 3, -15)
+material_override = SubResource("ShaderMaterial_jx7bd")
+cast_shadow = 0
+mesh = ExtResource("25_ejdd7")
+skeleton = NodePath("../../..")
+metadata/_edit_lock_ = true
+
+[node name="SmTextFrameScrn2" type="MeshInstance3D" parent="map_stuff/texts"]
+transform = Transform3D(1.05, 0, 0, 0, -4.5897e-08, -1.05, 0, 1.05, -4.5897e-08, -6, 3, -15)
+material_override = SubResource("ShaderMaterial_sswf3")
+cast_shadow = 0
+mesh = ExtResource("25_ejdd7")
+skeleton = NodePath("../../..")
+metadata/_edit_lock_ = true
+
+[node name="SmTextFrameScrn3" type="MeshInstance3D" parent="map_stuff/texts"]
+transform = Transform3D(1.05, 0, 0, 0, -4.5897e-08, -1.05, 0, 1.05, -4.5897e-08, 0, 3, -15)
+material_override = SubResource("ShaderMaterial_c4aof")
+cast_shadow = 0
+mesh = ExtResource("25_ejdd7")
+skeleton = NodePath("../../..")
+metadata/_edit_lock_ = true
+
+[node name="SmTextFrameScrn4" type="MeshInstance3D" parent="map_stuff/texts"]
+transform = Transform3D(1.05, 0, 0, 0, -4.5897e-08, -1.05, 0, 1.05, -4.5897e-08, 6, 3, -15)
+material_override = SubResource("ShaderMaterial_q5wrp")
+cast_shadow = 0
+mesh = ExtResource("25_ejdd7")
+skeleton = NodePath("../../..")
+metadata/_edit_lock_ = true
+
+[node name="SmTextFrameScrn5" type="MeshInstance3D" parent="map_stuff/texts"]
+transform = Transform3D(1.05, 0, 0, 0, -4.5897e-08, -1.05, 0, 1.05, -4.5897e-08, 12, 3, -15)
+material_override = SubResource("ShaderMaterial_81q87")
+cast_shadow = 0
+mesh = ExtResource("25_ejdd7")
+skeleton = NodePath("../../..")
+metadata/_edit_lock_ = true
+
+[node name="SmTextFrameScrn6" type="MeshInstance3D" parent="map_stuff/texts"]
+transform = Transform3D(-4.5897e-08, -1.05, 4.5897e-08, 0, -4.5897e-08, -1.05, 1.05, -4.5897e-08, 2.00622e-15, 16, 3, -11)
+material_override = SubResource("ShaderMaterial_mjubs")
+cast_shadow = 0
+mesh = ExtResource("25_ejdd7")
+skeleton = NodePath("../../..")
+metadata/_edit_lock_ = true
+
+[node name="SmTextFrameScrn7" type="MeshInstance3D" parent="map_stuff/texts"]
+transform = Transform3D(-4.5897e-08, -1.05, 4.5897e-08, 0, -4.5897e-08, -1.05, 1.05, -4.5897e-08, 2.00622e-15, 16, 3, -4)
+material_override = SubResource("ShaderMaterial_jrpa4")
+cast_shadow = 0
+mesh = ExtResource("25_ejdd7")
+skeleton = NodePath("../../..")
+metadata/_edit_lock_ = true
+
+[node name="SmTextFrameScrn8" type="MeshInstance3D" parent="map_stuff/texts"]
+transform = Transform3D(-4.5897e-08, -1.05, 4.5897e-08, 0, -4.5897e-08, -1.05, 1.05, -4.5897e-08, 2.00622e-15, 16, 3, 3)
+material_override = SubResource("ShaderMaterial_hcoi8")
+cast_shadow = 0
+mesh = ExtResource("25_ejdd7")
+skeleton = NodePath("../../..")
+metadata/_edit_lock_ = true
+
+[node name="SmTextFrameScrn9" type="MeshInstance3D" parent="map_stuff/texts"]
+transform = Transform3D(-4.5897e-08, -1.05, 4.5897e-08, 0, -4.5897e-08, -1.05, 1.05, -4.5897e-08, 2.00622e-15, 16, 3, 10)
+material_override = SubResource("ShaderMaterial_nbut5")
+cast_shadow = 0
+mesh = ExtResource("25_ejdd7")
+skeleton = NodePath("../../..")
+metadata/_edit_lock_ = true
+
+[node name="SmTextFrameScrn10" type="MeshInstance3D" parent="map_stuff/texts"]
+transform = Transform3D(-4.5897e-08, 1.05, -4.58969e-08, 3.85405e-22, -4.58969e-08, -1.05, -1.05, -4.5897e-08, 2.00622e-15, -16, 3, 10)
+material_override = SubResource("ShaderMaterial_wy083")
+cast_shadow = 0
+mesh = ExtResource("25_ejdd7")
+skeleton = NodePath("../../..")
+metadata/_edit_lock_ = true
+
+[node name="SmTextFrameScrn11" type="MeshInstance3D" parent="map_stuff/texts"]
+transform = Transform3D(-4.5897e-08, 1.05, -4.58969e-08, 3.85405e-22, -4.58969e-08, -1.05, -1.05, -4.5897e-08, 2.00622e-15, -16, 3, 3)
+material_override = SubResource("ShaderMaterial_mboyp")
+cast_shadow = 0
+mesh = ExtResource("25_ejdd7")
+skeleton = NodePath("../../..")
+metadata/_edit_lock_ = true
+
+[node name="SmTextFrameScrn12" type="MeshInstance3D" parent="map_stuff/texts"]
+transform = Transform3D(-4.5897e-08, 1.05, -4.58969e-08, 3.85405e-22, -4.58969e-08, -1.05, -1.05, -4.5897e-08, 2.00622e-15, -16, 3, -4)
+material_override = SubResource("ShaderMaterial_wxhie")
+cast_shadow = 0
+mesh = ExtResource("25_ejdd7")
+skeleton = NodePath("../../..")
+metadata/_edit_lock_ = true
+
+[node name="SmTextFrameScrn13" type="MeshInstance3D" parent="map_stuff/texts"]
+transform = Transform3D(-4.5897e-08, 1.05, -4.58969e-08, 3.85405e-22, -4.58969e-08, -1.05, -1.05, -4.5897e-08, 2.00622e-15, -16, 3, -11)
+material_override = SubResource("ShaderMaterial_srij7")
+cast_shadow = 0
+mesh = ExtResource("25_ejdd7")
+skeleton = NodePath("../../..")
+metadata/_edit_lock_ = true
+
+[node name="SmTextFrameScrn14" type="MeshInstance3D" parent="map_stuff/texts"]
+transform = Transform3D(-1.05, -1.58546e-07, 6.93025e-15, 0, -4.5897e-08, -1.05, 1.58546e-07, -1.05, 4.5897e-08, 12, 3, 15)
+material_override = SubResource("ShaderMaterial_r3y7b")
+cast_shadow = 0
+mesh = ExtResource("25_ejdd7")
+skeleton = NodePath("../../..")
+metadata/_edit_lock_ = true
+
+[node name="SmTextFrameScrn15" type="MeshInstance3D" parent="map_stuff/texts"]
+transform = Transform3D(-1.05, -1.58546e-07, 6.93025e-15, 0, -4.5897e-08, -1.05, 1.58546e-07, -1.05, 4.5897e-08, 6, 3, 15)
+material_override = SubResource("ShaderMaterial_wu0bb")
+cast_shadow = 0
+mesh = ExtResource("25_ejdd7")
+skeleton = NodePath("../../..")
+metadata/_edit_lock_ = true
+
+[node name="SmTextFrameScrn16" type="MeshInstance3D" parent="map_stuff/texts"]
+transform = Transform3D(-1.05, -1.58546e-07, 6.93025e-15, 0, -4.5897e-08, -1.05, 1.58546e-07, -1.05, 4.5897e-08, 0, 3, 15)
+material_override = SubResource("ShaderMaterial_yc0ss")
+cast_shadow = 0
+mesh = ExtResource("25_ejdd7")
+skeleton = NodePath("../../..")
+metadata/_edit_lock_ = true
+
+[node name="SmTextFrameScrn17" type="MeshInstance3D" parent="map_stuff/texts"]
+transform = Transform3D(-1.05, -1.58546e-07, 6.93025e-15, 0, -4.5897e-08, -1.05, 1.58546e-07, -1.05, 4.5897e-08, -6, 3, 15)
+material_override = SubResource("ShaderMaterial_nhls3")
+cast_shadow = 0
+mesh = ExtResource("25_ejdd7")
+skeleton = NodePath("../../..")
+metadata/_edit_lock_ = true
+
+[node name="SmTextFrameScrn18" type="MeshInstance3D" parent="map_stuff/texts"]
+transform = Transform3D(-1.05, -1.58546e-07, 6.93025e-15, 0, -4.5897e-08, -1.05, 1.58546e-07, -1.05, 4.5897e-08, -12, 3, 15)
+material_override = SubResource("ShaderMaterial_mva83")
+cast_shadow = 0
+mesh = ExtResource("25_ejdd7")
+skeleton = NodePath("../../..")
+metadata/_edit_lock_ = true
+
+[node name="SmTextFrameScrn19" type="MeshInstance3D" parent="map_stuff/texts"]
+transform = Transform3D(-0.742462, 0.742462, -3.2454e-08, -1.61529e-15, -4.58969e-08, -1.05, -0.742462, -0.742462, 3.2454e-08, -21, 5, 21)
+material_override = SubResource("ShaderMaterial_5nyyt")
+cast_shadow = 0
+mesh = ExtResource("25_ejdd7")
+skeleton = NodePath("../../..")
+metadata/_edit_lock_ = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="map_stuff"]
+libraries = {
+"": SubResource("AnimationLibrary_tl4ce")
+}
+autoplay = "Init"
+
+[node name="Marker3D" type="Marker3D" parent="map_stuff"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.537479, 0)

@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://1tij4jh6i0jx"
+path="res://.godot/imported/Duck_6.ogg-4b5444e90b63b6af100f3a659e1dfa60.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Duck_6.ogg"
+dest_files=["res://.godot/imported/Duck_6.ogg-4b5444e90b63b6af100f3a659e1dfa60.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://hgibujwnq2k2"
+path="res://.godot/imported/Chicken Bwak_4.ogg-ecf4e0a538425acb2f7294c774474533.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Chicken Bwak_4.ogg"
+dest_files=["res://.godot/imported/Chicken Bwak_4.ogg-ecf4e0a538425acb2f7294c774474533.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

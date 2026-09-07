@@ -1,122 +1,244 @@
 extends Node3D
+## The demo world. Players are spawned per peer by [PlayerSpawner]; the lobby owner hosts the Steam
+## session through [SteamPeer]. Server-owned state (clock, weather, NPCs, physics props, harvestables)
+## replicates to clients through the synchronizers in the scenes; projectiles spawn on every peer
+## through [ProjectileSpawner].
 
-@export var little_buddy_count: int = 64
-@export var spawn_frame_interval: int = 4
+const RADIO_OFF_ICON: Texture2D = preload("res://addons/radi_ot/assets/icons/stop_icon.svg")
+## The QA kit: what a freshly spawned local player carries, topped up to these counts (a saved inventory keeps
+## whatever else it holds). This world is the test bed, so nothing has to be found first.
+const STARTING_ITEMS: Dictionary[Item, int] = {
+	preload("res://resources/lures/worm.tres"): 10,
+	preload("res://resources/items/rifle_clip.tres"): 2,
+	preload("res://resources/items/pistol_magazine.tres"): 1,
+	preload("res://resources/items/arrow.tres"): 20,
+}
 
-@onready var player: Player = $Player
-@onready var first_buddy: Node3D = get_node_or_null("LittleBuddy") as Node3D
-var buddy_list: Array[Node3D] = []
-var frame_counter: int = 0
+## GodotSteam constant mirrors (the Steam class is absent on web exports).
+const STEAM_RESULT_OK: int = 1
+const STEAM_LOBBY_TYPE_PUBLIC: int = 2
+
+@export var max_lobby_players: int = 4
+
+var player: Player ## The player this peer controls, once spawned.
+var radi_ot_player: RadiOtPlayer3D ## The local player's car radio.
+
+@onready var player_spawner: PlayerSpawner = $PlayerSpawner
+@onready var steam_peer: SteamPeer = $SteamPeer
+@onready var date_and_time: DateAndTime = $DateAndTime
+@onready var weather_fx: WeatherFX = $WeatherFX
 
 
 ## Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	# Set the mouse mode to captured to hide the mouse cursor
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	_initialize_steam_lobby()
+	_apply_network_roles()
 
-	# Set the game style parameters
+
+## Tops the player's inventory up to the [constant STARTING_ITEMS] counts.
+func _grant_starting_items(target: Player) -> void:
+	for item: Item in STARTING_ITEMS:
+		var missing: int = STARTING_ITEMS[item] - target.inventory.count_of(item)
+		if missing > 0:
+			target.inventory.add_item(item, missing)
+
+
+## Binds the world to the player this peer controls (connected in the scene to PlayerSpawner.local_player_spawned).
+func _on_local_player_spawned(local_player: Player) -> void:
+	player = local_player
 	player.enable_paraglider = true
 	player.enable_stamina = true
-
-	if first_buddy:
-		if player:
-			first_buddy.set("player", player)
-		buddy_list.append(first_buddy)
-
-
-## Called when there is an input event.
-func _input(event: InputEvent) -> void:
-	# DEBUG - Whistle action triggers ragdoll state for the player
-	if event.is_action_pressed("whistle"):
-		if player and (player.is_paused or (player.pause and player.pause.visible)):
-			return
-		if player and player.held_object and player.held_object.is_using_ultrahand():
-			return
-		player.state_machine.travel(player.current_state, NodeStateMachine.States.RAGDOLLING)
+	player.state_changed.connect(_on_player_state_changed)
+	_grant_starting_items(player)
+	radi_ot_player = player.get_node("RadiOtPlayer3D")
+	radi_ot_player.auto_play_on_ready = false
+	radi_ot_player.set_power(false)
+	radi_ot_player.get_hud().hide_hud()
+	radi_ot_player.radio_toggled.connect(_on_radio_toggled)
+	radi_ot_player.station_changed.connect(_on_radio_station_changed)
+	# The spawner readies before this node, so resolve siblings directly instead of through @onready
+	($WeatherFX as WeatherFX).target_node = player
+	# NPCs follow the server's player; clients only display them
+	if multiplayer.is_server():
+		($Duck as FollowerNpc).player = player
+		($LittleBuddy as FollowerNpc).player = player
 
 
-## Called every physics frame. 'delta' is the elapsed time since the previous frame.
-func _physics_process(_delta: float) -> void:
-	# Do nothing if not the authority
-	if not is_multiplayer_authority(): return
+## The server runs the clock and weather; clients receive them.
+func _apply_network_roles() -> void:
+	var is_server: bool = multiplayer.is_server()
+	date_and_time.is_running = is_server
+	if is_server:
+		if not weather_fx.weather_changed.is_connected(_on_weather_changed):
+			weather_fx.weather_changed.connect(_on_weather_changed)
+			weather_fx.biome_changed.connect(_on_biome_changed)
+			multiplayer.peer_connected.connect(_send_weather_to_peer)
 
-	# Spawn LittleBuddy at the specified frame interval until reaching target count.
-	#if first_buddy and buddy_list.size() < little_buddy_count:
-	#	frame_counter += 1
-	#	if frame_counter >= spawn_frame_interval:
-	#		frame_counter = 0
-	#		var duplicate_buddy = first_buddy.duplicate() as Node3D
-	#		if player:
-	#			duplicate_buddy.set("player", player)
-	#		add_child(duplicate_buddy)
-	#		buddy_list.append(duplicate_buddy)
 
-	# If we're below -40, respawn (teleport to the initial position).
-	if player and not player.is_driving and not player.is_flying:
-		if player.global_position.y < -40.0:
-			_warp(player, player.initial_transform)
+func _on_weather_changed(new_weather: ClimateData.WeatherType, _old_weather: ClimateData.WeatherType) -> void:
+	if multiplayer.has_multiplayer_peer():
+		_sync_weather.rpc(weather_fx.current_biome, new_weather)
 
-	# Check if the "CameraRayCast" is colliding with an object that has a "display_menu" method, and if so, call that method
-	if player.camera.camera_ray_cast.is_colliding():
-		var collider = player.camera.camera_ray_cast.get_collider()
-		if collider:
-			var target = null
-			var current_node = collider
-			while current_node:
-				if current_node.has_method("display_menu"):
-					target = current_node
-					break
-				current_node = current_node.get_parent()
-			
-			if target:
-				if player.camera.looking_at and player.camera.looking_at != target and player.camera.looking_at.has_method("hide_menu"):
-					player.camera.looking_at.hide_menu()
-				target.display_menu(player)
-				player.camera.looking_at = target
-			else:
-				if player.camera.looking_at and player.camera.looking_at.has_method("hide_menu"):
-					player.camera.looking_at.hide_menu()
-				player.camera.looking_at = null
+
+func _on_biome_changed(new_biome: ClimateData.BiomeZone, _old_biome: ClimateData.BiomeZone) -> void:
+	if multiplayer.has_multiplayer_peer():
+		_sync_weather.rpc(new_biome, weather_fx.active_weather)
+
+
+func _send_weather_to_peer(peer_id: int) -> void:
+	_sync_weather.rpc_id(peer_id, weather_fx.current_biome, weather_fx.active_weather)
+
+
+@rpc("authority", "call_remote", "reliable")
+func _sync_weather(biome: ClimateData.BiomeZone, weather: ClimateData.WeatherType) -> void:
+	weather_fx.current_biome = biome
+	weather_fx.set_weather(weather)
+
+
+## Powers the car radio and its radial-menu stations while the local Player drives.
+func _on_player_state_changed(from_state: int, to_state: int) -> void:
+	if to_state == NodeStateMachine.States.RIDING and player.riding is Vehicle:
+		radi_ot_player.set_power(true)
+		radi_ot_player.get_hud().show_toast(5.0)
+		player.radial_menu.custom_item_provider = _provide_radio_items
+		player.radial_menu.custom_item_selected = _on_radio_item_selected
+		player.radial_menu.custom_item_is_equipped = _is_radio_item_equipped
+		player.inventory.custom_cycle_handler = _on_cycle_radio_station
+	elif from_state == NodeStateMachine.States.RIDING:
+		radi_ot_player.set_power(false)
+		radi_ot_player.get_hud().hide_toast()
+		player.radial_menu.custom_item_provider = Callable()
+		player.radial_menu.custom_item_selected = Callable()
+		player.radial_menu.custom_item_is_equipped = Callable()
+		player.inventory.custom_cycle_handler = Callable()
+
+
+func _on_warp_zone_body_entered(body: Node3D, marker_path: NodePath) -> void:
+	if body is Player and (body as Player).is_multiplayer_authority():
+		(body as Player).warp_to((get_node(marker_path) as Marker3D).global_transform)
+
+
+## Respawns a Player that fell out of the world at their starting position.
+func _on_kill_zone_body_entered(body: Node3D) -> void:
+	if body is Player and (body as Player).is_multiplayer_authority() and not (body as Player).is_riding and not (body as Player).is_flying:
+		(body as Player).warp_to((body as Player).initial_transform)
+
+
+func _on_water_area_3d_body_entered(body: Node3D, water_area_path: NodePath) -> void:
+	var water_area: Area3D = get_node(water_area_path)
+	if body is Player:
+		(body as Player).enter_water(water_area)
+	elif body is FollowerNpc:
+		(body as FollowerNpc).in_water_area = water_area
+	elif body is Horse:
+		(body as Horse).in_water_area = water_area as Buoyancy
+
+
+func _on_water_area_3d_body_exited(body: Node3D, water_area_path: NodePath) -> void:
+	if body is Player:
+		(body as Player).exit_water(get_node(water_area_path) as Area3D)
+	elif body is FollowerNpc:
+		(body as FollowerNpc).in_water_area = null
+	elif body is Horse:
+		(body as Horse).in_water_area = null
+
+
+func _provide_radio_items() -> Array:
+	var items: Array = []
+	items.append({
+		"is_radio_off": true,
+		"display_name": "Radio Off",
+		"icon": RADIO_OFF_ICON
+	})
+	if radi_ot_player.station_collection:
+		for i: int in range(radi_ot_player.station_collection.get_station_count()):
+			var station: RadioStation = radi_ot_player.station_collection.get_station_at(i)
+			if station:
+				items.append({
+					"station": station,
+					"station_index": i,
+					"display_name": station.get_full_title(),
+					"icon": station.logo
+				})
+	return items
+
+
+func _on_radio_item_selected(item: Variant, index: int) -> void:
+	if index == 0 or (item is Dictionary and item.get("is_radio_off")):
+		radi_ot_player.set_power(false)
+	elif item is Dictionary and "station_index" in item:
+		radi_ot_player.set_power(true)
+		radi_ot_player.tune_to_station_index(item.station_index)
+
+
+func _is_radio_item_equipped(item: Variant, index: int) -> bool:
+	if index == 0 or (item is Dictionary and item.get("is_radio_off")):
+		return not radi_ot_player.is_power_on()
+	if item is Dictionary and "station_index" in item:
+		return radi_ot_player.is_power_on() and radi_ot_player.current_station_index == item.station_index
+	return false
+
+
+func _on_cycle_radio_station(direction: int) -> void:
+	if not radi_ot_player.is_power_on():
+		radi_ot_player.set_power(true)
+		return
+	if direction > 0:
+		radi_ot_player.tune_next_station()
 	else:
-		if player.camera.looking_at and player.camera.looking_at.has_method("hide_menu"):
-			player.camera.looking_at.hide_menu()
-		player.camera.looking_at = null
+		radi_ot_player.tune_previous_station()
 
 
-func _on_player_detection_body_entered(body: Node3D) -> void:
-	if body is Player:
-		var p: Player = body as Player
-		if p.state_machine and not p.is_driving and p.is_driving_in == null and not p.is_entering_vehicle and not p.is_exiting_vehicle:
-			p.state_machine.travel(p.current_state, NodeStateMachine.States.SWIMMING)
+func _on_radio_station_changed(_station: RadioStation) -> void:
+	if player.riding is Vehicle:
+		radi_ot_player.get_hud().show_toast(5.0)
 
 
-func _on_player_detection_body_exited(body: Node3D) -> void:
-	if body is Player:
-		var p: Player = body as Player
-		p.is_swimming = false
+func _on_radio_toggled(_is_playing: bool) -> void:
+	if player.riding is Vehicle:
+		radi_ot_player.get_hud().show_toast(5.0)
 
 
-func _on_warp_zone_body_entered(body: Node3D) -> void:
-	var target_marker: Marker3D = $WarpZone/Marker3D as Marker3D
-	_warp(body, target_marker.global_transform)
+## Joins the lobby we arrived through (SteamPeer connects on ready) or creates one and hosts it.
+func _initialize_steam_lobby() -> void:
+	if not Engine.has_singleton("Steam"):
+		return
+	var steam: Object = Engine.get_singleton("Steam")
+	if not steam.isSteamRunning():
+		return
+
+	var steamworks: Node = get_node_or_null("/root/Steamworks")
+	var current_lobby_id: int = steamworks.lobby_id if steamworks else 0
+
+	# Only create a lobby if not already in one
+	if current_lobby_id == 0:
+		var callback_connect: int = steam.connect("lobby_created", Callable(self, "_on_steam_lobby_created"))
+		if callback_connect != OK and callback_connect != ERR_ALREADY_EXISTS:
+			printerr("Connecting lobby_created callback failed: %s" % callback_connect)
+		# Create a public lobby for up to max_lobby_players
+		steam.createLobby(STEAM_LOBBY_TYPE_PUBLIC, max_lobby_players)
+		print("Requested Steam lobby creation for single-player world.")
 
 
-func _on_warp_zone_2_body_entered(body: Node3D) -> void:
-	var target_marker: Marker3D = $WarpZone2/Marker3D as Marker3D
-	_warp(body, target_marker.global_transform)
-
-
-func _on_warp_zone_3_body_entered(body: Node3D) -> void:
-	var target_marker: Marker3D = $WarpZone3/Marker3D as Marker3D
-	_warp(body, target_marker.global_transform)
-
-
-func _warp(body: Node3D, target_transform: Transform3D) -> void:
-	if body is Player:
-		var warp_player: Player = body as Player
-		warp_player.global_transform = target_transform
-		warp_player.velocity = Vector3.ZERO
-		warp_player.up_direction = target_transform.basis.y.normalized()
-		warp_player.orientation = Transform3D(warp_player.global_transform.basis, Vector3.ZERO)
-		warp_player.player_model.transform = warp_player.initial_player_model_transform
-		warp_player.collision_shape.transform = warp_player.initial_collision_shape_transform
+func _on_steam_lobby_created(connect_status: int, lobby_id: int) -> void:
+	if not Engine.has_singleton("Steam"):
+		return
+	var steam: Object = Engine.get_singleton("Steam")
+	if connect_status == STEAM_RESULT_OK:
+		var steamworks: Node = get_node_or_null("/root/Steamworks")
+		if steamworks:
+			steamworks.lobby_id = lobby_id
+		var username: String = steamworks.username if steamworks else "Player"
+		var lobby_name: String = "%s's World" % username
+		steam.setLobbyData(lobby_id, "lobby_name", lobby_name)
+		steam.setLobbyData(lobby_id, "name", lobby_name)
+		steam.setLobbyData(lobby_id, "game", "Godot3DPlayerController")
+		steam.setLobbyData(lobby_id, "mode", "world")
+		print("Auto-created Steam Lobby: %s (ID: %d)" % [lobby_name, lobby_id])
+		# Host the session for anyone who joins this lobby
+		steam_peer.host()
+		_apply_network_roles()
+	else:
+		printerr("Failed to auto-create Steam lobby: %s" % connect_status)

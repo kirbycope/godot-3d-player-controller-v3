@@ -1,0 +1,112 @@
+[gd_resource type="Shader" format=3 uid="uid://jhdce4lg2l0u"]
+
+[resource]
+code = "// NOTE: Shader automatically converted from Godot Engine 4.2.2.stable's StandardMaterial3D.
+
+shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;
+
+
+uniform vec4 albedo : source_color;
+uniform sampler2D texture_albedo : source_color,filter_linear_mipmap,repeat_enable;
+uniform sampler2D texture_add : source_color,filter_linear_mipmap,repeat_enable;
+uniform float intensity_add = 1.0;
+uniform float point_size : hint_range(0,128);
+uniform vec3 uv1_scale;
+uniform vec3 uv1_offset;
+uniform vec3 uv2_scale;
+uniform vec3 uv2_offset;
+
+uniform float time : hint_range(0, 10);
+uniform float upscale_speed = 1.0;
+uniform float upscale_max_range = 1.0;
+uniform float rotation_speed = 1.0;
+uniform vec3 rotation_axis = vec3(0.0,1.0,0.0);
+
+
+uniform float Blinking_speed = 1.0;
+uniform float min_brightness = 0.5;
+uniform float max_brightness2 = 1.0;
+
+void vertex() {
+	UV=UV*uv1_scale.xy+uv1_offset.xy;
+    float scaleFactor = (sin(TIME*upscale_speed) * 0.2 + 1.0)*upscale_max_range; // Scale between 0.5 and 1.5
+	
+    // Create scaling matrix
+    mat4 scaleMatrix = mat4(1.0);
+    scaleMatrix[0][0] = scaleFactor;
+    scaleMatrix[1][1] = scaleFactor;
+    scaleMatrix[2][2] = scaleFactor;
+
+    // Calculate rotation angle
+    float rotationAngle = TIME*rotation_speed; // Rotate over time
+
+    // Normalize the rotation axis
+    vec3 normAxis = normalize(rotation_axis);
+
+    // Create rotation matrix (generalized for any axis)
+    float cosAngle = cos(rotationAngle);
+    float sinAngle = sin(rotationAngle);
+    mat4 rotationMatrix = mat4(
+        vec4(cosAngle + normAxis.x * normAxis.x * (1.0 - cosAngle), normAxis.x * normAxis.y * (1.0 - cosAngle) - normAxis.z * sinAngle, normAxis.x * normAxis.z * (1.0 - cosAngle) + normAxis.y * sinAngle, 0.0),
+        vec4(normAxis.y * normAxis.x * (1.0 - cosAngle) + normAxis.z * sinAngle, cosAngle + normAxis.y * normAxis.y * (1.0 - cosAngle), normAxis.y * normAxis.z * (1.0 - cosAngle) - normAxis.x * sinAngle, 0.0),
+        vec4(normAxis.z * normAxis.x * (1.0 - cosAngle) - normAxis.y * sinAngle, normAxis.z * normAxis.y * (1.0 - cosAngle) + normAxis.x * sinAngle, cosAngle + normAxis.z * normAxis.z * (1.0 - cosAngle), 0.0),
+        vec4(0.0, 0.0, 0.0, 1.0)
+    );
+
+    // Apply transformations
+    MODELVIEW_MATRIX = MODELVIEW_MATRIX * rotationMatrix * scaleMatrix;
+}
+
+
+
+
+
+void fragment() {
+	
+	
+//blink
+// Input:13
+	float n_out13p0 = TIME;
+
+
+// FloatParameter:15
+	float n_out15p0 = Blinking_speed;
+
+
+// FloatOp:14
+	float n_out14p0 = n_out13p0 * n_out15p0;
+
+
+// FloatFunc:16
+	float n_out16p0 = cos(n_out14p0);
+
+
+// FloatParameter:20
+	float n_out20p0 = min_brightness;
+
+
+// FloatParameter:21
+	float n_out21p0 = max_brightness2;
+
+
+	float n_out17p0;
+// Remap:17
+	float n_in17p1 = -1.00000;
+	float n_in17p2 = 1.00000;
+	{
+		float __input_range = n_in17p2 - n_in17p1;
+		float __output_range = n_out21p0 - n_out20p0;
+		n_out17p0 = n_out20p0 + __output_range * ((n_out16p0 - n_in17p1) / __input_range);
+	}
+//
+	
+	
+	vec2 base_uv = UV;
+	vec4 albedo_tex = texture(texture_albedo,base_uv);
+	vec4 add_tex = texture(texture_add,base_uv);
+	ALBEDO = (albedo.rgb * albedo_tex.rgb);
+	EMISSION = (add_tex.rgb * n_out17p0 );
+	
+}
+"

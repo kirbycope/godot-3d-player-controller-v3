@@ -1,0 +1,114 @@
+class_name Harvestable
+extends Node3D
+## Something the Player harvests with the "action" interaction or a capable melee weapon; depleted after enough hits.
+
+@export var hits_to_finish: int = 3 ## Number of hits before the harvestable is depleted.
+@export var hit_delay: float = 0.9 ## Seconds after the harvesting animation starts before the hit lands.
+@export var capability: StringName = &"can_log" ## Equipment capability needed to harvest (see [Equipment]).
+@export var harvest_animation: String = "Logging" ## Locomotion node played inside the equipped weapon group while harvesting.
+@export_group("Strike Effects")
+@export var hit_sfx: AudioStream ## Played on every strike, on every peer.
+@export var depleted_sfx: AudioStream ## Played when the last strike lands.
+
+var hits_taken: int = 0: ## Replicated from the server; the setter keeps the progress bar in step and plays each strike.
+	set(value):
+		var struck: bool = value > hits_taken
+		hits_taken = value
+		if progress_bar:
+			progress_bar.value = value
+		if struck:
+			play_strike()
+var is_depleted: bool = false: ## Replicated from the server; the setter swaps the visuals.
+	set(value):
+		if value == is_depleted:
+			return
+		is_depleted = value
+		if value:
+			_on_depleted()
+			_play(depleted_sfx)
+var player: Player
+
+@onready var action_prompt: ActionPrompt = $ActionPrompt
+@onready var progress_bar: ProgressBar3D = $ProgressBar3D
+@onready var hit_audio: AudioStreamPlayer3D = $HitAudio
+@onready var hit_particles: GPUParticles3D = $HitParticles ## One-shot chips at strike height.
+
+
+## Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	progress_bar.max_value = hits_to_finish
+
+
+## Called when there is an input event.
+func _input(event: InputEvent) -> void:
+	# Do nothing if not the authority
+	if not is_multiplayer_authority(): return
+
+	if not player or is_depleted or not event.is_action_pressed("action"): return
+	if player.is_locomotion_state_active_or_queued(harvest_animation): return
+	if not player.inventory.has_equipment_with_capability(capability): return
+
+	player.rotate_model_to_direction(global_position - player.global_position)
+	# Heavy equipment uses the GreatSword locomotion group.
+	var group: String = "GreatSword" if player.inventory.has_heavy_weapon_equipped() else "Shield"
+	player.travel_locomotion(group + "/" + harvest_animation)
+	# Land the hit once the swing connects
+	get_tree().create_timer(hit_delay).timeout.connect(register_hit)
+
+
+## Called by [HitDetection] when a melee weapon connects with this object.
+func register_weapon_hit(equipment: Node = null, _hit_node: Node = null) -> void:
+	if equipment and equipment.get(capability):
+		register_hit()
+
+
+## Applies one hit of damage; depletes the harvestable once enough hits land.
+## Counts a hit on the server (clients relay theirs); `hits_taken`/`is_depleted` replicate back to every peer.
+func register_hit() -> void:
+	if is_depleted:
+		return
+	if not multiplayer.is_server():
+		_request_hit.rpc_id(1)
+		return
+	hits_taken += 1
+	if hits_taken >= hits_to_finish:
+		is_depleted = true
+		hide_menu()
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func _request_hit() -> void:
+	if multiplayer.is_server():
+		register_hit()
+
+
+## Chips fly and the strike sound plays; runs on every peer through the replicated hit count.
+func play_strike() -> void:
+	if hit_particles:
+		hit_particles.restart()
+	_play(hit_sfx)
+
+
+func _play(stream: AudioStream) -> void:
+	if hit_audio and stream:
+		hit_audio.stream = stream
+		hit_audio.play()
+
+
+## Swaps the intact model for its depleted version. Overridden by subclasses.
+func _on_depleted() -> void:
+	pass
+
+
+## Called by [Camera] while the player looks at this object.
+func display_menu(_player: Player) -> void:
+	if is_depleted:
+		return
+	player = _player
+	action_prompt.show_for(player)
+
+
+## Called by [Camera] when the player looks away from this object.
+func hide_menu() -> void:
+	action_prompt.hide()
+	player = null

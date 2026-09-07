@@ -1,6 +1,8 @@
-[gd_scene format=3 uid="uid://bwpnabad6xun7"]
+[gd_scene load_steps=3 format=3 uid="uid://bwpnabad6xun7"]
 
 [ext_resource type="PackedScene" uid="uid://rmgs7cenq0xo" path="res://assets/galacticlake/godou.blend" id="1_dxr3v"]
+[ext_resource type="Script" path="res://addons/3d_player_controller/scripts/synced_body.gd" id="sync_script"]
+[ext_resource type="SceneReplicationConfig" path="res://addons/3d_player_controller/resources/rigid_body_replication.tres" id="sync_config"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_fk680"]
 radius = 0.14
@@ -169,3 +171,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1239139, 0.30411264, 0)
 shape = SubResource("SphereShape3D_5pyta")
 
 [editable path="godou"]
+
+[node name="BodySynchronizer" type="MultiplayerSynchronizer" parent="."]
+script = ExtResource("sync_script")
+replication_config = ExtResource("sync_config")

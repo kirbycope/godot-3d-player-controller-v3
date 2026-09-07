@@ -1,0 +1,390 @@
+[gd_scene format=3 uid="uid://dwh3gipqf366y"]
+
+[ext_resource type="Script" uid="uid://bl8qlxq8dcpnv" path="res://assets/BinbunVFX_Vol2/DarkMagicFX/script/VFXDarkBallBB.gd" id="1_stibi"]
+[ext_resource type="Shader" uid="uid://d31o1uw2hpq0h" path="res://assets/BinbunVFX_Vol2/DarkMagicFX/shader/void_particles.gdshader" id="2_urtus"]
+[ext_resource type="Shader" uid="uid://bygfogrron0qe" path="res://assets/BinbunVFX_Vol2/DarkMagicFX/shader/void_aura.gdshader" id="3_l3owk"]
+[ext_resource type="Shader" uid="uid://8kvsy31x7170" path="res://assets/BinbunVFX_Vol2/DarkMagicFX/shader/void_ball.gdshader" id="4_dtrk0"]
+[ext_resource type="Shader" uid="uid://c21trxc3o2ee7" path="res://assets/BinbunVFX_Vol2/DarkMagicFX/shader/void_core.gdshader" id="5_kpa4k"]
+[ext_resource type="Script" uid="uid://bwmucxp58uvvt" path="res://assets/BinbunVFX_Vol2/shared/script/VFXOmniLightBB.gd" id="6_5qhhu"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_6as2r"]
+seed = 3
+fractal_type = 2
+fractal_octaves = 2
+fractal_lacunarity = 1.5
+fractal_weighted_strength = 1.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_3iins"]
+generate_mipmaps = false
+noise = SubResource("FastNoiseLite_6as2r")
+seamless = true
+invert = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_p66lr"]
+render_priority = 0
+shader = ExtResource("2_urtus")
+shader_parameter/primary_color = Color(0.9390114, 0.10920996, 0.99999934, 1)
+shader_parameter/secondary_color = Color(6.738305e-07, 0.30182502, 0.7828738, 1)
+shader_parameter/emission = 4.0
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_3iins")
+shader_parameter/noise_scale = Vector2(2, 2)
+shader_parameter/noise_scroll = Vector2(0.2, 0.2)
+shader_parameter/noise_shape = 1.0
+shader_parameter/wave_strength = 0.7
+shader_parameter/wave_frequency = 5.0
+shader_parameter/edge_position = 0.05
+shader_parameter/edge_hardness = 0.0
+shader_parameter/speed_scale = 1.0
+
+[sub_resource type="Curve" id="Curve_rqvf0"]
+_data = [Vector2(0, 0), 0.0, 3.261884, 0, 0, Vector2(0.7702703, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -4.048852, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_ql8ny"]
+curve = SubResource("Curve_rqvf0")
+
+[sub_resource type="Gradient" id="Gradient_c2v4x"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ql8ny"]
+gradient = SubResource("Gradient_c2v4x")
+
+[sub_resource type="Curve" id="Curve_7gegb"]
+_data = [Vector2(0, 0), 0.0, 2.525177, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_mv8cw"]
+curve = SubResource("Curve_7gegb")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_iugho"]
+emission_shape = 2
+emission_sphere_radius = 1.0
+gravity = Vector3(0, 0, 0)
+radial_accel_min = -5.000002
+radial_accel_max = -4.0000024
+scale_curve = SubResource("CurveTexture_mv8cw")
+color_initial_ramp = SubResource("GradientTexture1D_ql8ny")
+alpha_curve = SubResource("CurveTexture_ql8ny")
+
+[sub_resource type="QuadMesh" id="QuadMesh_nwdsb"]
+size = Vector2(0.6, 1.4)
+subdivide_width = 2
+subdivide_depth = 2
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_glwma"]
+render_priority = 0
+shader = ExtResource("3_l3owk")
+shader_parameter/effect_decay = 0.0
+shader_parameter/primary_color = Color(0.9390114, 0.10920996, 0.99999934, 1)
+shader_parameter/secondary_color = Color(6.738305e-07, 0.30182502, 0.7828738, 1)
+shader_parameter/emission = 4.0
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_3iins")
+shader_parameter/noise_scale = Vector2(2, 2)
+shader_parameter/noise_scroll = Vector2(0.2, 0.2)
+shader_parameter/noise_shape = 1.0
+shader_parameter/wave_strength = 0.7
+shader_parameter/wave_frequency = 5.0
+shader_parameter/edge_position = 0.05
+shader_parameter/edge_hardness = 0.0
+shader_parameter/speed_scale = 1.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_n58gb"]
+size = Vector2(2.4, 2.4)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nouef"]
+render_priority = 0
+shader = ExtResource("4_dtrk0")
+shader_parameter/effect_decay = 0.0
+shader_parameter/primary_color = Color(0.9390114, 0.10920996, 0.99999934, 1)
+shader_parameter/secondary_color = Color(6.738305e-07, 0.30182502, 0.7828738, 1)
+shader_parameter/emission = 4.0
+shader_parameter/displacement_frequency = 1.0
+shader_parameter/displacement_amount = 0.5
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_3iins")
+shader_parameter/noise_scale = Vector2(2, 2)
+shader_parameter/noise_scroll = Vector2(0.2, 0.2)
+shader_parameter/speed_scale = 1.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_4i65n"]
+radius = 0.45
+height = 0.9
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yweq1"]
+render_priority = 0
+shader = ExtResource("5_kpa4k")
+shader_parameter/effect_decay = 0.0
+shader_parameter/displacement_frequency = 1.0
+shader_parameter/displacement_amount = 0.5
+shader_parameter/speed_scale = 1.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_v1px1"]
+radius = 0.3
+height = 0.6
+
+[sub_resource type="Animation" id="Animation_cyecv"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Particles:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Aura:material_override:shader_parameter/effect_decay")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Ball:material_override:shader_parameter/effect_decay")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Core:material_override:shader_parameter/effect_decay")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("VFXOmniLightBB:light_mult")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [1.0]
+}
+
+[sub_resource type="Animation" id="Animation_gpu3n"]
+resource_name = "close"
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Particles:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.099999994),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Aura:material_override:shader_parameter/effect_decay")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.70000005),
+"transitions": PackedFloat32Array(6, 0.2),
+"update": 0,
+"values": [0.0, 0.999999977648]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Ball:material_override:shader_parameter/effect_decay")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.70000005),
+"transitions": PackedFloat32Array(0.4, 1),
+"update": 0,
+"values": [0.0, 0.999999977648]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Core:material_override:shader_parameter/effect_decay")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.70000005),
+"transitions": PackedFloat32Array(2, 1),
+"update": 0,
+"values": [0.0, 0.999999977648]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("VFXOmniLightBB:light_mult")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.7),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [1.0, 0.0]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath(".:volume_animation")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.7),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [1.0, 0.0]
+}
+
+[sub_resource type="Animation" id="Animation_owski"]
+resource_name = "open"
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Particles:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Aura:material_override:shader_parameter/effect_decay")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.8),
+"transitions": PackedFloat32Array(0.2, 1),
+"update": 0,
+"values": [0.999999977648, 0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Ball:material_override:shader_parameter/effect_decay")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.8),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.999999977648, 0.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Core:material_override:shader_parameter/effect_decay")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.8),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.999999977648, 0.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("VFXOmniLightBB:light_mult")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 1.0]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath(".:volume_animation")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 1.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_kpp5a"]
+_data = {
+&"RESET": SubResource("Animation_cyecv"),
+&"close": SubResource("Animation_gpu3n"),
+&"open": SubResource("Animation_owski")
+}
+
+[node name="VFXBallVoid_02" type="Node3D" unique_id=986436229]
+script = ExtResource("1_stibi")
+primary_color = Color(0.9390114, 0.10920996, 0.99999934, 1)
+secondary_color = Color(6.738305e-07, 0.30182502, 0.7828738, 1)
+light_color = Color(0.9372549, 0.10980392, 1, 1)
+noise_texture = SubResource("NoiseTexture2D_3iins")
+noise_scale = Vector2(2, 2)
+noise_scroll = Vector2(0.2, 0.2)
+wave_strength = 0.7
+displacement_frequency = 1.0
+
+[node name="Particles" type="GPUParticles3D" parent="." unique_id=790732536]
+material_override = SubResource("ShaderMaterial_p66lr")
+amount = 32
+lifetime = 0.6
+transform_align = 3
+process_material = SubResource("ParticleProcessMaterial_iugho")
+draw_pass_1 = SubResource("QuadMesh_nwdsb")
+
+[node name="Aura" type="MeshInstance3D" parent="." unique_id=1082292828]
+sorting_offset = -0.1
+material_override = SubResource("ShaderMaterial_glwma")
+mesh = SubResource("QuadMesh_n58gb")
+
+[node name="Ball" type="MeshInstance3D" parent="." unique_id=630403616]
+material_override = SubResource("ShaderMaterial_nouef")
+mesh = SubResource("SphereMesh_4i65n")
+
+[node name="Core" type="MeshInstance3D" parent="." unique_id=1670159372]
+sorting_offset = 0.1
+material_override = SubResource("ShaderMaterial_yweq1")
+mesh = SubResource("SphereMesh_v1px1")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1223479149]
+libraries/ = SubResource("AnimationLibrary_kpp5a")
+
+[node name="VFXOmniLightBB" type="OmniLight3D" parent="." unique_id=1647498218]
+light_color = Color(0.9372549, 0.10980392, 1, 1)
+light_energy = 4.0
+script = ExtResource("6_5qhhu")
+vfx_light_energy = 4.0
+metadata/_custom_type_script = "uid://bwmucxp58uvvt"
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=442033983]
+max_distance = 3.0

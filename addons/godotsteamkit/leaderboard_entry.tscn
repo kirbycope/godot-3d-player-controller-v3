@@ -1,0 +1,78 @@
+[gd_scene format=3 uid="uid://cqdmu6pqa5ejs"]
+
+[ext_resource type="Theme" uid="uid://dlt46qyemf6cj" path="res://addons/godotsteamkit/themes/godotsteam.tres" id="1_l03x4"]
+[ext_resource type="Script" uid="uid://wr2ovfbb2x2g" path="res://addons/godotsteamkit/leaderboard_entry.gd" id="1_uhqui"]
+[ext_resource type="Texture2D" uid="uid://c5cm6165mpvlx" path="res://addons/godotsteamkit/ui/avatar_default.png" id="2_pf7dy"]
+[ext_resource type="Script" path="res://addons/godotsteamkit/avatars/steam_avatar_rect.gd" id="3_l7vif"]
+[ext_resource type="Script" path="res://addons/godotsteamkit/usernames/steam_username.gd" id="4_l03x4"]
+[ext_resource type="LabelSettings" uid="uid://cccv0hcqhqvac" path="res://addons/godotsteamkit/themes/label_settings/lobby_subtitle.tres" id="5_scwgj"]
+
+[node name="Leader" type="Panel" unique_id=1744417810]
+custom_minimum_size = Vector2(960, 100)
+offset_right = 507.0
+offset_bottom = 100.0
+theme = ExtResource("1_l03x4")
+script = ExtResource("1_uhqui")
+metadata/_edit_lock_ = true
+
+[node name="Margin" type="MarginContainer" parent="." unique_id=642609587]
+custom_minimum_size = Vector2(960, 100)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 20
+metadata/_edit_lock_ = true
+
+[node name="HFrame" type="HBoxContainer" parent="Margin" unique_id=765351622]
+layout_mode = 2
+theme_override_constants/separation = 15
+metadata/_edit_lock_ = true
+
+[node name="Avatar" type="TextureRect" parent="Margin/HFrame" unique_id=718321674]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+texture = ExtResource("2_pf7dy")
+expand_mode = 1
+script = ExtResource("3_l7vif")
+metadata/_edit_lock_ = true
+
+[node name="Rank" type="Label" parent="Margin/HFrame" unique_id=991484975]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "0"
+label_settings = ExtResource("5_scwgj")
+metadata/_edit_lock_ = true
+
+[node name="Name" type="Label" parent="Margin/HFrame" unique_id=980490574]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "No one"
+label_settings = ExtResource("5_scwgj")
+script = ExtResource("4_l03x4")
+metadata/_edit_lock_ = true
+
+[node name="Score" type="Label" parent="Margin/HFrame" unique_id=1471613647]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "0"
+label_settings = ExtResource("5_scwgj")
+metadata/_edit_lock_ = true
+
+[node name="UGC" type="Button" parent="Margin/HFrame" unique_id=981790289]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(50, 35)
+layout_mode = 2
+text = "See"
+metadata/_edit_lock_ = true

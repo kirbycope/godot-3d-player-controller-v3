@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://kxfqml5bs82n"
+path="res://.godot/imported/Cat Meow_2.ogg-a8d2f949a143c91854a589206b5dde1d.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Cat Meow_2.ogg"
+dest_files=["res://.godot/imported/Cat Meow_2.ogg-a8d2f949a143c91854a589206b5dde1d.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

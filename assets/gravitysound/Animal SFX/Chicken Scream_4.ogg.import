@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://csvr8oswufo2i"
+path="res://.godot/imported/Chicken Scream_4.ogg-d528ec14367769fea25cf5713089c46d.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Chicken Scream_4.ogg"
+dest_files=["res://.godot/imported/Chicken Scream_4.ogg-d528ec14367769fea25cf5713089c46d.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

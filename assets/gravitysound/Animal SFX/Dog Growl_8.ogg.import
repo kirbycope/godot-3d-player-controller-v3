@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://bvbhkl4k0uuv"
+path="res://.godot/imported/Dog Growl_8.ogg-83a177979d8a132b96cf9df1cf7df28c.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Dog Growl_8.ogg"
+dest_files=["res://.godot/imported/Dog Growl_8.ogg-83a177979d8a132b96cf9df1cf7df28c.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="DamageAbility" format=3 uid="uid://vxyio2qd6nhi"]
+
+[ext_resource type="Texture2D" path="res://addons/3d_player_controller/assets/game_icons/fire-ray.svg" id="spell_icon"]
+[ext_resource type="Script" uid="uid://cy4tkatxd8bhr" path="res://scenes/damage_ability.gd" id="1_damage"]
+[ext_resource type="PackedScene" uid="uid://dlecwaopab3gt" path="res://assets/BinbunVFX/magic_orbs/effects/magic_orb_small/magic_orb_small_vfx_04.tscn" id="2_charge"]
+[ext_resource type="PackedScene" path="res://Le_Lu/Fire_VFX/Scenes/VFX_FireProjectile_K1.tscn" id="2_bolt"]
+[ext_resource type="PackedScene" path="res://Le_Lu/Fire_VFX/Scenes/VFX_FireHit_1.tscn" id="2_hit"]
+[ext_resource type="AudioStream" uid="uid://4dogfllph4je" path="res://addons/3d_player_controller/assets/tommusic/fantasy_sfx/Spells/Firebuff 1.ogg" id="3_channel"]
+[ext_resource type="AudioStream" uid="uid://bs7c88oh6vty2" path="res://addons/3d_player_controller/assets/tommusic/fantasy_sfx/Spells/Fireball 1.ogg" id="4_cast"]
+[ext_resource type="AudioStream" uid="uid://cake8svtmtkxy" path="res://addons/3d_player_controller/assets/tommusic/fantasy_sfx/Spells/Spell Impact 1.ogg" id="5_impact"]
+
+[resource]
+script = ExtResource("1_damage")
+display_name = "Firebolt"
+icon = ExtResource("spell_icon")
+icon_color = Color(1, 0.27, 0, 1)
+cooldown = 4.0
+cast_time = 1.2
+energy_cost = 20.0
+fx_lifetime = 1.5
+target_mode = 1
+cast_style = 1
+elements = 1
+projectile_speed = 14.0
+channeling_vfx = ExtResource("2_charge")
+channeling_sfx = ExtResource("3_channel")
+casting_vfx = ExtResource("2_bolt")
+casting_sfx = ExtResource("4_cast")
+impact_vfx = ExtResource("2_hit")
+impact_sfx = ExtResource("5_impact")

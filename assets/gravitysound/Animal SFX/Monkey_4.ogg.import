@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dry4dc7vuu0dq"
+path="res://.godot/imported/Monkey_4.ogg-33ca73f50bce19d4f1f24c3c318cfa8f.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Monkey_4.ogg"
+dest_files=["res://.godot/imported/Monkey_4.ogg-33ca73f50bce19d4f1f24c3c318cfa8f.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

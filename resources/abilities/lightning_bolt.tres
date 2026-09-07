@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="DamageAbility" format=3 uid="uid://dyboqfn7je42w"]
+
+[ext_resource type="Texture2D" path="res://addons/3d_player_controller/assets/game_icons/lightning-slashes.svg" id="spell_icon"]
+[ext_resource type="Script" uid="uid://cy4tkatxd8bhr" path="res://scenes/damage_ability.gd" id="1_damage"]
+[ext_resource type="PackedScene" path="res://Le_Lu/Elemental_VFX/Scenes/VFX_Sparks_Yk1.tscn" id="2_charge"]
+[ext_resource type="PackedScene" uid="uid://l3mk56ty44tw" path="res://assets/BinbunVFX/magic_projectiles/effects/mprojectile_javelin/mprojectile_javelin_vfx_01.tscn" id="2_bolt"]
+[ext_resource type="PackedScene" path="res://Le_Lu/Elemental_VFX/Scenes/VFX_Explosion_Electric_Y.tscn" id="2_hit"]
+[ext_resource type="AudioStream" uid="uid://dnergpcre7p8c" path="res://addons/3d_player_controller/assets/tommusic/fantasy_sfx/Spells/Rock Meteor Swarm 1.ogg" id="3_channel"]
+[ext_resource type="AudioStream" uid="uid://r6hdt01ks5sc" path="res://addons/3d_player_controller/assets/tommusic/fantasy_sfx/Spells/Rock Meteor Throw 1.ogg" id="4_cast"]
+[ext_resource type="AudioStream" uid="uid://bojtfplrdhb4q" path="res://addons/3d_player_controller/assets/tommusic/fantasy_sfx/Spells/Spell Impact 3.ogg" id="5_impact"]
+
+[resource]
+script = ExtResource("1_damage")
+display_name = "Lightning Bolt"
+icon = ExtResource("spell_icon")
+icon_color = Color(0, 1, 1, 1)
+cooldown = 6.0
+cast_time = 2.0
+energy_cost = 30.0
+fx_lifetime = 2.0
+target_mode = 1
+cast_style = 1
+projectile_speed = 40.0
+channeling_vfx = ExtResource("2_charge")
+channeling_sfx = ExtResource("3_channel")
+casting_vfx = ExtResource("2_bolt")
+casting_sfx = ExtResource("4_cast")
+impact_vfx = ExtResource("2_hit")
+impact_sfx = ExtResource("5_impact")
+damage = 30.0

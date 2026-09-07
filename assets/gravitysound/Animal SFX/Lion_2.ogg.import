@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dbbyco5yomt8x"
+path="res://.godot/imported/Lion_2.ogg-5b0ab55be0a0ce6c6f99070d2e892ef6.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Lion_2.ogg"
+dest_files=["res://.godot/imported/Lion_2.ogg-5b0ab55be0a0ce6c6f99070d2e892ef6.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

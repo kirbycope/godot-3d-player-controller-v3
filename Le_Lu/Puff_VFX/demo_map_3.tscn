@@ -1,0 +1,195 @@
+[gd_scene format=3 uid="uid://bewkuxcx3kapu"]
+
+[ext_resource type="Texture2D" uid="uid://bgvrwetoo73t2" path="res://Le_Lu/Puff_VFX/scene stuff/Textures/text1a.png" id="1_xbtbx"]
+[ext_resource type="Texture2D" path="res://VFX_Puff premium pack/VFX/Textures/T_VFX_puff_animated1a.png" id="2_hnpu7"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jvghd"]
+albedo_color = Color(0.46229, 0.462291, 0.46229, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_tljoj"]
+size = Vector2(20, 20)
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_prx7c"]
+sky_top_color = Color(0, 0, 0, 1)
+sky_horizon_color = Color(0.462291, 0.462291, 0.462291, 1)
+sky_curve = 0.0861524
+sky_energy_multiplier = 1.59
+ground_bottom_color = Color(0.2, 0.2, 0.2, 1)
+ground_horizon_color = Color(0.465096, 0.474972, 0.490563, 1)
+
+[sub_resource type="Sky" id="Sky_evx6q"]
+sky_material = SubResource("ProceduralSkyMaterial_prx7c")
+
+[sub_resource type="Environment" id="Environment_m6mxa"]
+background_mode = 2
+sky = SubResource("Sky_evx6q")
+sky_rotation = Vector3(-0.172788, 0, 0)
+ambient_light_source = 2
+ambient_light_color = Color(0.296072, 0.322914, 0.374825, 1)
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kb02a"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+vertex_color_is_srgb = true
+albedo_texture = ExtResource("2_hnpu7")
+disable_receive_shadows = true
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 4
+particles_anim_v_frames = 2
+particles_anim_loop = false
+proximity_fade_enabled = true
+proximity_fade_distance = 0.4
+
+[sub_resource type="Gradient" id="Gradient_3r6eh"]
+colors = PackedColorArray(1, 1, 1, 1, 0.427451, 0.427451, 0.431373, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_weruq"]
+gradient = SubResource("Gradient_3r6eh")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_vfhs3"]
+gravity = Vector3(0, 0, 0)
+scale_min = 2.0
+scale_max = 2.0
+color_ramp = SubResource("GradientTexture1D_weruq")
+anim_speed_min = 1.0
+anim_speed_max = 1.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_xrvsf"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yjw8p"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+vertex_color_is_srgb = true
+albedo_texture = ExtResource("2_hnpu7")
+uv1_scale = Vector3(-1, 1, 1)
+disable_receive_shadows = true
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 4
+particles_anim_v_frames = 2
+particles_anim_loop = false
+proximity_fade_enabled = true
+proximity_fade_distance = 0.4
+
+[sub_resource type="QuadMesh" id="QuadMesh_e8wqm"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rtyvl"]
+albedo_color = Color(0, 0.478431, 1, 1)
+
+[sub_resource type="Animation" id="Animation_apug1"]
+resource_name = "new_animation"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CSGBox3D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.7, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0.5, 0), Vector3(0, 2.35912, 0), Vector3(0, 0.5, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("VFX_Puff_25D_animated/puff_animated1:emitting")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.8),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("VFX_Puff_25D_animated/puff_animated2:emitting")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.8),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_sm3xl"]
+_data = {
+"new_animation": SubResource("Animation_apug1")
+}
+
+[node name="map3" type="Node"]
+
+[node name="scene stuff" type="Node3D" parent="."]
+
+[node name="floor" type="MeshInstance3D" parent="scene stuff"]
+material_override = SubResource("StandardMaterial3D_jvghd")
+mesh = SubResource("PlaneMesh_tljoj")
+skeleton = NodePath("../..")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="scene stuff"]
+transform = Transform3D(-0.866024, -0.433016, 0.250001, 0, 0.499998, 0.866026, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+light_energy = 0.5
+shadow_enabled = true
+
+[node name="Camera3D" type="Camera3D" parent="scene stuff"]
+transform = Transform3D(1, 0, 0, 0, 0.987287, 0.158951, 0, -0.158951, 0.987287, 0, 0.99939, 1.53654)
+fov = 60.0
+
+[node name="OmniLight3D" type="OmniLight3D" parent="scene stuff"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.685725, 1.65688, 0.450561)
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="scene stuff"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.654936, 1.65688, 0.826637)
+light_energy = 0.5
+
+[node name="Sprite3D" type="Sprite3D" parent="scene stuff"]
+transform = Transform3D(0.195, 0, 0, 0, 0.195, 0, 0, 0, 0.195, -1.87131, 2.67967, 0)
+texture = ExtResource("1_xbtbx")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_m6mxa")
+
+[node name="VFX_Puff_25D_animated" type="Node3D" parent="."]
+
+[node name="puff_animated1" type="GPUParticles3D" parent="VFX_Puff_25D_animated"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.04218, 0.978271, 0)
+material_override = SubResource("StandardMaterial3D_kb02a")
+cast_shadow = 0
+emitting = false
+amount = 1
+lifetime = 0.3
+one_shot = true
+explosiveness = 1.0
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_vfhs3")
+draw_pass_1 = SubResource("QuadMesh_xrvsf")
+
+[node name="puff_animated2" type="GPUParticles3D" parent="VFX_Puff_25D_animated"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.16503, 0.978271, 0)
+material_override = SubResource("StandardMaterial3D_yjw8p")
+cast_shadow = 0
+emitting = false
+amount = 1
+lifetime = 0.3
+one_shot = true
+explosiveness = 1.0
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_vfhs3")
+draw_pass_1 = SubResource("QuadMesh_e8wqm")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+material_override = SubResource("StandardMaterial3D_rtyvl")
+
+[node name="AnimationPlayer2" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_sm3xl")
+}

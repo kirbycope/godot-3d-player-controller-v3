@@ -1,0 +1,60 @@
+[gd_scene format=3 uid="uid://d1dimpgvtuxvj"]
+
+[ext_resource type="Shader" path="res://Le_Lu/Full_Screen_VFX/shaders/ss_fullscreen_mastershader_A.gdshader" id="1_ikcm1"]
+[ext_resource type="Texture2D" uid="uid://dpsct3n8gl7jl" path="res://Le_Lu/Full_Screen_VFX/textures/T_VFX_Noise_3c.png" id="2_vbhi2"]
+[ext_resource type="Texture2D" uid="uid://djlb0gep2whiy" path="res://Le_Lu/Full_Screen_VFX/textures/T_VFX_WindNoise1.png" id="3_ofmvn"]
+
+
+[sub_resource type="Gradient" id="Gradient_8115r"]
+offsets = PackedFloat32Array(0.98062, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.707967, 0.707967, 0.707967, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_23dky"]
+gradient = SubResource("Gradient_8115r")
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="Gradient" id="Gradient_wmndm"]
+colors = PackedColorArray(0.611765, 0, 0, 0, 1, 0.664155, 0.348902, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_yan2m"]
+gradient = SubResource("Gradient_wmndm")
+
+[sub_resource type="Gradient" id="Gradient_akp2r"]
+offsets = PackedFloat32Array(0.430233, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_g60te"]
+gradient = SubResource("Gradient_akp2r")
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_a2alf"]
+render_priority = 0
+shader = ExtResource("1_ikcm1")
+shader_parameter/attach_to_camera = false
+shader_parameter/color_intensity = 5.0
+shader_parameter/multiply_or_subtract = false
+shader_parameter/enable_tex_distortion = true
+shader_parameter/distortion_speed = Vector2(0, -1)
+shader_parameter/distortion_scale = Vector2(1, 1)
+shader_parameter/distortion_intensity = 0.2
+shader_parameter/speed = Vector2(0.2, 1)
+shader_parameter/scale = Vector2(1, 1)
+shader_parameter/distortion_texture = ExtResource("2_vbhi2")
+shader_parameter/texture_noise = ExtResource("3_ofmvn")
+shader_parameter/mask = SubResource("GradientTexture2D_g60te")
+shader_parameter/add_texture = SubResource("GradientTexture2D_23dky")
+shader_parameter/gradient_color_1d = SubResource("GradientTexture1D_yan2m")
+
+[sub_resource type="QuadMesh" id="QuadMesh_dnupf"]
+size = Vector2(2, 2)
+
+[node name="VFX_Screen_underwater_B_ss" type="MeshInstance3D"]
+visible = false
+layers = 4
+material_override = SubResource("ShaderMaterial_a2alf")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_dnupf")

@@ -1,0 +1,690 @@
+[gd_scene format=3 uid="uid://bbhoelb4dlubi"]
+
+[ext_resource type="PackedScene" uid="uid://dxifu463ntyem" path="res://Le_Lu/Heal_Protection_VFX/Scenes/VFX_Healing_Area.tscn" id="1_1a4rh"]
+[ext_resource type="PackedScene" uid="uid://ck18rykofcffc" path="res://Le_Lu/Heal_Protection_VFX/Scenes/VFX_Healing_Flower.tscn" id="2_kpvdh"]
+[ext_resource type="PackedScene" uid="uid://bnsik3l1avsra" path="res://Le_Lu/Heal_Protection_VFX/Scenes/VFX_Healing_Orb.tscn" id="3_2tpon"]
+[ext_resource type="PackedScene" uid="uid://cnoihtn6b2tqu" path="res://Le_Lu/Heal_Protection_VFX/Scenes/VFX_Healing_R1.tscn" id="4_gp1rj"]
+[ext_resource type="PackedScene" uid="uid://bqedf64xdoauq" path="res://Le_Lu/Heal_Protection_VFX/Scenes/VFX_Healing_Ring_A.tscn" id="5_ttbbc"]
+[ext_resource type="PackedScene" uid="uid://bnpsbowdlu7wt" path="res://Le_Lu/Heal_Protection_VFX/Scenes/VFX_Healing_W1.tscn" id="6_uh7mp"]
+[ext_resource type="PackedScene" uid="uid://b3wiq2qxf863i" path="res://Le_Lu/Heal_Protection_VFX/Scenes/VFX_Protection_4_Shield.tscn" id="7_1orvw"]
+[ext_resource type="PackedScene" uid="uid://3ya3nvtd6kqh" path="res://Le_Lu/Heal_Protection_VFX/Scenes/VFX_Protection_Area.tscn" id="8_7v3ob"]
+[ext_resource type="PackedScene" uid="uid://dykbmlia8ae21" path="res://Le_Lu/Heal_Protection_VFX/Scenes/VFX_Protection_Bubble.tscn" id="9_l1sut"]
+[ext_resource type="PackedScene" uid="uid://cvf46kwf2d2vh" path="res://Le_Lu/Heal_Protection_VFX/Scenes/VFX_HealPuff_A.tscn" id="10_v1wts"]
+[ext_resource type="Material" uid="uid://lhotu1tsydst" path="res://Le_Lu/Heal_Protection_VFX/materials/m_healing43.tres" id="11_3mg5p"]
+[ext_resource type="ArrayMesh" uid="uid://vgiyxw3yneoh" path="res://Le_Lu/Elemental_VFX/objects/sm_cylinder_based.obj" id="12_ivpcr"]
+[ext_resource type="Shader" path="res://Le_Lu/Wind_VFX/shaders/s_master_fire2_fresnel_ds.tres" id="13_5y5kd"]
+[ext_resource type="Texture2D" uid="uid://bi58oq2oh63dp" path="res://Le_Lu/Heal_Protection_VFX/textures/T_NHU85.png" id="14_l1q1v"]
+[ext_resource type="ArrayMesh" uid="uid://cpq7r88qokqyt" path="res://Le_Lu/Heal_Protection_VFX/objects/sm_shockwaveW5.obj" id="15_o2gn5"]
+[ext_resource type="ArrayMesh" uid="uid://ct8qu8sekhktw" path="res://Le_Lu/Heal_Protection_VFX/Misc/sm_character_base1.obj" id="16_cedfk"]
+[ext_resource type="Shader" path="res://Le_Lu/Heal_Protection_VFX/shaders/s_animated_ds_unlit_bw_aT_instanced.gdshader" id="17_07yex"]
+[ext_resource type="Texture2D" uid="uid://bbyxbtx7n504o" path="res://Le_Lu/Heal_Protection_VFX/Misc/textures/T_Text_H34L1NG_ATTLAS.png" id="18_v8hct"]
+
+
+
+[sub_resource type="GDScript" id="GDScript_d7jyh"]
+resource_name = "VFX_showcaser_heal"
+script/source = "@tool
+extends Node
+
+@export var my_num:int = 0:
+	set(new_my_num):
+		my_num = new_my_num
+		if is_inside_tree():
+			play_all_animations(my_num)
+
+var is_autoplay: bool = true
+
+func _ready() -> void:
+	_setup_camera_and_ui()
+	_run()
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.keycode == KEY_1:
+			trigger_group(1)
+		elif event.keycode == KEY_2:
+			trigger_group(2)
+		elif event.keycode == KEY_3:
+			trigger_group(3)
+		elif event.keycode == KEY_4:
+			trigger_group(4)
+		elif event.keycode == KEY_SPACE:
+			trigger_all()
+
+func _run() -> void:
+	if not is_inside_tree():
+		return
+	
+	if is_autoplay:
+		var misc_anim := get_node_or_null("misc/AnimationPlayer") as AnimationPlayer
+		if misc_anim:
+			misc_anim.play("Init")
+
+func trigger_group(num: int) -> void:
+	my_num = num
+	play_all_animations(num)
+
+func trigger_all() -> void:
+	for i in range(1, 5):
+		play_all_animations(i)
+
+func play_all_animations(_num:int) -> void:
+	if not is_inside_tree():
+		return
+	var vfx_names: Array[String] = []
+	match _num:
+		1:
+			vfx_names = ["VFX_Healing_Area", "VFX_Healing_Flower"]
+		2:
+			vfx_names = ["VFX_Healing_Orb", "VFX_Protection_Bubble", "VFX_HealPuff_A"]
+		3:
+			vfx_names = ["VFX_Protection_4_Shield", "VFX_Protection_Area", "VFX_Healing_R1"]
+		4:
+			vfx_names = ["VFX_Healing_Ring_A", "VFX_Healing_W1"]
+	
+	for vname in vfx_names:
+		var node := get_node_or_null(vname)
+		if node:
+			var anim = node.find_child("AnimationPlayer")
+			if anim and anim is AnimationPlayer:
+				anim.stop()
+				anim.play("Init")
+
+func _setup_camera_and_ui() -> void:
+	if Engine.is_editor_hint():
+		return
+	
+	# Add Camera3D if none exists
+	if not get_node_or_null("ShowcaseCamera"):
+		var cam := Camera3D.new()
+		cam.name = "ShowcaseCamera"
+		cam.current = true
+		cam.position = Vector3(0, 10, 18)
+		cam.rotation_degrees = Vector3(-18, 0, 0)
+		add_child(cam)
+	
+	# Add on-screen Showcase UI overlay
+	if not get_node_or_null("ShowcaseUI"):
+		var canvas := CanvasLayer.new()
+		canvas.name = "ShowcaseUI"
+		canvas.layer = 10
+		add_child(canvas)
+		
+		var panel := PanelContainer.new()
+		panel.anchors_preset = Control.PRESET_BOTTOM_WIDE
+		panel.anchor_top = 1.0
+		panel.anchor_bottom = 1.0
+		panel.offset_top = -65.0
+		panel.offset_bottom = -15.0
+		panel.offset_left = 20.0
+		panel.offset_right = -20.0
+		canvas.add_child(panel)
+		
+		var style := StyleBoxFlat.new()
+		style.bg_color = Color(0.1, 0.12, 0.18, 0.9)
+		style.set_corner_radius_all(10)
+		style.set_content_margin_all(8)
+		panel.add_theme_stylebox_override("panel", style)
+		
+		var hbox := HBoxContainer.new()
+		hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+		hbox.add_theme_constant_override("separation", 12)
+		panel.add_child(hbox)
+		
+		var label := Label.new()
+		label.text = "Heal & Protection Selectors:"
+		label.add_theme_font_size_override("font_size", 14)
+		hbox.add_child(label)
+		
+		var groups = ["Group 1 (1)", "Group 2 (2)", "Group 3 (3)", "Group 4 (4)"]
+		for i in range(groups.size()):
+			var btn := Button.new()
+			btn.text = groups[i]
+			btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+			var grp_idx = i + 1
+			btn.pressed.connect(func():
+				trigger_group(grp_idx)
+			)
+			hbox.add_child(btn)
+		
+		var all_btn := Button.new()
+		all_btn.text = "Play All (Space)"
+		all_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		all_btn.pressed.connect(trigger_all)
+		hbox.add_child(all_btn)
+		
+		var auto_btn := Button.new()
+		auto_btn.text = "Auto-Cycle: ON"
+		auto_btn.toggle_mode = true
+		auto_btn.button_pressed = true
+		auto_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		auto_btn.toggled.connect(func(pressed: bool):
+			is_autoplay = pressed
+			auto_btn.text = "Auto-Cycle: ON" if pressed else "Auto-Cycle: OFF"
+			var misc_anim := get_node_or_null("misc/AnimationPlayer") as AnimationPlayer
+			if misc_anim:
+				if pressed:
+					misc_anim.play("Init")
+				else:
+					misc_anim.pause()
+		)
+		hbox.add_child(auto_btn)
+"
+
+[sub_resource type="Gradient" id="Gradient_q1upc"]
+offsets = PackedFloat32Array(0, 0.833333, 1)
+colors = PackedColorArray(0, 0, 0, 1, 1, 1, 1, 1, 0.423651, 0.423651, 0.423651, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_qx41o"]
+gradient = SubResource("Gradient_q1upc")
+
+[sub_resource type="Gradient" id="Gradient_o7wgd"]
+offsets = PackedFloat32Array(0, 0.761029, 1)
+colors = PackedColorArray(0.46, 0.69, 0, 0, 0.466347, 0.64, 0.3584, 1, 0.77, 1, 0.4, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_6e1wj"]
+gradient = SubResource("Gradient_o7wgd")
+
+[sub_resource type="Gradient" id="Gradient_s7x3k"]
+interpolation_color_space = 2
+offsets = PackedFloat32Array(0.419118, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_j78xm"]
+gradient = SubResource("Gradient_s7x3k")
+fill_to = Vector2(0, 1)
+
+[sub_resource type="Gradient" id="Gradient_c81sw"]
+offsets = PackedFloat32Array(0, 0.137255)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_wwf8h"]
+gradient = SubResource("Gradient_c81sw")
+
+[sub_resource type="Gradient" id="Gradient_htero"]
+interpolation_color_space = 2
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_co8hk"]
+gradient = SubResource("Gradient_htero")
+fill_to = Vector2(0, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_d4uom"]
+render_priority = 0
+shader = ExtResource("13_5y5kd")
+shader_parameter/Speed_XY2 = Vector2(0, 1)
+shader_parameter/Scale_XY2 = Vector2(2, 1)
+shader_parameter/Fresnel_Invert = true
+shader_parameter/Fresnel_power = 1.0
+shader_parameter/Color_Intensity2 = 1.0
+shader_parameter/Base_noise2 = ExtResource("14_l1q1v")
+shader_parameter/Fresnel_Gradient_Color_1D = SubResource("GradientTexture1D_qx41o")
+shader_parameter/Texture_substract = SubResource("GradientTexture2D_wwf8h")
+shader_parameter/Texture_add = SubResource("GradientTexture2D_j78xm")
+shader_parameter/Gradient_Color_1D2 = SubResource("GradientTexture1D_6e1wj")
+shader_parameter/Texture_substract_end = SubResource("GradientTexture2D_co8hk")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1tiiv"]
+albedo_color = Color(0.281187, 0.281187, 0.281187, 1)
+metallic_specular = 0.6
+roughness = 0.8
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ncmmg"]
+size = Vector2(999, 999)
+subdivide_width = 2
+subdivide_depth = 2
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_c3v4j"]
+sky_top_color = Color(0, 0, 0, 1)
+sky_horizon_color = Color(0.489622, 0.489622, 0.489622, 1)
+sky_curve = 0.0923359
+ground_bottom_color = Color(0.294, 0.297, 0.3, 1)
+ground_horizon_color = Color(0.51361, 0.517862, 0.522116, 1)
+
+[sub_resource type="Sky" id="Sky_acj4p"]
+sky_material = SubResource("ProceduralSkyMaterial_c3v4j")
+
+[sub_resource type="Environment" id="Environment_vusxj"]
+background_mode = 2
+background_energy_multiplier = 0.7
+sky = SubResource("Sky_acj4p")
+ambient_light_source = 2
+ambient_light_color = Color(0.176451, 0.261009, 0.323173, 1)
+ambient_light_energy = 1.33
+tonemap_mode = 1
+glow_enabled = true
+glow_blend_mode = 1
+fog_enabled = true
+fog_light_color = Color(0.0509463, 0.0567984, 0.0662132, 1)
+fog_depth_curve = 0.466517
+fog_depth_begin = 0.0
+fog_depth_end = 224.3
+volumetric_fog_density = 0.0188
+
+[sub_resource type="Animation" id="Animation_1s78f"]
+resource_name = "Init"
+length = 4.5
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../..:my_num")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.166667, 0.733333, 1.8, 2.1, 2.93333, 4.03333),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [2, 1, 2, 4, 3, 4]
+}
+
+[sub_resource type="Animation" id="Animation_2farw"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../..:my_num")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_w6d4n"]
+_data = {
+"Init": SubResource("Animation_1s78f"),
+"RESET": SubResource("Animation_2farw")
+}
+
+[sub_resource type="Gradient" id="Gradient_8jj0n"]
+interpolation_mode = 1
+interpolation_color_space = 1
+offsets = PackedFloat32Array(0, 0.340541, 0.794595)
+colors = PackedColorArray(0.07, 0.07, 0.07, 0, 0.196333, 0.38, 0, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_f2m7u"]
+gradient = SubResource("Gradient_8jj0n")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fyeo6"]
+render_priority = 0
+shader = ExtResource("17_07yex")
+shader_parameter/frame_count = Vector2(1, 12)
+shader_parameter/uv_offset = Vector2(-0.055, 0)
+shader_parameter/alpha_scissor_treshold = 0.3
+shader_parameter/sprite_sheet = ExtResource("18_v8hct")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_f2m7u")
+
+[sub_resource type="QuadMesh" id="QuadMesh_epi2s"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_k186u"]
+render_priority = 0
+shader = ExtResource("17_07yex")
+shader_parameter/frame_count = Vector2(1, 12)
+shader_parameter/uv_offset = Vector2(-0.055, -0.085)
+shader_parameter/alpha_scissor_treshold = 0.3
+shader_parameter/sprite_sheet = ExtResource("18_v8hct")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_f2m7u")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qfek2"]
+render_priority = 0
+shader = ExtResource("17_07yex")
+shader_parameter/frame_count = Vector2(1, 12)
+shader_parameter/uv_offset = Vector2(-0.16, -0.165)
+shader_parameter/alpha_scissor_treshold = 0.3
+shader_parameter/sprite_sheet = ExtResource("18_v8hct")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_f2m7u")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xopds"]
+render_priority = 0
+shader = ExtResource("17_07yex")
+shader_parameter/frame_count = Vector2(1, 12)
+shader_parameter/uv_offset = Vector2(-0.135, -0.5)
+shader_parameter/alpha_scissor_treshold = 0.3
+shader_parameter/sprite_sheet = ExtResource("18_v8hct")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_f2m7u")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lsrls"]
+render_priority = 0
+shader = ExtResource("17_07yex")
+shader_parameter/frame_count = Vector2(1, 12)
+shader_parameter/uv_offset = Vector2(-0.085, 0.245)
+shader_parameter/alpha_scissor_treshold = 0.3
+shader_parameter/sprite_sheet = ExtResource("18_v8hct")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_f2m7u")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nltlq"]
+render_priority = 0
+shader = ExtResource("17_07yex")
+shader_parameter/frame_count = Vector2(1, 12)
+shader_parameter/uv_offset = Vector2(-0.055, 0.16)
+shader_parameter/alpha_scissor_treshold = 0.3
+shader_parameter/sprite_sheet = ExtResource("18_v8hct")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_f2m7u")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mruxu"]
+render_priority = 0
+shader = ExtResource("17_07yex")
+shader_parameter/frame_count = Vector2(1, 12)
+shader_parameter/uv_offset = Vector2(-0.06, 0.42)
+shader_parameter/alpha_scissor_treshold = 0.3
+shader_parameter/sprite_sheet = ExtResource("18_v8hct")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_f2m7u")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_a2hpp"]
+render_priority = 0
+shader = ExtResource("17_07yex")
+shader_parameter/frame_count = Vector2(1, 12)
+shader_parameter/uv_offset = Vector2(-0.135, 0.33)
+shader_parameter/alpha_scissor_treshold = 0.734375
+shader_parameter/sprite_sheet = ExtResource("18_v8hct")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_f2m7u")
+
+[sub_resource type="Gradient" id="Gradient_cdgtf"]
+interpolation_mode = 1
+interpolation_color_space = 1
+offsets = PackedFloat32Array(0, 0.102703, 0.794595)
+colors = PackedColorArray(0.07, 0.07, 0.07, 0, 0.39, 0.2535, 0, 1, 1, 0.8215, 0.49, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_cqciq"]
+gradient = SubResource("Gradient_cdgtf")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_f74n6"]
+render_priority = 0
+shader = ExtResource("17_07yex")
+shader_parameter/frame_count = Vector2(1, 12)
+shader_parameter/uv_offset = Vector2(-0.02, -0.415)
+shader_parameter/alpha_scissor_treshold = 0.3
+shader_parameter/sprite_sheet = ExtResource("18_v8hct")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_cqciq")
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_e77ca"]
+gradient = SubResource("Gradient_cdgtf")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dc6gj"]
+render_priority = 0
+shader = ExtResource("17_07yex")
+shader_parameter/frame_count = Vector2(1, 12)
+shader_parameter/uv_offset = Vector2(-0.005, -1.245)
+shader_parameter/alpha_scissor_treshold = 0.3
+shader_parameter/sprite_sheet = ExtResource("18_v8hct")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_e77ca")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qr446"]
+render_priority = 0
+shader = ExtResource("17_07yex")
+shader_parameter/frame_count = Vector2(1, 12)
+shader_parameter/uv_offset = Vector2(-0.135, 0.075)
+shader_parameter/alpha_scissor_treshold = 0.3
+shader_parameter/sprite_sheet = ExtResource("18_v8hct")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_f2m7u")
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_0nv2v"]
+gradient = SubResource("Gradient_cdgtf")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0j8df"]
+render_priority = 0
+shader = ExtResource("17_07yex")
+shader_parameter/frame_count = Vector2(1, 12)
+shader_parameter/uv_offset = Vector2(-0.05, -0.33)
+shader_parameter/alpha_scissor_treshold = 0.3
+shader_parameter/sprite_sheet = ExtResource("18_v8hct")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_0nv2v")
+
+[node name="healing_vfx_showcase" type="Node"]
+script = SubResource("GDScript_d7jyh")
+
+[node name="VFX_Healing_Aura_B" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.2, 0, 0, 0, 4.221, 0, 0, 0, 1.2, 10.5051, 0, 0.02069)
+layers = 4
+material_override = ExtResource("11_3mg5p")
+cast_shadow = 0
+mesh = ExtResource("12_ivpcr")
+metadata/_edit_lock_ = true
+
+[node name="VFX_Healing_Aura_A" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.21, 0, 0, 0, 1.498, 0, 0, 0, 1.21, 6.83327, 0, -0.0167971)
+layers = 4
+material_override = SubResource("ShaderMaterial_d4uom")
+cast_shadow = 0
+mesh = ExtResource("15_o2gn5")
+metadata/_edit_lock_ = true
+
+[node name="VFX_Healing_Area" parent="." instance=ExtResource("1_1a4rh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.20537, 0, -8.22139)
+metadata/_edit_lock_ = true
+
+[node name="VFX_Healing_Flower" parent="." instance=ExtResource("2_kpvdh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.5093, 0, 5.04504)
+metadata/_edit_lock_ = true
+
+[node name="VFX_Healing_Orb" parent="." instance=ExtResource("3_2tpon")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.83066, 1.15883, 7.67525)
+metadata/_edit_lock_ = true
+
+[node name="VFX_Healing_R1" parent="." instance=ExtResource("4_gp1rj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0343282, 0, 5.05487)
+metadata/_edit_lock_ = true
+
+[node name="VFX_Healing_Ring_A" parent="." instance=ExtResource("5_ttbbc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.3611, 0, 5.07084)
+metadata/_edit_lock_ = true
+
+[node name="VFX_Healing_W1" parent="." instance=ExtResource("6_uh7mp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0126028, 0, 0.0476122)
+metadata/_edit_lock_ = true
+
+[node name="VFX_Protection_4_Shield" parent="." instance=ExtResource("7_1orvw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.39375, 0, 2.47184)
+metadata/_edit_lock_ = true
+
+[node name="VFX_Protection_Area" parent="." instance=ExtResource("8_7v3ob")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.13485, 0, -8.23737)
+metadata/_edit_lock_ = true
+
+[node name="VFX_Protection_Bubble" parent="." instance=ExtResource("9_l1sut")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.27806, 0, 2.42788)
+metadata/_edit_lock_ = true
+
+[node name="VFX_HealPuff_A" parent="." instance=ExtResource("10_v1wts")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.359, 1.26475, 0.0271697)
+metadata/_edit_lock_ = true
+
+[node name="misc" type="Node" parent="."]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="misc"]
+transform = Transform3D(1, 0, 0, 0, 0.384263, 0.923224, 0, -0.923224, 0.384263, 29.1317, 3.72037, -18.0515)
+visible = false
+light_energy = 0.5
+shadow_enabled = true
+metadata/_edit_lock_ = true
+
+[node name="floor" type="MeshInstance3D" parent="misc"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.003, -0.003, -1.795)
+layers = 32
+material_override = SubResource("StandardMaterial3D_1tiiv")
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_ncmmg")
+skeleton = NodePath("../../..")
+metadata/_edit_lock_ = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="misc"]
+environment = SubResource("Environment_vusxj")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="misc"]
+libraries = {
+"": SubResource("AnimationLibrary_w6d4n")
+}
+autoplay = "Init"
+
+[node name="OmniLight3D" type="OmniLight3D" parent="misc"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.83263, 0.466633, 0.207175)
+light_color = Color(0.613333, 1, 0.2, 1)
+metadata/_edit_lock_ = true
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="misc"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.4909, 0.59753, 0.277412)
+light_color = Color(0.613333, 1, 0.2, 1)
+metadata/_edit_lock_ = true
+
+[node name="TEXT" type="Node3D" parent="misc"]
+metadata/_edit_lock_ = true
+
+[node name="text3d_9" type="MeshInstance3D" parent="misc/TEXT"]
+transform = Transform3D(1.36313, 0, 0, 0, 0.134322, 0.69516, 0, -0.129895, 0.718855, 6.81798, 0.0560304, 1.19996)
+material_override = SubResource("ShaderMaterial_fyeo6")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_epi2s")
+metadata/_edit_lock_ = true
+
+[node name="text3d_10" type="MeshInstance3D" parent="misc/TEXT"]
+transform = Transform3D(1.36313, 0, 0, 0, 0.134322, 0.69516, 0, -0.129895, 0.718855, 10.4903, 0.0560304, 1.19996)
+material_override = SubResource("ShaderMaterial_k186u")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_epi2s")
+metadata/_edit_lock_ = true
+
+[node name="text3d_11" type="MeshInstance3D" parent="misc/TEXT"]
+transform = Transform3D(1.36313, 0, 0, 0, 0.134322, 0.69516, 0, -0.129895, 0.718855, 3.30818, 0.0560304, 1.19996)
+material_override = SubResource("ShaderMaterial_qfek2")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_epi2s")
+metadata/_edit_lock_ = true
+
+[node name="text3d_12" type="MeshInstance3D" parent="misc/TEXT"]
+transform = Transform3D(1.36313, 0, 0, 0, 0.134322, 0.69516, 0, -0.129895, 0.718855, -0.0250936, 0.0560304, 1.19996)
+material_override = SubResource("ShaderMaterial_xopds")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_epi2s")
+metadata/_edit_lock_ = true
+
+[node name="text3d_13" type="MeshInstance3D" parent="misc/TEXT"]
+transform = Transform3D(1.36313, 0, 0, 0, 0.134322, 0.69516, 0, -0.129895, 0.718855, 6.81798, 0.0560304, 6.32529)
+material_override = SubResource("ShaderMaterial_lsrls")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_epi2s")
+metadata/_edit_lock_ = true
+
+[node name="text3d_14" type="MeshInstance3D" parent="misc/TEXT"]
+transform = Transform3D(1.36313, 0, 0, 0, 0.134322, 0.69516, 0, -0.129895, 0.718855, 10.4903, 0.0560304, 6.32529)
+material_override = SubResource("ShaderMaterial_nltlq")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_epi2s")
+metadata/_edit_lock_ = true
+
+[node name="text3d_15" type="MeshInstance3D" parent="misc/TEXT"]
+transform = Transform3D(1.36313, 0, 0, 0, 0.134322, 0.69516, 0, -0.129895, 0.718855, 3.30818, 0.0560304, 6.32529)
+material_override = SubResource("ShaderMaterial_mruxu")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_epi2s")
+metadata/_edit_lock_ = true
+
+[node name="text3d_16" type="MeshInstance3D" parent="misc/TEXT"]
+transform = Transform3D(1.36313, 0, 0, 0, 0.134322, 0.69516, 0, -0.129895, 0.718855, -0.0250936, 0.0560304, 6.32529)
+material_override = SubResource("ShaderMaterial_a2hpp")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_epi2s")
+metadata/_edit_lock_ = true
+
+[node name="text3d_19" type="MeshInstance3D" parent="misc/TEXT"]
+transform = Transform3D(1.36313, 0, 0, 0, 0.134322, 0.69516, 0, -0.129895, 0.718855, -4.40638, 0.0560304, 4.60442)
+material_override = SubResource("ShaderMaterial_f74n6")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_epi2s")
+metadata/_edit_lock_ = true
+
+[node name="text3d_20" type="MeshInstance3D" parent="misc/TEXT"]
+transform = Transform3D(1.36313, 0, 0, 0, 0.134322, 0.69516, 0, -0.129895, 0.718855, -9.28627, 0.0560304, 4.60442)
+material_override = SubResource("ShaderMaterial_dc6gj")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_epi2s")
+metadata/_edit_lock_ = true
+
+[node name="text3d_17" type="MeshInstance3D" parent="misc/TEXT"]
+transform = Transform3D(1.36313, 0, 0, 0, 0.134322, 0.69516, 0, -0.129895, 0.718855, 4.2018, 0.0560304, -3.01476)
+material_override = SubResource("ShaderMaterial_qr446")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_epi2s")
+metadata/_edit_lock_ = true
+
+[node name="text3d_18" type="MeshInstance3D" parent="misc/TEXT"]
+transform = Transform3D(1.36313, 0, 0, 0, 0.134322, 0.69516, 0, -0.129895, 0.718855, -7.10883, 0.0560304, -2.59453)
+material_override = SubResource("ShaderMaterial_0j8df")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_epi2s")
+metadata/_edit_lock_ = true
+
+[node name="Mannequins" type="Node3D" parent="misc"]
+metadata/_edit_lock_ = true
+
+[node name="SmCharacterBase1" type="MeshInstance3D" parent="misc/Mannequins"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.83263, 0, 0.0725317)
+mesh = ExtResource("16_cedfk")
+skeleton = NodePath("../../..")
+metadata/_edit_lock_ = true
+
+[node name="SmCharacterBase2" type="MeshInstance3D" parent="misc/Mannequins"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.4909, 0, 0.0725317)
+mesh = ExtResource("16_cedfk")
+skeleton = NodePath("../../..")
+metadata/_edit_lock_ = true
+
+[node name="SmCharacterBase3" type="MeshInstance3D" parent="misc/Mannequins"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.32454, 0, 0.03925)
+mesh = ExtResource("16_cedfk")
+skeleton = NodePath("../../..")
+metadata/_edit_lock_ = true
+
+[node name="SmCharacterBase4" type="MeshInstance3D" parent="misc/Mannequins"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0113809, 0, 0.0481022)
+mesh = ExtResource("16_cedfk")
+skeleton = NodePath("../../..")
+metadata/_edit_lock_ = true
+
+[node name="SmCharacterBase5" type="MeshInstance3D" parent="misc/Mannequins"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0346318, 0, 5.05452)
+mesh = ExtResource("16_cedfk")
+skeleton = NodePath("../../..")
+metadata/_edit_lock_ = true
+
+[node name="SmCharacterBase6" type="MeshInstance3D" parent="misc/Mannequins"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.36121, 0, 5.07056)
+mesh = ExtResource("16_cedfk")
+skeleton = NodePath("../../..")
+metadata/_edit_lock_ = true
+
+[node name="SmCharacterBase8" type="MeshInstance3D" parent="misc/Mannequins"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.5098, 0, 5.04499)
+mesh = ExtResource("16_cedfk")
+skeleton = NodePath("../../..")
+metadata/_edit_lock_ = true
+
+[node name="SmCharacterBase9" type="MeshInstance3D" parent="misc/Mannequins"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.39462, 0, 2.47121)
+mesh = ExtResource("16_cedfk")
+skeleton = NodePath("../../..")
+metadata/_edit_lock_ = true
+
+[node name="SmCharacterBase10" type="MeshInstance3D" parent="misc/Mannequins"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.27796, 0, 2.42881)
+mesh = ExtResource("16_cedfk")
+skeleton = NodePath("../../..")
+metadata/_edit_lock_ = true
+
+[node name="SmCharacterBase11" type="MeshInstance3D" parent="misc/Mannequins"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.13447, 0, -8.23819)
+mesh = ExtResource("16_cedfk")
+skeleton = NodePath("../../..")
+metadata/_edit_lock_ = true
+
+[node name="SmCharacterBase12" type="MeshInstance3D" parent="misc/Mannequins"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.2047, 0, -8.22227)
+mesh = ExtResource("16_cedfk")
+skeleton = NodePath("../../..")
+metadata/_edit_lock_ = true
+
+[node name="SpotLight3D" type="SpotLight3D" parent="misc"]
+transform = Transform3D(1, 0, 0, 0, 0.257268, 0.96634, 0, -0.96634, 0.257268, -0.0571897, 20.5301, 6.53968)
+light_energy = 20.0
+shadow_enabled = true
+spot_range = 48.7657
+metadata/_edit_lock_ = true

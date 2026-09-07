@@ -1,0 +1,58 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" uid="uid://cxw0x2g3wc150" path="res://addons/date_and_time/scripts/date_and_time_display.gd" id="1_display"]
+[ext_resource type="FontFile" uid="uid://80cjre85pfln" path="res://addons/date_and_time/assets/fonts/Rodin-Italic.ttf" id="2_font"]
+[ext_resource type="Texture2D" uid="uid://bcdslcljepq0s" path="res://addons/date_and_time/assets/icons/down_arrow.svg" id="3_arrow"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_panel"]
+
+[node name="DateAndTimeDisplay" type="PanelContainer"]
+offset_right = 48.0
+offset_bottom = 38.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_panel")
+script = ExtResource("1_display")
+
+[node name="BotwBox" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="TimeRichLabel" type="RichTextLabel" parent="BotwBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 20)
+layout_mode = 2
+theme_override_colors/default_color = Color(0.565, 0.843, 0.929, 1)
+theme_override_colors/font_outline_color = Color(0, 0.541, 0.682, 1)
+theme_override_colors/font_shadow_color = Color(0, 0.541, 0.682, 0.275)
+theme_override_constants/outline_size = 1
+theme_override_constants/shadow_outline_size = 1
+theme_override_fonts/normal_font = ExtResource("2_font")
+theme_override_fonts/italics_font = ExtResource("2_font")
+theme_override_font_sizes/normal_font_size = 14
+theme_override_font_sizes/italics_font_size = 14
+bbcode_enabled = true
+text = "[i]--:--[/i]"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DownArrow" type="TextureRect" parent="BotwBox"]
+unique_name_in_owner = true
+modulate = Color(0.565, 0.843, 0.929, 1)
+custom_minimum_size = Vector2(8, 6)
+layout_mode = 2
+size_flags_horizontal = 4
+texture = ExtResource("3_arrow")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TimeLabel" type="Label" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text = "--:--"
+horizontal_alignment = 1
+vertical_alignment = 1

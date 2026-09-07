@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dxkgl5rgpogg8"
+path="res://.godot/imported/Dog Bark_1.ogg-fd1de7b384339d8a86e2bb0c7951a032.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Animal SFX/Dog Bark_1.ogg"
+dest_files=["res://.godot/imported/Dog Bark_1.ogg-fd1de7b384339d8a86e2bb0c7951a032.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

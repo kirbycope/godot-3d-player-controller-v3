@@ -1,0 +1,9 @@
+[gd_resource type="SceneReplicationConfig" format=3]
+
+[resource]
+properties/0/path = NodePath(".:hits_taken")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:is_depleted")
+properties/1/spawn = true
+properties/1/replication_mode = 1

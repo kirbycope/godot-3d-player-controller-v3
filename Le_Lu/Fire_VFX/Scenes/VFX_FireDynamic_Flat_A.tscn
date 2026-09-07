@@ -1,0 +1,70 @@
+[gd_scene format=3 uid="uid://cgibq30de8qrt"]
+
+[ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/ss_stylized_smoke_Q1_p.gdshader" id="1_1j7rh"]
+[ext_resource type="Texture2D" uid="uid://du4o44wboryvw" path="res://Le_Lu/Fire_VFX/textures/T_Noise_001R.png" id="2_warxu"]
+[ext_resource type="Gradient" uid="uid://c7skakdnd2y40" path="res://Le_Lu/Fire_VFX/textures/gradients/g_firepnf.tres" id="3_frvmo"]
+[ext_resource type="ArrayMesh" uid="uid://buu1yfi8wd1jq" path="res://Le_Lu/Fire_VFX/objects/sm_sphere5sft.obj" id="4_ndtkd"]
+
+[sub_resource type="Gradient" id="Gradient_nm7wo"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0, 0.486842)
+colors = PackedColorArray(0.205117, 0.205117, 0.205117, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_qwe7m"]
+gradient = SubResource("Gradient_nm7wo")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nvcfv"]
+render_priority = 0
+shader = ExtResource("1_1j7rh")
+shader_parameter/Texture_Scale = Vector2(0.5, 0.5)
+shader_parameter/Light_attenuation = 2.1
+shader_parameter/Shadow_roundness = 1.0
+shader_parameter/Disolver_Texture = ExtResource("2_warxu")
+shader_parameter/Color_1D_Gradient = SubResource("GradientTexture1D_qwe7m")
+
+[sub_resource type="Curve" id="Curve_tkytx"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 3.08732, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_2e3u6"]
+texture_mode = 1
+curve = SubResource("Curve_tkytx")
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_dm50j"]
+gradient = ExtResource("3_frvmo")
+
+[sub_resource type="Curve" id="Curve_bravl"]
+_data = [Vector2(0, 0.252747), 0.0, 0.0744811, 0, 0, Vector2(1, 0.67033), -0.124713, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_vvk7s"]
+curve = SubResource("Curve_bravl")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_8misf"]
+particle_flag_rotate_y = true
+emission_shape = 1
+emission_sphere_radius = 0.5
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(-0.3, 1, 0)
+spread = 0.0
+initial_velocity_min = 3.0
+initial_velocity_max = 4.0
+gravity = Vector3(0, 0, 0)
+scale_min = 1.2
+scale_max = 1.4
+scale_curve = SubResource("CurveTexture_vvk7s")
+color = Color(4, 0.7, 0.1, 1)
+color_ramp = SubResource("GradientTexture1D_dm50j")
+alpha_curve = SubResource("CurveTexture_2e3u6")
+
+[node name="VFX_FireDynamic_Flat_A" type="Node3D"]
+
+[node name="VFX_CellShadedSmoke_A_gray2" type="GPUParticles3D" parent="."]
+layers = 4
+material_override = SubResource("ShaderMaterial_nvcfv")
+cast_shadow = 0
+amount = 20
+fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_8misf")
+draw_pass_1 = ExtResource("4_ndtkd")

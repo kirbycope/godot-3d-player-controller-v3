@@ -1,0 +1,179 @@
+[gd_scene format=3 uid="uid://dg8mfy46smjt8"]
+
+[ext_resource type="Shader" path="res://addons/GPUTrail-main/shaders/trail.gdshader" id="1_nai16"]
+[ext_resource type="Shader" path="res://addons/GPUTrail-main/shaders/trail_draw_pass.gdshader" id="2_5uk6o"]
+[ext_resource type="Texture2D" uid="uid://cl5xfpgbok336" path="res://Le_Lu/Trails_VFX/textures/T_VFX_BlueTRails1.png" id="3_4tyxt"]
+[ext_resource type="Shader" path="res://Le_Lu/Trails_VFX/Objects/stylized_sword(1).glb" id="5_17oe8"]
+[ext_resource type="Script" uid="uid://000wyuy1u8wj" path="res://addons/GPUTrail-main/GPUTrail3D.gd" id="6_vpkar"]
+[ext_resource type="Texture2D" uid="uid://b18lwai1jk53" path="res://Le_Lu/Trails_VFX/textures/text1a.png" id="7_xhf68"]
+[ext_resource type="ArrayMesh" uid="uid://dh8esh3c2nqqq" path="res://Le_Lu/Trails_VFX/sword_mesh1.res" id="8_55pnp"]
+
+[sub_resource type="Environment" id="Environment_0jsei"]
+background_mode = 2
+ambient_light_source = 2
+ambient_light_color = Color(0.74902, 0.74902, 0.74902, 1)
+ambient_light_energy = 0.5
+glow_enabled = true
+glow_normalized = true
+glow_strength = 0.8
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_io4oq"]
+shader = ExtResource("1_nai16")
+
+[sub_resource type="Gradient" id="Gradient_voodu"]
+offsets = PackedFloat32Array(0.408805, 1)
+colors = PackedColorArray(0.537255, 0.670588, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_xidvu"]
+gradient = SubResource("Gradient_voodu")
+use_hdr = true
+
+[sub_resource type="Curve" id="Curve_drv3t"]
+_data = [Vector2(0, 1), 0.0, -0.463235, 0, 1, Vector2(1, 0.536765), -0.463235, 0.0, 1, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_ew2lb"]
+curve = SubResource("Curve_drv3t")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hjypq"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("2_5uk6o")
+shader_parameter/emmission_transform = Projection(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
+shader_parameter/flags = 40
+shader_parameter/tex = ExtResource("3_4tyxt")
+shader_parameter/color_ramp = SubResource("GradientTexture1D_xidvu")
+shader_parameter/curve = SubResource("CurveTexture_ew2lb")
+
+[sub_resource type="QuadMesh" id="QuadMesh_5nkx8"]
+material = SubResource("ShaderMaterial_hjypq")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_leh7t"]
+render_priority = 0
+shader = ExtResource("5_17oe8")
+
+[sub_resource type="Gradient" id="Gradient_o61nr"]
+offsets = PackedFloat32Array(0, 0.493631, 1)
+colors = PackedColorArray(1, 1, 1, 0.294118, 1, 1, 1, 1, 1, 1, 1, 0.290196)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_0domr"]
+gradient = SubResource("Gradient_o61nr")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_kj6dy"]
+gravity = Vector3(0, 0, 0)
+color = Color(0, 0.5, 1.5, 1)
+color_ramp = SubResource("GradientTexture1D_0domr")
+
+[sub_resource type="QuadMesh" id="QuadMesh_qnq80"]
+size = Vector2(0.2, 1)
+
+[sub_resource type="Animation" id="Animation_00p8x"]
+resource_name = "swordanime"
+length = 2.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("sword_b:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.9, 1.1, 1.3, 1.5, 1.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0.388691, 0), Vector3(-0.118836, 0.259914, 0.20902), Vector3(0.0494004, 0.244231, 0.426963), Vector3(0.0197601, 0.330907, 0.170785), Vector3(0.145402, 0.388691, -0.00381258), Vector3(0.13111, 0.281847, 0.265576), Vector3(-0.0479715, 0.19317, 0.286308), Vector3(-0.238198, 0.134926, 0.0502792), Vector3(0, 0.388691, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("sword_b:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.9, 1.1, 1.3, 1.5, 1.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(-0.17226, 0.786222, 0.880057), Vector3(-1.46754, 1.64616, 2.28076), Vector3(-0.0337357, 1.68979, 0.753896), Vector3(0.613064, 1.59701, 0.179891), Vector3(1.0509, 1.14915, 0.522645), Vector3(1.34027, 0.0666164, 0.0650458), Vector3(0.994959, 0.365261, 1.37941), Vector3(0, 0, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("sword_b/traisl112:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.5, 0.9, 1.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [true, false, true, false]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("sword_b/traisl112:length")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.4, 0.5, 0.8, 0.9, 1.6, 1.7),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [30, 30, 0, 0, 30, 30, 0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_v4mwy"]
+_data = {
+"swordanime": SubResource("Animation_00p8x")
+}
+
+[node name="map1a" type="Node"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_0jsei")
+
+[node name="sword_b" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.388691, 0)
+
+[node name="traisl112" type="GPUParticles3D" parent="sword_b"]
+transform = Transform3D(0.3, -6.02136e-16, -2.03198e-08, 0, 0.3, -8.8899e-09, 2.03198e-08, 8.8899e-09, 0.3, -0.00248188, 0.341067, 9.45517e-07)
+amount = 30
+lifetime = 30.0
+explosiveness = 1.0
+fixed_fps = 0
+process_material = SubResource("ShaderMaterial_io4oq")
+draw_pass_1 = SubResource("QuadMesh_5nkx8")
+script = ExtResource("6_vpkar")
+length = 30
+texture = ExtResource("3_4tyxt")
+color_ramp = SubResource("GradientTexture1D_xidvu")
+curve = SubResource("CurveTexture_ew2lb")
+_defaults_have_been_set = true
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="sword_b"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00184223, 0.344369, 0.000709116)
+material_override = SubResource("ShaderMaterial_leh7t")
+amount = 1
+fixed_fps = 0
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_kj6dy")
+draw_pass_1 = SubResource("QuadMesh_qnq80")
+
+[node name="SwordMesh1" type="MeshInstance3D" parent="sword_b"]
+transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -0.00273588, 0.0934164, 0.00470018)
+mesh = ExtResource("8_55pnp")
+skeleton = NodePath("../..")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_v4mwy")
+}
+autoplay = "swordanime"
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.94977, 0.312948, 0, -0.312948, 0.94977, 0, 0.974251, 1.88571)
+current = true
+fov = 50.0
+
+[node name="pls play anim" type="Sprite3D" parent="."]
+transform = Transform3D(0.05, 0, 0, 0, 0.05, 0, 0, 0, 0.05, 0, 1.32938, 0)
+modulate = Color(0.439216, 0.439216, 0.686275, 1)
+texture = ExtResource("7_xhf68")

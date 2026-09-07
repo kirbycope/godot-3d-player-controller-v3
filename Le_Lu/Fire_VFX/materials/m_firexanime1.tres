@@ -1,0 +1,20 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://dnfufd4de21wb"]
+
+[ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/s_animated_ds_unlit_bw.gdshader" id="1_48ofb"]
+[ext_resource type="Texture2D" uid="uid://blyul2rws0dg2" path="res://Le_Lu/Fire_VFX/textures/T_firex_shot88_billboard_bw.png" id="2_ei32k"]
+
+[sub_resource type="Gradient" id="Gradient_j28jg"]
+offsets = PackedFloat32Array(0, 0.807229, 1)
+colors = PackedColorArray(0, 0, 0, 0, 0.205117, 0.205117, 0.205118, 0.807229, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_x7jqj"]
+gradient = SubResource("Gradient_j28jg")
+
+[resource]
+render_priority = 1
+shader = ExtResource("1_48ofb")
+shader_parameter/frame_count = Vector2(8, 4)
+shader_parameter/is_loop = false
+shader_parameter/uv_offset = Vector2(0, 0.001)
+shader_parameter/sprite_sheet = ExtResource("2_ei32k")
+shader_parameter/gradient_1d_texture = SubResource("GradientTexture1D_x7jqj")

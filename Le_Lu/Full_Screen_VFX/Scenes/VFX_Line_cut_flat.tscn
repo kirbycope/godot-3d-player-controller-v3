@@ -1,0 +1,117 @@
+[gd_scene load_steps=9 format=3 uid="uid://ff5krwqyopd8"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4pdvb"]
+shading_mode = 0
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_50g7p"]
+
+[sub_resource type="Gradient" id="Gradient_52kw8"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_x16hx"]
+gradient = SubResource("Gradient_52kw8")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ghp7f"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(1, 1.2, 2.3, 1)
+albedo_texture = SubResource("GradientTexture2D_x16hx")
+
+[sub_resource type="Animation" id="Animation_n0y5x"]
+resource_name = "Init"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("WhiteLine3D_0:scale")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.166667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0.9, 2.852, 0.993), Vector3(0, 3.5, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("WhiteLine3D_0:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.266667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0.004), Vector3(0, 0, 0.002)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("WhiteLine3D_0:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.233333),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
+[sub_resource type="Animation" id="Animation_qm08m"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("WhiteLine3D_0:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0.208149, 2.85179, 0.993309)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("WhiteLine3D_0:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0.0544336, 0.0284035, 0.00283783)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_jdtnx"]
+_data = {
+"Init": SubResource("Animation_n0y5x"),
+"RESET": SubResource("Animation_qm08m")
+}
+
+[node name="VFX_LineCut_flat" type="Node3D"]
+
+[node name="BlackLine3D_0" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.007, 0, 0, 0, 2.871, 0, 0, 0, 1, 0, 0, 0.003)
+layers = 4
+material_override = SubResource("StandardMaterial3D_4pdvb")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_50g7p")
+
+[node name="WhiteLine3D_0" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.208149, 0, 0, 0, 2.85179, 0, 0, 0, 0.993309, 0.0544336, 0.0284035, 0.00283783)
+layers = 4
+material_override = SubResource("StandardMaterial3D_ghp7f")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_50g7p")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_jdtnx")
+}
+autoplay = "Init"

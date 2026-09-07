@@ -1,0 +1,498 @@
+[gd_scene format=3 uid="uid://b1alo2yhq8c8j"]
+
+[ext_resource type="Texture2D" uid="uid://ed44j8f3a8us" path="res://assets/BinbunVFX_Vol2/shared/story_studio_02_1k.hdr" id="1_eiomo"]
+[ext_resource type="Shader" uid="uid://mvwi25cb826n" path="res://assets/BinbunVFX_Vol2/shared/shader/checker.gdshader" id="2_a01x7"]
+[ext_resource type="PackedScene" uid="uid://c4jq7s82wru52" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/effects/projectile/vfx_fire_projectile_01.tscn" id="3_a01x7"]
+[ext_resource type="PackedScene" uid="uid://cljj8wvvd3nl2" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/effects/projectile/vfx_fire_projectile_02.tscn" id="4_w2eh1"]
+[ext_resource type="PackedScene" uid="uid://daugjhgej3dy5" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/effects/projectile/vfx_water_projectile_01.tscn" id="5_6drxn"]
+[ext_resource type="PackedScene" uid="uid://bp820jnets00k" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/effects/projectile/vfx_water_projectile_02.tscn" id="6_fentt"]
+[ext_resource type="PackedScene" uid="uid://0feo4vjbmkri" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/effects/projectile/vfx_electric_projectile_01.tscn" id="7_7ww1h"]
+[ext_resource type="PackedScene" uid="uid://2qvl6834c21c" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/effects/projectile/vfx_electric_projectile_02.tscn" id="8_irve1"]
+[ext_resource type="PackedScene" uid="uid://dow3u6lnrqqio" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/effects/projectile/vfx_nature_projectile_01.tscn" id="9_hi0bh"]
+[ext_resource type="PackedScene" uid="uid://bjmhlrebo1wao" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/effects/projectile/vfx_nature_projectile_02.tscn" id="10_8rtm6"]
+[ext_resource type="PackedScene" uid="uid://dyyycu6ys3vo3" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/effects/area/vfx_fire_area_01.tscn" id="11_klcbe"]
+[ext_resource type="PackedScene" uid="uid://cbowmu8dtuyhx" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/effects/area/vfx_fire_area_02.tscn" id="12_mlj6c"]
+[ext_resource type="PackedScene" uid="uid://cphq0blx4ie2l" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/effects/area/vfx_water_area_01.tscn" id="12_uyhsj"]
+[ext_resource type="PackedScene" uid="uid://bcvej3q1nmx75" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/effects/area/vfx_electric_area_01.tscn" id="13_wgc57"]
+[ext_resource type="PackedScene" uid="uid://cy0lf4rn282tv" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/effects/area/vfx_nature_area_01.tscn" id="14_d6baw"]
+[ext_resource type="PackedScene" uid="uid://c826l0bxa3tml" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/effects/area/vfx_water_area_02.tscn" id="14_woqjh"]
+[ext_resource type="PackedScene" uid="uid://g62a8ynmt1pw" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/effects/area/vfx_electric_area_02.tscn" id="16_4b7wl"]
+[ext_resource type="PackedScene" uid="uid://cekf1aenitgoo" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/effects/area/vfx_nature_area_02.tscn" id="18_y6tu6"]
+[ext_resource type="PackedScene" uid="uid://daq2m77vylo0o" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/effects/cast/vfx_fire_cast_01.tscn" id="19_qcu8g"]
+[ext_resource type="PackedScene" uid="uid://b2indhh6pqe8n" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/effects/cast/vfx_fire_cast_02.tscn" id="20_orge8"]
+[ext_resource type="PackedScene" uid="uid://cgotbu83mbx10" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/effects/cast/vfx_water_cast_01.tscn" id="21_hy4b3"]
+[ext_resource type="PackedScene" uid="uid://bub2q00i6sd3a" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/effects/cast/vfx_water_cast_02.tscn" id="22_rgcsv"]
+[ext_resource type="PackedScene" uid="uid://bvuvj8xujtcma" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/effects/cast/vfx_electric_cast_01.tscn" id="23_3i4on"]
+[ext_resource type="PackedScene" uid="uid://bo5bl66mn6i2o" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/effects/cast/vfx_electric_cast_02.tscn" id="24_ry7f0"]
+[ext_resource type="PackedScene" uid="uid://2xsgo4hsluck" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/effects/cast/vfx_nature_cast_01.tscn" id="25_0q3yo"]
+[ext_resource type="PackedScene" uid="uid://d4kl5eo2kfx37" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/effects/cast/vfx_nature_cast_02.tscn" id="26_uyfu0"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ip3vt"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_0ykfm"]
+noise = SubResource("FastNoiseLite_ip3vt")
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_1aiyq"]
+panorama = ExtResource("1_eiomo")
+energy_multiplier = 0.3
+
+[sub_resource type="Sky" id="Sky_3i3oo"]
+sky_material = SubResource("PanoramaSkyMaterial_1aiyq")
+radiance_size = 6
+
+[sub_resource type="Environment" id="Environment_ip3vt"]
+background_mode = 2
+sky = SubResource("Sky_3i3oo")
+sky_rotation = Vector3(0, 1.5707964, 0)
+ambient_light_source = 3
+reflected_light_source = 2
+tonemap_mode = 3
+ssr_enabled = true
+ssao_enabled = true
+ssao_intensity = 4.0
+ssil_enabled = true
+ssil_radius = 7.0
+sdfgi_enabled = true
+sdfgi_use_occlusion = true
+sdfgi_min_cell_size = 0.1
+sdfgi_y_scale = 0
+glow_enabled = true
+glow_bloom = 0.2
+glow_blend_mode = 0
+glow_map = SubResource("NoiseTexture2D_0ykfm")
+fog_enabled = true
+fog_light_color = Color(0, 0, 0, 1)
+fog_density = 0.02
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.03
+volumetric_fog_albedo = Color(0, 0, 0, 1)
+volumetric_fog_emission_energy = 288.1
+volumetric_fog_gi_inject = 0.01
+volumetric_fog_length = 256.0
+adjustment_enabled = true
+
+[sub_resource type="Gradient" id="Gradient_ip3vt"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_3i3oo"]
+noise_type = 2
+frequency = 0.002
+fractal_octaves = 1
+cellular_jitter = 0.0
+cellular_return_type = 0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_3i3oo"]
+noise = SubResource("FastNoiseLite_3i3oo")
+color_ramp = SubResource("Gradient_ip3vt")
+
+[sub_resource type="Gradient" id="Gradient_3i3oo"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_0ykfm"]
+noise_type = 2
+frequency = 0.002
+fractal_octaves = 1
+cellular_jitter = 0.0
+cellular_return_type = 0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_wejg2"]
+noise = SubResource("FastNoiseLite_0ykfm")
+color_ramp = SubResource("Gradient_3i3oo")
+as_normal_map = true
+normalize = false
+bump_strength = 2.0
+
+[sub_resource type="Gradient" id="Gradient_0ykfm"]
+colors = PackedColorArray(0.49354547, 0.49354553, 0.49354535, 1, 0.52906674, 0.5290667, 0.5290667, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_wejg2"]
+seed = 3
+frequency = 0.02
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_2ukpv"]
+noise = SubResource("FastNoiseLite_wejg2")
+color_ramp = SubResource("Gradient_0ykfm")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3i3oo"]
+render_priority = 0
+shader = ExtResource("2_a01x7")
+shader_parameter/primary_color = Color(0.12, 0.12, 0.12, 1)
+shader_parameter/secondary_color = Color(0.05, 0.05, 0.05, 1)
+shader_parameter/checker_texture = SubResource("NoiseTexture2D_3i3oo")
+shader_parameter/roughness_texture = SubResource("NoiseTexture2D_2ukpv")
+shader_parameter/normal_texture = SubResource("NoiseTexture2D_wejg2")
+
+[sub_resource type="BoxMesh" id="BoxMesh_0ykfm"]
+size = Vector3(1000, 4, 1000)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wejg2"]
+size = Vector3(200, 4, 200)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_fqdwg"]
+noise_type = 2
+fractal_octaves = 2
+fractal_gain = 1.0
+fractal_weighted_strength = 1.0
+fractal_ping_pong_strength = 1.13
+cellular_distance_function = 2
+cellular_return_type = 6
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_5ukum"]
+noise = SubResource("FastNoiseLite_fqdwg")
+seamless = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_a7h4e"]
+seed = 3
+fractal_type = 2
+fractal_octaves = 1
+fractal_weighted_strength = 1.0
+fractal_ping_pong_strength = 0.75
+cellular_distance_function = 1
+cellular_return_type = 3
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_rst71"]
+generate_mipmaps = false
+noise = SubResource("FastNoiseLite_a7h4e")
+seamless = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_mm7wq"]
+noise_type = 2
+frequency = 0.02
+fractal_type = 0
+fractal_octaves = 2
+cellular_return_type = 6
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_uapvj"]
+noise = SubResource("FastNoiseLite_mm7wq")
+seamless = true
+invert = true
+seamless_blend_skirt = 0.2
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ldojh"]
+noise_type = 2
+fractal_octaves = 2
+fractal_weighted_strength = 1.0
+cellular_distance_function = 2
+cellular_return_type = 6
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_l0amp"]
+noise = SubResource("FastNoiseLite_ldojh")
+seamless = true
+seamless_blend_skirt = 0.2
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_bkayy"]
+seed = 3
+fractal_type = 2
+fractal_octaves = 1
+fractal_weighted_strength = 1.0
+fractal_ping_pong_strength = 0.75
+cellular_distance_function = 1
+cellular_return_type = 3
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_uyfu0"]
+generate_mipmaps = false
+noise = SubResource("FastNoiseLite_bkayy")
+seamless = true
+
+[node name="Node3D" type="Node3D" unique_id=1052593402]
+
+[node name="Environment" type="Node3D" parent="." unique_id=1231126225]
+metadata/_edit_lock_ = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Environment" unique_id=467657209]
+environment = SubResource("Environment_ip3vt")
+
+[node name="Ground" type="StaticBody3D" parent="Environment" unique_id=468866569]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
+metadata/_edit_lock_ = true
+
+[node name="GroundMesh" type="MeshInstance3D" parent="Environment/Ground" unique_id=1705852002]
+material_override = SubResource("ShaderMaterial_3i3oo")
+mesh = SubResource("BoxMesh_0ykfm")
+metadata/_edit_lock_ = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Environment/Ground" unique_id=500792976]
+shape = SubResource("BoxShape3D_wejg2")
+metadata/_edit_lock_ = true
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment" unique_id=405547945]
+transform = Transform3D(0.7071068, 0.5, -0.5, 0, 0.7071068, 0.7071068, 0.7071068, -0.5, 0.5, 0, 0, 0)
+light_energy = 0.5
+shadow_enabled = true
+directional_shadow_blend_splits = true
+
+[node name="Lights" type="Node3D" parent="." unique_id=895534136]
+
+[node name="Row1" type="Node3D" parent="Lights" unique_id=939406636]
+
+[node name="SpotLight3D" type="SpotLight3D" parent="Lights/Row1" unique_id=537973113]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 5, 0)
+light_energy = 4.0
+shadow_enabled = true
+spot_range = 10.0
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="Lights/Row1" unique_id=497025712]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 3, 5, 0)
+light_energy = 4.0
+shadow_enabled = true
+spot_range = 10.0
+
+[node name="SpotLight3D3" type="SpotLight3D" parent="Lights/Row1" unique_id=786584931]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 6, 5, 0)
+light_energy = 4.0
+shadow_enabled = true
+spot_range = 10.0
+
+[node name="SpotLight3D4" type="SpotLight3D" parent="Lights/Row1" unique_id=379439188]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 9, 5, 0)
+light_energy = 4.0
+shadow_enabled = true
+spot_range = 10.0
+
+[node name="SpotLight3D5" type="SpotLight3D" parent="Lights/Row1" unique_id=411225160]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 12, 5, 0)
+light_energy = 8.0
+shadow_enabled = true
+spot_range = 10.0
+
+[node name="SpotLight3D6" type="SpotLight3D" parent="Lights/Row1" unique_id=651422057]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 15, 5, 0)
+light_energy = 4.0
+shadow_enabled = true
+spot_range = 10.0
+
+[node name="SpotLight3D7" type="SpotLight3D" parent="Lights/Row1" unique_id=1814868136]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 18, 5, 0)
+light_energy = 4.0
+shadow_enabled = true
+spot_range = 10.0
+
+[node name="SpotLight3D8" type="SpotLight3D" parent="Lights/Row1" unique_id=798174608]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 21, 5, 0)
+light_energy = 4.0
+shadow_enabled = true
+spot_range = 10.0
+
+[node name="Row2" type="Node3D" parent="Lights" unique_id=592789091]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="Lights/Row2" unique_id=656333267]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 5, 0)
+light_energy = 4.0
+shadow_enabled = true
+spot_range = 10.0
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="Lights/Row2" unique_id=70296741]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 3, 5, 0)
+light_energy = 4.0
+shadow_enabled = true
+spot_range = 10.0
+
+[node name="SpotLight3D3" type="SpotLight3D" parent="Lights/Row2" unique_id=272348736]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 6, 5, 0)
+light_energy = 4.0
+shadow_enabled = true
+spot_range = 10.0
+
+[node name="SpotLight3D4" type="SpotLight3D" parent="Lights/Row2" unique_id=98732028]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 9, 5, 0)
+light_energy = 4.0
+shadow_enabled = true
+spot_range = 10.0
+
+[node name="SpotLight3D5" type="SpotLight3D" parent="Lights/Row2" unique_id=938801520]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 12, 5, 0)
+light_energy = 4.0
+shadow_enabled = true
+spot_range = 10.0
+
+[node name="SpotLight3D6" type="SpotLight3D" parent="Lights/Row2" unique_id=898591552]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 15, 5, 0)
+light_energy = 4.0
+shadow_enabled = true
+spot_range = 10.0
+
+[node name="SpotLight3D7" type="SpotLight3D" parent="Lights/Row2" unique_id=1984548321]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 18, 5, 0)
+light_energy = 4.0
+shadow_enabled = true
+spot_range = 10.0
+
+[node name="SpotLight3D8" type="SpotLight3D" parent="Lights/Row2" unique_id=538328728]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 21, 5, 0)
+light_energy = 4.0
+shadow_enabled = true
+spot_range = 10.0
+
+[node name="Row3" type="Node3D" parent="Lights" unique_id=449466571]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6)
+visible = false
+
+[node name="SpotLight3D" type="SpotLight3D" parent="Lights/Row3" unique_id=2068103690]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 5, 0)
+light_energy = 4.0
+shadow_enabled = true
+spot_range = 10.0
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="Lights/Row3" unique_id=1218094895]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 3, 5, 0)
+light_energy = 4.0
+shadow_enabled = true
+spot_range = 10.0
+
+[node name="SpotLight3D3" type="SpotLight3D" parent="Lights/Row3" unique_id=1835082848]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 6, 5, 0)
+light_energy = 4.0
+shadow_enabled = true
+spot_range = 10.0
+
+[node name="SpotLight3D4" type="SpotLight3D" parent="Lights/Row3" unique_id=1304755026]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 9, 5, 0)
+light_energy = 4.0
+shadow_enabled = true
+spot_range = 10.0
+
+[node name="SpotLight3D5" type="SpotLight3D" parent="Lights/Row3" unique_id=2045392730]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 12, 5, 0)
+visible = false
+light_energy = 4.0
+shadow_enabled = true
+spot_range = 10.0
+
+[node name="SpotLight3D6" type="SpotLight3D" parent="Lights/Row3" unique_id=866944183]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 15, 5, 0)
+visible = false
+light_energy = 4.0
+shadow_enabled = true
+spot_range = 10.0
+
+[node name="SpotLight3D7" type="SpotLight3D" parent="Lights/Row3" unique_id=881914675]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 18, 5, 0)
+visible = false
+light_energy = 4.0
+shadow_enabled = true
+spot_range = 10.0
+
+[node name="SpotLight3D8" type="SpotLight3D" parent="Lights/Row3" unique_id=206294246]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 21, 5, 0)
+visible = false
+light_energy = 4.0
+shadow_enabled = true
+spot_range = 10.0
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=600333947]
+transform = Transform3D(1, 0, 0, 0, 0.90630776, 0.42261827, 0, -0.42261827, 0.90630776, 0, 2, 2)
+
+[node name="Projectile" type="Node3D" parent="." unique_id=946027403]
+
+[node name="VFXFireProjectile_01" parent="Projectile" unique_id=1245201508 instance=ExtResource("3_a01x7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+color_curve = 4.0
+noise_scroll = Vector2(0, 1)
+spiral_amount = 0.3
+spiral_noise = 0.4
+
+[node name="VFXFireProjectile_02" parent="Projectile" unique_id=950086204 instance=ExtResource("4_w2eh1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 1, 0)
+
+[node name="VFXWaterProjectile_01" parent="Projectile" unique_id=502063087 instance=ExtResource("5_6drxn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 1, 0)
+primary_color = Color(0, 0.8666667, 0.9882353, 1)
+secondary_color = Color(0, 0.6862745, 0.81960785, 1)
+color_curve = 4.0
+spiral_noise = 0.4
+
+[node name="VFXWaterProjectile_02" parent="Projectile" unique_id=396041641 instance=ExtResource("6_fentt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 1, 0)
+color_curve = 4.0
+spiral_noise = 0.4
+
+[node name="Node3D" type="Node3D" parent="Projectile" unique_id=1232964665]
+
+[node name="VFXElectricProjectile_01" parent="Projectile/Node3D" unique_id=891810604 instance=ExtResource("7_7ww1h")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 1, 0)
+primary_color = Color(1, 0.7294118, 0.15686275, 1)
+secondary_color = Color(0.6156863, 0.4117647, 0, 1)
+color_curve = 4.0
+noise_texture = SubResource("NoiseTexture2D_5ukum")
+
+[node name="VFXElectricProjectile_02" parent="Projectile/Node3D" unique_id=1463203582 instance=ExtResource("8_irve1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 1, 0)
+secondary_color = Color(0.6156863, 0.4117647, 0, 1)
+color_curve = 4.0
+
+[node name="VFXNatureProjectile_01" parent="Projectile/Node3D" unique_id=1682397167 instance=ExtResource("9_hi0bh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1, 0)
+primary_color = Color(0.74509805, 0.8352941, 0, 1)
+color_curve = 4.0
+
+[node name="VFXNatureProjectile_02" parent="Projectile/Node3D" unique_id=627347033 instance=ExtResource("10_8rtm6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 1, 0)
+color_curve = 4.0
+
+[node name="Area" type="Node3D" parent="." unique_id=1053213232]
+
+[node name="VFXFireArea_01" parent="Area" unique_id=23154919 instance=ExtResource("11_klcbe")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4)
+noise_texture = SubResource("NoiseTexture2D_rst71")
+
+[node name="VFXFireArea_02" parent="Area" unique_id=1819823821 instance=ExtResource("12_mlj6c")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, 2)
+
+[node name="VFXWaterArea_01" parent="Area" unique_id=1530750442 instance=ExtResource("12_uyhsj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 4)
+noise_texture = SubResource("NoiseTexture2D_uapvj")
+
+[node name="VFXWaterArea_02" parent="Area" unique_id=2019951019 instance=ExtResource("14_woqjh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0, 2)
+
+[node name="Node3D" type="Node3D" parent="Area" unique_id=334678855]
+
+[node name="VFXElectricArea_01" parent="Area/Node3D" unique_id=242646662 instance=ExtResource("13_wgc57")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 4)
+noise_texture = SubResource("NoiseTexture2D_l0amp")
+
+[node name="VFXElectricArea_02" parent="Area/Node3D" unique_id=1605190300 instance=ExtResource("16_4b7wl")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, 2)
+
+[node name="VFXNatureArea_01" parent="Area/Node3D" unique_id=2040590567 instance=ExtResource("14_d6baw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 4)
+
+[node name="VFXNatureArea_02" parent="Area/Node3D" unique_id=748463085 instance=ExtResource("18_y6tu6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 0, 2)
+
+[node name="Cast" type="Node3D" parent="." unique_id=1361455872]
+
+[node name="VFXFireCast_01" parent="Cast" unique_id=1791869936 instance=ExtResource("19_qcu8g")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1, -2)
+autoplay = true
+
+[node name="VFXFireCast_02" parent="Cast" unique_id=1468006558 instance=ExtResource("20_orge8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, -2)
+noise_texture = SubResource("NoiseTexture2D_uyfu0")
+one_shot = false
+autoplay = true
+
+[node name="VFXWaterCast_01" parent="Cast" unique_id=1387452885 instance=ExtResource("21_hy4b3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1, -2)
+autoplay = true
+
+[node name="VFXWaterCast_02" parent="Cast" unique_id=1479936395 instance=ExtResource("22_rgcsv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 1, -2)
+autoplay = true
+
+[node name="VFXElectricCast_01" parent="Cast" unique_id=2118034568 instance=ExtResource("23_3i4on")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 1, -2)
+autoplay = true
+
+[node name="VFXElectricCast_02" parent="Cast" unique_id=1438869197 instance=ExtResource("24_ry7f0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 1, -2)
+one_shot = false
+autoplay = true
+
+[node name="VFXNatureCast_01" parent="Cast" unique_id=1999681067 instance=ExtResource("25_0q3yo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17, 1, -2)
+autoplay = true
+
+[node name="VFXNatureCast_02" parent="Cast" unique_id=814702071 instance=ExtResource("26_uyfu0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 1, -2)
+one_shot = false
+autoplay = true

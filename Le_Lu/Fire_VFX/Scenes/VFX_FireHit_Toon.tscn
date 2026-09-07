@@ -1,0 +1,91 @@
+[gd_scene format=3 uid="uid://cvrmuaggx65gs"]
+
+[ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/s_Disolver_small_Liquid_p_Treshold_ds_us.tres" id="1_1ik6e"]
+[ext_resource type="Texture2D" uid="uid://dv6fsjgo3oep8" path="res://Le_Lu/Fire_VFX/textures/T_Blood_Leash_FE1.png" id="2_xn75y"]
+[ext_resource type="ArrayMesh" uid="uid://cbs6u7qd6xpp0" path="res://Le_Lu/Fire_VFX/objects/sm_smoke1.obj" id="3_ejhih"]
+
+[sub_resource type="Gradient" id="Gradient_gpae7"]
+offsets = PackedFloat32Array(0, 0.534137)
+colors = PackedColorArray(0.52, 0, 0, 1, 1, 0.282, 0.05, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_li7ry"]
+gradient = SubResource("Gradient_gpae7")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dkfrp"]
+render_priority = 0
+shader = ExtResource("1_1ik6e")
+shader_parameter/Scale = Vector2(2, 1)
+shader_parameter/Speed_XY = Vector2(0, 0)
+shader_parameter/Disolver_Texture = ExtResource("2_xn75y")
+shader_parameter/Color_1D_Gradient = SubResource("GradientTexture1D_li7ry")
+
+[sub_resource type="Curve" id="Curve_xqoba"]
+_data = [Vector2(0, 0), 0.0, 0.0413416, 0, 0, Vector2(1, 1), 3.25085, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_t4cq5"]
+texture_mode = 1
+curve = SubResource("Curve_xqoba")
+
+[sub_resource type="Curve" id="Curve_8wg6t"]
+_data = [Vector2(0, 0.153846), 0.0, 1.10857, 0, 0, Vector2(1, 1), -0.052317, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_rvktx"]
+curve = SubResource("Curve_8wg6t")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_gdsm8"]
+particle_flag_align_y = true
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(0, 0, -1)
+spread = 10.0
+radial_velocity_min = 0.0299776
+radial_velocity_max = 0.0999776
+gravity = Vector3(0, 0, 0)
+scale_min = 0.3
+scale_max = 0.7
+scale_curve = SubResource("CurveTexture_rvktx")
+color = Color(3, 3, 3, 1)
+alpha_curve = SubResource("CurveTexture_t4cq5")
+
+[sub_resource type="Animation" id="Animation_wico0"]
+resource_name = "Init"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("hit2firex2:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_5puvh"]
+_data = {
+"Init": SubResource("Animation_wico0")
+}
+
+[node name="VFX_FireHit_Toon" type="Node3D"]
+
+[node name="hit2firex2" type="GPUParticles3D" parent="."]
+layers = 4
+material_override = SubResource("ShaderMaterial_dkfrp")
+cast_shadow = 0
+emitting = false
+amount = 9
+lifetime = 0.5
+one_shot = true
+explosiveness = 0.62
+fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_gdsm8")
+draw_pass_1 = ExtResource("3_ejhih")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_5puvh")
+}
+autoplay = "Init"
