@@ -1,10 +1,11 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/player.tscn" id="6_e6ckp"]
 [ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/paraglider.tscn" id="7_mvg0v"]
 [ext_resource type="PackedScene" path="res://addons/radi_ot/scenes/radi_ot_player_3d.tscn" id="9_mvg0v"]
 [ext_resource type="Resource" path="res://addons/radi_ot/resources/stations/seattle_stations_default.tres" id="345_5hhec"]
 [ext_resource type="PackedScene" uid="uid://c7fishcard0001" path="res://scenes/fish_card.tscn" id="fish_card"]
+[ext_resource type="PackedScene" uid="uid://cp8l5m7auhh4p" path="res://assets/loop_box/VFX.tscn" id="connector_vfx"]
 [ext_resource type="Script" path="res://scenes/fishing_log.gd" id="fishing_log"]
 [ext_resource type="Script" path="res://addons/3d_player_controller/scripts/ability.gd" id="ability"]
 [ext_resource type="Resource" path="res://addons/3d_player_controller/resources/abilities/stealth.tres" id="stealth"]
@@ -313,7 +314,7 @@ joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000157575, -0.0001972352
 body_offset = Transform3D(-0.779299, -0.62648916, -0.014323711, -0.0034145415, 0.027102381, -0.999627, 0.6266434, -0.77895904, -0.02325996, 0.00072291493, 0.050510436, 0.0009227907)
 
 [node name="HeldObject" parent="." index="31" unique_id=194795531]
-connector_scene = "uid://cp8l5m7auhh4p"
+connector_scene = ExtResource("connector_vfx")
 
 [node name="RadiOtPlayer3D" parent="." unique_id=968257921 groups=["radio"] instance=ExtResource("9_mvg0v")]
 unit_size = 5.0
