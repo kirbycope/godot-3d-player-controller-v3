@@ -143,6 +143,7 @@ func test_an_equipment_item_goes_onto_the_skeleton() -> void:
 	assert_eq(sword.scale, sword.scale_offset, "and scale")
 	assert_true((sword.get_node("PlayerDetection/CollisionShape3D") as CollisionShape3D).disabled, "The copy is no pickup")
 	assert_false((sword.get_node("Hitbox/CollisionShape3D") as CollisionShape3D).disabled, "but its hitbox still counts")
+	assert_false((sword.get_node("WeaponBody/CollisionShape3D") as CollisionShape3D).disabled, "and its weapon body still shoves")
 	var dropped: Node3D = inventory.drop_equipment(sword)
 	assert_true(dropped is Equipment, "Dropping equipment puts its scene back in the world")
 	assert_false(inventory.has_equipment(Equipment.EquipmentType.SWORD_1H))

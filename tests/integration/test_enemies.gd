@@ -401,3 +401,31 @@ func test_the_archer_spreads_its_arrows_by_its_skill_and_a_novice_player_spreads
 			pistol_strays += 1
 		bullet.queue_free()
 	assert_gt(pistol_strays, 6, "A novice's pistol rounds wander off the crosshair line")
+
+
+func test_the_rifleman_flashes_its_muzzle_down_the_barrel_on_every_shot() -> void:
+	var rifleman: EnemyNpc = _enemy("Rifleman")
+	var flash: MuzzleFlash = rifleman.get_node("Muzzle/MuzzleFlash")
+	assert_false(flash.vfx.visible, "The flash is hidden at rest")
+	assert_true(rifleman.fired.is_connected(flash.flash), "The scene wires fired to the flash")
+	assert_true(flash.animation_player.animation_finished.is_connected(flash._on_animation_finished), "And the VFX's end hides it again")
+	# The Binbun flash's forward is its +X; the wrapper turns that down the muzzle's -Z, the line _fire shoots along
+	assert_almost_eq(flash.transform.basis.x.normalized(), Vector3.FORWARD, Vector3.ONE * 0.001, "VFX forward runs down the barrel")
+	rifleman.leash_distance = 200.0
+	player.warp_to(Transform3D(Basis(), rifleman.global_position - rifleman.global_basis.z * 8.0))
+	await wait_physics_frames(2)
+	rifleman.target = player
+	var aim: Vector3 = rifleman.muzzle.global_position.direction_to(Focus.get_focus_target_position(player))
+	assert_lt(rad_to_deg(aim.angle_to(-rifleman.muzzle.global_basis.z)), 15.0, "Facing the Player, the shot leaves along the muzzle's -Z")
+	var rounds: Array[Projectile] = []
+	rifleman.fired.connect(func(projectile: Projectile) -> void: rounds.append(projectile))
+	var bullet: Projectile = rifleman._fire()
+	assert_eq(rounds, [bullet] as Array[Projectile], "fired carries the round on the authority")
+	assert_true(flash.vfx.visible, "The flash shows as the round leaves")
+	assert_true(flash.animation_player.is_playing(), "And its animation runs")
+	assert_eq(flash.animation_player.current_animation, String(MuzzleFlash.FLASH_ANIMATION))
+	var archer: EnemyNpc = _enemy("Archer")
+	assert_null(archer.get_node_or_null("Muzzle/MuzzleFlash"), "A bow has no muzzle flash")
+	bullet.queue_free()
+	rifleman.target = null
+	rifleman.player = null

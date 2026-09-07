@@ -491,9 +491,9 @@ func equip_pickup(pickup: Equipment) -> Equipment:
 	copy.player = player
 	copy.scene_file_path = pickup.scene_file_path # so the inventory can save and drop it as its scene
 	attachment.add_child(copy)
-	# Disable world collision but keep the "Hitbox" shapes so HitDetection can monitor them.
+	# Disable world collision but keep the "Hitbox" and "WeaponBody" shapes so HitDetection can use them.
 	for shape: Node in copy.find_children("*", "CollisionShape3D", true, false):
-		(shape as CollisionShape3D).disabled = shape.get_parent().name != "Hitbox"
+		(shape as CollisionShape3D).disabled = shape.get_parent().name not in ["Hitbox", "WeaponBody"]
 	for tree: Node in copy.find_children("*", "AnimationTree", true, false):
 		(tree as AnimationTree).active = true
 		(tree as AnimationTree).advance_expression_base_node = tree.get_path_to(copy)

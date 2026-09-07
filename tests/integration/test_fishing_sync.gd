@@ -1,11 +1,14 @@
 extends GutTest
 
 ## Purpose: A float fired through the ProjectileSpawner on the host appears on a real ENet client with the
-## caster as its shooter, draws its own line there, and the host's plunge and catch RPCs reach the client.
+## caster as its shooter, draws its own line there, and the host's plunge and catch RPCs reach the client. The bait on
+## the line is the rod owner's alone: a peer's copy of the rod neither takes a used lure nor eats one.
 
 const PORT: int = 47392
 const PLAYER_SCENE: PackedScene = preload("res://addons/3d_player_controller/scenes/player.tscn")
 const BOBBER_SCENE: PackedScene = preload("res://scenes/bobber.tscn")
+const ROD_SCENE: PackedScene = preload("res://scenes/fishing_rod.tscn")
+const WORM: Lure = preload("res://resources/lures/worm.tres")
 const CARP_PATH: String = "res://resources/fish/carp.tres"
 const PLAYER_SPAWNER: Script = preload("res://addons/3d_player_controller/scripts/player_spawner.gd")
 const PROJECTILE_SPAWNER: Script = preload("res://addons/3d_player_controller/scripts/projectile_spawner.gd")
@@ -98,3 +101,33 @@ func test_host_float_appears_on_the_client_with_its_line_and_takes_rpcs() -> voi
 	host_bobber.retract.rpc()
 	await wait_process_frames(20)
 	assert_false(is_instance_valid(client_bobber) and client_bobber.is_inside_tree(), "Retracting on the host despawns the float on the client")
+
+
+func test_only_the_rods_owner_puts_bait_on_the_line_or_eats_it() -> void:
+	var host_player: Player = server_root.get_node("Players/1")
+	var client_player: Player = client_root.get_node("Players/1") # the client's copy of the host's player
+	assert_true(host_player.is_multiplayer_authority())
+	assert_false(client_player.is_multiplayer_authority(), "The client only mirrors player 1")
+	var host_pickup: FishingRod = ROD_SCENE.instantiate() as FishingRod
+	server_root.add_child(host_pickup)
+	assert_true(host_pickup.equip(host_player))
+	var client_pickup: FishingRod = ROD_SCENE.instantiate() as FishingRod
+	client_root.add_child(client_pickup)
+	assert_true(client_pickup.equip(client_player))
+	await wait_process_frames(2)
+	var host_rod: FishingRod = host_pickup.equipment_instance as FishingRod
+	var client_rod: FishingRod = client_pickup.equipment_instance as FishingRod
+	assert_true(host_rod.is_multiplayer_authority())
+	assert_false(client_rod.is_multiplayer_authority())
+	host_player.inventory.add_item(WORM, 2)
+	host_player.inventory.use_slot(WORM.category, 0)
+	assert_eq(host_rod.lure, WORM, "The owner's Use puts the worm on the line")
+	host_rod.consume_lure()
+	assert_eq(host_player.inventory.count_of(WORM), 0, "and the owner's bite takes the next one from the bag")
+	client_player.inventory.add_item(WORM, 2)
+	client_player.inventory.use_slot(WORM.category, 0)
+	assert_null(client_rod.lure, "A peer's copy of the rod does not listen to that inventory")
+	client_rod.lure = WORM # were it set by hand, as an export might
+	client_rod.consume_lure()
+	assert_eq(client_rod.lure, WORM, "the copy never eats it")
+	assert_eq(client_player.inventory.count_of(WORM), 1, "nor touches the bag")

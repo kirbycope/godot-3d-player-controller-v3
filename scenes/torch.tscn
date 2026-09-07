@@ -52,6 +52,8 @@ radius = 0.09
 height = 1.05
 
 [node name="Torch" type="RigidBody3D" unique_id=987654321 groups=["Fire", "Throwable", "Torch"]]
+collision_layer = 1025
+collision_mask = 513
 mass = 1.2
 physics_material_override = SubResource("PhysicsMaterial_torch")
 continuous_cd = true

@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/arrow.tscn" id="1_arrow"]
+[ext_resource type="Script" path="res://scenes/fire_arrow.gd" id="2_fire"]
+[ext_resource type="PackedScene" path="res://addons/weather_fx/scenes/vfx_flame.tscn" id="3_flame"]
+
+[node name="FireArrow" instance=ExtResource("1_arrow")]
+script = ExtResource("2_fire")
+stuck_seconds = 3.0
+
+[node name="Flame" parent="." instance=ExtResource("3_flame")]
+transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0.5, 0)
+
+[node name="FlameParticles" parent="Flame" index="0"]
+amount = 64
+
+[node name="EmberParticles" parent="Flame" index="1"]
+amount = 24
+
+[connection signal="hit" from="." to="." method="_on_hit"]
+
+[editable path="Flame"]

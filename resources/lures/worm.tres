@@ -7,8 +7,8 @@
 script = ExtResource("1_lure")
 id = &"worm"
 display_name = "Worm"
-description = "Wriggles on the hook. Catfish cannot resist it; use it from the inventory to put it on the line."
+description = "Wriggles on the hook. Catfish cannot resist it, and a crate of boots turns up for it now and then; use it from the inventory to put it on the line, and a bite eats it."
 icon = ExtResource("2_icon")
 category = 1
 max_stack = 99
-consumable = false
+consumable = true

@@ -12,6 +12,9 @@ const STARTING_ITEMS: Dictionary[Item, int] = {
 	preload("res://resources/items/rifle_clip.tres"): 2,
 	preload("res://resources/items/pistol_magazine.tres"): 1,
 	preload("res://resources/items/arrow.tres"): 20,
+	preload("res://resources/items/fire_arrow.tres"): 5,
+	preload("res://resources/items/ice_arrow.tres"): 5,
+	preload("res://resources/items/rifle_clip_incendiary.tres"): 1,
 }
 
 ## GodotSteam constant mirrors (the Steam class is absent on web exports).

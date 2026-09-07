@@ -15,6 +15,7 @@ signal aggroed(target: Node3D)
 signal attacked(target: Node3D) ## A melee swing or a shot was started.
 signal struck(body: Node3D) ## The weapon hitbox connected.
 signal headshot(projectile: Projectile) ## A round landed on the head: an outright kill.
+signal fired(projectile: Projectile) ## A round left the muzzle; on every peer, so the muzzle flash plays for all. Null except on the server, whose spawner hands the round back.
 signal died
 signal returned_home ## Back at the spawn point after the hunted Player died.
 
@@ -266,19 +267,31 @@ func _on_weapon_hitbox_hit(body: Node3D) -> void:
 
 
 ## Fires the projectile from the muzzle at the target's focus point, off the line by [member accuracy]'s spread
-## for [member skill_level], through the spawner when the scene has one.
+## for [member skill_level], through the spawner when the scene has one. [signal fired] goes out on every peer.
 func _fire() -> Projectile:
 	var origin: Transform3D = Transform3D(Basis(), muzzle.global_position)
 	var direction: Vector3 = muzzle.global_position.direction_to(Focus.get_focus_target_position(target))
 	if accuracy:
 		direction = accuracy.scatter(direction, skill_level)
-	var spawner: ProjectileSpawner = get_tree().get_first_node_in_group(&"ProjectileSpawner") as ProjectileSpawner
+	var spawner: ProjectileSpawner = ProjectileSpawner.find_for(self)
+	var projectile: Projectile
 	if spawner:
-		return spawner.fire(projectile_scene, origin, direction, projectile_speed, self)
-	var projectile: Projectile = projectile_scene.instantiate()
-	get_parent().add_child(projectile)
-	projectile.launch(origin, direction, projectile_speed, self)
+		projectile = spawner.fire(projectile_scene, origin, direction, projectile_speed, self)
+	else:
+		projectile = projectile_scene.instantiate()
+		get_parent().add_child(projectile)
+		projectile.launch(origin, direction, projectile_speed, self)
+	if is_multiplayer_authority():
+		_fired_remote.rpc()
+	fired.emit(projectile)
 	return projectile
+
+
+## The authority's shot relayed to the other peers so their muzzle flashes too; the round itself arrives through
+## the spawner.
+@rpc("authority", "call_remote", "unreliable")
+func _fired_remote() -> void:
+	fired.emit(null)
 
 
 ## Root motion moves the body: the navigation's wish only decides the animation, then the Root bone's

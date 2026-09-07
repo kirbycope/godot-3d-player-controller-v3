@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="FreezeAbility" format=3]
+
+[ext_resource type="Texture2D" path="res://addons/3d_player_controller/assets/game_icons/ice-bolt.svg" id="spell_icon"]
+[ext_resource type="Script" path="res://scenes/freeze_ability.gd" id="1_freeze"]
+[ext_resource type="PackedScene" uid="uid://b0yhsfcg8tlak" path="res://assets/BinbunVFX/magic_orbs/effects/magic_orb_small/magic_orb_small_vfx_02.tscn" id="2_charge"]
+[ext_resource type="PackedScene" path="res://assets/BinbunVFX/ice_effects/effects/ice_area/ice_area_vfx_01.tscn" id="2_hit"]
+[ext_resource type="AudioStream" uid="uid://cx58w5r1jp8ev" path="res://addons/3d_player_controller/assets/tommusic/fantasy_sfx/Spells/Ice Freeze 2.ogg" id="3_channel"]
+[ext_resource type="AudioStream" path="res://addons/3d_player_controller/assets/tommusic/fantasy_sfx/Spells/Ice Wall 1.ogg" id="5_impact"]
+
+[resource]
+script = ExtResource("1_freeze")
+display_name = "Freeze"
+icon = ExtResource("spell_icon")
+icon_color = Color(0.85, 0.95, 1, 1)
+cooldown = 8.0
+cast_time = 1.5
+energy_cost = 30.0
+fx_lifetime = 3.0
+target_mode = 1
+cast_style = 1
+elements = 2
+channeling_vfx = ExtResource("2_charge")
+channeling_sfx = ExtResource("3_channel")
+impact_vfx = ExtResource("2_hit")
+impact_sfx = ExtResource("5_impact")

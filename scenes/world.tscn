@@ -808,6 +808,15 @@ shape = SubResource("SphereShape3D_pickup")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.45)
 shape = SubResource("BoxShape3D_hbax1")
 
+[node name="WeaponBody" type="AnimatableBody3D" parent="N_Hance_Studio_1/SK_Axe_1H_Newbie_01"]
+collision_layer = 512
+collision_mask = 1024
+sync_to_physics = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Axe_1H_Newbie_01/WeaponBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.45)
+shape = SubResource("BoxShape3D_hbax1")
+
 [node name="SK_Axe_2HL_Newbie_01" parent="N_Hance_Studio_1" unique_id=1297848573 instance=ExtResource("19_r5yoc")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 2.5)
 script = ExtResource("15_5nedk")
@@ -828,6 +837,15 @@ shape = SubResource("SphereShape3D_pickup")
 [node name="Hitbox" type="Area3D" parent="N_Hance_Studio_1/SK_Axe_2HL_Newbie_01" unique_id=94929940]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Axe_2HL_Newbie_01/Hitbox" unique_id=712214968]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.75)
+shape = SubResource("BoxShape3D_hbax2")
+
+[node name="WeaponBody" type="AnimatableBody3D" parent="N_Hance_Studio_1/SK_Axe_2HL_Newbie_01"]
+collision_layer = 512
+collision_mask = 1024
+sync_to_physics = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Axe_2HL_Newbie_01/WeaponBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.75)
 shape = SubResource("BoxShape3D_hbax2")
 
@@ -971,6 +989,15 @@ shape = SubResource("SphereShape3D_pickup")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00039672852, -0.009277344, 0.65)
 shape = SubResource("BoxShape3D_cth4h")
 
+[node name="WeaponBody" type="AnimatableBody3D" parent="N_Hance_Studio_1/SK_Sword_1H_Newbie_01"]
+collision_layer = 512
+collision_mask = 1024
+sync_to_physics = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Sword_1H_Newbie_01/WeaponBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00039672852, -0.009277344, 0.65)
+shape = SubResource("BoxShape3D_cth4h")
+
 [node name="SK_Sword_2H_Newbie_01" parent="N_Hance_Studio_1" unique_id=674997095 instance=ExtResource("37_gny1c")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0.5, -3.5)
 script = ExtResource("15_5nedk")
@@ -991,6 +1018,15 @@ shape = SubResource("SphereShape3D_pickup")
 [node name="Hitbox" type="Area3D" parent="N_Hance_Studio_1/SK_Sword_2H_Newbie_01" unique_id=1218326031]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Sword_2H_Newbie_01/Hitbox" unique_id=561940658]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.85)
+shape = SubResource("BoxShape3D_hbsw2")
+
+[node name="WeaponBody" type="AnimatableBody3D" parent="N_Hance_Studio_1/SK_Sword_2H_Newbie_01"]
+collision_layer = 512
+collision_mask = 1024
+sync_to_physics = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Sword_2H_Newbie_01/WeaponBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.85)
 shape = SubResource("BoxShape3D_hbsw2")
 

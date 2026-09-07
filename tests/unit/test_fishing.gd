@@ -9,6 +9,7 @@ const CATFISH: Fish = preload("res://resources/fish/catfish.tres")
 const TROUT: Fish = preload("res://resources/fish/rainbow_trout.tres")
 const KOI: Fish = preload("res://resources/fish/koi.tres")
 const BOOT: Fish = preload("res://resources/fish/old_boot.tres")
+const CRATE: Fish = preload("res://resources/fish/boot_crate.tres")
 const WORM: Lure = preload("res://resources/lures/worm.tres")
 const FLY: Lure = preload("res://resources/lures/fly.tres")
 const POND_MATERIAL: Material = preload("res://addons/weather_fx/resources/pond_water_material.tres")
@@ -159,3 +160,44 @@ func test_bobber_splash_shows_droplets_and_a_ring() -> void:
 	assert_true(bobber.splash_particles.emitting, "Droplets burst")
 	await wait_seconds(0.8)
 	assert_false(bobber.ring.visible, "The ring fades out and hides")
+
+
+func test_a_bare_hook_pulls_up_mostly_junk_and_a_seeded_pick_repeats() -> void:
+	var water := _make_water()
+	water.fish = [CARP, PERCH, KOI, BOOT, CRATE]
+	WeatherFX.active_precipitation_strength = 0.0
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 12345
+	var junk: int = 0
+	var fish: int = 0
+	var first: Array[Fish] = []
+	for i in 400:
+		var pick: Fish = water.pick_fish(null, rng)
+		first.append(pick)
+		assert_ne(pick, CRATE, "The crate only comes up for a worm")
+		if pick.is_junk:
+			junk += 1
+		else:
+			fish += 1
+	# Noon, no lure: the boot keeps its 1.5 while the carp and perch keep 5% of 5 and 3, so about four in five are junk
+	assert_gt(junk, 240, "A bare hook is mostly junk: %d junk to %d fish" % [junk, fish])
+	assert_gt(fish, 0, "but the odd real fish still takes it")
+	rng.seed = 12345
+	for i in 400:
+		assert_eq(water.pick_fish(null, rng), first[i], "The same seed rolls the same picks")
+	var baited: int = 0
+	for i in 400:
+		if not water.pick_fish(WORM, rng).is_junk:
+			baited += 1
+	assert_gt(baited, 240, "With a worm on the line the real fish keep their full weight: %d fish of 400" % baited)
+
+
+func test_a_worm_tempts_the_crate_and_the_boot_bites_bare() -> void:
+	assert_false(CRATE.is_available(12, false), "The crate ignores a bare hook")
+	assert_true(CRATE.is_available(12, false, WORM), "but something in it likes worms")
+	assert_false(CRATE.is_available(12, false, FLY), "and nothing else")
+	assert_true(BOOT.is_available(12, false), "The boot bites on a bare hook")
+	assert_true(BOOT.is_available(12, false, FLY), "and on anything")
+	assert_eq(BOOT.bite_weight(), BOOT.weight, "Junk keeps its whole weight bare")
+	assert_almost_eq(CARP.bite_weight(), CARP.weight * 0.05, 0.0001, "A real fish keeps a twentieth")
+	assert_eq(CARP.bite_weight(WORM), CARP.weight, "and all of it with bait on")

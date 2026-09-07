@@ -46,8 +46,6 @@ func _on_depleted() -> void:
 			if child is CollisionShape3D:
 				(child as CollisionShape3D).disabled = false
 		log_body.freeze = false
-		# Brief grace so the felling swing's knockback doesn't bat the log away
-		log_body.set_meta("no_knockback_until", Time.get_ticks_msec() + 1000)
 		# Tip the log away from the stump so it does not balance on its cut end
 		var up: Vector3 = global_transform.basis.y
 		var away: Vector3 = log_body.global_position - global_position
@@ -55,7 +53,7 @@ func _on_depleted() -> void:
 		if away.length_squared() < 0.001:
 			away = -global_transform.basis.z
 		log_body.angular_velocity = up.cross(away.normalized()) * 2.0
-		# Action chops have no weapon knockback; nudge the log away from the player
+		# Nudge the log away from the player
 		if player:
 			var push: Vector3 = log_body.global_position - player.global_position
 			push = push - push.project(up)

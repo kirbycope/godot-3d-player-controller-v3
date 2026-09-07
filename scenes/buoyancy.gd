@@ -131,8 +131,10 @@ func is_raining() -> bool:
 	return WeatherFX.get_precipitation_strength() > 0.0
 
 
-## Weighted pick among the fish available at the current hour, weather and [param lure]; null when nothing bites.
-func pick_fish(lure: Item = null) -> Fish:
+## Weighted pick among the fish available at the current hour, weather and [param lure] (null for a bare hook, which
+## junk takes and real fish mostly pass by, see [method Fish.bite_weight]); null when nothing bites. A test hands
+## in [param rng] to make the roll repeatable.
+func pick_fish(lure: Item = null, rng: RandomNumberGenerator = null) -> Fish:
 	var hour: int = clock.get_hour() if clock else 12
 	var raining: bool = is_raining()
 	var biome: int = biome_zone.biome if biome_zone else -1
@@ -141,10 +143,10 @@ func pick_fish(lure: Item = null) -> Fish:
 		return null
 	var total: float = 0.0
 	for candidate: Fish in available:
-		total += candidate.weight
-	var roll: float = randf() * total
+		total += candidate.bite_weight(lure)
+	var roll: float = (rng.randf() if rng else randf()) * total
 	for candidate: Fish in available:
-		roll -= candidate.weight
+		roll -= candidate.bite_weight(lure)
 		if roll <= 0.0:
 			return candidate
 	return available.back()

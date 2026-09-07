@@ -1,8 +1,9 @@
 class_name Lure
 extends Item
-## Bait for the [FishingRod]: a GARP [Item] that, used from the inventory, goes on the line and stays there
-## until another is used, or, when [member consumable], until a fish eats it. Fish list the lures they bite
-## on in [member Fish.lures]; a fish with none listed bites on anything, including a bare hook.
+## Bait for the [FishingRod]: a GARP [Item] that, used from the inventory, goes on the line (Use takes that one out
+## of the bag) and stays there until another is used or, when [member consumable], until a fish takes it with the
+## bite; the next one in the bag then goes on by itself. Fish list the lures they bite on in [member Fish.lures]; a
+## fish with none listed bites on any bait, and on a bare hook only under [member Fish.bare_hook_chance].
 
 @export var bite_time_scale: float = 1.0 ## Multiplies the wait for a bite: 0.5 halves it.
 @export var attract_range_bonus: float = 0.0 ## Metres added to the species' [member Fish.attract_range] while this is on the line.

@@ -4,10 +4,12 @@ extends Equipment
 ## inside the hook window hooks the fish, reeling plays out on its own and the catch lands on the HUD card.
 ##
 ## Timing runs on the Timer nodes wired in the scene; the fish table and shadows come from the [Buoyancy]
-## water the float lands in, filtered by the [member lure] on the line (a [Lure] item used from the inventory
-## goes on the line). A landed fish is a GARP [Item], so it goes into the Player's inventory. The float goes
+## water the float lands in, filtered by the [member lure] on the line: a [Lure] used from the inventory goes on
+## the line, the bite eats it and the next one in the bag takes its place, and a bare hook mostly pulls up junk
+## (see [member Fish.bare_hook_chance]). A landed fish is a GARP [Item], so it goes into the Player's inventory. The float goes
 ## through the ProjectileSpawner when the scene has one, so every peer sees the float, its line, the dips and
-## the catch; the rod itself only runs on its owner.
+## the catch; the rod itself only runs on its owner, and so does the bait: what is on the line, the pick it filters
+## and its consumption are the owner's alone, since nothing on a peer's copy shows the bait.
 
 signal line_cast ## The float has left the rod.
 signal bite(fish: Fish) ## The hook window is open.
@@ -29,6 +31,7 @@ const CAST_ANIMATION: StringName = &"Fishing Cast/mixamo_com"
 	set(value):
 		lure = value
 		lure_changed.emit(lure)
+		details_changed.emit()
 @export var max_cast_distance: float = 12.0
 @export var cast_release: float = 1.5 ## Seconds into the cast animation at which the float leaves the rod.
 @export var bite_wait: Vector2 = Vector2(3.0, 8.0) ## Seconds before the bite, before the rain and shadow bonuses.
@@ -230,8 +233,8 @@ func _on_bobber_landed_in_water(area: Area3D) -> void:
 	bite_timer.start(wait)
 	nibble_timer.start(randf_range(nibble_interval.x, nibble_interval.y))
 	if water.shadows:
-		# Only a shadow already close takes the bait; the species says how close, the bait can stretch it
-		water.shadows.attract(bobber.global_position, hooked_fish.attract_range + (bait.attract_range_bonus if bait else 0.0))
+		# Only a shadow already close takes the bait; the species says how close, the bait can stretch it, a bare hook shrinks it
+		water.shadows.attract(bobber.global_position, hooked_fish.attract_range_for(lure))
 
 
 func _on_nibble_timer_timeout() -> void:
@@ -251,11 +254,7 @@ func _on_bite_timer_timeout() -> void:
 	state = State.BITE
 	nibble_timer.stop()
 	hooked_length = hooked_fish.roll_length()
-	# Bait that gets eaten is gone with the bite; the line is bare once the bag runs out
-	if lure and lure.consumable and player.inventory:
-		player.inventory.remove_item(lure, 1)
-		if player.inventory.count_of(lure) <= 0:
-			lure = null
+	consume_lure()
 	bobber.plunge.rpc(0.35, 0.8)
 	bobber.splash.rpc(1.0)
 	if water.shadows:
@@ -300,25 +299,38 @@ func _on_reel_timer_timeout() -> void:
 	fish_caught.emit(fish, length)
 
 
-## What the rod says about itself in the inventory: the bait on the line and what it does.
+## The bite takes the bait on the line: the next one in the bag goes on in its place, or the hook is bare. The
+## one on the line left the bag when it was used, so only the replacement comes out of the inventory here.
+func consume_lure() -> void:
+	if lure == null or not lure.consumable or not is_multiplayer_authority():
+		return
+	if player == null or player.inventory == null or player.inventory.remove_item(lure, 1) == 0:
+		lure = null
+	else:
+		details_changed.emit() # the same bait stays on, one fewer in the bag
+
+
+## What the rod says about itself in the inventory: the bait on the line, what it does, what it tempts and how
+## many more wait in the bag, or that the hook is bare.
 func get_details() -> String:
 	if lure == null:
-		return "Bare hook."
-	var text: String = "On the line: %s" % lure.get_display_name()
+		return "Bare hook: only junk bites"
+	var lines: PackedStringArray = ["On the line: %s" % lure.get_display_name()]
 	var bait: Lure = lure as Lure
 	if bait:
-		var effects: PackedStringArray = bait.describe_effects()
-		var takers: PackedStringArray = []
+		lines.append_array(bait.describe_effects())
+	var takers: PackedStringArray = []
+	if is_inside_tree():
 		for water_area: Node in get_tree().get_nodes_in_group("WATER"):
 			if water_area is Buoyancy:
-				for fish in (water_area as Buoyancy).fish:
-					if fish.lures.any(func(wanted: Item) -> bool: return wanted.is_same(bait)) and not takers.has(fish.get_display_name()):
+				for fish: Fish in (water_area as Buoyancy).fish:
+					if fish.lures.any(func(wanted: Item) -> bool: return wanted.is_same(lure)) and not takers.has(fish.get_display_name()):
 						takers.append(fish.get_display_name())
-		if not takers.is_empty():
-			effects.append("Tempts: " + ", ".join(takers))
-		if not effects.is_empty():
-			text += "\n" + "\n".join(effects)
-	return text
+	if not takers.is_empty():
+		lines.append("Tempts: " + ", ".join(takers))
+	if player and player.inventory:
+		lines.append("%d more in the bag" % player.inventory.count_of(lure))
+	return "\n".join(lines)
 
 
 ## The Action prompt follows the fishing state while the rod is out; states yield the labels meanwhile.
@@ -351,10 +363,14 @@ func _on_input_type_changed(_input_type: int) -> void:
 	update_labels()
 
 
-## Using a [Lure] from the inventory puts it on the line.
+## Using a [Lure] from the inventory puts it on the line; Use already took that one out of the bag, so whatever
+## was on the line goes back in.
 func _on_item_used(item: Item, _count: int) -> void:
-	if item is Lure:
-		lure = item
+	if not item is Lure or not is_multiplayer_authority():
+		return
+	if lure and lure.consumable and player.inventory:
+		player.inventory.add_item(lure, 1)
+	lure = item
 
 
 func _play(stream: AudioStream) -> void:

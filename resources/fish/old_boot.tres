@@ -11,6 +11,7 @@ min_length_cm = 0.0
 max_length_cm = 0.0
 weight = 1.5
 mass_kg = 1.2
+bare_hook_chance = 1.0
 attract_range = 0.0
 is_junk = true
 id = &"old_boot"

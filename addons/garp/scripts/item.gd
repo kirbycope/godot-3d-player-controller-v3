@@ -54,6 +54,12 @@ func get_details(_owner: Node) -> String:
 	return ""
 
 
+## A short word the grid prints in the cell's corner ("Loaded" on the ammunition a weapon draws); [param owner] is
+## the Player. Empty by default, and an empty badge is not drawn.
+func get_badge(_owner: Node) -> String:
+	return ""
+
+
 ## Called on a freshly instanced [member model_scene] before it is shown, for a subclass to dress it (a fish
 ## tints the placeholder body).
 func prepare_model(_model: Node3D) -> void:

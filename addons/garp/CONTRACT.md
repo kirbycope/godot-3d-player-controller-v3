@@ -121,6 +121,7 @@ duplicates the pickup onto it with `scene_file_path` copied and `player` set, di
 | `position_offset`, `rotation_offset_degrees`, `scale_offset` | `@export Vector3` | `wooden_sword.tscn` sets them; `equip_pickup` applies them to the copy |
 | `player` | `Player` | `equip_pickup` sets it on the copy |
 | `get_details()` | `-> String` | Extra lines under the description |
+| `details_changed` | signal | The inventory screen redraws an equipment entry whose details changed while it is open (the fishing rod emits it when its bait changes) |
 | `_on_player_detection_body_entered(body)` | `(Node3D) -> void` | Wired in `wooden_sword.tscn` from a child `Area3D` named `PlayerDetection`: hands the pickup to the first authoritative Player's `inventory.equip_pickup` unless the pickup's `dropped_by` meta is that Player (`drop_equipment` sets it and clears it on the area's `body_exited`), then stops monitoring |
 | `scene_file_path` | native | `save`, `drop_equipment` and `_is_scene_path` |
 

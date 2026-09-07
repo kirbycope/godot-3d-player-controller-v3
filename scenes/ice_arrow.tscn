@@ -1,0 +1,68 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/arrow.tscn" id="1_arrow"]
+[ext_resource type="Script" path="res://scenes/ice_arrow.gd" id="2_ice"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_shaft"]
+albedo_color = Color(0.7, 0.85, 1, 1)
+metallic_specular = 0.8
+roughness = 0.15
+emission_enabled = true
+emission = Color(0.5, 0.7, 1, 1)
+emission_energy_multiplier = 0.2
+
+[sub_resource type="Gradient" id="Gradient_frost"]
+colors = PackedColorArray(0.85, 0.95, 1, 0.9, 0.6, 0.8, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_frost"]
+gradient = SubResource("Gradient_frost")
+
+[sub_resource type="Curve" id="Curve_frost"]
+_data = [Vector2(0, 0.4), 0.0, 2.0, 0, 0, Vector2(0.5, 1.0), 0.0, 0.0, 0, 0, Vector2(1, 0.6), -1.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_frost"]
+curve = SubResource("Curve_frost")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_frost"]
+emission_shape = 1
+emission_sphere_radius = 0.03
+spread = 180.0
+initial_velocity_min = 0.1
+initial_velocity_max = 0.3
+gravity = Vector3(0, 0.15, 0)
+scale_min = 0.6
+scale_max = 1.0
+scale_curve = SubResource("CurveTexture_frost")
+color_ramp = SubResource("GradientTexture1D_frost")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_frost"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_frost"]
+material = SubResource("StandardMaterial3D_frost")
+size = Vector2(0.08, 0.08)
+
+[node name="IceArrow" instance=ExtResource("1_arrow")]
+script = ExtResource("2_ice")
+
+[node name="MeshInstance3D" parent="." index="1"]
+material_override = SubResource("StandardMaterial3D_shaft")
+
+[node name="Frost" type="GPUParticles3D" parent="." index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+amount = 24
+lifetime = 0.7
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_frost")
+draw_pass_1 = SubResource("QuadMesh_frost")
+
+[connection signal="hit" from="." to="." method="_on_hit"]

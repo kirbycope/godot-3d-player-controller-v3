@@ -6,6 +6,8 @@ extends GutTest
 const CATFISH: Fish = preload("res://resources/fish/catfish.tres")
 const CARP: Fish = preload("res://resources/fish/carp.tres")
 const BOOT: Fish = preload("res://resources/fish/old_boot.tres")
+const CRATE: Fish = preload("res://resources/fish/boot_crate.tres")
+const FLY: Lure = preload("res://resources/lures/fly.tres")
 const WORM: Lure = preload("res://resources/lures/worm.tres")
 const CHUM: Lure = preload("res://resources/lures/chum.tres")
 const LOG_SCRIPT = preload("res://scenes/fishing_log.gd")
@@ -31,7 +33,7 @@ func test_chum_is_consumable_bait_with_effects() -> void:
 	assert_true("Bites come 50% sooner" in effects)
 	assert_true("Draws shadows from 1.5 m further" in effects)
 	assert_true("Eaten with each bite" in effects)
-	assert_true(WORM.describe_effects().is_empty(), "A plain worm has nothing to add")
+	assert_eq(WORM.describe_effects(), PackedStringArray(["Eaten with each bite"]), "A plain worm only says that a bite eats it")
 
 
 func test_fishing_log_records_and_bag() -> void:
@@ -90,3 +92,34 @@ func test_conditions_describe_the_resource() -> void:
 			found = true
 	assert_true(found, "The biomes are listed by name")
 	assert_eq(BOOT.describe_conditions()[0], "Not a fish. Bites on anything, any time.")
+
+
+func test_the_bare_hook_rule_lives_on_the_fish() -> void:
+	assert_eq(Fish.new().bare_hook_chance, 0.05, "A real fish hardly ever takes a bare hook")
+	assert_eq(BOOT.bare_hook_chance, 1.0, "Junk always does")
+	assert_eq(CRATE.bare_hook_chance, 1.0)
+	var shy := Fish.new()
+	shy.bare_hook_chance = 0.0
+	assert_false(shy.is_available(12, false), "Zero means never on a bare hook")
+	assert_true(shy.is_available(12, false, WORM), "but any bait will do")
+	assert_eq(shy.bite_weight(), 0.0)
+	assert_eq(CATFISH.attract_range_for(WORM), 0.8, "Plain bait leaves the species' range alone")
+	assert_almost_eq(CATFISH.attract_range_for(CHUM), 2.3, 0.0001, "Chum stretches it")
+	assert_almost_eq(CARP.attract_range_for(null), 0.05, 0.0001, "A bare hook shrinks it by the bare-hook chance: no shadow comes over")
+	assert_eq(BOOT.attract_range_for(null), 0.0, "Junk has no shadow either way")
+
+
+func test_conditions_tell_the_bare_hook_and_the_crates_worm() -> void:
+	assert_eq(CRATE.describe_conditions()[0], "Not a fish. Only takes: Worm, any time.")
+	assert_true("Takes any bait; hardly ever a bare hook" in CARP.describe_conditions())
+	var keen := Fish.new()
+	keen.bare_hook_chance = 1.0
+	assert_true("Takes any bait, or a bare hook" in keen.describe_conditions())
+	keen.bare_hook_chance = 0.0
+	assert_true("Takes any bait, never a bare hook" in keen.describe_conditions())
+
+
+func test_every_shipped_lure_is_eaten_with_the_bite() -> void:
+	for bait: Lure in [WORM, FLY, CHUM]:
+		assert_true(bait.consumable, "%s is consumable" % bait.display_name)
+		assert_true("Eaten with each bite" in bait.describe_effects())

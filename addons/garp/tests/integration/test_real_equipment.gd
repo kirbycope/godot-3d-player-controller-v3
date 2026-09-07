@@ -63,6 +63,7 @@ func test_equip_on_a_world_pickup_goes_through_the_inventory_and_remembers_the_c
 	assert_eq(copy.scale, pickup.scale_offset)
 	assert_true((copy.get_node("PlayerDetection/CollisionShape3D") as CollisionShape3D).disabled, "The copy detects nobody")
 	assert_false((copy.get_node("Hitbox/CollisionShape3D") as CollisionShape3D).disabled, "but its hitbox still counts")
+	assert_true(copy.weapon_body.get_collision_exceptions().has(player), "and its weapon body never hits its own Player")
 	assert_false(pickup.equip(player), "A second of the same type on the same bone is refused")
 	assert_eq(pickup.equipment_instance, copy, "and the copy remembered stays")
 	inventory.unequip_all()

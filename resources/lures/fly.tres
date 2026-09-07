@@ -7,8 +7,8 @@
 script = ExtResource("1_lure")
 id = &"fly"
 display_name = "Dry Fly"
-description = "A feathered hook that sits on the surface. Trout rise to it; use it from the inventory to put it on the line."
+description = "A feathered hook that sits on the surface. Trout rise to it; use it from the inventory to put it on the line, and a bite eats it."
 icon = ExtResource("2_icon")
 category = 1
 max_stack = 99
-consumable = false
+consumable = true

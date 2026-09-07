@@ -12,6 +12,11 @@ const CAR_SCENE = preload("res://scenes/honda_crv.tscn")
 const INDEX_SCENE = preload("res://scenes/fish_index_screen.tscn")
 const CARP: Fish = preload("res://resources/fish/carp.tres")
 const CHUM: Lure = preload("res://resources/lures/chum.tres")
+const WORM: Lure = preload("res://resources/lures/worm.tres")
+const CATFISH: Fish = preload("res://resources/fish/catfish.tres")
+const CRATE: Fish = preload("res://resources/fish/boot_crate.tres")
+const BOOT: Fish = preload("res://resources/fish/old_boot.tres")
+const BOBBER_SCENE = preload("res://scenes/bobber.tscn")
 const BUOYANCY_SCRIPT = preload("res://scenes/buoyancy.gd")
 const SHADOWS_SCRIPT = preload("res://scenes/fish_shadows.gd")
 
@@ -244,3 +249,90 @@ func test_fish_index_hides_species_until_caught() -> void:
 	assert_eq(index.buttons[0].text, "Carp")
 	assert_eq(index.record_label.text, "Record: 41.0 cm")
 	index.hide_menu()
+
+
+## Puts a float on the water for the rod, as a landed cast would, so the bite can be called straight.
+func _land_float(rod: FishingRod, water: Buoyancy, fish: Fish) -> void:
+	var bobber: Bobber = BOBBER_SCENE.instantiate() as Bobber
+	root.add_child(bobber)
+	bobber.global_position = water.global_position + Vector3(0.0, 2.0, 0.0)
+	rod.bobber = bobber
+	rod.water = water
+	rod.hooked_fish = fish
+	rod.state = FishingRod.State.WAITING
+
+
+func _slot_of(item: Item) -> int:
+	return player.inventory.get_slots(item.category).find_custom(func(slot: ItemSlot) -> bool: return slot != null and slot.item == item)
+
+
+func test_rod_details_say_what_is_on_the_line_and_what_it_tempts() -> void:
+	var rod: FishingRod = await _equip_rod()
+	var water := _make_water()
+	water.fish = [CATFISH, CRATE, BOOT]
+	assert_eq(rod.get_details(), "Bare hook: only junk bites")
+	player.inventory.add_item(WORM, 3)
+	player.inventory.use_slot(WORM.category, _slot_of(WORM))
+	assert_eq(rod.lure, WORM, "Use puts the worm on the line")
+	assert_eq(player.inventory.count_of(WORM), 2, "and that one is out of the bag")
+	var lines: PackedStringArray = rod.get_details().split("\n")
+	assert_eq(lines[0], "On the line: Worm")
+	assert_true(lines.has("Eaten with each bite"), str(lines))
+	assert_true(lines.has("Tempts: Catfish, Crate of Boots"), "The fish that only bite on it, junk included: %s" % str(lines))
+	assert_true(lines.has("2 more in the bag"), str(lines))
+
+
+func test_using_another_bait_puts_the_old_one_back_in_the_bag() -> void:
+	var rod: FishingRod = await _equip_rod()
+	player.inventory.add_item(WORM, 1)
+	player.inventory.add_item(CHUM, 1)
+	player.inventory.use_slot(WORM.category, _slot_of(WORM))
+	assert_eq(rod.lure, WORM)
+	assert_eq(player.inventory.count_of(WORM), 0)
+	player.inventory.use_slot(CHUM.category, _slot_of(CHUM))
+	assert_eq(rod.lure, CHUM, "The chum takes the line")
+	assert_eq(player.inventory.count_of(WORM), 1, "and the worm goes back in the bag")
+	assert_eq(player.inventory.count_of(CHUM), 0)
+
+
+func test_the_bite_eats_the_bait_and_the_next_goes_on_even_when_the_fish_escapes() -> void:
+	var rod: FishingRod = await _equip_rod()
+	var water := _make_water()
+	player.inventory.add_item(WORM, 2)
+	player.inventory.use_slot(WORM.category, _slot_of(WORM))
+	assert_eq(player.inventory.count_of(WORM), 1)
+	watch_signals(rod)
+	_land_float(rod, water, CARP)
+	rod._on_bite_timer_timeout()
+	assert_eq(rod.state, FishingRod.State.BITE)
+	assert_eq(rod.lure, WORM, "The bite ate one worm and the last one went on the line")
+	assert_eq(player.inventory.count_of(WORM), 0, "so the bag is empty")
+	assert_signal_not_emitted(rod, "lure_changed", "The same bait staying on is not a change")
+	rod.hook_timer.stop()
+	rod._on_hook_timer_timeout()
+	assert_signal_emitted(rod, "fish_escaped", "The hook window closed with nothing hooked")
+	assert_eq(rod.state, FishingRod.State.IDLE)
+	assert_eq(rod.lure, WORM, "The escape does not eat a second worm; the bite already did")
+	_land_float(rod, water, CARP)
+	rod._on_bite_timer_timeout()
+	assert_null(rod.lure, "The last worm is eaten and nothing is left to go on")
+	assert_signal_emitted_with_parameters(rod, "lure_changed", [null])
+	assert_eq(rod.get_details(), "Bare hook: only junk bites")
+	rod.hook_timer.stop()
+	rod._on_hook_timer_timeout()
+
+
+func test_the_inventory_screen_redraws_the_rod_details_when_the_bait_changes() -> void:
+	var rod: FishingRod = await _equip_rod()
+	var pause: Node = player.get_node("Pause")
+	var screen: InventoryScreen = pause.inventory_screen as InventoryScreen
+	screen.show_menu()
+	screen._select_tab(Item.Category.EQUIPMENT)
+	screen.focused_index = 0
+	screen._update_details()
+	assert_true(screen.detail_description.text.ends_with("Bare hook: only junk bites"), screen.detail_description.text)
+	player.inventory.add_item(WORM, 1)
+	player.inventory.use_slot(WORM.category, _slot_of(WORM)) # the inventory redraws before the rod hears of it; the rod's details_changed redraws again
+	assert_eq(rod.lure, WORM)
+	assert_true("On the line: Worm" in screen.detail_description.text, screen.detail_description.text)
+	screen.hide_menu()

@@ -33,7 +33,7 @@ func test_pool_sets_follower_npc_water_area() -> void:
 func test_the_spawned_player_carries_the_qa_kit() -> void:
 	var player: Player = world.get_node("Players/1") as Player
 	var kit: Dictionary[Item, int] = world.STARTING_ITEMS
-	assert_eq(kit.size(), 4, "Worms, rifle clips, a pistol magazine and arrows")
+	assert_eq(kit.size(), 7, "Worms, rifle clips, an incendiary clip, a pistol magazine, arrows, fire arrows and ice arrows")
 	for item: Item in kit:
 		assert_eq(player.inventory.count_of(item), kit[item], "%d x %s on spawn" % [kit[item], item.get_display_name()])
 	assert_eq(player.inventory.count_of(load("res://resources/lures/worm.tres")), 10)

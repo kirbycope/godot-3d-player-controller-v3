@@ -12,6 +12,12 @@ const ORE: Item = preload("res://addons/garp/resources/items/iron_ore.tres")
 const SWORD: Item = preload("res://addons/garp/resources/items/wooden_sword.tres")
 const ContractActions: GDScript = preload("res://addons/garp/tests/contract_actions.gd")
 
+## An item with a badge: the word the grid prints in the cell's corner for the Player that owns it.
+class BadgedItem extends Item:
+	func get_badge(owner: Node) -> String:
+		return "Loaded" if owner is Player else ""
+
+
 var root: Node3D
 var player: Player
 var inventory: Inventory
@@ -166,4 +172,27 @@ func test_the_equipment_tab_stows_and_equips() -> void:
 	screen._on_drop_pressed()
 	await wait_physics_frames(1)
 	assert_eq(inventory.get_all_weapons().size(), 0, "Drop puts it back in the world")
+	screen.hide_menu()
+
+
+func test_the_grid_prints_an_items_badge_and_hides_it_without_one() -> void:
+	var badged := BadgedItem.new()
+	badged.id = &"badged"
+	badged.category = Item.Category.MATERIALS
+	inventory.add_item(badged, 1)
+	inventory.add_item(ORE, 3)
+	await _open()
+	screen._select_tab(Item.Category.MATERIALS)
+	var badged_slot: InventorySlotButton = screen._slots[0]
+	var ore_slot: InventorySlotButton = screen._slots[1]
+	assert_eq(badged.get_badge(player), "Loaded")
+	assert_true(badged_slot.badge_label.visible, "A badge shows in the cell")
+	assert_eq(badged_slot.badge_label.text, "Loaded")
+	assert_false(ore_slot.badge_label.visible, "An item with no badge shows none")
+	assert_eq(ore_slot.badge_label.text, "")
+	assert_eq(ORE.get_badge(player), "", "Item's badge is empty by default")
+	badged_slot.set_stack(null)
+	assert_false(badged_slot.badge_label.visible, "Emptying the cell clears the badge")
+	screen._select_tab(Item.Category.EQUIPMENT)
+	assert_false(screen._slots[0].badge_label.visible, "Equipment cells carry no badge")
 	screen.hide_menu()
