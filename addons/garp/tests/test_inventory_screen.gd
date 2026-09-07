@@ -10,12 +10,22 @@ const SCREEN_SCENE: PackedScene = preload("res://addons/garp/scenes/inventory_sc
 const APPLE: Item = preload("res://addons/garp/resources/items/apple.tres")
 const ORE: Item = preload("res://addons/garp/resources/items/iron_ore.tres")
 const SWORD: Item = preload("res://addons/garp/resources/items/wooden_sword.tres")
+const ContractActions: GDScript = preload("res://addons/garp/tests/contract_actions.gd")
 
 var root: Node3D
 var player: Player
 var inventory: Inventory
 var screen: InventoryScreen
 var sender
+var actions: RefCounted = ContractActions.new()
+
+
+func before_all() -> void:
+	actions.add_missing()
+
+
+func after_all() -> void:
+	actions.remove_added()
 
 
 func before_each() -> void:

@@ -48,11 +48,11 @@ func take() -> void:
 		queue_free()
 
 
-## Wired to PlayerDetection.body_entered: the Player who walked up gets the prompt.
+## Wired to PlayerDetection.body_entered: the Player who walked up gets the prompt, with the Action button read as
+## "Pick Up" (the scene sets the prompt's message_end; the prompt's own ready put it on the labels).
 func _on_player_detection_body_entered(body: Node3D) -> void:
 	if body is Player and body.is_multiplayer_authority() and not (body as Player).is_riding:
 		player = body
-		action_prompt.update_text()
 		action_prompt.show_for(player, "Pick Up")
 
 

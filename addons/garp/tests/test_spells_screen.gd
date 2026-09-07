@@ -12,12 +12,22 @@ const SCREEN_SCENE: PackedScene = preload("res://addons/garp/scenes/spells_scree
 const DEMO_TREE: SpellTree = preload("res://addons/garp/resources/spell_tree_demo.tres")
 const STEALTH: Ability = preload("res://addons/3d_player_controller/resources/abilities/stealth.tres")
 const HEAL: Ability = preload("res://addons/3d_player_controller/resources/abilities/heal.tres")
+const ContractActions: GDScript = preload("res://addons/garp/tests/contract_actions.gd")
 
 var root: Node3D
 var player: Player
 var spellbook: Spellbook
 var screen: SpellsScreen
 var sender
+var actions: RefCounted = ContractActions.new()
+
+
+func before_all() -> void:
+	actions.add_missing()
+
+
+func after_all() -> void:
+	actions.remove_added()
 
 
 func before_each() -> void:

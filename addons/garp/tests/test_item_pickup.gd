@@ -1,15 +1,26 @@
 extends GutTest
 
-## Purpose: an ItemPickup is taken Zelda style: walking up shows the prompt with the Action button reading
-## "Pick Up", Action moves the stack into the inventory and the pickup goes away, walking off hides the prompt.
+## Purpose: an ItemPickup is taken Zelda style: walking up shows the prompt, Action moves the stack into the
+## inventory and the pickup goes away, walking off hides the prompt. The Action button reading "Pick Up" while the
+## prompt is up is the player controller's label, covered in tests/integration.
 
 const PLAYER_SCENE: PackedScene = preload("res://addons/3d_player_controller/scenes/player.tscn")
 const PICKUP_SCENE: PackedScene = preload("res://addons/garp/scenes/item_pickup.tscn")
 const APPLE: Item = preload("res://addons/garp/resources/items/apple.tres")
+const ContractActions: GDScript = preload("res://addons/garp/tests/contract_actions.gd")
 
 var root: Node3D
 var player: Player
 var sender
+var actions: RefCounted = ContractActions.new()
+
+
+func before_all() -> void:
+	actions.add_missing()
+
+
+func after_all() -> void:
+	actions.remove_added()
 
 
 func before_each() -> void:
@@ -44,12 +55,12 @@ func _drop_pickup_at(offset: Vector3, count: int = 1) -> ItemPickup:
 	return pickup
 
 
-func test_walking_up_shows_the_prompt_with_a_pick_up_label() -> void:
+func test_walking_up_shows_the_prompt() -> void:
 	var pickup: ItemPickup = _drop_pickup_at(Vector3(0.5, 0.0, 0.0))
 	await wait_physics_frames(3)
 	assert_eq(pickup.player, player, "The Player in range is remembered")
 	assert_true(pickup.action_prompt.visible, "The prompt is up")
-	assert_eq(player.controls.joypad_button_0_label.text, "Pick Up", "The Action button reads Pick Up")
+	assert_eq(pickup.action_prompt.message_end, "to pick up", "reading Press ... to pick up")
 	assert_true(pickup.icon.visible, "The item's icon floats over the spot")
 	assert_eq(pickup.icon.texture, APPLE.icon)
 
@@ -66,7 +77,6 @@ func test_action_takes_the_stack_and_frees_the_pickup() -> void:
 	assert_eq(player.inventory.count_of(APPLE), 3, "The apples are in the inventory")
 	assert_eq(taken, [[player, 3]], "picked_up reported who took how many")
 	assert_false(is_instance_valid(pickup), "The pickup is gone")
-	assert_ne(player.controls.joypad_button_0_label.text, "Pick Up", "And the Action label is the state's again")
 
 
 func test_walking_away_hides_the_prompt() -> void:

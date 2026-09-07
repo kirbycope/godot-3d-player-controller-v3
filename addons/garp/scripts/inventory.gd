@@ -470,6 +470,42 @@ func equip_weapon(target_item: Equipment) -> void:
 		equip_from_backpack(attachment)
 
 
+## Equips [param pickup], an [Equipment] in the world, on the Player: a duplicate goes onto a new
+## [BoneAttachment3D] on the skeleton, on the bone the item names and with the item's offsets, and joins
+## [member equipment]; whatever conflicts with it is stowed first. Returns the copy on the skeleton, or null when
+## the item names no bone, the Player already carries one of this type on this bone, or the backpack is full.
+## [method Equipment.equip] and the walk-over pickups come through here.
+func equip_pickup(pickup: Equipment) -> Equipment:
+	if pickup == null or player == null or pickup.bone_attachment_bone_name.is_empty() \
+			or has_equipment_in_backpack(pickup.equipment_type, pickup.bone_attachment_bone_name) \
+			or not can_carry_equipment():
+		return null
+
+	stow_conflicting(pickup.bone_attachment_bone_name, pickup.is_exclusive)
+
+	var attachment: BoneAttachment3D = BoneAttachment3D.new()
+	attachment.bone_name = pickup.bone_attachment_bone_name
+	player.skeleton.add_child(attachment)
+
+	var copy: Equipment = pickup.duplicate() as Equipment
+	copy.player = player
+	copy.scene_file_path = pickup.scene_file_path # so the inventory can save and drop it as its scene
+	attachment.add_child(copy)
+	# Disable world collision but keep the "Hitbox" shapes so HitDetection can monitor them.
+	for shape: Node in copy.find_children("*", "CollisionShape3D", true, false):
+		(shape as CollisionShape3D).disabled = shape.get_parent().name != "Hitbox"
+	for tree: Node in copy.find_children("*", "AnimationTree", true, false):
+		(tree as AnimationTree).active = true
+		(tree as AnimationTree).advance_expression_base_node = tree.get_path_to(copy)
+	if pickup.is_inside_tree(): # The scene's hand offsets reach the copy from a pickup in the tree, as they always have
+		copy.position = pickup.position_offset
+		copy.rotation_degrees = pickup.rotation_offset_degrees
+		copy.scale = pickup.scale_offset
+
+	add_equipment(copy)
+	return copy
+
+
 ## Moves a stowed attachment back onto the skeleton, stowing whatever conflicts with it.
 func equip_from_backpack(attachment: BoneAttachment3D) -> void:
 	var item: Equipment = attachment.get_child(0) as Equipment
@@ -518,11 +554,11 @@ func _add_equipment_item(item: Item) -> bool:
 
 
 ## Equips a freshly instanced [param pickup] the way walking over it would: on the Player for the moment it
-## equips, since [method Equipment.equip] applies the scene's hand offsets only while the pickup is in the tree,
+## equips, since [method equip_pickup] applies the scene's hand offsets only while the pickup is in the tree,
 ## then freed. Returns the copy on the skeleton, or null when the equip was refused.
 func _equip_instance(pickup: Equipment) -> Equipment:
 	player.add_child(pickup)
-	var instance: Equipment = pickup.equipment_instance if pickup.equip(player) else null
+	var instance: Equipment = equip_pickup(pickup)
 	player.remove_child(pickup)
 	pickup.free()
 	return instance

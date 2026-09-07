@@ -5,9 +5,18 @@ extends GutTest
 class InventoryTestBase:
 	extends GutTest
 
+	const ContractActions: GDScript = preload("res://addons/garp/tests/contract_actions.gd")
+
 	var PlayerScene = load("res://addons/3d_player_controller/scenes/player.tscn")
 	var root: Node3D = null
 	var player_instance: Player = null
+	var actions: RefCounted = ContractActions.new()
+
+	func before_all() -> void:
+		actions.add_missing()
+
+	func after_all() -> void:
+		actions.remove_added()
 
 	func before_each() -> void:
 		root = Node3D.new()
@@ -72,8 +81,8 @@ class TestCycleAndBackpack:
 		var inventory: Inventory = player_instance.inventory
 		var sword = make_equipment(Equipment.EquipmentType.SWORD_1H, "RightHand")
 		var axe = make_equipment(Equipment.EquipmentType.AXE_1H, "RightHand")
-		sword.equip(player_instance)
-		axe.equip(player_instance)
+		inventory.equip_pickup(sword)
+		inventory.equip_pickup(axe)
 
 		# Same bone: the sword was stowed, the axe is equipped
 		assert_true(inventory.has_equipment(Equipment.EquipmentType.AXE_1H), "Axe should be equipped")
@@ -112,7 +121,7 @@ class TestWheelCap:
 		assert_eq(wheel.weapons.size(), 8, "Twelve stations offered, eight wedges drawn")
 		wheel.custom_item_provider = Callable()
 		for i in 10:
-			make_equipment(Equipment.EquipmentType.values()[i], "RightHand").equip(player_instance)
+			player_instance.inventory.equip_pickup(make_equipment(Equipment.EquipmentType.values()[i], "RightHand"))
 		assert_eq(player_instance.inventory.get_all_weapons().size(), 8, "The inventory itself stops at eight weapons")
 		wheel.update_items()
 		assert_eq(wheel.weapons.size(), 9, "Eight weapons plus the Unarmed wedge")
