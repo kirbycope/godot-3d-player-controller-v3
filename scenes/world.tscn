@@ -92,6 +92,9 @@
 [ext_resource type="PackedScene" path="res://addons/weather_fx/scenes/water_ripples.tscn" id="water_ripples_scene"]
 [ext_resource type="PackedScene" path="res://scenes/retro_computer.tscn" id="88_retro"]
 [ext_resource type="Resource" path="res://resources/lures/chum.tres" id="lure_chum"]
+[ext_resource type="Script" path="res://addons/3d_player_controller/scripts/muzzle_flash.gd" id="muzzle_flash_gd"]
+[ext_resource type="PackedScene" path="res://assets/BinbunVFX/muzzle_flash/effects/short_flash/short_flash_01.tscn" id="flash_pistol"]
+[ext_resource type="PackedScene" path="res://assets/BinbunVFX/muzzle_flash/effects/muzzle_flash/muzzle_flash_01.tscn" id="flash_rifle"]
 
 [sub_resource type="Environment" id="Environment_aqk2v"]
 background_mode = 2
@@ -712,6 +715,19 @@ rotation_offset_degrees = Vector3(0, 180, 80)
 [node name="Muzzle" type="Marker3D" parent="JustCreate3D/Weapon_02" unique_id=281785659]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0.66, 0.04, 0)
 
+[node name="MuzzleFlash" type="Node3D" parent="JustCreate3D/Weapon_02/Muzzle" node_paths=PackedStringArray("vfx", "animation_player")]
+transform = Transform3D(0, 0, 0.9, 0, 0.9, 0, -0.9, 0, 0, 0, 0, 0)
+script = ExtResource("muzzle_flash_gd")
+vfx = NodePath("Flash")
+animation_player = NodePath("Flash/AnimationPlayer")
+
+[node name="Flash" parent="JustCreate3D/Weapon_02/Muzzle/MuzzleFlash" instance=ExtResource("flash_rifle")]
+visible = false
+autoplay = false
+
+[node name="Light" parent="JustCreate3D/Weapon_02/Muzzle/MuzzleFlash/Flash" index="4"]
+base_energy = 3.0
+
 [node name="FireTimer" type="Timer" parent="JustCreate3D/Weapon_02" unique_id=1718678155]
 one_shot = true
 
@@ -743,6 +759,19 @@ rotation_offset_degrees = Vector3(-10, 180, 80)
 
 [node name="Muzzle" type="Marker3D" parent="JustCreate3D/Weapon_01" unique_id=271581943]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0.19, 0.08, 0)
+
+[node name="MuzzleFlash" type="Node3D" parent="JustCreate3D/Weapon_01/Muzzle" node_paths=PackedStringArray("vfx", "animation_player")]
+transform = Transform3D(0, 0, 0.5, 0, 0.5, 0, -0.5, 0, 0, 0, 0, 0)
+script = ExtResource("muzzle_flash_gd")
+vfx = NodePath("Flash")
+animation_player = NodePath("Flash/AnimationPlayer")
+
+[node name="Flash" parent="JustCreate3D/Weapon_01/Muzzle/MuzzleFlash" instance=ExtResource("flash_pistol")]
+visible = false
+autoplay = false
+
+[node name="Light" parent="JustCreate3D/Weapon_01/Muzzle/MuzzleFlash/Flash" index="3"]
+base_energy = 1.0
 
 [node name="FireTimer" type="Timer" parent="JustCreate3D/Weapon_01" unique_id=41256008]
 one_shot = true
@@ -1301,3 +1330,10 @@ hidden_while_in_use = Array[NodePath]([NodePath("../HUD")])
 [connection signal="body_exited" from="Pool/WaterArea3D" to="Pool/WaterRipples" method="_on_body_exited"]
 [connection signal="body_exited" from="Pool/WaterArea3D" to="." method="_on_water_area_3d_body_exited" binds= [NodePath("Pool/WaterArea3D")]]
 [connection signal="body_entered" from="KillZone" to="." method="_on_kill_zone_body_entered"]
+[connection signal="fired" from="JustCreate3D/Weapon_02" to="JustCreate3D/Weapon_02/Muzzle/MuzzleFlash" method="flash"]
+[connection signal="animation_finished" from="JustCreate3D/Weapon_02/Muzzle/MuzzleFlash/Flash/AnimationPlayer" to="JustCreate3D/Weapon_02/Muzzle/MuzzleFlash" method="_on_animation_finished"]
+[connection signal="fired" from="JustCreate3D/Weapon_01" to="JustCreate3D/Weapon_01/Muzzle/MuzzleFlash" method="flash"]
+[connection signal="animation_finished" from="JustCreate3D/Weapon_01/Muzzle/MuzzleFlash/Flash/AnimationPlayer" to="JustCreate3D/Weapon_01/Muzzle/MuzzleFlash" method="_on_animation_finished"]
+
+[editable path="JustCreate3D/Weapon_02/Muzzle/MuzzleFlash/Flash"]
+[editable path="JustCreate3D/Weapon_01/Muzzle/MuzzleFlash/Flash"]

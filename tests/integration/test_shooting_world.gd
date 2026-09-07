@@ -85,3 +85,28 @@ func test_the_rifle_fires_without_its_firing_emote_while_moving() -> void:
 	await wait_physics_frames(3)
 	assert_eq(emote.get_current_node(), &"RifleFiringStanding", "Standing still again brings the emote back")
 	Input.action_release("shoot")
+
+
+func test_the_rifle_and_pistol_carry_muzzle_flashes_wired_to_fired() -> void:
+	var pistol_pickup: Equipment = world.get_node("JustCreate3D/Weapon_01")
+	pistol_pickup.equip(player)
+	var pistol: Firearm = player.inventory.get_equipment_by_type(Equipment.EquipmentType.PISTOL)
+	await wait_physics_frames(2)
+	for gun: Firearm in [rifle, pistol]:
+		var flash: MuzzleFlash = gun.muzzle.get_node("MuzzleFlash") as MuzzleFlash
+		assert_not_null(flash, "%s has a MuzzleFlash under its muzzle" % gun.name)
+		assert_true(gun.fired.is_connected(flash.flash), "%s's fired signal plays the flash" % gun.name)
+		assert_true(flash.animation_player.animation_finished.is_connected(flash._on_animation_finished))
+		assert_false(flash.vfx.visible, "%s's flash is hidden until it fires" % gun.name)
+		assert_true(flash.global_basis.x.normalized().is_equal_approx(-gun.muzzle.global_basis.z.normalized()), "%s's flash runs down the barrel" % gun.name)
+	assert_lt(pistol.muzzle.get_node("MuzzleFlash").scale.x, rifle.muzzle.get_node("MuzzleFlash").scale.x, "The pistol's flash is the smaller one")
+
+
+func test_firing_shows_the_flash_and_it_fades_by_itself() -> void:
+	var flash: MuzzleFlash = rifle.muzzle.get_node("MuzzleFlash") as MuzzleFlash
+	await _aim_at(Vector3(0.0, 1.0, -20.0))
+	rifle.fire()
+	assert_true(flash.vfx.visible, "The rifle flashes on fire")
+	assert_true(flash.animation_player.is_playing())
+	await wait_seconds(0.4)
+	assert_false(flash.vfx.visible, "The flash is gone a moment later")
