@@ -74,6 +74,7 @@ func _on_local_player_spawned(local_player: Player) -> void:
 	player.enable_paraglider = true
 	player.enable_stamina = true
 	player.state_changed.connect(_on_player_state_changed)
+	player.whistled.connect(_on_player_whistled)
 	_grant_starting_items(player)
 	radi_ot_player = player.get_node("RadiOtPlayer3D")
 	radi_ot_player.auto_play_on_ready = false
@@ -87,6 +88,11 @@ func _on_local_player_spawned(local_player: Player) -> void:
 	if multiplayer.is_server():
 		($Duck as FollowerNpc).player = player
 		($LittleBuddy as FollowerNpc).player = player
+
+
+## The local Player whistled: the nearest horse in earshot comes (Horse.summon relays the call to its authority).
+func _on_player_whistled(whistler: Player) -> void:
+	Horse.summon_nearest(whistler)
 
 
 ## The server runs the clock and weather; clients receive them.
