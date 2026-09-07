@@ -37,7 +37,7 @@ window/stretch/mode="canvas_items"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/3d_player_controller/plugin.cfg", "res://addons/GPUTrail-main/plugin.cfg", "res://addons/date_and_time/plugin.cfg", "res://addons/garp/plugin.cfg", "res://addons/godotsteam/plugin.cfg", "res://addons/gta/plugin.cfg", "res://addons/gut/plugin.cfg", "res://addons/midi/plugin.cfg", "res://addons/radi_ot/plugin.cfg", "res://addons/tcps/plugin.cfg", "res://addons/weather_fx/plugin.cfg")
+enabled=PackedStringArray("res://addons/3d_player_controller/plugin.cfg", "res://addons/GPUTrail-main/plugin.cfg", "res://addons/SunshineClouds2/plugin.cfg", "res://addons/date_and_time/plugin.cfg", "res://addons/garp/plugin.cfg", "res://addons/godotsteam/plugin.cfg", "res://addons/gta/plugin.cfg", "res://addons/gut/plugin.cfg", "res://addons/midi/plugin.cfg", "res://addons/radi_ot/plugin.cfg", "res://addons/tcps/plugin.cfg", "res://addons/weather_fx/plugin.cfg")
 
 [importer_defaults]
 
@@ -64,7 +64,7 @@ pointing/emulate_mouse_from_touch=false
 [rendering]
 
 rendering_device/d3d12/max_resource_descriptors=1000000
-rendering_device/driver.windows="d3d12"
+rendering_device/driver.windows="vulkan"
 
 [shader_globals]
 

@@ -41,6 +41,19 @@ func test_the_world_drives_the_binbun_sky_from_the_weather() -> void:
 	var state: SceneState = WORLD.get_state()
 	var environment: Environment = _node_property(state, "WorldEnvironment", "environment")
 	assert_true(environment.sky.resource_path.contains("BinbunSky"), "The sky is a Binbun one, a shader that runs everywhere")
-	assert_null(_node_property(state, "WorldEnvironment", "compositor"), "No compositor effects: nothing that needs Forward+")
+	assert_null(_node_property(state, "WorldEnvironment", "compositor"), "No compositor on disk: nothing that needs Forward+ until runtime")
 	assert_eq(_node_property(state, "WeatherClouds", "world_environment"), NodePath("../WorldEnvironment"))
 	assert_eq(_node_property(state, "WeatherClouds", "weather"), NodePath("../WeatherFX"))
+
+
+func test_the_world_carries_the_volumetric_clouds_driver_for_forward_plus() -> void:
+	var state: SceneState = WORLD.get_state()
+	assert_eq(_node_property(state, "WeatherClouds", "volumetric_clouds"), NodePath("VolumetricClouds"), "WeatherClouds owns the SunshineClouds2 driver")
+	var script: Script = _node_property(state, "VolumetricClouds", "script")
+	assert_eq(script.resource_path, "res://addons/SunshineClouds2/SunshineCloudsDriver.gd")
+	assert_eq(_node_property(state, "VolumetricClouds", "tracked_directional_lights"), [NodePath("../../DirectionalLight3D")], "Lit by the world's sun")
+	assert_same(_node_property(state, "VolumetricClouds", "ambience_sample_environment"), _node_property(state, "WorldEnvironment", "environment"), "sampling the world's Environment")
+	var text: String = FileAccess.get_file_as_string("res://scenes/world.tscn")
+	assert_false(text.contains("world_clouds.tres"), "The SunshineClouds effect is not on disk in the scene: WeatherClouds loads it at runtime, on Forward+ only")
+	assert_false(text.contains("SunshineClouds.gd"), "so Compatibility and the web export never load its compute shaders")
+	assert_true(FileAccess.file_exists("res://resources/clouds/world_clouds.tres"), "The project clouds resource it loads")
