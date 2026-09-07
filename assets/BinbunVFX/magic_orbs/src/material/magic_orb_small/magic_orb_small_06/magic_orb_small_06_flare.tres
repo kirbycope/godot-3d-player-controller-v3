@@ -2,9 +2,7 @@
 
 [ext_resource type="Shader" uid="uid://ctc5s68igpvj6" path="res://assets/BinbunVFX/shared/shader/transparent.gdshader" id="1_t2qeb"]
 [ext_resource type="Texture2D" uid="uid://dau0lhbgg12nk" path="res://assets/BinbunVFX/magic_orbs/src/06_noise.tres" id="2_wcekx"]
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_wcekx"]
-load_path = "res://.godot/imported/spirals_04.png-fd67f25e32437ea3649a0dcfde3d892d.s3tc.ctex"
+[ext_resource type="Texture2D" path="res://assets/BinbunVFX/shared/texture/spirals/spirals_04.png" id="CompressedTexture2D_wcekx"]
 
 [sub_resource type="Gradient" id="Gradient_3ncnd"]
 offsets = PackedFloat32Array(0, 0.25, 1)
@@ -21,7 +19,7 @@ fill_to = Vector2(0.5, 0)
 [resource]
 render_priority = 0
 shader = ExtResource("1_t2qeb")
-shader_parameter/mask1_texture = SubResource("CompressedTexture2D_wcekx")
+shader_parameter/mask1_texture = ExtResource("CompressedTexture2D_wcekx")
 shader_parameter/mask1_scroll = Vector2(0, 0)
 shader_parameter/mask1_scale = Vector2(1, 1)
 shader_parameter/mask1_radial = false

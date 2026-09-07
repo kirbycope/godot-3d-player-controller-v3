@@ -1,10 +1,11 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/player.tscn" id="6_e6ckp"]
 [ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/paraglider.tscn" id="7_mvg0v"]
 [ext_resource type="PackedScene" path="res://addons/radi_ot/scenes/radi_ot_player_3d.tscn" id="9_mvg0v"]
 [ext_resource type="Resource" path="res://addons/radi_ot/resources/stations/seattle_stations_default.tres" id="345_5hhec"]
 [ext_resource type="PackedScene" uid="uid://c7fishcard0001" path="res://scenes/fish_card.tscn" id="fish_card"]
+[ext_resource type="Script" path="res://scenes/fishing_log.gd" id="fishing_log"]
 [ext_resource type="Script" path="res://addons/3d_player_controller/scripts/ability.gd" id="ability"]
 [ext_resource type="Resource" path="res://addons/3d_player_controller/resources/abilities/stealth.tres" id="stealth"]
 [ext_resource type="Resource" path="res://resources/abilities/firebolt.tres" id="firebolt"]
@@ -322,3 +323,11 @@ station_collection = ExtResource("345_5hhec")
 [editable path="PlayerModel"]
 
 [node name="FishCard" parent="Controls" instance=ExtResource("fish_card")]
+
+[node name="FishingLog" type="Node" parent="."]
+script = ExtResource("fishing_log")
+persist = true
+
+[node name="Pause" parent="."]
+extra_screen_scene = "res://scenes/fish_index_screen.tscn"
+extra_screen_label = "Fish Index"

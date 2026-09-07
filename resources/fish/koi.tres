@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="Fish" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="Fish" load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scenes/fish.gd" id="1_fish"]
 [ext_resource type="Texture2D" path="res://resources/fish/fish.svg" id="2_icon"]
+[ext_resource type="PackedScene" path="res://scenes/fish_models/koi.tscn" id="9_model"]
 
 [resource]
 script = ExtResource("1_fish")
@@ -21,3 +22,6 @@ to_hour = 8
 rain = 0
 is_junk = false
 shadow_scale = 1.4
+attract_range = 1.2
+biomes = Array[int]([0, 11])
+model_scene = ExtResource("9_model")

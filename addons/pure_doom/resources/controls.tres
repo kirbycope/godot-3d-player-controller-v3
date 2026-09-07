@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="PureDoomControls" load_steps=15 format=3]
+[gd_resource type="Resource" script_class="PureDoomControls" load_steps=17 format=3]
 
 [ext_resource type="Script" path="res://addons/pure_doom/scripts/pure_doom_controls.gd" id="1_controls"]
 [ext_resource type="Script" path="res://addons/pure_doom/scripts/pure_doom_control.gd" id="2_control"]
@@ -76,11 +76,33 @@ playstation = "Cross"
 script = ExtResource("2_control")
 label = "Weapons"
 keyboard = "1 to 7"
+xbox = "D-pad left, right"
+nintendo = "D-pad left, right"
+playstation = "D-pad left, right"
 
 [sub_resource type="Resource" id="Resource_automap"]
 script = ExtResource("2_control")
 label = "Automap"
 keyboard = "Tab"
+xbox = "D-pad up"
+nintendo = "D-pad up"
+playstation = "D-pad up"
+
+[sub_resource type="Resource" id="Resource_menu"]
+script = ExtResource("2_control")
+label = "DOOM menu"
+keyboard = "` (backquote)"
+xbox = "Back, D-pad down"
+nintendo = "-, D-pad down"
+playstation = "Share, D-pad down"
+
+[sub_resource type="Resource" id="Resource_menu_select"]
+script = ExtResource("2_control")
+label = "Menu: pick"
+keyboard = "Enter"
+xbox = "B"
+nintendo = "A"
+playstation = "Circle"
 
 [sub_resource type="Resource" id="Resource_leave"]
 script = ExtResource("2_control")
@@ -93,4 +115,4 @@ playstation = "Options"
 [resource]
 script = ExtResource("1_controls")
 movement = Array[ExtResource("2_control")]([SubResource("Resource_forward"), SubResource("Resource_back"), SubResource("Resource_strafe_left"), SubResource("Resource_strafe_right"), SubResource("Resource_turn"), SubResource("Resource_run"), SubResource("Resource_strafe_hold")])
-actions = Array[ExtResource("2_control")]([SubResource("Resource_fire"), SubResource("Resource_use"), SubResource("Resource_weapons"), SubResource("Resource_automap"), SubResource("Resource_leave")])
+actions = Array[ExtResource("2_control")]([SubResource("Resource_fire"), SubResource("Resource_use"), SubResource("Resource_weapons"), SubResource("Resource_automap"), SubResource("Resource_menu"), SubResource("Resource_menu_select"), SubResource("Resource_leave")])

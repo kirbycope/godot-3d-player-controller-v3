@@ -132,6 +132,8 @@ func _on_water_area_3d_body_entered(body: Node3D, water_area_path: NodePath) -> 
 		(body as Player).enter_water(water_area)
 	elif body is FollowerNpc:
 		(body as FollowerNpc).in_water_area = water_area
+	elif body is Horse:
+		(body as Horse).in_water_area = water_area as Buoyancy
 
 
 func _on_water_area_3d_body_exited(body: Node3D, water_area_path: NodePath) -> void:
@@ -139,6 +141,8 @@ func _on_water_area_3d_body_exited(body: Node3D, water_area_path: NodePath) -> v
 		(body as Player).exit_water(get_node(water_area_path) as Area3D)
 	elif body is FollowerNpc:
 		(body as FollowerNpc).in_water_area = null
+	elif body is Horse:
+		(body as Horse).in_water_area = null
 
 
 func _provide_radio_items() -> Array:

@@ -259,8 +259,8 @@ def main():
 	parser.add_argument(
 		"--max-size",
 		type=int,
-		default=1024,
-		help="Maximum size in pixels for the largest image edge (default: 1024)",
+		default=512,
+		help="Maximum size in pixels for the largest image edge (default: 512)",
 	)
 	parser.add_argument(
 		"--engine",

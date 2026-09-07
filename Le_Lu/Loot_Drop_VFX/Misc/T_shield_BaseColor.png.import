@@ -3,20 +3,19 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cd8x82y60qaf2"
-path.s3tc="res://.godot/imported/T_shield_BaseColor.png-7763db411d15f310031a6d71593429df.s3tc.ctex"
+path="res://.godot/imported/T_shield_BaseColor.png-7763db411d15f310031a6d71593429df.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 
 [deps]
 
 source_file="res://Le_Lu/Loot_Drop_VFX/Misc/T_shield_BaseColor.png"
-dest_files=["res://.godot/imported/T_shield_BaseColor.png-7763db411d15f310031a6d71593429df.s3tc.ctex"]
+dest_files=["res://.godot/imported/T_shield_BaseColor.png-7763db411d15f310031a6d71593429df.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=1
 compress/high_quality=false
 compress/high_quality_mode=0
 compress/lossy_quality=0.7
@@ -38,5 +37,5 @@ process/premult_alpha=false
 process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
-process/size_limit=0
+process/size_limit=512
 detect_3d/compress_to=0

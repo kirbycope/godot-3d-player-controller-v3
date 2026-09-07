@@ -3,20 +3,19 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d0ch8rfnxiskt"
-path.s3tc="res://.godot/imported/T_Blood_bulb_UJ1_testtyy.png-4897b3844f69cf7ea40e82c4d5b620d0.s3tc.ctex"
+path="res://.godot/imported/T_Blood_bulb_UJ1_testtyy.png-4897b3844f69cf7ea40e82c4d5b620d0.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 
 [deps]
 
 source_file="res://Le_Lu/Wind_VFX/textures/T_Blood_bulb_UJ1_testtyy.png"
-dest_files=["res://.godot/imported/T_Blood_bulb_UJ1_testtyy.png-4897b3844f69cf7ea40e82c4d5b620d0.s3tc.ctex"]
+dest_files=["res://.godot/imported/T_Blood_bulb_UJ1_testtyy.png-4897b3844f69cf7ea40e82c4d5b620d0.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=1
 compress/high_quality=false
 compress/high_quality_mode=0
 compress/lossy_quality=0.7
@@ -38,5 +37,5 @@ process/premult_alpha=false
 process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
-process/size_limit=0
+process/size_limit=512
 detect_3d/compress_to=0

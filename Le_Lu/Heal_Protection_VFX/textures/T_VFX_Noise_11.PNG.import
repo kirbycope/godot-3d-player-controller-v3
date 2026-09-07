@@ -3,20 +3,19 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bd2f3bkt1ey6i"
-path.s3tc="res://.godot/imported/T_VFX_Noise_11.PNG-1ff90ef769ebc16bbfad8b97cc1af7a3.s3tc.ctex"
+path="res://.godot/imported/T_VFX_Noise_11.PNG-1ff90ef769ebc16bbfad8b97cc1af7a3.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 
 [deps]
 
 source_file="res://Le_Lu/Heal_Protection_VFX/textures/T_VFX_Noise_11.PNG"
-dest_files=["res://.godot/imported/T_VFX_Noise_11.PNG-1ff90ef769ebc16bbfad8b97cc1af7a3.s3tc.ctex"]
+dest_files=["res://.godot/imported/T_VFX_Noise_11.PNG-1ff90ef769ebc16bbfad8b97cc1af7a3.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=1
 compress/high_quality=false
 compress/high_quality_mode=0
 compress/lossy_quality=0.7
@@ -38,5 +37,5 @@ process/premult_alpha=false
 process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
-process/size_limit=0
+process/size_limit=512
 detect_3d/compress_to=0

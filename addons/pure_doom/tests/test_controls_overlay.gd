@@ -37,10 +37,11 @@ func test_wording_follows_the_input_type() -> void:
 
 func test_lines_without_text_for_a_device_are_dropped() -> void:
 	overlay.input_type = "keyboard"
-	assert_true("Weapons" in overlay.actions.text)
+	assert_true("Strafe (hold)" in overlay.movement.text)
+	assert_true("1 to 7" in overlay.actions.text)
 	overlay.input_type = "xbox"
-	assert_false("Weapons" in overlay.actions.text, "Weapon slots are keyboard-only")
-	assert_false("Strafe (hold)" in overlay.movement.text)
+	assert_false("Strafe (hold)" in overlay.movement.text, "The strafe modifier is keyboard-only")
+	assert_true("D-pad left, right" in overlay.actions.text, "Pads cycle weapons with the d-pad")
 
 
 func test_text_for_falls_back_to_keyboard() -> void:

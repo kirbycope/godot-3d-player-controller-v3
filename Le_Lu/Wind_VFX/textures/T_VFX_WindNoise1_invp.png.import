@@ -3,20 +3,19 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://jwe4pxyn62ww"
-path.s3tc="res://.godot/imported/T_VFX_WindNoise1_invp.png-23cc775cc3b9a1e0e88d00b36ee0f02a.s3tc.ctex"
+path="res://.godot/imported/T_VFX_WindNoise1_invp.png-23cc775cc3b9a1e0e88d00b36ee0f02a.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 
 [deps]
 
 source_file="res://Le_Lu/Wind_VFX/textures/T_VFX_WindNoise1_invp.png"
-dest_files=["res://.godot/imported/T_VFX_WindNoise1_invp.png-23cc775cc3b9a1e0e88d00b36ee0f02a.s3tc.ctex"]
+dest_files=["res://.godot/imported/T_VFX_WindNoise1_invp.png-23cc775cc3b9a1e0e88d00b36ee0f02a.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=1
 compress/high_quality=false
 compress/high_quality_mode=0
 compress/lossy_quality=0.7
@@ -38,5 +37,5 @@ process/premult_alpha=false
 process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
-process/size_limit=0
+process/size_limit=512
 detect_3d/compress_to=0

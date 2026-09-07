@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3]
+[gd_scene load_steps=23 format=3]
 
 [ext_resource type="Script" path="res://scenes/retro_computer.gd" id="1_retro"]
 [ext_resource type="PackedScene" path="res://scenes/doom.tscn" id="2_doom"]
@@ -25,10 +25,6 @@ emission_enabled = true
 emission = Color(0.2, 1, 0.3, 1)
 emission_energy_multiplier = 2.0
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_screen"]
-resource_local_to_scene = true
-viewport_path = NodePath("ScreenViewport")
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_screen"]
 resource_local_to_scene = true
 shader = ExtResource("3_crt")
@@ -37,7 +33,6 @@ shader_parameter/scanline_strength = 0.35
 shader_parameter/vignette_strength = 0.4
 shader_parameter/glow = 1.4
 shader_parameter/screen_resolution = Vector2(320, 200)
-shader_parameter/screen_texture = SubResource("ViewportTexture_screen")
 
 [sub_resource type="BoxMesh" id="BoxMesh_desk"]
 material = ExtResource("4_planks")

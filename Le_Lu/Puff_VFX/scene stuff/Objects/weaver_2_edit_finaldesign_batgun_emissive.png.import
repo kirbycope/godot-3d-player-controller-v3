@@ -3,10 +3,9 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://byb6nyx48m6bo"
-path.s3tc="res://.godot/imported/weaver_2_edit_finaldesign_batgun_emissive.png-4bb0f3ffd0009808c1ea46a2782d7ed1.s3tc.ctex"
+path="res://.godot/imported/weaver_2_edit_finaldesign_batgun_emissive.png-4bb0f3ffd0009808c1ea46a2782d7ed1.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 generator_parameters={
 "md5": "afb3d822205c6ab649b221e5cd64de1a"
@@ -15,11 +14,11 @@ generator_parameters={
 [deps]
 
 source_file="res://Le_Lu/Puff_VFX/scene stuff/Objects/weaver_2_edit_finaldesign_batgun_emissive.png"
-dest_files=["res://.godot/imported/weaver_2_edit_finaldesign_batgun_emissive.png-4bb0f3ffd0009808c1ea46a2782d7ed1.s3tc.ctex"]
+dest_files=["res://.godot/imported/weaver_2_edit_finaldesign_batgun_emissive.png-4bb0f3ffd0009808c1ea46a2782d7ed1.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=1
 compress/high_quality=false
 compress/high_quality_mode=0
 compress/lossy_quality=0.7
@@ -41,5 +40,5 @@ process/premult_alpha=false
 process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
-process/size_limit=0
+process/size_limit=512
 detect_3d/compress_to=0

@@ -1,6 +1,6 @@
 class_name FishCard
 extends PanelContainer
-## Catch card on the HUD: a colour swatch, the fish's name and its length, shown for a few seconds.
+## Catch card on the HUD: a colour swatch, the item's name and a line of detail, shown for a few seconds.
 
 @onready var swatch: ColorRect = %Swatch
 @onready var name_label: Label = %NameLabel
@@ -8,10 +8,19 @@ extends PanelContainer
 @onready var hide_timer: Timer = $HideTimer ## Hides the card; its timeout is wired to [method hide] in the scene.
 
 
-func show_catch(fish: Fish, length_cm: float) -> void:
-	swatch.color = fish.color
-	name_label.text = fish.display_name
-	detail_label.text = "Junk" if fish.is_junk else "%.1f cm" % length_cm
+## A landed fish; [param is_record] marks the biggest of its kind so far.
+func show_catch(fish: Fish, length_cm: float, is_record: bool = false) -> void:
+	var detail: String = "Junk" if fish.is_junk else "%.1f cm" % length_cm
+	if is_record:
+		detail += "  * record"
+	show_item(fish, detail)
+
+
+## Any item with a line under it: chum from a shot fish, say.
+func show_item(item: Item, detail: String) -> void:
+	swatch.color = item.get_icon_color()
+	name_label.text = item.get_display_name()
+	detail_label.text = detail
 	pivot_offset = size * 0.5
 	scale = Vector2(0.6, 0.6)
 	show()

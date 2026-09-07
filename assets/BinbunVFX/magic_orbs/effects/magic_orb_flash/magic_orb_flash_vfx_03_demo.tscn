@@ -2,13 +2,14 @@
 
 [ext_resource type="Script" uid="uid://tb7n6ybv43ch" path="res://assets/BinbunVFX/shared/script/vfx_controller.gd" id="1_uer4i"]
 [ext_resource type="Script" uid="uid://bdk8hhttligw" path="res://assets/BinbunVFX/shared/script/vfx_light.gd" id="5_w57ny"]
+[ext_resource type="Texture2D" path="res://assets/BinbunVFX/shared/texture/flash_front/flash_front_03.png" id="CompressedTexture2D_yinen"]
 
 [sub_resource type="Shader" id="Shader_wan07"]
 code = "shader_type spatial;
 
-#include "res://assets/GodotVFX/src/shader/util/blend.gdshaderinc"
-#include "res://assets/GodotVFX/src/shader/util/uvtools.gdshaderinc"
-#include "res://assets/GodotVFX/src/shader/util/alpha.gdshaderinc"
+#include \"res://assets/BinbunVFX/shared/shader/util/blend.gdshaderinc\"
+#include \"res://assets/BinbunVFX/shared/shader/util/uvtools.gdshaderinc\"
+#include \"res://assets/BinbunVFX/shared/shader/util/alpha.gdshaderinc\"
 
 group_uniforms Masks;
 uniform sampler2D mask1_texture;
@@ -146,9 +147,6 @@ void fragment() {
 //}
 "
 
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_yinen"]
-load_path = "res://.godot/imported/flash_front_03.png-a0b7198632e12cc0d77896917cb7df4e.s3tc.ctex"
-
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_sjc2l"]
 noise_type = 2
 seed = 1
@@ -171,7 +169,7 @@ fill_to = Vector2(0.5, 0)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_003sq"]
 render_priority = 0
 shader = SubResource("Shader_wan07")
-shader_parameter/mask1_texture = SubResource("CompressedTexture2D_yinen")
+shader_parameter/mask1_texture = ExtResource("CompressedTexture2D_yinen")
 shader_parameter/mask1_scroll = Vector2(0, 0)
 shader_parameter/mask1_scale = Vector2(1, 1)
 shader_parameter/mask1_radial = false
@@ -222,9 +220,9 @@ subdivide_depth = 16
 code = "shader_type spatial;
 render_mode unshaded;
 
-#include "res://assets/GodotVFX/src/shader/util/freshnel.gdshaderinc"
-#include "res://assets/GodotVFX/src/shader/util/blend.gdshaderinc"
-#include "res://assets/GodotVFX/src/shader/util/alpha.gdshaderinc"
+#include \"res://assets/BinbunVFX/shared/shader/util/freshnel.gdshaderinc\"
+#include \"res://assets/BinbunVFX/shared/shader/util/blend.gdshaderinc\"
+#include \"res://assets/BinbunVFX/shared/shader/util/alpha.gdshaderinc\"
 
 group_uniforms fresnel;
 uniform float fresnel_amount : hint_range(0.0, 5.0, 0.05) = 1.0;
@@ -351,9 +349,9 @@ rings = 8
 code = "shader_type spatial;
 render_mode unshaded;
 
-#include "res://assets/GodotVFX/src/shader/util/freshnel.gdshaderinc"
-#include "res://assets/GodotVFX/src/shader/util/blend.gdshaderinc"
-#include "res://assets/GodotVFX/src/shader/util/alpha.gdshaderinc"
+#include \"res://assets/BinbunVFX/shared/shader/util/freshnel.gdshaderinc\"
+#include \"res://assets/BinbunVFX/shared/shader/util/blend.gdshaderinc\"
+#include \"res://assets/BinbunVFX/shared/shader/util/alpha.gdshaderinc\"
 
 group_uniforms fresnel;
 uniform float fresnel_amount : hint_range(0.0, 5.0, 0.05) = 1.0;

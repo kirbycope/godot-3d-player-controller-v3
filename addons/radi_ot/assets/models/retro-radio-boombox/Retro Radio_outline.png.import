@@ -3,10 +3,9 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://hsngv4oou8dx"
-path.s3tc="res://.godot/imported/Retro Radio_outline.png-d69eab35a27286588a8826b19b726db1.s3tc.ctex"
+path="res://.godot/imported/Retro Radio_outline.png-d69eab35a27286588a8826b19b726db1.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 generator_parameters={
 "md5": "e3609de1022a164fe240a562c69367de"
@@ -15,11 +14,11 @@ generator_parameters={
 [deps]
 
 source_file="res://addons/radi_ot/assets/models/retro-radio-boombox/Retro Radio_outline.png"
-dest_files=["res://.godot/imported/Retro Radio_outline.png-d69eab35a27286588a8826b19b726db1.s3tc.ctex"]
+dest_files=["res://.godot/imported/Retro Radio_outline.png-d69eab35a27286588a8826b19b726db1.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=1
 compress/high_quality=false
 compress/high_quality_mode=0
 compress/lossy_quality=0.7
@@ -41,5 +40,5 @@ process/premult_alpha=false
 process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
-process/size_limit=0
+process/size_limit=512
 detect_3d/compress_to=0

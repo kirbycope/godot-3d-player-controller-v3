@@ -33,6 +33,8 @@ class PureDoom : public TextureRect {
 	double midi_ticks_due = 0.0; // The music sequencer wants 140 ticks a second; this carries the remainder between frames.
 	bool trigger_fire = false;
 	int held_stick_keys[6] = { 0, 0, 0, 0, 0, 0 }; // Emulated W, S, A, D from the left stick and the turn arrows from the right.
+	int pending_weapon_key = 0; // A weapon slot digit the d-pad is holding down until the engine has seen it.
+	double weapon_release_in = 0.0;
 
 	PackedByteArray pixels;
 	Ref<Image> image;
@@ -45,6 +47,7 @@ class PureDoom : public TextureRect {
 	void tick_music(double delta);
 	void set_stick_key(int slot, int key, bool down);
 	void handle_key(int key, bool pressed);
+	void cycle_weapon(int direction);
 
 protected:
 	static void _bind_methods();
@@ -69,6 +72,8 @@ public:
 	void start();
 	void stop();
 	bool is_running() const;
+	bool is_menu_open() const;
+	int get_weapon_slot() const;
 	Ref<Image> get_frame() const;
 	double get_clock_usec() const;
 

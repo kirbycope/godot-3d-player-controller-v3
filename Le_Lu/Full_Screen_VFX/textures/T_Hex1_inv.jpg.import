@@ -3,20 +3,19 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bkpvow5cr5y64"
-path.bptc="res://.godot/imported/T_Hex1_inv.jpg-c2cf3c02c5975c12ef53af76e1277921.bptc.ctex"
+path="res://.godot/imported/T_Hex1_inv.jpg-c2cf3c02c5975c12ef53af76e1277921.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 
 [deps]
 
 source_file="res://Le_Lu/Full_Screen_VFX/textures/T_Hex1_inv.jpg"
-dest_files=["res://.godot/imported/T_Hex1_inv.jpg-c2cf3c02c5975c12ef53af76e1277921.bptc.ctex"]
+dest_files=["res://.godot/imported/T_Hex1_inv.jpg-c2cf3c02c5975c12ef53af76e1277921.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=1
 compress/high_quality=true
 compress/high_quality_mode=0
 compress/lossy_quality=0.7
@@ -38,5 +37,5 @@ process/premult_alpha=false
 process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
-process/size_limit=0
+process/size_limit=512
 detect_3d/compress_to=0

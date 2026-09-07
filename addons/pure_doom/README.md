@@ -37,11 +37,15 @@ SoundFont that is one line:
 doom.midi_message.connect(midi_player.receive_raw_midi_message)
 ```
 
-Controls: WASD walks and strafes, the mouse turns, left click and Ctrl fire, Space uses, Shift runs, Tab
-is the map, and the letters stay themselves so the cheat codes can be typed. On a pad the left stick walks and strafes, the right stick turns (it presses DOOM's left and
-right arrows, so Y for run applies), RT and X fire, A uses, Y runs, B accepts, and the d-pad is the arrow
-keys. The level starts directly (`-warp 1 1`) because Escape and Start are left to the host scene, so DOOM's
-own menu is not reachable; after dying, use restarts the level.
+Controls: WASD walks and strafes, the mouse turns, left click and Ctrl fire, Space uses, Shift runs, Tab is
+the automap, 1 to 7 pick weapons, backquote (`) opens DOOM's menu (Enter picks, backquote closes), and the
+letters stay themselves so the cheat codes can be typed. On a pad the left stick walks and strafes, the right
+stick turns (it presses DOOM's left and right arrows, so Y for run applies), RT and X fire, A uses, Y runs,
+B accepts, Back opens the menu, and the d-pad is context-sensitive: with the menu up it is the arrow keys,
+in the game up is the automap, down is the menu, and left and right cycle to the previous or next weapon you
+own (`cycle_weapon` reads the engine's weapon list, presses the slot's number and lets go two tics later).
+`is_menu_open()` and `get_weapon_slot()` expose the same engine state. The level starts directly (`-warp 1 1`)
+because Escape and Start are left to the host scene; after dying, use restarts the level.
 
 ## Controls card
 

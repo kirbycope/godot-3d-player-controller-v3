@@ -23,6 +23,9 @@ var _inventory: Inventory
 @onready var tab_buttons: Array[Button] = [%EquipmentTab, %MaterialsTab, %FoodTab, %KeyItemsTab]
 @onready var grid: GridContainer = %Grid
 @onready var detail_icon: TextureRect = %DetailIcon
+@onready var detail_model: SubViewportContainer = %DetailModel ## The turning 3D preview shown instead of the icon when an item has a model.
+@onready var model_pivot: Node3D = %ModelPivot
+@onready var model_camera: Camera3D = %ModelCamera
 @onready var detail_name: Label = %DetailName
 @onready var detail_count: Label = %DetailCount
 @onready var detail_description: Label = %DetailDescription
@@ -85,7 +88,9 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	if detail_model.visible:
+		model_pivot.rotate_y(delta * 0.8)
 	if held_index == -1 or not visible:
 		return
 	if player and player.controls and player.controls.current_input_type == Controls.InputType.KEYBOARD_MOUSE:
@@ -240,15 +245,50 @@ func _update_details() -> void:
 		detail_name.text = ""
 		detail_count.text = ""
 		detail_description.text = ""
+		_show_model(null, null)
 		return
 	detail_icon.texture = slot.icon
 	detail_icon.modulate = slot.item.get_icon_color() if slot.item else Color.WHITE
 	if slot.equipment:
 		detail_name.text = InventorySlotButton.equipment_name(slot.equipment)
 		detail_count.text = "Equipped" if _inventory.equipment.has(slot.equipment) else "Stowed"
-		detail_description.text = ""
+		detail_description.text = _join_details(slot.equipment.description, slot.equipment.get_details())
+		_show_model(slot.equipment.model_scene, null)
 	else:
 		var stack: ItemSlot = _inventory.get_slot(tab, index)
 		detail_name.text = slot.item.get_display_name()
 		detail_count.text = "x%d" % (stack.count if stack else 0)
-		detail_description.text = slot.item.description
+		detail_description.text = _join_details(slot.item.description, slot.item.get_details(player))
+		_show_model(slot.item.get_model_scene(), slot.item)
+
+
+## The flavour text, then whatever the item adds, with a blank line between when both are there.
+func _join_details(description: String, details: String) -> String:
+	if description.is_empty() or details.is_empty():
+		return description + details
+	return description + "\n\n" + details
+
+
+## Puts [param scene] turning in the preview viewport in place of the icon; null goes back to the icon.
+func _show_model(scene: PackedScene, item: Item) -> void:
+	for child: Node in model_pivot.get_children():
+		child.queue_free()
+	detail_model.visible = scene != null
+	detail_icon.visible = scene == null
+	if scene == null:
+		return
+	var model: Node3D = scene.instantiate() as Node3D
+	model_pivot.add_child(model)
+	if item:
+		item.prepare_model(model) # once in the tree, so the model's own ready nodes exist
+	# Centre the model under the camera and size the view to it
+	var bounds: AABB = AABB()
+	var first: bool = true
+	for geometry: Node in model.find_children("*", "GeometryInstance3D", true, false):
+		var visual: GeometryInstance3D = geometry as GeometryInstance3D
+		var box: AABB = (model_pivot.global_transform.affine_inverse() * visual.global_transform) * visual.get_aabb()
+		bounds = box if first else bounds.merge(box)
+		first = false
+	if not first:
+		model.position = -bounds.get_center()
+		model_camera.size = maxf(bounds.get_longest_axis_size() * 1.4, 0.1)

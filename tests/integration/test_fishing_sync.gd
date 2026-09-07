@@ -93,7 +93,7 @@ func test_host_float_appears_on_the_client_with_its_line_and_takes_rpcs() -> voi
 
 	host_bobber.present_catch.rpc(CARP_PATH, 40.0)
 	await wait_process_frames(5)
-	assert_true(client_projectiles.get_children().any(func(n: Node) -> bool: return n is FishModel), "The catch model shows on the client")
+	assert_true(client_projectiles.get_children().any(func(n: Node) -> bool: return n is FishModel or n.name.ends_with("Model")), "The catch model shows on the client")
 
 	host_bobber.retract.rpc()
 	await wait_process_frames(20)

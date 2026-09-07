@@ -3,10 +3,9 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dhlfvm0rkm6j1"
-path.s3tc="res://.godot/imported/aqua_edit_rig_KS001_Aqua_d.png-a650607bd39fbb0242f09f45482bb0a6.s3tc.ctex"
+path="res://.godot/imported/aqua_edit_rig_KS001_Aqua_d.png-a650607bd39fbb0242f09f45482bb0a6.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 generator_parameters={
 "md5": "2488dd0ea3fa6a5d94b35d90a6d08e98"
@@ -15,11 +14,11 @@ generator_parameters={
 [deps]
 
 source_file="res://Le_Lu/Puff_VFX/scene stuff/Objects/aqua_edit_rig_KS001_Aqua_d.png"
-dest_files=["res://.godot/imported/aqua_edit_rig_KS001_Aqua_d.png-a650607bd39fbb0242f09f45482bb0a6.s3tc.ctex"]
+dest_files=["res://.godot/imported/aqua_edit_rig_KS001_Aqua_d.png-a650607bd39fbb0242f09f45482bb0a6.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=1
 compress/high_quality=false
 compress/high_quality_mode=0
 compress/lossy_quality=0.7
@@ -41,5 +40,5 @@ process/premult_alpha=false
 process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
-process/size_limit=0
+process/size_limit=512
 detect_3d/compress_to=0

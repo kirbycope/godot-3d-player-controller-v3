@@ -30,6 +30,7 @@ const WAVES: Array[Vector3] = [
 @export var fish: Array[Fish] = [] ## What bites here; empty water never bites.
 @export var clock: DateAndTime ## In-game clock for the fish tables; without it every table reads noon.
 @export var shadows: FishShadows ## Optional shadows swimming in this water.
+@export var biome_zone: WeatherZone ## The zone this water lies in; fish list the biomes they live in, and water in no zone holds them all.
 
 var bodies: Dictionary[RigidBody3D, Array] = {} ## Floating body -> the nodes it is lifted at.
 
@@ -107,6 +108,9 @@ func _physics_process(_delta: float) -> void:
 
 ## Wired to body_entered in the scene.
 func _on_body_entered(body: Node3D) -> void:
+	# Anything burning goes out in the water (the torch, say) before it starts floating
+	if body.has_method(&"extinguish"):
+		body.call(&"extinguish")
 	var floating: RigidBody3D = body as RigidBody3D
 	if floating == null:
 		return
@@ -131,7 +135,8 @@ func is_raining() -> bool:
 func pick_fish(lure: Item = null) -> Fish:
 	var hour: int = clock.get_hour() if clock else 12
 	var raining: bool = is_raining()
-	var available: Array[Fish] = fish.filter(func(candidate: Fish) -> bool: return candidate.is_available(hour, raining, lure))
+	var biome: int = biome_zone.biome if biome_zone else -1
+	var available: Array[Fish] = fish.filter(func(candidate: Fish) -> bool: return candidate.is_available(hour, raining, lure, biome))
 	if available.is_empty():
 		return null
 	var total: float = 0.0

@@ -55,6 +55,8 @@ var emote_state: AnimationNodeStateMachinePlayback
 @onready var bite_timer: Timer = $BiteTimer
 @onready var nibble_timer: Timer = $NibbleTimer
 @onready var hook_timer: Timer = $HookTimer
+
+var hook_pulse: Tween ## Pulses the Action button green while the hook window is open.
 @onready var reel_timer: Timer = $ReelTimer
 @onready var audio: AudioStreamPlayer3D = $Audio
 
@@ -77,7 +79,9 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if not player or not player.is_fishing or not event.is_action_pressed(fishing_action):
+	# No casting from a menu or from behind the wheel; a horse or a boat is fine
+	if not player or not player.is_fishing or player.is_paused or player.riding is Vehicle \
+			or not event.is_action_pressed(fishing_action):
 		return
 	match state:
 		State.IDLE:
@@ -207,15 +211,19 @@ func _on_bobber_landed_in_water(area: Area3D) -> void:
 	hooked_fish = water.pick_fish(lure) if water else null
 	if hooked_fish == null:
 		return
+	var bait: Lure = lure as Lure
 	var wait: float = randf_range(bite_wait.x, bite_wait.y)
 	if water.is_raining():
 		wait *= 0.5
 	if water.shadows and water.shadows.nearest_distance(bobber.global_position) <= shadow_bonus_distance:
 		wait *= 0.6
+	if bait:
+		wait *= bait.bite_time_scale
 	bite_timer.start(wait)
 	nibble_timer.start(randf_range(nibble_interval.x, nibble_interval.y))
 	if water.shadows:
-		water.shadows.attract(bobber.global_position)
+		# Only a shadow already close takes the bait; the species says how close, the bait can stretch it
+		water.shadows.attract(bobber.global_position, hooked_fish.attract_range + (bait.attract_range_bonus if bait else 0.0))
 
 
 func _on_nibble_timer_timeout() -> void:
@@ -235,6 +243,11 @@ func _on_bite_timer_timeout() -> void:
 	state = State.BITE
 	nibble_timer.stop()
 	hooked_length = hooked_fish.roll_length()
+	# Bait that gets eaten is gone with the bite; the line is bare once the bag runs out
+	if lure and lure.consumable and player.inventory:
+		player.inventory.remove_item(lure, 1)
+		if player.inventory.count_of(lure) <= 0:
+			lure = null
 	bobber.plunge.rpc(0.35, 0.8)
 	bobber.splash.rpc(1.0)
 	if water.shadows:
@@ -268,12 +281,36 @@ func _on_reel_timer_timeout() -> void:
 	_clear_line()
 	emote_state.start("FishingIdle")
 	update_labels()
+	# The log keeps every length in the bag and the record per species; the card says when this one is the record
+	var log: FishingLog = player.get_node_or_null(^"FishingLog") as FishingLog
+	var is_record: bool = log.record_catch(fish, length) if log else false
 	var card: FishCard = player.controls.get_node_or_null(^"FishCard") as FishCard
 	if card:
-		card.show_catch(fish, length)
+		card.show_catch(fish, length, is_record)
 	_play(catch_sfx)
 	player.inventory.add_item(fish) # a full tab leaves it on the card only
 	fish_caught.emit(fish, length)
+
+
+## What the rod says about itself in the inventory: the bait on the line and what it does.
+func get_details() -> String:
+	if lure == null:
+		return "Bare hook."
+	var text: String = "On the line: %s" % lure.get_display_name()
+	var bait: Lure = lure as Lure
+	if bait:
+		var effects: PackedStringArray = bait.describe_effects()
+		var takers: PackedStringArray = []
+		for water_area: Node in get_tree().get_nodes_in_group("WATER"):
+			if water_area is Buoyancy:
+				for fish in (water_area as Buoyancy).fish:
+					if fish.lures.any(func(wanted: Item) -> bool: return wanted.is_same(bait)) and not takers.has(fish.get_display_name()):
+						takers.append(fish.get_display_name())
+		if not takers.is_empty():
+			effects.append("Tempts: " + ", ".join(takers))
+		if not effects.is_empty():
+			text += "\n" + "\n".join(effects)
+	return text
 
 
 ## The Action prompt follows the fishing state while the rod is out; states yield the labels meanwhile.
@@ -282,6 +319,24 @@ func update_labels() -> void:
 		return
 	player.controls.reset_labels()
 	player.controls.joypad_button_0_label.text = ACTION_LABELS[state]
+	# The hook window is short: the Action button throbs green until it closes
+	if state == State.BITE:
+		if hook_pulse == null or not hook_pulse.is_valid():
+			var button: CanvasItem = player.controls.joypad_button_0
+			hook_pulse = create_tween().set_loops().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+			hook_pulse.tween_property(button, "modulate", Color(0.55, 1.0, 0.55), 0.25)
+			hook_pulse.tween_property(button, "modulate", Color(0.0, 0.85, 0.0), 0.25)
+	else:
+		stop_hook_pulse()
+
+
+## Puts the Action button back to its own colour.
+func stop_hook_pulse() -> void:
+	if hook_pulse and hook_pulse.is_valid():
+		hook_pulse.kill()
+	hook_pulse = null
+	if player and player.controls:
+		player.controls.joypad_button_0.modulate = Color.WHITE
 
 
 func _on_input_type_changed(_input_type: int) -> void:
@@ -309,6 +364,7 @@ func _on_equipment_changed() -> void:
 		update_labels()
 	else:
 		retract()
+		stop_hook_pulse()
 		# Hand the control labels back to the active state, as a dropped held object does
 		player.controls.reset_labels()
 		var state_node: NodeStateMachine = player.state_machine.get_node_or_null(NodePath(NodeStateMachine.get_state_name(player.current_state))) as NodeStateMachine

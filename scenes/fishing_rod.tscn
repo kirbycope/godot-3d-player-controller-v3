@@ -18,6 +18,7 @@ script = ExtResource("1_1xn5j")
 bobber_scene = ExtResource("3_bobber")
 bone_attachment_bone_name = "LeftHand"
 equipment_type = 4
+description = "A cane rod with a cork grip. Cast where you aim, wait for the float to dip, and hook on the plunge."
 icon = ExtResource("2_binnr")
 is_exclusive = true
 

@@ -14,12 +14,16 @@ var is_in_use: bool = false
 @onready var action_prompt: ActionPrompt = $ActionPrompt
 @onready var controls_overlay: PureDoomControlsOverlay = $ControlsOverlay
 @onready var screen_camera: Camera3D = $ScreenCamera
+@onready var screen: MeshInstance3D = $Screen
 @onready var screen_viewport: SubViewport = $ScreenViewport
 @onready var doom: Doom = $ScreenViewport/Doom
 
 
 func _ready() -> void:
 	set_process_input(false)
+	# The CRT reads the viewport at runtime; a ViewportTexture saved in the scene cannot find the viewport while the
+	# editor exports the project and logs an invalid path
+	(screen.material_override as ShaderMaterial).set_shader_parameter(&"screen_texture", screen_viewport.get_texture())
 
 
 ## Only runs while the Player is at the keyboard: "start" leaves, everything else goes to the game.
@@ -28,6 +32,8 @@ func _input(event: InputEvent) -> void:
 	if not is_instance_valid(player) or player.is_ragdolling:
 		stop_using()
 		return
+	# The Controls detect the device in their own _input, which never runs once this one marks the event handled
+	player.controls._input(event)
 	if event.is_action_pressed("start"):
 		stop_using()
 	else:
@@ -97,6 +103,8 @@ func stop_using() -> void:
 
 func _on_input_type_changed(input_type: int) -> void:
 	controls_overlay.input_type = INPUT_TYPE_NAMES[input_type]
+	# Picking up a touch screen mid-game brings the on-screen controls back; any other device hides them again
+	player.controls.visible = input_type == player.controls.InputType.TOUCH
 
 
 func _set_level_hud_visible(shown: bool) -> void:

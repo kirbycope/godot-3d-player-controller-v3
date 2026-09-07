@@ -111,13 +111,12 @@ func present_catch(fish_path: String, length_cm: float) -> void:
 	if fish_path.is_empty() or not is_instance_valid(shooter):
 		return
 	var fish: Fish = load(fish_path)
-	var scene: PackedScene = fish.model_scene if fish.model_scene else fish_scene
+	var scene: PackedScene = fish.get_model_scene() if fish.get_model_scene() else fish_scene
 	var model: Node3D = scene.instantiate()
 	get_parent().add_child(model)
 	var from: Vector3 = global_position
 	model.global_position = from
-	if model is FishModel:
-		model.setup(fish, length_cm)
+	fish.dress_model(model, length_cm)
 	var target: Vector3 = shooter.global_position + Vector3.UP * 1.3
 	var tween: Tween = model.create_tween()
 	tween.tween_method(func(t: float) -> void: model.global_position = from.lerp(target, t) + Vector3.UP * sin(t * PI) * 1.5, 0.0, 1.0, 0.7)

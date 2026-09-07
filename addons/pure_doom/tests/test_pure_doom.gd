@@ -75,6 +75,34 @@ func test_changing_level_keeps_the_engine_alive() -> void:
 	assert_gt(lit, 0, "The new level should be drawing")
 
 
+func test_pad_back_toggles_the_menu_and_dpad_cycles_weapons() -> void:
+	if doom == null:
+		pass_test("PureDoom is not built for this platform")
+		return
+	doom.call(&"start")
+	await wait_process_frames(5)
+	assert_eq(doom.call(&"get_weapon_slot"), 2, "You start with the pistol in hand")
+	assert_false(doom.call(&"is_menu_open"))
+	await _press_joy(JOY_BUTTON_BACK)
+	await wait_seconds(0.3)
+	assert_true(doom.call(&"is_menu_open"), "Back should open DOOM's menu")
+	await _press_joy(JOY_BUTTON_BACK)
+	await wait_seconds(0.3)
+	assert_false(doom.call(&"is_menu_open"), "Back again should close it")
+	await _press_joy(JOY_BUTTON_DPAD_RIGHT)
+	await wait_seconds(1.5)
+	assert_eq(doom.call(&"get_weapon_slot"), 1, "Cycling right from the pistol skips the weapons you do not own and wraps to the fist")
+
+
+func _press_joy(button: JoyButton) -> void:
+	for pressed in [true, false]:
+		var event = InputEventJoypadButton.new()
+		event.button_index = button
+		event.pressed = pressed
+		Input.parse_input_event(event)
+		await wait_seconds(0.1) # Longer than a DOOM tic, so the engine sees the press before the release
+
+
 func test_stop_pauses_and_start_resumes() -> void:
 	if doom == null:
 		pass_test("PureDoom is not built for this platform")

@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://de6yh8gsjelk6" path="res://Le_Lu/Loot_Drop_VFX/Textures/T_VFX_Mask_15.jpg" id="7_k5stb"]
 [ext_resource type="Shader" path="res://Le_Lu/Loot_Drop_VFX/Shaders/s_simple_blink_unlit_fc.tres" id="8_ptq73"]
 [ext_resource type="Texture2D" uid="uid://dfede0wdplce0" path="res://Le_Lu/Loot_Drop_VFX/Textures/T_VFX_Mask_6.PNG" id="9_33kow"]
+[ext_resource type="Texture2D" path="res://Le_Lu/Loot_Drop_VFX/Textures/T_VFX_Flare_678.png" id="CompressedTexture2D_88n0u"]
 
 [sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_mweyg"]
 parameter_name = "Texture_Substract"
@@ -639,9 +640,6 @@ alpha_curve = SubResource("CurveTexture_vkww8")
 
 [sub_resource type="QuadMesh" id="QuadMesh_vd6i4"]
 
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_88n0u"]
-load_path = "res://.godot/imported/T_VFX_Flare_678.png-1ecd76773441e530e39943c718d286b6.s3tc.ctex"
-
 [sub_resource type="Gradient" id="Gradient_4w8ok"]
 colors = PackedColorArray(0.707967, 0.707967, 0.707966, 1, 0, 0, 0, 1)
 
@@ -663,7 +661,7 @@ shader_parameter/min_brightness = 0.2
 shader_parameter/max_brightness2 = 1.0
 shader_parameter/opacity = 1.0
 shader_parameter/Proximity_Fade = 0.5
-shader_parameter/Texture = SubResource("CompressedTexture2D_88n0u")
+shader_parameter/Texture = ExtResource("CompressedTexture2D_88n0u")
 shader_parameter/Texture_Add = SubResource("GradientTexture2D_lvtp4")
 
 [sub_resource type="QuadMesh" id="QuadMesh_vqb8h"]

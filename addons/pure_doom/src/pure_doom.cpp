@@ -19,6 +19,7 @@
 extern "C" {
 #include "PureDOOM.h"
 }
+#include "pure_doom_bridge.h"
 
 using namespace godot;
 
@@ -165,6 +166,7 @@ int doom_key_from(Key key) {
 		return DOOM_KEY_F1 + int(key - KEY_F1);
 	}
 	switch (key) {
+		case KEY_QUOTELEFT: return DOOM_KEY_ESCAPE; // DOOM's menu, since a host scene usually keeps Escape for itself
 		case KEY_TAB: return DOOM_KEY_TAB;
 		case KEY_ENTER: return DOOM_KEY_ENTER;
 		case KEY_KP_ENTER: return DOOM_KEY_ENTER;
@@ -193,13 +195,15 @@ int doom_key_from(Key key) {
 	}
 }
 
-// Pad buttons: A uses, X fires, B accepts, Y runs, the d-pad is the arrows.
+// Pad buttons: A uses, X fires, B accepts, Y runs, Back opens the menu, and the d-pad is the arrows (which is
+// what the menu wants; in the game _input gives the d-pad the automap, the menu and weapon cycling instead).
 int doom_key_from_joy_button(JoyButton button) {
 	switch (button) {
 		case JOY_BUTTON_A: return DOOM_KEY_SPACE;
 		case JOY_BUTTON_B: return DOOM_KEY_ENTER;
 		case JOY_BUTTON_X: return DOOM_KEY_CTRL;
 		case JOY_BUTTON_Y: return DOOM_KEY_SHIFT;
+		case JOY_BUTTON_BACK: return DOOM_KEY_ESCAPE;
 		case JOY_BUTTON_DPAD_UP: return DOOM_KEY_UP_ARROW;
 		case JOY_BUTTON_DPAD_DOWN: return DOOM_KEY_DOWN_ARROW;
 		case JOY_BUTTON_DPAD_LEFT: return DOOM_KEY_LEFT_ARROW;
@@ -214,6 +218,8 @@ void PureDoom::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("start"), &PureDoom::start);
 	ClassDB::bind_method(D_METHOD("stop"), &PureDoom::stop);
 	ClassDB::bind_method(D_METHOD("is_running"), &PureDoom::is_running);
+	ClassDB::bind_method(D_METHOD("is_menu_open"), &PureDoom::is_menu_open);
+	ClassDB::bind_method(D_METHOD("get_weapon_slot"), &PureDoom::get_weapon_slot);
 	ClassDB::bind_method(D_METHOD("get_frame"), &PureDoom::get_frame);
 
 	ClassDB::bind_method(D_METHOD("set_wad_path", "path"), &PureDoom::set_wad_path);
@@ -331,6 +337,10 @@ void PureDoom::stop() {
 		handle_key(DOOM_KEY_CTRL, false);
 		trigger_fire = false;
 	}
+	if (pending_weapon_key != 0) {
+		doom_key_up(doom_key_t(pending_weapon_key));
+		pending_weapon_key = 0;
+	}
 	if (sound_player) {
 		sound_player->stop();
 	}
@@ -339,6 +349,40 @@ void PureDoom::stop() {
 
 bool PureDoom::is_running() const {
 	return running;
+}
+
+// Whether DOOM's own menu is overlaid (the engine's menuactive flag).
+bool PureDoom::is_menu_open() const {
+	return engine_initialized && pure_doom_menu_active() != 0;
+}
+
+// The number key slot of the weapon in hand: 1 fist or chainsaw, 2 pistol, 3 shotgun, 4 chaingun, 5 rockets,
+// 6 plasma, 7 BFG.
+int PureDoom::get_weapon_slot() const {
+	if (!engine_initialized) {
+		return 0;
+	}
+	int weapon = pure_doom_ready_weapon();
+	return weapon == 7 ? 1 : weapon + 1;
+}
+
+// Presses the number of the next owned weapon slot in [param direction] and lets go a couple of tics later,
+// long enough for the engine to see it.
+void PureDoom::cycle_weapon(int direction) {
+	if (pending_weapon_key != 0 || !engine_initialized) {
+		return;
+	}
+	int slot = get_weapon_slot();
+	for (int step = 0; step < 7; step++) {
+		slot = ((slot - 1 + direction + 7) % 7) + 1;
+		bool owned = slot == 1 || pure_doom_weapon_owned(slot - 1) != 0;
+		if (owned) {
+			pending_weapon_key = DOOM_KEY_1 + slot - 1;
+			weapon_release_in = 0.08;
+			doom_key_down(doom_key_t(pending_weapon_key));
+			return;
+		}
+	}
 }
 
 // The last 320x200 frame as an Image, updated on the CPU every tick whatever the renderer.
@@ -355,6 +399,13 @@ void PureDoom::_process(double delta) {
 		return;
 	}
 	clock_usec += delta * 1000000.0;
+	if (pending_weapon_key != 0) {
+		weapon_release_in -= delta;
+		if (weapon_release_in <= 0.0) {
+			doom_key_up(doom_key_t(pending_weapon_key));
+			pending_weapon_key = 0;
+		}
+	}
 	doom_update();
 	if (exit_requested) {
 		exit_requested = false;
@@ -518,7 +569,19 @@ void PureDoom::_input(const Ref<InputEvent> &event) {
 	}
 	Ref<InputEventJoypadButton> joy_button = event;
 	if (joy_button.is_valid()) {
-		handle_key(doom_key_from_joy_button(joy_button->get_button_index()), joy_button->is_pressed());
+		JoyButton button = joy_button->get_button_index();
+		bool pressed = joy_button->is_pressed();
+		// With the menu up the d-pad is its arrow keys; in the game it is the automap, the menu and the weapons
+		if (!pure_doom_menu_active()) {
+			switch (button) {
+				case JOY_BUTTON_DPAD_UP: handle_key(DOOM_KEY_TAB, pressed); return;
+				case JOY_BUTTON_DPAD_DOWN: handle_key(DOOM_KEY_ESCAPE, pressed); return;
+				case JOY_BUTTON_DPAD_LEFT: if (pressed) { cycle_weapon(-1); } return;
+				case JOY_BUTTON_DPAD_RIGHT: if (pressed) { cycle_weapon(1); } return;
+				default: break;
+			}
+		}
+		handle_key(doom_key_from_joy_button(button), pressed);
 		return;
 	}
 	Ref<InputEventJoypadMotion> joy_motion = event;

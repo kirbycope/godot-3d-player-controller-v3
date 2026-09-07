@@ -9,9 +9,7 @@
 [ext_resource type="Shader" uid="uid://1q6lsrjyrqr1" path="res://Le_Lu/Explosions_VFX/shaders/s_simple_pfc.tres" id="7_487n8"]
 [ext_resource type="Texture2D" uid="uid://v0okqjvd2j3y" path="res://Le_Lu/Explosions_VFX/textures/T_VFX_Glo31.png" id="8_ffjvy"]
 [ext_resource type="Texture2D" uid="uid://cvvysvkq41rqs" path="res://Le_Lu/Explosions_VFX/textures/T_Cracks_41.png" id="9_mlrba"]
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ti3ft"]
-load_path = "res://.godot/imported/T_PerlinNoise_Tiled11_inv.png-2be470d36afb0df40ca1eb53fc2faf36.s3tc.ctex"
+[ext_resource type="Texture2D" path="res://Le_Lu/Explosions_VFX/textures/T_PerlinNoise_Tiled11_inv.png" id="CompressedTexture2D_ti3ft"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_c7tiy"]
 render_priority = 0
@@ -19,7 +17,7 @@ shader = ExtResource("1_0vpch")
 shader_parameter/Texture_Scale = Vector2(1, 0.2)
 shader_parameter/Texture_offset = Vector2(0, 0)
 shader_parameter/Proximity_Fade = 0.5
-shader_parameter/Disolver_Texture = SubResource("CompressedTexture2D_ti3ft")
+shader_parameter/Disolver_Texture = ExtResource("CompressedTexture2D_ti3ft")
 
 [sub_resource type="Curve" id="Curve_uxbpw"]
 _data = [Vector2(0, 0), 0.0, 1.76624, 0, 0, Vector2(1, 1), 1.09076e-06, 0.0, 0, 0]

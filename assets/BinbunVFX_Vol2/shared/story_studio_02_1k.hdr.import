@@ -3,20 +3,19 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ed44j8f3a8us"
-path.bptc="res://.godot/imported/story_studio_02_1k.hdr-6e28fc36b6eadb2fe0e50a21de2b4bfa.bptc.ctex"
+path="res://.godot/imported/story_studio_02_1k.hdr-6e28fc36b6eadb2fe0e50a21de2b4bfa.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 
 [deps]
 
 source_file="res://assets/BinbunVFX_Vol2/shared/story_studio_02_1k.hdr"
-dest_files=["res://.godot/imported/story_studio_02_1k.hdr-6e28fc36b6eadb2fe0e50a21de2b4bfa.bptc.ctex"]
+dest_files=["res://.godot/imported/story_studio_02_1k.hdr-6e28fc36b6eadb2fe0e50a21de2b4bfa.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=1
 compress/high_quality=false
 compress/high_quality_mode=0
 compress/lossy_quality=0.7
@@ -38,5 +37,5 @@ process/premult_alpha=false
 process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
-process/size_limit=0
+process/size_limit=512
 detect_3d/compress_to=0

@@ -88,6 +88,7 @@
 [ext_resource type="Script" uid="uid://7e2gpht4wap6" path="res://addons/3d_player_controller/scripts/rifle.gd" id="r_riflegd"]
 [ext_resource type="PackedScene" path="res://addons/weather_fx/scenes/water_ripples.tscn" id="water_ripples_scene"]
 [ext_resource type="PackedScene" path="res://scenes/retro_computer.tscn" id="88_retro"]
+[ext_resource type="Resource" path="res://resources/lures/chum.tres" id="lure_chum"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -1063,7 +1064,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -24)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.01, 0)
 mesh = SubResource("QuadMesh_hxkk4")
 
-[node name="WaterArea3D" type="Area3D" parent="Pool" unique_id=98712397 node_paths=PackedStringArray("water_mesh", "weather", "clock", "shadows") groups=["WATER"]]
+[node name="WaterArea3D" type="Area3D" parent="Pool" unique_id=98712397 node_paths=PackedStringArray("water_mesh", "weather", "clock", "shadows", "biome_zone") groups=["WATER"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.3, 0)
 script = ExtResource("buoyancy_script")
 water_mesh = NodePath("../Water")
@@ -1071,6 +1072,7 @@ weather = NodePath("../../WeatherFX")
 fish = Array[ExtResource("fish_script")]([ExtResource("fish_carp"), ExtResource("fish_perch"), ExtResource("fish_catfish"), ExtResource("fish_trout"), ExtResource("fish_koi"), ExtResource("fish_boot")])
 clock = NodePath("../../DateAndTime")
 shadows = NodePath("../FishShadows")
+biome_zone = NodePath("../../Zones/PlainsZone")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Pool/WaterArea3D" unique_id=98712396]
 shape = SubResource("BoxShape3D_hxkk4")
@@ -1081,6 +1083,7 @@ water_mesh = NodePath("../Water")
 [node name="FishShadows" type="Node3D" parent="Pool" unique_id=30355662 node_paths=PackedStringArray("water")]
 script = ExtResource("fish_shadows_script")
 water = NodePath("../WaterArea3D")
+chum = ExtResource("lure_chum")
 
 [node name="Boat" parent="." unique_id=1834386809 node_paths=PackedStringArray("water") instance=ExtResource("48_odf6h")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, -18)
@@ -1269,7 +1272,7 @@ shape = SubResource("BoxShape3D_killzone")
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 8)
 
 [node name="RetroComputer" parent="." instance=ExtResource("88_retro")]
-transform = Transform3D(0.9028605, 0, 0.4299335, 0, 1, 0, -0.4299335, 0, 0.9028605, 2, 0, -4.2)
+transform = Transform3D(0.9028605, 0, -0.4299335, 0, 1, 0, 0.4299335, 0, 0.9028605, 2, 0, -4.2)
 hidden_while_in_use = Array[NodePath]([NodePath("../HUD")])
 
 [connection signal="local_player_spawned" from="PlayerSpawner" to="." method="_on_local_player_spawned"]

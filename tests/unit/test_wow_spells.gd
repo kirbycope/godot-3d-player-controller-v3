@@ -64,12 +64,12 @@ func test_the_shipped_spells_load_with_their_effects_vfx_and_sounds() -> void:
 	assert_true(shadowstep is Shadowstep)
 	assert_eq(shadowstep.target_mode, Ability.Target.FOCUS)
 	assert_true(load(SPELL_DIR + "flash_of_light.tres") is HealAbility)
-	for name: String in ["firebolt", "fireball", "frostbolt", "lightning_bolt", "flash_of_light", "consecration", "shadowstep"]:
+	for name: String in ["firebolt", "fireball", "frostbolt", "lightning_bolt", "lightning", "chain_lightning", "flash_of_light", "consecration", "shadowstep"]:
 		var spell: Ability = load(SPELL_DIR + name + ".tres")
 		assert_not_null(spell.icon, name + " has its game-icons.net icon")
 		assert_true(spell.icon.resource_path.begins_with("res://addons/3d_player_controller/assets/game_icons/"), name + "'s icon lives with the other game-icons")
 		assert_ne(spell.icon_color, Color.WHITE, name + " is tinted like aethereal tinted it")
-	for name: String in ["firebolt", "fireball", "frostbolt", "lightning_bolt", "flash_of_light", "consecration", "shadowstep"]:
+	for name: String in ["firebolt", "fireball", "frostbolt", "lightning_bolt", "lightning", "chain_lightning", "flash_of_light", "consecration", "shadowstep"]:
 		var spell: Ability = load(SPELL_DIR + name + ".tres")
 		assert_false(spell.display_name.is_empty(), name + " is named")
 		assert_true(spell.casting_sfx != null or spell.impact_sfx != null, name + " has a sound")

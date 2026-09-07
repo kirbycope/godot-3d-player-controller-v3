@@ -21,3 +21,5 @@ to_hour = 24
 rain = 0
 is_junk = true
 shadow_scale = 1.0
+attract_range = 0.0
+biomes = Array[int]([])

@@ -21,6 +21,7 @@ enum Category {
 @export_range(1, 999) var max_stack: int = 99 ## Stacks of key items are 1; BOTW materials go to 999.
 @export var consumable: bool = false ## Using it takes one from the stack (the effect is the game's, see [signal Inventory.item_used]).
 @export var equipment_scene: PackedScene ## For [constant Category.EQUIPMENT]: the [Equipment] scene picked up when this item is added.
+@export var model_scene: PackedScene ## A 3D model the inventory shows turning in place of the icon; empty keeps the icon.
 
 
 ## The name saves and stacks match on.
@@ -45,3 +46,20 @@ func get_display_name() -> String:
 ## The tint for [member icon]; subclasses can derive it (a fish from its body colour).
 func get_icon_color() -> Color:
 	return icon_color
+
+
+## Extra lines the inventory prints under [member description]; [param owner] is the Player, for state kept on
+## it (a fish lists the lengths in the bag). Empty by default.
+func get_details(_owner: Node) -> String:
+	return ""
+
+
+## Called on a freshly instanced [member model_scene] before it is shown, for a subclass to dress it (a fish
+## tints the placeholder body).
+func prepare_model(_model: Node3D) -> void:
+	pass
+
+
+## The scene the inventory turns in the preview; a subclass can fall back to a shared placeholder.
+func get_model_scene() -> PackedScene:
+	return model_scene

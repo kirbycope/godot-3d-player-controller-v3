@@ -1,9 +1,7 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://d3pya4j7gs65t"]
 
 [ext_resource type="Shader" uid="uid://ctc5s68igpvj6" path="res://assets/BinbunVFX/shared/shader/transparent.gdshader" id="1_pg03q"]
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_a8lrh"]
-load_path = "res://.godot/imported/flare_02.png-bc88978a07e96528c95cb6f16c108426.s3tc.ctex"
+[ext_resource type="Texture2D" path="res://assets/BinbunVFX/shared/texture/flare/flare_02.png" id="CompressedTexture2D_a8lrh"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_6sdg0"]
 noise_type = 2
@@ -17,7 +15,7 @@ seamless_blend_skirt = 0.4
 [resource]
 render_priority = 0
 shader = ExtResource("1_pg03q")
-shader_parameter/mask1_texture = SubResource("CompressedTexture2D_a8lrh")
+shader_parameter/mask1_texture = ExtResource("CompressedTexture2D_a8lrh")
 shader_parameter/mask1_scroll = Vector2(0, 0)
 shader_parameter/mask1_scale = Vector2(1, 1)
 shader_parameter/mask1_radial = false
