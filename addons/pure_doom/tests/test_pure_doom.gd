@@ -94,6 +94,34 @@ func test_pad_back_toggles_the_menu_and_dpad_cycles_weapons() -> void:
 	assert_eq(doom.call(&"get_weapon_slot"), 1, "Cycling right from the pistol skips the weapons you do not own and wraps to the fist")
 
 
+func test_tab_toggles_the_automap() -> void:
+	if doom == null:
+		pass_test("PureDoom is not built for this platform")
+		return
+	if not doom.has_method(&"is_automap_open"):
+		pass_test("This library predates is_automap_open; rebuild it")
+		return
+	doom.call(&"start")
+	await wait_seconds(1.5) # Into E1M1; the automap only answers on a level
+	assert_false(doom.call(&"is_automap_open"))
+	await _press_key(KEY_TAB)
+	await wait_seconds(0.3)
+	assert_true(doom.call(&"is_automap_open"), "Tab should open the automap")
+	await _press_key(KEY_TAB)
+	await wait_seconds(0.3)
+	assert_false(doom.call(&"is_automap_open"), "Tab again should close it")
+
+
+func _press_key(key: Key) -> void:
+	for pressed in [true, false]:
+		var event = InputEventKey.new()
+		event.keycode = key
+		event.physical_keycode = key
+		event.pressed = pressed
+		Input.parse_input_event(event)
+		await wait_seconds(0.1) # Longer than a DOOM tic, so the engine sees the press before the release
+
+
 func _press_joy(button: JoyButton) -> void:
 	for pressed in [true, false]:
 		var event = InputEventJoypadButton.new()

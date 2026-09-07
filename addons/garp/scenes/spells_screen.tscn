@@ -16,15 +16,11 @@ visible = false
 script = ExtResource("1_screen")
 
 [node name="Panel" type="Panel" parent="."]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -380.0
-offset_top = -250.0
-offset_right = 380.0
-offset_bottom = 250.0
+anchors_preset = -1
+anchor_left = 0.08
+anchor_top = 0.06
+anchor_right = 0.92
+anchor_bottom = 0.94
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -89,11 +85,16 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Skill points: 0"
 
-[node name="TreeHolder" type="Control" parent="Panel/VBoxContainer/TreePage/TreeArea"]
+[node name="TreeHolder" type="ScrollContainer" parent="Panel/VBoxContainer/TreePage/TreeArea"]
 layout_mode = 2
 size_flags_vertical = 3
+follow_focus = true
 
-[node name="TreeLines" type="Control" parent="Panel/VBoxContainer/TreePage/TreeArea/TreeHolder"]
+[node name="TreeCanvas" type="Control" parent="Panel/VBoxContainer/TreePage/TreeArea/TreeHolder"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="TreeLines" type="Control" parent="Panel/VBoxContainer/TreePage/TreeArea/TreeHolder/TreeCanvas"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -102,19 +103,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-
-[node name="TreeGrid" type="GridContainer" parent="Panel/VBoxContainer/TreePage/TreeArea/TreeHolder"]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -240.0
-offset_right = 240.0
-grow_horizontal = 2
-theme_override_constants/h_separation = 24
-theme_override_constants/v_separation = 24
-columns = 5
 
 [node name="Details" type="VBoxContainer" parent="Panel/VBoxContainer/TreePage"]
 custom_minimum_size = Vector2(220, 0)

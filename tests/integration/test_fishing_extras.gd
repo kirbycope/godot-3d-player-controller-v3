@@ -80,6 +80,30 @@ func _press_action() -> InputEventAction:
 	return event
 
 
+func test_the_fishing_posture_shows_only_when_still_or_with_the_line_out() -> void:
+	var rod: FishingRod = await _equip_rod()
+	await wait_process_frames(2)
+	assert_eq(player.get_grounded_locomotion_state(), &"GreatSword/GreatSwordLocomotion", "The rod is carried like a two-handed sword")
+	assert_true(rod.wants_posture(), "Standing still, the fishing posture shows")
+	assert_eq(player.animation_tree.get("parameters/EmoteSpineBlend2/blend_amount"), 1.0)
+	var sender = InputSender.new(Input)
+	sender.set_auto_flush_input(true)
+	sender.action_down("move_up")
+	await wait_physics_frames(6)
+	assert_true(player.has_move_input, "Walking")
+	assert_false(rod.wants_posture(), "On the move the locomotion carries the rod alone")
+	assert_eq(player.animation_tree.get("parameters/EmoteSpineBlend2/blend_amount"), 0.0)
+	rod.state = FishingRod.State.WAITING
+	await wait_process_frames(2)
+	assert_true(rod.wants_posture(), "With the line out the posture holds even on the move")
+	assert_eq(player.animation_tree.get("parameters/EmoteSpineBlend2/blend_amount"), 1.0)
+	rod.state = FishingRod.State.IDLE
+	sender.release_all()
+	sender.clear()
+	await wait_physics_frames(20)
+	assert_true(rod.wants_posture(), "Stopped again, the posture comes back")
+
+
 func test_rod_ignores_the_cast_from_a_menu() -> void:
 	var rod: FishingRod = await _equip_rod()
 	player.is_fishing = true

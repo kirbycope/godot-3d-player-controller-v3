@@ -1,25 +1,22 @@
-[gd_resource type="Resource" script_class="Fish" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="Fish" format=3 uid="uid://bxtrlsnw7cbcc"]
 
-[ext_resource type="Script" path="res://scenes/fish.gd" id="1_fish"]
-[ext_resource type="Texture2D" path="res://resources/fish/boot.svg" id="2_icon"]
+[ext_resource type="PackedScene" uid="uid://c7nro8e27sqa7" path="res://assets/modular_character_outfits/Modular Parts/old_boot.gltf" id="1_1xiku"]
+[ext_resource type="Script" uid="uid://d1uyxp1uskyes" path="res://scenes/fish.gd" id="1_fish"]
+[ext_resource type="Texture2D" uid="uid://0slgq4213nvv" path="res://resources/fish/boot.svg" id="2_icon"]
+[ext_resource type="Script" uid="uid://bo3enaj37i6y0" path="res://addons/garp/scripts/item.gd" id="3_6txbw"]
 
 [resource]
 script = ExtResource("1_fish")
-id = &"old_boot"
-display_name = "Old Boot"
-description = "Somebody's left boot. It has been down there a while."
-icon = ExtResource("2_icon")
-category = 1
-max_stack = 99
-consumable = false
 color = Color(0.4, 0.25, 0.12, 1)
 min_length_cm = 0.0
 max_length_cm = 0.0
 weight = 1.5
-from_hour = 0
-to_hour = 24
-rain = 0
-is_junk = true
-shadow_scale = 1.0
+mass_kg = 1.2
 attract_range = 0.0
-biomes = Array[int]([])
+is_junk = true
+id = &"old_boot"
+display_name = "Old Boot"
+description = "Somebody's left boot. It has been down there a while."
+icon = ExtResource("2_icon")
+equipment_scene = ExtResource("1_1xiku")
+model_scene = ExtResource("1_1xiku")

@@ -8,6 +8,7 @@ extern "C" {
 #endif
 
 int pure_doom_menu_active(void);
+int pure_doom_automap_active(void);
 int pure_doom_ready_weapon(void);
 int pure_doom_weapon_owned(int weapon);
 

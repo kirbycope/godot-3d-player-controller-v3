@@ -67,6 +67,7 @@ const WALL_KINDS: Dictionary[String, int] = {"#": 0, "B": 1, "T": 2}
 @export var hurt_sfx: AudioStream
 @export var demon_death_sfx: AudioStream
 @export_file("*.sf2") var soundfont: String = "" ## SoundFont the real engine's music plays through (Godot MIDI Player); empty means no music.
+@export var use_engine: bool = true ## Off, the raycaster plays even where the PureDoom library is built; `doom_raycaster.tscn` runs it that way on its own.
 
 var screen: Screen = Screen.PROMPT
 var player_position: Vector2
@@ -195,9 +196,10 @@ func _on_face_timer_timeout() -> void:
 	face_timer.wait_time = randf_range(0.7, 2.0)
 
 
-## Hands the screen to the real engine when the PureDoom library is built for this platform, else plays the raycaster.
+## Hands the screen to the real engine when the PureDoom library is built for this platform (and [member use_engine]
+## allows it), else plays the raycaster.
 func start_game() -> void:
-	if engine == null and ClassDB.class_exists(&"PureDoom"):
+	if use_engine and engine == null and ClassDB.class_exists(&"PureDoom"):
 		# The class only exists with the library loaded, so it is created here rather than placed in the scene
 		engine = ClassDB.instantiate(&"PureDoom") as Control
 		engine.set_anchors_preset(Control.PRESET_FULL_RECT)

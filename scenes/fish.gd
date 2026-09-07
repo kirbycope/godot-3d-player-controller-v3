@@ -10,13 +10,19 @@ enum Rain { ANY, RAIN_ONLY, DRY_ONLY }
 @export var min_length_cm: float = 20.0
 @export var max_length_cm: float = 40.0
 @export var weight: float = 1.0 ## Relative chance against the other fish available at the time.
+@export var mass_kg: float = 0.0 ## What it weighs in the hand, for the index and the inventory; 0 leaves it unsaid.
 @export_range(0, 24) var from_hour: int = 0 ## First hour it bites (inclusive); later than [member to_hour] wraps past midnight.
 @export_range(0, 24) var to_hour: int = 24 ## Hour it stops biting (exclusive).
 @export var rain: Rain = Rain.ANY
 @export var lures: Array[Item] = [] ## Lures it bites on; empty means any lure, or none at all.
 @export var biomes: Array[ClimateData.BiomeZone] = [] ## Waters in these biomes hold it; empty means any water.
 @export var attract_range: float = 1.0 ## Metres from the float within which a shadow takes the bait; further ones stay put.
-@export var is_junk: bool = false ## Junk has no length and never shows a shadow.
+@export var is_junk: bool = false: ## Junk has no length and never shows a shadow; it is a material, kept in big stacks and not eaten.
+	set(value):
+		is_junk = value
+		category = Category.MATERIALS if value else Category.FOOD
+		consumable = not value
+		max_stack = 99 if value else 10
 @export var shadow_scale: float = 1.0 ## Size of the shadow it casts under the surface.
 
 
@@ -106,6 +112,8 @@ func describe_conditions() -> PackedStringArray:
 	var lines: PackedStringArray = []
 	if is_junk:
 		lines.append("Not a fish. Bites on anything, any time.")
+		if mass_kg > 0.0:
+			lines.append("Weighs %.1f kg" % mass_kg)
 		return lines
 	lines.append("%d to %d cm" % [roundi(min_length_cm), roundi(max_length_cm)])
 	if from_hour == 0 and to_hour == 24:

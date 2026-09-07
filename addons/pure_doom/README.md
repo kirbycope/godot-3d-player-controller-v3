@@ -44,7 +44,7 @@ stick turns (it presses DOOM's left and right arrows, so Y for run applies), RT 
 B accepts, Back opens the menu, and the d-pad is context-sensitive: with the menu up it is the arrow keys,
 in the game up is the automap, down is the menu, and left and right cycle to the previous or next weapon you
 own (`cycle_weapon` reads the engine's weapon list, presses the slot's number and lets go two tics later).
-`is_menu_open()` and `get_weapon_slot()` expose the same engine state. The level starts directly (`-warp 1 1`)
+`is_menu_open()`, `is_automap_open()` and `get_weapon_slot()` expose the same engine state. The level starts directly (`-warp 1 1`)
 because Escape and Start are left to the host scene; after dying, use restarts the level.
 
 ## Controls card

@@ -93,6 +93,25 @@ func test_the_tree_page_draws_the_nodes_and_unlocks_on_confirm() -> void:
 	pause.hide_menu()
 
 
+func test_the_tree_page_lays_the_nodes_out_by_cell_like_the_editor_graph() -> void:
+	await _open()
+	assert_eq(screen._node_buttons.size(), DEMO_TREE.nodes.size(), "A button per node, no spacers")
+	for node: SpellNode in DEMO_TREE.nodes:
+		var expected: Vector2 = Vector2(node.column, node.row) * SpellTree.CELL
+		assert_eq(screen._node_buttons[node.ability].position, expected, node.ability.display_name + " sits at its column and row")
+		assert_eq(SpellTree.cell_position(node), expected)
+	assert_eq(screen.tree_canvas.custom_minimum_size, DEMO_TREE.pixel_size(), "The canvas spans every column and row")
+	assert_eq(DEMO_TREE.pixel_size(), Vector2(DEMO_TREE.column_count(), DEMO_TREE.row_count()) * SpellTree.CELL)
+	var line: PackedVector2Array = SpellTree.connection_segment(Rect2(0, 0, 96, 80), Rect2(112, 120, 96, 80))
+	assert_almost_eq(line[0].y, 80.0, 0.01, "A prerequisite line leaves the earlier spell's edge, aimed at the later one")
+	assert_between(line[0].x, 48.0, 96.0)
+	assert_almost_eq(line[1].y, 120.0, 0.01, "and reaches the later spell's edge")
+	var sideways: PackedVector2Array = SpellTree.connection_segment(Rect2(0, 0, 96, 80), Rect2(224, 0, 96, 80))
+	assert_eq(sideways[0], Vector2(96, 40), "Side by side, it runs edge to edge")
+	assert_eq(sideways[1], Vector2(224, 40))
+	pause.hide_menu()
+
+
 func test_the_loadout_page_places_and_clears_wheel_slots() -> void:
 	spellbook.unlock(STEALTH)
 	spellbook.unlock(HEAL)

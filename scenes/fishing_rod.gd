@@ -33,7 +33,7 @@ const CAST_ANIMATION: StringName = &"Fishing Cast/mixamo_com"
 @export var cast_release: float = 1.5 ## Seconds into the cast animation at which the float leaves the rod.
 @export var bite_wait: Vector2 = Vector2(3.0, 8.0) ## Seconds before the bite, before the rain and shadow bonuses.
 @export var nibble_interval: Vector2 = Vector2(0.8, 1.8) ## Seconds between the small dips before the bite.
-@export var hook_window: float = 0.6 ## Seconds after the bite in which Action hooks the fish.
+@export var hook_window: float = 1.0 ## Seconds after the bite in which Action hooks the fish.
 @export var shadow_bonus_distance: float = 2.5 ## Landing within this of a shadow shortens the wait.
 @export_group("Sounds")
 @export var splash_sfx: AudioStream
@@ -353,6 +353,30 @@ func _play(stream: AudioStream) -> void:
 	if stream:
 		audio.stream = stream
 		audio.play()
+
+
+## Keeps the posture right for the equipped copy every frame; the world pickup has no Player.
+func _process(_delta: float) -> void:
+	if player and player.is_fishing and is_multiplayer_authority():
+		update_posture()
+
+
+## The fishing posture (the upper-body emote over the locomotion) shows while the line is out or the Player stands
+## or sits still; on the move the great-sword locomotion carries the rod on its own, so the walk and run read right.
+## Another emote or a spell's channel pose on that layer is left to its own owner.
+func update_posture() -> void:
+	if emote_state == null or String(emote_state.get_current_node()) not in FISHING_EMOTES:
+		return
+	player.animation_tree.set("parameters/EmoteSpineBlend2/blend_amount", 1.0 if wants_posture() else 0.0)
+
+
+## Whether the fishing posture belongs on the body right now.
+func wants_posture() -> bool:
+	if state != State.IDLE:
+		return true
+	if player.is_sitting:
+		return true
+	return not player.has_move_input and Vector2(player.velocity.x, player.velocity.z).length() < 0.5
 
 
 ## Holds the fishing upper-body posture while a rod is equipped; unequipping pulls the line in.

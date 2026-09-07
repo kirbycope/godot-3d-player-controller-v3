@@ -1,0 +1,122 @@
+class_name WeatherClouds
+extends Node
+## Drives the sky shader's clouds from [WeatherFX]: the Binbun sky scrolls two layers of noise cloud, and this sets
+## its [code]cloud_density[/code], [code]cloud_color[/code] and [code]wind_speed[/code] for the weather and the wind,
+## easing between values so a change rolls in. A sky shader runs on every renderer, the web export included, which
+## is what makes this the layer that works everywhere. The sky material is copied first, so the asset stays as is.
+
+@export var weather: WeatherFX
+@export var world_environment: WorldEnvironment ## Whose Environment holds the Binbun sky.
+@export var transition_seconds: float = 8.0 ## How long a change in the weather takes to roll across the sky.
+@export_group("Clear", "clear_")
+@export_range(0.0, 5.0) var clear_density: float = 0.5
+@export var clear_color: Color = Color(0.92, 0.92, 0.94)
+@export_group("Cloudy", "cloudy_")
+@export_range(0.0, 5.0) var cloudy_density: float = 1.4
+@export var cloudy_color: Color = Color(0.66, 0.68, 0.72)
+@export_group("Rain", "rain_")
+@export_range(0.0, 5.0) var rain_density: float = 2.0 ## Rain, snow and storms.
+@export var rain_color: Color = Color(0.45, 0.47, 0.52)
+@export_group("Wind", "wind_")
+@export var wind_scroll_scale: float = 0.01 ## Sky scroll per unit of the weather's wind strength.
+@export var wind_min_scroll: float = 0.03 ## The clouds never sit dead still.
+
+var target_density: float = 0.5
+var target_color: Color = Color(0.92, 0.92, 0.94)
+var target_wind: Vector2 = Vector2(0.05, 0.05)
+var _density: float = 0.5
+var _color: Color = Color(0.92, 0.92, 0.94)
+var _wind: Vector2 = Vector2(0.05, 0.05)
+
+
+func _ready() -> void:
+	var material: ShaderMaterial = sky_material()
+	if material == null:
+		set_process(false)
+		return
+	# Work on a copy: the sky and its material are shared assets on disk
+	var sky: Sky = world_environment.environment.sky.duplicate()
+	sky.sky_material = material.duplicate()
+	world_environment.environment.sky = sky
+	_density = target_density
+	_color = target_color
+	_wind = target_wind
+	if weather:
+		weather.weather_changed.connect(_on_weather_changed)
+		weather.wind_changed.connect(_on_wind_changed)
+		apply_weather(weather.active_weather)
+		_on_wind_changed(weather.current_wind_strength, weather.wind_direction)
+	snap()
+
+
+func _process(delta: float) -> void:
+	var weight: float = 1.0 if transition_seconds <= 0.0 else clampf(delta / transition_seconds, 0.0, 1.0)
+	_density = lerpf(_density, target_density, weight)
+	_color = _color.lerp(target_color, weight)
+	_wind = _wind.lerp(target_wind, weight)
+	_write()
+
+
+## The Binbun sky's material, or null when the environment's sky is something else.
+func sky_material() -> ShaderMaterial:
+	if world_environment == null or world_environment.environment == null or world_environment.environment.sky == null:
+		return null
+	var material: ShaderMaterial = world_environment.environment.sky.sky_material as ShaderMaterial
+	if material == null or material.get_shader_parameter(&"cloud_density") == null:
+		return null
+	return material
+
+
+func density_for(weather_type: ClimateData.WeatherType) -> float:
+	match weather_type:
+		ClimateData.WeatherType.BLUE_SKY:
+			return clear_density
+		ClimateData.WeatherType.CLOUDY:
+			return cloudy_density
+		_:
+			return rain_density
+
+
+func color_for(weather_type: ClimateData.WeatherType) -> Color:
+	match weather_type:
+		ClimateData.WeatherType.BLUE_SKY:
+			return clear_color
+		ClimateData.WeatherType.CLOUDY:
+			return cloudy_color
+		_:
+			return rain_color
+
+
+## Sets where the sky is heading for [param weather_type]; [method _process] eases it there.
+func apply_weather(weather_type: ClimateData.WeatherType) -> void:
+	target_density = density_for(weather_type)
+	target_color = color_for(weather_type)
+
+
+## Jumps the sky to its targets at once.
+func snap() -> void:
+	_density = target_density
+	_color = target_color
+	_wind = target_wind
+	_write()
+
+
+func _write() -> void:
+	var material: ShaderMaterial = sky_material()
+	if material == null:
+		return
+	material.set_shader_parameter(&"cloud_density", _density)
+	material.set_shader_parameter(&"cloud_color", _color)
+	material.set_shader_parameter(&"wind_speed", _wind)
+
+
+func _on_weather_changed(new_weather: ClimateData.WeatherType, _old_weather: ClimateData.WeatherType) -> void:
+	apply_weather(new_weather)
+
+
+## Scrolls the clouds down the wind, faster in a stronger one.
+func _on_wind_changed(strength: float, direction: Vector3) -> void:
+	var heading: Vector2 = Vector2(direction.x, direction.z)
+	if heading.length() < 0.001:
+		heading = target_wind.normalized() if target_wind.length() > 0.001 else Vector2.ONE.normalized()
+	target_wind = heading.normalized() * maxf(wind_min_scroll, strength * wind_scroll_scale)
