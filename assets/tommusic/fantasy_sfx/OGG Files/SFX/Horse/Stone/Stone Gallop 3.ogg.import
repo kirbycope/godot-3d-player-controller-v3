@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://bixd1dwhhcceo"
+path="res://.godot/imported/Stone Gallop 3.ogg-387d627ba23f19533f6f8fb99543b572.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/tommusic/fantasy_sfx/OGG Files/SFX/Horse/Stone/Stone Gallop 3.ogg"
+dest_files=["res://.godot/imported/Stone Gallop 3.ogg-387d627ba23f19533f6f8fb99543b572.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

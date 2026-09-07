@@ -12,6 +12,9 @@ extends CharacterBody3D
 ## frame while their own camera keeps its view; they play [member rider_animation] while up there.
 
 signal locomotion_requested(state_path: String, immediate: bool) ## Asks the rider to play an animation node.
+signal mounted ## A rider got on; horse.tscn wires it to MountAudio.
+signal dismounted ## The rider got off; wired to DismountAudio.
+signal jumped ## The rider hopped the horse; wired to JumpAudio.
 
 const BLEND_PATH: String = "parameters/Locomotion/blend_position"
 const JUMP_STATES: Array[StringName] = [&"JumpStart", &"JumpLoop", &"JumpEnd"]
@@ -130,6 +133,7 @@ func mount(_player: Player) -> void:
 	player = _player
 	_hide_prompt()
 	locomotion_requested.emit(rider_animation, true)
+	mounted.emit()
 
 
 ## The Player gets off beside the horse.
@@ -138,6 +142,7 @@ func dismount(_player: Player) -> void:
 	_player.velocity = Vector3.ZERO
 	speed = 0.0
 	player = null
+	dismounted.emit()
 
 
 ## Every physics frame with a rider: the move input drives the horse the way it drives the Player on foot, relative
@@ -169,6 +174,7 @@ func ride_input(_player: Player, event: InputEvent) -> void:
 	elif event.is_action_pressed(_action(keyboard_jump_action, pad_jump_action)) and is_on_floor() and in_water_area == null:
 		velocity.y = jump_speed
 		is_jumping = true
+		jumped.emit()
 
 
 func get_contextual_controls(_input_type: int) -> Dictionary:

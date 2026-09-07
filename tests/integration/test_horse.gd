@@ -166,3 +166,33 @@ func test_action_gets_off_beside_the_horse() -> void:
 	assert_lt(player.global_position.distance_to(horse.dismount_point.global_position), 0.75, "Beside the horse, give or take the settle onto the ground")
 	assert_true(player.camera.current)
 	assert_eq(horse.speed, 0.0)
+
+
+func test_mounting_jumping_and_dismounting_play_the_idle_horse_calls() -> void:
+	const IDLE_DIR: String = "res://assets/tommusic/fantasy_sfx/OGG Files/SFX/Horse/Idle/"
+	var mount_audio: AudioStreamPlayer3D = horse.get_node("MountAudio")
+	var jump_audio: AudioStreamPlayer3D = horse.get_node("JumpAudio")
+	var dismount_audio: AudioStreamPlayer3D = horse.get_node("DismountAudio")
+	assert_eq(mount_audio.stream.resource_path, IDLE_DIR + "Idle Horse 1.ogg", "Getting on is Idle Horse 1")
+	assert_eq(jump_audio.stream.resource_path, IDLE_DIR + "Idle Horse 2.ogg", "A jump is Idle Horse 2")
+	assert_eq(dismount_audio.stream.resource_path, IDLE_DIR + "Idle Horse 2.ogg", "and so is getting off")
+	for audio: AudioStreamPlayer3D in [mount_audio, jump_audio, dismount_audio]:
+		assert_false(audio.playing, audio.name + " is quiet with nobody on")
+	watch_signals(horse)
+	player.mount(horse)
+	await wait_physics_frames(2)
+	assert_signal_emitted(horse, "mounted")
+	assert_true(mount_audio.playing, "Mounting plays through the scene-wired MountAudio")
+	sender.action_down(horse.keyboard_jump_action)
+	await wait_physics_frames(1)
+	sender.action_up(horse.keyboard_jump_action)
+	assert_signal_emitted(horse, "jumped")
+	assert_true(jump_audio.playing, "The hop plays JumpAudio")
+	assert_false(dismount_audio.playing, "Nobody got off yet")
+	await wait_physics_frames(2)
+	sender.action_down("action")
+	await wait_physics_frames(2)
+	sender.action_up("action")
+	await wait_physics_frames(2)
+	assert_signal_emitted(horse, "dismounted")
+	assert_true(dismount_audio.playing, "Getting off plays DismountAudio")

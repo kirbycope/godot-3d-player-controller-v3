@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://e3fqqnievnlu"
+path="res://.godot/imported/Stone Trot Back Foot 3.ogg-a35e951e085acc047c42faf47043685e.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/tommusic/fantasy_sfx/OGG Files/SFX/Horse/Stone/Stone Trot Back Foot 3.ogg"
+dest_files=["res://.godot/imported/Stone Trot Back Foot 3.ogg-a35e951e085acc047c42faf47043685e.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
