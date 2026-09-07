@@ -1,12 +1,14 @@
 extends GutTest
 
-## Purpose: Pause shows a Spells button when its screen path is set; the Tree page draws the tree and unlocks on
-## Confirm, the Loadout page lifts an unlocked spell onto a wheel slot and clears slots, the pages switch with the
-## bumper actions and Back returns to Pause. The tree area keeps its size: a small tree is centred in it, a large
-## one scrolls, and nodes scrolled out of view lose their touch target. A node button wires its own signals in
-## its scene and fits its touch target to its size.
+## Purpose: the Spells screen opens on the Tree page and pauses the Player; the Tree page draws the tree and
+## unlocks on Confirm, the Loadout page lifts an unlocked spell onto a wheel slot and clears slots, the pages switch
+## with the bumper actions and Back hands over to the Player's pause menu. The tree area keeps its size: a small
+## tree is centred in it, a large one scrolls, and nodes scrolled out of view lose their touch target. A node button
+## wires its own signals in its scene and fits its touch target to its size. Contract tier: the screen is instanced
+## here and bound to the Player directly; opening it from the real Pause menu is covered in tests/integration.
 
 const PLAYER_SCENE: PackedScene = preload("res://addons/3d_player_controller/scenes/player.tscn")
+const SCREEN_SCENE: PackedScene = preload("res://addons/garp/scenes/spells_screen.tscn")
 const DEMO_TREE: SpellTree = preload("res://addons/garp/resources/spell_tree_demo.tres")
 const STEALTH: Ability = preload("res://addons/3d_player_controller/resources/abilities/stealth.tres")
 const HEAL: Ability = preload("res://addons/3d_player_controller/resources/abilities/heal.tres")
@@ -14,7 +16,6 @@ const HEAL: Ability = preload("res://addons/3d_player_controller/resources/abili
 var root: Node3D
 var player: Player
 var spellbook: Spellbook
-var pause: Node
 var screen: SpellsScreen
 var sender
 
@@ -32,11 +33,12 @@ func before_each() -> void:
 	root.add_child(player)
 	player.controls.current_input_type = Controls.InputType.KEYBOARD_MOUSE
 	spellbook = player.inventory.spellbook
-	pause = player.pause
+	screen = SCREEN_SCENE.instantiate()
+	screen.player = player
+	player.add_child(screen)
 	sender = InputSender.new(Input)
 	sender.set_auto_flush_input(true)
 	await wait_physics_frames(3)
-	screen = pause.spells_screen as SpellsScreen
 
 
 func after_each() -> void:
@@ -46,8 +48,7 @@ func after_each() -> void:
 
 
 func _open() -> void:
-	pause.show_menu()
-	pause._on_spells_pressed()
+	screen.show_menu()
 	await wait_physics_frames(1)
 
 
@@ -72,20 +73,20 @@ func _show_tree(tree: SpellTree) -> void:
 	await wait_process_frames(2)
 
 
-func test_pause_shows_the_spells_button_and_opens_the_screen() -> void:
-	assert_true(pause.spells_button.visible, "player.tscn sets the GARP spells screen path")
-	assert_not_null(screen)
-	assert_eq(screen.get_parent(), player)
+func test_show_menu_opens_on_the_tree_and_back_hands_over_to_pause() -> void:
+	assert_false(screen.visible, "Hidden until shown")
 	await _open()
 	assert_true(screen.visible)
-	assert_false(pause.visible)
+	assert_true(player.is_paused, "The screen pauses the Player like every menu layer")
 	assert_eq(screen.page, SpellsScreen.Page.TREE, "Opens on the tree")
 	assert_eq(screen.points_label.text, "Skill points: 3")
 	assert_true(screen.get_viewport().gui_get_focus_owner() is SpellNodeButton, "A tree node has focus")
 	screen._on_back_pressed()
 	await wait_physics_frames(1)
-	assert_true(pause.visible, "Back returns to Pause")
-	pause.hide_menu()
+	assert_false(screen.visible)
+	assert_true(player.pause.visible, "Back shows the Player's pause menu")
+	player.pause.hide_menu()
+	assert_false(player.is_paused)
 
 
 func test_the_tree_page_draws_the_nodes_and_unlocks_on_confirm() -> void:
@@ -113,7 +114,7 @@ func test_the_tree_page_draws_the_nodes_and_unlocks_on_confirm() -> void:
 	screen._on_unlock_pressed()
 	assert_true(spellbook.is_unlocked(HEAL), "The Unlock button unlocks the focused node")
 	assert_true(screen.unlock_button.disabled, "Nothing more to unlock here")
-	pause.hide_menu()
+	screen.hide_menu()
 
 
 func test_the_tree_page_lays_the_nodes_out_by_cell_like_the_editor_graph() -> void:
@@ -132,7 +133,7 @@ func test_the_tree_page_lays_the_nodes_out_by_cell_like_the_editor_graph() -> vo
 	var sideways: PackedVector2Array = SpellTree.connection_segment(Rect2(0, 0, 96, 80), Rect2(224, 0, 96, 80))
 	assert_eq(sideways[0], Vector2(96, 40), "Side by side, it runs edge to edge")
 	assert_eq(sideways[1], Vector2(224, 40))
-	pause.hide_menu()
+	screen.hide_menu()
 
 
 func test_the_loadout_page_places_and_clears_wheel_slots() -> void:
@@ -166,7 +167,7 @@ func test_the_loadout_page_places_and_clears_wheel_slots() -> void:
 	sender.action_up(screen.previous_page_action)
 	await wait_physics_frames(1)
 	assert_eq(screen.page, SpellsScreen.Page.TREE)
-	pause.hide_menu()
+	screen.hide_menu()
 
 
 func test_the_tree_area_keeps_its_size_centring_a_small_tree_and_scrolling_a_wide_one() -> void:
@@ -195,7 +196,7 @@ func test_the_tree_area_keeps_its_size_centring_a_small_tree_and_scrolling_a_wid
 	await wait_process_frames(2)
 	assert_lt(canvas.position.x, 0.0, "and it scrolls")
 	assert_eq(holder.size, holder_size, "without the area changing size")
-	pause.hide_menu()
+	screen.hide_menu()
 
 
 func test_a_node_button_wires_its_signals_in_its_scene() -> void:
@@ -227,7 +228,7 @@ func test_node_and_slot_buttons_fit_their_touch_targets_to_their_size() -> void:
 	await wait_process_frames(1)
 	assert_eq((slot.touch_button.shape as RectangleShape2D).size, slot.size, "A wheel slot's touch target follows its size too")
 	assert_eq(slot.touch_button.position, slot.size * 0.5)
-	pause.hide_menu()
+	screen.hide_menu()
 
 
 func test_nodes_scrolled_out_of_the_tree_area_lose_their_touch_target() -> void:
@@ -245,4 +246,4 @@ func test_nodes_scrolled_out_of_the_tree_area_lose_their_touch_target() -> void:
 	await wait_process_frames(2)
 	assert_false(top.touch_button.visible, "Scrolled to the bottom, the top node is out of view and cannot be tapped")
 	assert_true(bottom.touch_button.visible, "and the bottom node can")
-	pause.hide_menu()
+	screen.hide_menu()

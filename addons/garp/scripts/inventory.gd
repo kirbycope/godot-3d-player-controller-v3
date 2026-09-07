@@ -295,9 +295,9 @@ func apply_save(data: InventorySave) -> void:
 			var pickup: Equipment = scene.instantiate() as Equipment
 			if pickup == null:
 				continue
-			if pickup.equip(player):
-				instances.append(pickup.equipment_instance)
-			pickup.free()
+			var instance: Equipment = _equip_instance(pickup)
+			if instance:
+				instances.append(instance)
 		unequip_all()
 		for i: int in instances.size():
 			if i < data.equipment.size() and data.equipment[i].equipped:
@@ -514,9 +514,18 @@ func _add_equipment_item(item: Item) -> bool:
 	var pickup: Equipment = item.equipment_scene.instantiate() as Equipment
 	if pickup == null:
 		return false
-	var equipped: bool = pickup.equip(player)
+	return _equip_instance(pickup) != null
+
+
+## Equips a freshly instanced [param pickup] the way walking over it would: on the Player for the moment it
+## equips, since [method Equipment.equip] applies the scene's hand offsets only while the pickup is in the tree,
+## then freed. Returns the copy on the skeleton, or null when the equip was refused.
+func _equip_instance(pickup: Equipment) -> Equipment:
+	player.add_child(pickup)
+	var instance: Equipment = pickup.equipment_instance if pickup.equip(player) else null
+	player.remove_child(pickup)
 	pickup.free()
-	return equipped
+	return instance
 
 
 func _spawn_pickup(item: Item, count: int) -> Node3D:

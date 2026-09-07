@@ -3,7 +3,7 @@ extends GutTest
 ## Purpose: To test weapon cycling, backpack equipping and the radial menu hold timer.
 
 class InventoryTestBase:
-	extends IntegrationTestBase
+	extends GutTest
 
 	var PlayerScene = load("res://addons/3d_player_controller/scenes/player.tscn")
 	var root: Node3D = null

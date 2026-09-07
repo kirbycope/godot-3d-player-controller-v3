@@ -3,13 +3,15 @@
 The inventory and the spells of the [3D Player Controller](../3d_player_controller/README.md): the weapons and tools on the Player's skeleton (eight at most) with the radial quick-select, Breath of the Wild style tabs of stacked items shown in a grid that works with a pad, the keyboard, the mouse and touch alike, Zelda style pickups that wait for Action, a spell tree unlocked with skill points and a loadout of up to eight spells for the ability wheel, and a plain `.tres` save in `user://` that you are welcome to edit.
 
 > [!NOTE]
-> Requires `addons/3d_player_controller`, and the player controller requires GARP: `player.tscn` instances `scenes/inventory.tscn` as its `Inventory` node, so the two addons ship together. `Inventory`, `Spellbook`, `SpellTree`, `SpellNode`, `InventoryScreen`, `SpellsScreen`, `ItemPickup`, `Item`, `ItemSlot`, `EquipmentEntry` and `InventorySave` register their class names on their own; enabling the plugin adds the Spell Tree editor panel.
+> Requires `addons/3d_player_controller`, and the player controller requires GARP: `player.tscn` instances `scenes/inventory.tscn` as its `Inventory` node, so the two addons ship together. What GARP uses of the player controller is written down in `CONTRACT.md`, and the garp repo carries a contract stub at `addons/3d_player_controller` that implements exactly that surface (a Player that does not move, the menu layers, `Equipment.equip`, the two ability resources and the icons), so the addon is developed and tested there without the real addon. The tests come in two tiers: `tests/` is the contract tier and passes against the stub and the real addon alike; `tests/integration/` needs the real player controller (its state machine, skeleton, pause menu and ability wheel) and runs only in the player controller project. `Inventory`, `Spellbook`, `SpellTree`, `SpellNode`, `InventoryScreen`, `SpellsScreen`, `ItemPickup`, `Item`, `ItemSlot`, `EquipmentEntry` and `InventorySave` register their class names on their own; enabling the plugin adds the Spell Tree editor panel.
 
 ---
 
 ## Interactive Demo Scene
 
 Open and run **`res://addons/garp/scenes/demo/demo.tscn`**: a yard with apples, a mushroom, iron ore, wood logs, an old key and a wooden sword lying about, and the Player. Walk up to one and press Action to pick it up. Pause (Esc / Start), then Inventory: Q and T (or the bumpers) switch tabs, Confirm lifts a stack and drops it on another slot, Use and Drop act on the stack under the cursor, Back returns to Pause. The demo turns `persist` on, so what you carry is in `user://garp_inventory.tres` next time.
+
+The demo plays only in the player controller project. In the garp repo the scene opens on the contract stub's Player, which does not move, so nothing can be walked up to; that repo is for developing and contract-testing the addon, not for playing it.
 
 | Node | What it is |
 |---|---|
@@ -35,7 +37,7 @@ Open and run **`res://addons/garp/scenes/demo/demo.tscn`**: a yard with apples, 
 
 **Grid.** Every tab is `slots_per_tab` cells; Materials stack to their item's `max_stack` (999 for the demo ore), Key Items to 1. Confirm on a stack lifts it onto the cursor (it follows the mouse, or the focused cell on a pad or keyboard); Confirm on an empty cell moves it there, on the same item merges up to the limit, on anything else swaps. Cancel (B / Esc) puts a held stack back, or goes Back. Use emits `item_used(item, count)` and takes one from a consumable; Drop takes one and spawns an `ItemPickup` a metre in front of the Player, emitting `item_dropped(item, count, pickup)`. The Equipment tab lists what is on the skeleton and in the backpack: Confirm (or the Equip button) equips a stowed weapon or stows an equipped one, Drop puts its scene back in the world. `items_changed` fires after every stack change, `equipment_changed` after every equip.
 
-**Pickups.** Standing in a pickup's `PlayerDetection` shows the `ActionPrompt` and reads the Action button as "Pick Up"; Action puts what fits in the inventory and frees the pickup once it is empty. Equipment items are picked up by instancing their `equipment_scene` and equipping it, exactly as a walk-over pickup would; a second of the same type on the same bone is refused, so it stays on the ground.
+**Pickups.** Standing in a pickup's `PlayerDetection` shows the `ActionPrompt` and reads the Action button as "Pick Up"; Action puts what fits in the inventory and frees the pickup once it is empty. Equipment items are picked up by instancing their `equipment_scene` and equipping it, exactly as a walk-over pickup would (the instance is in the tree for the moment it equips, so the copy on the skeleton takes the scene's hand offsets; a save re-equips the same way); a second of the same type on the same bone is refused, so it stays on the ground.
 
 **Quick select.** Unchanged from the player controller: tapping `last_weapon` / `next_weapon` (J / L, D-pad) cycles the owned weapons, holding opens the `RadialMenu`, and `custom_cycle_handler` / `custom_item_provider` still let a vehicle radio borrow both. The wheel draws `max_items` (8) wedges at most, plus the Unarmed wedge on the weapon wheel; `Inventory.max_equipment` (8) refuses a ninth weapon or tool until one is dropped, and the Equipment tab shows only those slots.
 
@@ -51,9 +53,19 @@ Open and run **`res://addons/garp/scenes/demo/demo.tscn`**: a yard with apples, 
 
 ## Tests
 
+The contract tier, in either project (the garp repo's `.gutconfig.json` runs exactly this):
+
 ```powershell
 & 'C:\Godot\godot.exe' --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://addons/garp/tests -gexit
 ```
+
+Both tiers, in the player controller project:
+
+```powershell
+& 'C:\Godot\godot.exe' --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://addons/garp/tests,res://addons/garp/tests/integration -gexit
+```
+
+Every file under `tests/integration/` starts with a comment saying it needs the real player controller. A contract test may use only what `CONTRACT.md` lists; when GARP needs more, widen the contract and the stub first.
 
 ---
 

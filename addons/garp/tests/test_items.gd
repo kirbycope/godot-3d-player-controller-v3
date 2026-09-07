@@ -123,6 +123,7 @@ func test_an_equipment_item_goes_onto_the_skeleton() -> void:
 	assert_eq(inventory.add_item(SWORD), 1, "A second of the same type on the same bone is refused")
 	var sword: Equipment = inventory.get_equipment_by_type(Equipment.EquipmentType.SWORD_1H)
 	assert_eq(sword.scene_file_path, "res://addons/garp/scenes/demo/wooden_sword.tscn", "The copy remembers its scene")
+	assert_eq(sword.position, sword.position_offset, "It was in the tree while it equipped, so the hand offsets reached the copy")
 	var dropped: Node3D = inventory.drop_equipment(sword)
 	assert_true(dropped is Equipment, "Dropping equipment puts its scene back in the world")
 	assert_false(inventory.has_equipment(Equipment.EquipmentType.SWORD_1H))
@@ -131,10 +132,7 @@ func test_an_equipment_item_goes_onto_the_skeleton() -> void:
 	assert_eq(dropped.get_meta("dropped_by"), player, "Until the Player steps away")
 	player.warp_to(Transform3D(Basis(), player.global_position + Vector3(6.0, 0.0, 0.0)))
 	await wait_physics_frames(2)
-	assert_false(dropped.has_meta("dropped_by"), "Stepping away re-arms the pickup")
-	player.warp_to(Transform3D(Basis(), dropped.global_position))
-	await wait_physics_frames(2)
-	assert_true(inventory.has_equipment(Equipment.EquipmentType.SWORD_1H), "Walking back over it picks it up again")
+	assert_false(dropped.has_meta("dropped_by"), "Stepping away re-arms the pickup; walking back over it is the real addon's pickup, see tests/integration")
 
 
 func test_save_and_load_round_trip() -> void:
