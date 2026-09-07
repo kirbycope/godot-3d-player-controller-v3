@@ -57,8 +57,8 @@ script = ExtResource("2_ice")
 [node name="MeshInstance3D" parent="." index="1"]
 material_override = SubResource("StandardMaterial3D_shaft")
 
-[node name="Frost" type="GPUParticles3D" parent="." index="2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+[node name="Frost" type="GPUParticles3D" parent="Tip"]
+transform = Transform3D(1, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0)
 amount = 24
 lifetime = 0.7
 local_coords = true

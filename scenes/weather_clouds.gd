@@ -21,12 +21,17 @@ const SETTLED: float = 0.005 ## How close every channel must be to its target fo
 @export_group("Rain", "rain_")
 @export_range(0.0, 5.0) var rain_density: float = 2.0 ## Rain, snow and storms.
 @export var rain_color: Color = Color(0.45, 0.47, 0.52)
+@export_group("Night", "night_")
+@export var night_sun: DirectionalLight3D ## The sun; the clouds dim as it sets (empty: no dimming).
+@export_range(0.0, 1.0) var night_dim: float = 0.22 ## How bright the clouds stay with the sun fully down, as a share of the weather colour.
+@export_range(0.0, 1.0) var night_dusk_height: float = 0.25 ## Sun height (its -Z dropped on Y, 1 = overhead) above which the clouds are at full brightness; dimming runs from a little below the horizon up to here.
 @export_group("Wind", "wind_")
 @export var wind_scroll_scale: float = 0.002 ## Sky scroll per unit of the weather's wind strength; the shader scrolls at wind_speed * 0.1 per second, so a strong wind drifts the clouds rather than racing them.
 @export var wind_min_scroll: float = 0.006 ## The clouds never sit dead still.
 
 var target_density: float = 0.5
 var target_color: Color = Color(0.92, 0.92, 0.94)
+var _weather_type: ClimateData.WeatherType = ClimateData.WeatherType.BLUE_SKY ## The last weather applied, for the night retarget.
 var target_wind: Vector2 = Vector2(0.01, 0.01)
 var _density: float = 0.5
 var _color: Color = Color(0.92, 0.92, 0.94)
@@ -47,6 +52,9 @@ func _ready() -> void:
 	if weather:
 		weather.weather_changed.connect(_on_weather_changed)
 		weather.wind_changed.connect(_on_wind_changed)
+		var clock: Node = weather.get("date_and_time_node")
+		if is_instance_valid(clock) and clock.has_signal(&"time_changed"):
+			clock.connect(&"time_changed", _on_time_changed)
 		apply_weather(weather.active_weather)
 		_on_wind_changed(weather.current_wind_strength, weather.wind_direction)
 	snap()
@@ -93,10 +101,33 @@ func color_for(weather_type: ClimateData.WeatherType) -> Color:
 			return rain_color
 
 
+## How much of the weather colour the clouds keep for the sun's height: 1 by day, [member night_dim] with the sun down,
+## eased in between so dusk rolls in with the sky.
+func night_factor() -> float:
+	if not is_instance_valid(night_sun):
+		return 1.0
+	var sun_height: float = night_sun.global_basis.z.y # The light travels along -Z; up when the sun is above the horizon
+	var day: float = smoothstep(-0.08, maxf(night_dusk_height, 0.001), sun_height)
+	return lerpf(night_dim, 1.0, day)
+
+
+## The clock moved: the sun has, so the clouds head for their new brightness.
+func _on_time_changed(_current_time: float) -> void:
+	target_color = dimmed(color_for(_weather_type))
+	_start_easing()
+
+
+## [param color] with its brightness scaled by [method night_factor]; the alpha is left alone.
+func dimmed(color: Color) -> Color:
+	var factor: float = night_factor()
+	return Color(color.r * factor, color.g * factor, color.b * factor, color.a)
+
+
 ## Sets where the sky is heading for [param weather_type]; [method _process] eases it there.
 func apply_weather(weather_type: ClimateData.WeatherType) -> void:
 	target_density = density_for(weather_type)
-	target_color = color_for(weather_type)
+	_weather_type = weather_type
+	target_color = dimmed(color_for(weather_type))
 	_start_easing()
 
 

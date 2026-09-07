@@ -112,3 +112,27 @@ func test_it_stays_quiet_without_a_binbun_sky() -> void:
 	assert_null(quiet.sky_material())
 	assert_null(quiet._material)
 	assert_false(quiet.is_processing())
+
+
+func test_the_clouds_dim_with_the_sun_down() -> void:
+	var sun := DirectionalLight3D.new()
+	add_child_autofree(sun)
+	clouds.night_sun = sun
+	sun.rotation_degrees = Vector3(-60.0, 0.0, 0.0) # Light pointing down: the sun is well up
+	clouds.apply_weather(ClimateData.WeatherType.BLUE_SKY)
+	assert_almost_eq(clouds.night_factor(), 1.0, 0.001, "Full brightness with the sun overhead")
+	assert_eq(clouds.target_color, clouds.clear_color, "so the clouds head for the weather colour")
+	sun.rotation_degrees = Vector3(30.0, 0.0, 0.0) # Light pointing up: the sun is below the horizon
+	clouds._on_time_changed(2.0)
+	assert_almost_eq(clouds.night_factor(), clouds.night_dim, 0.001, "Night keeps only night_dim of the colour")
+	var dark: Color = Color(clouds.clear_color.r * clouds.night_dim, clouds.clear_color.g * clouds.night_dim, clouds.clear_color.b * clouds.night_dim, clouds.clear_color.a)
+	assert_eq(clouds.target_color, dark, "so the clouds head for a dark grey, not white, at full alpha")
+	assert_true(clouds.is_processing(), "and ease there")
+	sun.rotation_degrees = Vector3(-8.0, 0.0, 0.0) # Dusk: part way
+	clouds._on_time_changed(19.0)
+	assert_gt(clouds.night_factor(), clouds.night_dim)
+	assert_lt(clouds.night_factor(), 1.0)
+	clouds.night_sun = null
+	clouds._on_time_changed(3.0)
+	assert_almost_eq(clouds.night_factor(), 1.0, 0.001, "No sun given: no dimming")
+

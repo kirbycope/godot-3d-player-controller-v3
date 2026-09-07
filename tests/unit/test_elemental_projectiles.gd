@@ -4,7 +4,8 @@ extends GutTest
 ## rain) and only when they are the round's authority, the fire arrow's flame burning on where it sticks; an ice
 ## arrow over water is spent on an ice block at the surface, on ground it sticks like any arrow with its frost at
 ## the tip, and a copy off the authority freezes nothing. On the bow, the kind the next shot takes is nocked as a
-## frozen template copy, flame or frost running, that never lands.
+## frozen template copy, flame or frost running, that never lands. Both effects sit on the arrow's `Tip` marker, the
+## head end of the shaft, the flame at an eighth of the weather_fx flame's size with its particles riding the arrow.
 
 const FIRE_ARROW_SCENE: PackedScene = preload("res://scenes/fire_arrow.tscn")
 const ICE_ARROW_SCENE: PackedScene = preload("res://scenes/ice_arrow.tscn")
@@ -74,6 +75,36 @@ func _field() -> GrassField:
 	return field
 
 
+## [param vfx] sits on [param anchor]'s origin.
+func _assert_on(vfx: Node3D, anchor: Node3D, text: String) -> void:
+	assert_lt(vfx.global_position.distance_to(anchor.global_position), 0.001, "%s: %s is at %s, %s at %s" % [text, vfx.name, vfx.global_position, anchor.name, anchor.global_position])
+
+
+func test_the_flame_and_the_frost_sit_on_the_tip_marker_riding_the_arrow() -> void:
+	var fire: FireArrow = FIRE_ARROW_SCENE.instantiate()
+	var ice: IceArrow = ICE_ARROW_SCENE.instantiate()
+	for arrow: Arrow in [fire, ice]:
+		arrow.is_template = true
+		root.add_child(arrow)
+		var mesh: MeshInstance3D = arrow.get_node("MeshInstance3D")
+		var head: float = mesh.position.y + (mesh.mesh as CylinderMesh).height * 0.5
+		assert_almost_eq(arrow.tip.position.y, head, 0.02, "The Tip marker sits at the head end of the shaft, the +Y end that leads in flight")
+		assert_almost_eq(arrow.tip.position.x, 0.0, 0.001)
+		assert_almost_eq(arrow.tip.position.z, 0.0, 0.001)
+	assert_eq(fire.flame.get_parent(), fire.tip, "The flame is a child of the tip")
+	_assert_on(fire.flame, fire.tip, "at the tip")
+	assert_eq(fire.flame.scale, Vector3(0.125, 0.125, 0.125), "at half the size it had (an eighth of the weather_fx flame)")
+	assert_almost_eq(fire.flame.basis.y.normalized().dot(Vector3.DOWN), 1.0, 0.001, "rising back along the shaft from the head")
+	for particles: String in ["FlameParticles", "EmberParticles"]:
+		assert_true((fire.flame.get_node(particles) as GPUParticles3D).local_coords, "%s rides the arrow instead of trailing where it was emitted" % particles)
+	assert_eq(fire.flame.get_node("FlameParticles").amount, 32, "half the particles of the flame it replaces")
+	assert_eq(fire.flame.get_node("EmberParticles").amount, 12)
+	assert_eq(ice.frost.get_parent(), ice.tip, "The frost is a child of the tip")
+	_assert_on(ice.frost, ice.tip, "at the tip")
+	assert_true(ice.frost.local_coords)
+	assert_almost_eq(ice.frost.basis.y.normalized().dot(Vector3.DOWN), 1.0, 0.001, "drifting back along the shaft from the head")
+
+
 ## Fires [param scene] straight down from [param from]; an [param authority] other than 1 makes it a copy off the authority.
 func _shoot(scene: PackedScene, from: Vector3, authority: int = 1) -> Projectile:
 	var round: Projectile = scene.instantiate()
@@ -87,11 +118,11 @@ func test_a_fire_arrow_lights_the_grass_where_it_lands_and_burns_on_where_it_sti
 	var field: GrassField = _field()
 	await wait_physics_frames(2)
 	var arrow: FireArrow = _shoot(FIRE_ARROW_SCENE, Vector3(0.0, 3.0, 0.0))
-	assert_gt(arrow.flame.position.y, 0.4, "In flight the flame rides the tip")
+	_assert_on(arrow.flame, arrow.tip, "In flight the flame rides the tip")
 	await wait_physics_frames(20)
 	assert_gt(field._burning_cells.size(), 0, "The impact lights the grass around it")
 	assert_true(is_instance_valid(arrow) and arrow.has_hit and arrow.freeze, "The arrow sticks where it landed")
-	assert_eq(arrow.flame.position, Vector3.ZERO, "and its flame burns at the surface, not buried with the tip")
+	_assert_on(arrow.flame, arrow, "and its flame burns at the surface, not buried with the tip")
 	assert_true((arrow.flame.get_node("FlameParticles") as GPUParticles3D).emitting, "still alight while it is stuck")
 
 
@@ -128,7 +159,7 @@ func test_an_ice_arrow_over_water_is_spent_on_an_ice_block_at_the_surface() -> v
 	var pond: Buoyancy = _pond()
 	await wait_physics_frames(2)
 	var arrow: IceArrow = _shoot(ICE_ARROW_SCENE, Vector3(POND_X + 1.0, 3.0, -2.0))
-	assert_gt(arrow.frost.position.y, 0.4, "In flight the frost rides the tip")
+	_assert_on(arrow.frost, arrow.tip, "In flight the frost rides the tip")
 	assert_true(arrow.frost.emitting)
 	await wait_physics_frames(30)
 	var blocks: Array[Node] = get_tree().get_nodes_in_group(&"IceBlock")
@@ -147,7 +178,7 @@ func test_an_ice_arrow_sticks_in_the_ground_like_any_arrow() -> void:
 	await wait_physics_frames(20)
 	assert_true(is_instance_valid(arrow) and arrow.has_hit and arrow.freeze, "Stuck")
 	assert_eq(get_tree().get_nodes_in_group(&"IceBlock").size(), 0, "Ground does not freeze")
-	assert_eq(arrow.frost.position, Vector3.ZERO, "The frost sits where the arrow went in")
+	_assert_on(arrow.frost, arrow, "The frost sits where the arrow went in")
 	assert_true(arrow.frost.emitting, "and keeps drifting while it is stuck")
 
 
@@ -210,6 +241,7 @@ func test_selecting_fire_arrows_nocks_a_burning_template_and_running_out_puts_th
 	assert_false(nocked.visible, "hidden like the template it stands in for")
 	assert_false(bow.arrow_node.visible, "and the plain template stays hidden while it is nocked")
 	assert_true((nocked.flame.get_node("FlameParticles") as GPUParticles3D).emitting, "The flame burns while nocked")
+	_assert_on(nocked.flame, nocked.tip, "on the tip of the nocked arrow")
 	for shape: Node in nocked.find_children("*", "CollisionShape3D", true, false):
 		assert_true((shape as CollisionShape3D).disabled, "No collision on the string")
 	assert_false((nocked.get_node("Swish") as AudioStreamPlayer3D).playing, "No flight sound from a nocked arrow")
@@ -232,7 +264,7 @@ func test_a_nocked_ice_arrow_frosts_but_never_lands_or_freezes_the_water() -> vo
 	var nocked: IceArrow = bow.nocked_arrow as IceArrow
 	assert_not_null(nocked, "Ice arrows nock an ice arrow")
 	assert_true(nocked.frost.emitting, "The frost drifts off the nocked arrow")
-	assert_gt(nocked.frost.position.y, 0.4, "from the tip")
+	_assert_on(nocked.frost, nocked.tip, "from the tip")
 	watch_signals(nocked)
 	var floor_body: StaticBody3D = root.get_child(0) as StaticBody3D
 	nocked._on_body_entered(floor_body) # a contact against the bow's surroundings

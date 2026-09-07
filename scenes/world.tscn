@@ -508,10 +508,11 @@ environment = SubResource("Environment_aqk2v")
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
 shadow_enabled = true
 
-[node name="WeatherClouds" type="Node" parent="." node_paths=PackedStringArray("weather", "world_environment")]
+[node name="WeatherClouds" type="Node" parent="." node_paths=PackedStringArray("weather", "world_environment", "night_sun")]
 script = ExtResource("weather_clouds")
 weather = NodePath("../WeatherFX")
 world_environment = NodePath("../WorldEnvironment")
+night_sun = NodePath("DirectionalLight3D")
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=1256611108]
 navigation_mesh = SubResource("NavigationMesh_senyo")

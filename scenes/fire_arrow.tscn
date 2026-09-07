@@ -8,15 +8,17 @@
 script = ExtResource("2_fire")
 stuck_seconds = 3.0
 
-[node name="Flame" parent="." instance=ExtResource("3_flame")]
-transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0.5, 0)
+[node name="Flame" parent="Tip" instance=ExtResource("3_flame")]
+transform = Transform3D(0.125, 0, 0, 0, -0.125, 0, 0, 0, -0.125, 0, 0, 0)
 
-[node name="FlameParticles" parent="Flame" index="0"]
-amount = 64
+[node name="FlameParticles" parent="Tip/Flame" index="0"]
+amount = 32
+local_coords = true
 
-[node name="EmberParticles" parent="Flame" index="1"]
-amount = 24
+[node name="EmberParticles" parent="Tip/Flame" index="1"]
+amount = 12
+local_coords = true
 
 [connection signal="hit" from="." to="." method="_on_hit"]
 
-[editable path="Flame"]
+[editable path="Tip/Flame"]

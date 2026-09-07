@@ -561,7 +561,11 @@ func equip_from_backpack(attachment: BoneAttachment3D) -> void:
 func stow_conflicting(bone_name: String, is_exclusive: bool) -> void:
 	for item: Equipment in equipment.duplicate():
 		if item.bone_attachment_bone_name == bone_name or is_exclusive or item.is_exclusive:
-			_stow_attachment(item.get_parent() as BoneAttachment3D)
+			var attachment: BoneAttachment3D = item.get_parent() as BoneAttachment3D
+			if attachment:
+				_stow_attachment(attachment)
+			else:
+				remove_equipment(item) # Equipment added without a bone attachment (a bare test fixture) just leaves the set
 
 
 func unequip_all() -> void:

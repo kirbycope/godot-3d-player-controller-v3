@@ -1,11 +1,13 @@
 class_name IceArrow
 extends Arrow
-## A frost arrow: a cold mist rides its tip in flight and where it sticks. Landing over water it is spent on the
+## A frost arrow: a cold mist sits on the shaft's `Tip` marker, drifting back along the shaft from the head, in
+## flight, on the string and where it sticks. Landing over water it is spent on the
 ## spot and the surface there freezes into an [IceBlock]; on ground it sticks like any arrow. Only the arrow's
 ## authority freezes the water and is spent; the slab reaches every peer through the [ProjectileSpawner] (or is
 ## made locally without one), whose despawn then takes the other peers' copies of the arrow.
 
-@onready var frost: GPUParticles3D = $Frost
+@onready var tip: Marker3D = $Tip ## The head end of the shaft, where the frost sits.
+@onready var frost: GPUParticles3D = $Tip/Frost
 
 
 ## Wired to [signal Projectile.hit] in the scene, before the arrow decides whether to stick, so the copy can be
@@ -13,7 +15,7 @@ extends Arrow
 ## tip that is now buried in the target. Over water the slab forms where the flight line broke the surface
 ## ([method surface_entry]), the spot the crosshair was on.
 func _on_hit(_collider: Node, point: Vector3, _normal: Vector3) -> void:
-	frost.position = Vector3.ZERO
+	frost.global_position = global_position
 	if not is_multiplayer_authority():
 		return
 	var at: Vector3 = surface_entry(point)
