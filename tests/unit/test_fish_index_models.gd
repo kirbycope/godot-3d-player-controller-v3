@@ -22,6 +22,7 @@ func after_each() -> void:
 
 func test_the_old_boot_has_the_peasant_boot_model_and_the_index_turns_it() -> void:
 	assert_not_null(OLD_BOOT.model_scene, "The Old Boot names its model")
+	assert_null(OLD_BOOT.equipment_scene, "as a model to turn, not equipment to pick up")
 	assert_false(OLD_BOOT.model_scene.resource_path.ends_with("fish_model.tscn"), "A model of its own, not the placeholder")
 	index._show(OLD_BOOT)
 	await wait_process_frames(1)
@@ -46,9 +47,11 @@ func test_the_crate_of_boots_is_junk_that_outweighs_a_boot_eleven_times_and_is_l
 	assert_lt(crate.weight, OLD_BOOT.weight, "but rarer on the line: weight is the bite chance, not the kilograms")
 	assert_true(crate.describe_conditions().has("Weighs 15.0 kg"), "The index says what it weighs")
 	assert_eq(crate.category, Item.Category.MATERIALS, "Junk goes on the Materials tab")
-	assert_eq(OLD_BOOT.category, Item.Category.MATERIALS, "so does a boot saved without a category line: is_junk decides")
+	assert_eq(OLD_BOOT.category, Item.Category.MATERIALS, "and so does the boot: its resource says so, is_junk does not decide")
 	assert_false(OLD_BOOT.consumable)
 	assert_eq(OLD_BOOT.max_stack, 99)
+	assert_eq(crate.max_stack, 99)
+	assert_false(crate.consumable)
 	assert_true(index.species.has(crate), "The index lists it")
 	index._show(crate)
 	await wait_process_frames(1)
@@ -79,3 +82,19 @@ func test_a_species_without_a_model_still_shows_the_placeholder_fish() -> void:
 	assert_true(index.model_pivot.get_child(0) is FishModel)
 	assert_null(nameless.model_scene, "A species without a model of its own")
 	assert_not_null(CARP.get_model_scene(), "Every shipped species resolves to some model")
+
+
+func test_a_fresh_fish_takes_the_item_defaults_and_is_junk_only_flags_the_catch() -> void:
+	var fresh: Fish = Fish.new()
+	assert_eq(fresh.category, Item.Category.MATERIALS, "A Fish keeps Item's declared defaults, so a saved resource only stores what differs")
+	assert_eq(fresh.max_stack, 99)
+	assert_false(fresh.consumable)
+	fresh.category = Item.Category.FOOD
+	fresh.max_stack = 10
+	fresh.consumable = true
+	fresh.is_junk = true
+	assert_eq(fresh.category, Item.Category.FOOD, "is_junk leaves the Item fields alone")
+	assert_eq(fresh.max_stack, 10)
+	assert_true(fresh.consumable)
+	assert_almost_eq(fresh.roll_length(), 0.0, 0.001, "It only takes the length away")
+	assert_true(fresh.describe_conditions()[0].begins_with("Not a fish"))

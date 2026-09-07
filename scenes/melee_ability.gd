@@ -9,6 +9,8 @@ const SWING_HEIGHT: float = 1.25 ## Metres above the caster's feet the swing VFX
 @export var reach: float = 2.5 ## Metres from the caster a body must be within.
 @export_range(0.0, 360.0) var arc_degrees: float = 150.0 ## Width of the swing, centred on where the caster aims.
 
+var hit_anything: bool = false ## Whether the last [method impact] found a victim; a whiff plays no impact phase.
+
 
 func _init() -> void:
 	target_mode = Target.SELF
@@ -25,12 +27,15 @@ func activate(_caster: Node3D) -> bool:
 
 ## Hits every body in the arc; the impact position is the caster, so nothing here uses [param _target].
 func impact(caster: Node3D, _target: Node3D) -> void:
-	for victim: Node3D in find_victims(caster):
+	var victims: Array[Node3D] = find_victims(caster)
+	hit_anything = not victims.is_empty()
+	for victim: Node3D in victims:
 		super.impact(caster, victim)
 
 
 ## Every node with `take_hit` whose collider lies within [member reach] and [member arc_degrees] of the caster,
-## the caster itself aside.
+## the caster itself aside. Only bodies are asked for: zones, water, grass and pickups are areas, and they would
+## fill the query before an enemy in reach was returned.
 func find_victims(caster: Node3D) -> Array[Node3D]:
 	var found: Array[Node3D] = []
 	var world: World3D = caster.get_world_3d()
@@ -41,11 +46,11 @@ func find_victims(caster: Node3D) -> Array[Node3D]:
 	sphere.radius = reach
 	query.shape = sphere
 	query.transform = Transform3D(Basis(), caster.global_position + Vector3.UP * SWING_HEIGHT)
-	query.collide_with_areas = true
+	query.collide_with_areas = false
 	if caster is CollisionObject3D:
 		query.exclude = [(caster as CollisionObject3D).get_rid()]
 	var forward: Vector3 = forward_of(caster)
-	for hit: Dictionary in world.direct_space_state.intersect_shape(query, 32):
+	for hit: Dictionary in world.direct_space_state.intersect_shape(query, 64):
 		var node: Node = hit["collider"] as Node
 		while node and not node.has_method("take_hit"):
 			node = node.get_parent()
@@ -68,7 +73,7 @@ static func forward_of(caster: Node3D) -> Vector3:
 	return forward.normalized() if forward.length() > 0.01 else -caster.global_basis.z
 
 
-## The swing VFX plays at chest height, turned to face where the caster aims.
+## The swing VFX plays at chest height, turned to face where the caster aims, keeping the scale its scene authored.
 func spawn_phase(phase: Phase, at: Vector3, fx_root: Node3D, audio: AudioStreamPlayer3D, target: Node3D, destination: Vector3) -> Node3D:
 	var node: Node3D = super.spawn_phase(phase, at, fx_root, audio, target, destination)
 	if node == null or phase != Phase.CASTING:
@@ -76,5 +81,5 @@ func spawn_phase(phase: Phase, at: Vector3, fx_root: Node3D, audio: AudioStreamP
 	var caster: Node3D = fx_root.get_parent() as Node3D # The Player's AbilityFx sits right under it
 	if caster:
 		node.global_position = at + Vector3.UP * SWING_HEIGHT
-		node.global_basis = Basis.looking_at(forward_of(caster), Vector3.UP)
+		node.global_basis = Basis.looking_at(forward_of(caster), Vector3.UP).scaled(node.scale)
 	return node

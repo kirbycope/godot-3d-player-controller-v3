@@ -104,6 +104,26 @@ func test_the_fishing_posture_shows_only_when_still_or_with_the_line_out() -> vo
 	assert_true(rod.wants_posture(), "Stopped again, the posture comes back")
 
 
+func test_the_posture_follows_events_and_is_not_rewritten_every_frame() -> void:
+	var rod: FishingRod = await _equip_rod()
+	await wait_physics_frames(2)
+	assert_eq(player.animation_tree.get("parameters/EmoteSpineBlend2/blend_amount"), 1.0, "Standing still, the posture shows")
+	# Nothing changes, so nothing writes: a sentinel left on the blend survives the frames
+	player.animation_tree.set("parameters/EmoteSpineBlend2/blend_amount", 0.5)
+	await wait_physics_frames(3)
+	assert_eq(player.animation_tree.get("parameters/EmoteSpineBlend2/blend_amount"), 0.5, "The blend is only written when the posture changes")
+	rod.state = FishingRod.State.CASTING
+	assert_eq(player.animation_tree.get("parameters/EmoteSpineBlend2/blend_amount"), 1.0, "A fishing state change writes the posture at once")
+	player.animation_tree.set("parameters/EmoteSpineBlend2/blend_amount", 0.5)
+	rod.state = FishingRod.State.IDLE
+	assert_eq(player.animation_tree.get("parameters/EmoteSpineBlend2/blend_amount"), 1.0, "and so does the line coming back in")
+	player.animation_tree.set("parameters/EmoteSpineBlend2/blend_amount", 0.5)
+	player.is_sitting = true
+	player.state_changed.emit(player.current_state, player.current_state)
+	assert_eq(player.animation_tree.get("parameters/EmoteSpineBlend2/blend_amount"), 1.0, "and a Player state change")
+	player.is_sitting = false
+
+
 func test_rod_ignores_the_cast_from_a_menu() -> void:
 	var rod: FishingRod = await _equip_rod()
 	player.is_fishing = true

@@ -17,19 +17,8 @@ enum Rain { ANY, RAIN_ONLY, DRY_ONLY }
 @export var lures: Array[Item] = [] ## Lures it bites on; empty means any lure, or none at all.
 @export var biomes: Array[ClimateData.BiomeZone] = [] ## Waters in these biomes hold it; empty means any water.
 @export var attract_range: float = 1.0 ## Metres from the float within which a shadow takes the bait; further ones stay put.
-@export var is_junk: bool = false: ## Junk has no length and never shows a shadow; it is a material, kept in big stacks and not eaten.
-	set(value):
-		is_junk = value
-		category = Category.MATERIALS if value else Category.FOOD
-		consumable = not value
-		max_stack = 99 if value else 10
+@export var is_junk: bool = false ## Junk has no length and never shows a shadow. Its tab, stack size and whether it is eaten are the Item fields in the resource, as for any fish.
 @export var shadow_scale: float = 1.0 ## Size of the shadow it casts under the surface.
-
-
-func _init() -> void:
-	category = Category.FOOD
-	max_stack = 10
-	consumable = true
 
 
 ## Whether it bites at [param hour], in this weather, on [param lure] (null for a bare hook), in the water's

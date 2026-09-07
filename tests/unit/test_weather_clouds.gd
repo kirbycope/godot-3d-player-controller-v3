@@ -1,7 +1,8 @@
 extends GutTest
 
 ## Purpose: WeatherClouds drives the Binbun sky shader from the weather: cloud density and colour per weather type,
-## the wind's heading and strength as the scroll, eased over time, all on a copy of the sky so the asset is untouched.
+## the wind's heading and strength as the scroll, eased over time on a copy of the sky so the asset is untouched,
+## and it only processes while the sky is on its way somewhere.
 
 const SKY: Sky = preload("res://assets/BinbunSky/skies/stylized/stylized_sky_01.tres")
 
@@ -28,6 +29,19 @@ func test_it_works_on_a_copy_of_the_sky_and_starts_clear() -> void:
 	assert_ne(environment.environment.sky.sky_material, SKY.sky_material, "and so was its material")
 	assert_almost_eq(float(_param(&"cloud_density")), clouds.clear_density, 0.001)
 	assert_almost_eq(float(SKY.sky_material.get_shader_parameter(&"cloud_density")), 0.5, 0.001, "The asset keeps its own value")
+	assert_false(clouds.is_processing(), "Snapped to clear at start, nothing to ease")
+
+
+func test_it_writes_to_one_cached_copy_of_the_material() -> void:
+	var material: ShaderMaterial = clouds._material
+	assert_not_null(material)
+	assert_eq(material, environment.environment.sky.sky_material, "The copy in the environment is the one it holds")
+	clouds.apply_weather(ClimateData.WeatherType.CLOUDY)
+	clouds.snap()
+	clouds._on_wind_changed(5.0, Vector3.FORWARD)
+	await wait_process_frames(2)
+	assert_eq(clouds._material, material, "The same object across writes, never resolved again")
+	assert_eq(clouds.sky_material(), material)
 
 
 func test_density_and_colour_follow_the_weather() -> void:
@@ -47,10 +61,29 @@ func test_density_and_colour_follow_the_weather() -> void:
 func test_a_change_rolls_in_over_time() -> void:
 	clouds.transition_seconds = 0.5
 	clouds.apply_weather(ClimateData.WeatherType.CLOUDY)
+	assert_true(clouds.is_processing(), "A new target starts the easing")
 	await wait_process_frames(2)
 	var partway: float = _param(&"cloud_density")
 	assert_gt(partway, clouds.clear_density, "On its way")
 	assert_lt(partway, clouds.cloudy_density, "but not there yet")
+	assert_true(clouds.is_processing(), "and still easing")
+
+
+func test_it_settles_on_the_target_and_stops_processing() -> void:
+	clouds.transition_seconds = 0.02
+	clouds.apply_weather(ClimateData.WeatherType.RAIN)
+	clouds._on_wind_changed(10.0, Vector3(1.0, 0.0, 0.0))
+	assert_true(clouds.is_processing())
+	await wait_process_frames(20)
+	assert_false(clouds.is_processing(), "Within reach of the target it snaps and stops")
+	assert_eq(float(_param(&"cloud_density")), clouds.rain_density, "exactly on the target")
+	assert_eq(_param(&"cloud_color"), clouds.rain_color)
+	assert_eq(_param(&"wind_speed"), Vector2(10.0 * clouds.wind_scroll_scale, 0.0))
+	clouds.apply_weather(ClimateData.WeatherType.BLUE_SKY)
+	assert_true(clouds.is_processing(), "The next change starts it again")
+	clouds.snap()
+	assert_false(clouds.is_processing(), "and a snap ends it at once")
+	assert_eq(float(_param(&"cloud_density")), clouds.clear_density)
 
 
 func test_the_wind_scrolls_the_clouds() -> void:
@@ -74,6 +107,8 @@ func test_it_stays_quiet_without_a_binbun_sky() -> void:
 	quiet.world_environment = plain
 	add_child_autofree(quiet)
 	quiet.apply_weather(ClimateData.WeatherType.RAIN)
+	assert_false(quiet.is_processing(), "Nothing to drive, so nothing to ease")
 	quiet.snap()
 	assert_null(quiet.sky_material())
-	assert_false(quiet.is_processing(), "Nothing to drive")
+	assert_null(quiet._material)
+	assert_false(quiet.is_processing())

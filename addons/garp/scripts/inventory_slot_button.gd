@@ -23,10 +23,7 @@ func _ready() -> void:
 	touch_button.pressed.connect(func() -> void:
 		grab_focus()
 		slot_pressed.emit(index))
-	var shape: RectangleShape2D = touch_button.shape as RectangleShape2D
-	if shape:
-		shape.size = custom_minimum_size
-		touch_button.position = custom_minimum_size / 2.0
+	PlayerMenuLayer.fit_touch_buttons(self)
 
 
 ## Shows a stack, or empties the cell with null.

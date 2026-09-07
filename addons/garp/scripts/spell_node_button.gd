@@ -17,14 +17,7 @@ var ability: Ability
 
 
 func _ready() -> void:
-	pressed.connect(_on_pressed)
-	focus_entered.connect(_on_focus_entered)
-	mouse_entered.connect(grab_focus)
-	touch_button.pressed.connect(_on_touch_pressed)
-	var shape: RectangleShape2D = touch_button.shape as RectangleShape2D
-	if shape:
-		shape.size = custom_minimum_size
-		touch_button.position = custom_minimum_size / 2.0
+	PlayerMenuLayer.fit_touch_buttons(self) # The signals are wired in spell_node_button.tscn
 
 
 ## Shows [param node]'s spell in one of three looks: unlocked, unlockable now, or locked.

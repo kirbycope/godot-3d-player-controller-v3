@@ -86,6 +86,7 @@ layout_mode = 2
 text = "Skill points: 0"
 
 [node name="TreeHolder" type="ScrollContainer" parent="Panel/VBoxContainer/TreePage/TreeArea"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 follow_focus = true
@@ -93,6 +94,8 @@ follow_focus = true
 [node name="TreeCanvas" type="Control" parent="Panel/VBoxContainer/TreePage/TreeArea/TreeHolder"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
 
 [node name="TreeLines" type="Control" parent="Panel/VBoxContainer/TreePage/TreeArea/TreeHolder/TreeCanvas"]
 unique_name_in_owner = true
@@ -226,3 +229,5 @@ stretch_mode = 5
 [connection signal="mouse_entered" from="Panel/VBoxContainer/Actions/Back" to="Panel/VBoxContainer/Actions/Back" method="grab_focus"]
 [connection signal="pressed" from="Panel/VBoxContainer/Actions/Back" to="." method="_on_back_pressed"]
 [connection signal="pressed" from="Panel/VBoxContainer/Actions/Back/TouchScreenButton" to="." method="_on_back_touch_screen_button_pressed"]
+[connection signal="resized" from="Panel/VBoxContainer/TreePage/TreeArea/TreeHolder" to="." method="_update_touch_visibility"]
+[connection signal="item_rect_changed" from="Panel/VBoxContainer/TreePage/TreeArea/TreeHolder/TreeCanvas" to="." method="_update_touch_visibility"]

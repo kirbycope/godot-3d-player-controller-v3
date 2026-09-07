@@ -42,12 +42,18 @@ const CAST_ANIMATION: StringName = &"Fishing Cast/mixamo_com"
 @export var reel_sfx: AudioStream
 @export var catch_sfx: AudioStream
 
-var state: State = State.IDLE
+var state: State = State.IDLE: ## Every transition assigns it, so the posture follows the line on its own.
+	set(value):
+		if value == state:
+			return
+		state = value
+		update_posture()
 var bobber: Bobber
 var water: Buoyancy ## The water the float landed in.
 var hooked_fish: Fish ## The fish that will bite (chosen on landing) or is being reeled.
 var hooked_length: float = 0.0
 var emote_state: AnimationNodeStateMachinePlayback
+var _posture_shown: bool = false ## What the last posture write said, so the standing-still poll only writes on a change.
 
 @onready var animation_player: AnimationPlayer = $Sketchfab_Scene/AnimationPlayer
 @onready var rod_tip: Marker3D = %RodTip ## Rides the pole's last bone, so the line starts at the bending tip.
@@ -68,12 +74,14 @@ func _ready() -> void:
 	if thread:
 		thread.visible = false
 	if not player or not is_multiplayer_authority():
+		set_physics_process(false)
 		return
 	emote_state = player.animation_tree.get(Player.EMOTE_STATE_PLAYBACK_PATH)
 	player.inventory.equipment_changed.connect(_on_equipment_changed)
 	player.inventory.item_used.connect(_on_item_used)
 	player.animation_tree.animation_finished.connect(_on_animation_finished)
 	player.state_changed.connect(_on_player_state_changed)
+	player.locomotion_node_changed.connect(_on_locomotion_node_changed)
 	player.controls.input_type_changed.connect(_on_input_type_changed)
 	_on_equipment_changed()
 
@@ -355,9 +363,9 @@ func _play(stream: AudioStream) -> void:
 		audio.play()
 
 
-## Keeps the posture right for the equipped copy every frame; the world pickup has no Player.
-func _process(_delta: float) -> void:
-	if player and player.is_fishing and is_multiplayer_authority():
+## Standing still has no signal, so it alone is polled: only with the line in, and the blend is written on a change.
+func _physics_process(_delta: float) -> void:
+	if state == State.IDLE and is_instance_valid(player) and player.is_fishing and wants_posture() != _posture_shown:
 		update_posture()
 
 
@@ -365,15 +373,27 @@ func _process(_delta: float) -> void:
 ## or sits still; on the move the great-sword locomotion carries the rod on its own, so the walk and run read right.
 ## Another emote or a spell's channel pose on that layer is left to its own owner.
 func update_posture() -> void:
-	if emote_state == null or String(emote_state.get_current_node()) not in FISHING_EMOTES:
+	if not is_instance_valid(player) or not player.is_fishing or emote_state == null:
 		return
-	player.animation_tree.set("parameters/EmoteSpineBlend2/blend_amount", 1.0 if wants_posture() else 0.0)
+	if String(emote_state.get_current_node()) not in FISHING_EMOTES:
+		return
+	show_posture(wants_posture())
+
+
+## Writes the posture blend and remembers it.
+func show_posture(shown: bool) -> void:
+	if not is_instance_valid(player):
+		return
+	_posture_shown = shown
+	player.animation_tree.set("parameters/EmoteSpineBlend2/blend_amount", 1.0 if shown else 0.0)
 
 
 ## Whether the fishing posture belongs on the body right now.
 func wants_posture() -> bool:
 	if state != State.IDLE:
 		return true
+	if not is_instance_valid(player):
+		return false
 	if player.is_sitting:
 		return true
 	return not player.has_move_input and Vector2(player.velocity.x, player.velocity.z).length() < 0.5
@@ -382,7 +402,7 @@ func wants_posture() -> bool:
 ## Holds the fishing upper-body posture while a rod is equipped; unequipping pulls the line in.
 func _on_equipment_changed() -> void:
 	player.is_fishing = player.inventory.has_equipment(Equipment.EquipmentType.FISHING_ROD)
-	player.animation_tree.set("parameters/EmoteSpineBlend2/blend_amount", 1.0 if player.is_fishing else 0.0)
+	show_posture(player.is_fishing)
 	if player.is_fishing:
 		emote_state.start("FishingIdle")
 		update_labels()
@@ -396,13 +416,27 @@ func _on_equipment_changed() -> void:
 			state_node._on_input_type_changed(player.controls.current_input_type)
 
 
-## Any non-fishing emote hands back to the fishing posture once it ends.
+## Any non-fishing emote hands back to the fishing posture once it ends. The emote's owner drops the blend as it
+## ends, so the posture is put back on the next physics frame, once that write is behind.
 func _on_animation_finished(_animation_name: StringName) -> void:
-	if player.is_fishing and String(emote_state.get_current_node()) not in FISHING_EMOTES:
+	if is_instance_valid(player) and player.is_fishing and String(emote_state.get_current_node()) not in FISHING_EMOTES:
 		emote_state.start("FishingIdle")
+		if is_inside_tree():
+			get_tree().physics_frame.connect(_reapply_posture, CONNECT_ONE_SHOT)
+
+
+func _reapply_posture() -> void:
+	if is_instance_valid(player) and player.is_fishing:
+		show_posture(wants_posture())
+
+
+## Wired to the Player's locomotion_node_changed: Idle against Walk or Run says whether the body moves.
+func _on_locomotion_node_changed(_state_path: String) -> void:
+	update_posture()
 
 
 ## Jumping, falling, swimming, driving and the like pull the line in; stopping a sprint or crouching does not.
 func _on_player_state_changed(_from_state: int, to_state: int) -> void:
 	if state != State.IDLE and not to_state in LINE_STATES:
 		retract()
+	update_posture()

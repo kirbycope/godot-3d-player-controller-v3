@@ -1,9 +1,8 @@
-[gd_resource type="Resource" script_class="Fish" format=3 uid="uid://bxtrlsnw7cbcc"]
+[gd_resource type="Resource" script_class="Fish" load_steps=4 format=3 uid="uid://bxtrlsnw7cbcc"]
 
 [ext_resource type="PackedScene" uid="uid://c7nro8e27sqa7" path="res://assets/modular_character_outfits/Modular Parts/old_boot.gltf" id="1_1xiku"]
 [ext_resource type="Script" uid="uid://d1uyxp1uskyes" path="res://scenes/fish.gd" id="1_fish"]
 [ext_resource type="Texture2D" uid="uid://0slgq4213nvv" path="res://resources/fish/boot.svg" id="2_icon"]
-[ext_resource type="Script" uid="uid://bo3enaj37i6y0" path="res://addons/garp/scripts/item.gd" id="3_6txbw"]
 
 [resource]
 script = ExtResource("1_fish")
@@ -18,5 +17,7 @@ id = &"old_boot"
 display_name = "Old Boot"
 description = "Somebody's left boot. It has been down there a while."
 icon = ExtResource("2_icon")
-equipment_scene = ExtResource("1_1xiku")
+category = 1
+max_stack = 99
+consumable = false
 model_scene = ExtResource("1_1xiku")

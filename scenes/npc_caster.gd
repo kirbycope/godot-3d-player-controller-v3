@@ -97,8 +97,11 @@ func _activate(ability: Ability) -> void:
 	ability_activated.emit(ability)
 
 
+## The impact phase; a melee swing that reports no `hit_anything` plays no impact, as the Player's does not.
 func _land(ability: Ability, target: Node3D, at: Vector3) -> void:
 	ability.impact(caster, target)
+	if ability.get(&"hit_anything") == false:
+		return
 	_play(ability, Ability.Phase.IMPACT, at)
 
 

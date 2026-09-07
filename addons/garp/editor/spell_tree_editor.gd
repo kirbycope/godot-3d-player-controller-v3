@@ -7,8 +7,8 @@ extends Control
 ## Drag a spell to move it and it snaps to the nearest free cell. With Connect on, drag from the spell to unlock
 ## first onto the spell it unlocks and a line with an arrow joins them (a [member SpellNode.requires] entry).
 ## Click a spell or a line to select it; Remove (or Delete) takes it away and Cost sets the selected spell's price.
-## The palette on the left lists every [Ability] resource in the project; Refresh rescans the disk, double-click,
-## Add or a drag onto the canvas puts one on the tree, and Save writes the [code].tres[/code].
+## The palette on the left lists every [Ability] resource the editor's file index knows; Refresh rescans it,
+## double-click, Add or a drag onto the canvas puts one on the tree, and Save writes the [code].tres[/code].
 ##
 ## The plugin hands in the editor's undo/redo so every edit is undoable; without one (in tests) edits apply at once.
 
@@ -24,7 +24,6 @@ const SELECTED_COLOR: Color = Color(0.93, 0.78, 0.35)
 const LINE_WIDTH: float = 3.0
 const LINK_PICK_DISTANCE: float = 8.0 ## Pixels from a line that still count as clicking it.
 const NO_LINK: Vector2i = Vector2i(-1, -1)
-const SKIP_FOLDERS: PackedStringArray = ["addons/gut"] ## Never hold abilities; skipped by the disk scan.
 
 var tree: SpellTree: ## The tree on the canvas; null clears it.
 	set(value):
@@ -317,7 +316,7 @@ func save_to(path: String) -> bool:
 	if error != OK:
 		_set_status("Could not save %s: %s" % [path, error_string(error)])
 		return false
-	if tree.resource_path.is_empty():
+	if tree.resource_path.is_empty() or tree.resource_path.contains("::"): # No file yet, or built into another one
 		tree.take_over_path(path)
 	dirty = false
 	_refresh_state()
@@ -344,34 +343,42 @@ func refresh_palette() -> void:
 		palette.set_item_metadata(index, path)
 		palette.set_item_tooltip(index, path)
 	_mark_palette()
+	if palette.item_count == 0:
+		_set_status("No Ability resources found; the palette lists what the editor's file index knows")
 
 
-## Every .tres under res:// whose script class is an Ability (or extends one), read off the file header so nothing loads.
+## Every .tres whose script class is an Ability (or extends one), found through the editor's file index instead of
+## walking the disk. The index knows a script-backed .tres only by its native type, Resource (materials, meshes and
+## the like carry their own and are passed over), so just those few headers are read for their script_class; nothing
+## loads. Outside the editor there is no index and the list is empty.
 func scan_ability_paths() -> PackedStringArray:
-	_class_bases.clear()
-	for entry: Dictionary in ProjectSettings.get_global_class_list():
-		_class_bases[entry["class"]] = entry["base"]
 	var found: PackedStringArray = []
-	_scan_folder("res://", found)
+	if not Engine.is_editor_hint():
+		return found
+	var filesystem: EditorFileSystem = EditorInterface.get_resource_filesystem()
+	if filesystem == null:
+		return found
+	_load_class_bases()
+	_scan_index(filesystem.get_filesystem(), found)
 	return found
 
 
-func _scan_folder(folder: String, found: PackedStringArray) -> void:
-	var dir: DirAccess = DirAccess.open(folder)
-	if dir == null:
+func _scan_index(folder: EditorFileSystemDirectory, found: PackedStringArray) -> void:
+	if folder == null:
 		return
-	dir.include_hidden = false
-	dir.list_dir_begin()
-	var entry: String = dir.get_next()
-	while not entry.is_empty():
-		var path: String = folder.path_join(entry)
-		if dir.current_is_dir():
-			if not entry.begins_with(".") and not SKIP_FOLDERS.has(path.trim_prefix("res://")):
-				_scan_folder(path, found)
-		elif entry.get_extension() == "tres" and _extends_ability(_header_script_class(path)):
+	for i: int in folder.get_file_count():
+		var path: String = folder.get_file_path(i)
+		if path.get_extension() == "tres" and folder.get_file_type(i) == "Resource" and _extends_ability(_header_script_class(path)):
 			found.append(path)
-		entry = dir.get_next()
-	dir.list_dir_end()
+	for i: int in folder.get_subdir_count():
+		_scan_index(folder.get_subdir(i), found)
+
+
+## Global class name -> base, from the project's class list, so [method _extends_ability] can follow a chain.
+func _load_class_bases() -> void:
+	_class_bases.clear()
+	for entry: Dictionary in ProjectSettings.get_global_class_list():
+		_class_bases[entry["class"]] = entry["base"]
 
 
 ## The script_class attribute of a .tres header, or "" when it has none.
@@ -510,11 +517,15 @@ func _draw_canvas() -> void:
 	if tree == null:
 		return
 	for link: Vector2i in get_links():
+		var from: Rect2 = _node_rect(link.x)
+		var to: Rect2 = _node_rect(link.y)
+		if not from.has_area() or not to.has_area():
+			continue
 		var color: Color = SELECTED_COLOR if link == selected_link else LINE_COLOR
-		SpellTree.draw_connection(canvas, _node_rect(link.x), _node_rect(link.y), color, LINE_WIDTH * ui_scale)
-	if _link_from != -1:
+		SpellTree.draw_connection(canvas, from, to, color, LINE_WIDTH * ui_scale)
+	if _link_from != -1 and _node_rect(_link_from).has_area():
 		canvas.draw_line(_node_rect(_link_from).get_center(), _pointer, SELECTED_COLOR, LINE_WIDTH * ui_scale, true)
-	if selected_index != -1:
+	if selected_index != -1 and _node_rect(selected_index).has_area():
 		canvas.draw_rect(_node_rect(selected_index).grow(3.0 * ui_scale), SELECTED_COLOR, false, 2.0 * ui_scale)
 
 
@@ -533,7 +544,11 @@ func _on_canvas_input(event: InputEvent) -> void:
 	elif event is InputEventMouseMotion:
 		_pointer = (event as InputEventMouseMotion).position
 		if _drag_index != -1:
-			get_node_button(_drag_index).position = _pointer - _drag_offset
+			var dragged: SpellNodeButton = get_node_button(_drag_index)
+			if dragged:
+				dragged.position = _pointer - _drag_offset
+			else:
+				_drag_index = -1 # The button went away under the mouse; nothing to carry
 			canvas.queue_redraw()
 		elif _link_from != -1:
 			canvas.queue_redraw()
@@ -569,11 +584,12 @@ func _release(at: Vector2) -> void:
 	if _drag_index != -1:
 		var index: int = _drag_index
 		_drag_index = -1
-		var node: SpellNode = tree.nodes[index]
-		var cell: Vector2i = _cell_of(get_node_button(index).position)
-		if not move_node(index, cell):
-			_set_status("That cell already has a spell")
 		var button: SpellNodeButton = get_node_button(index)
+		if button == null:
+			return
+		if not move_node(index, _cell_of(button.position)):
+			_set_status("That cell already has a spell")
+		button = get_node_button(index) # A move rebuilt the canvas
 		if button:
 			button.position = _offset_of(Vector2i(tree.nodes[index].column, tree.nodes[index].row))
 		canvas.queue_redraw()
@@ -586,8 +602,11 @@ func _release(at: Vector2) -> void:
 		canvas.queue_redraw()
 
 
+## The spell's button on the canvas, or an empty [Rect2] (no area) when it has none, such as a node added without a rebuild.
 func _node_rect(index: int) -> Rect2:
 	var button: SpellNodeButton = get_node_button(index)
+	if button == null:
+		return Rect2()
 	return Rect2(button.position, button.size * ui_scale)
 
 
@@ -605,7 +624,11 @@ func _node_at_point(at: Vector2) -> int:
 ## The line within [constant LINK_PICK_DISTANCE] of [param at], or [constant NO_LINK].
 func _link_at_point(at: Vector2) -> Vector2i:
 	for link: Vector2i in get_links():
-		var segment: PackedVector2Array = SpellTree.connection_segment(_node_rect(link.x), _node_rect(link.y))
+		var from: Rect2 = _node_rect(link.x)
+		var to: Rect2 = _node_rect(link.y)
+		if not from.has_area() or not to.has_area():
+			continue
+		var segment: PackedVector2Array = SpellTree.connection_segment(from, to)
 		if Geometry2D.get_closest_point_to_segment(at, segment[0], segment[1]).distance_to(at) <= LINK_PICK_DISTANCE * ui_scale:
 			return link
 	return NO_LINK
@@ -664,16 +687,12 @@ func _apply_nodes(target: SpellTree, nodes: Array[SpellNode]) -> void:
 	_after_edit(target)
 
 
+## Marks the edit and tells the tree it changed; the tree setter wired [signal Resource.changed] to [method rebuild],
+## so the canvas redraws right here, before this returns.
 func _after_edit(target: SpellTree) -> void:
 	if target == tree:
 		dirty = true
-		if tree.changed.is_connected(rebuild):
-			tree.changed.disconnect(rebuild)
-		target.emit_changed()
-		tree.changed.connect(rebuild)
-		rebuild()
-	else:
-		target.emit_changed()
+	target.emit_changed()
 	modified.emit()
 
 

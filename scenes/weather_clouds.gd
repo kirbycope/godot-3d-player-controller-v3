@@ -4,6 +4,10 @@ extends Node
 ## its [code]cloud_density[/code], [code]cloud_color[/code] and [code]wind_speed[/code] for the weather and the wind,
 ## easing between values so a change rolls in. A sky shader runs on every renderer, the web export included, which
 ## is what makes this the layer that works everywhere. The sky material is copied first, so the asset stays as is.
+## It only processes while the sky is on its way somewhere: once every value is within [constant SETTLED] of its
+## target it snaps there, writes once and stops until the next change.
+
+const SETTLED: float = 0.005 ## How close every channel must be to its target for the easing to stop.
 
 @export var weather: WeatherFX
 @export var world_environment: WorldEnvironment ## Whose Environment holds the Binbun sky.
@@ -27,6 +31,7 @@ var target_wind: Vector2 = Vector2(0.05, 0.05)
 var _density: float = 0.5
 var _color: Color = Color(0.92, 0.92, 0.94)
 var _wind: Vector2 = Vector2(0.05, 0.05)
+var _material: ShaderMaterial ## This node's own copy of the sky material, the one the values are written to.
 
 
 func _ready() -> void:
@@ -36,11 +41,9 @@ func _ready() -> void:
 		return
 	# Work on a copy: the sky and its material are shared assets on disk
 	var sky: Sky = world_environment.environment.sky.duplicate()
-	sky.sky_material = material.duplicate()
+	_material = material.duplicate()
+	sky.sky_material = _material
 	world_environment.environment.sky = sky
-	_density = target_density
-	_color = target_color
-	_wind = target_wind
 	if weather:
 		weather.weather_changed.connect(_on_weather_changed)
 		weather.wind_changed.connect(_on_wind_changed)
@@ -50,6 +53,9 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	if _is_settled():
+		snap()
+		return
 	var weight: float = 1.0 if transition_seconds <= 0.0 else clampf(delta / transition_seconds, 0.0, 1.0)
 	_density = lerpf(_density, target_density, weight)
 	_color = _color.lerp(target_color, weight)
@@ -91,23 +97,35 @@ func color_for(weather_type: ClimateData.WeatherType) -> Color:
 func apply_weather(weather_type: ClimateData.WeatherType) -> void:
 	target_density = density_for(weather_type)
 	target_color = color_for(weather_type)
+	_start_easing()
 
 
-## Jumps the sky to its targets at once.
+## Jumps the sky to its targets at once and stops easing.
 func snap() -> void:
 	_density = target_density
 	_color = target_color
 	_wind = target_wind
 	_write()
+	set_process(false)
+
+
+func _start_easing() -> void:
+	set_process(_material != null)
+
+
+func _is_settled() -> bool:
+	var gap: Color = target_color - _color
+	return absf(target_density - _density) < SETTLED \
+		and Vector3(gap.r, gap.g, gap.b).length() < SETTLED \
+		and (target_wind - _wind).length() < SETTLED
 
 
 func _write() -> void:
-	var material: ShaderMaterial = sky_material()
-	if material == null:
+	if _material == null:
 		return
-	material.set_shader_parameter(&"cloud_density", _density)
-	material.set_shader_parameter(&"cloud_color", _color)
-	material.set_shader_parameter(&"wind_speed", _wind)
+	_material.set_shader_parameter(&"cloud_density", _density)
+	_material.set_shader_parameter(&"cloud_color", _color)
+	_material.set_shader_parameter(&"wind_speed", _wind)
 
 
 func _on_weather_changed(new_weather: ClimateData.WeatherType, _old_weather: ClimateData.WeatherType) -> void:
@@ -120,3 +138,4 @@ func _on_wind_changed(strength: float, direction: Vector3) -> void:
 	if heading.length() < 0.001:
 		heading = target_wind.normalized() if target_wind.length() > 0.001 else Vector2.ONE.normalized()
 	target_wind = heading.normalized() * maxf(wind_min_scroll, strength * wind_scroll_scale)
+	_start_easing()

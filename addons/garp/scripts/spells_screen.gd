@@ -30,6 +30,7 @@ var _slot_buttons: Array[InventorySlotButton] = []
 @onready var tree_page: Control = %TreePage
 @onready var loadout_page: Control = %LoadoutPage
 @onready var points_label: Label = %PointsLabel
+@onready var tree_holder: ScrollContainer = %TreeHolder ## The fixed tree area: the canvas is centred inside it when smaller, scrolls when larger.
 @onready var tree_canvas: Control = %TreeCanvas ## Spans the grid; the node buttons sit on it at their cells, like the editor graph.
 @onready var tree_lines: Control = %TreeLines
 @onready var detail_icon: TextureRect = %DetailIcon
@@ -97,6 +98,19 @@ func _build_tree() -> void:
 		button.node_pressed.connect(_on_node_pressed)
 		button.node_focused.connect(_on_node_focused)
 		_node_buttons[node.ability] = button
+	_update_touch_visibility()
+
+
+## A [TouchScreenButton] ignores the holder's clipping, so a node scrolled out of view would still take taps over
+## the tabs and the action row; hiding it turns its hit test off. Wired to the holder's resized and the canvas's
+## item_rect_changed (a scroll moves the canvas) in spells_screen.tscn, and called after every rebuild.
+func _update_touch_visibility() -> void:
+	if not is_instance_valid(tree_holder):
+		return
+	var shown: Rect2 = tree_holder.get_global_rect()
+	for button: SpellNodeButton in _node_buttons.values():
+		if is_instance_valid(button) and is_instance_valid(button.touch_button):
+			button.touch_button.visible = shown.intersects(button.get_global_rect())
 
 
 func _input(event: InputEvent) -> void:

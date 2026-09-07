@@ -1,8 +1,9 @@
 extends Control
 ## Runs the GDScript DOOM raycaster on its own for Run Current Scene: the 320x200 screen scales to the window at
 ## 16:10 with crisp pixels, the addon's controls register the move, look and shoot actions, every input is pushed
-## into the screen's viewport, the mouse is captured for turning and Escape lets it go (a click takes it back).
-## The [Doom] inside has [member Doom.use_engine] off, so it is the raycaster even where the PureDoom library is built.
+## into the screen's viewport while the mouse is captured for turning, and Escape lets it go (a click takes it
+## back without reaching the game). The [Doom] inside has [member Doom.use_engine] off, so it is the raycaster even
+## where the PureDoom library is built.
 
 const CONTROLS_SCENE: PackedScene = preload("res://addons/3d_player_controller/scenes/controls.tscn")
 
@@ -26,6 +27,14 @@ func _input(event: InputEvent) -> void:
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if captured else Input.MOUSE_MODE_CAPTURED
 		get_viewport().set_input_as_handled()
 		return
-	if event is InputEventMouseButton and (event as InputEventMouseButton).pressed and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
-		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	if not _mouse_captured():
+		if event is InputEventMouseButton and (event as InputEventMouseButton).pressed:
+			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED # The click takes the mouse back; the game never sees it fire
+			get_viewport().set_input_as_handled()
+		return
 	viewport.push_input(event) # The screen's own viewport gets no input on its own
+
+
+## Whether the mouse is captured for turning; the game only gets input while it is.
+func _mouse_captured() -> bool:
+	return Input.mouse_mode == Input.MOUSE_MODE_CAPTURED
