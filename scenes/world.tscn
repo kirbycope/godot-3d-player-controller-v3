@@ -71,7 +71,6 @@
 [ext_resource type="Resource" path="res://resources/fish/old_boot.tres" id="fish_boot"]
 [ext_resource type="Resource" path="res://resources/fish/boot_crate.tres" id="fish_crate"]
 [ext_resource type="Script" path="res://scenes/weather_clouds.gd" id="weather_clouds"]
-[ext_resource type="Script" uid="uid://djusduuxf0voj" path="res://addons/SunshineClouds2/SunshineCloudsDriver.gd" id="sunshine_clouds_driver"]
 [ext_resource type="Sky" path="res://assets/BinbunSky/skies/stylized/stylized_sky_01.tres" id="binbun_sky"]
 [ext_resource type="Resource" path="res://resources/fish/carp.tres" id="fish_carp"]
 [ext_resource type="Resource" path="res://resources/fish/catfish.tres" id="fish_catfish"]
@@ -509,19 +508,10 @@ environment = SubResource("Environment_aqk2v")
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
 shadow_enabled = true
 
-[node name="WeatherClouds" type="Node" parent="." node_paths=PackedStringArray("weather", "world_environment", "volumetric_clouds")]
+[node name="WeatherClouds" type="Node" parent="." node_paths=PackedStringArray("weather", "world_environment")]
 script = ExtResource("weather_clouds")
 weather = NodePath("../WeatherFX")
 world_environment = NodePath("../WorldEnvironment")
-volumetric_clouds = NodePath("VolumetricClouds")
-
-[node name="VolumetricClouds" type="Node" parent="WeatherClouds" node_paths=PackedStringArray("tracked_directional_lights")]
-script = ExtResource("sunshine_clouds_driver")
-ambience_sample_environment = SubResource("Environment_aqk2v")
-tracked_directional_lights = [NodePath("../../DirectionalLight3D")]
-tracked_directional_light_shadow_steps = Array[int]([24])
-wind_direction = Vector3(1, 0, 1)
-metadata/_custom_type_script = "uid://djusduuxf0voj"
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=1256611108]
 navigation_mesh = SubResource("NavigationMesh_senyo")
