@@ -40,7 +40,8 @@ func test_the_sun_rule_matches_the_date_and_time_demo() -> void:
 func test_the_world_drives_the_binbun_sky_from_the_weather() -> void:
 	var state: SceneState = WORLD.get_state()
 	var environment: Environment = _node_property(state, "WorldEnvironment", "environment")
-	assert_true(environment.sky.resource_path.contains("BinbunSky"), "The sky is a Binbun one, a shader that runs everywhere")
+	assert_true(environment.sky.resource_path.begins_with("res://addons/weather_fx/assets/BinbunSky/"), "The sky is a Binbun one from the weather_fx addon, a shader that runs everywhere")
 	assert_null(_node_property(state, "WorldEnvironment", "compositor"), "No compositor effects: nothing that needs Forward+")
 	assert_eq(_node_property(state, "WeatherClouds", "world_environment"), NodePath("../WorldEnvironment"))
 	assert_eq(_node_property(state, "WeatherClouds", "weather"), NodePath("../WeatherFX"))
+	assert_eq(_node_property(state, "WeatherClouds", "night_sun"), NodePath("../DirectionalLight3D"), "and the sky clouds dim with the sun")
