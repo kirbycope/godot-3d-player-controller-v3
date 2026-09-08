@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="PureDoomControls" format=3 uid="uid://m332c2cm3bbp"]
 
-[ext_resource type="Script" uid="uid://rf34gjfnt12" path="res://addons/pure_doom/scripts/pure_doom_controls.gd" id="1_controls"]
-[ext_resource type="Script" uid="uid://dnpcm1e8eepf1" path="res://addons/pure_doom/scripts/pure_doom_control.gd" id="2_control"]
+[ext_resource type="Script" uid="uid://rf34gjfnt12" path="res://addons/godot_doom_gdextension/scripts/pure_doom_controls.gd" id="1_controls"]
+[ext_resource type="Script" uid="uid://dnpcm1e8eepf1" path="res://addons/godot_doom_gdextension/scripts/pure_doom_control.gd" id="2_control"]
 
 [sub_resource type="Resource" id="Resource_fire"]
 script = ExtResource("2_control")

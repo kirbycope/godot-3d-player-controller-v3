@@ -23,7 +23,7 @@ class PureDoom : public TextureRect {
 	static const int FRAME_HEIGHT = 200;
 	static const int SOUND_FRAMES = 512; // PureDOOM mixes 512 stereo frames at 11025 Hz per call.
 
-	String wad_path = "res://addons/pure_doom/assets/doom1.wad";
+	String wad_path = "res://addons/godot_doom_gdextension/assets/doom1.wad";
 	float mouse_sensitivity = 2.0f;
 	int skill = 3;
 

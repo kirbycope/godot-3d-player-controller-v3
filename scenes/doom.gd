@@ -203,6 +203,9 @@ func start_game() -> void:
 		# The class only exists with the library loaded, so it is created here rather than placed in the scene
 		engine = ClassDB.instantiate(&"PureDoom") as Control
 		engine.set_anchors_preset(Control.PRESET_FULL_RECT)
+		# The node defaults to this path too, but the libraries in bin/ were built when the addon lived at
+		# addons/pure_doom, so they still bake in the old one. Setting it here works on every platform.
+		engine.set(&"wad_path", "res://addons/godot_doom_gdextension/assets/doom1.wad")
 		engine.connect(&"exited", sleep.unbind(1))
 		add_child(engine)
 		if soundfont != "" and ResourceLoader.exists("res://addons/midi/MidiPlayer.tscn"):

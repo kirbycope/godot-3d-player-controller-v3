@@ -6,7 +6,7 @@
 [ext_resource type="Material" uid="uid://bgh0q813ao036" path="res://assets/ambientcg_com/planks_20/Planks020_1K-JPG.tres" id="4_planks"]
 [ext_resource type="Material" uid="uid://da7xlxi1ot5r1" path="res://assets/ambientcg_com/wood_073/Wood073_1K-JPG.tres" id="5_wood"]
 [ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://addons/3d_player_controller/scenes/action_prompt.tscn" id="6_prompt"]
-[ext_resource type="PackedScene" path="res://addons/pure_doom/scenes/pure_doom_controls_overlay.tscn" id="7_overlay"]
+[ext_resource type="PackedScene" path="res://addons/godot_doom_gdextension/scenes/pure_doom_controls_overlay.tscn" id="7_overlay"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_body"]
 size = Vector3(1.2, 1.2, 0.7)
@@ -139,7 +139,7 @@ size = Vector2i(320, 200)
 render_target_update_mode = 4
 
 [node name="Doom" parent="ScreenViewport" instance=ExtResource("2_doom")]
-soundfont = "res://addons/pure_doom/assets/gzdoom.sf2"
+soundfont = "res://addons/godot_doom_gdextension/assets/gzdoom.sf2"
 
 [node name="ScreenCamera" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.995, 0.55)

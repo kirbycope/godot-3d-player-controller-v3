@@ -8,7 +8,7 @@
 		"res://addons/tcps/tests",
 		"res://addons/date_and_time/tests",
 		"res://addons/radi_ot/tests",
-		"res://addons/pure_doom/tests",
+		"res://addons/godot_doom_gdextension/tests",
 		"res://addons/weather_fx/tests",
 		"res://tests/unit",
 		"res://tests/integration"
@@ -20,7 +20,7 @@
 		"res://addons/tcps/tests",
 		"res://addons/date_and_time/tests",
 		"res://addons/radi_ot/tests",
-		"res://addons/pure_doom/tests",
+		"res://addons/godot_doom_gdextension/tests",
 		"res://addons/weather_fx/tests",
 		"res://tests/unit",
 		"res://tests/integration"

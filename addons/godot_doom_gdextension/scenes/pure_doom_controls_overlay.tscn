@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3]
 
-[ext_resource type="Script" path="res://addons/pure_doom/scripts/pure_doom_controls_overlay.gd" id="1_overlay"]
-[ext_resource type="Resource" path="res://addons/pure_doom/resources/controls.tres" id="2_controls"]
+[ext_resource type="Script" path="res://addons/godot_doom_gdextension/scripts/pure_doom_controls_overlay.gd" id="1_overlay"]
+[ext_resource type="Resource" path="res://addons/godot_doom_gdextension/resources/controls.tres" id="2_controls"]
 
 [sub_resource type="SystemFont" id="SystemFont_mono"]
 font_names = PackedStringArray("Consolas", "Courier New", "monospace")

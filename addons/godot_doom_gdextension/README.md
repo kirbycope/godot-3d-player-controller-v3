@@ -7,6 +7,21 @@ frame into an `ImageTexture` every tick, feeds its 11025 Hz sound into an `Audio
 Godot input events into DOOM key, button and mouse events. Everything runs in-process, so the same source
 builds for the Windows desktop and for the browser as a WebAssembly side module.
 
+## Demo scene
+
+`scenes/demo/demo.tscn` runs the node full screen with the controls card down each side and, when Godot MIDI
+Player (`addons/midi/`) is in the project, the music through `assets/gzdoom.sf2`. It is the main scene of the
+[Godot Doom GDExtension](https://github.com/kirbycope/godot-doom-gdextension) project this addon is developed
+in, and it is also the shortest example of wiring the node up: instantiate it, connect `exited`, connect
+`midi_message` to a synthesiser, call `start()`. Where the library is not built for the platform the demo
+shows a message instead of failing.
+
+It also shows the two things a host scene has to handle itself. DOOM turns on relative mouse motion, so the
+demo captures the cursor in `_ready()`, gives it back on Escape and takes it again on a click. And because a
+browser only grants pointer lock from inside a user gesture, a web export cannot capture at startup at all;
+the demo puts a "Click to start" `CanvasLayer` up when `OS.has_feature("web")` and captures on that first
+click. Off the web the interstitial stays hidden.
+
 ## Using the node
 
 Add a `PureDoom` node (it is a `TextureRect`) anywhere a `Control` can go, typically inside a `SubViewport`
@@ -68,9 +83,9 @@ Prebuilt binaries for Windows, macOS and the web are in `bin/`. To rebuild, clon
 the extension API from the Godot build you run, so the bindings match it:
 
 ```powershell
-git clone --depth 1 https://github.com/godotengine/godot-cpp.git addons/pure_doom/godot-cpp
+git clone --depth 1 https://github.com/godotengine/godot-cpp.git addons/godot_doom_gdextension/godot-cpp
 & 'C:\Godot\godot.exe' --headless --dump-extension-api      # writes extension_api.json
-cd addons/pure_doom
+cd addons/godot_doom_gdextension
 scons platform=windows target=template_debug custom_api_file=..\..\extension_api.json
 scons platform=windows target=template_release custom_api_file=..\..\extension_api.json
 scons platform=web threads=no target=template_release custom_api_file=..\..\extension_api.json
@@ -80,9 +95,9 @@ On macOS the same steps with `brew install scons` and the Xcode Command Line Too
 (arm64 and x86_64) framework:
 
 ```sh
-git clone --depth 1 https://github.com/godotengine/godot-cpp.git addons/pure_doom/godot-cpp
+git clone --depth 1 https://github.com/godotengine/godot-cpp.git addons/godot_doom_gdextension/godot-cpp
 /Applications/Godot.app/Contents/MacOS/Godot --headless --dump-extension-api   # writes extension_api.json
-cd addons/pure_doom
+cd addons/godot_doom_gdextension
 scons platform=macos arch=universal target=template_debug custom_api_file=../../extension_api.json
 scons platform=macos arch=universal target=template_release custom_api_file=../../extension_api.json
 ```

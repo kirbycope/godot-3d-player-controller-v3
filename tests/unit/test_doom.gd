@@ -47,7 +47,7 @@ func test_music_plays_through_the_soundfont() -> void:
 	if not ClassDB.class_exists(&"PureDoom"):
 		pass_test("PureDoom is not built for this platform")
 		return
-	doom.soundfont = "res://addons/pure_doom/assets/gzdoom.sf2"
+	doom.soundfont = "res://addons/godot_doom_gdextension/assets/gzdoom.sf2"
 	doom.start_game()
 	assert_not_null(doom.midi_player, "A SoundFont should bring up the MIDI player")
 	await wait_seconds(1.5)

@@ -10,6 +10,9 @@ func before_each() -> void:
 	if not ClassDB.class_exists(&"PureDoom"):
 		return
 	doom = ClassDB.instantiate(&"PureDoom") as Control
+	# The libraries in bin/ were built when the addon lived at addons/pure_doom and still default to that
+	# path, so the WAD is named here rather than left to the node.
+	doom.set(&"wad_path", "res://addons/godot_doom_gdextension/assets/doom1.wad")
 	add_child_autofree(doom)
 
 

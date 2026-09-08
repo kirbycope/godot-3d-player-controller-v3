@@ -3,6 +3,7 @@ godot-cpp/
 *.os
 *.o
 .sconsign.dblite
+bin/~*
 bin/*.exp
 bin/*.lib
 bin/*.pdb

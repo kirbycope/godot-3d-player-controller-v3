@@ -56,9 +56,6 @@ height = 0.05
 [sub_resource type="CircleShape2D" id="CircleShape2D_kxxiu"]
 radius = 24.0
 
-[sub_resource type="LabelSettings" id="LabelSettings_kxxiu"]
-font_size = 24
-
 [node name="RadiOtDemo" type="Node3D" unique_id=1184901078 node_paths=PackedStringArray("radio_player")]
 script = ExtResource("1_demo_script")
 radio_player = NodePath("RadioMesh/RadiOtPlayer3D")
@@ -173,41 +170,6 @@ icon = ExtResource("7_5pa3q")
 [node name="TouchScreenButton" type="TouchScreenButton" parent="UI/NextStation" unique_id=433392095]
 position = Vector2(28, 28)
 shape = SubResource("CircleShape2D_kxxiu")
-
-[node name="ClickToStart" type="CanvasLayer" parent="." unique_id=738363484]
-layer = 100
-visible = false
-
-[node name="ColorRect" type="ColorRect" parent="ClickToStart" unique_id=27767820]
-custom_minimum_size = Vector2(3840, 2160)
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -1920.0
-offset_top = -1080.0
-offset_right = 1920.0
-offset_bottom = 1080.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 1)
-
-[node name="Label" type="Label" parent="ClickToStart/ColorRect" unique_id=1270391819]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -49.0
-offset_top = -11.5
-offset_right = 49.0
-offset_bottom = 11.5
-grow_horizontal = 2
-grow_vertical = 2
-text = "Click to start"
-label_settings = SubResource("LabelSettings_kxxiu")
 
 [connection signal="pressed" from="UI/VBoxContainer/BulletinBtn1" to="." method="_on_bulletin_btn_1_pressed"]
 [connection signal="pressed" from="UI/VBoxContainer/BulletinBtn2" to="." method="_on_bulletin_btn_2_pressed"]

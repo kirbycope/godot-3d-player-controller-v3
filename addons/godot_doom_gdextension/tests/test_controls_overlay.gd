@@ -3,7 +3,7 @@ extends GutTest
 ## Purpose: The controls card beside the monitor lists the default card's lines in plain text and rewords them
 ## per input device.
 
-const OVERLAY_SCENE = preload("res://addons/pure_doom/scenes/pure_doom_controls_overlay.tscn")
+const OVERLAY_SCENE = preload("res://addons/godot_doom_gdextension/scenes/pure_doom_controls_overlay.tscn")
 
 var overlay: PureDoomControlsOverlay
 

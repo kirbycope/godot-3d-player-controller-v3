@@ -18,9 +18,9 @@ const HINT_TEXT: String = "[J] Prev Station   [L] Next Station   [M] Power"
 var _camera_distance: float = 4.0
 var _camera_height: float = 1.6
 var _camera_angle_offset: float = 0.0
+var _awaiting_web_gesture: bool = false ## Web only: the radio stays silent until the page has been clicked.
 
 @onready var _camera: Camera3D = $Camera3D
-@onready var click_to_start: CanvasLayer = $ClickToStart
 
 
 func _ready() -> void:
@@ -32,13 +32,13 @@ func _ready() -> void:
 	_camera_height = _camera.position.y
 	if _camera.position.x != 0.0 or _camera.position.z != 0.0:
 		_camera_angle_offset = atan2(_camera.position.x, _camera.position.z)
-	# Browsers block audio until the page receives a click or touch.
-	click_to_start.visible = OS.has_feature("web")
+	# Browsers block audio until the page receives a click or touch, so on web the first one tunes in.
+	_awaiting_web_gesture = OS.has_feature("web")
 
 
 func _input(event: InputEvent) -> void:
-	if click_to_start.visible and (event is InputEventMouseButton or event is InputEventScreenTouch) and event.is_pressed():
-		click_to_start.hide()
+	if _awaiting_web_gesture and (event is InputEventMouseButton or event is InputEventScreenTouch) and event.is_pressed():
+		_awaiting_web_gesture = false
 		radio_player.tune_to_station_index(0)
 
 
