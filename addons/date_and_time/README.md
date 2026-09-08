@@ -1,3 +1,5 @@
+![Preview](./assets/date-and-time.png)
+
 # Date and Time Addon for Godot 4.8+
 
 In-game and in-editor date, time, and calendar progression system with full `@tool` controls, leap year logic, custom time scale, and Godot signals.

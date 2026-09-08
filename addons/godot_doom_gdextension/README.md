@@ -1,4 +1,6 @@
-# PureDoom
+![Preview](./assets/godot-doom-gdextension.png)
+
+# Godot Doom GDExtension
 
 A GDExtension that runs the real DOOM engine inside Godot 4.8 and shows it on a `TextureRect`. The engine
 is [PureDOOM](https://github.com/Daivuk/PureDOOM), a single-header C port of the 1993 source with no OS

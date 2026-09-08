@@ -1,3 +1,5 @@
+![Preview](./assets/weather-fx.png)
+
 # Weather FX for Godot 4.8+
 
 A high-performance, modular climate, weather, and atmospheric wind simulation system for Godot 4.8+. Features 20 universal biomes, altitude- and time-based temperature lapse curves, procedural 4-minute forecasting cycles, rain ground impact effects (puddle ripples & splash droplets), global wind shader integration with stylized foliage sway, interactive Zelda-inspired HUD widgets, and a comprehensive test lab (`demo.tscn`).
@@ -53,7 +55,6 @@ Provides statistical weather distribution tables, diurnal temperature ranges, al
 - **Global Shader Uniforms** (written by `WeatherFX`):
   - `weather_wind_strength` (`float`), `weather_wind_direction` (`vec3`), `weather_precipitation_strength` (`float`, `0.0` to `1.2`)
   - `weather_foliage_tint` / `weather_grass_tint` (`color`): biome tints blended over `biome_tint_transition_speed`.
-- **Biome blending** (`WeatherFX.blend_zones`, on by default): with a `target_node`, WeatherFX no longer switches biome the moment the target crosses a zone's edge. Every frame it weighs each `WeatherZone` (group `WeatherZone`) at the target with `WeatherZone.get_weight`: 0 outside the zone's footprint (height is ignored), rising to 1 `blend_distance` in from the nearest side (box, sphere and cylinder shapes measure to their edge; anything else counts full inside its bounds). The heaviest zone is `current_biome` (a tie keeps the current one, and outside every zone the last biome stays) and the runner-up is `blend_biome`, with `blend_weight` its share of the two weights (at most 0.5, so the hand-over midway through an overlap is continuous). `calculate_temperature`, the wind power in `_update_wind_globals`, the sun colour (`WeatherFX.get_sun_color(biome, is_day)`, now a static lookup) and `get_target_foliage_tint` / `get_target_grass_tint` all lerp toward the blend biome by that weight; weather odds and the forecast stay the current biome's. `set_biome_blend` rounds the weight to a hundredth so a walk through an overlap re-reads the climate a hundred times at most. Without a target (or with `blend_zones` off) `WeatherZone` switches the biome on `body_entered` as it always did.
 - **Stylized Wind Shaders** (`resources/`): `grass_wind.gdshader` (multi-octave sway, vertical color gradient, wetness, and combustion driven by `burn_progress`, the `instance_burn_progress` instance uniform, or per-blade MultiMesh custom data against `fire_clock`), `foliage_wind.gdshader` (trunk lean, branch sway, leaf flutter), `pond_water.gdshader` (see below).
 - **Instanced Grass Generator (`GrassField`)**: `MultiMeshInstance3D` field using the preloaded Quaternius grass meshes (`Common Short`, `Common Tall`, `Wispy Short`, `Wispy Tall`) or a custom mesh, with circular exclusion zones.
 
@@ -114,7 +115,7 @@ Wiring: a `WorldEnvironment` with one of the Binbun skies as its `Environment.sk
 | `WeatherForecastDisplay`, `TemperatureGaugeDisplay` (instance their scenes), `WindDirectionDial` (script on a `Control`) | Under your HUD `CanvasLayer` | `weather_fx` -> the WeatherFX node |
 | Pond water: a `MeshInstance3D` with `resources/pond_water_material.tres` | Sunk into a hole in the ground | Subdivide the mesh to 10-15 cm cells. For wakes and rings, add `scenes/water_ripples.tscn` next to it, set `water_mesh`, and wire the water `Area3D`'s `body_entered` / `body_exited` to its `_on_body_entered` / `_on_body_exited` |
 | `WeatherClouds` (`scripts/weather_clouds.gd` on a `Node`) | Once per level, next to WeatherFX | `weather` -> the WeatherFX node; `world_environment` -> a `WorldEnvironment` whose `Environment.sky` is one of `assets/BinbunSky/skies/*/*.tres`; `night_sun` -> your `DirectionalLight3D`; `clear_` / `cloudy_` / `rain_` density and colour, `transition_seconds`, `wind_scroll_scale`, `wind_min_scroll`, `night_dim`, `night_dusk_height` |
-| `WeatherZone` (script on an `Area3D`) | Around a region that should switch biome when entered; overlap zones to blend between them | `biome`, `weather_fx`, `blend_distance` (metres in from the sides over which its climate fades in, 8 by default) |
+| `WeatherZone` (script on an `Area3D`) | Around a region that should switch biome when entered | `biome`, `weather_fx` |
 | `BurnableGrass`, `FireTrailNode` | Individual burnable props | See section 8 |
 
 Minimum scene:

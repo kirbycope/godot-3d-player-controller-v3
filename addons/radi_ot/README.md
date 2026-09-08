@@ -1,3 +1,5 @@
+![Preview](./assets/radi-ot.png)
+
 # radi-ot (Radio + Godot)
 
 **radi-ot** is a feature-packed 3D audio streaming addon for **Godot 4.8** that streams real live Seattle radio stations over the internet. Built for both **Steam (Forward+)** and **Web (Compatibility)**, it features positional 3D audio, an in-game retro-modern CanvasLayer HUD, procedural FM tuning static, and an `urgent_bulletin()` API designed for in-game narrative progression and emergency broadcasts.
