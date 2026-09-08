@@ -94,6 +94,8 @@ func test_full_loop_catches_a_fish() -> void:
 	assert_eq(rod.state, FishingRod.State.REELING)
 	assert_signal_emitted(rod, "fish_hooked")
 	var fish: Fish = rod.hooked_fish
+	var log: FishingLog = player.get_node("FishingLog")
+	var first_of_its_kind: bool = log.record_of(fish) == 0.0 # the world player's log persists, so a saved record may stand
 	rod.reel_timer.stop()
 	rod._on_reel_timer_timeout()
 	assert_signal_emitted(rod, "fish_caught")
@@ -104,9 +106,21 @@ func test_full_loop_catches_a_fish() -> void:
 	assert_null(rod.bobber, "The line is back in")
 	await wait_physics_frames(2)
 	assert_true(world.get_node("Projectiles").get_children().any(func(n: Node) -> bool: return n is FishModel or n.name.ends_with("Model")), "The catch model arcs out of the water")
+	var screen: FishCaughtScreen = player.get_node("FishCaughtScreen")
+	assert_false(screen.visible, "The screen waits for the catch to arc into the hands")
+	assert_false(rod.catch_screen_timer.is_stopped(), "on the rod's timer")
+	await wait_physics_frames(60) # frames, not seconds: the screen pauses the tree, which GUT's second counter runs on
+	assert_true(screen.visible, "then holds the catch up")
+	assert_eq(screen.name_label.text, fish.get_display_name(), "by name")
+	assert_true(screen.size_label.text.ends_with("cm") or screen.size_label.text.ends_with("* record") or screen.size_label.text == "Junk", "with its length")
+	if first_of_its_kind and not fish.is_junk:
+		assert_true(screen.size_label.text.ends_with("* record"), "A first catch is the record")
+	assert_eq(screen.flavor_label.text, fish.description, "with its flavour text")
+	assert_true(get_tree().paused, "Playing alone, the world waits")
 	var card: FishCard = player.controls.get_node("FishCard")
-	assert_true(card.visible, "The catch card is up")
-	assert_ne(card.name_label.text, "", "The card names the catch")
+	assert_false(card.visible, "The HUD card stands down for the screen")
+	screen.hide_menu()
+	assert_false(get_tree().paused)
 
 
 func test_a_lure_used_from_the_inventory_goes_on_the_line() -> void:

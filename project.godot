@@ -25,7 +25,6 @@ driver/enable_input=true
 
 Steamworks="*res://addons/godotsteamkit/autoloads/steamworks.gd"
 
-McpBridge="*res://mcp_bridge.gd"
 [debug]
 
 file_logging/enable_file_logging=true

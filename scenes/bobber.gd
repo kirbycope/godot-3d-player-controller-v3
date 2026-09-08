@@ -20,6 +20,7 @@ var in_water: bool = false
 @onready var line: MeshInstance3D = $Line ## Top-level, so its vertices are world space.
 @onready var splash_particles: GPUParticles3D = $SplashParticles
 @onready var ring: MeshInstance3D = $Ring ## Top-level expanding ripple ring.
+@onready var bait_icon: Sprite3D = $BaitIcon ## The bait's icon, floated off the hook when the bite takes it.
 
 
 func _init() -> void:
@@ -90,6 +91,22 @@ func splash(strength: float) -> void:
 	tween.tween_property(ring, "scale", Vector3(0.8 + strength, 1.0, 0.8 + strength), 0.6)
 	tween.parallel().tween_property(ring, "transparency", 1.0, 0.6)
 	tween.tween_callback(ring.hide)
+
+
+## The bite took the bait: its icon (at [param icon_path], tinted [param tint]) rises off the float and fades, on
+## every peer, so the loss is seen and not only read in the rod's details. An empty path shows nothing.
+@rpc("any_peer", "call_local", "reliable")
+func show_bait_taken(icon_path: String, tint: Color) -> void:
+	if icon_path.is_empty():
+		return
+	bait_icon.texture = load(icon_path)
+	bait_icon.modulate = Color(tint.r, tint.g, tint.b, 1.0)
+	bait_icon.position = Vector3(0.0, 0.15, 0.0)
+	bait_icon.show()
+	var tween: Tween = create_tween()
+	tween.tween_property(bait_icon, "position:y", 0.9, 1.0).set_ease(Tween.EASE_OUT)
+	tween.parallel().tween_property(bait_icon, "modulate:a", 0.0, 0.7).set_delay(0.3)
+	tween.tween_callback(bait_icon.hide)
 
 
 ## A hooked fish drags the float about for [param duration] seconds, on every peer.

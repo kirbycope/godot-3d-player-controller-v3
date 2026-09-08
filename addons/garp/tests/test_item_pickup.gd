@@ -100,3 +100,31 @@ func test_a_full_inventory_leaves_the_rest_lying_there() -> void:
 	pickup.take()
 	assert_eq(pickup.count, 2, "Only one fitted; two stay")
 	assert_true(is_instance_valid(pickup), "The pickup stays for later")
+
+
+func test_an_item_with_a_model_lies_there_as_the_model_turning_instead_of_the_icon() -> void:
+	var mesh := MeshInstance3D.new()
+	mesh.mesh = BoxMesh.new() # a metre box centred on its origin
+	var scene := PackedScene.new()
+	scene.pack(mesh)
+	mesh.free()
+	var crate := Item.new()
+	crate.id = &"test_crate"
+	crate.icon = APPLE.icon
+	crate.model_scene = scene
+	var pickup: ItemPickup = PICKUP_SCENE.instantiate()
+	pickup.item = crate
+	root.add_child(pickup)
+	pickup.global_position = player.global_position + Vector3(5.0, 0.0, 0.0)
+	await wait_physics_frames(1)
+	assert_false(pickup.icon.visible, "The model stands in for the icon")
+	assert_eq(pickup.model_pivot.get_child_count(), 1, "The item's model is on the spot")
+	var model: Node3D = pickup.model_pivot.get_child(0)
+	assert_almost_eq(model.position.y, 0.5, 0.01, "stood on the ground, not sunk half into it")
+	var heading: float = pickup.model_pivot.rotation.y
+	await wait_physics_frames(3)
+	assert_ne(pickup.model_pivot.rotation.y, heading, "and turning")
+	pickup.item = APPLE
+	await wait_physics_frames(1)
+	assert_true(pickup.icon.visible, "An item without a model floats its icon")
+	assert_eq(pickup.model_pivot.get_child_count(), 0)

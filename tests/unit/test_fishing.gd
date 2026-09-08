@@ -201,3 +201,18 @@ func test_a_worm_tempts_the_crate_and_the_boot_bites_bare() -> void:
 	assert_eq(BOOT.bite_weight(), BOOT.weight, "Junk keeps its whole weight bare")
 	assert_almost_eq(CARP.bite_weight(), CARP.weight * 0.05, 0.0001, "A real fish keeps a twentieth")
 	assert_eq(CARP.bite_weight(WORM), CARP.weight, "and all of it with bait on")
+
+
+func test_the_bite_floats_the_bait_icon_off_the_hook() -> void:
+	var bobber: Bobber = BOBBER_SCENE.instantiate()
+	add_child_autofree(bobber)
+	await wait_physics_frames(1)
+	assert_false(bobber.bait_icon.visible)
+	bobber.show_bait_taken(WORM.icon.resource_path, WORM.get_icon_color())
+	assert_true(bobber.bait_icon.visible, "The bait's icon rises off the float")
+	assert_eq(bobber.bait_icon.texture.resource_path, WORM.icon.resource_path)
+	assert_true(bobber.bait_icon.billboard == BaseMaterial3D.BILLBOARD_ENABLED)
+	await wait_seconds(1.3)
+	assert_false(bobber.bait_icon.visible, "and is gone once it has risen and faded")
+	bobber.show_bait_taken("", Color.WHITE)
+	assert_false(bobber.bait_icon.visible, "Nothing to show for bait without an icon")

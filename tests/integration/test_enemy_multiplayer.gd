@@ -106,3 +106,29 @@ func test_a_shot_on_the_host_flashes_the_muzzle_on_the_client() -> void:
 	assert_true(remote_flash.vfx.visible, "The client sees the flash")
 	assert_eq(client_rounds.size(), 1, "And the round arrives through the spawner")
 	assert_eq(host_shots.size(), 1, "The client's flash never echoes back to the host")
+
+
+func test_an_enemy_set_ablaze_on_the_host_burns_on_the_client_too() -> void:
+	await wait_process_frames(30)
+	var host: EnemyNpc = server_root.get_node("Enemies/Rifleman")
+	var remote: EnemyNpc = client_root.get_node("Enemies/Rifleman")
+	remote.burn(3.0, 5.0)
+	assert_false(remote.is_burning, "A client's copy never lights itself")
+	var before: float = host.health.health
+	Ability.burn_around(server_root.get_tree(), host.global_position, 1.5)
+	assert_true(host.is_burning, "The host's copy burns")
+	for i in 60:
+		await wait_process_frames(1)
+		if remote.is_burning:
+			break
+	assert_true(remote.is_burning, "and the client's copy shows the flame through the synchronizer")
+	assert_true(remote.burn_vfx.visible)
+	assert_true(remote.burn_tick_timer.is_stopped(), "The client ticks no damage of its own")
+	await wait_seconds(0.6)
+	assert_lt(host.health.health, before, "The host ticks it")
+	host.extinguish()
+	for i in 60:
+		await wait_process_frames(1)
+		if not remote.is_burning:
+			break
+	assert_false(remote.is_burning, "Out on the host, out on the client")

@@ -30,5 +30,3 @@ casting_sfx = ExtResource("4_cast")
 impact_vfx = ExtResource("2_hit")
 impact_sfx = ExtResource("5_impact")
 damage = 25.0
-over_time_damage = 8.0
-over_time_duration = 4.0

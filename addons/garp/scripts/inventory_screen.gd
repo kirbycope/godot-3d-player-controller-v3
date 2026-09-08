@@ -28,6 +28,7 @@ var _inventory: Inventory
 @onready var model_camera: Camera3D = %ModelCamera
 @onready var detail_name: Label = %DetailName
 @onready var detail_count: Label = %DetailCount
+@onready var detail_scroll: ScrollContainer = %DetailScroll ## Holds the description at the panel's fixed height; a long one (a fish's ten lengths) scrolls inside it.
 @onready var detail_description: Label = %DetailDescription
 @onready var use_button: Button = %Use
 @onready var drop_button: Button = %Drop

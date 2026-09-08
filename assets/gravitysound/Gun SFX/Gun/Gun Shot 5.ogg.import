@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://bb17wrlcuw1bv"
+path="res://.godot/imported/Gun Shot 5.ogg-b8e2ef5f0a577a06ac2cf1708d9b62e5.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Gun SFX/Gun/Gun Shot 5.ogg"
+dest_files=["res://.godot/imported/Gun Shot 5.ogg-b8e2ef5f0a577a06ac2cf1708d9b62e5.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

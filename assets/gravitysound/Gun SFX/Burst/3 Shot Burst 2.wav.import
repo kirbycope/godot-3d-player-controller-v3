@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://dqfbn6cggvd7"
+path="res://.godot/imported/3 Shot Burst 2.wav-415f0e3872f615134bb0d28df6ba2a94.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Gun SFX/Burst/3 Shot Burst 2.wav"
+dest_files=["res://.godot/imported/3 Shot Burst 2.wav-415f0e3872f615134bb0d28df6ba2a94.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

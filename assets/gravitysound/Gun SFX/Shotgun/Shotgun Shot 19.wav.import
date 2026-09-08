@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://buwf1py2xwirr"
+path="res://.godot/imported/Shotgun Shot 19.wav-5d2738124bf896be1ffc6eb5aba53b4f.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Gun SFX/Shotgun/Shotgun Shot 19.wav"
+dest_files=["res://.godot/imported/Shotgun Shot 19.wav-5d2738124bf896be1ffc6eb5aba53b4f.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

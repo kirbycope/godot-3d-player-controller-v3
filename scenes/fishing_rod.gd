@@ -1,7 +1,8 @@
 class_name FishingRod
 extends Equipment
 ## One-button fishing: Action casts the float where the camera aims, nibbles telegraph the bite, Action
-## inside the hook window hooks the fish, reeling plays out on its own and the catch lands on the HUD card.
+## inside the hook window hooks the fish, reeling plays out on its own and the catch is held up on the Player's
+## [FishCaughtScreen] once it has arced into their hands (the CatchScreenTimer), or on the HUD [FishCard] without one.
 ##
 ## Timing runs on the Timer nodes wired in the scene; the fish table and shadows come from the [Buoyancy]
 ## water the float lands in, filtered by the [member lure] on the line: a [Lure] used from the inventory goes on
@@ -55,6 +56,9 @@ var bobber: Bobber
 var water: Buoyancy ## The water the float landed in.
 var hooked_fish: Fish ## The fish that will bite (chosen on landing) or is being reeled.
 var hooked_length: float = 0.0
+var landed_fish: Fish ## The last catch, held for the CatchScreenTimer.
+var landed_length: float = 0.0
+var landed_record: bool = false
 var emote_state: AnimationNodeStateMachinePlayback
 var _posture_shown: bool = false ## What the last posture write said, so the standing-still poll only writes on a change.
 
@@ -67,6 +71,7 @@ var _posture_shown: bool = false ## What the last posture write said, so the sta
 
 var hook_pulse: Tween ## Pulses the Action button green while the hook window is open.
 @onready var reel_timer: Timer = $ReelTimer
+@onready var catch_screen_timer: Timer = $CatchScreenTimer ## Delays the catch screen until the catch has arced into the hands.
 @onready var audio: AudioStreamPlayer3D = $Audio
 
 
@@ -288,22 +293,38 @@ func _on_reel_timer_timeout() -> void:
 	_clear_line()
 	emote_state.start("FishingIdle")
 	update_labels()
-	# The log keeps every length in the bag and the record per species; the card says when this one is the record
+	# The log keeps every length in the bag and the record per species; the screen says when this one is the record
 	var log: FishingLog = player.get_node_or_null(^"FishingLog") as FishingLog
 	var is_record: bool = log.record_catch(fish, length) if log else false
-	var card: FishCard = player.controls.get_node_or_null(^"FishCard") as FishCard
-	if card:
-		card.show_catch(fish, length, is_record)
+	landed_fish = fish
+	landed_length = length
+	landed_record = is_record
+	if player.get_node_or_null(^"FishCaughtScreen") is FishCaughtScreen:
+		catch_screen_timer.start() # once the catch has arced into the hands
+	else:
+		var card: FishCard = player.controls.get_node_or_null(^"FishCard") as FishCard
+		if card:
+			card.show_catch(fish, length, is_record)
 	_play(catch_sfx)
-	player.inventory.add_item(fish) # a full tab leaves it on the card only
+	player.inventory.add_item(fish) # a full tab leaves it on the screen only
 	fish_caught.emit(fish, length)
 
 
+## Wired to CatchScreenTimer.timeout: the catch is in the hands, so the Player's [FishCaughtScreen] holds it up.
+func _on_catch_screen_timer_timeout() -> void:
+	var screen: FishCaughtScreen = player.get_node_or_null(^"FishCaughtScreen") as FishCaughtScreen if player else null
+	if screen and landed_fish:
+		screen.show_catch(landed_fish, landed_length, landed_record)
+
+
 ## The bite takes the bait on the line: the next one in the bag goes on in its place, or the hook is bare. The
-## one on the line left the bag when it was used, so only the replacement comes out of the inventory here.
+## one on the line left the bag when it was used, so only the replacement comes out of the inventory here. The
+## float shows the bait going on every peer ([method Bobber.show_bait_taken]).
 func consume_lure() -> void:
 	if lure == null or not lure.consumable or not is_multiplayer_authority():
 		return
+	if is_instance_valid(bobber) and bobber.is_inside_tree():
+		bobber.show_bait_taken.rpc(lure.icon.resource_path if lure.icon else "", lure.get_icon_color())
 	if player == null or player.inventory == null or player.inventory.remove_item(lure, 1) == 0:
 		lure = null
 	else:

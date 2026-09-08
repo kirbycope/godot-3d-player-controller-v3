@@ -1,4 +1,4 @@
-[gd_resource type="VisualShader" format=3]
+[gd_resource type="VisualShader" format=3 uid="uid://egxmy1w8844f"]
 
 [sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_hpytl"]
 linked_parent_graph_frame = 30

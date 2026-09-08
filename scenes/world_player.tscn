@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" path="res://addons/radi_ot/scenes/radi_ot_player_3d.tscn" id="9_mvg0v"]
 [ext_resource type="Resource" path="res://addons/radi_ot/resources/stations/seattle_stations_default.tres" id="345_5hhec"]
 [ext_resource type="PackedScene" uid="uid://c7fishcard0001" path="res://scenes/fish_card.tscn" id="fish_card"]
+[ext_resource type="PackedScene" path="res://scenes/fish_caught_screen.tscn" id="fish_caught_screen"]
 [ext_resource type="PackedScene" uid="uid://cp8l5m7auhh4p" path="res://assets/loop_box/VFX.tscn" id="connector_vfx"]
 [ext_resource type="Script" path="res://scenes/fishing_log.gd" id="fishing_log"]
 [ext_resource type="Script" path="res://addons/3d_player_controller/scripts/ability.gd" id="ability"]
@@ -328,6 +329,9 @@ station_collection = ExtResource("345_5hhec")
 [node name="FishingLog" type="Node" parent="."]
 script = ExtResource("fishing_log")
 persist = true
+
+[node name="FishCaughtScreen" parent="." node_paths=PackedStringArray("player") instance=ExtResource("fish_caught_screen")]
+player = NodePath("..")
 
 [node name="Pause" parent="."]
 extra_screen_scene = "res://scenes/fish_index_screen.tscn"

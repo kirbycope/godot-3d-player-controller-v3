@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://dn5ymyp1vrfnv"
+path="res://.godot/imported/Silenced Shot 8.wav-d18969fd285ebea75a74301a79197647.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Gun SFX/Silenced/Silenced Shot 8.wav"
+dest_files=["res://.godot/imported/Silenced Shot 8.wav-d18969fd285ebea75a74301a79197647.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

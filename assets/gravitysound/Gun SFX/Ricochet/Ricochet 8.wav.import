@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://bxrbjl3k2eltx"
+path="res://.godot/imported/Ricochet 8.wav-02b5f78144925a0d96f9383f1d12c608.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Gun SFX/Ricochet/Ricochet 8.wav"
+dest_files=["res://.godot/imported/Ricochet 8.wav-02b5f78144925a0d96f9383f1d12c608.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

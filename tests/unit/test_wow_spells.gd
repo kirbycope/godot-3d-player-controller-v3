@@ -59,7 +59,8 @@ func _dummy_at(offset: Vector3) -> DummyBody:
 func test_the_shipped_spells_load_with_their_effects_vfx_and_sounds() -> void:
 	var fireball: DamageAbility = load(SPELL_DIR + "fireball.tres")
 	assert_true(bool(fireball.elements & Ability.Element.FIRE), "Fireball burns the grass")
-	assert_gt(fireball.over_time_damage, 0.0, "and keeps burning its target")
+	assert_eq(fireball.over_time_damage, 0.0, "and its damage over time is the burn the fire sets, not a second set of ticks")
+	assert_true(fireball.get_details().contains("sets enemies ablaze"), "which its details say: " + fireball.get_details())
 	var frostbolt: DamageAbility = load(SPELL_DIR + "frostbolt.tres")
 	assert_lt(frostbolt.slow_factor, 1.0, "Frostbolt slows")
 	assert_true(bool(frostbolt.elements & Ability.Element.WATER), "and douses fire where it lands")

@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scenes/ice_block.gd" id="1_ice"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ice"]
-size = Vector3(2, 0.3, 2)
+size = Vector3(2, 0.6, 2)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ice"]
 transparency = 1
@@ -18,7 +18,7 @@ emission_energy_multiplier = 0.15
 
 [sub_resource type="BoxMesh" id="BoxMesh_ice"]
 material = SubResource("StandardMaterial3D_ice")
-size = Vector3(2, 0.3, 2)
+size = Vector3(2, 0.6, 2)
 
 [node name="IceBlock" type="StaticBody3D"]
 script = ExtResource("1_ice")

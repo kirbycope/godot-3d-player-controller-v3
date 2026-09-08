@@ -196,3 +196,27 @@ func test_the_grid_prints_an_items_badge_and_hides_it_without_one() -> void:
 	screen._select_tab(Item.Category.EQUIPMENT)
 	assert_false(screen._slots[0].badge_label.visible, "Equipment cells carry no badge")
 	screen.hide_menu()
+
+
+func test_a_long_description_scrolls_inside_the_panel_instead_of_growing_it() -> void:
+	var logbook := Item.new()
+	logbook.id = &"test_logbook"
+	logbook.category = Item.Category.FOOD
+	logbook.icon = APPLE.icon
+	var lines: PackedStringArray = ["In the bag:"]
+	for i: int in 40: # a fish with a bag full of lengths prints one line each
+		lines.append("%d.0 cm" % (30 + i))
+	logbook.description = "\n".join(lines)
+	inventory.add_item(logbook, 1)
+	await _open()
+	screen._select_tab(Item.Category.FOOD)
+	screen._slots[0].grab_focus()
+	await wait_physics_frames(2)
+	var panel: Control = screen.get_node("Panel")
+	var column: Control = screen.get_node("Panel/VBoxContainer")
+	assert_eq(panel.size, Vector2(720.0, 480.0), "The panel keeps the size the scene gives it")
+	assert_lte(column.size.y, panel.size.y, "and its contents fit inside it")
+	assert_gt(screen.detail_scroll.size.y, 40.0, "The description has a fixed area")
+	assert_gt(screen.detail_description.size.y, screen.detail_scroll.size.y, "that the long text scrolls within instead of stretching")
+	assert_eq(screen.detail_description.get_parent(), screen.detail_scroll)
+	screen.hide_menu()

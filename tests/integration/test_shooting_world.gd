@@ -174,3 +174,36 @@ func test_an_ice_arrow_freezes_the_pool_under_the_crosshair() -> void:
 		return
 	var at: Vector3 = (blocks[0] as Node3D).global_position
 	assert_lt(Vector2(at.x - aim.x, at.z - aim.z).length(), 1.0, "The pool freezes within a metre of where the crosshair pointed (the arrow breaks the surface a little past the aim point on its arc): %s for %s" % [at, aim])
+
+
+func test_the_guns_draw_shoot_and_reload_with_the_gravity_sound_clips() -> void:
+	var pistol_pickup: Equipment = world.get_node("JustCreate3D/Weapon_01")
+	var rifle_pickup: Equipment = world.get_node("JustCreate3D/Weapon_02")
+	assert_eq(pistol_pickup.equip_sfx.resource_path, "res://resources/audio/gun_draw.tres", "The pistol draws with the pack's equip clips")
+	assert_eq(pistol_pickup.stow_sfx.resource_path, "res://resources/audio/gun_holster.tres")
+	assert_eq(rifle_pickup.equip_sfx.resource_path, "res://resources/audio/gun_draw.tres", "and so does the rifle")
+	assert_eq((pistol_pickup.get_node("FireAudio") as AudioStreamPlayer3D).stream.resource_path, "res://resources/audio/pistol_shot.tres")
+	assert_eq((rifle_pickup.get_node("FireAudio") as AudioStreamPlayer3D).stream.resource_path, "res://resources/audio/rifle_shot.tres", "each gun its own shots")
+	assert_eq((pistol_pickup.get_node("ReloadAudio") as AudioStreamPlayer3D).stream.resource_path, "res://resources/audio/pistol_reload.tres")
+	assert_eq((rifle_pickup.get_node("ReloadAudio") as AudioStreamPlayer3D).stream.resource_path, "res://resources/audio/rifle_reload.tres", "and its own reload")
+	for clip: AudioStream in [rifle.fire_sfx.stream, rifle.reload_sfx.stream]:
+		var randomizer: AudioStreamRandomizer = clip as AudioStreamRandomizer
+		assert_eq(randomizer.streams_count, 3, "Three takes of each")
+		assert_true(randomizer.get_stream(0).resource_path.ends_with(".ogg"), "as 96 kbps Vorbis, not the pack's WAVs")
+	assert_eq(rifle.fire_sfx, rifle.get_node("FireAudio"), "The equipped copy carries the nodes")
+	player.weapon_audio.armed = true
+	await _aim_at(Vector3(0.0, 1.0, -30.0))
+	var projectiles: Node = world.get_node("Projectiles")
+	var bullet: Projectile = rifle.fire()
+	assert_not_null(bullet)
+	var speaker: AudioStreamPlayer3D = projectiles.get_node_or_null("LaunchSfx") as AudioStreamPlayer3D
+	assert_not_null(speaker, "The shot plays through a speaker beside the round (what every peer's copy does)")
+	assert_eq(speaker.stream, rifle.fire_sfx.stream, "with the rifle's shots")
+	assert_true(speaker.playing)
+	assert_false(rifle.fire_sfx.playing, "not through the weapon's own node")
+	rifle.rounds = 0
+	rifle.reload()
+	assert_true(rifle.reload_sfx.playing, "Reloading plays the reload")
+	player.inventory.stow_equipment(rifle)
+	assert_true(player.weapon_audio.stow_audio.playing, "Stowing the rifle holsters it")
+	assert_eq(player.weapon_audio.stow_audio.stream.resource_path, "res://resources/audio/gun_holster.tres")

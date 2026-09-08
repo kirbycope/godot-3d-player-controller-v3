@@ -94,6 +94,7 @@ hides) is behind `show_for` / `hide_for` and is the player controller's; the con
 | `display_name` | `@export String` | Node buttons, details, wheel slots, palette labels, button names |
 | `icon` | `@export Texture2D` | Node buttons, details, wheel slots, the held icon, the palette |
 | `icon_color` | `@export Color` | Tints the icon everywhere it is drawn |
+| `get_details()` | `-> String`, optional | The details panel's `DetailInfo` line (damage, ticks, slows); `SpellsScreen` checks `has_method` first, so the stub need not have it |
 | `HealAbility` | `scripts/heal_ability.gd extends Ability` | `heal.tres` (`script_class="HealAbility"`); the editor's class chain test |
 | `StealthAbility` | `scripts/stealth_ability.gd extends Ability` | `stealth.tres` (`script_class="StealthAbility"`); the editor's class chain test |
 

@@ -54,6 +54,10 @@ one_shot = true
 
 [node name="ReelTimer" type="Timer" parent="."]
 wait_time = 2.0
+
+[node name="CatchScreenTimer" type="Timer" parent="."]
+wait_time = 0.8
+one_shot = true
 one_shot = true
 
 [connection signal="timeout" from="CastTimer" to="." method="_on_cast_timer_timeout"]
@@ -61,6 +65,7 @@ one_shot = true
 [connection signal="timeout" from="NibbleTimer" to="." method="_on_nibble_timer_timeout"]
 [connection signal="timeout" from="HookTimer" to="." method="_on_hook_timer_timeout"]
 [connection signal="timeout" from="ReelTimer" to="." method="_on_reel_timer_timeout"]
+[connection signal="timeout" from="CatchScreenTimer" to="." method="_on_catch_screen_timer_timeout"]
 
 [connection signal="body_entered" from="PlayerDetection" to="." method="_on_player_detection_body_entered"]
 [editable path="Sketchfab_Scene"]

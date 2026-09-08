@@ -36,6 +36,7 @@ var _slot_buttons: Array[InventorySlotButton] = []
 @onready var detail_icon: TextureRect = %DetailIcon
 @onready var detail_name: Label = %DetailName
 @onready var detail_status: Label = %DetailStatus
+@onready var detail_info: Label = %DetailInfo ## What the ability does in numbers (`Ability.get_details()`: damage, ticks, slows, fire).
 @onready var detail_requires: Label = %DetailRequires
 @onready var unlock_button: Button = %Unlock
 @onready var unlocked_grid: GridContainer = %UnlockedGrid
@@ -344,12 +345,14 @@ func _update_details() -> void:
 		detail_icon.texture = null
 		detail_name.text = ""
 		detail_status.text = "Empty slot" if focused_slot != -1 else ""
+		detail_info.text = ""
 		detail_requires.text = ""
 		unlock_button.disabled = true
 		return
 	detail_icon.texture = ability.icon
 	detail_icon.modulate = ability.icon_color
 	detail_name.text = ability.display_name
+	detail_info.text = str(ability.call("get_details")) if ability.has_method("get_details") else ""
 	var node: SpellNode = _spellbook.tree.get_node_for(ability) if _spellbook.tree else null
 	if _spellbook.is_unlocked(ability):
 		detail_status.text = "On the wheel" if _spellbook.is_active(ability) else "Unlocked"

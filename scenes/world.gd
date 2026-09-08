@@ -88,6 +88,7 @@ func _on_local_player_spawned(local_player: Player) -> void:
 	if multiplayer.is_server():
 		($Duck as FollowerNpc).player = player
 		($LittleBuddy as FollowerNpc).player = player
+	print("World ready: %s spawned as peer %d" % [player.name, multiplayer.get_unique_id()]) # what tools/web_smoke_test.py waits for
 
 
 ## The local Player whistled: the nearest horse in earshot comes (Horse.summon relays the call to its authority).
@@ -120,9 +121,13 @@ func _send_weather_to_peer(peer_id: int) -> void:
 	_sync_weather.rpc_id(peer_id, weather_fx.current_biome, weather_fx.active_weather)
 
 
+## The host's weather lands on every client. The biome comes along for a client without a player of its own to
+## stand in a zone; one that has reads its biome off the zones around that player (WeatherFX.blend_zones), so the
+## grass and the sky match where they stand while the rain is still the host's.
 @rpc("authority", "call_remote", "reliable")
 func _sync_weather(biome: ClimateData.BiomeZone, weather: ClimateData.WeatherType) -> void:
-	weather_fx.current_biome = biome
+	if not weather_fx.is_blending_zones():
+		weather_fx.current_biome = biome
 	weather_fx.set_weather(weather)
 
 

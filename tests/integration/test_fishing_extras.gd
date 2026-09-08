@@ -244,10 +244,17 @@ func test_fish_index_hides_species_until_caught() -> void:
 	assert_true("cm" in index.conditions_label.text, "The conditions are told even before a catch")
 	index.hide_menu()
 	var log: FishingLog = player.get_node("FishingLog")
-	log.record_catch(CARP, 41.0)
 	index.show_menu()
-	assert_eq(index.buttons[0].text, "Carp")
+	log.record_catch(CARP, 41.0) # with the index open
+	assert_eq(index.buttons[0].text, "Carp", "The list follows the log while it is open")
+	index._show(CARP)
 	assert_eq(index.record_label.text, "Record: 41.0 cm")
+	assert_eq(index.buttons[5].text, "???", "The boot is not found yet")
+	assert_false(log.record_catch(BOOT, 0.0), "Junk is never a record")
+	assert_true(log.has_caught(BOOT), "but it is logged as found")
+	assert_eq(index.buttons[5].text, "Old Boot", "so the index names it")
+	index._show(BOOT)
+	assert_eq(index.record_label.text, "Found", "with no length to record")
 	index.hide_menu()
 
 
@@ -305,6 +312,8 @@ func test_the_bite_eats_the_bait_and_the_next_goes_on_even_when_the_fish_escapes
 	_land_float(rod, water, CARP)
 	rod._on_bite_timer_timeout()
 	assert_eq(rod.state, FishingRod.State.BITE)
+	assert_true(rod.bobber.bait_icon.visible, "The worm floats off the hook for all to see")
+	assert_eq(rod.bobber.bait_icon.texture, WORM.icon)
 	assert_eq(rod.lure, WORM, "The bite ate one worm and the last one went on the line")
 	assert_eq(player.inventory.count_of(WORM), 0, "so the bag is empty")
 	assert_signal_not_emitted(rod, "lure_changed", "The same bait staying on is not a change")

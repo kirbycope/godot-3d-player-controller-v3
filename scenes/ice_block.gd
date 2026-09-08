@@ -1,14 +1,15 @@
 class_name IceBlock
 extends StaticBody3D
 ## A slab of ice frozen out of a pond: a walkable body the Player and floating props rest on. It sits with its top
-## just above the wave surface, melts after [member lifetime] seconds (shrinking away over the last
-## [member melt_seconds]) and frees itself. [method freeze_at] makes one on any "WATER" area ([Buoyancy]) under a
+## just above the wave surface and reaches deep enough below it that a swimmer's ledge ray (cast a little under
+## the surface) meets its flank, so it is climbed out onto as the pool's rim is. It melts after [member lifetime]
+## seconds (shrinking away over the last [member melt_seconds]) and frees itself. [method freeze_at] makes one on any "WATER" area ([Buoyancy]) under a
 ## point, through the world's [ProjectileSpawner] so every peer gets it, or locally without one.
 
 signal melted ## Emitted when the slab has melted away, just before it frees itself.
 
 const SCENE_PATH: String = "res://scenes/ice_block.tscn"
-const SIZE: Vector3 = Vector3(2.0, 0.3, 2.0) ## The slab, as the scene's box and mesh are sized.
+const SIZE: Vector3 = Vector3(2.0, 0.6, 2.0) ## The slab, as the scene's box and mesh are sized; half a metre of it is under water.
 const TOP_ABOVE_SURFACE: float = 0.1 ## The top of the slab floats this far above the resting wave surface.
 const OVER_WATER_MARGIN: float = 0.5 ## A point this far above the surface still counts as over the water (an arrow in the surface).
 

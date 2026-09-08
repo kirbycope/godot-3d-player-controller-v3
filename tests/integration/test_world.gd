@@ -91,3 +91,14 @@ func test_hud_temperature_gauge_stays_square() -> void:
 	var gauge: Control = world.get_node("HUD/BottomRight/TemperatureGaugeDisplay")
 	await wait_physics_frames(2)
 	assert_eq(gauge.size, Vector2(36.0, 36.0), "The gauge dial is 36x36; a stretched height means an unpinned offset_bottom")
+
+
+func test_the_world_plays_the_weather_fx_ambience() -> void:
+	var sounds: Node3D = world.get_node_or_null("BackGroundSounds")
+	assert_not_null(sounds, "world.tscn instances the addon's bgs.tscn (left in the addon)")
+	var audio: WeatherAudio = world.get_node("WeatherFX/WeatherAudio")
+	assert_eq(audio.bgs_day_clear, sounds.get_node("BGS_Day_Clear"), "and points WeatherAudio's slots at its players")
+	assert_eq(audio.bgs_night_storm, sounds.get_node("BGS_Night_Storm"))
+	var target: Node = audio.get_target_bgs_player()
+	assert_not_null(target, "One of them matches the weather and the hour")
+	assert_true(bool(target.get("playing")), "and is playing")

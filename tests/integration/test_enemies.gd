@@ -429,3 +429,41 @@ func test_the_rifleman_flashes_its_muzzle_down_the_barrel_on_every_shot() -> voi
 	bullet.queue_free()
 	rifleman.target = null
 	rifleman.player = null
+
+
+func test_fire_sets_an_enemy_ablaze_for_three_seconds_of_ticking_damage() -> void:
+	var swordsman: EnemyNpc = _enemy("Swordsman")
+	assert_true(swordsman.is_in_group("Burnable"), "Enemies are what fire sets ablaze")
+	assert_false(swordsman.is_burning)
+	assert_false(swordsman.burn_vfx.visible)
+	var before: float = swordsman.health.health
+	# What a fire arrow, an incendiary round or a fire spell landing at its feet does
+	Ability.ignite_grass(get_tree(), swordsman.global_position, 1.5, 6.0)
+	assert_true(swordsman.is_burning, "Ablaze")
+	assert_true(swordsman.burn_vfx.visible, "with the flame showing")
+	assert_false(swordsman.burn_tick_timer.is_stopped(), "and the ticks running")
+	await wait_seconds(1.1)
+	assert_lt(swordsman.health.health, before, "The fire costs health in ticks")
+	assert_eq(swordsman.anim_state, EnemyNpc.LOCOMOTION_STATE, "without a flinch per tick")
+	await wait_seconds(2.6)
+	assert_false(swordsman.is_burning, "Out after three seconds")
+	assert_false(swordsman.burn_vfx.visible)
+	assert_almost_eq(before - swordsman.health.health, Ability.BURN_SECONDS * Ability.BURN_DAMAGE_PER_SECOND, 0.01, "Fifteen damage over the three seconds")
+	Ability.ignite_grass(get_tree(), swordsman.global_position + Vector3(4.0, 0.0, 0.0), 1.5, 6.0)
+	assert_false(swordsman.is_burning, "Fire four metres off does not reach it")
+	Ability.ignite_grass(get_tree(), swordsman.global_position, 1.5, 6.0)
+	assert_true(swordsman.is_burning)
+	swordsman.extinguish()
+	assert_false(swordsman.is_burning, "Water puts it out")
+	assert_true(swordsman.burn_tick_timer.is_stopped())
+
+
+func test_the_fire_spells_say_what_they_burn() -> void:
+	var fireball: DamageAbility = load("res://resources/abilities/fireball.tres")
+	var details: String = fireball.get_details()
+	assert_true(details.begins_with("Damage: 25"), details)
+	assert_true(details.contains("sets enemies ablaze: 15 damage over 3 s"), "The burn is the fireball's damage over time: " + details)
+	assert_eq(fireball.over_time_damage, 0.0, "not a second set of ticks")
+	var frostbolt: DamageAbility = load("res://resources/abilities/frostbolt.tres")
+	assert_true(frostbolt.get_details().contains("Slows to"), frostbolt.get_details())
+	assert_true(frostbolt.get_details().contains("Douses fire"))

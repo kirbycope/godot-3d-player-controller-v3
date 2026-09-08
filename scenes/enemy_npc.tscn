@@ -18,6 +18,7 @@
 [ext_resource type="PackedScene" uid="uid://c7health000001" path="res://addons/3d_player_controller/scenes/health.tscn" id="health_scene"]
 [ext_resource type="PackedScene" uid="uid://c7statusbars01" path="res://addons/3d_player_controller/scenes/status_bars_3d.tscn" id="bars_scene"]
 [ext_resource type="PackedScene" uid="uid://c7boss00000001" path="res://addons/3d_player_controller/scenes/boss.tscn" id="boss_scene"]
+[ext_resource type="PackedScene" path="res://addons/weather_fx/scenes/vfx_flame.tscn" id="flame_scene"]
 [ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/melee_hitbox.tscn" id="hitbox_scene"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_nkhb5"]
@@ -362,7 +363,7 @@ graph_offset = Vector2(-334.13638, -114)
 [sub_resource type="SphereShape3D" id="SphereShape3D_head"]
 radius = 0.14
 
-[node name="EnemyNpc" type="CharacterBody3D" groups=["Focusable"]]
+[node name="EnemyNpc" type="CharacterBody3D" groups=["Burnable", "Focusable"]]
 script = ExtResource("1_script")
 move_speed = 3.5
 walk_speed = 1.4
@@ -1391,6 +1392,13 @@ one_shot = true
 wait_time = 0.45
 one_shot = true
 
+[node name="BurnTickTimer" type="Timer" parent="."]
+wait_time = 0.5
+
+[node name="BurnVFX" parent="." instance=ExtResource("flame_scene")]
+visible = false
+transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0, 0.9, 0)
+
 [node name="Muzzle" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 1.35, -0.4)
 
@@ -1433,6 +1441,7 @@ replication_config = ExtResource("state_sync")
 [connection signal="energy_changed" from="Health" to="StatusBars3D" method="set_energy"]
 [connection signal="died" from="Health" to="." method="_on_health_died"]
 [connection signal="timeout" from="StrikeTimer" to="." method="_on_strike_timer_timeout"]
+[connection signal="timeout" from="BurnTickTimer" to="." method="_on_burn_tick_timer_timeout"]
 [connection signal="cast_started" from="NpcCaster" to="." method="_on_cast_started"]
 [connection signal="hit" from="Mannequin_M/Armature/GeneralSkeleton/WeaponAttachment/WeaponHitbox" to="." method="_on_weapon_hitbox_hit"]
 [connection signal="timeout" from="NpcCaster/CastTimer" to="NpcCaster" method="_on_cast_timer_timeout"]

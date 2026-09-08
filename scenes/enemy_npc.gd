@@ -6,6 +6,8 @@ extends FollowerNpc
 ## [member leash_distance] from the post (a respawn far away counts), it turns on any other living Player still
 ## inside its aggro area or walks back to where it started, stands as it stood and heals to full. A Player in a
 ## vehicle is never chased: it is attacked while inside attack range and given up on once it drives out of it.
+## Fire sets it ablaze ([method burn], through [method Ability.burn_around] from a fire arrow, an incendiary round, a
+## fire spell or the torch): the flame shows on every peer while the server ticks the damage, and water puts it out.
 ## Locomotion is a blend space (Idle, Walk, Run) fed by a smoothed [member locomotion_blend], as LittleBuddy's is,
 ## and root motion as for the Player: the navigation decides where to face and how fast it wants to go, and the
 ## animation's Root bone carries the body. Health, death and the animation state replicate from
@@ -57,6 +59,13 @@ var locomotion_blend: float = 0.0: ## Replicated: 0 idle, 0.5 walk, 1 run, eased
 		locomotion_blend = value
 		if animation_tree:
 			animation_tree.set(LOCOMOTION_BLEND_PATH, value)
+var is_burning: bool = false: ## Replicated: ablaze, the flame showing on every peer while the server ticks the damage.
+	set(value):
+		is_burning = value
+		if is_node_ready():
+			_update_burn_vfx()
+var _burn_ticks_left: int = 0
+var _burn_tick_damage: float = 0.0
 
 @onready var mannequin: Node3D = $Mannequin_M ## The animated model; root motion is in its space.
 @onready var animation_tree: AnimationTree = $AnimationTree
@@ -72,6 +81,8 @@ var locomotion_blend: float = 0.0: ## Replicated: 0 idle, 0.5 walk, 1 run, eased
 @onready var aggro_area: Area3D = $AggroArea
 @onready var footstep_audio: AudioStreamPlayer3D = $FootstepAudio
 @onready var physical_bone_simulator: PhysicalBoneSimulator3D = $Mannequin_M/Armature/GeneralSkeleton/PhysicalBoneSimulator3D
+@onready var burn_vfx: Node3D = $BurnVFX ## The flame shown while [member is_burning].
+@onready var burn_tick_timer: Timer = $BurnTickTimer ## Ticks the burn damage; its timeout is wired in the scene.
 
 
 func _ready() -> void:
@@ -80,6 +91,7 @@ func _ready() -> void:
 	animation_tree.active = true
 	attack_timer.wait_time = attack_interval
 	strike_timer.wait_time = strike_delay
+	_update_burn_vfx()
 	if is_dead:
 		_apply_death()
 
@@ -223,6 +235,43 @@ func _request_hit(damage: float, from: Vector3) -> void:
 		take_hit(damage, from)
 
 
+## Sets the enemy ablaze for [param seconds], costing [param damage_per_second] in ticks of the BurnTickTimer; a
+## new burn restarts the clock. Only the authority burns; the flame reaches the peers through [member is_burning].
+func burn(seconds: float, damage_per_second: float) -> void:
+	if is_dead or not is_multiplayer_authority() or seconds <= 0.0:
+		return
+	_burn_ticks_left = maxi(1, roundi(seconds / burn_tick_timer.wait_time))
+	_burn_tick_damage = damage_per_second * burn_tick_timer.wait_time
+	is_burning = true
+	burn_tick_timer.start()
+
+
+## Puts the fire out: water ([Buoyancy] and a Water spell call it on anything that has it), death, or the last tick.
+func extinguish() -> void:
+	burn_tick_timer.stop()
+	_burn_ticks_left = 0
+	if is_multiplayer_authority():
+		is_burning = false
+
+
+## Wired to BurnTickTimer.timeout: a tick of fire damage straight to the health, so the enemy fights on through it
+## instead of flinching every half second; the last tick puts the fire out.
+func _on_burn_tick_timer_timeout() -> void:
+	if is_dead:
+		extinguish()
+		return
+	health.damage(_burn_tick_damage, global_position)
+	_burn_ticks_left -= 1
+	if _burn_ticks_left <= 0:
+		extinguish()
+
+
+func _update_burn_vfx() -> void:
+	burn_vfx.visible = is_burning
+	for particles: Node in burn_vfx.find_children("*", "GPUParticles3D", true, false):
+		(particles as GPUParticles3D).emitting = is_burning
+
+
 func can_heal() -> bool:
 	return health.can_heal()
 
@@ -326,6 +375,7 @@ func _update_locomotion() -> void:
 
 ## The ragdoll takes over and the enemy stops being a threat or a target.
 func _apply_death() -> void:
+	extinguish()
 	caster.interrupt()
 	boss.disengage()
 	if is_instance_valid(target) and is_multiplayer_authority():

@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://chglfv3uixt8o"
+path="res://.godot/imported/Gun Shot 18.wav-2d883410048cf47c6c7ecf7f1af6ceb7.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Gun SFX/Gun/Gun Shot 18.wav"
+dest_files=["res://.godot/imported/Gun Shot 18.wav-2d883410048cf47c6c7ecf7f1af6ceb7.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

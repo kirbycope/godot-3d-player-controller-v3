@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://buqne64k8jwf6"
+path="res://.godot/imported/Bullet Shells 5.wav-95c579ef524239dd0c1f2fd6729b36b8.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Gun SFX/Bullet Shells/Bullet Shells 5.wav"
+dest_files=["res://.godot/imported/Bullet Shells 5.wav-95c579ef524239dd0c1f2fd6729b36b8.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2
