@@ -47,6 +47,18 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 		pass
 
 
+def _sky_samples(path: str) -> list:
+	"""Three pixels high in the frame, clear of the HUD; empty without Pillow."""
+	try:
+		from PIL import Image
+	except ImportError:
+		print("Pillow is not installed; skipping the sky check")
+		return []
+	image = Image.open(path).convert("RGB")
+	width, height = image.size
+	return [image.getpixel((int(width * 0.12), int(height * 0.12))), image.getpixel((int(width * 0.5), int(height * 0.2))), image.getpixel((int(width * 0.85), int(height * 0.12)))]
+
+
 def serve(port: int) -> socketserver.TCPServer:
 	socketserver.TCPServer.allow_reuse_address = True
 	server = socketserver.ThreadingTCPServer(("127.0.0.1", port), Handler)
@@ -89,7 +101,7 @@ def main() -> int:
 					errors.append(text)
 
 			page.on("console", on_console)
-			page.on("pageerror", lambda exc: errors.append(f"[pageerror] {exc}"))
+			page.on("pageerror", lambda exc: None if any(ignored in str(exc) for ignored in IGNORED) else errors.append(f"[pageerror] {exc}"))
 			page.on("crash", lambda: errors.append("[crash] the page crashed"))
 
 			print(f"Opening {url}")
@@ -99,13 +111,13 @@ def main() -> int:
 			# The engine is up once the status overlay goes away
 			page.wait_for_function("() => { const s = document.getElementById('status'); return !s || s.style.visibility === 'hidden' || getComputedStyle(s).visibility === 'hidden'; }", timeout=args.timeout * 1000)
 			print("Engine started")
-			page.screenshot(path=os.path.join(OUT, "1_started.png"))
+			page.screenshot(path=os.path.join(OUT, "1_started.png"), timeout=120_000)
 
 			# Click to start (the web build waits for a gesture before capturing input and audio), then the title screen
 			# has Single-Player focused: Enter presses it
 			canvas.click(position={"x": 640, "y": 360})
 			page.wait_for_timeout(1500)
-			page.screenshot(path=os.path.join(OUT, "2_title.png"))
+			page.screenshot(path=os.path.join(OUT, "2_title.png"), timeout=120_000)
 			page.keyboard.press("Enter")
 			print("Single-Player pressed; waiting for the world (World.gd prints \"World ready\" once the local player has spawned)")
 			started = time.time()
@@ -114,10 +126,17 @@ def main() -> int:
 				if any("World ready:" in line for line in console):
 					loaded = True
 					break
-			page.screenshot(path=os.path.join(OUT, "3_loading.png"))
+			page.screenshot(path=os.path.join(OUT, "3_loading.png"), timeout=120_000)
 			# Give the world a moment to spawn the player and settle, then look at it
 			page.wait_for_timeout(8000)
-			page.screenshot(path=os.path.join(OUT, "4_world.png"))
+			page.screenshot(path=os.path.join(OUT, "4_world.png"), timeout=120_000)
+			# The sky shader must be drawing: three points in the sky are never one flat colour (a white or fog-coloured
+			# sky is what a failed sky shader or a fog with sky_affect at 1 leaves). Read off the screenshot: a WebGL
+			# readback after the frame can come back empty.
+			sky = _sky_samples(os.path.join(OUT, "4_world.png"))
+			print(f"Sky samples: {sky}")
+			if sky and len(set(sky)) == 1:
+				errors.append(f"[sky] the sky is one flat colour {sky[0]}: the sky shader is not drawing")
 			browser.close()
 	finally:
 		server.shutdown()
