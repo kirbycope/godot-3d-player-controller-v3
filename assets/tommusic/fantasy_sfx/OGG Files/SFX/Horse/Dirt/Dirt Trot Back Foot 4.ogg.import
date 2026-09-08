@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://diqhqtlmy4i6f"
+path="res://.godot/imported/Dirt Trot Back Foot 4.ogg-040079b5645d0f4d340761d1a40434ef.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/tommusic/fantasy_sfx/OGG Files/SFX/Horse/Dirt/Dirt Trot Back Foot 4.ogg"
+dest_files=["res://.godot/imported/Dirt Trot Back Foot 4.ogg-040079b5645d0f4d340761d1a40434ef.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

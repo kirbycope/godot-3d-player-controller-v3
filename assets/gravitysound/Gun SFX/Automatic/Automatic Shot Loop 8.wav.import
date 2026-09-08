@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://ddhh7h4xhfrqy"
+path="res://.godot/imported/Automatic Shot Loop 8.wav-d902af29cf349667ea5c35b3fca7ec48.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Gun SFX/Automatic/Automatic Shot Loop 8.wav"
+dest_files=["res://.godot/imported/Automatic Shot Loop 8.wav-d902af29cf349667ea5c35b3fca7ec48.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

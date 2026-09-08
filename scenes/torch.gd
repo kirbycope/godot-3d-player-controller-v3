@@ -41,6 +41,14 @@ func _process(_delta: float) -> void:
 	omni_light.global_position = head_world_pos + Vector3(0.0, 0.1, 0.0)
 
 
+## Leaving the tree stops the crackle (a pickup reparents the torch onto the Player's spring arm, a drop puts it
+## back): re-entering brings it back only while the torch is lit. The scene leaves the loop's autoplay off for the
+## same reason: an autoplaying loop restarts on every re-entry, lit or not.
+func _enter_tree() -> void:
+	if is_node_ready():
+		_update_flame_state.call_deferred() # once the audio child is back in the tree too
+
+
 func _update_flame_state() -> void:
 	if not is_node_ready():
 		return
@@ -50,9 +58,10 @@ func _update_flame_state() -> void:
 		(particles as GPUParticles3D).visible = is_lit
 	omni_light.visible = is_lit
 	omni_light.light_energy = flame_light_energy if is_lit else 0.0
-	if is_lit and not audio_loop.playing:
-		audio_loop.play()
-	elif not is_lit and audio_loop.playing:
+	if is_lit:
+		if not audio_loop.playing:
+			audio_loop.play()
+	else:
 		audio_loop.stop()
 
 
@@ -72,6 +81,8 @@ func _on_body_entered(_body: Node) -> void:
 	for node: Node in get_tree().get_nodes_in_group("BurnableGrass"):
 		if node is Node3D and node.has_method("ignite") and (node as Node3D).global_position.distance_to(contact_pos) <= 4.5:
 			node.call("ignite")
+	# 3. Anyone standing in it catches fire (on their own authority)
+	Ability.burn_around(get_tree(), contact_pos, 1.5)
 
 
 ## Extinguishes the torch (e.g. when submerged in water).

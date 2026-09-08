@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://d3si3je0psytn"
+path="res://.godot/imported/Water Trot Front Foot 3.ogg-f05c27282943469add55186e2d51ab6a.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/tommusic/fantasy_sfx/OGG Files/SFX/Horse/Water/Water Trot Front Foot 3.ogg"
+dest_files=["res://.godot/imported/Water Trot Front Foot 3.ogg-f05c27282943469add55186e2d51ab6a.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

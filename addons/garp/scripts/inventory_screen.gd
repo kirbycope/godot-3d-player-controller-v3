@@ -28,6 +28,7 @@ var _inventory: Inventory
 @onready var model_camera: Camera3D = %ModelCamera
 @onready var detail_name: Label = %DetailName
 @onready var detail_count: Label = %DetailCount
+@onready var detail_scroll: ScrollContainer = %DetailScroll ## Holds the description at the panel's fixed height; a long one (a fish's ten lengths) scrolls inside it.
 @onready var detail_description: Label = %DetailDescription
 @onready var use_button: Button = %Use
 @onready var drop_button: Button = %Drop
@@ -125,11 +126,14 @@ func refresh() -> void:
 			var weapon: Equipment = _weapons[i] if i < _weapons.size() else null
 			_slots[i].set_equipment(weapon, weapon != null and _inventory.equipment.has(weapon))
 			_slots[i].disabled = i >= _inventory.max_equipment # BOTW: the weapon slots beyond the limit are not there
+			# A rod's bait changes without the inventory moving; the equipment says so and the details follow
+			if weapon and not weapon.details_changed.is_connected(_update_details):
+				weapon.details_changed.connect(_update_details)
 		use_button.text = "Equip"
 	else:
 		var slots: Array = _inventory.get_slots(tab)
 		for i: int in _slots.size():
-			_slots[i].set_stack(slots[i] if i < slots.size() else null)
+			_slots[i].set_stack(slots[i] if i < slots.size() else null, player)
 			_slots[i].disabled = false
 		use_button.text = "Use"
 	for i: int in _slots.size():
@@ -194,6 +198,7 @@ func _on_use_pressed() -> void:
 		_toggle_equipment(index)
 	else:
 		_inventory.use_slot(tab, index)
+		refresh() # a non-consumable changes no stack, but what it selected may badge the grid
 	_cancel_hold()
 
 

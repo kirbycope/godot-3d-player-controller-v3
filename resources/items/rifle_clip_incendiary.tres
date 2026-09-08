@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="AmmoItem" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://addons/3d_player_controller/scripts/ammo_item.gd" id="1_ammo"]
+[ext_resource type="Texture2D" path="res://addons/3d_player_controller/assets/game_icons/mp5.svg" id="2_icon"]
+[ext_resource type="PackedScene" path="res://scenes/incendiary_round.tscn" id="3_projectile"]
+
+[resource]
+script = ExtResource("1_ammo")
+id = &"rifle_clip_incendiary"
+display_name = "Incendiary Rifle Clip"
+description = "A rifle magazine of incendiary rounds that set fire to what they hit."
+icon = ExtResource("2_icon")
+icon_color = Color(1, 0.3, 0.25, 1)
+category = 1
+max_stack = 20
+consumable = false
+weapon_type = 6
+projectile_scene = ExtResource("3_projectile")

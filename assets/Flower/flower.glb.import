@@ -49,7 +49,7 @@ _subresources={
 "lods/normal_merge_angle": 60.0,
 "lods/normal_split_angle": 25.0,
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://Magic_Area_VFX/flower_mesh.res",
+"save_to_file/fallback_path": "res://Le_Lu/Magic_Area_VFX/flower_mesh.res",
 "save_to_file/make_streamable": "",
 "save_to_file/path": "uid://d0x385agcwa5f"
 }

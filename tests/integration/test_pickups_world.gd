@@ -41,7 +41,7 @@ func test_walking_over_a_weapon_equips_a_copy_once_and_spends_the_pickup() -> vo
 func test_every_world_pickup_has_a_detection_area_and_no_prompt() -> void:
 	var count: int = 0
 	for item: Node in world.find_children("*", "Node3D", true, false):
-		if item is Equipment and item.get_node_or_null("PlayerDetection"):
+		if item is Equipment and item.get_node_or_null("PlayerDetection") and (item as Equipment).player == null: # not a copy the kit put in the Player's backpack
 			count += 1
 			assert_true((item as Equipment).player_detection.body_entered.is_connected(item._on_player_detection_body_entered), item.name + " is wired in the scene")
 			assert_null(item.get_node_or_null("ActionPrompt"), item.name + " has no prompt")
@@ -81,3 +81,31 @@ func test_pressing_action_by_the_car_gets_in() -> void:
 	assert_true(player.is_riding, "Action by the car gets in")
 	assert_eq(car.player, player, "The driver stays the car's Player")
 	assert_false(car.get_node("ActionPrompt").visible, "The prompt is gone once inside")
+
+
+func test_a_dropped_item_shows_its_model_and_its_label_only_while_in_range() -> void:
+	var rock: Item = load("res://resources/items/rock.tres")
+	var action_label: Label = player.controls.joypad_button_0_label
+	player.refresh_contextual_controls()
+	var default_text: String = action_label.text
+	var slot: int = player.inventory.get_slots(rock.category).find_custom(func(entry: ItemSlot) -> bool: return entry != null and entry.item == rock)
+	assert_gte(slot, 0, "The kit hands out rocks")
+	var pickup: ItemPickup = player.inventory.drop_slot(rock.category, slot) as ItemPickup
+	assert_not_null(pickup)
+	await wait_physics_frames(3)
+	assert_eq(pickup.model_pivot.get_child_count(), 1, "The rock lies there as its model")
+	assert_false(pickup.icon.visible)
+	assert_eq(pickup.player, player, "Dropped a metre ahead, the Player is in range")
+	assert_eq(action_label.text, "Pick Up", "and Action reads Pick Up")
+	assert_eq(player.prompt_action_label, "Pick Up")
+	player.refresh_contextual_controls()
+	assert_eq(action_label.text, "Pick Up", "The label survives a refresh (a state change, an equipment change) while in range")
+	await _stand_at(player.global_position + Vector3(0.0, 0.0, 6.0))
+	assert_null(pickup.player, "Out of range")
+	assert_ne(player.prompt_action_label, "Pick Up", "the prompt has let the label go (another prompt may be in reach there)")
+	assert_ne(action_label.text, "Pick Up", "and Action no longer reads Pick Up")
+	await _stand_at(pickup.global_position + Vector3(0.5, 0.0, 0.0))
+	assert_eq(action_label.text, "Pick Up", "Back in range, back to Pick Up")
+	pickup.free() # someone else took it
+	assert_ne(player.prompt_action_label, "Pick Up", "A pickup that vanishes in range clears the label")
+	assert_ne(action_label.text, "Pick Up")

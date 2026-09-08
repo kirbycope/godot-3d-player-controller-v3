@@ -1,21 +1,37 @@
 extends GutTest
 
-## Purpose: the Pause menu shows an Inventory button only when its screen path is set, the screen opens from it
-## and Back returns, tabs switch with the bumper actions, confirm lifts and places stacks, Use and Drop act on the
-## stack under the cursor, and the equipment tab equips and stows.
+## Purpose: the inventory screen opens on a Player and pauses them, tabs switch with the bumper actions, confirm
+## lifts and places stacks, Use and Drop act on the stack under the cursor, the equipment tab equips and stows, and
+## Back hands over to the Player's pause menu. Contract tier: the screen is instanced here and bound to the Player
+## directly; opening it from the real Pause menu is covered in tests/integration.
 
 const PLAYER_SCENE: PackedScene = preload("res://addons/3d_player_controller/scenes/player.tscn")
-const PAUSE_SCENE: PackedScene = preload("res://addons/3d_player_controller/scenes/pause.tscn")
+const SCREEN_SCENE: PackedScene = preload("res://addons/garp/scenes/inventory_screen.tscn")
 const APPLE: Item = preload("res://addons/garp/resources/items/apple.tres")
 const ORE: Item = preload("res://addons/garp/resources/items/iron_ore.tres")
 const SWORD: Item = preload("res://addons/garp/resources/items/wooden_sword.tres")
+const ContractActions: GDScript = preload("res://addons/garp/tests/contract_actions.gd")
+
+## An item with a badge: the word the grid prints in the cell's corner for the Player that owns it.
+class BadgedItem extends Item:
+	func get_badge(owner: Node) -> String:
+		return "Loaded" if owner is Player else ""
+
 
 var root: Node3D
 var player: Player
 var inventory: Inventory
-var pause: Node
 var screen: InventoryScreen
 var sender
+var actions: RefCounted = ContractActions.new()
+
+
+func before_all() -> void:
+	actions.add_missing()
+
+
+func after_all() -> void:
+	actions.remove_added()
 
 
 func before_each() -> void:
@@ -32,11 +48,12 @@ func before_each() -> void:
 	root.add_child(player)
 	player.controls.current_input_type = Controls.InputType.KEYBOARD_MOUSE
 	inventory = player.inventory
-	pause = player.pause
+	screen = SCREEN_SCENE.instantiate()
+	screen.player = player
+	player.add_child(screen)
 	sender = InputSender.new(Input)
 	sender.set_auto_flush_input(true)
 	await wait_physics_frames(3)
-	screen = pause.inventory_screen as InventoryScreen
 
 
 func after_each() -> void:
@@ -46,53 +63,24 @@ func after_each() -> void:
 
 
 func _open() -> void:
-	pause.show_menu()
-	pause._on_inventory_pressed()
+	screen.show_menu()
 	await wait_physics_frames(1)
 
 
-func test_pause_shows_the_inventory_button_when_a_screen_is_set() -> void:
-	assert_true(pause.inventory_button.visible, "player.tscn sets the GARP screen path")
-	assert_not_null(screen, "The screen is instanced")
-	assert_eq(screen.get_parent(), player, "As a sibling menu on the Player")
-	assert_false(screen.visible)
-
-
-func test_pause_hides_the_button_when_no_screen_is_set() -> void:
-	var bare: Node = PAUSE_SCENE.instantiate()
-	bare.inventory_screen_scene = ""
-	bare.player = player
-	root.add_child(bare)
-	await wait_physics_frames(1)
-	assert_false(bare.inventory_button.visible, "No path, no button")
-	assert_null(bare.inventory_screen)
-	bare.queue_free()
-
-
-func test_inventory_opens_from_pause_and_back_returns_to_it() -> void:
+func test_show_menu_pauses_the_player_and_back_hands_over_to_pause() -> void:
+	assert_false(screen.visible, "Hidden until shown")
+	assert_false(player.is_paused)
 	await _open()
-	assert_true(screen.visible, "The inventory screen is up")
-	assert_false(pause.visible, "In place of the pause menu")
-	assert_true(player.is_paused, "Still paused")
+	assert_true(screen.visible)
+	assert_true(player.is_paused, "The screen pauses the Player like every menu layer")
 	assert_true(screen.get_viewport().gui_get_focus_owner() is InventorySlotButton, "A slot has focus for pad and keyboard")
 	screen._on_back_pressed()
 	await wait_physics_frames(1)
 	assert_false(screen.visible)
-	assert_true(pause.visible, "Back returns to the pause menu")
-	assert_true(player.is_paused)
-	pause.hide_menu()
+	assert_true(player.pause.visible, "Back shows the Player's pause menu")
+	assert_true(player.is_paused, "Still paused")
+	player.pause.hide_menu()
 	assert_false(player.is_paused)
-
-
-func test_the_start_action_closes_the_inventory_and_unpauses() -> void:
-	await _open()
-	sender.action_down("start")
-	await wait_physics_frames(1)
-	sender.action_up("start")
-	await wait_physics_frames(1)
-	assert_false(screen.visible)
-	assert_false(pause.visible)
-	assert_false(player.is_paused, "Start closes everything, like the other menus")
 
 
 func test_bumper_actions_switch_tabs() -> void:
@@ -111,7 +99,7 @@ func test_bumper_actions_switch_tabs() -> void:
 	assert_eq(screen.tab, Item.Category.EQUIPMENT)
 	screen._select_tab(Item.Category.KEY_ITEMS)
 	assert_true(screen.tab_buttons[3].button_pressed)
-	pause.hide_menu()
+	screen.hide_menu()
 
 
 func test_confirm_lifts_a_stack_and_places_it_on_another_slot() -> void:
@@ -149,7 +137,7 @@ func test_confirm_lifts_a_stack_and_places_it_on_another_slot() -> void:
 	await wait_physics_frames(1)
 	assert_eq(screen.held_index, -1, "Cancel puts a held stack back")
 	assert_true(screen.visible, "Without leaving the screen")
-	pause.hide_menu()
+	screen.hide_menu()
 
 
 func test_use_and_drop_act_on_the_focused_stack() -> void:
@@ -166,7 +154,7 @@ func test_use_and_drop_act_on_the_focused_stack() -> void:
 	assert_eq(inventory.count_of(APPLE), 1)
 	assert_eq(screen._slots[0].count_label.text, "", "A single apple shows no count")
 	assert_eq(screen.detail_count.text, "x1")
-	pause.hide_menu()
+	screen.hide_menu()
 
 
 func test_the_equipment_tab_stows_and_equips() -> void:
@@ -184,4 +172,51 @@ func test_the_equipment_tab_stows_and_equips() -> void:
 	screen._on_drop_pressed()
 	await wait_physics_frames(1)
 	assert_eq(inventory.get_all_weapons().size(), 0, "Drop puts it back in the world")
-	pause.hide_menu()
+	screen.hide_menu()
+
+
+func test_the_grid_prints_an_items_badge_and_hides_it_without_one() -> void:
+	var badged := BadgedItem.new()
+	badged.id = &"badged"
+	badged.category = Item.Category.MATERIALS
+	inventory.add_item(badged, 1)
+	inventory.add_item(ORE, 3)
+	await _open()
+	screen._select_tab(Item.Category.MATERIALS)
+	var badged_slot: InventorySlotButton = screen._slots[0]
+	var ore_slot: InventorySlotButton = screen._slots[1]
+	assert_eq(badged.get_badge(player), "Loaded")
+	assert_true(badged_slot.badge_label.visible, "A badge shows in the cell")
+	assert_eq(badged_slot.badge_label.text, "Loaded")
+	assert_false(ore_slot.badge_label.visible, "An item with no badge shows none")
+	assert_eq(ore_slot.badge_label.text, "")
+	assert_eq(ORE.get_badge(player), "", "Item's badge is empty by default")
+	badged_slot.set_stack(null)
+	assert_false(badged_slot.badge_label.visible, "Emptying the cell clears the badge")
+	screen._select_tab(Item.Category.EQUIPMENT)
+	assert_false(screen._slots[0].badge_label.visible, "Equipment cells carry no badge")
+	screen.hide_menu()
+
+
+func test_a_long_description_scrolls_inside_the_panel_instead_of_growing_it() -> void:
+	var logbook := Item.new()
+	logbook.id = &"test_logbook"
+	logbook.category = Item.Category.FOOD
+	logbook.icon = APPLE.icon
+	var lines: PackedStringArray = ["In the bag:"]
+	for i: int in 40: # a fish with a bag full of lengths prints one line each
+		lines.append("%d.0 cm" % (30 + i))
+	logbook.description = "\n".join(lines)
+	inventory.add_item(logbook, 1)
+	await _open()
+	screen._select_tab(Item.Category.FOOD)
+	screen._slots[0].grab_focus()
+	await wait_physics_frames(2)
+	var panel: Control = screen.get_node("Panel")
+	var column: Control = screen.get_node("Panel/VBoxContainer")
+	assert_eq(panel.size, Vector2(720.0, 480.0), "The panel keeps the size the scene gives it")
+	assert_lte(column.size.y, panel.size.y, "and its contents fit inside it")
+	assert_gt(screen.detail_scroll.size.y, 40.0, "The description has a fixed area")
+	assert_gt(screen.detail_description.size.y, screen.detail_scroll.size.y, "that the long text scrolls within instead of stretching")
+	assert_eq(screen.detail_description.get_parent(), screen.detail_scroll)
+	screen.hide_menu()

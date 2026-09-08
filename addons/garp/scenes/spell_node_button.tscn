@@ -54,3 +54,8 @@ horizontal_alignment = 1
 [node name="TouchScreenButton" type="TouchScreenButton" parent="."]
 position = Vector2(48, 40)
 shape = SubResource("RectangleShape2D_node")
+
+[connection signal="focus_entered" from="." to="." method="_on_focus_entered"]
+[connection signal="mouse_entered" from="." to="." method="grab_focus"]
+[connection signal="pressed" from="." to="." method="_on_pressed"]
+[connection signal="pressed" from="TouchScreenButton" to="." method="_on_touch_pressed"]

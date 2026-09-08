@@ -12,7 +12,6 @@
 #include <godot_cpp/classes/input_event_mouse_motion.hpp>
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/core/math.hpp>
-#include <godot_cpp/variant/utility_functions.hpp>
 
 #include <cstring>
 
@@ -154,6 +153,37 @@ int doom_eof_callback(void *handle) {
 	return file->data ? file->position >= file->size : file->file->eof_reached();
 }
 
+// PureDOOM.h defines C macros named like Godot's keys (KEY_TAB is 9 there, KEY_ESCAPE 27, KEY_F1 187...). Left in
+// place they rewrite the Godot constants below, so Tab, Escape, Enter and the F keys never matched; the node only
+// ever needs DOOM's keys through the doom_key_t enum, so the macros go.
+#undef KEY_BACKSPACE
+#undef KEY_DOWNARROW
+#undef KEY_ENTER
+#undef KEY_EQUALS
+#undef KEY_ESCAPE
+#undef KEY_F1
+#undef KEY_F10
+#undef KEY_F11
+#undef KEY_F12
+#undef KEY_F2
+#undef KEY_F3
+#undef KEY_F4
+#undef KEY_F5
+#undef KEY_F6
+#undef KEY_F7
+#undef KEY_F8
+#undef KEY_F9
+#undef KEY_LALT
+#undef KEY_LEFTARROW
+#undef KEY_MINUS
+#undef KEY_PAUSE
+#undef KEY_RALT
+#undef KEY_RCTRL
+#undef KEY_RIGHTARROW
+#undef KEY_RSHIFT
+#undef KEY_TAB
+#undef KEY_UPARROW
+
 // Godot key to PureDOOM key; -1 for keys DOOM has no use for.
 int doom_key_from(Key key) {
 	if (key >= KEY_A && key <= KEY_Z) {
@@ -219,6 +249,7 @@ void PureDoom::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("stop"), &PureDoom::stop);
 	ClassDB::bind_method(D_METHOD("is_running"), &PureDoom::is_running);
 	ClassDB::bind_method(D_METHOD("is_menu_open"), &PureDoom::is_menu_open);
+	ClassDB::bind_method(D_METHOD("is_automap_open"), &PureDoom::is_automap_open);
 	ClassDB::bind_method(D_METHOD("get_weapon_slot"), &PureDoom::get_weapon_slot);
 	ClassDB::bind_method(D_METHOD("get_frame"), &PureDoom::get_frame);
 
@@ -354,6 +385,10 @@ bool PureDoom::is_running() const {
 // Whether DOOM's own menu is overlaid (the engine's menuactive flag).
 bool PureDoom::is_menu_open() const {
 	return engine_initialized && pure_doom_menu_active() != 0;
+}
+
+bool PureDoom::is_automap_open() const {
+	return engine_initialized && pure_doom_automap_active() != 0;
 }
 
 // The number key slot of the weapon in hand: 1 fist or chainsaw, 2 pistol, 3 shotgun, 4 chaingun, 5 rockets,

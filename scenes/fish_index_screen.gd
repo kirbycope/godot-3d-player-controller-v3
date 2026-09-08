@@ -2,7 +2,8 @@ class_name FishIndexScreen
 extends PlayerMenuLayer
 ## Every species that can be caught, from the pause menu. A species you have landed shows its name, its record
 ## length and the conditions it bites in, read from its [Fish] resource; one you have not is a dark shape and a
-## row of question marks, with the conditions still listed so you know what to try.
+## row of question marks, with the conditions still listed so you know what to try. The rows follow the
+## [FishingLog] as it changes, so a catch made with the index open shows up at once.
 
 @export var species: Array[Fish] = [] ## The species listed, in this order.
 @export var placeholder_model: PackedScene ## Model for species without a [member Item.model_scene] of their own.
@@ -32,6 +33,9 @@ func _ready() -> void:
 		focus_on_show = buttons[0]
 	back_button.pressed.connect(hide_menu)
 	set_process(false)
+	var log: FishingLog = _log()
+	if log:
+		log.changed.connect(refresh)
 
 
 func _input(event: InputEvent) -> void:

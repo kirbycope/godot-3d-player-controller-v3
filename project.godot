@@ -37,7 +37,7 @@ window/stretch/mode="canvas_items"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/3d_player_controller/plugin.cfg", "res://addons/date_and_time/plugin.cfg", "res://addons/godotsteam/plugin.cfg", "res://addons/gut/plugin.cfg", "res://addons/midi/plugin.cfg", "res://addons/radi_ot/plugin.cfg", "res://addons/weather_fx/plugin.cfg")
+enabled=PackedStringArray("res://addons/3d_player_controller/plugin.cfg", "res://addons/GPUTrail-main/plugin.cfg", "res://addons/date_and_time/plugin.cfg", "res://addons/garp/plugin.cfg", "res://addons/godotsteam/plugin.cfg", "res://addons/gta/plugin.cfg", "res://addons/gut/plugin.cfg", "res://addons/midi/plugin.cfg", "res://addons/radi_ot/plugin.cfg", "res://addons/tcps/plugin.cfg", "res://addons/weather_fx/plugin.cfg")
 
 [importer_defaults]
 
@@ -51,6 +51,11 @@ texture={
 
 joypads/ignore_joypad_on_unfocused_application=true
 pointing/emulate_mouse_from_touch=false
+
+[layer_names]
+
+3d_physics/layer_10="Weapons"
+3d_physics/layer_11="Hittable"
 
 [physics]
 

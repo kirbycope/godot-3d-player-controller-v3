@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="Fish" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scenes/fish.gd" id="1_fish"]
+[ext_resource type="Texture2D" path="res://resources/fish/crate.svg" id="2_icon"]
+[ext_resource type="Script" path="res://addons/garp/scripts/item.gd" id="4_item"]
+[ext_resource type="Resource" path="res://resources/lures/worm.tres" id="3_lure"]
+
+[resource]
+script = ExtResource("1_fish")
+id = &"boot_crate"
+display_name = "Crate of Boots"
+description = "Twelve boots, not a pair among them. Weighs at least eleven times what one does. Something in there likes worms."
+icon = ExtResource("2_icon")
+category = 1
+max_stack = 99
+consumable = false
+color = Color(0.55, 0.38, 0.2, 1)
+min_length_cm = 0.0
+max_length_cm = 0.0
+weight = 0.5
+mass_kg = 15.0
+from_hour = 0
+to_hour = 24
+rain = 0
+lures = Array[ExtResource("4_item")]([ExtResource("3_lure")])
+bare_hook_chance = 1.0
+is_junk = true
+shadow_scale = 1.0
+attract_range = 0.0
+biomes = Array[int]([])

@@ -166,3 +166,140 @@ func test_action_gets_off_beside_the_horse() -> void:
 	assert_lt(player.global_position.distance_to(horse.dismount_point.global_position), 0.75, "Beside the horse, give or take the settle onto the ground")
 	assert_true(player.camera.current)
 	assert_eq(horse.speed, 0.0)
+
+
+func test_mounting_jumping_and_dismounting_play_the_idle_horse_calls() -> void:
+	const IDLE_DIR: String = "res://assets/tommusic/fantasy_sfx/OGG Files/SFX/Horse/Idle/"
+	var mount_audio: AudioStreamPlayer3D = horse.get_node("MountAudio")
+	var jump_audio: AudioStreamPlayer3D = horse.get_node("JumpAudio")
+	var dismount_audio: AudioStreamPlayer3D = horse.get_node("DismountAudio")
+	assert_eq(mount_audio.stream.resource_path, IDLE_DIR + "Idle Horse 1.ogg", "Getting on is Idle Horse 1")
+	assert_eq(jump_audio.stream.resource_path, IDLE_DIR + "Idle Horse 2.ogg", "A jump is Idle Horse 2")
+	assert_eq(dismount_audio.stream.resource_path, IDLE_DIR + "Idle Horse 2.ogg", "and so is getting off")
+	for audio: AudioStreamPlayer3D in [mount_audio, jump_audio, dismount_audio]:
+		assert_false(audio.playing, audio.name + " is quiet with nobody on")
+	watch_signals(horse)
+	player.mount(horse)
+	await wait_physics_frames(2)
+	assert_signal_emitted(horse, "mounted")
+	assert_true(mount_audio.playing, "Mounting plays through the scene-wired MountAudio")
+	sender.action_down(horse.keyboard_jump_action)
+	await wait_physics_frames(1)
+	sender.action_up(horse.keyboard_jump_action)
+	assert_signal_emitted(horse, "jumped")
+	assert_true(jump_audio.playing, "The hop plays JumpAudio")
+	assert_false(dismount_audio.playing, "Nobody got off yet")
+	await wait_physics_frames(2)
+	sender.action_down("action")
+	await wait_physics_frames(2)
+	sender.action_up("action")
+	await wait_physics_frames(2)
+	assert_signal_emitted(horse, "dismounted")
+	assert_true(dismount_audio.playing, "Getting off plays DismountAudio")
+
+
+# --- Summon -------------------------------------------------------------------------------------------------------
+
+func _whistle() -> void:
+	sender.action_down("whistle")
+	await wait_physics_frames(2)
+	sender.action_up("whistle")
+	await wait_physics_frames(1)
+
+
+## What the world does with the whistle: Horse.summon_nearest picks the horse in earshot.
+func _answer_whistles() -> void:
+	player.whistled.connect(func(whistler: Player) -> void: Horse.summon_nearest(whistler))
+
+
+func _wait_for_summon_state(state: Horse.SummonState, frames: int) -> void:
+	for i: int in frames:
+		if horse.summon_state == state:
+			return
+		await get_tree().physics_frame
+
+
+func test_a_whistle_in_range_brings_the_horse_to_the_player_and_it_calls_out_on_arriving() -> void:
+	const IDLE_3: String = "res://assets/tommusic/fantasy_sfx/OGG Files/SFX/Horse/Idle/Idle Horse 3.ogg"
+	var summon_audio: AudioStreamPlayer3D = horse.get_node("SummonAudio")
+	assert_eq(summon_audio.stream.resource_path, IDLE_3, "Arriving is Idle Horse 3")
+	assert_false(summon_audio.playing)
+	_answer_whistles()
+	player.warp_to(Transform3D(Basis(), Vector3(20.0, 0.1, 0.0)))
+	await wait_physics_frames(3)
+	watch_signals(horse)
+	await _whistle()
+	assert_eq(horse.summon_state, Horse.SummonState.COMING, "A whistle within summon_range starts the summon")
+	assert_eq(horse.summoner, player)
+	await wait_physics_frames(60)
+	assert_gt(horse.speed, horse.walk_speed, "It gallops while far off")
+	assert_gt((horse.animation_tree.get(Horse.BLEND_PATH) as Vector2).y, 0.5, "in the run cycle of the blend space")
+	assert_eq(horse.playback.get_current_node(), &"Locomotion")
+	await _wait_for_summon_state(Horse.SummonState.ARRIVED, 600)
+	assert_eq(horse.summon_state, Horse.SummonState.ARRIVED, "It arrives")
+	assert_signal_emitted(horse, "arrived")
+	assert_true(summon_audio.playing, "and plays through the scene-wired SummonAudio")
+	var to_player: Vector3 = (player.global_position - horse.global_position).slide(Vector3.UP)
+	assert_lt(to_player.length(), horse.arrive_distance + 0.1, "stopping at arrive_distance")
+	assert_gt(to_player.length(), 1.0, "beside the Player, not on top of them")
+	await wait_physics_frames(30)
+	to_player = (player.global_position - horse.global_position).slide(Vector3.UP)
+	assert_gt(horse.global_basis.z.dot(to_player.normalized()), 0.95, "facing them")
+	assert_eq(horse.speed, 0.0, "and standing")
+	assert_almost_eq((horse.animation_tree.get(Horse.BLEND_PATH) as Vector2).y, 0.0, 0.05, "back in the idle")
+
+
+func test_a_whistle_out_of_range_is_not_heard() -> void:
+	_answer_whistles()
+	player.warp_to(Transform3D(Basis(), Vector3(horse.summon_range + 10.0, 0.1, 0.0)))
+	await wait_physics_frames(3)
+	var start: Vector3 = horse.global_position
+	await _whistle()
+	await wait_physics_frames(30)
+	assert_eq(horse.summon_state, Horse.SummonState.IDLE, "Beyond summon_range the horse does not hear it")
+	assert_null(horse.summoner)
+	assert_lt(horse.global_position.distance_to(start), 0.05, "and stays put")
+	assert_eq(horse.speed, 0.0)
+	assert_false((horse.get_node("SummonAudio") as AudioStreamPlayer3D).playing)
+
+
+func test_mounting_cancels_the_summon() -> void:
+	player.warp_to(Transform3D(Basis(), Vector3(20.0, 0.1, 0.0)))
+	await wait_physics_frames(3)
+	horse.summon(player)
+	await wait_physics_frames(30)
+	assert_eq(horse.summon_state, Horse.SummonState.COMING)
+	assert_gt(horse.speed, 0.0, "On its way")
+	player.mount(horse)
+	await wait_physics_frames(2)
+	assert_eq(horse.summon_state, Horse.SummonState.IDLE, "Getting on ends the summon")
+	assert_null(horse.summoner)
+	assert_eq(player.riding, horse)
+	await wait_physics_frames(60)
+	assert_eq(horse.speed, 0.0, "and the horse stands under the rider instead of walking on")
+	horse.summon(player)
+	assert_eq(horse.summon_state, Horse.SummonState.IDLE, "A ridden horse ignores whistles")
+
+
+func test_a_second_whistle_while_coming_does_not_restart_it_but_another_player_retargets_it() -> void:
+	_answer_whistles()
+	player.warp_to(Transform3D(Basis(), Vector3(20.0, 0.1, 0.0)))
+	await wait_physics_frames(3)
+	await _whistle()
+	await wait_physics_frames(30)
+	var speed_before: float = horse.speed
+	assert_gt(speed_before, 0.0)
+	await _whistle()
+	assert_eq(horse.summon_state, Horse.SummonState.COMING, "Still coming")
+	assert_eq(horse.summoner, player)
+	assert_gte(horse.speed, speed_before, "without slowing down or starting over")
+	var other: Player = PLAYER_SCENE.instantiate()
+	root.add_child(other)
+	other.global_position = Vector3(0.0, 0.1, 20.0)
+	await wait_physics_frames(2)
+	horse.summon(other)
+	assert_eq(horse.summoner, other, "A different Player's whistle retargets the horse")
+	assert_eq(horse.summon_state, Horse.SummonState.COMING)
+	await wait_physics_frames(60)
+	var to_other: Vector3 = (other.global_position - horse.global_position).slide(Vector3.UP).normalized()
+	assert_gt(horse.global_basis.z.dot(to_other), 0.9, "and it turns to head for them")

@@ -1,13 +1,16 @@
 class_name FishingRod
 extends Equipment
 ## One-button fishing: Action casts the float where the camera aims, nibbles telegraph the bite, Action
-## inside the hook window hooks the fish, reeling plays out on its own and the catch lands on the HUD card.
+## inside the hook window hooks the fish, reeling plays out on its own and the catch is held up on the Player's
+## [FishCaughtScreen] once it has arced into their hands (the CatchScreenTimer), or on the HUD [FishCard] without one.
 ##
 ## Timing runs on the Timer nodes wired in the scene; the fish table and shadows come from the [Buoyancy]
-## water the float lands in, filtered by the [member lure] on the line (a [Lure] item used from the inventory
-## goes on the line). A landed fish is a GARP [Item], so it goes into the Player's inventory. The float goes
+## water the float lands in, filtered by the [member lure] on the line: a [Lure] used from the inventory goes on
+## the line, the bite eats it and the next one in the bag takes its place, and a bare hook mostly pulls up junk
+## (see [member Fish.bare_hook_chance]). A landed fish is a GARP [Item], so it goes into the Player's inventory. The float goes
 ## through the ProjectileSpawner when the scene has one, so every peer sees the float, its line, the dips and
-## the catch; the rod itself only runs on its owner.
+## the catch; the rod itself only runs on its owner, and so does the bait: what is on the line, the pick it filters
+## and its consumption are the owner's alone, since nothing on a peer's copy shows the bait.
 
 signal line_cast ## The float has left the rod.
 signal bite(fish: Fish) ## The hook window is open.
@@ -29,11 +32,12 @@ const CAST_ANIMATION: StringName = &"Fishing Cast/mixamo_com"
 	set(value):
 		lure = value
 		lure_changed.emit(lure)
+		details_changed.emit()
 @export var max_cast_distance: float = 12.0
 @export var cast_release: float = 1.5 ## Seconds into the cast animation at which the float leaves the rod.
 @export var bite_wait: Vector2 = Vector2(3.0, 8.0) ## Seconds before the bite, before the rain and shadow bonuses.
 @export var nibble_interval: Vector2 = Vector2(0.8, 1.8) ## Seconds between the small dips before the bite.
-@export var hook_window: float = 0.6 ## Seconds after the bite in which Action hooks the fish.
+@export var hook_window: float = 1.0 ## Seconds after the bite in which Action hooks the fish.
 @export var shadow_bonus_distance: float = 2.5 ## Landing within this of a shadow shortens the wait.
 @export_group("Sounds")
 @export var splash_sfx: AudioStream
@@ -42,12 +46,21 @@ const CAST_ANIMATION: StringName = &"Fishing Cast/mixamo_com"
 @export var reel_sfx: AudioStream
 @export var catch_sfx: AudioStream
 
-var state: State = State.IDLE
+var state: State = State.IDLE: ## Every transition assigns it, so the posture follows the line on its own.
+	set(value):
+		if value == state:
+			return
+		state = value
+		update_posture()
 var bobber: Bobber
 var water: Buoyancy ## The water the float landed in.
 var hooked_fish: Fish ## The fish that will bite (chosen on landing) or is being reeled.
 var hooked_length: float = 0.0
+var landed_fish: Fish ## The last catch, held for the CatchScreenTimer.
+var landed_length: float = 0.0
+var landed_record: bool = false
 var emote_state: AnimationNodeStateMachinePlayback
+var _posture_shown: bool = false ## What the last posture write said, so the standing-still poll only writes on a change.
 
 @onready var animation_player: AnimationPlayer = $Sketchfab_Scene/AnimationPlayer
 @onready var rod_tip: Marker3D = %RodTip ## Rides the pole's last bone, so the line starts at the bending tip.
@@ -58,6 +71,7 @@ var emote_state: AnimationNodeStateMachinePlayback
 
 var hook_pulse: Tween ## Pulses the Action button green while the hook window is open.
 @onready var reel_timer: Timer = $ReelTimer
+@onready var catch_screen_timer: Timer = $CatchScreenTimer ## Delays the catch screen until the catch has arced into the hands.
 @onready var audio: AudioStreamPlayer3D = $Audio
 
 
@@ -68,12 +82,14 @@ func _ready() -> void:
 	if thread:
 		thread.visible = false
 	if not player or not is_multiplayer_authority():
+		set_physics_process(false)
 		return
 	emote_state = player.animation_tree.get(Player.EMOTE_STATE_PLAYBACK_PATH)
 	player.inventory.equipment_changed.connect(_on_equipment_changed)
 	player.inventory.item_used.connect(_on_item_used)
 	player.animation_tree.animation_finished.connect(_on_animation_finished)
 	player.state_changed.connect(_on_player_state_changed)
+	player.locomotion_node_changed.connect(_on_locomotion_node_changed)
 	player.controls.input_type_changed.connect(_on_input_type_changed)
 	_on_equipment_changed()
 
@@ -222,8 +238,8 @@ func _on_bobber_landed_in_water(area: Area3D) -> void:
 	bite_timer.start(wait)
 	nibble_timer.start(randf_range(nibble_interval.x, nibble_interval.y))
 	if water.shadows:
-		# Only a shadow already close takes the bait; the species says how close, the bait can stretch it
-		water.shadows.attract(bobber.global_position, hooked_fish.attract_range + (bait.attract_range_bonus if bait else 0.0))
+		# Only a shadow already close takes the bait; the species says how close, the bait can stretch it, a bare hook shrinks it
+		water.shadows.attract(bobber.global_position, hooked_fish.attract_range_for(lure))
 
 
 func _on_nibble_timer_timeout() -> void:
@@ -243,11 +259,7 @@ func _on_bite_timer_timeout() -> void:
 	state = State.BITE
 	nibble_timer.stop()
 	hooked_length = hooked_fish.roll_length()
-	# Bait that gets eaten is gone with the bite; the line is bare once the bag runs out
-	if lure and lure.consumable and player.inventory:
-		player.inventory.remove_item(lure, 1)
-		if player.inventory.count_of(lure) <= 0:
-			lure = null
+	consume_lure()
 	bobber.plunge.rpc(0.35, 0.8)
 	bobber.splash.rpc(1.0)
 	if water.shadows:
@@ -281,36 +293,65 @@ func _on_reel_timer_timeout() -> void:
 	_clear_line()
 	emote_state.start("FishingIdle")
 	update_labels()
-	# The log keeps every length in the bag and the record per species; the card says when this one is the record
+	# The log keeps every length in the bag and the record per species; the screen says when this one is the record
 	var log: FishingLog = player.get_node_or_null(^"FishingLog") as FishingLog
 	var is_record: bool = log.record_catch(fish, length) if log else false
-	var card: FishCard = player.controls.get_node_or_null(^"FishCard") as FishCard
-	if card:
-		card.show_catch(fish, length, is_record)
+	landed_fish = fish
+	landed_length = length
+	landed_record = is_record
+	if player.get_node_or_null(^"FishCaughtScreen") is FishCaughtScreen:
+		catch_screen_timer.start() # once the catch has arced into the hands
+	else:
+		var card: FishCard = player.controls.get_node_or_null(^"FishCard") as FishCard
+		if card:
+			card.show_catch(fish, length, is_record)
 	_play(catch_sfx)
-	player.inventory.add_item(fish) # a full tab leaves it on the card only
+	player.inventory.add_item(fish) # a full tab leaves it on the screen only
 	fish_caught.emit(fish, length)
 
 
-## What the rod says about itself in the inventory: the bait on the line and what it does.
+## Wired to CatchScreenTimer.timeout: the catch is in the hands, so the Player's [FishCaughtScreen] holds it up.
+func _on_catch_screen_timer_timeout() -> void:
+	var screen: FishCaughtScreen = player.get_node_or_null(^"FishCaughtScreen") as FishCaughtScreen if player else null
+	if screen and landed_fish:
+		screen.show_catch(landed_fish, landed_length, landed_record)
+
+
+## The bite takes the bait on the line: the next one in the bag goes on in its place, or the hook is bare. The
+## one on the line left the bag when it was used, so only the replacement comes out of the inventory here. The
+## float shows the bait going on every peer ([method Bobber.show_bait_taken]).
+func consume_lure() -> void:
+	if lure == null or not lure.consumable or not is_multiplayer_authority():
+		return
+	if is_instance_valid(bobber) and bobber.is_inside_tree():
+		bobber.show_bait_taken.rpc(lure.icon.resource_path if lure.icon else "", lure.get_icon_color())
+	if player == null or player.inventory == null or player.inventory.remove_item(lure, 1) == 0:
+		lure = null
+	else:
+		details_changed.emit() # the same bait stays on, one fewer in the bag
+
+
+## What the rod says about itself in the inventory: the bait on the line, what it does, what it tempts and how
+## many more wait in the bag, or that the hook is bare.
 func get_details() -> String:
 	if lure == null:
-		return "Bare hook."
-	var text: String = "On the line: %s" % lure.get_display_name()
+		return "Bare hook: only junk bites"
+	var lines: PackedStringArray = ["On the line: %s" % lure.get_display_name()]
 	var bait: Lure = lure as Lure
 	if bait:
-		var effects: PackedStringArray = bait.describe_effects()
-		var takers: PackedStringArray = []
+		lines.append_array(bait.describe_effects())
+	var takers: PackedStringArray = []
+	if is_inside_tree():
 		for water_area: Node in get_tree().get_nodes_in_group("WATER"):
 			if water_area is Buoyancy:
-				for fish in (water_area as Buoyancy).fish:
-					if fish.lures.any(func(wanted: Item) -> bool: return wanted.is_same(bait)) and not takers.has(fish.get_display_name()):
+				for fish: Fish in (water_area as Buoyancy).fish:
+					if fish.lures.any(func(wanted: Item) -> bool: return wanted.is_same(lure)) and not takers.has(fish.get_display_name()):
 						takers.append(fish.get_display_name())
-		if not takers.is_empty():
-			effects.append("Tempts: " + ", ".join(takers))
-		if not effects.is_empty():
-			text += "\n" + "\n".join(effects)
-	return text
+	if not takers.is_empty():
+		lines.append("Tempts: " + ", ".join(takers))
+	if player and player.inventory:
+		lines.append("%d more in the bag" % player.inventory.count_of(lure))
+	return "\n".join(lines)
 
 
 ## The Action prompt follows the fishing state while the rod is out; states yield the labels meanwhile.
@@ -343,10 +384,14 @@ func _on_input_type_changed(_input_type: int) -> void:
 	update_labels()
 
 
-## Using a [Lure] from the inventory puts it on the line.
+## Using a [Lure] from the inventory puts it on the line; Use already took that one out of the bag, so whatever
+## was on the line goes back in.
 func _on_item_used(item: Item, _count: int) -> void:
-	if item is Lure:
-		lure = item
+	if not item is Lure or not is_multiplayer_authority():
+		return
+	if lure and lure.consumable and player.inventory:
+		player.inventory.add_item(lure, 1)
+	lure = item
 
 
 func _play(stream: AudioStream) -> void:
@@ -355,10 +400,46 @@ func _play(stream: AudioStream) -> void:
 		audio.play()
 
 
+## Standing still has no signal, so it alone is polled: only with the line in, and the blend is written on a change.
+func _physics_process(_delta: float) -> void:
+	if state == State.IDLE and is_instance_valid(player) and player.is_fishing and wants_posture() != _posture_shown:
+		update_posture()
+
+
+## The fishing posture (the upper-body emote over the locomotion) shows while the line is out or the Player stands
+## or sits still; on the move the great-sword locomotion carries the rod on its own, so the walk and run read right.
+## Another emote or a spell's channel pose on that layer is left to its own owner.
+func update_posture() -> void:
+	if not is_instance_valid(player) or not player.is_fishing or emote_state == null:
+		return
+	if String(emote_state.get_current_node()) not in FISHING_EMOTES:
+		return
+	show_posture(wants_posture())
+
+
+## Writes the posture blend and remembers it.
+func show_posture(shown: bool) -> void:
+	if not is_instance_valid(player):
+		return
+	_posture_shown = shown
+	player.animation_tree.set("parameters/EmoteSpineBlend2/blend_amount", 1.0 if shown else 0.0)
+
+
+## Whether the fishing posture belongs on the body right now.
+func wants_posture() -> bool:
+	if state != State.IDLE:
+		return true
+	if not is_instance_valid(player):
+		return false
+	if player.is_sitting:
+		return true
+	return not player.has_move_input and Vector2(player.velocity.x, player.velocity.z).length() < 0.5
+
+
 ## Holds the fishing upper-body posture while a rod is equipped; unequipping pulls the line in.
 func _on_equipment_changed() -> void:
 	player.is_fishing = player.inventory.has_equipment(Equipment.EquipmentType.FISHING_ROD)
-	player.animation_tree.set("parameters/EmoteSpineBlend2/blend_amount", 1.0 if player.is_fishing else 0.0)
+	show_posture(player.is_fishing)
 	if player.is_fishing:
 		emote_state.start("FishingIdle")
 		update_labels()
@@ -372,13 +453,27 @@ func _on_equipment_changed() -> void:
 			state_node._on_input_type_changed(player.controls.current_input_type)
 
 
-## Any non-fishing emote hands back to the fishing posture once it ends.
+## Any non-fishing emote hands back to the fishing posture once it ends. The emote's owner drops the blend as it
+## ends, so the posture is put back on the next physics frame, once that write is behind.
 func _on_animation_finished(_animation_name: StringName) -> void:
-	if player.is_fishing and String(emote_state.get_current_node()) not in FISHING_EMOTES:
+	if is_instance_valid(player) and player.is_fishing and String(emote_state.get_current_node()) not in FISHING_EMOTES:
 		emote_state.start("FishingIdle")
+		if is_inside_tree():
+			get_tree().physics_frame.connect(_reapply_posture, CONNECT_ONE_SHOT)
+
+
+func _reapply_posture() -> void:
+	if is_instance_valid(player) and player.is_fishing:
+		show_posture(wants_posture())
+
+
+## Wired to the Player's locomotion_node_changed: Idle against Walk or Run says whether the body moves.
+func _on_locomotion_node_changed(_state_path: String) -> void:
+	update_posture()
 
 
 ## Jumping, falling, swimming, driving and the like pull the line in; stopping a sprint or crouching does not.
 func _on_player_state_changed(_from_state: int, to_state: int) -> void:
 	if state != State.IDLE and not to_state in LINE_STATES:
 		retract()
+	update_posture()

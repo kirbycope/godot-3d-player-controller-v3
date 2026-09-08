@@ -1,7 +1,9 @@
+@tool
 class_name SpellNodeButton
 extends Button
 ## One node of the tree on the [SpellsScreen]: the spell's icon, name and cost, drawn dim while locked and marked
-## once unlocked, with a [TouchScreenButton] for fingers.
+## once unlocked, with a [TouchScreenButton] for fingers. A tool script, so the editor's Spell Tree panel can draw
+## the same button inside its graph nodes.
 
 signal node_pressed(ability: Ability)
 signal node_focused(ability: Ability)
@@ -15,16 +17,7 @@ var ability: Ability
 
 
 func _ready() -> void:
-	pressed.connect(func() -> void: node_pressed.emit(ability))
-	focus_entered.connect(func() -> void: node_focused.emit(ability))
-	mouse_entered.connect(grab_focus)
-	touch_button.pressed.connect(func() -> void:
-		grab_focus()
-		node_pressed.emit(ability))
-	var shape: RectangleShape2D = touch_button.shape as RectangleShape2D
-	if shape:
-		shape.size = custom_minimum_size
-		touch_button.position = custom_minimum_size / 2.0
+	PlayerMenuLayer.fit_touch_buttons(self) # The signals are wired in spell_node_button.tscn
 
 
 ## Shows [param node]'s spell in one of three looks: unlocked, unlockable now, or locked.
@@ -36,3 +29,16 @@ func set_node(node: SpellNode, is_unlocked: bool, is_unlockable: bool) -> void:
 	cost_label.text = "Unlocked" if is_unlocked else ("%d pt" % node.cost if node.cost != 1 else "1 pt")
 	modulate = Color.WHITE if is_unlocked or is_unlockable else Color(1.0, 1.0, 1.0, 0.45)
 	tooltip_text = name_label.text
+
+
+func _on_pressed() -> void:
+	node_pressed.emit(ability)
+
+
+func _on_focus_entered() -> void:
+	node_focused.emit(ability)
+
+
+func _on_touch_pressed() -> void:
+	grab_focus()
+	node_pressed.emit(ability)

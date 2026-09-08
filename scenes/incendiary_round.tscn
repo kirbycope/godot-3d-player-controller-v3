@@ -1,0 +1,57 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/bullet.tscn" id="1_bullet"]
+[ext_resource type="Script" path="res://scenes/incendiary_round.gd" id="2_incendiary"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tracer"]
+shading_mode = 0
+albedo_color = Color(1, 0.55, 0.15, 1)
+emission_enabled = true
+emission = Color(1, 0.4, 0.05, 1)
+emission_energy_multiplier = 4.0
+
+[sub_resource type="Gradient" id="Gradient_ember"]
+colors = PackedColorArray(1, 0.75, 0.3, 1, 1, 0.25, 0.02, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ember"]
+gradient = SubResource("Gradient_ember")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ember"]
+emission_shape = 1
+emission_sphere_radius = 0.02
+spread = 180.0
+initial_velocity_min = 0.2
+initial_velocity_max = 0.6
+gravity = Vector3(0, -1, 0)
+color_ramp = SubResource("GradientTexture1D_ember")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ember"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+emission_enabled = true
+emission = Color(1, 0.45, 0.1, 1)
+emission_energy_multiplier = 2.0
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_ember"]
+material = SubResource("StandardMaterial3D_ember")
+size = Vector2(0.03, 0.03)
+
+[node name="IncendiaryRound" instance=ExtResource("1_bullet")]
+script = ExtResource("2_incendiary")
+
+[node name="Tracer" parent="." index="1"]
+material_override = SubResource("StandardMaterial3D_tracer")
+
+[node name="Embers" type="GPUParticles3D" parent="." index="2"]
+amount = 48
+lifetime = 0.4
+process_material = SubResource("ParticleProcessMaterial_ember")
+draw_pass_1 = SubResource("QuadMesh_ember")
+
+[connection signal="hit" from="." to="." method="_on_hit"]

@@ -10,6 +10,10 @@ int pure_doom_menu_active(void) {
 	return menuactive;
 }
 
+int pure_doom_automap_active(void) {
+	return automapactive;
+}
+
 int pure_doom_ready_weapon(void) {
 	return (int)players[consoleplayer].readyweapon;
 }

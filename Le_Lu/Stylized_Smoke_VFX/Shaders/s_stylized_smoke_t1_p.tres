@@ -1,4 +1,4 @@
-[gd_resource type="VisualShader" load_steps=7 format=3]
+[gd_resource type="VisualShader" format=3 uid="uid://chawrph66n7h0"]
 
 [sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_xnfcv"]
 expanded_output_ports = [0]
@@ -26,48 +26,6 @@ default_value = Vector2(1, 1)
 constant = Color(0, 0, 0, 1)
 
 [resource]
-code = "shader_type spatial;
-render_mode blend_mix, depth_draw_opaque, cull_disabled, diffuse_lambert, specular_schlick_ggx;
-
-uniform vec2 Texture_Scale = vec2(1.000000, 1.000000);
-uniform sampler2D Disolver_Texture : source_color;
-
-
-
-void fragment() {
-// ColorConstant:7
-	vec4 n_out7p0 = vec4(0.000000, 0.000000, 0.000000, 1.000000);
-
-
-// Vector2Parameter:6
-	vec2 n_out6p0 = Texture_Scale;
-
-
-// UVFunc:5
-	vec2 n_in5p2 = vec2(0.00000, 0.00000);
-	vec2 n_out5p0 = (UV - n_in5p2) * n_out6p0 + n_in5p2;
-
-
-	vec4 n_out4p0;
-// Texture2D:4
-	n_out4p0 = texture(Disolver_Texture, n_out5p0);
-	float n_out4p1 = n_out4p0.r;
-
-
-// Input:2
-	vec4 n_out2p0 = COLOR;
-	float n_out2p4 = n_out2p0.a;
-
-
-// Output:0
-	ALBEDO = vec3(n_out7p0.xyz);
-	ALPHA = n_out4p1;
-	EMISSION = vec3(n_out2p0.xyz);
-	ALPHA_SCISSOR_THRESHOLD = n_out2p4;
-
-
-}
-"
 modes/cull = 2
 nodes/fragment/0/position = Vector2(580, 160)
 nodes/fragment/2/node = SubResource("VisualShaderNodeInput_xnfcv")

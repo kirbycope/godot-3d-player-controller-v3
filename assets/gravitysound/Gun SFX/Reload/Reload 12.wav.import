@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://cw4wrj5lyfvxf"
+path="res://.godot/imported/Reload 12.wav-55850cea021e8ae5782a00a7be37309f.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Gun SFX/Reload/Reload 12.wav"
+dest_files=["res://.godot/imported/Reload 12.wav-55850cea021e8ae5782a00a7be37309f.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

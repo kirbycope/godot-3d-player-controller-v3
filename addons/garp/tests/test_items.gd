@@ -10,11 +10,21 @@ const ORE: Item = preload("res://addons/garp/resources/items/iron_ore.tres")
 const KEY: Item = preload("res://addons/garp/resources/items/old_key.tres")
 const SWORD: Item = preload("res://addons/garp/resources/items/wooden_sword.tres")
 const TEST_SAVE: String = "user://garp_test_inventory.tres"
+const ContractActions: GDScript = preload("res://addons/garp/tests/contract_actions.gd")
 
 var root: Node3D
 var player: Player
 var inventory: Inventory
+var actions: RefCounted = ContractActions.new()
 var _persistence_was_enabled: bool
+
+
+func before_all() -> void:
+	actions.add_missing()
+
+
+func after_all() -> void:
+	actions.remove_added()
 
 
 func before_each() -> void:
@@ -123,6 +133,17 @@ func test_an_equipment_item_goes_onto_the_skeleton() -> void:
 	assert_eq(inventory.add_item(SWORD), 1, "A second of the same type on the same bone is refused")
 	var sword: Equipment = inventory.get_equipment_by_type(Equipment.EquipmentType.SWORD_1H)
 	assert_eq(sword.scene_file_path, "res://addons/garp/scenes/demo/wooden_sword.tscn", "The copy remembers its scene")
+	assert_eq(sword.player, player, "and its Player")
+	var attachment: BoneAttachment3D = sword.get_parent() as BoneAttachment3D
+	assert_not_null(attachment, "The copy hangs off a BoneAttachment3D")
+	assert_eq(attachment.bone_name, "RightHand", "on the bone the scene names")
+	assert_eq(attachment.get_parent(), player.skeleton, "under the Player's skeleton")
+	assert_eq(sword.position, sword.position_offset, "It was in the tree while it equipped, so the hand offsets reached the copy")
+	assert_almost_eq(sword.rotation_degrees.y, sword.rotation_offset_degrees.y, 0.01, "rotation included")
+	assert_eq(sword.scale, sword.scale_offset, "and scale")
+	assert_true((sword.get_node("PlayerDetection/CollisionShape3D") as CollisionShape3D).disabled, "The copy is no pickup")
+	assert_false((sword.get_node("Hitbox/CollisionShape3D") as CollisionShape3D).disabled, "but its hitbox still counts")
+	assert_false((sword.get_node("WeaponBody/CollisionShape3D") as CollisionShape3D).disabled, "and its weapon body still shoves")
 	var dropped: Node3D = inventory.drop_equipment(sword)
 	assert_true(dropped is Equipment, "Dropping equipment puts its scene back in the world")
 	assert_false(inventory.has_equipment(Equipment.EquipmentType.SWORD_1H))
@@ -131,10 +152,7 @@ func test_an_equipment_item_goes_onto_the_skeleton() -> void:
 	assert_eq(dropped.get_meta("dropped_by"), player, "Until the Player steps away")
 	player.warp_to(Transform3D(Basis(), player.global_position + Vector3(6.0, 0.0, 0.0)))
 	await wait_physics_frames(2)
-	assert_false(dropped.has_meta("dropped_by"), "Stepping away re-arms the pickup")
-	player.warp_to(Transform3D(Basis(), dropped.global_position))
-	await wait_physics_frames(2)
-	assert_true(inventory.has_equipment(Equipment.EquipmentType.SWORD_1H), "Walking back over it picks it up again")
+	assert_false(dropped.has_meta("dropped_by"), "Stepping away re-arms the pickup; walking back over it is the real addon's pickup, see tests/integration")
 
 
 func test_save_and_load_round_trip() -> void:
@@ -193,6 +211,48 @@ func test_persistence_can_be_switched_off_for_every_inventory() -> void:
 	assert_true(FileAccess.file_exists(TEST_SAVE))
 
 
+func test_throwables_are_listed_and_use_item_uses_the_first_stack() -> void:
+	assert_false(Item.new().throwable, "Nothing is throwable unless the resource says so")
+	assert_eq(Item.new().throw_damage, 0.0)
+	var stone: Item = Item.new()
+	stone.id = &"stone"
+	stone.throwable = true
+	inventory.add_item(APPLE, 3)
+	inventory.add_item(ORE, 5)
+	inventory.add_item(stone, 4)
+	assert_eq(inventory.get_throwable_items(), [stone] as Array[Item], "Only the flagged kind, once")
+	watch_signals(inventory)
+	inventory.use_item(APPLE)
+	assert_signal_emitted_with_parameters(inventory, "item_used", [APPLE, 1]) # use_item finds the stack and uses it as use_slot does
+	assert_eq(inventory.count_of(APPLE), 2)
+	inventory.use_item(Item.new())
+	assert_signal_emit_count(inventory, "item_used", 1, "An item that is not carried uses nothing")
+
+
+func test_forget_equipment_drops_nothing_and_add_equipment_scene_brings_it_back() -> void:
+	assert_eq(inventory.add_item(SWORD), 0)
+	var sword: Equipment = inventory.get_equipment_by_type(Equipment.EquipmentType.SWORD_1H)
+	var bare: Equipment = Equipment.new()
+	bare.equipment_type = Equipment.EquipmentType.DAGGER
+	bare.bone_attachment_bone_name = "LeftHand"
+	root.add_child(bare)
+	var dagger: Equipment = inventory.equip_pickup(bare)
+	assert_eq(inventory.forget_equipment(dagger), "", "Equipment from no scene cannot be forgotten: there is nothing to bring it back from")
+	assert_true(inventory.equipment.has(dagger), "so it stays")
+	watch_signals(inventory)
+	var children_before: int = root.get_child_count()
+	assert_eq(inventory.forget_equipment(sword), "res://addons/garp/scenes/demo/wooden_sword.tscn", "The scene path the sword can come back from")
+	assert_false(inventory.has_equipment(Equipment.EquipmentType.SWORD_1H))
+	assert_eq(inventory.get_all_weapons().filter(func(item: Equipment) -> bool: return item.equipment_type == Equipment.EquipmentType.SWORD_1H).size(), 0, "Out of the backpack")
+	assert_eq(root.get_child_count(), children_before, "and no pickup in the world")
+	assert_signal_emitted(inventory, "items_changed")
+	var copy: Equipment = inventory.add_equipment_scene(SWORD.equipment_scene)
+	assert_not_null(copy, "add_equipment_scene equips a fresh copy from the scene")
+	assert_true(inventory.has_equipment(Equipment.EquipmentType.SWORD_1H))
+	assert_eq(copy.scene_file_path, "res://addons/garp/scenes/demo/wooden_sword.tscn")
+	assert_eq(copy.position, copy.position_offset, "with the hand offsets, as a walk-over pickup gets them")
+
+
 func test_the_ninth_weapon_is_refused() -> void:
 	assert_eq(inventory.max_equipment, 8, "BOTW's eight weapon slots by default")
 	inventory.max_equipment = 2
@@ -201,16 +261,16 @@ func test_the_ninth_weapon_is_refused() -> void:
 	dagger.equipment_type = Equipment.EquipmentType.DAGGER
 	dagger.bone_attachment_bone_name = "RightHand"
 	root.add_child(dagger)
-	assert_true(dagger.equip(player), "The second weapon fits")
+	assert_not_null(inventory.equip_pickup(dagger), "The second weapon fits")
 	assert_false(inventory.can_carry_equipment(), "Two carried, none to spare")
 	var axe: Equipment = Equipment.new()
 	axe.equipment_type = Equipment.EquipmentType.AXE_1H
 	axe.bone_attachment_bone_name = "RightHand"
 	root.add_child(axe)
-	assert_false(axe.equip(player), "A third is refused until one is dropped")
+	assert_null(inventory.equip_pickup(axe), "A third is refused until one is dropped")
 	assert_eq(inventory.get_all_weapons().size(), 2)
 	var sword: Equipment = inventory.get_all_weapons().filter(func(weapon: Equipment) -> bool: return weapon.equipment_type == Equipment.EquipmentType.SWORD_1H)[0]
 	assert_not_null(inventory.drop_equipment(sword), "The sword came from a scene, so it can be dropped")
 	await wait_physics_frames(1)
 	assert_true(inventory.can_carry_equipment())
-	assert_true(axe.equip(player), "Dropping one makes room")
+	assert_not_null(inventory.equip_pickup(axe), "Dropping one makes room")

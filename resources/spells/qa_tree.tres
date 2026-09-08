@@ -1,36 +1,38 @@
 [gd_resource type="Resource" script_class="SpellTree" format=3 uid="uid://qcky7ndpi2aa"]
 
 [ext_resource type="Script" uid="uid://klxo6bc3ftnp" path="res://addons/3d_player_controller/scripts/ability.gd" id="ability"]
+[ext_resource type="Resource" path="res://resources/abilities/chain_lightning.tres" id="chain_lightning"]
 [ext_resource type="Resource" uid="uid://dphv1ydg5ri2w" path="res://resources/abilities/consecration.tres" id="consecration"]
 [ext_resource type="Resource" uid="uid://dsb0mvbbhx42w" path="res://resources/abilities/fireball.tres" id="fireball"]
 [ext_resource type="Resource" uid="uid://vxyio2qd6nhi" path="res://resources/abilities/firebolt.tres" id="firebolt"]
 [ext_resource type="Resource" uid="uid://dsei12l7cfx2w" path="res://resources/abilities/flash_of_light.tres" id="flash_of_light"]
+[ext_resource type="Resource" path="res://resources/abilities/freeze.tres" id="freeze"]
 [ext_resource type="Resource" uid="uid://dskw2fcehr42w" path="res://resources/abilities/frostbolt.tres" id="frostbolt"]
-[ext_resource type="Resource" uid="uid://dyboqfn7je42w" path="res://resources/abilities/lightning_bolt.tres" id="lightning_bolt"]
 [ext_resource type="Resource" path="res://resources/abilities/lightning.tres" id="lightning"]
-[ext_resource type="Resource" path="res://resources/abilities/chain_lightning.tres" id="chain_lightning"]
+[ext_resource type="Resource" uid="uid://dyboqfn7je42w" path="res://resources/abilities/lightning_bolt.tres" id="lightning_bolt"]
 [ext_resource type="Script" uid="uid://ddadfo5yx3g8a" path="res://addons/garp/scripts/spell_node.gd" id="node"]
 [ext_resource type="Resource" uid="uid://bum070844yb5" path="res://resources/abilities/shadowstep.tres" id="shadowstep"]
 [ext_resource type="Resource" uid="uid://ywtv6gwnislu" path="res://addons/3d_player_controller/resources/abilities/stealth.tres" id="stealth"]
+[ext_resource type="Resource" path="res://resources/abilities/sword_slash.tres" id="sword_slash"]
 [ext_resource type="Script" uid="uid://bmambxdir3q0q" path="res://addons/garp/scripts/spell_tree.gd" id="tree"]
 
 [sub_resource type="Resource" id="n_stealth"]
 script = ExtResource("node")
 ability = ExtResource("stealth")
 
-[sub_resource type="Resource" id="n_shadowstep"]
+[sub_resource type="Resource" id="Resource_q4ge1"]
 script = ExtResource("node")
 ability = ExtResource("shadowstep")
 cost = 2
 requires = Array[ExtResource("ability")]([ExtResource("stealth")])
 row = 1
 
-[sub_resource type="Resource" id="n_flash_of_light"]
+[sub_resource type="Resource" id="Resource_li18f"]
 script = ExtResource("node")
 ability = ExtResource("flash_of_light")
 column = 2
 
-[sub_resource type="Resource" id="n_consecration"]
+[sub_resource type="Resource" id="Resource_aw1ac"]
 script = ExtResource("node")
 ability = ExtResource("consecration")
 cost = 2
@@ -38,52 +40,65 @@ requires = Array[ExtResource("ability")]([ExtResource("flash_of_light")])
 row = 1
 column = 2
 
-[sub_resource type="Resource" id="n_firebolt"]
+[sub_resource type="Resource" id="Resource_w76nj"]
 script = ExtResource("node")
 ability = ExtResource("firebolt")
-column = 4
+column = 5
 
-[sub_resource type="Resource" id="n_fireball"]
+[sub_resource type="Resource" id="Resource_rw5q0"]
 script = ExtResource("node")
 ability = ExtResource("fireball")
 cost = 2
 requires = Array[ExtResource("ability")]([ExtResource("firebolt")])
 row = 1
-column = 4
+column = 6
 
-[sub_resource type="Resource" id="n_frostbolt"]
+[sub_resource type="Resource" id="Resource_f4541"]
 script = ExtResource("node")
 ability = ExtResource("frostbolt")
 cost = 2
 requires = Array[ExtResource("ability")]([ExtResource("firebolt")])
-row = 2
+row = 1
 column = 4
 
-[sub_resource type="Resource" id="n_lightning_bolt"]
+[sub_resource type="Resource" id="n_freeze"]
+script = ExtResource("node")
+ability = ExtResource("freeze")
+cost = 2
+requires = Array[ExtResource("ability")]([ExtResource("frostbolt")])
+row = 2
+column = 3
+
+[sub_resource type="Resource" id="Resource_iuv8e"]
 script = ExtResource("node")
 ability = ExtResource("lightning_bolt")
 cost = 3
 requires = Array[ExtResource("ability")]([ExtResource("fireball"), ExtResource("frostbolt")])
 row = 2
-column = 3
+column = 5
 
-[sub_resource type="Resource" id="n_lightning"]
+[sub_resource type="Resource" id="Resource_f3xhr"]
 script = ExtResource("node")
 ability = ExtResource("lightning")
 cost = 3
 requires = Array[ExtResource("ability")]([ExtResource("lightning_bolt")])
 row = 3
-column = 3
+column = 5
 
-[sub_resource type="Resource" id="n_chain_lightning"]
+[sub_resource type="Resource" id="Resource_3nfeo"]
 script = ExtResource("node")
 ability = ExtResource("chain_lightning")
 cost = 4
 requires = Array[ExtResource("ability")]([ExtResource("lightning")])
 row = 4
-column = 3
+column = 5
+
+[sub_resource type="Resource" id="n_sword_slash"]
+script = ExtResource("node")
+ability = ExtResource("sword_slash")
+column = 1
 
 [resource]
 script = ExtResource("tree")
 display_name = "QA Spells"
-nodes = Array[ExtResource("node")]([SubResource("n_stealth"), SubResource("n_shadowstep"), SubResource("n_flash_of_light"), SubResource("n_consecration"), SubResource("n_firebolt"), SubResource("n_fireball"), SubResource("n_frostbolt"), SubResource("n_lightning_bolt"), SubResource("n_lightning"), SubResource("n_chain_lightning")])
+nodes = Array[ExtResource("node")]([SubResource("n_stealth"), SubResource("Resource_q4ge1"), SubResource("Resource_li18f"), SubResource("Resource_aw1ac"), SubResource("Resource_w76nj"), SubResource("Resource_rw5q0"), SubResource("Resource_f4541"), SubResource("n_freeze"), SubResource("Resource_iuv8e"), SubResource("Resource_f3xhr"), SubResource("Resource_3nfeo"), SubResource("n_sword_slash")])

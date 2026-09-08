@@ -49,4 +49,13 @@ shape = SubResource("SphereShape3D_pickup")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
 shape = SubResource("BoxShape3D_hitbox")
 
+[node name="WeaponBody" type="AnimatableBody3D" parent="."]
+collision_layer = 512
+collision_mask = 1024
+sync_to_physics = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WeaponBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+shape = SubResource("BoxShape3D_hitbox")
+
 [connection signal="body_entered" from="PlayerDetection" to="." method="_on_player_detection_body_entered"]

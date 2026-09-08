@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dow6c2bk5jg16"
+path="res://.godot/imported/Dirt Gallop 7.ogg-d48c1a2d1072680288621aa9100b5cdc.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/tommusic/fantasy_sfx/OGG Files/SFX/Horse/Dirt/Dirt Gallop 7.ogg"
+dest_files=["res://.godot/imported/Dirt Gallop 7.ogg-d48c1a2d1072680288621aa9100b5cdc.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

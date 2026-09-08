@@ -22,6 +22,8 @@ enum Category {
 @export var consumable: bool = false ## Using it takes one from the stack (the effect is the game's, see [signal Inventory.item_used]).
 @export var equipment_scene: PackedScene ## For [constant Category.EQUIPMENT]: the [Equipment] scene picked up when this item is added.
 @export var model_scene: PackedScene ## A 3D model the inventory shows turning in place of the icon; empty keeps the icon.
+@export var throwable: bool = false ## The Player can throw one from the stack; a thrown one lands in the world as an [ItemPickup] (the throw itself is the game's).
+@export var throw_damage: float = 0.0 ## What a thrown one does to whatever it lands on that can take a hit; 0 hurts nothing.
 
 
 ## The name saves and stacks match on.
@@ -51,6 +53,12 @@ func get_icon_color() -> Color:
 ## Extra lines the inventory prints under [member description]; [param owner] is the Player, for state kept on
 ## it (a fish lists the lengths in the bag). Empty by default.
 func get_details(_owner: Node) -> String:
+	return ""
+
+
+## A short word the grid prints in the cell's corner ("Loaded" on the ammunition a weapon draws); [param owner] is
+## the Player. Empty by default, and an empty badge is not drawn.
+func get_badge(_owner: Node) -> String:
 	return ""
 
 

@@ -19,3 +19,6 @@ properties/4/replication_mode = 2
 properties/5/path = NodePath(".:locomotion_blend")
 properties/5/spawn = true
 properties/5/replication_mode = 2
+properties/6/path = NodePath(".:is_burning")
+properties/6/spawn = true
+properties/6/replication_mode = 2

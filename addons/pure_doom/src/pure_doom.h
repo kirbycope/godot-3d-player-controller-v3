@@ -73,6 +73,7 @@ public:
 	void stop();
 	bool is_running() const;
 	bool is_menu_open() const;
+	bool is_automap_open() const;
 	int get_weapon_slot() const;
 	Ref<Image> get_frame() const;
 	double get_clock_usec() const;

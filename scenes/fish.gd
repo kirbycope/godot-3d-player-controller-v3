@@ -10,20 +10,16 @@ enum Rain { ANY, RAIN_ONLY, DRY_ONLY }
 @export var min_length_cm: float = 20.0
 @export var max_length_cm: float = 40.0
 @export var weight: float = 1.0 ## Relative chance against the other fish available at the time.
+@export var mass_kg: float = 0.0 ## What it weighs in the hand, for the index and the inventory; 0 leaves it unsaid.
 @export_range(0, 24) var from_hour: int = 0 ## First hour it bites (inclusive); later than [member to_hour] wraps past midnight.
 @export_range(0, 24) var to_hour: int = 24 ## Hour it stops biting (exclusive).
 @export var rain: Rain = Rain.ANY
-@export var lures: Array[Item] = [] ## Lures it bites on; empty means any lure, or none at all.
+@export var lures: Array[Item] = [] ## Lures it bites on; empty means any lure, or a bare hook under [member bare_hook_chance].
+@export_range(0.0, 1.0) var bare_hook_chance: float = 0.05 ## Share of [member weight] it keeps when nothing is on the line; 0 never bites bare, junk sets 1.
 @export var biomes: Array[ClimateData.BiomeZone] = [] ## Waters in these biomes hold it; empty means any water.
 @export var attract_range: float = 1.0 ## Metres from the float within which a shadow takes the bait; further ones stay put.
-@export var is_junk: bool = false ## Junk has no length and never shows a shadow.
+@export var is_junk: bool = false ## Junk has no length and never shows a shadow. Its tab, stack size and whether it is eaten are the Item fields in the resource, as for any fish.
 @export var shadow_scale: float = 1.0 ## Size of the shadow it casts under the surface.
-
-
-func _init() -> void:
-	category = Category.FOOD
-	max_stack = 10
-	consumable = true
 
 
 ## Whether it bites at [param hour], in this weather, on [param lure] (null for a bare hook), in the water's
@@ -35,9 +31,25 @@ func is_available(hour: int, raining: bool, lure: Item = null, biome: int = -1) 
 		return false
 	if not lures.is_empty() and (lure == null or not lures.any(func(wanted: Item) -> bool: return wanted.is_same(lure))):
 		return false
+	if lure == null and bare_hook_chance <= 0.0:
+		return false
 	if from_hour <= to_hour:
 		return hour >= from_hour and hour < to_hour
 	return hour >= from_hour or hour < to_hour
+
+
+## Its share of the bites with [param lure] on the line (null for a bare hook), for the water's weighted pick.
+func bite_weight(lure: Item = null) -> float:
+	return weight * (bare_hook_chance if lure == null else 1.0)
+
+
+## Metres from the float within which a shadow comes over with [param lure] on the line: bait can stretch
+## [member attract_range], a bare hook shrinks it by [member bare_hook_chance], so that bite comes from a fish you never saw.
+func attract_range_for(lure: Item = null) -> float:
+	if lure == null:
+		return attract_range * bare_hook_chance
+	var bait: Lure = lure as Lure
+	return attract_range + (bait.attract_range_bonus if bait else 0.0)
 
 
 ## Length in centimetres for one catch; junk has none.
@@ -105,7 +117,9 @@ func get_model_scene() -> PackedScene:
 func describe_conditions() -> PackedStringArray:
 	var lines: PackedStringArray = []
 	if is_junk:
-		lines.append("Not a fish. Bites on anything, any time.")
+		lines.append("Not a fish. %s, any time." % ("Bites on anything" if lures.is_empty() else "Only takes: " + ", ".join(_lure_names())))
+		if mass_kg > 0.0:
+			lines.append("Weighs %.1f kg" % mass_kg)
 		return lines
 	lines.append("%d to %d cm" % [roundi(min_length_cm), roundi(max_length_cm)])
 	if from_hour == 0 and to_hour == 24:
@@ -117,16 +131,24 @@ func describe_conditions() -> PackedStringArray:
 			lines.append("Only in the rain")
 		Rain.DRY_ONLY:
 			lines.append("Only in dry weather")
-	if lures.is_empty():
+	if not lures.is_empty():
+		lines.append("Only takes: " + ", ".join(_lure_names()))
+	elif bare_hook_chance >= 1.0:
 		lines.append("Takes any bait, or a bare hook")
+	elif bare_hook_chance > 0.0:
+		lines.append("Takes any bait; hardly ever a bare hook")
 	else:
-		var names: PackedStringArray = []
-		for wanted: Item in lures:
-			names.append(wanted.get_display_name())
-		lines.append("Only takes: " + ", ".join(names))
+		lines.append("Takes any bait, never a bare hook")
 	if not biomes.is_empty():
 		var places: PackedStringArray = []
 		for biome: ClimateData.BiomeZone in biomes:
 			places.append(ClimateData.get_biome_display_name(biome))
 		lines.append("Found in: " + ", ".join(places))
 	return lines
+
+
+func _lure_names() -> PackedStringArray:
+	var names: PackedStringArray = []
+	for wanted: Item in lures:
+		names.append(wanted.get_display_name())
+	return names

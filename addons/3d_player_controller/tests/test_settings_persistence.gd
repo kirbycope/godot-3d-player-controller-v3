@@ -104,3 +104,62 @@ func test_fsr_and_ssaa_are_mutually_exclusive_and_round_trip() -> void:
 	assert_eq(video_settings.settings_res.fsr_index, 0, "Selecting SSAA should reset FSR")
 	assert_eq(video_settings.fsr_button.selected, 0, "Selecting SSAA should reset the FSR control")
 	video_settings._on_ssaa_item_selected(0)
+
+
+func test_voice_volume_and_mute_persist_and_apply() -> void:
+	DirAccess.remove_absolute(PlayerSettingsResource.SAVE_PATH)
+	add_child_autofree(AUDIO_SCENE.instantiate()) # Creates the buses
+	var voice_bus: int = AudioServer.get_bus_index(&"Voice")
+	var audio_settings: PlayerMenuLayer = AUDIO_SETTINGS_SCENE.instantiate() as PlayerMenuLayer
+	add_child_autofree(audio_settings)
+
+	audio_settings.voice_slider.value = 20.0
+	assert_almost_eq(AudioServer.get_bus_volume_db(voice_bus), linear_to_db(0.2), 0.001, "The Voice slider drives the Voice bus")
+	assert_eq(audio_settings.settings_res.voice_volume, 20.0, "and the resource")
+	audio_settings.mute_voice.button_pressed = true
+	assert_true(AudioServer.is_bus_mute(voice_bus), "The toggle mutes the Voice bus on this machine")
+	assert_true(audio_settings.settings_res.voice_muted, "and the resource")
+	assert_true(FileAccess.file_exists(PlayerSettingsResource.SAVE_PATH), "A toggle saves at once")
+
+	var loaded: PlayerSettingsResource = ResourceLoader.load(PlayerSettingsResource.SAVE_PATH, "", ResourceLoader.CACHE_MODE_IGNORE)
+	assert_eq(loaded.voice_volume, 20.0, "Voice volume persists")
+	assert_true(loaded.voice_muted, "Voice mute persists")
+
+	AudioServer.set_bus_mute(voice_bus, false)
+	PlayerSettingsResource.set_bus_volume(&"Voice", 100.0)
+	loaded.apply_audio_settings()
+	assert_true(AudioServer.is_bus_mute(voice_bus), "Startup applies the mute with the other volumes")
+	assert_almost_eq(AudioServer.get_bus_volume_db(voice_bus), linear_to_db(0.2), 0.001, "and the Voice volume")
+	AudioServer.set_bus_mute(voice_bus, false)
+	PlayerSettingsResource.set_bus_volume(&"Voice", 50.0)
+
+
+func test_chat_rect_persists() -> void:
+	var settings: PlayerSettingsResource = PlayerSettingsResource.new()
+	assert_eq(settings.chat_rect, Rect2(), "A zero rect means the chat picks its default bottom-left spot")
+	settings.chat_rect = Rect2(40.0, 50.0, 300.0, 150.0)
+	settings.save()
+	var loaded: PlayerSettingsResource = ResourceLoader.load(PlayerSettingsResource.SAVE_PATH, "", ResourceLoader.CACHE_MODE_IGNORE)
+	assert_eq(loaded.chat_rect, Rect2(40.0, 50.0, 300.0, 150.0), "The chat window's rect persists")
+
+
+func test_toon_mode_persists() -> void:
+	var settings: PlayerSettingsResource = PlayerSettingsResource.new()
+	assert_eq(settings.toon_mode, 0, "Toon shading is off by default")
+	settings.toon_mode = 2
+	settings.save()
+	var loaded: PlayerSettingsResource = ResourceLoader.load(PlayerSettingsResource.SAVE_PATH, "", ResourceLoader.CACHE_MODE_IGNORE)
+	assert_eq(loaded.toon_mode, 2, "The toon mode persists")
+
+
+func test_an_old_toon_enabled_setting_migrates_to_newspaper() -> void:
+	var script_path: String = (PlayerSettingsResource.new().get_script() as Script).resource_path
+	for old_value: Array in [[true, PlayerSettingsResource.TOON_NEWSPAPER], [false, 0]]:
+		var file: FileAccess = FileAccess.open(PlayerSettingsResource.SAVE_PATH, FileAccess.WRITE)
+		file.store_string('[gd_resource type="Resource" script_class="PlayerSettingsResource" load_steps=2 format=3]\n\n'
+			+ '[ext_resource type="Script" path="%s" id="1"]\n\n[resource]\nscript = ExtResource("1")\nmsaa_index = 2\ntoon_enabled = %s\n' % [script_path, str(old_value[0]).to_lower()])
+		file.close()
+		var loaded: PlayerSettingsResource = ResourceLoader.load(PlayerSettingsResource.SAVE_PATH, "", ResourceLoader.CACHE_MODE_IGNORE)
+		assert_eq(loaded.toon_mode, old_value[1], "toon_enabled = %s from before toon_mode loads as mode %d" % [old_value[0], old_value[1]])
+		assert_eq(loaded.msaa_index, 2, "and the rest of the file still loads")
+		assert_false("toon_enabled" in loaded, "The old property is gone")

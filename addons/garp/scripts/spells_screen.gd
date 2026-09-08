@@ -30,11 +30,13 @@ var _slot_buttons: Array[InventorySlotButton] = []
 @onready var tree_page: Control = %TreePage
 @onready var loadout_page: Control = %LoadoutPage
 @onready var points_label: Label = %PointsLabel
-@onready var tree_grid: GridContainer = %TreeGrid
+@onready var tree_holder: ScrollContainer = %TreeHolder ## The fixed tree area: the canvas is centred inside it when smaller, scrolls when larger.
+@onready var tree_canvas: Control = %TreeCanvas ## Spans the grid; the node buttons sit on it at their cells, like the editor graph.
 @onready var tree_lines: Control = %TreeLines
 @onready var detail_icon: TextureRect = %DetailIcon
 @onready var detail_name: Label = %DetailName
 @onready var detail_status: Label = %DetailStatus
+@onready var detail_info: Label = %DetailInfo ## What the ability does in numbers (`Ability.get_details()`: damage, ticks, slows, fire).
 @onready var detail_requires: Label = %DetailRequires
 @onready var unlock_button: Button = %Unlock
 @onready var unlocked_grid: GridContainer = %UnlockedGrid
@@ -49,7 +51,6 @@ func _ready() -> void:
 		page_buttons[i].pressed.connect(_select_page.bind(i as Page))
 		page_buttons[i].mouse_entered.connect(page_buttons[i].grab_focus)
 	tree_lines.draw.connect(_draw_tree_lines)
-	tree_grid.sort_children.connect(tree_lines.queue_redraw)
 	if player:
 		bind(player)
 
@@ -77,32 +78,40 @@ func bind(target: Player) -> void:
 		_slot_buttons.append(slot)
 
 
+## Puts a button for every node at its cell, the same picture the editor's Spell Tree panel draws.
 func _build_tree() -> void:
-	for child: Node in tree_grid.get_children():
-		tree_grid.remove_child(child)
-		child.queue_free()
+	for button: SpellNodeButton in _node_buttons.values():
+		tree_canvas.remove_child(button)
+		button.queue_free()
 	_node_buttons.clear()
 	var tree: SpellTree = _spellbook.tree
 	_built_tree = tree
-	if tree == null or tree.nodes.is_empty():
-		tree_grid.columns = 1
+	tree_canvas.custom_minimum_size = tree.pixel_size() if tree else Vector2.ZERO
+	if tree == null:
 		return
-	tree_grid.columns = tree.column_count()
-	for row: int in tree.row_count():
-		for column: int in tree.column_count():
-			var node: SpellNode = tree.get_node_at(row, column)
-			if node == null or node.ability == null:
-				var spacer: Control = Control.new()
-				spacer.custom_minimum_size = Vector2(96, 80)
-				spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
-				tree_grid.add_child(spacer)
-				continue
-			var button: SpellNodeButton = NODE_BUTTON_SCENE.instantiate()
-			button.name = node.ability.display_name.to_pascal_case()
-			tree_grid.add_child(button)
-			button.node_pressed.connect(_on_node_pressed)
-			button.node_focused.connect(_on_node_focused)
-			_node_buttons[node.ability] = button
+	for node: SpellNode in tree.nodes:
+		if node.ability == null:
+			continue
+		var button: SpellNodeButton = NODE_BUTTON_SCENE.instantiate()
+		button.name = node.ability.display_name.to_pascal_case()
+		tree_canvas.add_child(button)
+		button.position = SpellTree.cell_position(node)
+		button.node_pressed.connect(_on_node_pressed)
+		button.node_focused.connect(_on_node_focused)
+		_node_buttons[node.ability] = button
+	_update_touch_visibility()
+
+
+## A [TouchScreenButton] ignores the holder's clipping, so a node scrolled out of view would still take taps over
+## the tabs and the action row; hiding it turns its hit test off. Wired to the holder's resized and the canvas's
+## item_rect_changed (a scroll moves the canvas) in spells_screen.tscn, and called after every rebuild.
+func _update_touch_visibility() -> void:
+	if not is_instance_valid(tree_holder):
+		return
+	var shown: Rect2 = tree_holder.get_global_rect()
+	for button: SpellNodeButton in _node_buttons.values():
+		if is_instance_valid(button) and is_instance_valid(button.touch_button):
+			button.touch_button.visible = shown.intersects(button.get_global_rect())
 
 
 func _input(event: InputEvent) -> void:
@@ -253,13 +262,13 @@ func _draw_tree_lines() -> void:
 		return
 	for ability: Ability in _node_buttons:
 		var node: SpellNode = _spellbook.tree.get_node_for(ability)
-		var to: Vector2 = _node_buttons[ability].global_position + _node_buttons[ability].size * 0.5 - tree_lines.global_position
+		var to_button: SpellNodeButton = _node_buttons[ability]
 		for required: Ability in node.requires:
 			var from_button: SpellNodeButton = _node_buttons.get(required)
 			if from_button == null:
 				continue
-			var from: Vector2 = from_button.global_position + from_button.size * 0.5 - tree_lines.global_position
-			tree_lines.draw_line(from, to, LINE_UNLOCKED_COLOR if _spellbook.is_unlocked(required) else LINE_COLOR, 3.0, true)
+			var color: Color = LINE_UNLOCKED_COLOR if _spellbook.is_unlocked(required) else LINE_COLOR
+			SpellTree.draw_connection(tree_lines, Rect2(from_button.position, from_button.size), Rect2(to_button.position, to_button.size), color)
 
 
 # --- Loadout page ----------------------------------------------------------------------------------------------
@@ -336,12 +345,14 @@ func _update_details() -> void:
 		detail_icon.texture = null
 		detail_name.text = ""
 		detail_status.text = "Empty slot" if focused_slot != -1 else ""
+		detail_info.text = ""
 		detail_requires.text = ""
 		unlock_button.disabled = true
 		return
 	detail_icon.texture = ability.icon
 	detail_icon.modulate = ability.icon_color
 	detail_name.text = ability.display_name
+	detail_info.text = str(ability.call("get_details")) if ability.has_method("get_details") else ""
 	var node: SpellNode = _spellbook.tree.get_node_for(ability) if _spellbook.tree else null
 	if _spellbook.is_unlocked(ability):
 		detail_status.text = "On the wheel" if _spellbook.is_active(ability) else "Unlocked"

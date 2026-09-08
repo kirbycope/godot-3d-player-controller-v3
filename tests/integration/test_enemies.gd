@@ -401,3 +401,69 @@ func test_the_archer_spreads_its_arrows_by_its_skill_and_a_novice_player_spreads
 			pistol_strays += 1
 		bullet.queue_free()
 	assert_gt(pistol_strays, 6, "A novice's pistol rounds wander off the crosshair line")
+
+
+func test_the_rifleman_flashes_its_muzzle_down_the_barrel_on_every_shot() -> void:
+	var rifleman: EnemyNpc = _enemy("Rifleman")
+	var flash: MuzzleFlash = rifleman.get_node("Muzzle/MuzzleFlash")
+	assert_false(flash.vfx.visible, "The flash is hidden at rest")
+	assert_true(rifleman.fired.is_connected(flash.flash), "The scene wires fired to the flash")
+	assert_true(flash.animation_player.animation_finished.is_connected(flash._on_animation_finished), "And the VFX's end hides it again")
+	# The Binbun flash's forward is its +X; the wrapper turns that down the muzzle's -Z, the line _fire shoots along
+	assert_almost_eq(flash.transform.basis.x.normalized(), Vector3.FORWARD, Vector3.ONE * 0.001, "VFX forward runs down the barrel")
+	rifleman.leash_distance = 200.0
+	player.warp_to(Transform3D(Basis(), rifleman.global_position - rifleman.global_basis.z * 8.0))
+	await wait_physics_frames(2)
+	rifleman.target = player
+	var aim: Vector3 = rifleman.muzzle.global_position.direction_to(Focus.get_focus_target_position(player))
+	assert_lt(rad_to_deg(aim.angle_to(-rifleman.muzzle.global_basis.z)), 15.0, "Facing the Player, the shot leaves along the muzzle's -Z")
+	var rounds: Array[Projectile] = []
+	rifleman.fired.connect(func(projectile: Projectile) -> void: rounds.append(projectile))
+	var bullet: Projectile = rifleman._fire()
+	assert_eq(rounds, [bullet] as Array[Projectile], "fired carries the round on the authority")
+	assert_true(flash.vfx.visible, "The flash shows as the round leaves")
+	assert_true(flash.animation_player.is_playing(), "And its animation runs")
+	assert_eq(flash.animation_player.current_animation, String(MuzzleFlash.FLASH_ANIMATION))
+	var archer: EnemyNpc = _enemy("Archer")
+	assert_null(archer.get_node_or_null("Muzzle/MuzzleFlash"), "A bow has no muzzle flash")
+	bullet.queue_free()
+	rifleman.target = null
+	rifleman.player = null
+
+
+func test_fire_sets_an_enemy_ablaze_for_three_seconds_of_ticking_damage() -> void:
+	var swordsman: EnemyNpc = _enemy("Swordsman")
+	assert_true(swordsman.is_in_group("Burnable"), "Enemies are what fire sets ablaze")
+	assert_false(swordsman.is_burning)
+	assert_false(swordsman.burn_vfx.visible)
+	var before: float = swordsman.health.health
+	# What a fire arrow, an incendiary round or a fire spell landing at its feet does
+	Ability.ignite_grass(get_tree(), swordsman.global_position, 1.5, 6.0)
+	assert_true(swordsman.is_burning, "Ablaze")
+	assert_true(swordsman.burn_vfx.visible, "with the flame showing")
+	assert_false(swordsman.burn_tick_timer.is_stopped(), "and the ticks running")
+	await wait_seconds(1.1)
+	assert_lt(swordsman.health.health, before, "The fire costs health in ticks")
+	assert_eq(swordsman.anim_state, EnemyNpc.LOCOMOTION_STATE, "without a flinch per tick")
+	await wait_seconds(2.6)
+	assert_false(swordsman.is_burning, "Out after three seconds")
+	assert_false(swordsman.burn_vfx.visible)
+	assert_almost_eq(before - swordsman.health.health, Ability.BURN_SECONDS * Ability.BURN_DAMAGE_PER_SECOND, 0.01, "Fifteen damage over the three seconds")
+	Ability.ignite_grass(get_tree(), swordsman.global_position + Vector3(4.0, 0.0, 0.0), 1.5, 6.0)
+	assert_false(swordsman.is_burning, "Fire four metres off does not reach it")
+	Ability.ignite_grass(get_tree(), swordsman.global_position, 1.5, 6.0)
+	assert_true(swordsman.is_burning)
+	swordsman.extinguish()
+	assert_false(swordsman.is_burning, "Water puts it out")
+	assert_true(swordsman.burn_tick_timer.is_stopped())
+
+
+func test_the_fire_spells_say_what_they_burn() -> void:
+	var fireball: DamageAbility = load("res://resources/abilities/fireball.tres")
+	var details: String = fireball.get_details()
+	assert_true(details.begins_with("Damage: 25"), details)
+	assert_true(details.contains("sets enemies ablaze: 15 damage over 3 s"), "The burn is the fireball's damage over time: " + details)
+	assert_eq(fireball.over_time_damage, 0.0, "not a second set of ticks")
+	var frostbolt: DamageAbility = load("res://resources/abilities/frostbolt.tres")
+	assert_true(frostbolt.get_details().contains("Slows to"), frostbolt.get_details())
+	assert_true(frostbolt.get_details().contains("Douses fire"))

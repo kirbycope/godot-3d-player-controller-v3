@@ -184,6 +184,27 @@ func use_slot(category: Item.Category, index: int, count: int = 1) -> void:
 	item_used.emit(item, used)
 
 
+## Uses [param count] of [param item] from the first stack that holds it, as [method use_slot] does.
+func use_item(item: Item, count: int = 1) -> void:
+	if item == null:
+		return
+	var slots: Array = get_slots(item.category)
+	for i: int in slots.size():
+		if slots[i] and slots[i].item.is_same(item):
+			use_slot(item.category, i, count)
+			return
+
+
+## Every carried [Item] with [member Item.throwable] set, in tab and slot order, each kind once.
+func get_throwable_items() -> Array[Item]:
+	var found: Array[Item] = []
+	for category: Item.Category in ITEM_TABS:
+		for slot: ItemSlot in get_slots(category):
+			if slot and slot.item.throwable and not found.any(func(item: Item) -> bool: return item.is_same(slot.item)):
+				found.append(slot.item)
+	return found
+
+
 ## Drops [param count] from the stack at [param index] on the ground in front of the Player as an [ItemPickup].
 func drop_slot(category: Item.Category, index: int, count: int = 1) -> Node3D:
 	var slot: ItemSlot = get_slot(category, index)
@@ -203,27 +224,48 @@ func drop_slot(category: Item.Category, index: int, count: int = 1) -> Node3D:
 ## Drops an equipped or stowed [Equipment] back into the world (its scene, in front of the Player) and forgets it.
 ## Equipment that was not instanced from a scene cannot be dropped; it stays.
 func drop_equipment(item: Equipment) -> Node3D:
-	if item == null or player == null or not _is_scene_path(item.scene_file_path):
+	if player == null:
 		return null
-	var scene: PackedScene = load(item.scene_file_path) as PackedScene
-	if scene == null:
+	var scene_path: String = forget_equipment(item)
+	if scene_path.is_empty():
 		return null
-	var attachment: BoneAttachment3D = item.get_parent() as BoneAttachment3D
-	if equipment.has(item):
-		_stow_attachment(attachment)
-	var pickup: Node3D = scene.instantiate() as Node3D
+	var pickup: Node3D = (load(scene_path) as PackedScene).instantiate() as Node3D
 	_place_in_front(pickup)
 	# A walk-over pickup lands inside its own reach; it ignores the Player who dropped it until they step away
 	pickup.set_meta("dropped_by", player)
 	var detection: Area3D = pickup.get_node_or_null("PlayerDetection") as Area3D
 	if detection:
 		detection.body_exited.connect(_on_dropped_equipment_body_exited.bind(pickup))
+	return pickup
+
+
+## Forgets an equipped or stowed [Equipment] without putting anything in the world (it was thrown, it broke) and
+## returns the scene path it can be re-created from. Empty, and nothing happens, for equipment that was not
+## instanced from a scene.
+func forget_equipment(item: Equipment) -> String:
+	if item == null or not _is_scene_path(item.scene_file_path):
+		return ""
+	var scene_path: String = item.scene_file_path
+	var attachment: BoneAttachment3D = item.get_parent() as BoneAttachment3D
+	if equipment.has(item):
+		_stow_attachment(attachment)
 	var gone: Node = attachment if attachment else item
 	if gone.get_parent():
 		gone.get_parent().remove_child(gone) # out of the backpack now, freed at the end of the frame
 	gone.queue_free()
 	_items_changed()
-	return pickup
+	return scene_path
+
+
+## Equips a fresh instance of [param scene] (an [Equipment] scene) as walking over it would; returns the copy on
+## the skeleton, or null when the equip was refused. An equipment [Item] comes through here when it is added.
+func add_equipment_scene(scene: PackedScene) -> Equipment:
+	if scene == null or player == null:
+		return null
+	var pickup: Equipment = scene.instantiate() as Equipment
+	if pickup == null:
+		return null
+	return _equip_instance(pickup)
 
 
 ## Puts [param item] back in the backpack without dropping it.
@@ -295,9 +337,9 @@ func apply_save(data: InventorySave) -> void:
 			var pickup: Equipment = scene.instantiate() as Equipment
 			if pickup == null:
 				continue
-			if pickup.equip(player):
-				instances.append(pickup.equipment_instance)
-			pickup.free()
+			var instance: Equipment = _equip_instance(pickup)
+			if instance:
+				instances.append(instance)
 		unequip_all()
 		for i: int in instances.size():
 			if i < data.equipment.size() and data.equipment[i].equipped:
@@ -470,6 +512,42 @@ func equip_weapon(target_item: Equipment) -> void:
 		equip_from_backpack(attachment)
 
 
+## Equips [param pickup], an [Equipment] in the world, on the Player: a duplicate goes onto a new
+## [BoneAttachment3D] on the skeleton, on the bone the item names and with the item's offsets, and joins
+## [member equipment]; whatever conflicts with it is stowed first. Returns the copy on the skeleton, or null when
+## the item names no bone, the Player already carries one of this type on this bone, or the backpack is full.
+## [method Equipment.equip] and the walk-over pickups come through here.
+func equip_pickup(pickup: Equipment) -> Equipment:
+	if pickup == null or player == null or pickup.bone_attachment_bone_name.is_empty() \
+			or has_equipment_in_backpack(pickup.equipment_type, pickup.bone_attachment_bone_name) \
+			or not can_carry_equipment():
+		return null
+
+	stow_conflicting(pickup.bone_attachment_bone_name, pickup.is_exclusive)
+
+	var attachment: BoneAttachment3D = BoneAttachment3D.new()
+	attachment.bone_name = pickup.bone_attachment_bone_name
+	player.skeleton.add_child(attachment)
+
+	var copy: Equipment = pickup.duplicate() as Equipment
+	copy.player = player
+	copy.scene_file_path = pickup.scene_file_path # so the inventory can save and drop it as its scene
+	attachment.add_child(copy)
+	# Disable world collision but keep the "Hitbox" and "WeaponBody" shapes so HitDetection can use them.
+	for shape: Node in copy.find_children("*", "CollisionShape3D", true, false):
+		(shape as CollisionShape3D).disabled = shape.get_parent().name not in ["Hitbox", "WeaponBody"]
+	for tree: Node in copy.find_children("*", "AnimationTree", true, false):
+		(tree as AnimationTree).active = true
+		(tree as AnimationTree).advance_expression_base_node = tree.get_path_to(copy)
+	if pickup.is_inside_tree(): # The scene's hand offsets reach the copy from a pickup in the tree, as they always have
+		copy.position = pickup.position_offset
+		copy.rotation_degrees = pickup.rotation_offset_degrees
+		copy.scale = pickup.scale_offset
+
+	add_equipment(copy)
+	return copy
+
+
 ## Moves a stowed attachment back onto the skeleton, stowing whatever conflicts with it.
 func equip_from_backpack(attachment: BoneAttachment3D) -> void:
 	var item: Equipment = attachment.get_child(0) as Equipment
@@ -483,7 +561,11 @@ func equip_from_backpack(attachment: BoneAttachment3D) -> void:
 func stow_conflicting(bone_name: String, is_exclusive: bool) -> void:
 	for item: Equipment in equipment.duplicate():
 		if item.bone_attachment_bone_name == bone_name or is_exclusive or item.is_exclusive:
-			_stow_attachment(item.get_parent() as BoneAttachment3D)
+			var attachment: BoneAttachment3D = item.get_parent() as BoneAttachment3D
+			if attachment:
+				_stow_attachment(attachment)
+			else:
+				remove_equipment(item) # Equipment added without a bone attachment (a bare test fixture) just leaves the set
 
 
 func unequip_all() -> void:
@@ -509,14 +591,18 @@ func _empty_tab() -> Array:
 
 ## An equipment item is picked up by instancing its scene and equipping it, as a walk-over pickup would.
 func _add_equipment_item(item: Item) -> bool:
-	if item.equipment_scene == null or player == null:
-		return false
-	var pickup: Equipment = item.equipment_scene.instantiate() as Equipment
-	if pickup == null:
-		return false
-	var equipped: bool = pickup.equip(player)
+	return add_equipment_scene(item.equipment_scene) != null
+
+
+## Equips a freshly instanced [param pickup] the way walking over it would: on the Player for the moment it
+## equips, since [method equip_pickup] applies the scene's hand offsets only while the pickup is in the tree,
+## then freed. Returns the copy on the skeleton, or null when the equip was refused.
+func _equip_instance(pickup: Equipment) -> Equipment:
+	player.add_child(pickup)
+	var instance: Equipment = equip_pickup(pickup)
+	player.remove_child(pickup)
 	pickup.free()
-	return equipped
+	return instance
 
 
 func _spawn_pickup(item: Item, count: int) -> Node3D:

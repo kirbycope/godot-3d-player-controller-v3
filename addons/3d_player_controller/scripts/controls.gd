@@ -45,12 +45,14 @@ const ACTIONS: Dictionary = {
 	"last_weapon": {"keys": [KEY_J], "buttons": [JOY_BUTTON_DPAD_LEFT]}, ## Controller: DPad Left, Keyboard: [J]
 	"next_weapon": {"keys": [KEY_L], "buttons": [JOY_BUTTON_DPAD_RIGHT]}, ## Controller: DPad Right, Keyboard: [L]
 	"broadcast": {"keys": [KEY_V]}, ## Push-to-talk. Keyboard: [V]
+	"chat": {"keycodes": [KEY_ENTER, KEY_KP_ENTER]}, ## Opens the chat window; handled in _unhandled_input so menus keep Enter. Keyboard: [Enter]
 	"ui_accept": {"deadzone": 0.5, "keycodes": [KEY_ENTER, KEY_KP_ENTER], "keys": [KEY_SPACE], "buttons": [JOY_BUTTON_A]},
 	"ui_left": {"deadzone": 0.5, "buttons": [JOY_BUTTON_DPAD_LEFT]},
 	"ui_right": {"deadzone": 0.5, "buttons": [JOY_BUTTON_DPAD_RIGHT]},
 	"ui_up": {"deadzone": 0.5, "buttons": [JOY_BUTTON_DPAD_UP]},
 	"ui_down": {"deadzone": 0.5, "buttons": [JOY_BUTTON_DPAD_DOWN]},
 	"debug": {"keycodes": [KEY_F3]}, ## Debug HUD. Keyboard: [F3]
+	"toggle_toon": {"keycodes": [KEY_F6]}, ## Toon shading filter on or off. Keyboard: [F6]
 }
 
 @export var player: Player
@@ -163,6 +165,8 @@ const ACTIONS: Dictionary = {
 @export var sony_axis_4_plus_pressed: Texture2D ## Sony L2 (Pressed)
 @export var sony_axis_5_plus_normal: Texture2D ## Sony R2 (Normal)
 @export var sony_axis_5_plus_pressed: Texture2D ## Sony R2 (Pressed)
+
+var _seeker_shown: String = "" ## What [method seeker_label_text] said when the labels were last applied.
 
 @onready var joypad_button_0: TouchScreenButton = $BottomRight/JoypadButton0 ## Joypad Button 0 (Bottom Action, Sony Cross, XBox A, Nintendo B)
 @onready var joypad_button_0_label: Label = $BottomRight/JoypadButton0/Label
@@ -380,6 +384,8 @@ func _input(event: InputEvent) -> void:
 	# Motion events are never button presses; only press/release events update the pressed visuals
 	if event is InputEventMouseMotion or event is InputEventScreenDrag:
 		return
+	if event.is_action_pressed("focus") or event.is_action_released("focus"):
+		refresh_seeker_label()
 	for button: TouchScreenButton in all_buttons:
 		if button.action.is_empty() or not event.is_action(button.action):
 			continue
@@ -395,8 +401,46 @@ func reset_labels() -> void:
 
 	if player != null and player.has_firearm_equipped:
 		joypad_axis_4_plus_label.text = "Aim"
+	var seeker: String = seeker_label_text()
+	if seeker != "":
+		joypad_button_11_label.text = seeker
+		key_i_label.text = seeker
 	if player != null and player.abilities != null and player.abilities.active_ability:
 		joypad_button_9_label.text = player.abilities.active_ability.display_name
+	_apply_prompt_label()
+	_seeker_shown = seeker
+
+
+## What Seeker (D-pad Up / I) opens right now, as [method SeekerWheel.get_aimed_weapon] decides: the arrow kinds
+## while the bow is aimed (focus held or the string drawn), the ammunition while a gun is aimed, else the scene's
+## default label (empty means keep it): a slung bow opens the throwables, not the arrows.
+func seeker_label_text() -> String:
+	if player == null or player.inventory == null or player.seeker_wheel == null:
+		return ""
+	var aimed: Equipment = player.seeker_wheel.get_aimed_weapon()
+	if aimed is Bow:
+		return "Arrows"
+	if aimed is Firearm:
+		return "Ammo"
+	return ""
+
+
+## The seeker label follows the aim: wired to Player.locomotion_node_changed (the string drawn or let go) and called on
+## the focus action, it re-applies the state's labels only when what the wheel would offer has changed.
+func refresh_seeker_label() -> void:
+	if player != null and seeker_label_text() != _seeker_shown:
+		player.refresh_contextual_controls()
+
+
+func _on_locomotion_node_changed(_state_path: String) -> void:
+	refresh_seeker_label()
+
+
+## A world prompt in range keeps the Action button reading what it does ("Pick Up", "Get In") through every label
+## refresh, until the prompt gives the label back ([method ActionPrompt.hide_for]).
+func _apply_prompt_label() -> void:
+	if player != null and player.prompt_action_label != "" and joypad_button_0_label:
+		joypad_button_0_label.text = player.prompt_action_label
 
 
 func set_labels(label_texts: Dictionary) -> void:
@@ -428,6 +472,8 @@ func set_labels(label_texts: Dictionary) -> void:
 		# Don't clear joystick labels if they are not explicitly specified
 		elif label != left_joystick_label and label != right_joystick_label:
 			label.text = ""
+	_apply_prompt_label()
+	_seeker_shown = seeker_label_text()
 
 
 ## Applies the current input type: device textures on the swappable buttons, keyboard vs joypad visibility, default labels, and held-button visuals.

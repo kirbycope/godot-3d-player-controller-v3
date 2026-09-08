@@ -6,12 +6,19 @@ extends Node3D
 
 const RADIO_OFF_ICON: Texture2D = preload("res://addons/radi_ot/assets/icons/stop_icon.svg")
 ## The QA kit: what a freshly spawned local player carries, topped up to these counts (a saved inventory keeps
-## whatever else it holds). This world is the test bed, so nothing has to be found first.
+## whatever else it holds). This world is the test bed, so nothing has to be found first. Equipment items go in
+## the backpack stowed, one each, unless a copy from their scene is carried already.
 const STARTING_ITEMS: Dictionary[Item, int] = {
 	preload("res://resources/lures/worm.tres"): 10,
 	preload("res://resources/items/rifle_clip.tres"): 2,
 	preload("res://resources/items/pistol_magazine.tres"): 1,
 	preload("res://resources/items/arrow.tres"): 20,
+	preload("res://resources/items/fire_arrow.tres"): 5,
+	preload("res://resources/items/ice_arrow.tres"): 5,
+	preload("res://resources/items/rifle_clip_incendiary.tres"): 1,
+	preload("res://resources/items/rock.tres"): 5,
+	preload("res://resources/items/apple.tres"): 3,
+	preload("res://resources/items/dagger.tres"): 1,
 }
 
 ## GodotSteam constant mirrors (the Steam class is absent on web exports).
@@ -40,9 +47,25 @@ func _ready() -> void:
 ## Tops the player's inventory up to the [constant STARTING_ITEMS] counts.
 func _grant_starting_items(target: Player) -> void:
 	for item: Item in STARTING_ITEMS:
+		if item.category == Item.Category.EQUIPMENT:
+			_grant_starting_equipment(target, item)
+			continue
 		var missing: int = STARTING_ITEMS[item] - target.inventory.count_of(item)
 		if missing > 0:
 			target.inventory.add_item(item, missing)
+
+
+## Puts one of an equipment item's scene in the backpack, stowed so the player still spawns unarmed, unless a copy
+## from that scene is carried already.
+func _grant_starting_equipment(target: Player, item: Item) -> void:
+	if item.equipment_scene == null:
+		return
+	for carried: Equipment in target.inventory.get_all_weapons():
+		if carried.scene_file_path == item.equipment_scene.resource_path:
+			return
+	var copy: Equipment = target.inventory.add_equipment_scene(item.equipment_scene)
+	if copy:
+		target.inventory.stow_equipment(copy)
 
 
 ## Binds the world to the player this peer controls (connected in the scene to PlayerSpawner.local_player_spawned).
@@ -51,6 +74,7 @@ func _on_local_player_spawned(local_player: Player) -> void:
 	player.enable_paraglider = true
 	player.enable_stamina = true
 	player.state_changed.connect(_on_player_state_changed)
+	player.whistled.connect(_on_player_whistled)
 	_grant_starting_items(player)
 	radi_ot_player = player.get_node("RadiOtPlayer3D")
 	radi_ot_player.auto_play_on_ready = false
@@ -64,6 +88,12 @@ func _on_local_player_spawned(local_player: Player) -> void:
 	if multiplayer.is_server():
 		($Duck as FollowerNpc).player = player
 		($LittleBuddy as FollowerNpc).player = player
+	print("World ready: %s spawned as peer %d" % [player.name, multiplayer.get_unique_id()]) # what tools/web_smoke_test.py waits for
+
+
+## The local Player whistled: the nearest horse in earshot comes (Horse.summon relays the call to its authority).
+func _on_player_whistled(whistler: Player) -> void:
+	Horse.summon_nearest(whistler)
 
 
 ## The server runs the clock and weather; clients receive them.
@@ -91,9 +121,13 @@ func _send_weather_to_peer(peer_id: int) -> void:
 	_sync_weather.rpc_id(peer_id, weather_fx.current_biome, weather_fx.active_weather)
 
 
+## The host's weather lands on every client. The biome comes along for a client without a player of its own to
+## stand in a zone; one that has reads its biome off the zones around that player (WeatherFX.blend_zones), so the
+## grass and the sky match where they stand while the rain is still the host's.
 @rpc("authority", "call_remote", "reliable")
 func _sync_weather(biome: ClimateData.BiomeZone, weather: ClimateData.WeatherType) -> void:
-	weather_fx.current_biome = biome
+	if not weather_fx.is_blending_zones():
+		weather_fx.current_biome = biome
 	weather_fx.set_weather(weather)
 
 

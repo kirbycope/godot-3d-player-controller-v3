@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://d0lu4l2hcvjoj"
+path="res://.godot/imported/Sniper Shot_15.wav-7d3b8fbfb278c4ed2988bc0a2a9f9d34.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Gun SFX/Sniper/Sniper Shot_15.wav"
+dest_files=["res://.godot/imported/Sniper Shot_15.wav-7d3b8fbfb278c4ed2988bc0a2a9f9d34.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

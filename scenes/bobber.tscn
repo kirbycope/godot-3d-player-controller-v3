@@ -111,5 +111,13 @@ top_level = true
 cast_shadow = 0
 material_override = SubResource("StandardMaterial3D_line")
 
+[node name="BaitIcon" type="Sprite3D" parent="."]
+visible = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0)
+cast_shadow = 0
+pixel_size = 0.0025
+billboard = 1
+no_depth_test = true
+
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="area_entered" from="WaterSensor" to="." method="_on_water_sensor_area_entered"]

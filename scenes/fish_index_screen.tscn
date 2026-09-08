@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://scenes/fish_index_screen.gd" id="1_screen"]
 [ext_resource type="PackedScene" path="res://scenes/fish_model.tscn" id="2_model"]
@@ -8,6 +8,7 @@
 [ext_resource type="Resource" path="res://resources/fish/rainbow_trout.tres" id="6_trout"]
 [ext_resource type="Resource" path="res://resources/fish/koi.tres" id="7_koi"]
 [ext_resource type="Resource" path="res://resources/fish/old_boot.tres" id="8_boot"]
+[ext_resource type="Resource" path="res://resources/fish/boot_crate.tres" id="9_crate"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
 content_margin_left = 16.0
@@ -37,19 +38,15 @@ font_color = Color(1, 0.85, 0.35, 1)
 [node name="FishIndexScreen" type="CanvasLayer"]
 visible = false
 script = ExtResource("1_screen")
-species = Array[Resource]([ExtResource("3_carp"), ExtResource("4_perch"), ExtResource("5_catfish"), ExtResource("6_trout"), ExtResource("7_koi"), ExtResource("8_boot")])
+species = Array[Resource]([ExtResource("3_carp"), ExtResource("4_perch"), ExtResource("5_catfish"), ExtResource("6_trout"), ExtResource("7_koi"), ExtResource("8_boot"), ExtResource("9_crate")])
 placeholder_model = ExtResource("2_model")
 
 [node name="Panel" type="PanelContainer" parent="."]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -340.0
-offset_top = -220.0
-offset_right = 340.0
-offset_bottom = 220.0
+anchors_preset = -1
+anchor_left = 0.12
+anchor_top = 0.1
+anchor_right = 0.88
+anchor_bottom = 0.9
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")

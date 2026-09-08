@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://siamyyct78qy"
+path="res://.godot/imported/Reload 4.ogg-61678ec874658fe1602b2b0d2510e6f6.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/gravitysound/Gun SFX/Reload/Reload 4.ogg"
+dest_files=["res://.godot/imported/Reload 4.ogg-61678ec874658fe1602b2b0d2510e6f6.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

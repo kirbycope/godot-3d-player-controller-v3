@@ -52,6 +52,9 @@ func test_full_loop_catches_a_fish() -> void:
 	assert_eq(action.text, "Reel In", "A line in the water offers Reel In")
 	assert_not_null(rod.hooked_fish, "Landing picks what will bite")
 	assert_false(rod.bite_timer.is_stopped())
+	if rod.hooked_fish.is_junk:
+		# A bare hook mostly pulls up junk, which casts no shadow; this is the loop test, so make it a fish
+		rod.hooked_fish = rod.water.fish[0]
 	var shadows: FishShadows = rod.water.shadows
 	if shadows.interested == null:
 		# The nearest shadow started outside the species' attract range; bring one within it, as a lucky cast would.
@@ -91,19 +94,33 @@ func test_full_loop_catches_a_fish() -> void:
 	assert_eq(rod.state, FishingRod.State.REELING)
 	assert_signal_emitted(rod, "fish_hooked")
 	var fish: Fish = rod.hooked_fish
+	var log: FishingLog = player.get_node("FishingLog")
+	var first_of_its_kind: bool = log.record_of(fish) == 0.0 # the world player's log persists, so a saved record may stand
 	rod.reel_timer.stop()
 	rod._on_reel_timer_timeout()
 	assert_signal_emitted(rod, "fish_caught")
 	assert_eq(player.inventory.count_of(fish), 1, "The catch is in the inventory")
-	assert_eq(player.inventory.get_slot(fish.category, 0).item, fish, "On the fish's own tab")
+	assert_true(player.inventory.count_of(fish) > 0, "On the fish's own tab (the kit's apples share the Food tab, so the slot index is not fixed)")
 	assert_eq(rod.state, FishingRod.State.IDLE)
 	assert_eq(action.text, "Cast", "Back to Cast after the catch")
 	assert_null(rod.bobber, "The line is back in")
 	await wait_physics_frames(2)
 	assert_true(world.get_node("Projectiles").get_children().any(func(n: Node) -> bool: return n is FishModel or n.name.ends_with("Model")), "The catch model arcs out of the water")
+	var screen: FishCaughtScreen = player.get_node("FishCaughtScreen")
+	assert_false(screen.visible, "The screen waits for the catch to arc into the hands")
+	assert_false(rod.catch_screen_timer.is_stopped(), "on the rod's timer")
+	await wait_physics_frames(60) # frames, not seconds: the screen pauses the tree, which GUT's second counter runs on
+	assert_true(screen.visible, "then holds the catch up")
+	assert_eq(screen.name_label.text, fish.get_display_name(), "by name")
+	assert_true(screen.size_label.text.ends_with("cm") or screen.size_label.text.ends_with("* record") or screen.size_label.text == "Junk", "with its length")
+	if first_of_its_kind and not fish.is_junk:
+		assert_true(screen.size_label.text.ends_with("* record"), "A first catch is the record")
+	assert_eq(screen.flavor_label.text, fish.description, "with its flavour text")
+	assert_true(get_tree().paused, "Playing alone, the world waits")
 	var card: FishCard = player.controls.get_node("FishCard")
-	assert_true(card.visible, "The catch card is up")
-	assert_ne(card.name_label.text, "", "The card names the catch")
+	assert_false(card.visible, "The HUD card stands down for the screen")
+	screen.hide_menu()
+	assert_false(get_tree().paused)
 
 
 func test_a_lure_used_from_the_inventory_goes_on_the_line() -> void:
@@ -115,7 +132,7 @@ func test_a_lure_used_from_the_inventory_goes_on_the_line() -> void:
 	player.inventory.use_slot(worm.category, 0)
 	assert_eq(rod.lure, worm, "Using the worm puts it on the line")
 	assert_signal_emitted_with_parameters(rod, "lure_changed", [worm])
-	assert_eq(player.inventory.count_of(worm), worms, "Lures are not used up")
+	assert_eq(player.inventory.count_of(worm), worms - 1, "The one on the line is out of the bag until a bite eats it")
 
 
 func test_missing_the_hook_window_loses_the_fish() -> void:

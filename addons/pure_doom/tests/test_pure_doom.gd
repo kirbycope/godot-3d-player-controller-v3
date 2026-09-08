@@ -94,13 +94,52 @@ func test_pad_back_toggles_the_menu_and_dpad_cycles_weapons() -> void:
 	assert_eq(doom.call(&"get_weapon_slot"), 1, "Cycling right from the pistol skips the weapons you do not own and wraps to the fist")
 
 
+func test_tab_toggles_the_automap() -> void:
+	if doom == null:
+		pass_test("PureDoom is not built for this platform")
+		return
+	if not doom.has_method(&"is_automap_open"):
+		fail_test("This library predates is_automap_open; rebuild it")
+		return
+	doom.call(&"start")
+	await wait_until(_level_is_drawing, 3.0) # Into E1M1; the automap only answers on a level
+	assert_true(_level_is_drawing(), "The level should be drawing before Tab is pressed")
+	assert_false(doom.call(&"is_automap_open"))
+	await _press_key(KEY_TAB)
+	await wait_until(func() -> bool: return doom.call(&"is_automap_open"), 1.0) # Read on the engine's next tic
+	assert_true(doom.call(&"is_automap_open"), "Tab should open the automap")
+	await _press_key(KEY_TAB)
+	await wait_until(func() -> bool: return not doom.call(&"is_automap_open"), 1.0)
+	assert_false(doom.call(&"is_automap_open"), "Tab again should close it")
+
+
+## DOOM draws nothing until the level is loaded, so any lit pixel means E1M1 is up.
+func _level_is_drawing() -> bool:
+	var image: Image = doom.call(&"get_frame")
+	for x in range(0, 320, 16):
+		for y in range(0, 200, 16):
+			if image.get_pixel(x, y).get_luminance() > 0.05:
+				return true
+	return false
+
+
+func _press_key(key: Key) -> void:
+	for pressed in [true, false]:
+		var event = InputEventKey.new()
+		event.keycode = key
+		event.physical_keycode = key
+		event.pressed = pressed
+		Input.parse_input_event(event)
+		await wait_process_frames(2) # Input is flushed on the next frame, so the engine sees the press before the release
+
+
 func _press_joy(button: JoyButton) -> void:
 	for pressed in [true, false]:
 		var event = InputEventJoypadButton.new()
 		event.button_index = button
 		event.pressed = pressed
 		Input.parse_input_event(event)
-		await wait_seconds(0.1) # Longer than a DOOM tic, so the engine sees the press before the release
+		await wait_process_frames(2) # Input is flushed on the next frame, so the engine sees the press before the release
 
 
 func test_stop_pauses_and_start_resumes() -> void:

@@ -1,15 +1,26 @@
 extends GutTest
 
-## Purpose: an ItemPickup is taken Zelda style: walking up shows the prompt with the Action button reading
-## "Pick Up", Action moves the stack into the inventory and the pickup goes away, walking off hides the prompt.
+## Purpose: an ItemPickup is taken Zelda style: walking up shows the prompt, Action moves the stack into the
+## inventory and the pickup goes away, walking off hides the prompt. The Action button reading "Pick Up" while the
+## prompt is up is the player controller's label, covered in tests/integration.
 
 const PLAYER_SCENE: PackedScene = preload("res://addons/3d_player_controller/scenes/player.tscn")
 const PICKUP_SCENE: PackedScene = preload("res://addons/garp/scenes/item_pickup.tscn")
 const APPLE: Item = preload("res://addons/garp/resources/items/apple.tres")
+const ContractActions: GDScript = preload("res://addons/garp/tests/contract_actions.gd")
 
 var root: Node3D
 var player: Player
 var sender
+var actions: RefCounted = ContractActions.new()
+
+
+func before_all() -> void:
+	actions.add_missing()
+
+
+func after_all() -> void:
+	actions.remove_added()
 
 
 func before_each() -> void:
@@ -44,12 +55,12 @@ func _drop_pickup_at(offset: Vector3, count: int = 1) -> ItemPickup:
 	return pickup
 
 
-func test_walking_up_shows_the_prompt_with_a_pick_up_label() -> void:
+func test_walking_up_shows_the_prompt() -> void:
 	var pickup: ItemPickup = _drop_pickup_at(Vector3(0.5, 0.0, 0.0))
 	await wait_physics_frames(3)
 	assert_eq(pickup.player, player, "The Player in range is remembered")
 	assert_true(pickup.action_prompt.visible, "The prompt is up")
-	assert_eq(player.controls.joypad_button_0_label.text, "Pick Up", "The Action button reads Pick Up")
+	assert_eq(pickup.action_prompt.message_end, "to pick up", "reading Press ... to pick up")
 	assert_true(pickup.icon.visible, "The item's icon floats over the spot")
 	assert_eq(pickup.icon.texture, APPLE.icon)
 
@@ -66,7 +77,6 @@ func test_action_takes_the_stack_and_frees_the_pickup() -> void:
 	assert_eq(player.inventory.count_of(APPLE), 3, "The apples are in the inventory")
 	assert_eq(taken, [[player, 3]], "picked_up reported who took how many")
 	assert_false(is_instance_valid(pickup), "The pickup is gone")
-	assert_ne(player.controls.joypad_button_0_label.text, "Pick Up", "And the Action label is the state's again")
 
 
 func test_walking_away_hides_the_prompt() -> void:
@@ -90,3 +100,31 @@ func test_a_full_inventory_leaves_the_rest_lying_there() -> void:
 	pickup.take()
 	assert_eq(pickup.count, 2, "Only one fitted; two stay")
 	assert_true(is_instance_valid(pickup), "The pickup stays for later")
+
+
+func test_an_item_with_a_model_lies_there_as_the_model_turning_instead_of_the_icon() -> void:
+	var mesh := MeshInstance3D.new()
+	mesh.mesh = BoxMesh.new() # a metre box centred on its origin
+	var scene := PackedScene.new()
+	scene.pack(mesh)
+	mesh.free()
+	var crate := Item.new()
+	crate.id = &"test_crate"
+	crate.icon = APPLE.icon
+	crate.model_scene = scene
+	var pickup: ItemPickup = PICKUP_SCENE.instantiate()
+	pickup.item = crate
+	root.add_child(pickup)
+	pickup.global_position = player.global_position + Vector3(5.0, 0.0, 0.0)
+	await wait_physics_frames(1)
+	assert_false(pickup.icon.visible, "The model stands in for the icon")
+	assert_eq(pickup.model_pivot.get_child_count(), 1, "The item's model is on the spot")
+	var model: Node3D = pickup.model_pivot.get_child(0)
+	assert_almost_eq(model.position.y, 0.5, 0.01, "stood on the ground, not sunk half into it")
+	var heading: float = pickup.model_pivot.rotation.y
+	await wait_physics_frames(3)
+	assert_ne(pickup.model_pivot.rotation.y, heading, "and turning")
+	pickup.item = APPLE
+	await wait_physics_frames(1)
+	assert_true(pickup.icon.visible, "An item without a model floats its icon")
+	assert_eq(pickup.model_pivot.get_child_count(), 0)

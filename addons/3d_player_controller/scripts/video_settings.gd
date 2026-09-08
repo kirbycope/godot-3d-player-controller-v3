@@ -1,6 +1,7 @@
 extends PlayerMenuLayer
 
 @onready var vsync_button: CheckButton = $Panel/VBoxContainer/VSYNC
+@onready var toon_button: OptionButton = $Panel/VBoxContainer/ToonShading ## Items are [enum ToonFilter.Mode] in order.
 @onready var msaa_button: OptionButton = $Panel/VBoxContainer/MSAA
 @onready var ssaa_button: OptionButton = $Panel/VBoxContainer/SSAA
 @onready var fxaa_button: CheckButton = $Panel/VBoxContainer/FXAA
@@ -21,6 +22,8 @@ func _ready() -> void:
 
 	# Available in all renderers
 	vsync_button.set_pressed_no_signal(settings_res.vsync_enabled)
+	toon_button.selected = clampi(settings_res.toon_mode, 0, toon_button.item_count - 1)
+	update_cel_availability(player.toon_filter.is_cel_available() if player and is_instance_valid(player.toon_filter) else RenderingServer.get_current_rendering_method() == ToonFilter.FORWARD_PLUS)
 	msaa_button.selected = settings_res.msaa_index
 	ssaa_button.selected = settings_res.ssaa_index
 	# Forward+ and Mobile only
@@ -48,6 +51,41 @@ func _on_vsync_toggled(toggled_on: bool) -> void:
 
 func _on_vsync_touch_screen_button_pressed() -> void:
 	_on_vsync_toggled(not vsync_button.button_pressed)
+
+
+## Cel needs Forward+; elsewhere the option stays listed, greyed, with the reason as its tooltip.
+func update_cel_availability(available: bool) -> void:
+	toon_button.set_item_disabled(ToonFilter.Mode.CEL, not available)
+	toon_button.set_item_tooltip(ToonFilter.Mode.CEL, "" if available else "Cel shading needs the Forward+ renderer")
+
+
+## The option drives the Player's [ToonFilter] and saves the choice with the rest.
+func _on_toon_shading_item_selected(index: int) -> void:
+	settings_res.toon_mode = index
+	_apply_and_save()
+	if player and is_instance_valid(player.toon_filter):
+		player.toon_filter.set_mode(index as ToonFilter.Mode)
+
+
+## Steps to the next option, skipping a greyed Cel.
+func _on_toon_shading_touch_screen_button_pressed() -> void:
+	var next: int = (toon_button.selected + 1) % toon_button.item_count
+	if toon_button.is_item_disabled(next):
+		next = (next + 1) % toon_button.item_count
+	toon_button.selected = next
+	_on_toon_shading_item_selected(next)
+
+
+## Wired to the ToonFilter's mode_changed: the [F6] key keeps the option honest.
+func _on_toon_filter_mode_changed(mode: int) -> void:
+	if is_node_ready():
+		toon_button.selected = mode
+
+
+## Wired to the ToonFilter's toggled in older Player scenes; reads the mode off the filter.
+func _on_toon_filter_toggled(_enabled: bool) -> void:
+	if player and is_instance_valid(player.toon_filter):
+		_on_toon_filter_mode_changed(player.toon_filter.mode)
 
 
 func _on_msaa_item_selected(index: int) -> void:

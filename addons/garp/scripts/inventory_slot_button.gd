@@ -1,7 +1,7 @@
 class_name InventorySlotButton
 extends Button
-## One cell of the [InventoryScreen] grid: the item's icon, its stack count, a held marker while it is being
-## carried, and a [TouchScreenButton] so it works under a finger as well as under focus and the mouse.
+## One cell of the [InventoryScreen] grid: the item's icon, its stack count, its [method Item.get_badge] in the top
+## right corner, a held marker while it is being carried, and a [TouchScreenButton] so it works under a finger as well as under focus and the mouse.
 
 signal slot_pressed(index: int)
 signal slot_focused(index: int)
@@ -13,6 +13,7 @@ var ability: Ability ## For the spell wheel slots: the spell shown.
 
 @onready var count_label: Label = $Count
 @onready var equipped_mark: Label = $Equipped
+@onready var badge_label: Label = $Badge ## The item's badge; hidden when the item has none.
 @onready var touch_button: TouchScreenButton = $TouchScreenButton
 
 
@@ -23,20 +24,18 @@ func _ready() -> void:
 	touch_button.pressed.connect(func() -> void:
 		grab_focus()
 		slot_pressed.emit(index))
-	var shape: RectangleShape2D = touch_button.shape as RectangleShape2D
-	if shape:
-		shape.size = custom_minimum_size
-		touch_button.position = custom_minimum_size / 2.0
+	PlayerMenuLayer.fit_touch_buttons(self)
 
 
-## Shows a stack, or empties the cell with null.
-func set_stack(slot: ItemSlot) -> void:
+## Shows a stack, or empties the cell with null; [param owner] is the Player, handed to [method Item.get_badge].
+func set_stack(slot: ItemSlot, owner: Node = null) -> void:
 	equipment = null
 	ability = null
 	item = slot.item if slot else null
 	icon = item.icon if item else null
 	_tint(item.get_icon_color() if item else Color.WHITE)
 	count_label.text = str(slot.count) if slot and slot.count > 1 else ""
+	_set_badge(item.get_badge(owner) if item else "")
 	equipped_mark.hide()
 	tooltip_text = item.get_display_name() if item else ""
 
@@ -49,6 +48,7 @@ func set_equipment(weapon: Equipment, is_equipped: bool) -> void:
 	icon = weapon.icon if weapon else null
 	_tint(Color.WHITE)
 	count_label.text = ""
+	_set_badge("")
 	equipped_mark.visible = weapon != null and is_equipped
 	tooltip_text = equipment_name(weapon) if weapon else ""
 
@@ -61,6 +61,7 @@ func set_ability(spell: Ability) -> void:
 	icon = spell.icon if spell else null
 	_tint(spell.icon_color if spell else Color.WHITE)
 	count_label.text = ""
+	_set_badge("")
 	equipped_mark.hide()
 	tooltip_text = spell.display_name if spell else ""
 
@@ -72,6 +73,12 @@ func set_held(held: bool) -> void:
 
 func is_empty() -> bool:
 	return item == null and equipment == null and ability == null
+
+
+## Prints [param text] in the corner, or hides the label when there is nothing to print.
+func _set_badge(text: String) -> void:
+	badge_label.text = text
+	badge_label.visible = not text.is_empty()
 
 
 ## The icon's colour in every button state.

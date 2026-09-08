@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://dojfs8hdq4a5e"
+path="res://.godot/imported/5 Shot Burst 9.wav-d673d3fec40ed1260f0d1290ffb4f836.sample"
+
+[deps]
+
+source_file="res://assets/gravitysound/Gun SFX/Burst/5 Shot Burst 9.wav"
+dest_files=["res://.godot/imported/5 Shot Burst 9.wav-d673d3fec40ed1260f0d1290ffb4f836.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

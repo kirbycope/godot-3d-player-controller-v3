@@ -146,19 +146,24 @@ func _gun(player: Player) -> Firearm:
 	return gun
 
 
-func test_magazine_empties_and_reloads_from_the_reserve() -> void:
+func test_magazine_empties_and_reloads_from_the_inventory() -> void:
 	var player: Player = PLAYER_SCENE.instantiate()
 	root.add_child(player)
 	var gun: Firearm = _gun(player)
+	gun.equipment_type = Equipment.EquipmentType.PISTOL
 	gun.magazine_size = 2
-	gun.reserve_rounds = 3
 	gun.reload_time = 0.2
 	gun.rounds = 2
+	# The reserve is the inventory: one two-round magazine (an AmmoItem built here, so no .tres is loaded)
+	var magazine := AmmoItem.new()
+	magazine.id = &"test_pistol_magazine"
+	magazine.weapon_type = Equipment.EquipmentType.PISTOL
+	player.inventory.add_item(magazine, 1)
 	await wait_physics_frames(1)
 	watch_signals(gun)
 	assert_not_null(gun.fire())
 	assert_eq(gun.rounds, 1)
-	assert_signal_emitted_with_parameters(gun, "ammo_changed", [1, 3])
+	assert_signal_emitted_with_parameters(gun, "ammo_changed", [1, 2])
 	gun.fire_timer.stop()
 	assert_not_null(gun.fire())
 	assert_eq(gun.rounds, 0)
@@ -168,12 +173,13 @@ func test_magazine_empties_and_reloads_from_the_reserve() -> void:
 	assert_false(gun.fire_timer.is_stopped(), "Reloading blocks the trigger")
 	await wait_seconds(0.3)
 	assert_false(gun.is_reloading)
-	assert_eq(gun.rounds, 2, "The magazine refills from the reserve")
-	assert_eq(gun.reserve_rounds, 1)
+	assert_eq(gun.rounds, 2, "The magazine refills from the inventory")
+	assert_eq(player.inventory.count_of(magazine), 0, "The magazine item is spent")
+	assert_eq(gun.reserve_rounds, 0)
 	gun.reload()
 	assert_false(gun.is_reloading, "A full magazine does not reload")
 	player.controls.set_ammo(gun.rounds, gun.reserve_rounds)
-	assert_eq(player.controls.ammo_label.text, "2 / 1")
+	assert_eq(player.controls.ammo_label.text, "2 / 0")
 	assert_true(player.controls.ammo_label.visible)
 	player.controls.hide_ammo()
 	assert_false(player.controls.ammo_label.visible)
@@ -202,3 +208,21 @@ func test_rumble_only_reaches_a_pad() -> void:
 	assert_false(controls.rumble(0.0, 0.8, 0.1), "Touch players get no rumble")
 	controls.current_input_type = Controls.InputType.MICROSOFT
 	assert_true(controls.rumble(0.0, 0.8, 0.1), "A pad gets the kick")
+
+
+func test_a_peers_copy_of_a_round_waits_for_the_spawners_despawn_instead_of_freeing_itself() -> void:
+	# A spawner-owned round belongs to the server; a client's copy must not free on its own hit, or the server's
+	# despawn arrives for a node the client no longer has (ERR_UNAUTHORIZED in on_despawn_receive).
+	var target := _make_area_target(Vector3(0, 0, -6))
+	var bullet: Projectile = BULLET_SCENE.instantiate()
+	root.add_child(bullet)
+	bullet.set_multiplayer_authority(2) # Somebody else's round
+	bullet.launch(Transform3D(Basis.IDENTITY, Vector3.ZERO), Vector3.FORWARD, 300.0, null)
+	await wait_physics_frames(4)
+	assert_eq(target.hits, 1, "The copy still simulates the hit")
+	assert_true(is_instance_valid(bullet) and bullet.is_inside_tree(), "but it stays for the spawner's despawn")
+	assert_true(bullet.freeze, "stopped where it landed")
+	assert_false(bullet.visible, "and out of sight")
+	var mine := _shoot(Vector3.ZERO, Vector3.FORWARD, 300.0)
+	await wait_physics_frames(4)
+	assert_false(is_instance_valid(mine) and mine.is_inside_tree(), "A round this peer owns frees itself as before")

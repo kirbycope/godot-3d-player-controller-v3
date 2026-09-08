@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://yiiiqo6x27su"
+path="res://.godot/imported/Idle Horse 3.ogg-6ef1c8bbf7cbefe0bd02edab8b12b6a0.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/tommusic/fantasy_sfx/OGG Files/SFX/Horse/Idle/Idle Horse 3.ogg"
+dest_files=["res://.godot/imported/Idle Horse 3.ogg-6ef1c8bbf7cbefe0bd02edab8b12b6a0.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

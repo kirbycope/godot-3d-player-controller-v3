@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://bgmfq2b5t7455"
+path="res://.godot/imported/Water Gallop 2.ogg-3725a3aaf5026fca46b2bf483e60aedf.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/tommusic/fantasy_sfx/OGG Files/SFX/Horse/Water/Water Gallop 2.ogg"
+dest_files=["res://.godot/imported/Water Gallop 2.ogg-3725a3aaf5026fca46b2bf483e60aedf.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

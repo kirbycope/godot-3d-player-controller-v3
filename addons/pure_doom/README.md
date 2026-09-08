@@ -44,7 +44,7 @@ stick turns (it presses DOOM's left and right arrows, so Y for run applies), RT 
 B accepts, Back opens the menu, and the d-pad is context-sensitive: with the menu up it is the arrow keys,
 in the game up is the automap, down is the menu, and left and right cycle to the previous or next weapon you
 own (`cycle_weapon` reads the engine's weapon list, presses the slot's number and lets go two tics later).
-`is_menu_open()` and `get_weapon_slot()` expose the same engine state. The level starts directly (`-warp 1 1`)
+`is_menu_open()`, `is_automap_open()` and `get_weapon_slot()` expose the same engine state. The level starts directly (`-warp 1 1`)
 because Escape and Start are left to the host scene; after dying, use restarts the level.
 
 ## Controls card
@@ -64,7 +64,7 @@ node can run in a process and it initialises once; `stop()` and `start()` pause 
 
 ## Building
 
-Prebuilt binaries are in `bin/`. To rebuild, clone godot-cpp into this folder (it is git-ignored) and dump
+Prebuilt binaries for Windows, macOS and the web are in `bin/`. To rebuild, clone godot-cpp into this folder (it is git-ignored) and dump
 the extension API from the Godot build you run, so the bindings match it:
 
 ```powershell
@@ -74,6 +74,17 @@ cd addons/pure_doom
 scons platform=windows target=template_debug custom_api_file=..\..\extension_api.json
 scons platform=windows target=template_release custom_api_file=..\..\extension_api.json
 scons platform=web threads=no target=template_release custom_api_file=..\..\extension_api.json
+```
+
+On macOS the same steps with `brew install scons` and the Xcode Command Line Tools produce a universal
+(arm64 and x86_64) framework:
+
+```sh
+git clone --depth 1 https://github.com/godotengine/godot-cpp.git addons/pure_doom/godot-cpp
+/Applications/Godot.app/Contents/MacOS/Godot --headless --dump-extension-api   # writes extension_api.json
+cd addons/pure_doom
+scons platform=macos arch=universal target=template_debug custom_api_file=../../extension_api.json
+scons platform=macos arch=universal target=template_release custom_api_file=../../extension_api.json
 ```
 
 Windows needs Visual Studio 2022 with the C++ workload, Python and SCons. The web build needs the

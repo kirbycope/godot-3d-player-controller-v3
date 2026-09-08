@@ -36,6 +36,19 @@ func impact(caster: Node3D, target: Node3D) -> void:
 		_schedule_tick(target, over_time_damage / ticks, ticks)
 
 
+## The numbers for the spells screen: the hit, the ticks, the slow, then what the impact does to the world.
+func get_details() -> String:
+	var lines: PackedStringArray = ["Damage: %d" % roundi(damage)]
+	if over_time_damage > 0.0 and over_time_duration > 0.0:
+		lines.append("Damage over time: %d over %d s" % [roundi(over_time_damage), roundi(over_time_duration)])
+	if slow_factor < 1.0 and slow_duration > 0.0:
+		lines.append("Slows to %d%% for %d s" % [roundi(slow_factor * 100.0), roundi(slow_duration)])
+	var world: String = super()
+	if not world.is_empty():
+		lines.append(world)
+	return "\n".join(lines)
+
+
 func _schedule_tick(target: Node3D, amount: float, ticks_left: int) -> void:
 	target.get_tree().create_timer(1.0).timeout.connect(_tick.bind(target, amount, ticks_left))
 

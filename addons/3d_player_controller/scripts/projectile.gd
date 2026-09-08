@@ -40,10 +40,14 @@ func _ready() -> void:
 	if is_template:
 		freeze = true
 		set_physics_process(false)
+		for audio: Node in find_children("*", "AudioStreamPlayer3D", true, false):
+			(audio as AudioStreamPlayer3D).stop() # a nocked copy of a scene makes no flight sound
 	elif not pending_launch.is_empty():
 		var data: Dictionary = pending_launch
 		pending_launch = {}
 		launch(data["origin"], data["direction"], data["speed"], get_node_or_null(data["shooter"]) as Node3D, get_node_or_null(data["weapon"]) as Equipment)
+		if data.has("fire_sfx"):
+			play_launch_sfx(data["fire_sfx"])
 
 
 ## Places the projectile at [param origin] and sends it along [param direction] at [param speed].
@@ -65,6 +69,23 @@ func launch(origin: Transform3D, direction: Vector3, speed: float, from_shooter:
 		add_collision_exception_with(shooter)
 		get_tree().create_timer(SHOOTER_EXCEPTION_SECONDS).timeout.connect(_on_shooter_exception_timeout)
 	get_tree().create_timer(lifetime).timeout.connect(_on_lifetime_timeout)
+
+
+## Plays the stream at [param stream_path] where the round is now (the muzzle, on launch) through a speaker beside the
+## round that frees itself when the clip ends, so the shot is heard where it was fired however far the round flies or
+## how soon it lands. A [Firearm] sends its shot sound along in the launch data, so every peer's copy calls this.
+func play_launch_sfx(stream_path: String) -> void:
+	var stream: AudioStream = load(stream_path) as AudioStream
+	if stream == null or not is_inside_tree():
+		return
+	var speaker: AudioStreamPlayer3D = AudioStreamPlayer3D.new()
+	speaker.name = "LaunchSfx"
+	speaker.stream = stream
+	speaker.bus = &"SFX"
+	speaker.finished.connect(speaker.queue_free)
+	get_parent().add_child(speaker)
+	speaker.global_position = global_position
+	speaker.play()
 
 
 ## Sweeps a ray from the previous step's position to the current one to catch anything physics stepped over.
@@ -96,9 +117,9 @@ func _physics_process(_delta: float) -> void:
 
 
 ## Contact fallback for rounds physics resolves before the sweep runs (wired in the scene); a character still
-## gets its hurtbox looked up along the flight line through the contact.
+## gets its hurtbox looked up along the flight line through the contact. A template never lands.
 func _on_body_entered(body: Node) -> void:
-	if has_hit or body == shooter or body is Projectile:
+	if has_hit or is_template or body == shooter or body is Projectile:
 		return
 	var along: Vector3 = _flight_velocity.normalized()
 	if body is CharacterBody3D and along.length_squared() > 0.0:
@@ -123,9 +144,9 @@ func _apply_hit(collider: Node, point: Vector3, normal: Vector3) -> void:
 		global_position = point
 		freeze = true
 		set_physics_process(false)
-		get_tree().create_timer(stuck_seconds).timeout.connect(queue_free)
+		get_tree().create_timer(stuck_seconds).timeout.connect(_free_on_authority)
 	else:
-		queue_free()
+		_free_on_authority()
 
 
 ## Casts the same ray on the hurtbox layer, past the capsule, for a hurtbox that belongs to [param body].
@@ -161,4 +182,16 @@ func _on_shooter_exception_timeout() -> void:
 ## Only an unlanded projectile is still around to free; a stuck one frees itself after [member stuck_seconds].
 func _on_lifetime_timeout() -> void:
 	if not has_hit:
+		_free_on_authority()
+
+
+## Frees the round on its multiplayer authority (the server for spawner-owned rounds, this peer offline or for a local
+## copy); a peer's copy stops where it is, hidden, and waits for the spawner's despawn, so the server's despawn never
+## arrives for a node the peer has already freed.
+func _free_on_authority() -> void:
+	if is_multiplayer_authority():
 		queue_free()
+		return
+	freeze = true
+	set_physics_process(false)
+	hide()

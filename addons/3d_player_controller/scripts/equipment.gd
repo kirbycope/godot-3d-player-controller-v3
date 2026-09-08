@@ -7,7 +7,13 @@ extends Node3D
 ## then stops monitoring, so each pickup is taken once with no prompt or button.
 ##
 ## Melee weapons that should register hits need a child [Area3D] named "Hitbox"; [HitDetection]
-## enables its monitoring during attack swings.
+## enables its monitoring during attack swings. A weapon that should shove props needs a child
+## [AnimatableBody3D] named "WeaponBody" (a shape along the blade, on the Weapons physics layer masking
+## Hittable, sync_to_physics off: a synced body reverts to its own last transform and ignores the bone
+## attachment carrying it): it rides the bone animation and pushes with the swing's real velocity,
+## [HitDetection] puts it on its layer only while a swing is live, and it never touches the Player carrying it.
+
+signal details_changed ## What [method get_details] prints has changed (a rod's bait, say); the inventory screen redraws it.
 
 enum EquipmentType {
 	AXE_1H,
@@ -34,7 +40,8 @@ enum EquipmentType {
 @export var equipment_type: EquipmentType ## The type of equipment (e.g. AXE_1H, BOW, RIFLE, etc.)
 @export var icon: Texture2D ## Icon to display in the UI for this equipment
 @export var is_exclusive: bool = false ## Is this equipment exclusive, meaning it cannot be equipped with other equipment types simultaneously?
-@export var is_throwable: bool = false ## Can this equipment be thrown?
+@export var is_throwable: bool = false ## Can this equipment be thrown? The "throw" action throws the equipped piece ([HeldObject]); it lands as a walk-over pickup of its own scene.
+@export var throw_damage: float = 0.0 ## What a thrown one does to whatever it lands on that can take a hit; 0 hurts nothing.
 @export var projectile_speed: float = 50.0 ## meters/second (Arrows, Bullets, etc.)
 @export var accuracy: Accuracy ## Spread cone for ranged equipment, shrinking with the Player's [code]skill_level[/code]; empty fires dead straight.
 @export var position_offset: Vector3: ## Positional offset applied to the equipment when attached to the player.
@@ -49,14 +56,32 @@ enum EquipmentType {
 	set(val):
 		scale_offset = val
 		_update_attachment_offsets()
+@export_group("Sounds")
+@export var equip_sfx: AudioStream ## Played through the Player's [WeaponAudio] when this is drawn; empty plays the TomMusic sword unsheath on a metal melee weapon ([constant WeaponAudio.BLADED_TYPES]) and nothing on anything else.
+@export var stow_sfx: AudioStream ## Played when this is stowed; empty plays the sword sheath on a metal melee weapon and nothing on anything else.
+@export var attack_sfx: AudioStream ## Played at the start of each swing (a [Bow]: each shot); empty plays the default sword swing.
+@export var hit_sfx: AudioStream ## Played when a swing lands on something that takes a hit; empty plays the default sword impact.
+@export_group("")
 
 var equipment_instance: Equipment ## The equipped copy of this item, once [method equip] has run.
 var player: Player
 
 @onready var player_detection: Area3D = get_node_or_null("PlayerDetection") as Area3D ## The walk-over pickup volume, on world copies.
+@onready var weapon_body: AnimatableBody3D = get_node_or_null("WeaponBody") as AnimatableBody3D ## The blade's physical body, on melee weapons.
+
+
+## An equipped copy's weapon body ignores its Player and their ragdoll bones, whatever layers they end up on.
+func _ready() -> void:
+	if weapon_body == null or not is_instance_valid(player):
+		return
+	weapon_body.add_collision_exception_with(player)
+	if is_instance_valid(player.physical_bone_simulator):
+		for bone: Node in player.physical_bone_simulator.find_children("*", "PhysicalBone3D", true, false):
+			weapon_body.add_collision_exception_with(bone as PhysicsBody3D)
 
 
 ## Extra lines the inventory prints under [member description]; a rod says what bait is on the line. Empty by default.
+## Emit [signal details_changed] when they change, so an open inventory screen redraws them.
 func get_details() -> String:
 	return ""
 
@@ -76,33 +101,16 @@ func _on_player_detection_body_entered(body: Node3D) -> void:
 		player_detection.set_deferred(&"monitoring", false)
 
 
-## Duplicates this item onto a new [BoneAttachment3D] on the player's skeleton and registers it with the inventory.
+## Equips this item on [param target_player]: the inventory duplicates it onto a new [BoneAttachment3D] on the
+## skeleton ([method Inventory.equip_pickup]) and this pickup remembers the copy as [member equipment_instance].
 ## False when the Player already carries one of this type on this bone, or the item cannot be worn.
 func equip(target_player: Player) -> bool:
-	if target_player == null or bone_attachment_bone_name.is_empty() \
-			or target_player.inventory.has_equipment_in_backpack(equipment_type, bone_attachment_bone_name) \
-			or not target_player.inventory.can_carry_equipment():
+	if target_player == null:
 		return false
-
-	target_player.inventory.stow_conflicting(bone_attachment_bone_name, is_exclusive)
-
-	var attachment: BoneAttachment3D = BoneAttachment3D.new()
-	attachment.bone_name = bone_attachment_bone_name
-	target_player.skeleton.add_child(attachment)
-
-	equipment_instance = duplicate() as Equipment
-	equipment_instance.player = target_player
-	equipment_instance.scene_file_path = scene_file_path # so the inventory can save and drop it as its scene
-	attachment.add_child(equipment_instance)
-	# Disable world collision but keep the "Hitbox" shapes so HitDetection can monitor them.
-	for shape: Node in equipment_instance.find_children("*", "CollisionShape3D", true, false):
-		(shape as CollisionShape3D).disabled = shape.get_parent().name != "Hitbox"
-	for tree: Node in equipment_instance.find_children("*", "AnimationTree", true, false):
-		(tree as AnimationTree).active = true
-		(tree as AnimationTree).advance_expression_base_node = tree.get_path_to(equipment_instance)
-	_update_attachment_offsets()
-
-	target_player.inventory.add_equipment(equipment_instance)
+	var copy: Equipment = target_player.inventory.equip_pickup(self)
+	if copy == null:
+		return false
+	equipment_instance = copy
 	return true
 
 

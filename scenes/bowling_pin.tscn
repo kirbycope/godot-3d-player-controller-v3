@@ -24,6 +24,8 @@ stream_4/stream = ExtResource("6_hx8ey")
 stream_5/stream = ExtResource("7_ju7tb")
 
 [node name="BowlingPin" type="RigidBody3D" unique_id=1041192849]
+collision_layer = 1025
+collision_mask = 513
 mass = 40.0
 center_of_mass_mode = 1
 center_of_mass = Vector3(0, 1, 0)

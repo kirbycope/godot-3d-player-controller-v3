@@ -1,7 +1,8 @@
 extends GutTest
 ## Purpose: the World of Warcraft spells brought over from the aethereal project run on the Ability system:
 ## Fireball keeps burning after the hit, Frostbolt slows, Consecration hurts whatever stands in it but not the
-## caster, Shadowstep puts the caster behind its target facing it, and every shipped resource loads with VFX and sounds.
+## caster, Shadowstep puts the caster behind its target facing it, Freeze turns the water under the crosshair into
+## an ice block and refuses dry ground, and every shipped resource loads with VFX and sounds.
 
 const PLAYER_SCENE: PackedScene = preload("res://addons/3d_player_controller/scenes/player.tscn")
 const AreaDamage := preload("res://scenes/area_damage_ability.gd")
@@ -39,6 +40,11 @@ func before_each() -> void:
 	await wait_physics_frames(10)
 
 
+func after_each() -> void:
+	for block: Node in get_tree().get_nodes_in_group(&"IceBlock"):
+		block.free()
+
+
 func _dummy_at(offset: Vector3) -> DummyBody:
 	var dummy := DummyBody.new()
 	var shape := CollisionShape3D.new()
@@ -53,7 +59,8 @@ func _dummy_at(offset: Vector3) -> DummyBody:
 func test_the_shipped_spells_load_with_their_effects_vfx_and_sounds() -> void:
 	var fireball: DamageAbility = load(SPELL_DIR + "fireball.tres")
 	assert_true(bool(fireball.elements & Ability.Element.FIRE), "Fireball burns the grass")
-	assert_gt(fireball.over_time_damage, 0.0, "and keeps burning its target")
+	assert_eq(fireball.over_time_damage, 0.0, "and its damage over time is the burn the fire sets, not a second set of ticks")
+	assert_true(fireball.get_details().contains("sets enemies ablaze"), "which its details say: " + fireball.get_details())
 	var frostbolt: DamageAbility = load(SPELL_DIR + "frostbolt.tres")
 	assert_lt(frostbolt.slow_factor, 1.0, "Frostbolt slows")
 	assert_true(bool(frostbolt.elements & Ability.Element.WATER), "and douses fire where it lands")
@@ -64,12 +71,12 @@ func test_the_shipped_spells_load_with_their_effects_vfx_and_sounds() -> void:
 	assert_true(shadowstep is Shadowstep)
 	assert_eq(shadowstep.target_mode, Ability.Target.FOCUS)
 	assert_true(load(SPELL_DIR + "flash_of_light.tres") is HealAbility)
-	for name: String in ["firebolt", "fireball", "frostbolt", "lightning_bolt", "lightning", "chain_lightning", "flash_of_light", "consecration", "shadowstep"]:
+	for name: String in ["firebolt", "fireball", "frostbolt", "lightning_bolt", "lightning", "chain_lightning", "flash_of_light", "consecration", "shadowstep", "freeze"]:
 		var spell: Ability = load(SPELL_DIR + name + ".tres")
 		assert_not_null(spell.icon, name + " has its game-icons.net icon")
 		assert_true(spell.icon.resource_path.begins_with("res://addons/3d_player_controller/assets/game_icons/"), name + "'s icon lives with the other game-icons")
 		assert_ne(spell.icon_color, Color.WHITE, name + " is tinted like aethereal tinted it")
-	for name: String in ["firebolt", "fireball", "frostbolt", "lightning_bolt", "lightning", "chain_lightning", "flash_of_light", "consecration", "shadowstep"]:
+	for name: String in ["firebolt", "fireball", "frostbolt", "lightning_bolt", "lightning", "chain_lightning", "flash_of_light", "consecration", "shadowstep", "freeze"]:
 		var spell: Ability = load(SPELL_DIR + name + ".tres")
 		assert_false(spell.display_name.is_empty(), name + " is named")
 		assert_true(spell.casting_sfx != null or spell.impact_sfx != null, name + " has a sound")
@@ -199,3 +206,58 @@ func test_firebolt_carries_fire() -> void:
 	var firebolt: Ability = load(SPELL_DIR + "firebolt.tres")
 	assert_true(bool(firebolt.elements & Ability.Element.FIRE))
 	assert_false(bool(firebolt.elements & Ability.Element.WATER))
+
+
+# --- Freeze: the water under the crosshair becomes an ice block ---
+
+const POND_MATERIAL: Material = preload("res://addons/weather_fx/resources/pond_water_material.tres")
+
+
+## A pond the size of the floor, its surface level with it, so wherever the crosshair lands is water.
+func _pond_under_the_player() -> Buoyancy:
+	var surface := MeshInstance3D.new()
+	var quad := QuadMesh.new()
+	quad.size = Vector2(40.0, 40.0)
+	quad.orientation = PlaneMesh.FACE_Y
+	quad.material = POND_MATERIAL
+	surface.mesh = quad
+	player.get_parent().add_child(surface)
+	surface.global_position = Vector3(player.global_position.x, 0.0, player.global_position.z)
+	var pond := Buoyancy.new()
+	pond.add_to_group(&"WATER")
+	var shape := CollisionShape3D.new()
+	shape.shape = BoxShape3D.new()
+	shape.shape.size = Vector3(40.0, 1.0, 40.0)
+	pond.add_child(shape)
+	pond.water_mesh = surface
+	player.get_parent().add_child(pond)
+	pond.global_position = surface.global_position + Vector3(0.0, -0.5, 0.0)
+	return pond
+
+
+func test_freeze_turns_the_water_under_the_crosshair_into_an_ice_block_and_refuses_dry_ground() -> void:
+	var freeze := FreezeAbility.new()
+	freeze.energy_cost = 10.0
+	abilities.abilities.append(freeze)
+	watch_signals(abilities)
+	assert_false(freeze.can_cast(player), "Nothing under the crosshair is water")
+	abilities.cast(freeze)
+	assert_signal_not_emitted(abilities, "ability_activated", "Refused over dry ground, nothing spent")
+	assert_eq(get_tree().get_nodes_in_group(&"IceBlock").size(), 0)
+	var pond: Buoyancy = _pond_under_the_player()
+	await wait_physics_frames(2)
+	var at: Vector3 = freeze.get_impact_position(player)
+	assert_true(freeze.can_cast(player), "The crosshair lands on the pond")
+	var energy: float = player.health.energy
+	abilities.cast(freeze)
+	assert_signal_emitted(abilities, "ability_activated")
+	assert_lt(player.health.energy, energy, "The cast costs its energy")
+	var blocks: Array[Node] = get_tree().get_nodes_in_group(&"IceBlock")
+	assert_eq(blocks.size(), 1, "One slab where the impact landed")
+	var block: IceBlock = blocks[0] as IceBlock
+	assert_almost_eq(Vector2(block.global_position.x, block.global_position.z), Vector2(at.x, at.z), Vector2.ONE * 0.05)
+	assert_almost_eq(block.global_position.y + IceBlock.SIZE.y * 0.5, pond.get_surface_height(at) + IceBlock.TOP_ABOVE_SURFACE, 0.1, "with its top at the surface")
+	var shipped: Ability = load(SPELL_DIR + "freeze.tres")
+	assert_true(shipped is FreezeAbility, "The shipped Freeze is a FreezeAbility")
+	assert_eq(shipped.target_mode, Ability.Target.FOCUS)
+	assert_true(bool(shipped.elements & Ability.Element.WATER), "and carries Water, so it douses fire where it lands")

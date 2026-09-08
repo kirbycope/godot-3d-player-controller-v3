@@ -23,7 +23,7 @@
 [ext_resource type="AudioStream" uid="uid://bxuo1psaadb7n" path="res://addons/3d_player_controller/assets/pixabay/djartmusic-arrow-swish_03-306040.mp3" id="25_shehe"]
 [ext_resource type="AudioStream" uid="uid://14v2pascfajw" path="res://addons/3d_player_controller/assets/pixabay/djartmusic-arrow-twang_01-306041.mp3" id="26_l137e"]
 [ext_resource type="AudioStream" uid="uid://bo6duef7adfmo" path="res://assets/pixabay/freesound_community-bow-loading-38752.mp3" id="27_ygn2i"]
-[ext_resource type="AudioStream" uid="uid://diys7xvxwcdj" path="res://assets/pixabay/freesound_community-bow-release-bow-and-arrow-4-101936.mp3" id="28_swu3i"]
+[ext_resource type="AudioStream" path="res://addons/3d_player_controller/resources/audio/bow_attack.tres" id="28_swu3i"]
 [ext_resource type="PackedScene" uid="uid://blo6m8lpjri0d" path="res://assets/n_hance_studio/weapons/SK_Dagger_1H_Newbie_01.fbx" id="29_oexs8"]
 [ext_resource type="Texture2D" uid="uid://boo50abhv7hgk" path="res://addons/3d_player_controller/assets/game_icons/plain-dagger.svg" id="30_n78cu"]
 [ext_resource type="PackedScene" uid="uid://1eqwedxx6bid" path="res://assets/n_hance_studio/weapons/SK_Shield_Newbie_01.fbx" id="31_kcpaj"]
@@ -52,6 +52,7 @@
 [ext_resource type="PackedScene" uid="uid://ci146l3tivu1p" path="res://scenes/duck.tscn" id="54_xiw03"]
 [ext_resource type="Script" uid="uid://b5icexjxoi6mg" path="res://addons/date_and_time/scripts/date_and_time.gd" id="55_dt"]
 [ext_resource type="PackedScene" uid="uid://do6j5qhjt8bsf" path="res://addons/weather_fx/scenes/weather_fx.tscn" id="56_wfx"]
+[ext_resource type="PackedScene" uid="uid://df2moxe7vqkyp" path="res://addons/weather_fx/scenes/bgs.tscn" id="56_bgs"]
 [ext_resource type="Script" uid="uid://bhmeif0ssxubk" path="res://addons/weather_fx/scripts/weather_zone.gd" id="57_wzone"]
 [ext_resource type="PackedScene" path="res://addons/date_and_time/scenes/date_and_time_display.tscn" id="58_dtdisplay"]
 [ext_resource type="PackedScene" path="res://addons/weather_fx/scenes/weather_forecast_display.tscn" id="59_wfdisplay"]
@@ -60,46 +61,62 @@
 [ext_resource type="Material" uid="uid://dnb46gq1n57a5" path="res://addons/weather_fx/resources/grass_material.tres" id="62_grassmat"]
 [ext_resource type="PackedScene" path="res://scenes/torch.tscn" id="63_torch"]
 [ext_resource type="PackedScene" path="res://scenes/horse.tscn" id="87_xgy6y"]
+[ext_resource type="PackedScene" path="res://scenes/retro_computer.tscn" id="88_retro"]
 [ext_resource type="Resource" path="res://addons/3d_player_controller/resources/accuracy/bow.tres" id="accuracy_bow"]
+[ext_resource type="AudioStream" path="res://addons/3d_player_controller/resources/audio/bow_take_out.tres" id="bow_take_out"]
+[ext_resource type="AudioStream" path="res://addons/3d_player_controller/resources/audio/bow_put_away.tres" id="bow_put_away"]
+[ext_resource type="AudioStream" path="res://resources/audio/pistol_shot.tres" id="sfx_pistol_shot"]
+[ext_resource type="AudioStream" path="res://resources/audio/rifle_shot.tres" id="sfx_rifle_shot"]
+[ext_resource type="AudioStream" path="res://resources/audio/gun_draw.tres" id="sfx_gun_draw"]
+[ext_resource type="AudioStream" path="res://resources/audio/gun_holster.tres" id="sfx_gun_holster"]
+[ext_resource type="AudioStream" path="res://resources/audio/pistol_reload.tres" id="sfx_pistol_reload"]
+[ext_resource type="AudioStream" path="res://resources/audio/rifle_reload.tres" id="sfx_rifle_reload"]
 [ext_resource type="Resource" path="res://addons/3d_player_controller/resources/accuracy/pistol.tres" id="accuracy_pistol"]
 [ext_resource type="Resource" path="res://addons/3d_player_controller/resources/accuracy/rifle.tres" id="accuracy_rifle"]
+[ext_resource type="Sky" uid="uid://rvgdfly32rcm" path="res://addons/weather_fx/assets/BinbunSky/skies/stylized/stylized_sky_01.tres" id="binbun_sky"]
 [ext_resource type="Script" uid="uid://co2i2r08w3qms" path="res://scenes/buoyancy.gd" id="buoyancy_script"]
 [ext_resource type="PackedScene" uid="uid://drgmvkbg7fitw" path="res://scenes/enemy_archer.tscn" id="enemy_archer"]
 [ext_resource type="PackedScene" uid="uid://drgmvkr7bji2w" path="res://scenes/enemy_rifleman.tscn" id="enemy_rifleman"]
 [ext_resource type="PackedScene" uid="uid://drgmvkcyor42w" path="res://scenes/enemy_spellcaster.tscn" id="enemy_spellcaster"]
 [ext_resource type="PackedScene" uid="uid://drgmvktmkph2w" path="res://scenes/enemy_swordsman.tscn" id="enemy_swordsman"]
-[ext_resource type="Resource" path="res://resources/fish/old_boot.tres" id="fish_boot"]
+[ext_resource type="Resource" uid="uid://bxtrlsnw7cbcc" path="res://resources/fish/old_boot.tres" id="fish_boot"]
 [ext_resource type="Resource" path="res://resources/fish/carp.tres" id="fish_carp"]
 [ext_resource type="Resource" path="res://resources/fish/catfish.tres" id="fish_catfish"]
+[ext_resource type="Resource" path="res://resources/fish/boot_crate.tres" id="fish_crate"]
 [ext_resource type="Resource" path="res://resources/fish/koi.tres" id="fish_koi"]
 [ext_resource type="Resource" path="res://resources/fish/perch.tres" id="fish_perch"]
 [ext_resource type="Script" uid="uid://d1uyxp1uskyes" path="res://scenes/fish.gd" id="fish_script"]
 [ext_resource type="Script" uid="uid://bknwbf0toy4wv" path="res://scenes/fish_shadows.gd" id="fish_shadows_script"]
 [ext_resource type="Resource" path="res://resources/fish/rainbow_trout.tres" id="fish_trout"]
+[ext_resource type="PackedScene" uid="uid://calgbn1slkmss" path="res://assets/BinbunVFX/muzzle_flash/effects/short_flash/short_flash_01.tscn" id="flash_pistol"]
+[ext_resource type="PackedScene" uid="uid://dd7uf7xlh4l1w" path="res://assets/BinbunVFX/muzzle_flash/effects/muzzle_flash/muzzle_flash_01.tscn" id="flash_rifle"]
+[ext_resource type="Resource" path="res://resources/lures/chum.tres" id="lure_chum"]
 [ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/arrow.tscn" id="mp_arrow"]
 [ext_resource type="Script" uid="uid://b0h23y2uet4r" path="res://addons/3d_player_controller/scripts/player_spawner.gd" id="mp_player_spawner"]
 [ext_resource type="Script" uid="uid://d4lqkvawlhhn1" path="res://addons/3d_player_controller/scripts/projectile_spawner.gd" id="mp_projectile_spawner"]
 [ext_resource type="Script" uid="uid://dgk0123inqplm" path="res://addons/3d_player_controller/scripts/steam_peer.gd" id="mp_steam_peer"]
 [ext_resource type="PackedScene" path="res://scenes/world_player.tscn" id="mp_world_player"]
+[ext_resource type="Script" uid="uid://d046dc2e6l7mn" path="res://addons/3d_player_controller/scripts/muzzle_flash.gd" id="muzzle_flash_gd"]
 [ext_resource type="Script" uid="uid://b03h8ijilon1x" path="res://addons/3d_player_controller/scripts/arrow.gd" id="r_arrowgd"]
 [ext_resource type="Texture2D" uid="uid://dqhgd83i0432v" path="res://addons/3d_player_controller/assets/game_icons/bow-arrow.svg" id="r_bowarrowsvg"]
 [ext_resource type="Script" uid="uid://7r16fm6kmk1p" path="res://addons/3d_player_controller/scripts/bow.gd" id="r_bowgd"]
 [ext_resource type="Texture2D" uid="uid://dba30et81gi40" path="res://addons/3d_player_controller/assets/game_icons/mp5.svg" id="r_mp5svg"]
 [ext_resource type="Script" uid="uid://7e2gpht4wap6" path="res://addons/3d_player_controller/scripts/rifle.gd" id="r_riflegd"]
 [ext_resource type="PackedScene" path="res://addons/weather_fx/scenes/water_ripples.tscn" id="water_ripples_scene"]
-[ext_resource type="PackedScene" path="res://scenes/retro_computer.tscn" id="88_retro"]
-[ext_resource type="Resource" path="res://resources/lures/chum.tres" id="lure_chum"]
-
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
-sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
-ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
-
-[sub_resource type="Sky" id="Sky_tlwt5"]
-sky_material = SubResource("ProceduralSkyMaterial_fj7yv")
+[ext_resource type="Script" uid="uid://bia70m5sxncj0" path="res://addons/weather_fx/scripts/weather_clouds.gd" id="weather_clouds"]
 
 [sub_resource type="Environment" id="Environment_aqk2v"]
 background_mode = 2
-sky = SubResource("Sky_tlwt5")
+sky = ExtResource("binbun_sky")
+fog_density = 0.0
+volumetric_fog_density = 0.0
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_time"]
+properties/0/path = NodePath(".:current_time")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_panel"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_senyo"]
 vertices = PackedVector3Array(-15.599998, 0.19999981, -15.799999, -5.0999985, 0.19999981, -9, -4.200001, 0.19999981, -9.5, -2.8999977, 0.19999981, -9.5, -2.8999977, 0.09999943, -31.5, -15.5, 0.09999943, -31.5, -0.29999924, 0.19999981, -7.5, -0.099998474, 0.19999981, -7, 0.10000229, 0.19999981, -7, 0.29999924, 0.19999981, -7.5, -1.7999992, 0.19999981, -9, 1.2000008, 0.19999981, -8.4, 2.2000008, 0.19999981, -8.5, 2.2000008, 0.09999943, -31.5, 1, 0.19999981, -7.6000004, -1.2999992, 0.19999981, -8.4, -1.0999985, 0.19999981, -7.699999, 7.4000015, 0.19999981, -8.299999, 15.799999, 0.19999981, -15.6, 15.5, 0.19999981, -15.9, 7.200001, 0.19999981, -8.5, 15.5, 0.09999943, -31.5, -15.299999, -6.3000007, -31.4, -15.299999, -6.3000007, -16.599998, 15.400002, -6.3000007, -16.599998, 15.400002, -6.3000007, -31.4, -5.700001, 0.19999981, -8.299999, -15.799999, 0.19999981, -15.6, -6, 0.19999981, -7.699999, -6, 0.19999981, -6.299999, -5.700001, 0.19999981, -5.6000004, -4.8999977, 0.19999981, -4.799999, -47.5, 0.19999981, -15.5, -47.5, 0.19999981, 31.5, -3.5, 0.19999981, 31.5, -3.5, 0.19999981, -4.3999996, 4, 1.6999993, -7.5, 4, 1.6999993, -6, 4.4000015, 1.6999993, -6.3999996, 7.200001, 0.39999962, -7.5, 7.200001, 0.39999962, -6.3999996, 5.0666656, 1.5999999, -7.5, 4.960003, 1.6999993, -6.3999996, 7.5, 0.19999981, -5.699999, 5, 0.19999981, -2.5, 5, 0.19999981, 31.5, 47.5, 0.19999981, 31.5, 47.5, 0.19999981, -15.5, 7.5, 0.2999997, -7.799999, 7.5, 0.2999997, -6.1000004, 7.200001, 0.19999981, -5.3999996, 5.1000023, 0.19999981, -5.3999996, -2.7000008, 10.200001, -5.6000004, -2.2999992, 10.200001, -5.8999996, -2, 10.200001, -6.5, -2.0999985, 10.200001, -7.799999, -2.3999977, 10.200001, -8.199999, -3, 10.200001, -8.5, -4.299999, 10.200001, -8.4, -4.700001, 10.200001, -8.1, -5, 10.200001, -7.5, -4.8999977, 10.200001, -6.199999, -4.299999, 10.200001, -5.6000004, -4.799999, 0.19999981, -6.299999, -4.5, 0.19999981, -5.8999996, -3.8999977, 0.19999981, -5.6000004, -2.7999992, 0.19999981, -5.699999, -2.3999977, 0.19999981, -6, -2.0999985, 0.19999981, -6.6000004, -2.2000008, 0.19999981, -7.699999, -2.5, 0.19999981, -8.1, -3.0999985, 0.19999981, -8.4, -4.200001, 0.19999981, -8.299999, -4.5999985, 0.19999981, -8, -4.8999977, 0.19999981, -7.3999996, 2.1000023, 1.6999993, -7.5, 2.1000023, 1.6999993, -6.3999996, 2.9000015, 1.6999993, -6.3999996, 2.9000015, 1.6999993, -7.5, 2.5, 1.7999997, -7.5, 2.5, 1.7999997, -6.3999996, 0.29999924, 0.19999981, -6.5, -0.29999924, 0.19999981, -6.5, 3.1000023, 0.19999981, -2.5, 3, 0.19999981, -5.3999996, 1.2000008, 0.19999981, -5.5, -1.7999992, 0.19999981, -5, -2.5, 0.19999981, -4.6000004, 1, 0.19999981, -5.799999, 1, 0.19999981, -6.3999996, -1.2999992, 0.19999981, -5.6000004, -1.0999985, 0.19999981, -6.299999, 3.1000023, 0.19999981, 31.5, 4.200001, 0.2999997, -2.5, 4, 0.5999994, -3.1999989, 3.9000015, 0.2999997, -2.5, 4.0999985, 0.49999952, -2.8499985, 3.9500008, 0.49999952, -2.8499985)
@@ -476,11 +493,6 @@ _data = {
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_sbl7x"]
 bounce = 0.2
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_time"]
-properties/0/path = NodePath(".:current_time")
-properties/0/spawn = true
-properties/0/replication_mode = 1
-
 [sub_resource type="BoxShape3D" id="BoxShape3D_plains_zone"]
 size = Vector3(40, 20, 40)
 
@@ -489,8 +501,6 @@ size = Vector3(40, 20, 40)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_desert_zone"]
 size = Vector3(40, 20, 40)
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_panel"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_torch"]
 friction = 0.7
@@ -506,8 +516,89 @@ script = ExtResource("1_5hglh")
 environment = SubResource("Environment_aqk2v")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=752936558]
-transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+transform = Transform3D(0.8660254, 0.5, 2.1855692e-08, 0, -4.371139e-08, 0.99999994, 0.5, -0.8660254, -3.785517e-08, 0, 0, 0)
+light_color = Color(1, 0.95, 0.85, 1)
 shadow_enabled = true
+
+[node name="WeatherClouds" type="Node" parent="." unique_id=769777904 node_paths=PackedStringArray("weather", "world_environment", "night_sun")]
+script = ExtResource("weather_clouds")
+weather = NodePath("../WeatherFX")
+world_environment = NodePath("../WorldEnvironment")
+night_sun = NodePath("../DirectionalLight3D")
+
+[node name="WeatherFX" parent="." unique_id=98712302 node_paths=PackedStringArray("date_and_time_node", "sun_light", "world_environment") instance=ExtResource("56_wfx")]
+date_and_time_node = NodePath("../DateAndTime")
+sun_light = NodePath("../DirectionalLight3D")
+world_environment = NodePath("../WorldEnvironment")
+
+[node name="WeatherAudio" parent="WeatherFX" node_paths=PackedStringArray("bgs_day_clear", "bgs_day_rain", "bgs_day_storm", "bgs_night_clear", "bgs_night_rain", "bgs_night_storm")]
+bgs_day_clear = NodePath("../../BackGroundSounds/BGS_Day_Clear")
+bgs_day_rain = NodePath("../../BackGroundSounds/BGS_Day_Rain")
+bgs_day_storm = NodePath("../../BackGroundSounds/BGS_Day_Storm")
+bgs_night_clear = NodePath("../../BackGroundSounds/BGS_Night_Clear")
+bgs_night_rain = NodePath("../../BackGroundSounds/BGS_Night_Rain")
+bgs_night_storm = NodePath("../../BackGroundSounds/BGS_Night_Storm")
+
+[node name="BackGroundSounds" parent="." instance=ExtResource("56_bgs")]
+
+[node name="DateAndTime" type="Node" parent="." unique_id=98712301]
+script = ExtResource("55_dt")
+editor_time_enabled = false
+
+[node name="TimeSynchronizer" type="MultiplayerSynchronizer" parent="DateAndTime" unique_id=2142557897]
+replication_config = SubResource("SceneReplicationConfig_time")
+
+[node name="HUD" type="CanvasLayer" parent="." unique_id=98712310]
+
+[node name="BottomRight" type="Control" parent="HUD" unique_id=98712311]
+layout_mode = 3
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -441.0
+offset_top = -80.0
+offset_right = -257.0
+offset_bottom = -16.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="DateAndTimeDisplay" parent="HUD/BottomRight" unique_id=98712313 node_paths=PackedStringArray("date_and_time_node") instance=ExtResource("58_dtdisplay")]
+layout_mode = 0
+offset_top = -38.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_panel")
+date_and_time_node = NodePath("../../../DateAndTime")
+
+[node name="WeatherForecastDisplay" parent="HUD/BottomRight" unique_id=98712314 node_paths=PackedStringArray("weather_fx") instance=ExtResource("59_wfdisplay")]
+layout_mode = 0
+weather_fx = NodePath("../../../WeatherFX")
+temperature_unit = 1
+
+[node name="TemperatureGaugeDisplay" parent="HUD/BottomRight" unique_id=98712312 node_paths=PackedStringArray("weather_fx") instance=ExtResource("60_tgdisplay")]
+anchors_preset = 0
+offset_left = 100.0
+offset_top = -36.0
+offset_right = 136.0
+offset_bottom = 0.0
+weather_fx = NodePath("../../../WeatherFX")
+
+[node name="SteamPeer" type="Node" parent="." unique_id=38257544]
+script = ExtResource("mp_steam_peer")
+
+[node name="Players" type="Node3D" parent="." unique_id=839194789]
+
+[node name="Projectiles" type="Node3D" parent="." unique_id=618184642]
+
+[node name="PlayerSpawner" type="MultiplayerSpawner" parent="." unique_id=1708759852]
+_spawnable_scenes = PackedStringArray("res://scenes/world_player.tscn")
+spawn_path = NodePath("../Players")
+script = ExtResource("mp_player_spawner")
+player_scene = ExtResource("mp_world_player")
+
+[node name="ProjectileSpawner" type="MultiplayerSpawner" parent="." unique_id=629412626 groups=["ProjectileSpawner"]]
+spawn_path = NodePath("../Projectiles")
+script = ExtResource("mp_projectile_spawner")
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=1256611108]
 navigation_mesh = SubResource("NavigationMesh_senyo")
@@ -667,36 +758,21 @@ use_collision = true
 size = Vector3(1, 0.15, 0.35)
 material = SubResource("StandardMaterial3D_dwbse")
 
-[node name="SteamPeer" type="Node" parent="." unique_id=38257544]
-script = ExtResource("mp_steam_peer")
-
-[node name="Players" type="Node3D" parent="." unique_id=839194789]
-
-[node name="Projectiles" type="Node3D" parent="." unique_id=618184642]
-
-[node name="PlayerSpawner" type="MultiplayerSpawner" parent="." unique_id=1708759852]
-_spawnable_scenes = PackedStringArray("res://scenes/world_player.tscn")
-spawn_path = NodePath("../Players")
-script = ExtResource("mp_player_spawner")
-player_scene = ExtResource("mp_world_player")
-
-[node name="ProjectileSpawner" type="MultiplayerSpawner" parent="." unique_id=629412626 groups=["ProjectileSpawner"]]
-spawn_path = NodePath("../Projectiles")
-script = ExtResource("mp_projectile_spawner")
-
 [node name="LittleBuddy" parent="." unique_id=174060025 instance=ExtResource("9_5hl1e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 2)
 
 [node name="JustCreate3D" type="Node3D" parent="." unique_id=647333121]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 5, 0, 0)
 
-[node name="Weapon_02" parent="JustCreate3D" unique_id=1867527010 node_paths=PackedStringArray("muzzle", "fire_timer", "laser_sight") instance=ExtResource("10_66tox")]
+[node name="Weapon_02" parent="JustCreate3D" unique_id=1867527010 node_paths=PackedStringArray("muzzle", "fire_timer", "laser_sight", "fire_sfx", "reload_sfx") instance=ExtResource("10_66tox")]
 transform = Transform3D(-8.742278e-08, -4.3711395e-08, 1, 1, -4.371139e-08, 8.742278e-08, 4.3711385e-08, 1, 4.3711395e-08, 0.5, 0.322, 0.5)
 script = ExtResource("r_riflegd")
 projectile_scene = ExtResource("15_bullet")
 muzzle = NodePath("Muzzle")
 fire_timer = NodePath("FireTimer")
 laser_sight = NodePath("LaserSight")
+fire_sfx = NodePath("FireAudio")
+reload_sfx = NodePath("ReloadAudio")
 bone_attachment_bone_name = "RightHand"
 can_attack = true
 can_shoot = true
@@ -707,12 +783,36 @@ projectile_speed = 120.0
 accuracy = ExtResource("accuracy_rifle")
 position_offset = Vector3(0, 0.09, 0.025)
 rotation_offset_degrees = Vector3(0, 180, 80)
+equip_sfx = ExtResource("sfx_gun_draw")
+stow_sfx = ExtResource("sfx_gun_holster")
 
 [node name="Muzzle" type="Marker3D" parent="JustCreate3D/Weapon_02" unique_id=281785659]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0.66, 0.04, 0)
 
+[node name="MuzzleFlash" type="Node3D" parent="JustCreate3D/Weapon_02/Muzzle" unique_id=1372548437 node_paths=PackedStringArray("vfx", "animation_player")]
+transform = Transform3D(0, 0, 0.9, 0, 0.9, 0, -0.9, 0, 0, 0, 0, 0)
+script = ExtResource("muzzle_flash_gd")
+vfx = NodePath("Flash")
+animation_player = NodePath("Flash/AnimationPlayer")
+
+[node name="Flash" parent="JustCreate3D/Weapon_02/Muzzle/MuzzleFlash" unique_id=736381498 instance=ExtResource("flash_rifle")]
+visible = false
+autoplay = false
+
+[node name="Light" parent="JustCreate3D/Weapon_02/Muzzle/MuzzleFlash/Flash" index="4"]
+light_energy = 3.0
+base_energy = 3.0
+
 [node name="FireTimer" type="Timer" parent="JustCreate3D/Weapon_02" unique_id=1718678155]
 one_shot = true
+
+[node name="FireAudio" type="AudioStreamPlayer3D" parent="JustCreate3D/Weapon_02"]
+stream = ExtResource("sfx_rifle_shot")
+bus = &"SFX"
+
+[node name="ReloadAudio" type="AudioStreamPlayer3D" parent="JustCreate3D/Weapon_02"]
+stream = ExtResource("sfx_rifle_reload")
+bus = &"SFX"
 
 [node name="LaserSight" parent="JustCreate3D/Weapon_02" unique_id=652437950 instance=ExtResource("15_laser")]
 visible = false
@@ -722,13 +822,15 @@ visible = false
 [node name="CollisionShape3D" type="CollisionShape3D" parent="JustCreate3D/Weapon_02/PlayerDetection" unique_id=1160603387]
 shape = SubResource("SphereShape3D_pickup")
 
-[node name="Weapon_01" parent="JustCreate3D" unique_id=1674455333 node_paths=PackedStringArray("muzzle", "fire_timer", "laser_sight") instance=ExtResource("14_myjip")]
+[node name="Weapon_01" parent="JustCreate3D" unique_id=1674455333 node_paths=PackedStringArray("muzzle", "fire_timer", "laser_sight", "fire_sfx", "reload_sfx") instance=ExtResource("14_myjip")]
 transform = Transform3D(1.9106855e-15, 4.371139e-08, 1, 1, -4.371139e-08, 0, 4.371139e-08, 1, -4.371139e-08, 0.5, 0.5, -0.5)
 script = ExtResource("15_firearm")
 projectile_scene = ExtResource("15_bullet")
 muzzle = NodePath("Muzzle")
 fire_timer = NodePath("FireTimer")
 laser_sight = NodePath("LaserSight")
+fire_sfx = NodePath("FireAudio")
+reload_sfx = NodePath("ReloadAudio")
 bone_attachment_bone_name = "RightHand"
 can_attack = true
 can_shoot = true
@@ -739,12 +841,36 @@ projectile_speed = 80.0
 accuracy = ExtResource("accuracy_pistol")
 position_offset = Vector3(0, 0.09, 0.025)
 rotation_offset_degrees = Vector3(-10, 180, 80)
+equip_sfx = ExtResource("sfx_gun_draw")
+stow_sfx = ExtResource("sfx_gun_holster")
 
 [node name="Muzzle" type="Marker3D" parent="JustCreate3D/Weapon_01" unique_id=271581943]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0.19, 0.08, 0)
 
+[node name="MuzzleFlash" type="Node3D" parent="JustCreate3D/Weapon_01/Muzzle" unique_id=128777478 node_paths=PackedStringArray("vfx", "animation_player")]
+transform = Transform3D(0, 0, 0.5, 0, 0.5, 0, -0.5, 0, 0, 0, 0, 0)
+script = ExtResource("muzzle_flash_gd")
+vfx = NodePath("Flash")
+animation_player = NodePath("Flash/AnimationPlayer")
+
+[node name="Flash" parent="JustCreate3D/Weapon_01/Muzzle/MuzzleFlash" unique_id=319420775 instance=ExtResource("flash_pistol")]
+visible = false
+autoplay = false
+
+[node name="Light" parent="JustCreate3D/Weapon_01/Muzzle/MuzzleFlash/Flash" index="3"]
+light_energy = 1.0
+base_energy = 1.0
+
 [node name="FireTimer" type="Timer" parent="JustCreate3D/Weapon_01" unique_id=41256008]
 one_shot = true
+
+[node name="FireAudio" type="AudioStreamPlayer3D" parent="JustCreate3D/Weapon_01"]
+stream = ExtResource("sfx_pistol_shot")
+bus = &"SFX"
+
+[node name="ReloadAudio" type="AudioStreamPlayer3D" parent="JustCreate3D/Weapon_01"]
+stream = ExtResource("sfx_pistol_reload")
+bus = &"SFX"
 
 [node name="LaserSight" parent="JustCreate3D/Weapon_01" unique_id=1387924823 instance=ExtResource("15_laser")]
 visible = false
@@ -778,6 +904,15 @@ shape = SubResource("SphereShape3D_pickup")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.45)
 shape = SubResource("BoxShape3D_hbax1")
 
+[node name="WeaponBody" type="AnimatableBody3D" parent="N_Hance_Studio_1/SK_Axe_1H_Newbie_01" unique_id=1787608667]
+collision_layer = 512
+collision_mask = 1024
+sync_to_physics = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Axe_1H_Newbie_01/WeaponBody" unique_id=2101849400]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.45)
+shape = SubResource("BoxShape3D_hbax1")
+
 [node name="SK_Axe_2HL_Newbie_01" parent="N_Hance_Studio_1" unique_id=1297848573 instance=ExtResource("19_r5yoc")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 2.5)
 script = ExtResource("15_5nedk")
@@ -801,6 +936,15 @@ shape = SubResource("SphereShape3D_pickup")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.75)
 shape = SubResource("BoxShape3D_hbax2")
 
+[node name="WeaponBody" type="AnimatableBody3D" parent="N_Hance_Studio_1/SK_Axe_2HL_Newbie_01" unique_id=921295939]
+collision_layer = 512
+collision_mask = 1024
+sync_to_physics = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Axe_2HL_Newbie_01/WeaponBody" unique_id=1466703579]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.75)
+shape = SubResource("BoxShape3D_hbax2")
+
 [node name="SK_Bow_Newbie_01" parent="N_Hance_Studio_1" unique_id=1222899704 instance=ExtResource("21_ntuqo")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 1.5)
 script = ExtResource("r_bowgd")
@@ -812,6 +956,8 @@ equipment_type = 2
 icon = ExtResource("r_bowarrowsvg")
 is_exclusive = true
 accuracy = ExtResource("accuracy_bow")
+equip_sfx = ExtResource("bow_take_out")
+stow_sfx = ExtResource("bow_put_away")
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(180, 90, 15)
 
@@ -821,7 +967,7 @@ rotation_offset_degrees = Vector3(180, 90, 15)
 shape = SubResource("SphereShape3D_pickup")
 
 [node name="Arrow" type="RigidBody3D" parent="N_Hance_Studio_1/SK_Bow_Newbie_01" unique_id=1811199221]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.099999964)
+transform = Transform3D(1, 0, 0, 0, -1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 0.39999998, 0.099999964)
 visible = false
 script = ExtResource("r_arrowgd")
 
@@ -941,6 +1087,15 @@ shape = SubResource("SphereShape3D_pickup")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00039672852, -0.009277344, 0.65)
 shape = SubResource("BoxShape3D_cth4h")
 
+[node name="WeaponBody" type="AnimatableBody3D" parent="N_Hance_Studio_1/SK_Sword_1H_Newbie_01" unique_id=1884213546]
+collision_layer = 512
+collision_mask = 1024
+sync_to_physics = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Sword_1H_Newbie_01/WeaponBody" unique_id=334430718]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00039672852, -0.009277344, 0.65)
+shape = SubResource("BoxShape3D_cth4h")
+
 [node name="SK_Sword_2H_Newbie_01" parent="N_Hance_Studio_1" unique_id=674997095 instance=ExtResource("37_gny1c")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0.5, -3.5)
 script = ExtResource("15_5nedk")
@@ -961,6 +1116,15 @@ shape = SubResource("SphereShape3D_pickup")
 [node name="Hitbox" type="Area3D" parent="N_Hance_Studio_1/SK_Sword_2H_Newbie_01" unique_id=1218326031]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Sword_2H_Newbie_01/Hitbox" unique_id=561940658]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.85)
+shape = SubResource("BoxShape3D_hbsw2")
+
+[node name="WeaponBody" type="AnimatableBody3D" parent="N_Hance_Studio_1/SK_Sword_2H_Newbie_01" unique_id=25260689]
+collision_layer = 512
+collision_mask = 1024
+sync_to_physics = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="N_Hance_Studio_1/SK_Sword_2H_Newbie_01/WeaponBody" unique_id=294770556]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.85)
 shape = SubResource("BoxShape3D_hbsw2")
 
@@ -1069,7 +1233,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.3, 0)
 script = ExtResource("buoyancy_script")
 water_mesh = NodePath("../Water")
 weather = NodePath("../../WeatherFX")
-fish = Array[ExtResource("fish_script")]([ExtResource("fish_carp"), ExtResource("fish_perch"), ExtResource("fish_catfish"), ExtResource("fish_trout"), ExtResource("fish_koi"), ExtResource("fish_boot")])
+fish = Array[ExtResource("fish_script")]([ExtResource("fish_carp"), ExtResource("fish_perch"), ExtResource("fish_catfish"), ExtResource("fish_trout"), ExtResource("fish_koi"), ExtResource("fish_boot"), ExtResource("fish_crate")])
 clock = NodePath("../../DateAndTime")
 shadows = NodePath("../FishShadows")
 biome_zone = NodePath("../../Zones/PlainsZone")
@@ -1186,18 +1350,6 @@ transform = Transform3D(1.1920929e-07, 0, -1, 0, 1, 0, 1, 0, 1.1920929e-07, 0, 0
 physics_material_override = SubResource("PhysicsMaterial_sbl7x")
 center_of_mass = Vector3(0, -0.05, -0.1)
 
-[node name="DateAndTime" type="Node" parent="." unique_id=98712301]
-script = ExtResource("55_dt")
-current_time = 16.04527017147361
-day = 8
-
-[node name="TimeSynchronizer" type="MultiplayerSynchronizer" parent="DateAndTime" unique_id=2142557897]
-replication_config = SubResource("SceneReplicationConfig_time")
-
-[node name="WeatherFX" parent="." unique_id=98712302 node_paths=PackedStringArray("date_and_time_node") instance=ExtResource("56_wfx")]
-date_and_time_node = NodePath("../DateAndTime")
-manual_time_of_day = 16.04527017147361
-
 [node name="Zones" type="Node3D" parent="." unique_id=98712303]
 
 [node name="PlainsZone" type="Area3D" parent="Zones" unique_id=98712304]
@@ -1223,41 +1375,6 @@ biome = 5
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Zones/DesertZone" unique_id=98712309]
 shape = SubResource("BoxShape3D_desert_zone")
 
-[node name="HUD" type="CanvasLayer" parent="." unique_id=98712310]
-
-[node name="BottomRight" type="Control" parent="HUD" unique_id=98712311]
-layout_mode = 3
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -441.0
-offset_top = -80.0
-offset_right = -257.0
-offset_bottom = -16.0
-grow_horizontal = 0
-grow_vertical = 0
-
-[node name="DateAndTimeDisplay" parent="HUD/BottomRight" unique_id=98712313 node_paths=PackedStringArray("date_and_time_node") instance=ExtResource("58_dtdisplay")]
-layout_mode = 0
-offset_top = -38.0
-theme_override_styles/panel = SubResource("StyleBoxEmpty_panel")
-date_and_time_node = NodePath("../../../DateAndTime")
-
-[node name="WeatherForecastDisplay" parent="HUD/BottomRight" unique_id=98712314 node_paths=PackedStringArray("weather_fx") instance=ExtResource("59_wfdisplay")]
-layout_mode = 0
-weather_fx = NodePath("../../../WeatherFX")
-temperature_unit = 1
-
-[node name="TemperatureGaugeDisplay" parent="HUD/BottomRight" unique_id=98712312 node_paths=PackedStringArray("weather_fx") instance=ExtResource("60_tgdisplay")]
-anchors_preset = 0
-offset_left = 100.0
-offset_top = -36.0
-offset_right = 136.0
-offset_bottom = 0.0
-weather_fx = NodePath("../../../WeatherFX")
-
 [node name="Torch" parent="." unique_id=987654321 instance=ExtResource("63_torch")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 1.9000001, -7)
 physics_material_override = SubResource("PhysicsMaterial_torch")
@@ -1271,12 +1388,16 @@ shape = SubResource("BoxShape3D_killzone")
 [node name="Horse" parent="." unique_id=780231883 instance=ExtResource("87_xgy6y")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 8)
 
-[node name="RetroComputer" parent="." instance=ExtResource("88_retro")]
+[node name="RetroComputer" parent="." unique_id=1535839674 instance=ExtResource("88_retro")]
 transform = Transform3D(0.9028605, 0, -0.4299335, 0, 1, 0, 0.4299335, 0, 0.9028605, 2, 0, -4.2)
 hidden_while_in_use = Array[NodePath]([NodePath("../HUD")])
 
 [connection signal="local_player_spawned" from="PlayerSpawner" to="." method="_on_local_player_spawned"]
+[connection signal="fired" from="JustCreate3D/Weapon_02" to="JustCreate3D/Weapon_02/Muzzle/MuzzleFlash" method="flash"]
+[connection signal="animation_finished" from="JustCreate3D/Weapon_02/Muzzle/MuzzleFlash/Flash/AnimationPlayer" to="JustCreate3D/Weapon_02/Muzzle/MuzzleFlash" method="_on_animation_finished"]
 [connection signal="body_entered" from="JustCreate3D/Weapon_02/PlayerDetection" to="JustCreate3D/Weapon_02" method="_on_player_detection_body_entered"]
+[connection signal="fired" from="JustCreate3D/Weapon_01" to="JustCreate3D/Weapon_01/Muzzle/MuzzleFlash" method="flash"]
+[connection signal="animation_finished" from="JustCreate3D/Weapon_01/Muzzle/MuzzleFlash/Flash/AnimationPlayer" to="JustCreate3D/Weapon_01/Muzzle/MuzzleFlash" method="_on_animation_finished"]
 [connection signal="body_entered" from="JustCreate3D/Weapon_01/PlayerDetection" to="JustCreate3D/Weapon_01" method="_on_player_detection_body_entered"]
 [connection signal="body_entered" from="N_Hance_Studio_1/SK_Axe_1H_Newbie_01/PlayerDetection" to="N_Hance_Studio_1/SK_Axe_1H_Newbie_01" method="_on_player_detection_body_entered"]
 [connection signal="body_entered" from="N_Hance_Studio_1/SK_Axe_2HL_Newbie_01/PlayerDetection" to="N_Hance_Studio_1/SK_Axe_2HL_Newbie_01" method="_on_player_detection_body_entered"]
@@ -1298,3 +1419,6 @@ hidden_while_in_use = Array[NodePath]([NodePath("../HUD")])
 [connection signal="body_exited" from="Pool/WaterArea3D" to="Pool/WaterRipples" method="_on_body_exited"]
 [connection signal="body_exited" from="Pool/WaterArea3D" to="." method="_on_water_area_3d_body_exited" binds= [NodePath("Pool/WaterArea3D")]]
 [connection signal="body_entered" from="KillZone" to="." method="_on_kill_zone_body_entered"]
+
+[editable path="JustCreate3D/Weapon_02/Muzzle/MuzzleFlash/Flash"]
+[editable path="JustCreate3D/Weapon_01/Muzzle/MuzzleFlash/Flash"]

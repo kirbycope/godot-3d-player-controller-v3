@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="Item" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://addons/garp/scripts/item.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://addons/garp/assets/icons/ore.svg" id="2_icon"]
+[ext_resource type="PackedScene" path="res://scenes/rock.tscn" id="3_model"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"rock"
+display_name = "Rock"
+description = "A fist-sized stone. Throw it: it stings whatever it lands on and lies where it fell."
+icon = ExtResource("2_icon")
+icon_color = Color(0.75, 0.75, 0.75, 1)
+category = 1
+max_stack = 99
+consumable = false
+model_scene = ExtResource("3_model")
+throwable = true
+throw_damage = 5.0

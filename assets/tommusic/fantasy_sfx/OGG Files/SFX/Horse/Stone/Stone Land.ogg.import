@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://b36eu68fpusev"
+path="res://.godot/imported/Stone Land.ogg-29f510a23a44d511678a736d014a696e.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/tommusic/fantasy_sfx/OGG Files/SFX/Horse/Stone/Stone Land.ogg"
+dest_files=["res://.godot/imported/Stone Land.ogg-29f510a23a44d511678a736d014a696e.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

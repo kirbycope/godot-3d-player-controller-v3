@@ -4,6 +4,8 @@
 [ext_resource type="PackedScene" path="res://assets/justcreate3d/weapons_lite/Weapon_02.fbx" id="2_weapon"]
 [ext_resource type="Resource" path="res://addons/3d_player_controller/resources/accuracy/rifle.tres" id="4_accuracy"]
 [ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/bullet.tscn" id="3_projectile"]
+[ext_resource type="Script" path="res://addons/3d_player_controller/scripts/muzzle_flash.gd" id="5_flash_gd"]
+[ext_resource type="PackedScene" path="res://assets/BinbunVFX/muzzle_flash/effects/muzzle_flash/muzzle_flash_01.tscn" id="6_flash"]
 
 [node name="EnemyRifleman" instance=ExtResource("1_base")]
 attack_animation = "RifleAttack"
@@ -22,3 +24,21 @@ rotation_degrees = Vector3(0, 180, 80)
 
 [node name="Boss" parent="." index="0"]
 boss_name = "Rifleman"
+
+[node name="MuzzleFlash" type="Node3D" parent="Muzzle" node_paths=PackedStringArray("vfx", "animation_player")]
+transform = Transform3D(0, 0, 0.9, 0, 0.9, 0, -0.9, 0, 0, 0, 0, 0)
+script = ExtResource("5_flash_gd")
+vfx = NodePath("Flash")
+animation_player = NodePath("Flash/AnimationPlayer")
+
+[node name="Flash" parent="Muzzle/MuzzleFlash" instance=ExtResource("6_flash")]
+visible = false
+autoplay = false
+
+[node name="Light" parent="Muzzle/MuzzleFlash/Flash" index="4"]
+base_energy = 3.0
+
+[connection signal="fired" from="." to="Muzzle/MuzzleFlash" method="flash"]
+[connection signal="animation_finished" from="Muzzle/MuzzleFlash/Flash/AnimationPlayer" to="Muzzle/MuzzleFlash" method="_on_animation_finished"]
+
+[editable path="Muzzle/MuzzleFlash/Flash"]

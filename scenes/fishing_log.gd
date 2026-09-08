@@ -31,11 +31,15 @@ func _watch_inventory(player: Player) -> void:
 		player.inventory.item_dropped.connect(func(item: Item, count: int, _pickup: Node) -> void: _on_item_gone(item, count))
 
 
-## Logs a landed fish; true when it is the biggest of its kind so far. Junk is not logged.
+## Logs a landed fish; true when it is the biggest of its kind so far. Junk is logged as found (so the index shows
+## it) but never as a record, and its lengths are not kept.
 func record_catch(fish: Fish, length_cm: float) -> bool:
-	if fish.is_junk:
-		return false
 	var id: StringName = fish.get_id()
+	if fish.is_junk:
+		if not records.has(id):
+			records[id] = 0.0
+			_changed()
+		return false
 	var is_record: bool = length_cm > records.get(id, 0.0)
 	if is_record:
 		records[id] = length_cm
