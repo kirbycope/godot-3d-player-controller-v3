@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scenes/fish.gd" id="1_fish"]
 [ext_resource type="Texture2D" path="res://resources/fish/fish.svg" id="2_icon"]
-[ext_resource type="Script" path="res://addons/garp/scripts/item.gd" id="4_item"]
+[ext_resource type="Script" path="res://addons/3d_player_controller/garp/scripts/item.gd" id="4_item"]
 [ext_resource type="Resource" path="res://resources/lures/worm.tres" id="3_lure"]
 [ext_resource type="PackedScene" path="res://scenes/fish_models/catfish.tscn" id="9_model"]
 

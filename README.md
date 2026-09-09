@@ -46,7 +46,7 @@ The project renders with D3D12 on Windows and sets `rendering/rendering_device/d
 Run the full GUT suite headless (all six test directories):
 
 ```powershell
-& 'C:\Godot\godot.exe' --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests/unit,res://tests/integration,res://addons/3d_player_controller/tests,res://addons/tcps/tests,res://addons/gta/tests,res://addons/garp/tests,res://addons/garp/tests/integration,res://addons/weather_fx/tests,res://addons/date_and_time/tests,res://addons/radi_ot/tests,res://addons/godot_doom_gdextension/tests -gexit
+& 'C:\Godot\godot.exe' --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests/unit,res://tests/integration,res://addons/3d_player_controller/tests,res://addons/tcps/tests,res://addons/gta/tests,res://addons/3d_player_controller/garp/tests,res://addons/3d_player_controller/garp/tests/integration,res://addons/weather_fx/tests,res://addons/date_and_time/tests,res://addons/radi_ot/tests,res://addons/godot_doom_gdextension/tests -gexit
 ```
 
 ---
