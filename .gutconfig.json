@@ -4,6 +4,7 @@
 	"configured_dirs": [
 		"res://addons/3d_player_controller/tests",
 		"res://addons/3d_player_controller/garp/tests",
+		"res://addons/3d_player_controller/garp/tests/integration",
 		"res://addons/gta/tests",
 		"res://addons/tcps/tests",
 		"res://addons/date_and_time/tests",
@@ -16,6 +17,7 @@
 	"dirs": [
 		"res://addons/3d_player_controller/tests",
 		"res://addons/3d_player_controller/garp/tests",
+		"res://addons/3d_player_controller/garp/tests/integration",
 		"res://addons/gta/tests",
 		"res://addons/tcps/tests",
 		"res://addons/date_and_time/tests",
