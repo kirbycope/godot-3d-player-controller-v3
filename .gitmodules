@@ -16,3 +16,6 @@
 [submodule "addons/tcps"]
 	path = addons/tcps
 	url = https://github.com/kirbycope/tcps-addon.git
+[submodule "addons/godot_doom_gdextension"]
+	path = addons/godot_doom_gdextension
+	url = https://github.com/kirbycope/godot-doom-gdextension-addon.git
