@@ -1,3 +1,9 @@
 [submodule "addons/date_and_time"]
 	path = addons/date_and_time
 	url = https://github.com/kirbycope/date-and-time-addon.git
+[submodule "addons/weather_fx"]
+	path = addons/weather_fx
+	url = https://github.com/kirbycope/weather-fx-addon.git
+[submodule "addons/radi_ot"]
+	path = addons/radi_ot
+	url = https://github.com/kirbycope/radi-ot-addon.git
