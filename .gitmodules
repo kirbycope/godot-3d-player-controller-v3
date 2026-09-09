@@ -1,21 +1,21 @@
 [submodule "addons/date_and_time"]
 	path = addons/date_and_time
-	url = https://github.com/kirbycope/date-and-time-addon.git
+	url = https://github.com/kirbycope/date-and-time.git
 [submodule "addons/weather_fx"]
 	path = addons/weather_fx
-	url = https://github.com/kirbycope/weather-fx-addon.git
+	url = https://github.com/kirbycope/weather-fx.git
 [submodule "addons/radi_ot"]
 	path = addons/radi_ot
-	url = https://github.com/kirbycope/radi-ot-addon.git
+	url = https://github.com/kirbycope/radi-ot.git
 [submodule "addons/3d_player_controller"]
 	path = addons/3d_player_controller
 	url = https://github.com/kirbycope/godot-3d-player-controller-addon.git
 [submodule "addons/gta"]
 	path = addons/gta
-	url = https://github.com/kirbycope/gta-addon.git
+	url = https://github.com/kirbycope/gta.git
 [submodule "addons/tcps"]
 	path = addons/tcps
-	url = https://github.com/kirbycope/tcps-addon.git
+	url = https://github.com/kirbycope/tcps.git
 [submodule "addons/godot_doom_gdextension"]
 	path = addons/godot_doom_gdextension
-	url = https://github.com/kirbycope/godot-doom-gdextension-addon.git
+	url = https://github.com/kirbycope/godot-doom-gdextension.git
