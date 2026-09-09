@@ -23,7 +23,7 @@ driver/enable_input=true
 
 [autoload]
 
-Steamworks="*res://addons/godotsteamkit/autoloads/steamworks.gd"
+Steamworks="*res://addons/3d_player_controller/scripts/steamworks.gd"
 
 [debug]
 
