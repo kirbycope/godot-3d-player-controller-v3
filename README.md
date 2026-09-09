@@ -39,7 +39,7 @@ Click [here](https://timothycope.com/godot-3d-player-controller-v3/) to play!
 
 ## Running and testing
 
-The addons written here are git submodules: `3d_player_controller`, `date_and_time`, `godot_doom_gdextension`, `gta`, `radi_ot` and `weather_fx`. Clone with `git clone --recurse-submodules`, or run `git submodule update --init --recursive` in an existing clone, or those folders check out empty and nothing runs. The third-party addons (`gut`, `midi`, `godotsteam`, `godotsteamkit`, `GPUTrail-main`) are vendored in directly.
+The addons written here are git submodules: `3d_player_controller`, `date_and_time`, `godot_doom_gdextension`, `gta`, `radi_ot` and `weather_fx`. Clone with `git clone --recurse-submodules`, or run `git submodule update --init --recursive` in an existing clone, or those folders check out empty and nothing runs. The third-party addons (`gut`, `midi`, `godotsteam`, `godotsteamkit`, `GPUTrail-main`) are vendored in directly; [Vendored addons](#vendored-addons) records each one's author, version, licence and upstream, and why they cannot be submodules.
 
 Open the project in Godot 4.8+ and run `scenes/main.tscn`, or run the world directly with `scenes/world.tscn`.
 
@@ -162,6 +162,31 @@ The first automated release starts from `v3.0.0` if no previous `v*` tag exists.
 
 ## Credits & Asset Attributions
 
+### Vendored addons
+
+The addons written here are submodules (see [Running and testing](#running-and-testing)). These five are other people's work, copied into `addons/` rather than referenced.
+
+Four of them cannot be submodules. A git submodule mounts a whole repository and never a subdirectory, and none of these four publish the addon at a repository root: `gut` sits at `addons/gut/` inside a Godot project and `midi` at `addons/midi/`, so pointing a submodule at `addons/gut` would give `addons/gut/addons/gut/`, while the two GodotSteam pieces ship through releases and the asset library rather than from a repository tree at all. Forking each into a repository with the addon hoisted to the root would mean republishing someone else's code, so the copies stay and are recorded here instead.
+
+`GPUTrail-main` is the exception: its repository root is the addon, so it could be a submodule. It is a copy of a downloaded zip (hence the `-main` suffix) and stays one deliberately, because it serves the Le Lu effects in this project rather than any addon developed here.
+
+| Addon | What it is | Author | Version | License (as recorded in folder) | Upstream |
+| --- | --- | --- | --- | --- | --- |
+| `addons/gut` | Godot Unit Test, the test runner the whole suite uses | Butch Wesley | 9.7.1 | MIT (`LICENSE.md`) | https://github.com/bitwes/Gut |
+| `addons/midi` | Godot MIDI Player, the SoundFont synthesiser DOOM's music plays through | arlez80 (Yui Kinomoto) | 4.5.0 | MIT (`LICENSE.txt`) | https://bitbucket.org/arlez80/godot-midi-player-g4 |
+| `addons/godotsteam` | GodotSteam GDExtension Updater; the Steamworks binding itself is the GDExtension it updates | GP Garcia, Chris Ridenour and contributors | 4.21 | MIT (`license.md`) | https://godotsteam.com |
+| `addons/godotsteamkit` | GodotSteamKit: leaderboard, chat, avatar and lobby scenes on top of GodotSteam | GP Garcia, GodotSteam | Kit 1.1 | **GodotSteam Software License v1** (`license.md`), not an open licence - see below | https://godotsteam.com |
+| `addons/GPUTrail-main` | GPUTrail, the trail renderer the Le Lu effects use | celyk | 0.1 | MIT (`LICENSE`) | https://github.com/celyk/GPUTrail |
+
+> [!WARNING]
+> `addons/godotsteamkit` is not licensed like the others. Its licence says "You may not repackage,
+> distribute, and/or sell the GodotSteamKit and its contents, in whole or in part, anywhere", and this
+> repository is public with all 89 of its files committed. It also requires that its copyright and
+> permissions notice travel with the project, which `license.md` satisfies. Either take the Kit out of
+> the public history and install it per-machine, or make this repository private.
+
+### Assets
+
 Third-party assets under `assets/`, with the license as recorded in each folder's license/readme file. "not recorded" means the folder has no license file; fill it in from the source page.
 
 | Folder | Asset | Author | License (as recorded in folder) | Source |
@@ -187,7 +212,6 @@ Third-party assets under `assets/`, with the license as recorded in each folder'
 | `assets/kenney_nl` | Prototype Textures, Road Textures | Kenney | CC0 (`License.txt`) | https://kenney.nl |
 | `addons/godot_doom_gdextension/thirdparty` | PureDOOM single-header DOOM engine | Daivuk (David St-Louis), from the id Software source | GPL 2.0 (`LICENSE` in the folder) | https://github.com/Daivuk/PureDOOM |
 | `addons/godot_doom_gdextension/assets` | DOOM shareware `doom1.wad` | id Software | Shareware, freely redistributable | https://github.com/Daivuk/PureDOOM |
-| `addons/midi` | Godot MIDI Player (SoundFont synthesiser) | arlez80 (Yui Kinomoto) | MIT (`LICENSE.txt`) | https://bitbucket.org/arlez80/godot-midi-player-g4 |
 | `addons/godot_doom_gdextension/assets` | `gzdoom.sf2`, GZDoom's default General MIDI SoundFont (SC-55 preset) | ZDoom team | not recorded - fill in (ships with GZDoom, no license file of its own) | https://github.com/ZDoom/gzdoom/blob/master/soundfont/gzdoom.sf2 |
 | `addons/gta/assets/libertycity/2024_Honda_CRV` | 2024 Honda CR-V | not recorded - fill in | not recorded - fill in | https://libertycity.net |
 | `assets/loop_box` | Ray mesh and line shader VFX | not recorded - fill in | not recorded - fill in | not recorded - fill in |
