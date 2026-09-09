@@ -65,7 +65,7 @@ func _make_water() -> Buoyancy:
 
 
 func test_fish_are_inventory_items() -> void:
-	assert_true(CARP is Item, "A Fish is a GARP Item")
+	assert_true(CARP is Item, "A Fish is an inventory Item")
 	assert_eq(CARP.category, Item.Category.FOOD, "Fish go on the Food tab")
 	assert_true(CARP.consumable)
 	assert_eq(BOOT.category, Item.Category.MATERIALS, "Junk is a material, as its resource says")

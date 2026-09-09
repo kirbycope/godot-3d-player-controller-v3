@@ -7,7 +7,7 @@ extends Equipment
 ## Timing runs on the Timer nodes wired in the scene; the fish table and shadows come from the [Buoyancy]
 ## water the float lands in, filtered by the [member lure] on the line: a [Lure] used from the inventory goes on
 ## the line, the bite eats it and the next one in the bag takes its place, and a bare hook mostly pulls up junk
-## (see [member Fish.bare_hook_chance]). A landed fish is a GARP [Item], so it goes into the Player's inventory. The float goes
+## (see [member Fish.bare_hook_chance]). A landed fish is an inventory [Item], so it goes into the Player's inventory. The float goes
 ## through the ProjectileSpawner when the scene has one, so every peer sees the float, its line, the dips and
 ## the catch; the rod itself only runs on its owner, and so does the bait: what is on the line, the pick it filters
 ## and its consumption are the owner's alone, since nothing on a peer's copy shows the bait.

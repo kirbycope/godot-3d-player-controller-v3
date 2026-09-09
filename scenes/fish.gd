@@ -1,6 +1,6 @@
 class_name Fish
 extends Item
-## One catchable species (or piece of junk) in a water's fish table; see [member Buoyancy.fish]. A Fish is a GARP
+## One catchable species (or piece of junk) in a water's fish table; see [member Buoyancy.fish]. A Fish is an inventory
 ## [Item], so a catch goes into the Player's inventory: its name, icon, description, tab and stack size are the
 ## Item's, and the rest says when it bites, on what, how big it runs and what it looks like when landed.
 
