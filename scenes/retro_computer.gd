@@ -48,12 +48,12 @@ func display_menu(_player: Player) -> void:
 	if is_in_use:
 		return
 	player = _player
-	action_prompt.show_for(player, "Use")
+	action_prompt.show_for(player.controls, "Use")
 
 
 ## Called by [Camera] when the player looks away from the computer.
 func hide_menu() -> void:
-	action_prompt.hide_for(player)
+	action_prompt.hide_for(player.controls)
 
 
 ## Called by [Camera] when the player presses "action" while looking at the computer.
@@ -62,7 +62,7 @@ func equip(_player: Player) -> void:
 		return
 	player = _player
 	is_in_use = true
-	action_prompt.hide_for(player)
+	action_prompt.hide_for(player.controls)
 	player.is_paused = true
 	player.velocity = Vector3.ZERO
 	player.rotate_model_to_direction(global_position - player.global_position)

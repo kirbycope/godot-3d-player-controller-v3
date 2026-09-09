@@ -4,7 +4,7 @@ extends GutTest
 ## movement against walls, shooting, biting and restarting.
 
 const DOOM_SCENE = preload("res://scenes/doom.tscn")
-const CONTROLS_SCENE = preload("res://addons/3d_player_controller/scenes/controls.tscn")
+const CONTROLS_SCENE = preload("res://addons/3d_player_controller/scenes/player_controls.tscn")
 
 var doom: Doom
 

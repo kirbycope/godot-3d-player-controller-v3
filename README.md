@@ -39,7 +39,7 @@ Click [here](https://timothycope.com/godot-3d-player-controller-v3/) to play!
 
 ## Running and testing
 
-The addons written here are git submodules: `3d_player_controller`, `date_and_time`, `godot_doom_gdextension`, `gta`, `radi_ot` and `weather_fx`. Clone with `git clone --recurse-submodules`, or run `git submodule update --init --recursive` in an existing clone, or those folders check out empty and nothing runs. The third-party addons (`gut`, `midi`, `godotsteam`, `GPUTrail-main`) are vendored in directly; [Vendored addons](#vendored-addons) records each one's author, version, licence and upstream, and why they cannot be submodules.
+The addons written here are git submodules: `3d_player_controller`, `controls`, `date_and_time`, `godot_doom_gdextension`, `gta`, `radi_ot`, `tcps` and `weather_fx`. Clone with `git clone --recurse-submodules`, or run `git submodule update --init --recursive` in an existing clone, or those folders check out empty and nothing runs. The third-party addons (`gut`, `midi`, `godotsteam`, `GPUTrail-main`) are vendored in directly; [Vendored addons](#vendored-addons) records each one's author, version, licence and upstream, and why they cannot be submodules.
 
 Open the project in Godot 4.8+ and run `scenes/main.tscn`, or run the world directly with `scenes/world.tscn`.
 

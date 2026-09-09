@@ -5,7 +5,7 @@ extends Control
 ## back without reaching the game). The [Doom] inside has [member Doom.use_engine] off, so it is the raycaster even
 ## where the PureDoom library is built.
 
-const CONTROLS_SCENE: PackedScene = preload("res://addons/3d_player_controller/scenes/controls.tscn")
+const CONTROLS_SCENE: PackedScene = preload("res://addons/3d_player_controller/scenes/player_controls.tscn")
 
 @onready var viewport: SubViewport = $ScreenViewport
 @onready var doom: Doom = $ScreenViewport/Doom

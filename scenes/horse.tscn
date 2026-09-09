@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scenes/horse.gd" id="1_horse"]
 [ext_resource type="PackedScene" path="res://assets/n_hance_studio/horse/Horse.fbx" id="2_model"]
-[ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/action_prompt.tscn" id="3_prompt"]
+[ext_resource type="PackedScene" path="res://addons/controls/action_prompt.tscn" id="3_prompt"]
 [ext_resource type="AudioStream" path="res://assets/tommusic/fantasy_sfx/OGG Files/SFX/Horse/Idle/Idle Horse 1.ogg" id="4_idle1"]
 [ext_resource type="AudioStream" path="res://assets/tommusic/fantasy_sfx/OGG Files/SFX/Horse/Idle/Idle Horse 2.ogg" id="5_idle2"]
 [ext_resource type="AudioStream" path="res://assets/tommusic/fantasy_sfx/OGG Files/SFX/Horse/Idle/Idle Horse 3.ogg" id="6_idle3"]

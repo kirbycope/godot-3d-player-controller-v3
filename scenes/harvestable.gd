@@ -105,7 +105,7 @@ func display_menu(_player: Player) -> void:
 	if is_depleted:
 		return
 	player = _player
-	action_prompt.show_for(player)
+	action_prompt.show_for(player.controls)
 
 
 ## Called by [Camera] when the player looks away from this object.

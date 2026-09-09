@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://bnuhx6pjxygby" path="res://addons/3d_player_controller/assets/mixamo/characters/y_bot_root.glb" id="3_fsggc"]
 [ext_resource type="AnimationLibrary" uid="uid://cj72elgwwlpq3" path="res://addons/3d_player_controller/assets/mixamo/animations/root_motion/Sitting On Idle.glb" id="4_bt8vh"]
 [ext_resource type="PackedScene" uid="uid://ci4cski5ljr6o" path="res://addons/3d_player_controller/assets/mixamo/characters/x_bot.fbx" id="5_wo52m"]
-[ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://addons/3d_player_controller/scenes/action_prompt.tscn" id="6_action_prompt"]
+[ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://addons/controls/action_prompt.tscn" id="6_action_prompt"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0063d"]
 render_priority = -1

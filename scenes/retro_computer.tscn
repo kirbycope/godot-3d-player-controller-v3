@@ -5,7 +5,7 @@
 [ext_resource type="Shader" path="res://scenes/crt_screen.gdshader" id="3_crt"]
 [ext_resource type="Material" uid="uid://bgh0q813ao036" path="res://assets/ambientcg_com/planks_20/Planks020_1K-JPG.tres" id="4_planks"]
 [ext_resource type="Material" uid="uid://da7xlxi1ot5r1" path="res://assets/ambientcg_com/wood_073/Wood073_1K-JPG.tres" id="5_wood"]
-[ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://addons/3d_player_controller/scenes/action_prompt.tscn" id="6_prompt"]
+[ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://addons/controls/action_prompt.tscn" id="6_prompt"]
 [ext_resource type="PackedScene" path="res://addons/godot_doom_gdextension/scenes/pure_doom_controls_overlay.tscn" id="7_overlay"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_body"]

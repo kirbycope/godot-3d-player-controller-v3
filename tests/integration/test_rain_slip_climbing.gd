@@ -4,7 +4,7 @@ extends GutTest
 ## slide the climber down, block sprint climbing, and slow the climb animation.
 
 const PLAYER_SCENE = preload("res://addons/3d_player_controller/scenes/player.tscn")
-const CONTROLS_SCENE = preload("res://addons/3d_player_controller/scenes/controls.tscn")
+const CONTROLS_SCENE = preload("res://addons/3d_player_controller/scenes/player_controls.tscn")
 
 var player: Player
 var climbing_node: Climbing

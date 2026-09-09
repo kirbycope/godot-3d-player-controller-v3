@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://drmvyehu4dq43" path="res://addons/tcps/scenes/skateboard.tscn" id="8_h3odw"]
 [ext_resource type="PackedScene" uid="uid://b55kg5055u1k8" path="res://scenes/little_buddy.tscn" id="9_5hl1e"]
 [ext_resource type="PackedScene" uid="uid://dl71nqjm2psik" path="res://assets/justcreate3d/weapons_lite/Weapon_02.fbx" id="10_66tox"]
-[ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://addons/3d_player_controller/scenes/action_prompt.tscn" id="13_4kmvx"]
+[ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://addons/controls/action_prompt.tscn" id="13_4kmvx"]
 [ext_resource type="PackedScene" uid="uid://b3tb2j1pwgw3u" path="res://assets/justcreate3d/weapons_lite/Weapon_01.fbx" id="14_myjip"]
 [ext_resource type="Script" uid="uid://d0u7oh1rirfy4" path="res://addons/3d_player_controller/scripts/equipment.gd" id="15_5nedk"]
 [ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/bullet.tscn" id="15_bullet"]

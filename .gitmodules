@@ -19,3 +19,6 @@
 [submodule "addons/godot_doom_gdextension"]
 	path = addons/godot_doom_gdextension
 	url = https://github.com/kirbycope/godot-doom-gdextension.git
+[submodule "addons/controls"]
+	path = addons/controls
+	url = https://github.com/kirbycope/godot-controls.git

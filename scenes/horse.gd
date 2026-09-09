@@ -371,7 +371,7 @@ func _on_player_detection_body_entered(body: Node3D) -> void:
 	if body is Player and body.is_multiplayer_authority() and not (body as Player).is_riding:
 		player = body
 		action_prompt.update_text()
-		action_prompt.show_for(player, "Mount")
+		action_prompt.show_for(player.controls, "Mount")
 		menu_displayed = true
 
 
@@ -385,6 +385,6 @@ func _on_player_detection_body_exited(body: Node3D) -> void:
 func _hide_prompt() -> void:
 	menu_displayed = false
 	if action_prompt.visible and player and player.riding != self:
-		action_prompt.hide_for(player)
+		action_prompt.hide_for(player.controls)
 	else:
 		action_prompt.hide()

@@ -3,7 +3,7 @@ extends GutTest
 ## Purpose: The Camera resolves the interactable under its ray, emits looking_at_changed, and shows/hides its prompt.
 
 const PLAYER_SCENE: PackedScene = preload("res://addons/3d_player_controller/scenes/player.tscn")
-const ACTION_PROMPT_SCENE: PackedScene = preload("res://addons/3d_player_controller/scenes/action_prompt.tscn")
+const ACTION_PROMPT_SCENE: PackedScene = preload("res://addons/controls/action_prompt.tscn")
 
 
 class Interactable:
@@ -54,7 +54,7 @@ func test_action_prompt_shows_matching_input_type() -> void:
 	add_child_autofree(prompt)
 
 	player.controls.current_input_type = player.controls.InputType.SONY
-	prompt.show_for(player)
+	prompt.show_for(player.controls)
 	assert_true(prompt.visible)
 	assert_true(prompt.get_node("Sony").visible, "Sony prompt should be shown")
 	assert_false(prompt.get_node("KeyboardMouse").visible, "Other prompts should be hidden")

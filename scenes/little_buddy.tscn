@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://b55kg5055u1k8"]
 
-[ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://addons/3d_player_controller/scenes/action_prompt.tscn" id="1_actpr"]
+[ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://addons/controls/action_prompt.tscn" id="1_actpr"]
 [ext_resource type="Script" uid="uid://chujawfkubv85" path="res://scenes/little_buddy.gd" id="1_llqmq"]
 [ext_resource type="PackedScene" uid="uid://bnuhx6pjxygby" path="res://addons/3d_player_controller/assets/mixamo/characters/y_bot_root.glb" id="1_xrax1"]
 [ext_resource type="AnimationLibrary" uid="uid://dwv1nfcdfgjaf" path="res://addons/3d_player_controller/assets/mixamo/animations/root_motion/Swimming.glb" id="6_tfnjv"]

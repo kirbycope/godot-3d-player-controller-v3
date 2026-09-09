@@ -4,7 +4,7 @@ extends GutTest
 ## (O(1) lookup, class_name fallback) and that updraft proximity VFX activates for a nearby player.
 
 const PLAYER_SCENE = preload("res://addons/3d_player_controller/scenes/player.tscn")
-const CONTROLS_SCENE = preload("res://addons/3d_player_controller/scenes/controls.tscn")
+const CONTROLS_SCENE = preload("res://addons/3d_player_controller/scenes/player_controls.tscn")
 const FIRE_TRAIL_SCENE: PackedScene = preload("res://addons/weather_fx/scenes/fire_trail_node.tscn")
 
 var player: Player
