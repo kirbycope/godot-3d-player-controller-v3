@@ -1,10 +1,10 @@
 {
   "3d_player_controller": {
-    "commit": "18686a703f250b3d607b21a95e7bec9cf693bed1",
-    "pulled": "2026-09-10T21:03:16Z",
+    "commit": "e37d00a07eb2a8f51f222978934fb84e2cb8c710",
+    "pulled": "2026-09-10T21:33:02Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "docs: consuming projects vendor this addon now"
+    "subject": "Ship the README with the addon, and fix the tool paths"
   },
   "controls": {
     "commit": "15d667e4e889a6e43a7936bd6323d707a67e1802",

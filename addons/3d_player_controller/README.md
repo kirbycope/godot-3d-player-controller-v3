@@ -209,18 +209,25 @@ The demo runs in a browser at <https://timothycope.com/godot-3d-player-controlle
 push to `main` and hands it straight to Pages, so the export itself is never committed: this repository is a
 submodule of the projects that use the addon, and a web export is tens of megabytes that git cannot compress.
 
-`demo/` is the project that export is built from. It expects the addon at `res://addons/3d_player_controller/`, which is
-where a consuming project puts it, so nothing in the addon needs a second set of paths. `demo/addons/` is
-ignored by git; fill it before running the demo locally:
+This repository **is** that project. It follows the layout the
+[Godot Asset Library](https://docs.godotengine.org/en/stable/community/asset_library/submitting_to_assetlib.html)
+expects, with the addon at `addons/3d_player_controller/` and a `project.godot` at the root, so you can
+clone it, open it in Godot and edit the addon in place. Nothing is copied anywhere first.
 
-```powershell
-robocopy . demo\addons\3d_player_controller /MIR /XD "$PWD\.git" "$PWD\.github" "$PWD\demo" "$PWD\.godot" /XF .gitignore .gitattributes
+```
+project.godot                    the demo project, which is this repository
+addons/3d_player_controller/     the addon, plugin.cfg and all
+addons/controls/                 what the addon needs, a submodule
+addons/gut/                      the test runner
 ```
 
-The excluded folders are given as full paths on purpose. `robocopy /XD demo` would exclude any folder called
-`demo` at any depth, which includes `scenes/demo/` - the demo scene itself.
+Installing from the Asset Library takes `addons/` and leaves the rest; Godot flags the root
+`project.godot` as a conflict and skips it, which is why it can live here harmlessly.
 
-Then open `demo/` in Godot.
+There used to be a second Godot project under `demo/`, filled with a `robocopy` mirror of this
+repository. It is gone. It made the addon effectively uneditable: the only project that mounted the
+addon held a throwaway copy of it, so edits to a scene there, the AnimationPlayer especially, were
+destroyed by the next mirror.
 
 ---
 
@@ -303,7 +310,8 @@ To prepare and import custom Mixamo animations with Root Motion:
    - Format: **FBX Binary (.fbx)**
    - Skin: **Without Skin**
    - Frames per Second: **30** or **60**
-3. Move the downloaded `.fbx` into `assets/mixamo/animations/source/` **in this repository**. The
+3. Move the downloaded `.fbx` into `addons/3d_player_controller/assets/mixamo/animations/source/`
+   **in this repository**. The
    animations belong to the addon, so they are added here and picked up by a game when it next
    takes this repository. A consuming project's `addons/` copy is a copy: work added there is
    overwritten the next time it updates.
@@ -311,15 +319,17 @@ To prepare and import custom Mixamo animations with Root Motion:
    ```bash
    blender --background --python tools/bake_root_motion.py
    ```
-   It reads `assets/mixamo/animations/source/` and writes `.glb` files to
-   `assets/mixamo/animations/root_motion/`, adding a `root` bone and reparenting `hips` to it so the
+   It reads `addons/3d_player_controller/assets/mixamo/animations/source/` and writes `.glb` files
+   to `addons/3d_player_controller/assets/mixamo/animations/root_motion/`, adding a `root` bone and reparenting `hips` to it so the
    positional data moves from `hips` to `root`. Pass `--source` and `--dest` to override either.
    `tools/add_root_to_character.py` does the same for the character mesh itself
-   (`assets/mixamo/characters/y_bot.fbx`).
+   (`addons/3d_player_controller/assets/mixamo/characters/y_bot.fbx`).
 5. In Godot, reimport the resulting `.glb` as an **Animation Library** retargeted to
    `mixamo_root_bone_map.tres`, and set Loop Mode to Linear for cycles (not for one-shots such as
    emotes).
-6. Open `scenes/player.tscn`, select `AnimationPlayer`, and load the animation into the library.
+6. Open `addons/3d_player_controller/scenes/player.tscn` in this project, select `AnimationPlayer`,
+   and load the animation into the library, then wire the AnimationTree. The addon is mounted at
+   `res://addons/3d_player_controller/` here, so this is the real file, not a copy.
 7. Commit and push here, then update each consuming project. `godot-3d-player-controller-v3`
    vendors this addon and takes new work with `python tools/pull_addons.py 3d_player_controller`;
    the projects that still consume it as a git submodule bump their pointer instead.
@@ -348,26 +358,24 @@ Adding more here:
 ## Testing
 
 The controller carries its own test suite, powered by [GUT (Godot Unit Test)](https://github.com/bitwes/Gut)
-9.7.1, vendored at `demo/addons/gut/`. The tests belong to this repository and run here, against this
-repository's `demo` project, not from a game that consumes the addon: the demo imports a fraction of a
-full game's assets, so a run answers in seconds.
+9.7.1, vendored at `addons/gut/`. The tests belong to this repository and run here, not from a game
+that consumes the addon: this project imports a fraction of a full game's assets, so a run answers in
+seconds rather than minutes.
 
-First fill `demo/addons/3d_player_controller` with the robocopy line from
-[Installation](#option-1-manual-installation-recommended); it is git-ignored and starts empty. The
-Controls addon beside it is a submodule, so clone with `--recurse-submodules` or run
-`git submodule update --init --recursive`.
+The Controls addon is a submodule, so clone with `--recurse-submodules` or run
+`git submodule update --init --recursive`; otherwise `addons/controls` is empty and nothing loads.
 
 ### Running the tests headless
 
 ```powershell
-& 'C:\Godot\godot.exe' --headless --path demo -s addons/gut/gut_cmdln.gd -gdir=res://addons/3d_player_controller/tests,res://addons/3d_player_controller/inventory/tests,res://addons/3d_player_controller/inventory/tests/integration -gexit
+& 'C:\Godot\godot.exe' --headless --audio-driver Dummy --path . -s addons/gut/gut_cmdln.gd -gconfig=res://.gutconfig.json -gexit
 ```
 
 Add `-gtest=res://addons/3d_player_controller/tests/test_chat.gd` to run a single file.
 
 ### Running the tests in the editor
 
-1. Open `demo/project.godot`.
+1. Open `project.godot` at the root of this repository.
 2. Open the **GUT** panel at the bottom of the editor.
 3. The three directories above are already listed in `.gutconfig.json`, so click **Run All**.
 

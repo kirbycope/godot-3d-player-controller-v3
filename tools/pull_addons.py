@@ -21,6 +21,7 @@ from datetime import datetime, timezone
 
 from addon_common import (
     ROOT,
+    addon_source,
     load_lock,
     load_manifest,
     mirror,
@@ -90,7 +91,8 @@ def main() -> int:
         previous = lock.get(name, {}).get("commit")
 
         # Look before touching anything, so a pull that would destroy unpushed work can stop.
-        copied, removed = mirror(cache, dest, dry_run=True)
+        origin = addon_source(cache, name)
+        copied, removed = mirror(origin, dest, dry_run=True)
 
         if removed and not (args.force or args.dry_run):
             print(f"{name:<28} {commit[:7]}  STOPPED: {len(removed)} local file(s) are not upstream")
@@ -103,7 +105,7 @@ def main() -> int:
             continue
 
         if not args.dry_run:
-            copied, removed = mirror(cache, dest, dry_run=False)
+            copied, removed = mirror(origin, dest, dry_run=False)
 
         if copied or removed:
             changed = True

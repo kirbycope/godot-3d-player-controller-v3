@@ -22,6 +22,7 @@ import sys
 from addon_common import (
     EXCLUDED_TOP_LEVEL,
     ROOT,
+    addon_source,
     load_lock,
     load_manifest,
     mirror,
@@ -76,7 +77,7 @@ def main() -> int:
         # Copy this project's copy over the clone, then let git say what actually differs. The
         # repository's own scaffolding is protected: it is not vendored here, so its absence from
         # the source must never be read as a deletion.
-        mirror(source, cache, dry_run=False, protect=set(EXCLUDED_TOP_LEVEL))
+        mirror(source, addon_source(cache, name), dry_run=False, protect=set(EXCLUDED_TOP_LEVEL))
 
         status = run(["git", "status", "--porcelain"], cwd=cache)
         if not status:

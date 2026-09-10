@@ -80,6 +80,19 @@ def sync_cache(addon: dict, fetch: bool = True) -> Path:
     return path
 
 
+def addon_source(cache: Path, name: str) -> Path:
+    """Where the addon itself sits inside its repository.
+
+    The Godot Asset Library layout puts the addon at addons/<name>/ and makes the repository root a
+    Godot project, so the repository can be opened and the addon edited in place. Repositories not
+    yet converted still keep the addon at their root. Both are handled by looking for plugin.cfg.
+    """
+    nested = cache / "addons" / name / "plugin.cfg"
+    if nested.exists():
+        return nested.parent
+    return cache
+
+
 def payload_entries(source: Path) -> list[Path]:
     """The top-level entries of an addon repository that make up the addon itself."""
     return sorted(p for p in source.iterdir() if p.name not in EXCLUDED_TOP_LEVEL)
