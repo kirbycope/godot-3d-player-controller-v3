@@ -43,13 +43,27 @@ def get_tinify_module(api_key: str):
 	return tinify
 
 
-def load_api_key(project_root: Path):
-	key = os.getenv("TINY_PNG_API_KEY") or os.getenv("TINYPNG_API_KEY")
-	if key:
-		return key.strip()
+# TINY_PNY_API_KEY is a typo for TINY_PNG_API_KEY that is what C:\GitHub\.env actually spells, so
+# it is accepted rather than silently ignored, which is why the TinyPNG engine never engaged.
+API_KEY_NAMES = {"TINY_PNG_API_KEY", "TINYPNG_API_KEY", "TINY_PNY_API_KEY"}
 
-	env_path = project_root / ".env"
-	if not env_path.exists():
+
+def find_env_file(project_root: Path):
+	"""The .env beside the project, or the shared one in the directory the repositories sit in."""
+	for candidate in (project_root / ".env", *(p / ".env" for p in project_root.parents)):
+		if candidate.exists():
+			return candidate
+	return None
+
+
+def load_api_key(project_root: Path):
+	for name in API_KEY_NAMES:
+		key = os.getenv(name)
+		if key:
+			return key.strip()
+
+	env_path = find_env_file(project_root)
+	if env_path is None:
 		return None
 
 	try:
@@ -61,7 +75,7 @@ def load_api_key(project_root: Path):
 
 				name, value = line.split("=", 1)
 				var_name = name.strip()
-				if var_name not in {"TINY_PNG_API_KEY", "TINYPNG_API_KEY"}:
+				if var_name not in API_KEY_NAMES:
 					continue
 
 				cleaned = value.strip().strip('"').strip("'")

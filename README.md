@@ -1,4 +1,4 @@
-![Preview](/godot-3d-player-controller-v3.png)
+![Preview](godot-3d-player-controller-v3.png)
 
 # godot-3d-player-controller-v3
 
