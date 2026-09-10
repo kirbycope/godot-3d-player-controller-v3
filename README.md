@@ -123,6 +123,14 @@ run an addon's own tests in its own repository before pushing.
 A submodule that is detached cannot be pushed to a branch, so `-Push` reports it and moves on; a
 plain `tools\sync_submodules.ps1` puts it back on `main` first.
 
+It pushes to whatever branch the submodule is on, which after a sync is `main`, so an addon change
+goes straight to that addon's `main` with no branch and no pull request. That is deliberate, and it
+has one consequence worth remembering: `godot-3d-player-controller-addon` is the only addon that
+still publishes releases, and its `release-addon.yml` fires on a merged pull request, never on a
+direct push. So a player controller change sent this way cuts no release. Cut one when it is wanted
+by running that workflow from the Actions tab (`workflow_dispatch`), or by putting a later change
+through a pull request.
+
 Three things to know before working this way:
 
 - **The standalone checkout goes stale.** `C:\GitHub\godot-3d-player-controller-addon` and its
