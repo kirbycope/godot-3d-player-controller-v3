@@ -200,10 +200,16 @@ failing on any error the engine or the page logs, with screenshots and the conso
 
 ## Releases
 
-When code is merged into `main`, `.github/workflows/release-addon.yml` finds the latest `vX.Y.Z` tag,
-increments the patch version, builds `3d_player_controller-vX.Y.Z.zip` from
-`addons/3d_player_controller` and publishes a GitHub Release with the zip attached. The first
-automated release starts from `v3.0.0` if no previous `v*` tag exists.
+`.github/workflows/release-addon.yml` finds the latest `vX.Y.Z` tag, increments the patch version,
+builds `3d_player_controller-vX.Y.Z.zip` from `addons/3d_player_controller`, publishes a GitHub
+Release with the zip attached, then bumps `config/version` in `project.godot` and opens the next
+`vX.Y.Z` branch. The first automated release starts from `v3.0.0` if no previous `v*` tag exists.
+
+It runs on a **merged pull request** into `main`, or on `workflow_dispatch`, and on nothing else. A
+direct push to `main` cuts no release, however much code it carries, so work that goes in that way
+has to be followed by a merged pull request or a manual run of the workflow. It also skips when
+main's tip is already tagged `v*`, or when that commit is authored by `github-actions` or says
+`[skip ci]`, which is what keeps its own version bump from triggering it again.
 
 ---
 
