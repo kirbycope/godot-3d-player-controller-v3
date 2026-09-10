@@ -80,6 +80,26 @@ submodule.
 Clone with `git clone --recurse-submodules`, or run `git submodule update --init --recursive` in an
 existing clone, or the addon folders check out empty and nothing runs.
 
+### Keeping the submodules in step
+
+`tools/sync_submodules.ps1` puts every addon submodule on its tracked branch (`branch = main` in
+`.gitmodules`), pulls it from origin, brings the addon's own nested submodules onto the commits that
+addon records, and lists the pointers that moved so they can be reviewed:
+
+```powershell
+tools\sync_submodules.ps1            # bring every submodule up to date, list what moved
+tools\sync_submodules.ps1 -Commit    # the same, and commit the bumped pointers (does not push)
+tools\sync_submodules.ps1 -Pinned    # the other way: back to the commits this repository records
+```
+
+It exists because a submodule checkout is detached by default, so checking `main` out by hand in one
+leaves the parent showing it as modified with nothing to record the new pointer. A submodule holding
+uncommitted **file** changes is skipped and reported rather than moved; a nested submodule pointer
+that has drifted is not treated as work and does not block the run.
+
+Use the default direction after pushing work to an addon's own repository, and `-Pinned` after a
+fresh clone or to throw away drift. Neither direction pushes.
+
 Open the project in Godot 4.8+ and run `scenes/main.tscn`, or the world directly with
 `scenes/world.tscn`.
 
@@ -195,21 +215,6 @@ in 3D is not switched back to VRAM compression.
 failing on any error the engine or the page logs, with screenshots and the console under
 `scratch/web_smoke/`. `tools/tinyify.py <folder> --engine local` downsizes the PNGs under a folder to
 512 and stamps them with `TINYIFY_*` metadata so they are skipped next time.
-
----
-
-## Releases
-
-`.github/workflows/release-addon.yml` finds the latest `vX.Y.Z` tag, increments the patch version,
-builds `3d_player_controller-vX.Y.Z.zip` from `addons/3d_player_controller`, publishes a GitHub
-Release with the zip attached, then bumps `config/version` in `project.godot` and opens the next
-`vX.Y.Z` branch. The first automated release starts from `v3.0.0` if no previous `v*` tag exists.
-
-It runs on a **merged pull request** into `main`, or on `workflow_dispatch`, and on nothing else. A
-direct push to `main` cuts no release, however much code it carries, so work that goes in that way
-has to be followed by a merged pull request or a manual run of the workflow. It also skips when
-main's tip is already tagged `v*`, or when that commit is authored by `github-actions` or says
-`[skip ci]`, which is what keeps its own version bump from triggering it again.
 
 ---
 

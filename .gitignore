@@ -11,3 +11,7 @@ wfx_*.txt
 screenshot_*.png
 screenshot_*.png.import
 *.TMP
+
+# Python bytecode caches from the scripts in tools/
+__pycache__/
+*.pyc
