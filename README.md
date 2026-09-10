@@ -100,6 +100,35 @@ that has drifted is not treated as work and does not block the run.
 Use the default direction after pushing work to an addon's own repository, and `-Pinned` after a
 fresh clone or to throw away drift. Neither direction pushes.
 
+### Working on an addon from here
+
+Because the submodules sit on `main` rather than detached, an addon can be edited in place, from
+this project, against the whole game. The cycle is:
+
+```powershell
+cd addons\3d_player_controller
+# edit, then run that addon's own tests in its own repository, not from here
+git add -A ; git commit -m "..." ; git push origin main
+
+cd ..\..
+tools\sync_submodules.ps1 -Commit    # records the new pointer in this repository
+git push origin main
+```
+
+Three things to know before working this way:
+
+- **The standalone checkout goes stale.** `C:\GitHub\godot-3d-player-controller-addon` and its
+  siblings are separate clones of the same repositories. Pushing from inside a submodule leaves them
+  behind, so `git pull` there before doing anything, or the two checkouts diverge and one of them
+  loses work.
+- **Tests still belong to the addon.** Run an addon's suite in its own repository against that
+  repository's `demo/` project, which imports a fraction of this project's assets and answers in
+  seconds. Never point a run at `res://addons/<name>/tests` from here; this project runs only its own
+  `tests/unit` and `tests/integration`.
+- **Other projects consume these addons too.** `seattle-emerald-city`, `gta` and `tcps` pin their own
+  commits of `3d_player_controller` and `controls`, and a push from here does not move them. Bump
+  each consumer's pointer when a change is meant to reach it.
+
 Open the project in Godot 4.8+ and run `scenes/main.tscn`, or the world directly with
 `scenes/world.tscn`.
 
