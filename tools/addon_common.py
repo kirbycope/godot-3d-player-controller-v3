@@ -94,6 +94,20 @@ def addon_source(cache: Path, name: str) -> Path:
     return cache
 
 
+def local_checkout(addon: dict) -> Path | None:
+    """The sibling clone of the addon beside this project, if there is one.
+
+    Every addon is also cloned under C:\GitHub with the name git clone produces, and that copy is
+    the one worked in. Pushing through it rather than through .addon_cache/ means the local clone
+    ends up holding the change too, instead of silently falling behind its own origin.
+    """
+    name = addon["repo"].rstrip("/").rsplit("/", 1)[-1]
+    if name.endswith(".git"):
+        name = name[:-4]
+    path = ROOT.parent / name
+    return path if (path / ".git").exists() else None
+
+
 def payload_entries(source: Path) -> list[Path]:
     """The top-level entries of an addon repository that make up the addon itself."""
     return sorted(p for p in source.iterdir() if p.name not in EXCLUDED_TOP_LEVEL)

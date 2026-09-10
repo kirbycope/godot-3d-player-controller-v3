@@ -78,15 +78,23 @@ are not in `addons.json`; the pull script leaves them alone. See
 
 ## Running and testing
 
-Clone normally. The addons are committed to this repository, so it opens and runs straight away
-with no fetch step.
+Clone, then fetch the addons before opening the project:
+
+```powershell
+python tools/pull_addons.py
+git config core.hooksPath .githooks   # once per clone, see below
+```
+
+`addons/` is git-ignored for everything the manifest manages, so a fresh clone has empty addon
+folders until that runs. The four third-party addons beside them (`gut`, `midi`, `godotsteam`,
+`GPUTrail-main`) are not managed by any script and are committed here as normal files.
 
 ### The addons are vendored, not submodules
 
 Each addon is developed in its own repository, and a copy of it lives here under `addons/<name>/`,
-committed like any other file. `tools/addons.json` names the repository and branch each copy comes
-from, and `tools/addons.lock.json` records the exact commit each was taken at, so a vendored copy is
-always traceable upstream.
+fetched rather than committed. `tools/addons.json` names the repository and branch each copy comes
+from, and `tools/addons.lock.json` records the exact commit each was taken at, so what is in the
+working tree is always traceable upstream even though it is not in this repository's history.
 
 Two scripts move code between here and those repositories. Both keep a clone of each addon under
 `.addon_cache/` (git-ignored) and compare by content, so only real changes show up.
@@ -116,8 +124,8 @@ addon untouched:
 ```
 
 So the rule is **push before you pull**. `--force` is there for when the local files really are
-rubbish. The addons are committed here in any case, so `git checkout -- addons/<name>` brings back
-anything a forced pull removed.
+rubbish, but note that `addons/` is not committed here, so a forced pull is the one place where
+unpushed addon work is genuinely lost: there is no `git checkout` to bring it back.
 
 ### Working on an addon from here
 
@@ -131,11 +139,24 @@ git commit -m "..."
 git push origin main
 ```
 
-`push_addons.py` copies `addons/<name>/` over the cached clone of that addon's repository, and where
-that produces a change, commits it there and pushes to the branch `addons.json` names. It never
-commits or pushes this repository: the vendored copies are ordinary files here, so they go in your
-own commit alongside whatever project changes came with them. `--no-push` commits upstream without
-pushing, and naming an addon limits it to that one.
+`push_addons.py` copies `addons/<name>/` over **that addon's own clone under `C:\GitHub`**, and
+where that produces a change, commits it there and pushes to the branch `addons.json` names. Going
+through the local clone rather than a hidden cache means that copy ends up holding the change too,
+instead of quietly falling behind its own origin; a clone with uncommitted work of its own is
+skipped rather than written over. `--no-push` commits without pushing, and naming an addon limits it
+to that one.
+
+Because `addons/` is not committed here, **nothing in this repository's history records an addon
+change**, which is the easy mistake: push the project, forget the addon, and the work exists only on
+this machine. A `pre-push` hook catches it:
+
+```powershell
+git config core.hooksPath .githooks   # once per clone
+```
+
+`.githooks/pre-push` runs `push_addons.py --dry-run` and refuses the push while any addon differs
+from its repository, naming the addon and the files. `git push --no-verify` bypasses it for one
+push.
 
 It pushes straight to the addon's `main`, with no branch and no pull request. That has one
 consequence worth remembering: `godot-3d-player-controller-addon` is the only addon that still

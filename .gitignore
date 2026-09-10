@@ -18,3 +18,14 @@ __pycache__/
 
 # Clones of the addon repositories, filled by tools/pull_addons.py.
 .addon_cache/
+
+# Fetched by tools/pull_addons.py and never committed here. The third-party addons beside them
+# (gut, midi, godotsteam, GPUTrail-main) are not managed by any script and stay tracked.
+addons/3d_player_controller/
+addons/controls/
+addons/date_and_time/
+addons/godot_doom_gdextension/
+addons/gta/
+addons/radi_ot/
+addons/tcps/
+addons/weather_fx/
