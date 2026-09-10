@@ -25,18 +25,15 @@ Open and run **`res://addons/gta/scenes/demo/demo.tscn`**: an asphalt lot with a
 ## Playing the demo
 
 This repository is private, and GitHub Pages will not serve a private repository on this plan, so there is
-no published demo. `demo/` is the project one is built from; fill its ignored `addons/` and open it in
-Godot:
+no published demo. This repository is the project one is built from: it uses the layout the
+[Godot Asset Library](https://docs.godotengine.org/en/stable/community/asset_library/submitting_to_assetlib.html)
+expects, with the addon at `addons/gta/` and a `project.godot` at the root, so cloning it and
+opening it in Godot is all it takes. The addon is edited in place, with nothing copied first.
 
-```powershell
-robocopy . demo\addons\gta /MIR /XD "$PWD\.git" "$PWD\.github" "$PWD\demo" "$PWD\.godot" /XF .gitignore .gitattributes
-git submodule update --init --recursive
-```
+The player controller and the Controls addon sit under `addons/` beside it, which is what the
+recursive clone below is for.
 
-The excluded folders are given as full paths on purpose. `robocopy /XD demo` would exclude any folder called
-`demo` at any depth, which includes `scenes/demo/` - the demo scene itself.
-
-The player controller and the Controls addon are submodules of `demo/addons/`, which is what the second line
+The player controller and the Controls addon are submodules of `addons/`, which is what the second line
 fills in.
 
 ---

@@ -1,48 +1,14 @@
-![Preview](./assets/date-and-time.png)
+This repository **is** that project. It uses the layout the
+[Godot Asset Library](https://docs.godotengine.org/en/stable/community/asset_library/submitting_to_assetlib.html) expects, with the addon at `addons/date_and_time/` and a
+`project.godot` at the root, so you can clone it, open it in Godot and edit the addon in
+place. Nothing is copied anywhere first, and the root `project.godot` is skipped as a
+conflict when the asset is installed from the library.
 
-# Date and Time Addon for Godot 4.8+
+There used to be a second Godot project under `demo/` holding a `robocopy` mirror of this
+repository. It is gone: it meant the only project that mounted the addon held a throwaway
+copy, so edits made there were destroyed by the next mirror.
 
-In-game and in-editor date, time, and calendar progression system with full `@tool` controls, leap year logic, custom time scale, and Godot signals.
-
-> [!NOTE]
-> **Plugin Activation vs Scene Usage**:
-> `DateAndTime` is a script-only node (`class_name DateAndTime`); `DateAndTimeDisplay` ships as a scene.
-> - **Direct Usage**: Add a `DateAndTime` node and instantiate `scenes/date_and_time_display.tscn` without enabling anything in Project Settings.
-> - **Enabling the Plugin**: Enabling `Date and Time` in **Project Settings > Plugins** registers the custom icon and adds `DateAndTime` to Godot's "Create New Node" dialog.
-
----
-
-## Interactive Demo Scene
-
-Open and run **`res://addons/date_and_time/scenes/demo/demo.tscn`** to explore time flow, day/night transitions, and calendar features:
-- **Time Scrubber**: Drag the slider (0:00 to 24:00) with real-time sun/moon lighting synchronization.
-- **Pace / Speed Multipliers**: Run time at 1x, 5x, 24x (1 min/day), 60x, or 300x.
-- **Date & Calendar Controls**: Increment Day, Month, and Year with leap year handling.
-- **Display Options**: Toggle 12h/24h format, show/hide date, and 5-min/10-min/exact minute rounding.
-- **OS Clock Sync**: Toggle synchronization with real-world system time.
-
-All demo UI signals are wired in `demo.tscn`; the script only handles camera input in `_process`.
-
----
-
-## Playing the demo
-
-The demo runs in a browser at <https://timothycope.com/date-and-time/>. A GitHub Action exports it on every
-push to `main` and hands it straight to Pages, so the export itself is never committed: this repository is a
-submodule of the projects that use the addon, and a web export is tens of megabytes that git cannot compress.
-
-`demo/` is the project that export is built from, and the same project the tests are built around. It expects the addon at `res://addons/date_and_time/`, which is
-where a consuming project puts it, so nothing in the addon needs a second set of paths. `demo/addons/` is
-ignored by git; fill it before running the demo locally:
-
-```powershell
-robocopy . demo\addons\date_and_time /MIR /XD "$PWD\.git" "$PWD\.github" "$PWD\demo" "$PWD\.godot" /XF .gitignore .gitattributes
-```
-
-The excluded folders are given as full paths on purpose. `robocopy /XD demo` would exclude any folder called
-`demo` at any depth, which includes `scenes/demo/` - the demo scene itself.
-
-Then open `demo/` in Godot.
+Then open this repository in Godot.
 
 ---
 

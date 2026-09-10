@@ -1,51 +1,14 @@
-![Preview](./assets/godot-doom-gdextension.png)
+This repository **is** that project. It uses the layout the
+[Godot Asset Library](https://docs.godotengine.org/en/stable/community/asset_library/submitting_to_assetlib.html) expects, with the addon at `addons/godot_doom_gdextension/` and a
+`project.godot` at the root, so you can clone it, open it in Godot and edit the addon in
+place. Nothing is copied anywhere first, and the root `project.godot` is skipped as a
+conflict when the asset is installed from the library.
 
-# Godot Doom GDExtension
+There used to be a second Godot project under `demo/` holding a `robocopy` mirror of this
+repository. It is gone: it meant the only project that mounted the addon held a throwaway
+copy, so edits made there were destroyed by the next mirror.
 
-A GDExtension that runs the real DOOM engine inside Godot 4.8 and shows it on a `TextureRect`. The engine
-is [PureDOOM](https://github.com/Daivuk/PureDOOM), a single-header C port of the 1993 source with no OS
-layer of its own; this addon supplies its time, file, print and environment callbacks, copies its 320x200
-frame into an `ImageTexture` every tick, feeds its 11025 Hz sound into an `AudioStreamGenerator`, and turns
-Godot input events into DOOM key, button and mouse events. Everything runs in-process, so the same source
-builds for the Windows desktop and for the browser as a WebAssembly side module.
-
-## Demo scene
-
-`scenes/demo/demo.tscn` runs the node full screen with the controls card down each side, an on-screen pad for
-a player with no keyboard, and, when Godot MIDI Player (`addons/midi/`) is in the project, the music through
-`assets/gzdoom.sf2`. It is the main scene of the
-[Godot Doom GDExtension](https://github.com/kirbycope/godot-doom-gdextension) project this addon is developed
-in, and it is also the shortest example of wiring the node up: instantiate it, connect `exited`, connect
-`midi_message` to a synthesiser, call `start()`. Where the library is not built for the platform the demo
-shows a message instead of failing.
-
-It also shows the two things a host scene has to handle itself. DOOM turns on relative mouse motion, so the
-demo captures the cursor in `_ready()`, gives it back on Escape and takes it again on a click. And because a
-browser only grants pointer lock from inside a user gesture, a web export cannot capture at startup at all;
-the demo puts a "Click to start" `CanvasLayer` up when `OS.has_feature("web")` and captures on that first
-click. Off the web the interstitial stays hidden. On a touchscreen it captures nothing: there is no relative
-motion to read, and holding the pointer would make the browser's emulated mouse events look like a mouse.
-
-## Playing the demo
-
-The demo runs in a browser at <https://timothycope.com/godot-doom-gdextension/>. A GitHub Action exports it on every
-push to `main` and hands it straight to Pages, so the export itself is never committed: this repository is a
-submodule of the projects that use the addon, and a web export is tens of megabytes that git cannot compress.
-
-`demo/` is the project that export is built from. It expects the addon at `res://addons/godot_doom_gdextension/`, which is
-where a consuming project puts it, so nothing in the addon needs a second set of paths. It also takes
-[godot-controls](https://github.com/kirbycope/godot-controls) as a submodule at `demo/addons/controls`, for
-the on-screen pad, so clone with `--recurse-submodules` or run `git submodule update --init` afterwards.
-`demo/addons/godot_doom_gdextension` is ignored by git; fill it before running the demo locally:
-
-```powershell
-robocopy . demo\addons\godot_doom_gdextension /MIR /XD "$PWD\.git" "$PWD\.github" "$PWD\demo" "$PWD\.godot" /XF .gitignore .gitattributes
-```
-
-The excluded folders are given as full paths on purpose. `robocopy /XD demo` would exclude any folder called
-`demo` at any depth, which includes `scenes/demo/` - the demo scene itself.
-
-Then open `demo/` in Godot.
+Then open this repository in Godot.
 
 ---
 
@@ -178,7 +141,7 @@ project runs a 4.8 development build.
 
 | What | Author | License | Source |
 | --- | --- | --- | --- |
-| `demo/addons/controls` | Tim Cope | MIT | https://github.com/kirbycope/godot-controls |
+| `addons/controls` | Tim Cope | MIT | https://github.com/kirbycope/godot-controls |
 | `thirdparty/PureDOOM.h` | Daivuk (David St-Louis), from the id Software DOOM source | GPL 2.0 (`thirdparty/LICENSE`) | https://github.com/Daivuk/PureDOOM |
 | `assets/doom1.wad` | id Software | DOOM shareware, freely redistributable | https://github.com/Daivuk/PureDOOM |
 | `assets/gzdoom.sf2` (GZDoom's default General MIDI SoundFont, an SC-55 preset) | ZDoom team | not recorded - fill in (ships with GZDoom, no license file of its own) | https://github.com/ZDoom/gzdoom/blob/master/soundfont/gzdoom.sf2 |

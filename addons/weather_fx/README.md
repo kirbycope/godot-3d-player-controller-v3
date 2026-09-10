@@ -1,54 +1,14 @@
-![Preview](./assets/weather-fx.png)
+This repository **is** that project. It uses the layout the
+[Godot Asset Library](https://docs.godotengine.org/en/stable/community/asset_library/submitting_to_assetlib.html) expects, with the addon at `addons/weather_fx/` and a
+`project.godot` at the root, so you can clone it, open it in Godot and edit the addon in
+place. Nothing is copied anywhere first, and the root `project.godot` is skipped as a
+conflict when the asset is installed from the library.
 
-# Weather FX for Godot 4.8+
+There used to be a second Godot project under `demo/` holding a `robocopy` mirror of this
+repository. It is gone: it meant the only project that mounted the addon held a throwaway
+copy, so edits made there were destroyed by the next mirror.
 
-A high-performance, modular climate, weather, and atmospheric wind simulation system for Godot 4.8+. Features 20 universal biomes, altitude- and time-based temperature lapse curves, procedural 4-minute forecasting cycles, rain ground impact effects (puddle ripples & splash droplets), global wind shader integration with stylized foliage sway, interactive Zelda-inspired HUD widgets, and a comprehensive test lab (`demo.tscn`).
-
-> [!NOTE]
-> **Plugin Activation vs Direct Scene Usage**:
-> All core scripts register global class names with editor icons (`WeatherFX`, `PrecipitationFX`, `WeatherAudio`, `WeatherZone`, `WeatherForecastDisplay`, `TemperatureGaugeDisplay`, `GaugeNeedle`, `WindDirectionDial`, `WindVFX`, `FallingLeaves`, `FireFX`, `GrassField`, `BurnableGrass`, `FireTrailNode`, `ClimateData`, `WaterRipples`), so they appear in the *Create New Node* dialog whether or not the plugin is enabled.
-> - **Direct Usage**: Instance `scenes/weather_fx.tscn` (or add a `WeatherFX` node) and control it via GDScript immediately. Ensure the global shader parameters are added under **Project Settings > Shader Globals**.
-> - **Enabling the Plugin**: Enabling `Weather FX` in **Project Settings > Plugins** registers all required **Shader Globals** in `ProjectSettings` automatically.
-
----
-
-## Interactive Demo Scene
-
-Open and run **`res://addons/weather_fx/scenes/demo/demo.tscn`** to explore the complete feature suite in real time:
-
-- **20 Biome Explorer**: Instantly travel between all 20 biomes from a dropdown menu.
-- **Weather Simulation & Overrides**: Force or procedurally simulate Blue Sky, Cloudy, Rain, Heavy Rain, Storm, Snow, or Heavy Snow.
-- **Interactive 360° Wind Direction Dial**: Click and drag the circular compass dial on the HUD to rotate the global wind vector in real time.
-- **Wind Multiplier Scrubber**: Adjust wind power from `0.0x` (calm) to `3.0x` (gale force) to test foliage sway and particle velocities.
-- **Rain Impact Physics**: Observe raindrops bursting into upward water splashes and concentric expanding puddle ripples on ground contact.
-- **Time-of-Day Scrubber**: Scrub time from 0:00 to 24:00 to test diurnal temperature swings, sunrise/sunset lighting, and day/night transitions.
-- **Altitude Scrubber**: Test temperature lapse rate as altitude climbs from 0m to 1500m.
-- **Unit Toggle**: Instantly switch between Celsius (`°C`) and Fahrenheit (`°F`) across all HUD displays and gauges.
-- **Diagnostic Info & FPS Counter**: HUD readout (refreshed by a `StatusTimer`) of FPS, current temperature, active biome, wind speed & cardinal direction, altitude, and cycle countdown.
-- **Free Camera Orbit**: Right-click drag or WASD/Arrow keys to orbit around the scene and zoom in/out with the mouse scroll wheel.
-
-All demo UI and `WeatherFX` signal connections are wired in `demo.tscn`; `demo.gd` only holds the handlers.
-
----
-
-## Playing the demo
-
-The demo runs in a browser at <https://timothycope.com/weather-fx/>. A GitHub Action exports it on every
-push to `main` and hands it straight to Pages, so the export itself is never committed: this repository is a
-submodule of the projects that use the addon, and a web export is tens of megabytes that git cannot compress.
-
-`demo/` is the project that export is built from. It expects the addon at `res://addons/weather_fx/`, which is
-where a consuming project puts it, so nothing in the addon needs a second set of paths. `demo/addons/` is
-ignored by git; fill it before running the demo locally:
-
-```powershell
-robocopy . demo\addons\weather_fx /MIR /XD "$PWD\.git" "$PWD\.github" "$PWD\demo" "$PWD\.godot" /XF .gitignore .gitattributes
-```
-
-The excluded folders are given as full paths on purpose. `robocopy /XD demo` would exclude any folder called
-`demo` at any depth, which includes `scenes/demo/` - the demo scene itself.
-
-Then open `demo/` in Godot.
+Then open this repository in Godot.
 
 ---
 

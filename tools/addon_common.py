@@ -87,9 +87,10 @@ def addon_source(cache: Path, name: str) -> Path:
     Godot project, so the repository can be opened and the addon edited in place. Repositories not
     yet converted still keep the addon at their root. Both are handled by looking for plugin.cfg.
     """
-    nested = cache / "addons" / name / "plugin.cfg"
-    if nested.exists():
-        return nested.parent
+    nested = cache / "addons" / name
+    # plugin.cfg marks an editor plugin; a GDExtension has a .gdextension file and no plugin.cfg.
+    if (nested / "plugin.cfg").exists() or any(nested.glob("*.gdextension")):
+        return nested
     return cache
 
 

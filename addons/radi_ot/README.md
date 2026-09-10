@@ -1,101 +1,14 @@
-![Preview](./assets/radi-ot.png)
+This repository **is** that project. It uses the layout the
+[Godot Asset Library](https://docs.godotengine.org/en/stable/community/asset_library/submitting_to_assetlib.html) expects, with the addon at `addons/radi_ot/` and a
+`project.godot` at the root, so you can clone it, open it in Godot and edit the addon in
+place. Nothing is copied anywhere first, and the root `project.godot` is skipped as a
+conflict when the asset is installed from the library.
 
-# radi-ot (Radio + Godot)
+There used to be a second Godot project under `demo/` holding a `robocopy` mirror of this
+repository. It is gone: it meant the only project that mounted the addon held a throwaway
+copy, so edits made there were destroyed by the next mirror.
 
-**radi-ot** is a feature-packed 3D audio streaming addon for **Godot 4.8** that streams real live Seattle radio stations over the internet. Built for both **Steam (Forward+)** and **Web (Compatibility)**, it features positional 3D audio, an in-game retro-modern CanvasLayer HUD, procedural FM tuning static, and an `urgent_bulletin()` API designed for in-game narrative progression and emergency broadcasts.
-
----
-
-## Features
-
-- **3D Positional Spatial Audio:** `RadiOtPlayer3D` extends `AudioStreamPlayer3D`, offering realistic distance attenuation, unit size, and panning attached to any in-game object (vehicles, radios, boomboxes, storefronts).
-- **Curated Seattle Radio Presets (.tres):**
-  - **88.5 FM — KNKX:** Jazz, Blues, and NPR News
-  - **89.5 FM — C89.5 (KNHC):** Student-run Electronic, Dance, and House
-  - **90.3 FM — KEXP:** World-renowned Independent, Alternative, and Eclectic
-  - **94.9 FM — KUOW:** Puget Sound NPR News and Information
-  - **98.1 FM — KING-FM:** Classical Seattle
-  - **101.1 FM — KMGP (Space 101.1 FM):** Indie, Local Seattle, and Eclectic community radio
-- **Urgent Bulletin System (`urgent_bulletin`):** Seamlessly interrupt live radio broadcasts with custom story audio (emergency broadcasts, story alerts, news flashes). When the bulletin finishes, live radio automatically resumes.
-- **Retro-Modern CanvasLayer HUD:** Displays current frequency, call sign, genre, live signal indicator, a Tween-animated dial bar, optional key hints (`hint_text`), and emergency alert banners. The panel auto-hides through its `AutoHideTimer` child and fades out with a Tween; set `toast_hide = false` on the HUD (as the demo scene does) to keep it on screen.
-- **Procedural FM Static:** Realistic white/pink noise static plays seamlessly while buffering or switching between stations.
-- **Dual-Platform Streaming Engine:**
-  - **Desktop:** `HTTPClient` stream with automatic redirect handling (up to 4 hops), chunks cut on validated MPEG frame headers (version, layer, bitrate and sample-rate fields checked), and two ping-pong `AudioStreamPlayer3D` channels swapped by their `finished` signals. A 10 s Timer (`RadiOtStreamer.STREAM_TIMEOUT_SECONDS`) covers connect, first byte and stalls and reports `stream_playback_failed` when it expires.
-  - **Web (HTML5):** HTML5 Audio element whose volume mirrors the player's attenuation model, refreshed by a 10 Hz Timer and only when the value changes. `auto_play_on_ready` is ignored on web because browsers block autoplay until the page is clicked.
-- **"radio" group:** The player scene is in the `radio` group and exposes `set_volume(linear: float)`, which sets the stream channels, the bulletin player and the node itself. Audio settings menus can call `get_tree().call_group("radio", "set_volume", value)`.
-- **Interactive Demo Keyboard Controls:**
-  - `[L]` — Tune to Next Station
-  - `[J]` — Tune to Previous Station
-  - `[M]` — Toggle Radio Power On/Off
-
----
-
-## Installation
-
-### Option 1: Manual Installation (Recommended)
-
-1. Download or clone this repository.
-2. Copy the `addons/radi_ot/` directory into your Godot project's `addons/` folder:
-   ```text
-   your_godot_project/
-   ├── addons/
-   │   └── radi_ot/
-   │       ├── plugin.cfg
-   │       ├── plugin.gd
-   │       ├── resources/
-   │       ├── scenes/
-   │       └── scripts/
-   ├── project.godot
-   └── ...
-   ```
-3. Open your project in **Godot 4.8+**.
-4. Go to **Project > Project Settings > Plugins** and toggle the **Enable** checkbox next to **radi-ot**.
-
-### Option 2: Git Submodule
-
-If your project uses Git, add `radi-ot` directly as a submodule into your `addons/` folder:
-
-```bash
-git submodule add https://github.com/kirbycope/radi-ot.git addons/radi_ot
-```
-
-### Option 3: Godot Asset Library
-
-1. Open Godot and select the **AssetLib** tab at the top of the editor.
-2. Search for **radi-ot**.
-3. Click **Download**, then **Install** into your project.
-4. Enable the plugin under **Project > Project Settings > Plugins**.
-
----
-
-## Interactive Demo Scene
-
-Open and run **`res://addons/radi_ot/scenes/demo/demo.tscn`** to experience live 3D positional radio streaming:
-- **Live Seattle Streams**: Stream real audio from KEXP, C89.5, KNKX, KUOW, KING-FM, and KMGP.
-- **Narrative Story Bulletins**: Trigger simulated emergency broadcasts with voiceovers that interrupt the live broadcast.
-- **Spatial Orbit Camera**: Orbits around the 3D radio to showcase distance attenuation and positional panning.
-- **Tuning Controls**: Switch stations (`J`/`L` keys or on-screen buttons) and toggle power (`M`).
-
----
-
-## Playing the demo
-
-The demo runs in a browser at <https://timothycope.com/radi-ot/>. A GitHub Action exports it on every
-push to `main` and hands it straight to Pages, so the export itself is never committed: this repository is a
-submodule of the projects that use the addon, and a web export is tens of megabytes that git cannot compress.
-
-`demo/` is the project that export is built from. It expects the addon at `res://addons/radi_ot/`, which is
-where a consuming project puts it, so nothing in the addon needs a second set of paths. `demo/addons/` is
-ignored by git; fill it before running the demo locally:
-
-```powershell
-robocopy . demo\addons\radi_ot /MIR /XD "$PWD\.git" "$PWD\.github" "$PWD\demo" "$PWD\.godot" /XF .gitignore .gitattributes
-```
-
-The excluded folders are given as full paths on purpose. `robocopy /XD demo` would exclude any folder called
-`demo` at any depth, which includes `scenes/demo/` - the demo scene itself.
-
-Then open `demo/` in Godot.
+Then open this repository in Godot.
 
 ---
 

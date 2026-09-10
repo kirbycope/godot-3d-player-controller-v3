@@ -1,58 +1,58 @@
 {
   "3d_player_controller": {
     "commit": "e37d00a07eb2a8f51f222978934fb84e2cb8c710",
-    "pulled": "2026-09-10T21:33:02Z",
+    "pulled": "2026-09-10T21:52:45Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
     "subject": "Ship the README with the addon, and fix the tool paths"
   },
   "controls": {
-    "commit": "15d667e4e889a6e43a7936bd6323d707a67e1802",
-    "pulled": "2026-09-10T21:04:54Z",
+    "commit": "a670d73c100bf28a78c77daf467c6fd867406b12",
+    "pulled": "2026-09-10T21:52:46Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-controls.git",
-    "subject": "ci: drop the addon release workflow"
+    "subject": "Restructure to the Godot Asset Library layout"
   },
   "date_and_time": {
-    "commit": "41a2054ba35a4ef075a4c6fb0b6948882d5dd88a",
-    "pulled": "2026-09-10T21:04:56Z",
+    "commit": "682e5e7c76c6f6bdffbf675bc451ac59ee09ef7f",
+    "pulled": "2026-09-10T21:52:49Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/date-and-time.git",
-    "subject": "docs: drop the release zip from the demo description"
+    "subject": "Restructure to the Godot Asset Library layout"
   },
   "godot_doom_gdextension": {
-    "commit": "2feaddb7016e19a4dbf0c33f39a371cc817350df",
-    "pulled": "2026-09-10T21:04:59Z",
+    "commit": "9729eb5623aa8db269c2dfc7e869c1d011d5c263",
+    "pulled": "2026-09-10T21:52:53Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-doom-gdextension.git",
-    "subject": "ci: drop the addon release workflow"
+    "subject": "Restructure to the Godot Asset Library layout"
   },
   "gta": {
-    "commit": "2ed9549ce247a7e46708ce7fa5e8738f1505f027",
-    "pulled": "2026-09-10T21:04:57Z",
+    "commit": "ecd3c7e56d96cc4585550e32d48690fbaea82920",
+    "pulled": "2026-09-10T21:52:50Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/gta.git",
-    "subject": "chore: take the sync script's -Push direction"
+    "subject": "Restructure to the Godot Asset Library layout"
   },
   "radi_ot": {
-    "commit": "246c04f6908eb48480eb8362f74df5ba39e6cf22",
-    "pulled": "2026-09-10T21:04:58Z",
+    "commit": "848cb7c7677677c5e0744f0b90d6409e4ca59b6c",
+    "pulled": "2026-09-10T21:52:52Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/radi-ot.git",
-    "subject": "ci: drop the addon release workflow"
+    "subject": "Restructure to the Godot Asset Library layout"
   },
   "tcps": {
-    "commit": "88ef8a567758db41e127ded380f16b4de6b92039",
-    "pulled": "2026-09-10T21:04:58Z",
+    "commit": "15f6c6ce5c52b15cdf1d6546c98b8db413a9075f",
+    "pulled": "2026-09-10T21:52:51Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/tcps.git",
-    "subject": "chore: take the sync script's -Push direction"
+    "subject": "Restructure to the Godot Asset Library layout"
   },
   "weather_fx": {
-    "commit": "82c03d832660109ac4905433284d9312aade354d",
-    "pulled": "2026-09-10T21:04:55Z",
+    "commit": "21635c48e0bb1dffd83fb856912048ce0338d52c",
+    "pulled": "2026-09-10T21:52:48Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/weather-fx.git",
-    "subject": "ci: drop the addon release workflow"
+    "subject": "Restructure to the Godot Asset Library layout"
   }
 }
