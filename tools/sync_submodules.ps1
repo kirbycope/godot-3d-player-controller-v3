@@ -63,7 +63,7 @@ Write-Host ""
 # blanket update, which would reset a checkout that is deliberately sitting somewhere else.
 foreach ($path in $paths) {
     if (-not (Test-Path (Join-Path $path ".git"))) {
-        Write-Host ("{0,-34} not checked out, initialising" -f ($path -replace '^addons/', ''))
+        Write-Host ("{0,-34} not checked out, initialising" -f (Split-Path $path -Leaf))
         git submodule update --init --recursive --quiet -- $path
     }
 }
@@ -72,7 +72,7 @@ $moved = [System.Collections.Generic.List[object]]::new()
 $skipped = [System.Collections.Generic.List[object]]::new()
 
 foreach ($path in $paths) {
-    $name = $path -replace '^addons/', ''
+    $name = Split-Path $path -Leaf
     $before = (git -C $path rev-parse HEAD).Trim()
 
     # --ignore-submodules=all so the guard fires on real file edits only. An addon's own nested
