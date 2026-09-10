@@ -1,0 +1,21 @@
+{
+  "godotTools.editorPath.godot4": "c:\Godot\godot.exe",
+  "gut-extension.additionalOptions": "-d --headless",
+  "cSpell.words": [
+    "automap",
+    "backquote",
+    "emsdk",
+    "Emscripten",
+    "gdextension",
+    "godotengine",
+    "gzdoom",
+    "IWAD",
+    "keycode",
+    "nothreads",
+    "PureDOOM",
+    "scons",
+    "SoundFont",
+    "tscn",
+    "wasm"
+  ]
+}

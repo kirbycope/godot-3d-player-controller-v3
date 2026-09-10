@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="RadioStation" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://addons/radi_ot/scripts/radio_station.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://addons/radi_ot/assets/logos/kexp_logo.svg" id="2_logo"]
+
+[resource]
+script = ExtResource("1_script")
+station_name = "KEXP 90.3 FM"
+call_sign = "KEXP"
+frequency = 90.3
+stream_url = "https://kexp.streamguys1.com/kexp128.mp3"
+genre = "Indie / Alternative / Eclectic"
+tagline = "Where the Music Matters"
+description = "Seattle's legendary listener-powered music radio station broadcasting from Seattle Center."
+logo = ExtResource("2_logo")

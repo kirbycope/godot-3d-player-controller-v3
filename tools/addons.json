@@ -1,0 +1,45 @@
+{
+  "_comment": "Addons vendored into addons/ by tools/pull_addons.py. 'ref' is the branch, tag or commit to take; 'main' means always the latest. tools/addons.lock.json records what was actually taken.",
+  "addons": [
+    {
+      "name": "3d_player_controller",
+      "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
+      "ref": "main"
+    },
+    {
+      "name": "controls",
+      "repo": "https://github.com/kirbycope/godot-controls.git",
+      "ref": "main"
+    },
+    {
+      "name": "weather_fx",
+      "repo": "https://github.com/kirbycope/weather-fx.git",
+      "ref": "main"
+    },
+    {
+      "name": "date_and_time",
+      "repo": "https://github.com/kirbycope/date-and-time.git",
+      "ref": "main"
+    },
+    {
+      "name": "gta",
+      "repo": "https://github.com/kirbycope/gta.git",
+      "ref": "main"
+    },
+    {
+      "name": "tcps",
+      "repo": "https://github.com/kirbycope/tcps.git",
+      "ref": "main"
+    },
+    {
+      "name": "radi_ot",
+      "repo": "https://github.com/kirbycope/radi-ot.git",
+      "ref": "main"
+    },
+    {
+      "name": "godot_doom_gdextension",
+      "repo": "https://github.com/kirbycope/godot-doom-gdextension.git",
+      "ref": "main"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+	"dirs": [
+		"res://addons/tcps/tests"
+	],
+	"include_subdirs": false,
+	"prefix": "test_",
+	"suffix": ".gd",
+	"should_exit": false,
+	"should_exit_on_success": true,
+	"configured_dirs": [
+		"res://addons/tcps/tests"
+	]
+}

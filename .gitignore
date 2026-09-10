@@ -15,3 +15,6 @@ screenshot_*.png.import
 # Python bytecode caches from the scripts in tools/
 __pycache__/
 *.pyc
+
+# Clones of the addon repositories, filled by tools/pull_addons.py.
+.addon_cache/

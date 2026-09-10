@@ -12,10 +12,11 @@ Click [here](https://timothycope.com/godot-3d-player-controller-v3/) to play!
 
 ## Addons
 
-Each addon is a git submodule of its own repository, and **its README is where its features are
-documented**. This file covers only what belongs to the game project.
+Each addon is developed in its own repository and vendored into `addons/` here (see
+[The addons are vendored](#the-addons-are-vendored-not-submodules)), and **its README is where its
+features are documented**. This file covers only what belongs to the game project.
 
-| Submodule | Repository | What it provides |
+| Addon | Repository | What it provides |
 | --- | --- | --- |
 | `addons/3d_player_controller` | [godot-3d-player-controller-addon](https://github.com/kirbycope/godot-3d-player-controller-addon) | The Player: locomotion state machine, camera, equipment and combat, projectiles, inventory and spell system, abilities, chat, throwing, toon shading, health, stamina, settings, Steam lobby UI and the multiplayer spawners |
 | `addons/controls` | [godot-controls](https://github.com/kirbycope/godot-controls) | On-screen input hints and the world-space `ActionPrompt` |
@@ -26,9 +27,9 @@ documented**. This file covers only what belongs to the game project.
 | `addons/radi_ot` | [radi-ot](https://github.com/kirbycope/radi-ot) | Internet radio, played through the car |
 | `addons/godot_doom_gdextension` | [godot-doom-gdextension](https://github.com/kirbycope/godot-doom-gdextension) | PureDOOM as a GDExtension, plus a fallback raycaster |
 
-The third-party addons (`gut`, `midi`, `godotsteam`, `GPUTrail-main`) are vendored in directly; see
-[Vendored addons](#vendored-addons) for each one's author, licence, upstream and why it cannot be a
-submodule.
+The third-party addons (`gut`, `midi`, `godotsteam`, `GPUTrail-main`) are other people's work and
+are not in `addons.json`; the pull script leaves them alone. See
+[Third-party addons](#third-party-addons) for each one's author, licence and upstream.
 
 ---
 
@@ -77,73 +78,75 @@ submodule.
 
 ## Running and testing
 
-Clone with `git clone --recurse-submodules`, or run `git submodule update --init --recursive` in an
-existing clone, or the addon folders check out empty and nothing runs.
+Clone normally. The addons are committed to this repository, so it opens and runs straight away
+with no fetch step.
 
-### Keeping the submodules in step
+### The addons are vendored, not submodules
 
-`tools/sync_submodules.ps1` puts every addon submodule on its tracked branch (`branch = main` in
-`.gitmodules`), pulls it from origin, brings the addon's own nested submodules onto the commits that
-addon records, and lists the pointers that moved so they can be reviewed:
+Each addon is developed in its own repository, and a copy of it lives here under `addons/<name>/`,
+committed like any other file. `tools/addons.json` names the repository and branch each copy comes
+from, and `tools/addons.lock.json` records the exact commit each was taken at, so a vendored copy is
+always traceable upstream.
+
+Two scripts move code between here and those repositories. Both keep a clone of each addon under
+`.addon_cache/` (git-ignored) and compare by content, so only real changes show up.
 
 ```powershell
-tools\sync_submodules.ps1            # bring every submodule up to date, list what moved
-tools\sync_submodules.ps1 -Commit    # the same, and commit the bumped pointers (does not push)
-tools\sync_submodules.ps1 -Pinned    # the other way: back to the commits this repository records
-tools\sync_submodules.ps1 -Push -Message "..."   # send addons edited here upstream, see below
+python tools/pull_addons.py                     # take the latest of every addon
+python tools/pull_addons.py controls gta        # only these
+python tools/pull_addons.py --dry-run           # report, change nothing
+python tools/pull_addons.py --locked            # the commits in the lock file, not the branch tip
 ```
 
-It exists because a submodule checkout is detached by default, so checking `main` out by hand in one
-leaves the parent showing it as modified with nothing to record the new pointer. A submodule holding
-uncommitted **file** changes is skipped and reported rather than moved; a nested submodule pointer
-that has drifted is not treated as work and does not block the run.
+`pull_addons.py` is the install step. It mirrors each addon's payload into `addons/<name>/` and
+rewrites the lock file. The addon's own scaffolding is never vendored: its `demo/` project,
+`.github/` workflows and git metadata stay upstream, while `scenes/demo/`, the demo scene inside the
+addon, is part of the addon and comes along.
 
-Use the default direction to take in work pushed from an addon's own checkout, `-Pinned` after a
-fresh clone or to throw away drift, and `-Push` for work edited here. Only `-Push` pushes anything,
-and never this repository.
+Because it is a mirror, a file sitting in `addons/<name>/` that upstream does not have would be
+deleted. That is how an upstream removal reaches this project, but it is also how unpushed work
+would be lost, so **the pull stops rather than delete anything**, names the files and leaves that
+addon untouched:
+
+```
+3d_player_controller  18686a7  STOPPED: 8 local file(s) are not upstream
+                        assets\mixamonimations\source\Sitting Typing.fbx
+                        ...
+                      push them first, or re-run with --force to delete them
+```
+
+So the rule is **push before you pull**. `--force` is there for when the local files really are
+rubbish. The addons are committed here in any case, so `git checkout -- addons/<name>` brings back
+anything a forced pull removed.
 
 ### Working on an addon from here
 
-Because the submodules sit on `main` rather than detached, an addon can be edited in place, from
-this project, against the whole game. Edit it under `addons/<name>/`, then send it upstream and
-record the new pointer here:
+Edit the addon in place under `addons/<name>/`, against the whole game, then send it upstream:
 
 ```powershell
-tools\sync_submodules.ps1 -Push -Message "fix the swim ledge ray"
-git commit -m "..."      # the staged pointers, alongside any project changes
+python tools/push_addons.py --dry-run                         # always look first
+python tools/push_addons.py -m "fix the swim ledge ray"       # commit and push each addon that differs
+git add addons tools/addons.lock.json
+git commit -m "..."
 git push origin main
 ```
 
-`-Push` commits every submodule that has file changes, pushes it to its own repository along with
-any commits it already had waiting, and stages the moved pointers here. It stops at that point: this
-repository's commit is yours to write, because an addon change usually lands beside project changes
-in the same commit. Add `-DryRun` to see what it would commit and push without doing any of it, and
-run an addon's own tests in its own repository before pushing.
+`push_addons.py` copies `addons/<name>/` over the cached clone of that addon's repository, and where
+that produces a change, commits it there and pushes to the branch `addons.json` names. It never
+commits or pushes this repository: the vendored copies are ordinary files here, so they go in your
+own commit alongside whatever project changes came with them. `--no-push` commits upstream without
+pushing, and naming an addon limits it to that one.
 
-A submodule that is detached cannot be pushed to a branch, so `-Push` reports it and moves on; a
-plain `tools\sync_submodules.ps1` puts it back on `main` first.
-
-It pushes to whatever branch the submodule is on, which after a sync is `main`, so an addon change
-goes straight to that addon's `main` with no branch and no pull request. That is deliberate, and it
-has one consequence worth remembering: `godot-3d-player-controller-addon` is the only addon that
-still publishes releases, and its `release-addon.yml` fires on a merged pull request, never on a
-direct push. So a player controller change sent this way cuts no release. Cut one when it is wanted
-by running that workflow from the Actions tab (`workflow_dispatch`), or by putting a later change
+It pushes straight to the addon's `main`, with no branch and no pull request. That has one
+consequence worth remembering: `godot-3d-player-controller-addon` is the only addon that still
+publishes releases, and its `release-addon.yml` fires on a merged pull request, never on a direct
+push. So a player controller change sent this way cuts no release. Cut one when it is wanted by
+running that workflow from the Actions tab (`workflow_dispatch`), or by putting a later change
 through a pull request.
 
-Three things to know before working this way:
-
-- **The standalone checkout goes stale.** `C:\GitHub\godot-3d-player-controller-addon` and its
-  siblings are separate clones of the same repositories. Pushing from inside a submodule leaves them
-  behind, so `git pull` there before doing anything, or the two checkouts diverge and one of them
-  loses work.
-- **Tests still belong to the addon.** Run an addon's suite in its own repository against that
-  repository's `demo/` project, which imports a fraction of this project's assets and answers in
-  seconds. Never point a run at `res://addons/<name>/tests` from here; this project runs only its own
-  `tests/unit` and `tests/integration`.
-- **Other projects consume these addons too.** `seattle-emerald-city`, `gta` and `tcps` pin their own
-  commits of `3d_player_controller` and `controls`, and a push from here does not move them. Bump
-  each consumer's pointer when a change is meant to reach it.
+Two more things to know. Run an addon's own tests in its own repository, against that repository's
+`demo/` project, rather than from here. And other projects vendor these addons too, so a push from
+here does not reach `seattle-emerald-city`, `gta` or `tcps`; update each of those separately.
 
 Open the project in Godot 4.8+ and run `scenes/main.tscn`, or the world directly with
 `scenes/world.tscn`.
@@ -265,23 +268,19 @@ failing on any error the engine or the page logs, with screenshots and the conso
 
 ## Credits & Asset Attributions
 
-### Vendored addons
+### Third-party addons
 
-The addons written here are submodules (see [Addons](#addons)). These four are other people's work,
-copied into `addons/` rather than referenced.
+The addons written here come from their own repositories (see [Addons](#addons)) and are managed by
+`tools/pull_addons.py`. These four are other people's work, copied into `addons/` by hand and not
+listed in `tools/addons.json`, so the pull script never touches them.
 
-Three of them cannot be submodules. A git submodule mounts a whole repository and never a
-subdirectory, and none of these three publish the addon at a repository root: `gut` sits at
-`addons/gut/` inside a Godot project and `midi` at `addons/midi/`, so pointing a submodule at
-`addons/gut` would give `addons/gut/addons/gut/`, while the two GodotSteam pieces ship through
-releases and the asset library rather than from a repository tree at all. Forking each into a
-repository with the addon hoisted to the root would mean republishing someone else's code, so the
-copies stay and are recorded here instead.
-
-`GPUTrail-main` is the odd one out: it is an asset of this project, not part of any addon developed
-here, and the Le Lu trail effects are what use it. It sits under `addons/` only because Godot reads
-`plugin.cfg` there. Its repository root is the addon, so it could be a submodule, but it stays a copy
-of a downloaded zip (hence the `-main` suffix) deliberately.
+They are updated by hand rather than by script, because they are not developed here and their
+upstreams do not publish the addon at a repository root the way ours do: `gut` sits at `addons/gut/`
+inside a Godot project and `midi` at `addons/midi/`, while the two GodotSteam pieces ship through
+releases and the asset library. `GPUTrail-main` is the odd one out, an asset of this project rather
+than part of any addon developed here, kept as a copy of a downloaded zip (hence the `-main`
+suffix); the Le Lu trail effects are what use it. All four must credit their upstream rather than be
+republished as ours.
 
 | Addon | What it is | Author | Version | License (as recorded in folder) | Upstream |
 | --- | --- | --- | --- | --- | --- |

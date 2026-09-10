@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="RadioStation" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://addons/radi_ot/scripts/radio_station.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://addons/radi_ot/assets/logos/kuow_logo.svg" id="2_logo"]
+
+[resource]
+script = ExtResource("1_script")
+station_name = "KUOW 94.9 FM"
+call_sign = "KUOW"
+frequency = 94.9
+stream_url = "https://playerservices.streamtheworld.com/api/livestream-redirect/KUOWFM_HIGH_MP3.mp3"
+genre = "NPR / News / Conversations"
+tagline = "Puget Sound Public Radio"
+description = "In-depth journalism, local news, and NPR talk for the Seattle metropolitan area."
+logo = ExtResource("2_logo")

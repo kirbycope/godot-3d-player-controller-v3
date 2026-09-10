@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="RadioStation" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://addons/radi_ot/scripts/radio_station.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://addons/radi_ot/assets/logos/knkx_logo.svg" id="2_logo"]
+
+[resource]
+script = ExtResource("1_script")
+station_name = "KNKX 88.5 FM"
+call_sign = "KNKX"
+frequency = 88.5
+stream_url = "https://knkx-live-a.edge.audiocdn.com/6284_128k"
+genre = "Jazz / Blues / NPR News"
+tagline = "Your Sound Connection"
+description = "Public radio station broadcasting jazz, blues, and Puget Sound regional news."
+logo = ExtResource("2_logo")
