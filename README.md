@@ -90,6 +90,7 @@ addon records, and lists the pointers that moved so they can be reviewed:
 tools\sync_submodules.ps1            # bring every submodule up to date, list what moved
 tools\sync_submodules.ps1 -Commit    # the same, and commit the bumped pointers (does not push)
 tools\sync_submodules.ps1 -Pinned    # the other way: back to the commits this repository records
+tools\sync_submodules.ps1 -Push -Message "..."   # send addons edited here upstream, see below
 ```
 
 It exists because a submodule checkout is detached by default, so checking `main` out by hand in one
@@ -97,23 +98,30 @@ leaves the parent showing it as modified with nothing to record the new pointer.
 uncommitted **file** changes is skipped and reported rather than moved; a nested submodule pointer
 that has drifted is not treated as work and does not block the run.
 
-Use the default direction after pushing work to an addon's own repository, and `-Pinned` after a
-fresh clone or to throw away drift. Neither direction pushes.
+Use the default direction to take in work pushed from an addon's own checkout, `-Pinned` after a
+fresh clone or to throw away drift, and `-Push` for work edited here. Only `-Push` pushes anything,
+and never this repository.
 
 ### Working on an addon from here
 
 Because the submodules sit on `main` rather than detached, an addon can be edited in place, from
-this project, against the whole game. The cycle is:
+this project, against the whole game. Edit it under `addons/<name>/`, then send it upstream and
+record the new pointer here:
 
 ```powershell
-cd addons\3d_player_controller
-# edit, then run that addon's own tests in its own repository, not from here
-git add -A ; git commit -m "..." ; git push origin main
-
-cd ..\..
-tools\sync_submodules.ps1 -Commit    # records the new pointer in this repository
+tools\sync_submodules.ps1 -Push -Message "fix the swim ledge ray"
+git commit -m "..."      # the staged pointers, alongside any project changes
 git push origin main
 ```
+
+`-Push` commits every submodule that has file changes, pushes it to its own repository along with
+any commits it already had waiting, and stages the moved pointers here. It stops at that point: this
+repository's commit is yours to write, because an addon change usually lands beside project changes
+in the same commit. Add `-DryRun` to see what it would commit and push without doing any of it, and
+run an addon's own tests in its own repository before pushing.
+
+A submodule that is detached cannot be pushed to a branch, so `-Push` reports it and moves on; a
+plain `tools\sync_submodules.ps1` puts it back on `main` first.
 
 Three things to know before working this way:
 
