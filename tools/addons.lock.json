@@ -1,56 +1,56 @@
 {
   "3d_player_controller": {
-    "commit": "29a824774451003a4ea53c8f898e6f4327e2f8b3",
-    "pulled": "2026-09-11T22:46:40Z",
+    "commit": "bc94c4801d523aa66456002f511de677d2d58eee",
+    "pulled": "2026-09-11T23:02:02Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Take the HUD looking the same in the editor as in the game"
+    "subject": "Take the HUD with its labels blank"
   },
   "controls": {
-    "commit": "245fb4fe291f63777e20b115f23619185970bddb",
-    "pulled": "2026-09-11T22:46:42Z",
+    "commit": "26f391adec064695d1e90a21e386aa7924646982",
+    "pulled": "2026-09-11T23:02:04Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-controls.git",
-    "subject": "Let the game name its own buttons, and leave the labels blank"
+    "subject": "Name the screenshot button after what it does, and give Sony the Share glyph"
   },
   "date_and_time": {
     "commit": "a7cf4a647029df53c7723a6d0571b3a03ddfce35",
-    "pulled": "2026-09-11T22:46:44Z",
+    "pulled": "2026-09-11T23:02:06Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/date-and-time.git",
     "subject": "ci: point the tests at the gutconfig where it now lives"
   },
   "godot_doom_gdextension": {
-    "commit": "0fad0587e312923c48c179af2afece8c4425ae55",
-    "pulled": "2026-09-11T22:46:47Z",
+    "commit": "7b6e1eaabcd138c86921a619497c564de62e7966",
+    "pulled": "2026-09-11T23:02:10Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-doom-gdextension.git",
-    "subject": "Take the HUD looking the same in the editor as in the game"
+    "subject": "Take the HUD with its labels blank"
   },
   "gta": {
-    "commit": "3813c7940084b9a6f033200429afca0b4a2e4b5d",
-    "pulled": "2026-09-11T22:46:45Z",
+    "commit": "0d2210583a4cec3eec22fc059987106ad87296ed",
+    "pulled": "2026-09-11T23:02:07Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/gta.git",
-    "subject": "Take the HUD looking the same in the editor as in the game"
+    "subject": "Take the HUD with its labels blank"
   },
   "radi_ot": {
     "commit": "93aee33383208471e1cb57b8e93392ef3bcf0765",
-    "pulled": "2026-09-11T22:46:47Z",
+    "pulled": "2026-09-11T23:02:09Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/radi-ot.git",
     "subject": "ci: judge the test run by its report, not Godot's exit code"
   },
   "tcps": {
-    "commit": "aa692f8a3c1d8b5905c018c13378a05e9b59f9d5",
-    "pulled": "2026-09-11T22:46:46Z",
+    "commit": "0a1877870afc9c4aa591bbb3a4c2173620a766f1",
+    "pulled": "2026-09-11T23:02:09Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/tcps.git",
-    "subject": "Take the HUD looking the same in the editor as in the game"
+    "subject": "Take the HUD with its labels blank"
   },
   "weather_fx": {
     "commit": "322b54f383ac59b58b80f1cf19d9d37397452634",
-    "pulled": "2026-09-11T22:46:43Z",
+    "pulled": "2026-09-11T23:02:06Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/weather-fx.git",
     "subject": "Show the clouds in the pink sky, with wind and leaves"
