@@ -49,10 +49,10 @@
     "subject": "Give every root README the same shape, preview included"
   },
   "weather_fx": {
-    "commit": "bcf9ca1273682b84f2861c3054e8d23435de679c",
-    "pulled": "2026-09-11T00:15:47Z",
+    "commit": "717b1a31878b3837a475716b9c66c59afedf2674",
+    "pulled": "2026-09-11T01:07:19Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/weather-fx.git",
-    "subject": "Give every root README the same shape, preview included"
+    "subject": "Take the storm-force dawn as the preview"
   }
 }
