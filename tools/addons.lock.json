@@ -21,11 +21,11 @@
     "subject": "Restore the README, preview image and all"
   },
   "godot_doom_gdextension": {
-    "commit": "b9d3fd64aef1f5e3880bcafa6737e55a3d3c41dc",
-    "pulled": "2026-09-10T22:42:03Z",
+    "commit": "7c88366718423d1f65e2880e295e82f5a0b1544f",
+    "pulled": "2026-09-11T00:04:22Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-doom-gdextension.git",
-    "subject": "Restore the README, preview image and all"
+    "subject": "chore: stop tracking __pycache__"
   },
   "gta": {
     "commit": "98de60b2091b680ffc2c718ba2af546d1e257d7b",
