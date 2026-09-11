@@ -1,58 +1,58 @@
 {
   "3d_player_controller": {
-    "commit": "9ea6e84d4d1a5184dce3ad0d86e6205d5946b7e9",
-    "pulled": "2026-09-11T00:09:36Z",
+    "commit": "42b4547c2e2bb5c8a36d0d6e12ae3ee01bca6354",
+    "pulled": "2026-09-11T00:15:43Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "chore: refresh the fetched addons"
+    "subject": "Give every root README the same shape, preview included"
   },
   "controls": {
-    "commit": "10f0b4013c66b696c8af69bfc0093c8de2d149e7",
-    "pulled": "2026-09-11T00:09:38Z",
+    "commit": "004ca46df86b1e1ef1714377af04a7fa6841fa2c",
+    "pulled": "2026-09-11T00:15:45Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-controls.git",
-    "subject": "chore: ignore Python bytecode caches"
+    "subject": "Give every root README the same shape, preview included"
   },
   "date_and_time": {
-    "commit": "608bc3dbae5bdb78f79adb09317143c38a9115c4",
-    "pulled": "2026-09-11T00:09:41Z",
+    "commit": "091f7007702f00d81143ba0e132f19586ce65cfc",
+    "pulled": "2026-09-11T00:15:48Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/date-and-time.git",
-    "subject": "chore: ignore Python bytecode caches"
+    "subject": "Give every root README the same shape, preview included"
   },
   "godot_doom_gdextension": {
-    "commit": "7c88366718423d1f65e2880e295e82f5a0b1544f",
-    "pulled": "2026-09-11T00:09:45Z",
+    "commit": "5f7494490ad6afb4abf680c1535453f23bf5726f",
+    "pulled": "2026-09-11T00:15:52Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-doom-gdextension.git",
-    "subject": "chore: stop tracking __pycache__"
+    "subject": "Give every root README the same shape, preview included"
   },
   "gta": {
-    "commit": "5aa662eb48f6717decfea7d2b63a50e514f6ea87",
-    "pulled": "2026-09-11T00:09:42Z",
+    "commit": "b26cc4da1d6c05bcc08f7871b60d95888a77d6c0",
+    "pulled": "2026-09-11T00:15:49Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/gta.git",
-    "subject": "Recapture the preview at 960x540 through TinyPNG"
+    "subject": "Give every root README the same shape, preview included"
   },
   "radi_ot": {
-    "commit": "3186dc1e5e41eee5e56596fc0b552d21cfaf1d06",
-    "pulled": "2026-09-11T00:09:44Z",
+    "commit": "d6fa5017f08f5c181d56d36f8133a3ea767afb76",
+    "pulled": "2026-09-11T00:15:51Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/radi-ot.git",
-    "subject": "chore: ignore Python bytecode caches"
+    "subject": "Give every root README the same shape, preview included"
   },
   "tcps": {
-    "commit": "fba6d070d7b5fb1aa977c733fc000a52558f77c1",
-    "pulled": "2026-09-11T00:09:43Z",
+    "commit": "f45cd4967352cac7706966f6cd113b2456a640d7",
+    "pulled": "2026-09-11T00:15:50Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/tcps.git",
-    "subject": "Recapture the preview at 960x540 through TinyPNG"
+    "subject": "Give every root README the same shape, preview included"
   },
   "weather_fx": {
-    "commit": "c7a1317f533cf18be8c83757ec4a18c1680e3546",
-    "pulled": "2026-09-11T00:09:40Z",
+    "commit": "bcf9ca1273682b84f2861c3054e8d23435de679c",
+    "pulled": "2026-09-11T00:15:47Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/weather-fx.git",
-    "subject": "chore: ignore Python bytecode caches"
+    "subject": "Give every root README the same shape, preview included"
   }
 }
