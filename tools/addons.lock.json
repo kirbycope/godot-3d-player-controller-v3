@@ -1,24 +1,24 @@
 {
   "3d_player_controller": {
     "commit": "38b4cfd56ad4e59199a557943faa2c98f2442e2b",
-    "pulled": "2026-09-11T04:01:12Z",
+    "pulled": "2026-09-11T22:22:27Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
     "subject": "Add the seated typing pose and a head-only look-at"
   },
   "controls": {
-    "commit": "004ca46df86b1e1ef1714377af04a7fa6841fa2c",
-    "pulled": "2026-09-11T00:15:45Z",
+    "commit": "b4ad573582c5c2181306981c9afc6f21ccd74ac8",
+    "pulled": "2026-09-11T22:22:35Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-controls.git",
-    "subject": "Give every root README the same shape, preview included"
+    "subject": "Space the HUD and the world prompt from what is actually in them"
   },
   "date_and_time": {
-    "commit": "091f7007702f00d81143ba0e132f19586ce65cfc",
-    "pulled": "2026-09-11T00:15:48Z",
+    "commit": "a7cf4a647029df53c7723a6d0571b3a03ddfce35",
+    "pulled": "2026-09-11T22:22:41Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/date-and-time.git",
-    "subject": "Give every root README the same shape, preview included"
+    "subject": "ci: point the tests at the gutconfig where it now lives"
   },
   "godot_doom_gdextension": {
     "commit": "5f7494490ad6afb4abf680c1535453f23bf5726f",
@@ -28,29 +28,29 @@
     "subject": "Give every root README the same shape, preview included"
   },
   "gta": {
-    "commit": "b26cc4da1d6c05bcc08f7871b60d95888a77d6c0",
-    "pulled": "2026-09-11T00:15:49Z",
+    "commit": "1cd2d01466f10e76ea4c44b2ebd0b54bdd617330",
+    "pulled": "2026-09-11T22:22:45Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/gta.git",
-    "subject": "Give every root README the same shape, preview included"
+    "subject": "ci: point the tests at the gutconfig where it now lives"
   },
   "radi_ot": {
-    "commit": "d6fa5017f08f5c181d56d36f8133a3ea767afb76",
-    "pulled": "2026-09-11T00:15:51Z",
+    "commit": "93aee33383208471e1cb57b8e93392ef3bcf0765",
+    "pulled": "2026-09-11T22:22:50Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/radi-ot.git",
-    "subject": "Give every root README the same shape, preview included"
+    "subject": "ci: judge the test run by its report, not Godot's exit code"
   },
   "tcps": {
-    "commit": "f45cd4967352cac7706966f6cd113b2456a640d7",
-    "pulled": "2026-09-11T00:15:50Z",
+    "commit": "0d6fb14ac81f8e5a1f8a16aff7e0f456565f7fc2",
+    "pulled": "2026-09-11T22:22:48Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/tcps.git",
-    "subject": "Give every root README the same shape, preview included"
+    "subject": "ci: point the tests at the gutconfig where it now lives"
   },
   "weather_fx": {
     "commit": "322b54f383ac59b58b80f1cf19d9d37397452634",
-    "pulled": "2026-09-11T01:12:21Z",
+    "pulled": "2026-09-11T22:22:39Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/weather-fx.git",
     "subject": "Show the clouds in the pink sky, with wind and leaves"
