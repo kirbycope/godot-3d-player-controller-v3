@@ -1,58 +1,58 @@
 {
   "3d_player_controller": {
-    "commit": "c58042d50e5d82fae6698d17d0dcd51707792423",
-    "pulled": "2026-09-10T22:41:55Z",
+    "commit": "9ea6e84d4d1a5184dce3ad0d86e6205d5946b7e9",
+    "pulled": "2026-09-11T00:09:36Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Restore the README, preview image and all"
+    "subject": "chore: refresh the fetched addons"
   },
   "controls": {
-    "commit": "29b92c66195a580bb5c558481d782a6fa1ba514e",
-    "pulled": "2026-09-10T22:41:56Z",
+    "commit": "10f0b4013c66b696c8af69bfc0093c8de2d149e7",
+    "pulled": "2026-09-11T00:09:38Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-controls.git",
-    "subject": "Restore the README, preview image and all"
+    "subject": "chore: ignore Python bytecode caches"
   },
   "date_and_time": {
-    "commit": "b619e8e6bc9362cd5e933cade4912f73f309dc05",
-    "pulled": "2026-09-10T22:41:59Z",
+    "commit": "608bc3dbae5bdb78f79adb09317143c38a9115c4",
+    "pulled": "2026-09-11T00:09:41Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/date-and-time.git",
-    "subject": "Restore the README, preview image and all"
+    "subject": "chore: ignore Python bytecode caches"
   },
   "godot_doom_gdextension": {
     "commit": "7c88366718423d1f65e2880e295e82f5a0b1544f",
-    "pulled": "2026-09-11T00:04:22Z",
+    "pulled": "2026-09-11T00:09:45Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-doom-gdextension.git",
     "subject": "chore: stop tracking __pycache__"
   },
   "gta": {
-    "commit": "98de60b2091b680ffc2c718ba2af546d1e257d7b",
-    "pulled": "2026-09-10T22:42:00Z",
+    "commit": "5aa662eb48f6717decfea7d2b63a50e514f6ea87",
+    "pulled": "2026-09-11T00:09:42Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/gta.git",
-    "subject": "Restore the README, preview image and all"
+    "subject": "Recapture the preview at 960x540 through TinyPNG"
   },
   "radi_ot": {
-    "commit": "b51c4e96b0df0088686ed5f07ff218248708141f",
-    "pulled": "2026-09-10T22:42:02Z",
+    "commit": "3186dc1e5e41eee5e56596fc0b552d21cfaf1d06",
+    "pulled": "2026-09-11T00:09:44Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/radi-ot.git",
-    "subject": "Restore the README, preview image and all"
+    "subject": "chore: ignore Python bytecode caches"
   },
   "tcps": {
-    "commit": "0ecf849e203e7a60a5855d2e396f649228955958",
-    "pulled": "2026-09-10T22:42:01Z",
+    "commit": "fba6d070d7b5fb1aa977c733fc000a52558f77c1",
+    "pulled": "2026-09-11T00:09:43Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/tcps.git",
-    "subject": "Restore the README, preview image and all"
+    "subject": "Recapture the preview at 960x540 through TinyPNG"
   },
   "weather_fx": {
-    "commit": "8c06c43fa330eee6c41c435bfe3cf45f69e7380e",
-    "pulled": "2026-09-10T22:41:58Z",
+    "commit": "c7a1317f533cf18be8c83757ec4a18c1680e3546",
+    "pulled": "2026-09-11T00:09:40Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/weather-fx.git",
-    "subject": "Restore the README, preview image and all"
+    "subject": "chore: ignore Python bytecode caches"
   }
 }
