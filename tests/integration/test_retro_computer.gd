@@ -51,12 +51,9 @@ func test_using_the_computer_takes_the_camera_and_boots_doom() -> void:
 	assert_eq(computer.doom.screen, Doom.Screen.BOOTING)
 	assert_true(computer.is_processing_input(), "The computer should take over input while in use")
 	assert_false(computer.action_prompt.visible)
-	assert_false(player.controls.visible, "The on-screen controls should hide for keyboard and pad players")
+	assert_true(player.controls.visible, "The HUD stays up, re-labelled for DOOM")
 	assert_false(player.crosshair.visible, "The crosshair should hide over the monitor")
-	assert_true(computer.controls_overlay.visible, "The controls card should show beside the monitor")
-	assert_eq(computer.controls_overlay.input_type, "keyboard")
-	player.controls.current_input_type = player.controls.InputType.SONY
-	assert_eq(computer.controls_overlay.input_type, "playstation", "The card should follow the input device")
+	assert_false(computer.controls_overlay.visible, "The full-screen key card is off by default; it letterboxes the shot")
 
 
 func test_input_reaches_the_game_and_start_leaves() -> void:
@@ -97,3 +94,81 @@ func test_riding_player_cannot_use_it() -> void:
 	computer.equip(player)
 	assert_false(computer.is_in_use)
 	assert_false(player.is_paused)
+
+
+func test_key_card_can_be_turned_back_on_and_follows_the_device() -> void:
+	computer.show_keymap_card = true
+	player.controls.current_input_type = player.controls.InputType.KEYBOARD_MOUSE
+	computer.equip(player)
+	assert_true(computer.controls_overlay.visible, "With the card on it shows beside the monitor")
+	assert_eq(computer.controls_overlay.input_type, "keyboard")
+	player.controls.current_input_type = player.controls.InputType.SONY
+	assert_eq(computer.controls_overlay.input_type, "playstation", "The card should follow the input device")
+
+
+func test_using_it_seats_the_player_and_starts_them_typing() -> void:
+	computer.equip(player)
+	assert_true(player.is_sitting, "The Player should be in the chair")
+	assert_true(player.is_typing_at_keyboard, "The typing pose drives off this flag")
+	assert_almost_eq(player.global_position, computer.player_seat.global_position, Vector3.ONE * 0.001,
+			"The Player should be warped onto the seat marker")
+
+
+func test_the_head_turns_onto_the_screen_and_lets_go_again() -> void:
+	var modifier: LookAtModifier3D = player.head_look_at_modifier as LookAtModifier3D
+	assert_false(modifier.active, "Nothing should be driving the head before sitting down")
+	computer.equip(player)
+	assert_true(modifier.active, "Sitting down should point the head at the CRT")
+	assert_eq(modifier.get_node(modifier.target_node), computer.screen, "It should look at the screen itself")
+	assert_eq(modifier.bone_name, "Head", "The spine modifier is a separate one used for aiming")
+	computer.stop_using()
+	assert_false(modifier.active, "Getting up should release the head")
+	assert_eq(modifier.target_node, NodePath(""), "and clear the target with it")
+
+
+func test_first_person_gets_a_square_view_and_third_person_the_shoulder_shot() -> void:
+	(player.camera as Camera).perspective = Camera.Perspective.FIRST_PERSON
+	computer.equip(player)
+	assert_eq(computer.screen_camera.fov, computer.first_person_camera_fov,
+			"First person should take the square-on framing")
+	assert_almost_eq(computer.screen_camera.position.x, computer.first_person_camera_position.x, 0.001,
+			"and sit on the screen's own axis rather than off to one side")
+	computer.stop_using()
+
+	(player.camera as Camera).perspective = Camera.Perspective.THIRD_PERSON
+	computer.equip(player)
+	assert_eq(computer.screen_camera.fov, computer.seated_camera_fov,
+			"Third person should take the over-the-shoulder framing")
+
+
+func test_the_hud_names_doom_not_the_player_controller() -> void:
+	player.controls.current_input_type = player.controls.InputType.MICROSOFT
+	computer.equip(player)
+	assert_eq(player.controls.joypad_axis_5_plus_label.text, "Fire")
+	assert_eq(player.controls.joypad_button_0_label.text, "Use, open")
+	assert_eq(player.controls.joypad_button_6_label.text, "Get Up")
+	assert_eq(player.controls.joypad_button_13_label.text, "Weapon")
+	computer.stop_using()
+	assert_eq(player.controls.joypad_button_0_label.text, "Action",
+			"Leaving should give the player controller its own labels back")
+
+
+func test_the_keyboard_gets_the_two_clusters_its_glyphs_can_tell_the_truth_about() -> void:
+	player.controls.current_input_type = player.controls.InputType.KEYBOARD_MOUSE
+	computer.equip(player)
+	assert_eq(player.controls.key_s_label.text, "Move, strafe", "WASD really is DOOM's movement")
+	assert_eq(player.controls.key_down_label.text, "Turn", "and the arrows really do turn")
+	assert_eq(player.controls.key_i_label.text, "",
+			"IJKL are blanked: set_labels would otherwise mirror the d-pad onto keys DOOM does not use")
+
+
+func test_sitting_back_down_cancels_a_pending_stand_up() -> void:
+	computer.equip(player)
+	computer.stop_using()
+	assert_true(player.locomotion_node_changed.is_connected(computer._on_player_locomotion_node_changed),
+			"Leaving waits for the lead-out before standing the Player up")
+	computer.equip(player)
+	assert_false(player.locomotion_node_changed.is_connected(computer._on_player_locomotion_node_changed),
+			"Sitting back down first must cancel it, or it stands them up at the keyboard")
+	assert_true(computer.is_in_use)
+	assert_true(player.is_sitting)
