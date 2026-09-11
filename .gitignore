@@ -29,3 +29,7 @@ addons/gta/
 addons/radi_ot/
 addons/tcps/
 addons/weather_fx/
+
+# The web export is built by .github/workflows/pages.yml and handed to Pages, never committed.
+build/
+docs/
