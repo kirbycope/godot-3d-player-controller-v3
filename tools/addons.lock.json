@@ -21,11 +21,11 @@
     "subject": "ci: point the tests at the gutconfig where it now lives"
   },
   "godot_doom_gdextension": {
-    "commit": "5f7494490ad6afb4abf680c1535453f23bf5726f",
+    "commit": "0d61f09cf11db1a859ef0d728bf3bcabfb9fdc38",
     "pulled": "2026-09-11T00:15:52Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-doom-gdextension.git",
-    "subject": "Give every root README the same shape, preview included"
+    "subject": "Make the controls card a resource instead of a hardcoded scene\n\nEach line of the card is a PureDoomControl resource - a label plus the plain-text\ninput for keyboard, Xbox, Nintendo and PlayStation, with an empty device dropping\nthat line - and resources/controls.tres is the example holding DOOM's own. The\noverlay reads them, so a game changes what the card says by editing a .tres rather\nthan by editing the scene. pure_doom_controls.tscn is replaced by\npure_doom_controls_overlay.tscn.\n\nCo-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
   },
   "gta": {
     "commit": "1cd2d01466f10e76ea4c44b2ebd0b54bdd617330",
