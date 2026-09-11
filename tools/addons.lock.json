@@ -1,56 +1,56 @@
 {
   "3d_player_controller": {
-    "commit": "1097d8884acfdad5887c27095a13bed526b04267",
-    "pulled": "2026-09-11T22:38:55Z",
+    "commit": "29a824774451003a4ea53c8f898e6f4327e2f8b3",
+    "pulled": "2026-09-11T22:46:40Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Take the controls HUD and world prompt spacing fixes"
+    "subject": "Take the HUD looking the same in the editor as in the game"
   },
   "controls": {
-    "commit": "374e3813d624c6faebb7de21f720aa86a36a739b",
-    "pulled": "2026-09-11T22:38:57Z",
+    "commit": "245fb4fe291f63777e20b115f23619185970bddb",
+    "pulled": "2026-09-11T22:46:42Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-controls.git",
-    "subject": "Show in the editor what the HUD will actually look like"
+    "subject": "Let the game name its own buttons, and leave the labels blank"
   },
   "date_and_time": {
     "commit": "a7cf4a647029df53c7723a6d0571b3a03ddfce35",
-    "pulled": "2026-09-11T22:38:59Z",
+    "pulled": "2026-09-11T22:46:44Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/date-and-time.git",
     "subject": "ci: point the tests at the gutconfig where it now lives"
   },
   "godot_doom_gdextension": {
-    "commit": "0d61f09cf11db1a859ef0d728bf3bcabfb9fdc38",
-    "pulled": "2026-09-11T22:39:02Z",
+    "commit": "0fad0587e312923c48c179af2afece8c4425ae55",
+    "pulled": "2026-09-11T22:46:47Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-doom-gdextension.git",
-    "subject": "Make the controls card a resource instead of a hardcoded scene"
+    "subject": "Take the HUD looking the same in the editor as in the game"
   },
   "gta": {
-    "commit": "3f1976900dbcfb6f5af5889cd1641a2c7f36b4b4",
-    "pulled": "2026-09-11T22:39:00Z",
+    "commit": "3813c7940084b9a6f033200429afca0b4a2e4b5d",
+    "pulled": "2026-09-11T22:46:45Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/gta.git",
-    "subject": "Take the controls HUD and world prompt spacing fixes"
+    "subject": "Take the HUD looking the same in the editor as in the game"
   },
   "radi_ot": {
     "commit": "93aee33383208471e1cb57b8e93392ef3bcf0765",
-    "pulled": "2026-09-11T22:39:01Z",
+    "pulled": "2026-09-11T22:46:47Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/radi-ot.git",
     "subject": "ci: judge the test run by its report, not Godot's exit code"
   },
   "tcps": {
-    "commit": "066a1103cb1b95aaaf808cc64aee4f2b11a8add2",
-    "pulled": "2026-09-11T22:39:01Z",
+    "commit": "aa692f8a3c1d8b5905c018c13378a05e9b59f9d5",
+    "pulled": "2026-09-11T22:46:46Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/tcps.git",
-    "subject": "Take the controls HUD and world prompt spacing fixes"
+    "subject": "Take the HUD looking the same in the editor as in the game"
   },
   "weather_fx": {
     "commit": "322b54f383ac59b58b80f1cf19d9d37397452634",
-    "pulled": "2026-09-11T22:38:58Z",
+    "pulled": "2026-09-11T22:46:43Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/weather-fx.git",
     "subject": "Show the clouds in the pink sky, with wind and leaves"
