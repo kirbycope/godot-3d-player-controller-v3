@@ -21,11 +21,11 @@
     "subject": "ci: point the tests at the gutconfig where it now lives"
   },
   "godot_doom_gdextension": {
-    "commit": "fc8a2ca9c589976b0046fd0d2fdcef8acbf12464",
-    "pulled": "2026-09-12T03:34:49Z",
+    "commit": "73b5b1048d355749ef470b01fe273615854dcf93",
+    "pulled": "2026-09-12T14:12:10Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-doom-gdextension.git",
-    "subject": "Ignore the web export here too, as Alley Cat already does"
+    "subject": "Ignore the godot-cpp clone rather than committing it"
   },
   "gta": {
     "commit": "09bb25d4ed9de45598213066d5804d875c842111",

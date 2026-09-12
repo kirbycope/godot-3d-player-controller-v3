@@ -1,10 +1,11 @@
-[gd_scene load_steps=22 format=3]
+[gd_scene load_steps=23 format=3]
 
 [ext_resource type="Script" path="res://scenes/retro_computer.gd" id="1_retro"]
 [ext_resource type="PackedScene" path="res://scenes/doom.tscn" id="2_doom"]
 [ext_resource type="Shader" path="res://scenes/crt_screen.gdshader" id="3_crt"]
 [ext_resource type="Material" uid="uid://bgh0q813ao036" path="res://assets/ambientcg_com/planks_20/Planks020_1K-JPG.tres" id="4_planks"]
 [ext_resource type="Material" uid="uid://da7xlxi1ot5r1" path="res://assets/ambientcg_com/wood_073/Wood073_1K-JPG.tres" id="5_wood"]
+[ext_resource type="PackedScene" path="res://addons/godot_doom_gdextension/scenes/pure_doom_controls.tscn" id="7_doom_hud"]
 [ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://addons/controls/action_prompt.tscn" id="6_prompt"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_body"]
@@ -198,6 +199,9 @@ soundfont = "res://addons/godot_doom_gdextension/assets/gzdoom.sf2"
 [node name="ScreenCamera" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.06, 0.4)
 fov = 50.0
+
+[node name="DoomControls" parent="." instance=ExtResource("7_doom_hud")]
+visible = false
 
 [node name="ActionPrompt" parent="." instance=ExtResource("6_prompt")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.265, 0.1)

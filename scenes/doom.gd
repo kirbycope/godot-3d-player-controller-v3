@@ -5,6 +5,10 @@ extends Control
 ## on the fly, so the scene ships no third-party assets. Walking and turning poll the player controller's
 ## actions (analog input has no signal); everything else arrives as events pushed into the screen's [SubViewport].
 
+## The real DOOM has taken the screen and is running. Carries the [code]PureDoom[/code] node, which a host
+## needs to ask what weapon is in hand. Not emitted for the raycaster, which has no weapons to cycle.
+signal engine_started(engine_node: Control)
+
 enum Screen { PROMPT, BOOTING, PLAYING, DEAD, WON, ENGINE }
 
 ## A floating one-eyed demon that bites once it has seen you.
@@ -219,6 +223,9 @@ func start_game() -> void:
 		engine.show()
 		engine.call(&"start")
 		queue_redraw()
+		# The boot text runs first, so the engine does not exist when the Player sits down. Whoever is
+		# driving the screen is told when it does rather than having to watch for it.
+		engine_started.emit(engine)
 	else:
 		start_level()
 

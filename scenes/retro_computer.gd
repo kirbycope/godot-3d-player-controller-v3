@@ -6,8 +6,10 @@ extends StaticBody3D
 ##
 ## The view stays a camera in the room rather than a full-screen cut, so the monitor reads as an object
 ## on the desk: the bezel, the keyboard and the Player's own shoulders stay in frame, and their head turns
-## down onto the CRT. The game's own HUD stays up and is re-labelled for DOOM rather than being replaced,
-## for the same reason: a second full-screen overlay would letterbox the shot and break the illusion.
+## down onto the CRT. While they are seated the Player's own HUD steps aside for DOOM's, which the DOOM addon
+## ships as a scene: the same buttons in the same places, saying what DOOM does with them and drawing the keys
+## DOOM answers to. It is the HUD rather than a list of keys beside the monitor for the same reason the view
+## is a camera in the room - a full-screen card letterboxes the shot and breaks the illusion.
 
 @export var hidden_while_in_use: Array[NodePath] = [] ## HUD layers of the level (the clock and weather, say) to hide while the Player is at the keyboard.
 
@@ -25,6 +27,7 @@ var is_in_use: bool = false
 var _view_tween: Tween
 
 @onready var action_prompt: ActionPrompt = $ActionPrompt
+@onready var doom_controls: PureDoomControls = $DoomControls
 @onready var screen_camera: Camera3D = $ScreenCamera
 @onready var screen: MeshInstance3D = $Screen
 @onready var screen_viewport: SubViewport = $ScreenViewport
@@ -34,6 +37,11 @@ var _view_tween: Tween
 
 func _ready() -> void:
 	set_process_input(false)
+	# DOOM's HUD is only ever hand-fed events by this node's own _input, because everything that reaches the
+	# game has already been marked handled by then. Left listening it would also answer the share button and
+	# take screenshots while the Player is walking around the level, which is not its screen to claim.
+	doom_controls.set_process_input(false)
+	doom_controls.set_process(false)
 	# The CRT reads the viewport at runtime; a ViewportTexture saved in the scene cannot find the viewport while the
 	# editor exports the project and logs an invalid path
 	(screen.material_override as ShaderMaterial).set_shader_parameter(&"screen_texture", screen_viewport.get_texture())
@@ -45,8 +53,9 @@ func _input(event: InputEvent) -> void:
 	if not is_instance_valid(player) or player.is_ragdolling:
 		stop_using()
 		return
-	# The Controls detect the device in their own _input, which never runs once this one marks the event handled
-	player.controls._input(event)
+	# The Controls detect the device in their own _input, which never runs once this one marks the event
+	# handled. While seated that is DOOM's HUD rather than the Player's, since that is the one on screen.
+	doom_controls._input(event)
 	if event.is_action_pressed("start"):
 		stop_using()
 	else:
@@ -85,10 +94,23 @@ func equip(_player: Player) -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	player.crosshair.hide()
 	_set_level_hud_visible(false)
-	_show_doom_controls()
-	player.controls.input_type_changed.connect(_on_input_type_changed)
+	# DOOM's HUD takes the screen while the Player's steps aside. Both are the same buttons in the same
+	# places, so swapping them reads as the words changing rather than as a HUD appearing.
+	player.controls.hide()
+	doom_controls.current_input_type = player.controls.current_input_type
+	doom_controls.show()
+	doom_controls.set_process(true)
+	# The weapon arms ask the engine what is in hand and what is being carried, and it does not exist until
+	# the boot text has finished running. On a platform the PureDoom library is not built for it never
+	# arrives at all, the raycaster stands in, and the arms stay quiet because there are no weapons to cycle.
+	if not doom.engine_started.is_connected(_on_engine_started):
+		doom.engine_started.connect(_on_engine_started)
 	doom.boot()
 	set_process_input(true)
+
+
+func _on_engine_started(engine_node: Control) -> void:
+	doom_controls.game = engine_node
 
 
 ## Puts the Player in the chair and starts them typing. The AnimationTree does the rest: [code]is_sitting[/code]
@@ -110,17 +132,20 @@ func stop_using() -> void:
 	is_in_use = false
 	set_process_input(false)
 	doom.sleep()
+	doom_controls.hide()
+	doom_controls.set_process(false)
+	doom_controls.game = null
 	_set_level_hud_visible(true)
 	if not is_instance_valid(player):
 		player = null
 		return
-	if player.controls.input_type_changed.is_connected(_on_input_type_changed):
-		player.controls.input_type_changed.disconnect(_on_input_type_changed)
+	# The Player's HUD never saw the events that went to the game, so it is told which device is in hand
+	# rather than being left showing whatever was in use when they sat down.
+	player.controls.current_input_type = doom_controls.current_input_type
 	player.is_typing_at_keyboard = false
 	player.is_paused = false
 	player.set_head_look_at_target(null)
 	_end_seated_view()
-	player.controls.reset_labels()
 	player.controls.show()
 	player.crosshair.show()
 	# A Player knocked out of the chair is already in Ragdolling, which travels itself back to Standing
@@ -175,51 +200,6 @@ func _end_seated_view() -> void:
 		_view_tween.kill()
 	if is_instance_valid(player.camera):
 		player.camera.current = true
-
-
-## Re-labels the HUD for DOOM rather than for the player controller: at the keyboard the shoulder buttons are
-## not Stealth and Focus, they are Fire and Weapons. Every name here matches the words on the DOOM addon's
-## own HUD, so the two never disagree about what a button does.
-##
-## The set differs by device because the HUD's key glyphs are fixed (WASD, IJKL, the arrows) while a pad has
-## its own buttons. On a keyboard DOOM really does take WASD to move and strafe and the arrows to turn, so
-## those are named honestly; its other keys (Ctrl to fire, Space to use, 1-7 for weapons, Tab for the
-## automap) have no glyph on this HUD, which draws the player controller's own key faces rather than DOOM's.
-## IJKL are blanked by hand because [method Controls.set_labels] otherwise
-## mirrors the d-pad onto them, which would print "Automap" on the I key, where DOOM has nothing.
-func _show_doom_controls() -> void:
-	var controls: Controls = player.controls
-	var labels: Dictionary = {}
-	if controls.current_input_type == controls.InputType.KEYBOARD_MOUSE:
-		# Only these two render: set_labels mirrors the sticks onto them, and they are the WASD and arrow
-		# clusters, the one part of DOOM's keyboard scheme this HUD's fixed glyphs actually match.
-		labels = {
-			controls.key_s_label: "Move, strafe",
-			controls.key_down_label: "Turn",
-		}
-	else:
-		labels = {
-			controls.joypad_axis_5_plus_label: "Fire",
-			controls.joypad_button_2_label: "Fire",
-			controls.joypad_button_0_label: "Use, open",
-			controls.joypad_button_1_label: "Menu: pick",
-			controls.joypad_button_3_label: "Run (hold)",
-			controls.joypad_button_11_label: "Automap",
-			controls.joypad_button_12_label: "DOOM menu",
-			controls.joypad_button_13_label: "Weapon",
-			controls.joypad_button_14_label: "Weapon",
-			controls.joypad_button_6_label: "Get Up",
-			controls.left_joystick_label: "Move",
-			controls.right_joystick_label: "Turn",
-		}
-	controls.set_labels(labels)
-	controls.show()
-
-
-func _on_input_type_changed(_input_type: int) -> void:
-	# Swapping device re-applies the Controls' defaults, so the seated labels have to be put back
-	if is_in_use:
-		_show_doom_controls()
 
 
 func _set_level_hud_visible(shown: bool) -> void:
