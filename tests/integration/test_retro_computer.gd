@@ -53,7 +53,7 @@ func test_using_the_computer_takes_the_camera_and_boots_doom() -> void:
 	assert_false(computer.action_prompt.visible)
 	assert_true(player.controls.visible, "The HUD stays up, re-labelled for DOOM")
 	assert_false(player.crosshair.visible, "The crosshair should hide over the monitor")
-	assert_false(computer.controls_overlay.visible, "The full-screen key card is off by default; it letterboxes the shot")
+	assert_eq(player.controls.key_s_label.text, "Move, strafe", "and the HUD says what DOOM does, not what the game does")
 
 
 func test_input_reaches_the_game_and_start_leaves() -> void:
@@ -75,7 +75,7 @@ func test_input_reaches_the_game_and_start_leaves() -> void:
 	assert_false(computer.is_processing_input())
 	assert_true(player.controls.visible, "Leaving should bring the on-screen controls back")
 	assert_true(player.crosshair.visible, "Leaving should bring the crosshair back")
-	assert_false(computer.controls_overlay.visible, "Leaving should hide the controls card")
+	assert_eq(player.controls.key_s_label.text, "Move", "and the HUD goes back to the game's own words")
 	assert_eq(computer.doom.screen, Doom.Screen.PROMPT, "The screen should drop back to the DOS prompt")
 
 
@@ -96,14 +96,14 @@ func test_riding_player_cannot_use_it() -> void:
 	assert_false(player.is_paused)
 
 
-func test_key_card_can_be_turned_back_on_and_follows_the_device() -> void:
-	computer.show_keymap_card = true
-	player.controls.current_input_type = player.controls.InputType.KEYBOARD_MOUSE
+## Swapping device puts the Controls' own labels back, so the DOOM words have to go on again or the HUD
+## silently reverts to naming the game's actions while the Player is still at the keyboard.
+func test_the_doom_words_survive_a_change_of_device() -> void:
+	player.controls.current_input_type = player.controls.InputType.MICROSOFT
 	computer.equip(player)
-	assert_true(computer.controls_overlay.visible, "With the card on it shows beside the monitor")
-	assert_eq(computer.controls_overlay.input_type, "keyboard")
+	assert_eq(player.controls.joypad_button_2_label.text, "Fire")
 	player.controls.current_input_type = player.controls.InputType.SONY
-	assert_eq(computer.controls_overlay.input_type, "playstation", "The card should follow the input device")
+	assert_eq(player.controls.joypad_button_2_label.text, "Fire", "and they stay on through the swap")
 
 
 func test_using_it_seats_the_player_and_starts_them_typing() -> void:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3]
+[gd_scene load_steps=22 format=3]
 
 [ext_resource type="Script" path="res://scenes/retro_computer.gd" id="1_retro"]
 [ext_resource type="PackedScene" path="res://scenes/doom.tscn" id="2_doom"]
@@ -6,7 +6,6 @@
 [ext_resource type="Material" uid="uid://bgh0q813ao036" path="res://assets/ambientcg_com/planks_20/Planks020_1K-JPG.tres" id="4_planks"]
 [ext_resource type="Material" uid="uid://da7xlxi1ot5r1" path="res://assets/ambientcg_com/wood_073/Wood073_1K-JPG.tres" id="5_wood"]
 [ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://addons/controls/action_prompt.tscn" id="6_prompt"]
-[ext_resource type="PackedScene" path="res://addons/godot_doom_gdextension/scenes/pure_doom_controls_overlay.tscn" id="7_overlay"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_body"]
 size = Vector3(1.2, 1.2, 0.7)
@@ -202,5 +201,3 @@ fov = 50.0
 
 [node name="ActionPrompt" parent="." instance=ExtResource("6_prompt")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.265, 0.1)
-
-[node name="ControlsOverlay" parent="." instance=ExtResource("7_overlay")]

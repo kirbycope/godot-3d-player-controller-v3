@@ -1,56 +1,56 @@
 {
   "3d_player_controller": {
-    "commit": "7a1fea0cea905af67f90d8ac44e9707883829e5d",
-    "pulled": "2026-09-11T23:14:03Z",
+    "commit": "36ec249450c6cb85cc938a8532b618f3318431ad",
+    "pulled": "2026-09-12T03:34:25Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Take the screenshot button named, and Sony's Share glyph"
+    "subject": "Name the buttons the HUD stopped naming"
   },
   "controls": {
-    "commit": "2b3a11bc0806d6ff0fbe9678922f7866ce101ccf",
-    "pulled": "2026-09-11T23:14:05Z",
+    "commit": "88900e9dda5ea1ef8b3bac6652ad68bd5fadfb55",
+    "pulled": "2026-09-12T03:34:26Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-controls.git",
-    "subject": "Show PlayStation the button that actually takes the screenshot"
+    "subject": "Keep both slots' events when two of them name one action"
   },
   "date_and_time": {
     "commit": "a7cf4a647029df53c7723a6d0571b3a03ddfce35",
-    "pulled": "2026-09-11T23:14:07Z",
+    "pulled": "2026-09-12T03:34:30Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/date-and-time.git",
     "subject": "ci: point the tests at the gutconfig where it now lives"
   },
   "godot_doom_gdextension": {
-    "commit": "13d548e0e7dd54737468835a152e091d62bc7393",
-    "pulled": "2026-09-11T23:14:11Z",
+    "commit": "fc8a2ca9c589976b0046fd0d2fdcef8acbf12464",
+    "pulled": "2026-09-12T03:34:49Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-doom-gdextension.git",
-    "subject": "Take the screenshot button named, and Sony's Share glyph"
+    "subject": "Ignore the web export here too, as Alley Cat already does"
   },
   "gta": {
-    "commit": "6a560b95b705e0a2752f95a5483ce3760df46d96",
-    "pulled": "2026-09-11T23:14:08Z",
+    "commit": "09bb25d4ed9de45598213066d5804d875c842111",
+    "pulled": "2026-09-12T03:50:38Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/gta.git",
-    "subject": "Take the screenshot button named, and Sony's Share glyph"
+    "subject": "Take the HUD with its button labels back"
   },
   "radi_ot": {
     "commit": "93aee33383208471e1cb57b8e93392ef3bcf0765",
-    "pulled": "2026-09-11T23:14:10Z",
+    "pulled": "2026-09-12T03:34:36Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/radi-ot.git",
     "subject": "ci: judge the test run by its report, not Godot's exit code"
   },
   "tcps": {
-    "commit": "d17b946e25e2a65715a821f857e05f2e036a359d",
-    "pulled": "2026-09-11T23:14:09Z",
+    "commit": "06ab493fcd0ac09f2194c95c634438d7916eab74",
+    "pulled": "2026-09-12T03:50:39Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/tcps.git",
-    "subject": "Take the screenshot button named, and Sony's Share glyph"
+    "subject": "Take the HUD with its button labels back"
   },
   "weather_fx": {
     "commit": "322b54f383ac59b58b80f1cf19d9d37397452634",
-    "pulled": "2026-09-11T23:14:06Z",
+    "pulled": "2026-09-12T03:34:29Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/weather-fx.git",
     "subject": "Show the clouds in the pink sky, with wind and leaves"

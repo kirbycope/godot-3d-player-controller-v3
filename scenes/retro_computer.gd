@@ -6,11 +6,8 @@ extends StaticBody3D
 ##
 ## The view stays a camera in the room rather than a full-screen cut, so the monitor reads as an object
 ## on the desk: the bezel, the keyboard and the Player's own shoulders stay in frame, and their head turns
-## down onto the CRT. That is also why [member show_keymap_card] defaults to false, since the full-screen
-## key list letterboxes the shot; the game's own HUD stays up instead, re-labelled for DOOM.
-
-## The overlay's plain-text device names, indexed by the player controller's Controls.InputType.
-const INPUT_TYPE_NAMES: Array[String] = ["keyboard", "xbox", "nintendo", "playstation", "touch"]
+## down onto the CRT. The game's own HUD stays up and is re-labelled for DOOM rather than being replaced,
+## for the same reason: a second full-screen overlay would letterbox the shot and break the illusion.
 
 @export var hidden_while_in_use: Array[NodePath] = [] ## HUD layers of the level (the clock and weather, say) to hide while the Player is at the keyboard.
 
@@ -21,7 +18,6 @@ const INPUT_TYPE_NAMES: Array[String] = ["keyboard", "xbox", "nintendo", "playst
 @export var first_person_camera_position: Vector3 = Vector3(0.0, 1.06, 0.40) ## Where the view sits when the Player's camera is in first person: level with the middle of the CRT and on its axis, so the screen is square to the view rather than seen across.
 @export var first_person_camera_fov: float = 50.0 ## Frames the whole monitor at that distance, with the room at the sides, since a 4:3 CRT never fills a 16:9 frame.
 @export var view_move_time: float = 0.7 ## Seconds the view takes to travel from the Player's own camera into the seat.
-@export var show_keymap_card: bool = false ## The full-screen list of keys. Off by default: it fills the edges of the frame and breaks the illusion that the monitor is in the room.
 
 var player: Player ## The Player looking at or using the computer.
 var is_in_use: bool = false
@@ -29,7 +25,6 @@ var is_in_use: bool = false
 var _view_tween: Tween
 
 @onready var action_prompt: ActionPrompt = $ActionPrompt
-@onready var controls_overlay: PureDoomControlsOverlay = $ControlsOverlay
 @onready var screen_camera: Camera3D = $ScreenCamera
 @onready var screen: MeshInstance3D = $Screen
 @onready var screen_viewport: SubViewport = $ScreenViewport
@@ -92,9 +87,6 @@ func equip(_player: Player) -> void:
 	_set_level_hud_visible(false)
 	_show_doom_controls()
 	player.controls.input_type_changed.connect(_on_input_type_changed)
-	if show_keymap_card:
-		_on_input_type_changed(player.controls.current_input_type)
-		controls_overlay.show()
 	doom.boot()
 	set_process_input(true)
 
@@ -118,7 +110,6 @@ func stop_using() -> void:
 	is_in_use = false
 	set_process_input(false)
 	doom.sleep()
-	controls_overlay.hide()
 	_set_level_hud_visible(true)
 	if not is_instance_valid(player):
 		player = null
@@ -187,14 +178,14 @@ func _end_seated_view() -> void:
 
 
 ## Re-labels the HUD for DOOM rather than for the player controller: at the keyboard the shoulder buttons are
-## not Stealth and Focus, they are Fire and Weapons. Every name here comes from the godot_doom_gdextension
-## controls resource, so the HUD and the key card never disagree.
+## not Stealth and Focus, they are Fire and Weapons. Every name here matches the words on the DOOM addon's
+## own HUD, so the two never disagree about what a button does.
 ##
 ## The set differs by device because the HUD's key glyphs are fixed (WASD, IJKL, the arrows) while a pad has
 ## its own buttons. On a keyboard DOOM really does take WASD to move and strafe and the arrows to turn, so
-## those are named honestly; its other keys have no glyph on this HUD (Ctrl to fire, Space to use, 1-7 for
-## weapons, Tab for the automap, Esc to leave) and only the key card can show them, which is what
-## [member show_keymap_card] is for. IJKL are blanked by hand because [method Controls.set_labels] otherwise
+## those are named honestly; its other keys (Ctrl to fire, Space to use, 1-7 for weapons, Tab for the
+## automap) have no glyph on this HUD, which draws the player controller's own key faces rather than DOOM's.
+## IJKL are blanked by hand because [method Controls.set_labels] otherwise
 ## mirrors the d-pad onto them, which would print "Automap" on the I key, where DOOM has nothing.
 func _show_doom_controls() -> void:
 	var controls: Controls = player.controls
@@ -225,8 +216,7 @@ func _show_doom_controls() -> void:
 	controls.show()
 
 
-func _on_input_type_changed(input_type: int) -> void:
-	controls_overlay.input_type = INPUT_TYPE_NAMES[input_type]
+func _on_input_type_changed(_input_type: int) -> void:
 	# Swapping device re-applies the Controls' defaults, so the seated labels have to be put back
 	if is_in_use:
 		_show_doom_controls()
