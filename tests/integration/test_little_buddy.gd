@@ -78,3 +78,23 @@ func test_the_replicated_blend_feeds_the_blend_space_on_a_puppet():
 	buddy.locomotion_blend = 0.5 # what the synchronizer writes while the server's buddy walks
 	var blend: float = buddy.animation_tree.get(buddy.LOCOMOTION_BLEND_POSITION_PATH)
 	assert_eq(blend, 0.5, "The setter drives the blend space, so the puppet's legs move.")
+
+
+## A drop puts the buddy back under the parent it stood under before, not under whatever the current scene is:
+## a test runner has none, and two peers with different fallbacks would put their copies under different paths.
+func test_a_drop_returns_the_buddy_to_where_it_stood() -> void:
+	var player: Player = PLAYER_SCENE.instantiate() as Player
+	root.add_child(player)
+	var home: Node3D = Node3D.new()
+	home.name = "Home"
+	root.add_child(home)
+	var buddy: CharacterBody3D = LITTLE_BUDDY_SCENE.instantiate() as CharacterBody3D
+	home.add_child(buddy)
+	await wait_physics_frames(2)
+	buddy.player = player
+	buddy.pick_up()
+	await wait_physics_frames(2)
+	assert_eq(buddy.get_parent(), player.item_spring_arm, "Carried on the player's arm")
+	buddy.drop()
+	await wait_physics_frames(2)
+	assert_eq(buddy.get_parent(), home, "and back under Home when dropped, current scene or not")

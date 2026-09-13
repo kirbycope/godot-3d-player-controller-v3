@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Smoke-test the Web export in a real browser: serve docs/, open it in headless Chromium, get past the
-click-to-start overlay and the title screen, wait for the world to load, and fail on any error the engine or the
+click-to-start overlay straight into the world, wait for it to load, and fail on any error the engine or the
 page logs. Screenshots of each step land in scratch/web_smoke/.
 
     pip install playwright && playwright install chromium
@@ -113,13 +113,12 @@ def main() -> int:
 			print("Engine started")
 			page.screenshot(path=os.path.join(OUT, "1_started.png"), timeout=120_000)
 
-			# Click to start (the web build waits for a gesture before capturing input and audio), then the title screen
-			# has Single-Player focused: Enter presses it
+			# Click to start (the web build waits for a gesture before capturing input and audio); the click goes
+			# straight into the single-player world, there is no title screen to press through
 			canvas.click(position={"x": 640, "y": 360})
 			page.wait_for_timeout(1500)
-			page.screenshot(path=os.path.join(OUT, "2_title.png"), timeout=120_000)
-			page.keyboard.press("Enter")
-			print("Single-Player pressed; waiting for the world (World.gd prints \"World ready\" once the local player has spawned)")
+			page.screenshot(path=os.path.join(OUT, "2_loading.png"), timeout=120_000)
+			print("Started; waiting for the world (World.gd prints \"World ready\" once the local player has spawned)")
 			started = time.time()
 			while time.time() - started < args.timeout:
 				page.wait_for_timeout(2000) # a Playwright wait, so console events keep arriving (a plain sleep pumps none)

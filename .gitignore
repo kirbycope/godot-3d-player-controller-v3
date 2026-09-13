@@ -33,3 +33,6 @@ addons/weather_fx/
 # The web export is built by .github/workflows/pages.yml and handed to Pages, never committed.
 build/
 docs/
+
+# Results of the two-machine Steam run, tools/steam_test.py; local only.
+.steam_test/

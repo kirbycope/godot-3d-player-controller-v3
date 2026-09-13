@@ -2,6 +2,11 @@ extends Node3D
 
 @export_file("*.tscn") var single_player_scene: String
 
+## Whether the game goes straight into the single-player world instead of showing the title screen. On the web
+## the Click to Start overlay still comes first, because a browser lets the game capture the mouse and play
+## audio only from inside a user gesture; the click then starts the game rather than revealing the title.
+@export var straight_to_single_player: bool = true
+
 @onready var click_to_start: CanvasLayer = $ClickToStart
 @onready var title_screen: TitleScreen = $TitleScreen
 @onready var lobby_explorer: LobbyExplorer = $LobbyExplorer
@@ -13,7 +18,9 @@ func _ready() -> void:
 	# [Webfix] Browsers require a user gesture before capturing the mouse and playing audio
 	var requires_input_activation: bool = ProjectSettings.get_setting("rendering/renderer/rendering_method") not in ["forward_plus", "mobile"]
 	click_to_start.visible = requires_input_activation
-	title_screen.visible = not requires_input_activation
+	title_screen.visible = not requires_input_activation and not straight_to_single_player
+	if straight_to_single_player and not requires_input_activation:
+		single_player()
 
 
 ## Called when there is an input event.
@@ -36,9 +43,12 @@ func _unhandled_input(event: InputEvent) -> void:
 				title_screen.button_single_player.pressed.emit()
 
 
-## Hides the click-to-start overlay and reveals the title screen.
+## Hides the click-to-start overlay and starts the game, or reveals the title screen when that is wanted.
 func _dismiss_click_to_start() -> void:
 	click_to_start.hide()
+	if straight_to_single_player:
+		single_player()
+		return
 	title_screen.show()
 	title_screen.button_single_player.grab_focus()
 

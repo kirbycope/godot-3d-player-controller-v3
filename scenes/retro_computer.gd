@@ -162,6 +162,9 @@ func stop_using() -> void:
 	# Sitting, and the locomotion path tells us when it has landed there.
 	if not player.locomotion_node_changed.is_connected(_on_player_locomotion_node_changed):
 		player.locomotion_node_changed.connect(_on_player_locomotion_node_changed)
+	# Already back in the plain sitting pose, the lead-out has nothing to play and the path will not change again
+	if player.current_locomotion_path == "Sitting":
+		_on_player_locomotion_node_changed("Sitting")
 
 
 ## Stands the Player up once the typing lead-out has returned the tree to the plain sitting pose.

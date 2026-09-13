@@ -21,6 +21,7 @@ var locomotion_blend: float = 0.0: ## Replicated: 0 idle, 0.5 walk, 1 run; the s
 @onready var action_prompt: ActionPrompt = $ActionPrompt
 @onready var animation_tree: AnimationTree = $y_bot_root/AnimationTree
 @onready var collision_shape: CollisionShape3D = $CollisionShape3D
+@onready var _home: Node = get_parent() ## Where the buddy stood before anyone picked it up; where a drop puts it back on every peer.
 
 
 func _physics_process(delta: float) -> void:
@@ -177,9 +178,8 @@ func _set_authority(peer_id: int) -> void:
 	set_multiplayer_authority(peer_id)
 
 
-## Moves the buddy from the player's spring arm back into the current scene, keeping its world position.
+## Moves the buddy from the player's spring arm back to where it lived before, keeping its world position. The
+## same parent on every peer, or the copies end up under different paths and the synchronizer's data lands on
+## a node the other side cannot find.
 func _return_to_scene() -> void:
-	var scene_root: Node = get_tree().current_scene
-	if scene_root == null:
-		scene_root = player.get_parent() if player and player.get_parent() else get_tree().root
-	reparent(scene_root)
+	reparent(_home if is_instance_valid(_home) else get_tree().root)

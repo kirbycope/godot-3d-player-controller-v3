@@ -33,6 +33,13 @@ are not in `addons.json`; the pull script leaves them alone. See
 
 ---
 
+The game starts in the single-player world with no title screen: `Main.straight_to_single_player` is on in
+`scenes/main.tscn`, so `main.gd` loads the world on ready. On the web the Click to Start overlay still comes
+first, since a browser lets the game capture the mouse and play audio only from inside a user gesture, and the
+click starts the world. Turning the flag off brings the title screen back with its Single-Player and
+Multiplayer buttons. A single-player world hosts a public Steam lobby as it always has, so a friend can still
+join through their own lobby list.
+
 ## What is in the world
 
 `scenes/world.tscn` is the level. The parts below are this project's own, under `scenes/` and
@@ -195,6 +202,56 @@ suites:
 & 'C:\Godot\godot.exe' --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests/unit,res://tests/integration -gexit
 ```
 
+### Two-machine Steam tests
+
+`tests/steam/` is a third suite that runs the game over a real Steam lobby: one Godot on this PC as
+the lobby host and one on the Mac as the client, each signed into its own Steam account, both
+against Spacewar (app id 480). It is the only place the multiplayer is exercised end to end rather
+than over ENet on localhost, so it covers what the world does between two peers: the session and
+who is who, text chat, push-to-talk, emotes, weather, the car and its radio, the horse's whistle and
+saddle, equipment, stealth, the little buddy, the giant duck, harvesting, the boat, a sign, drops
+and pickups, the training dummy, the torch, the retro computer, shooting, a thrown rock, the fishing
+float, the skateboard and a spell. Where something turned out not to cross the network the scenario
+says so in a pending test rather than pretending: the car radio's station, and the skateboard under a
+rider.
+
+```powershell
+python tools/steam_test.py                      # the host here, the client on the Mac over SSH
+python tools/steam_test.py --select test_07     # one scenario, by filename substring
+python tools/steam_test.py --role host          # one side by hand; give the other the same --run-id
+python tools/steam_test.py --windowed           # drop --headless if Steam or rendering wants a window
+```
+
+The runner makes a run id, launches both sides at once with `STEAM_TEST_ROLE` and `STEAM_TEST_ID`
+in their environment, streams both outputs with a `[host]` or `[client]` prefix, copies the Mac's
+JUnit XML back into `.steam_test/` and exits non-zero when either side failed or never reported.
+This PC resolves `Timothys-MacBook-Pro.local` only some of the time, so the runner reaches the Mac
+by IP (`--mac`, default `192.168.4.41`, printed at launch) and the client is not a foreground SSH
+command: it starts detached under `nohup` with its output in `.steam_test/client.log` on the Mac,
+the launch is retried while the name does not resolve, and the log and exit code are polled with
+short SSH calls that tolerate a failure. Godot runs there under `caffeinate -dis`, which keeps the
+Mac awake for exactly as long as the run lasts; that is the rule for every long SSH job on the Mac,
+and a bare `caffeinate` is never left running on its own. Every wait in the lockstep has a hard
+timeout that fails the test, and a side whose peer has left the session gives up its waits at once.
+The host's world creates a public lobby as it always does and tags it `steam_test=<run id>`; the
+client asks Steam for lobbies with exactly that tag, every two seconds for up to three minutes, joins it
+and loads the world, and both wait until two Players stand in it. From then on the two sides run
+the same scenario files in the same order and hand off through `SteamTestSync`, a node under
+`/root` with the same path on both machines: `mark(step)` tells the other side a step is done,
+`await_step(step)` waits for it, `barrier(step)` does both. Every assertion sits on the side that
+sees the effect. Both machines run headless; GodotSteam initialises without a window on either.
+
+It never runs in CI, and it is not in `.gutconfig.json`. It needs two machines signed into two
+Steam accounts with a lobby between them, which a runner does not have; the CI workflow runs GUT
+with `.gutconfig.json`, whose directories are the addon suites, `tests/unit` and
+`tests/integration`, with `include_subdirs` off, so `tests/steam` is never collected there.
+
+The runner passes `-gfailure_error_types=gut,push_error`, so an engine error line on its own does
+not fail a scenario. The game's authority handoffs (a horse mounted, the buddy picked up) and the
+spawner's despawn of a node a peer has already let go log bursts of `Ignoring sync data from
+non-authority` and `ERR_UNAUTHORIZED` on a run that behaves; the assertions are what count, and a
+lockstep timeout still fails through `push_error`.
+
 ---
 
 ## Example resources
@@ -288,7 +345,7 @@ on its largest edge by `process/size_limit`, with `detect_3d/compress_to` off so
 in 3D is not switched back to VRAM compression.
 
 `tools/web_smoke_test.py` serves `docs/` and drives the export in headless Chromium through Playwright
-(`pip install playwright && playwright install chromium`): click to start, Single-Player, the world,
+(`pip install playwright && playwright install chromium`): click to start, straight into the world,
 failing on any error the engine or the page logs, with screenshots and the console under
 `scratch/web_smoke/`. `tools/tinyify.py <folder> --engine local` downsizes the PNGs under a folder to
 512 and stamps them with `TINYIFY_*` metadata so they are skipped next time.
