@@ -1,56 +1,56 @@
 {
   "3d_player_controller": {
-    "commit": "0f76e19b913b8f5388dd92b08341340896e91443",
-    "pulled": "2026-09-13T07:00:49Z",
+    "commit": "2d1cdf30574fb4cc31834f0219f6022c62c31668",
+    "pulled": "2026-09-13T07:13:15Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Take the controls addon's touch sizing"
+    "subject": "Drop the stretch mode: the controls HUD sizes itself to the window now"
   },
   "controls": {
-    "commit": "ca5297f3305706b41a4e8f8fb46c64cf0d128ae3",
-    "pulled": "2026-09-13T07:00:51Z",
+    "commit": "5a073169a44078371e14fec28e21e591577eca3d",
+    "pulled": "2026-09-13T07:13:16Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-controls.git",
-    "subject": "Fit the HUD to the window on every device, and again on every resize"
+    "subject": "Drop the stretch mode: the HUD sizes itself to the window now"
   },
   "date_and_time": {
     "commit": "a7cf4a647029df53c7723a6d0571b3a03ddfce35",
-    "pulled": "2026-09-13T07:00:53Z",
+    "pulled": "2026-09-13T07:13:18Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/date-and-time.git",
     "subject": "ci: point the tests at the gutconfig where it now lives"
   },
   "godot_doom_gdextension": {
-    "commit": "f143e95a7b928f6513e87eead565ba5736e4c3ef",
-    "pulled": "2026-09-13T07:00:57Z",
+    "commit": "9ae7505f962c0104114c6db0ca8469f0e2129226",
+    "pulled": "2026-09-13T07:13:22Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-doom-gdextension.git",
-    "subject": "Retake the preview with the current HUD"
+    "subject": "Drop the stretch mode: the controls HUD sizes itself to the window now"
   },
   "gta": {
-    "commit": "31f5cb43ace46961e8323fe2d4a7d58941dc47a7",
-    "pulled": "2026-09-13T07:00:54Z",
+    "commit": "a8b72fce6ad733170f2089056a09c5ce26c79f1f",
+    "pulled": "2026-09-13T07:13:19Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/gta.git",
-    "subject": "Take the controls addon's touch sizing"
+    "subject": "Drop the stretch mode: the controls HUD sizes itself to the window now"
   },
   "radi_ot": {
     "commit": "93aee33383208471e1cb57b8e93392ef3bcf0765",
-    "pulled": "2026-09-13T07:00:56Z",
+    "pulled": "2026-09-13T07:13:21Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/radi-ot.git",
     "subject": "ci: judge the test run by its report, not Godot's exit code"
   },
   "tcps": {
-    "commit": "1595f7ea796721a2f1a6592fca2e44905de2816e",
-    "pulled": "2026-09-13T07:00:55Z",
+    "commit": "bc94678f4703290edc287e0d4909118280d62a62",
+    "pulled": "2026-09-13T07:13:20Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/tcps.git",
-    "subject": "Take the controls addon's touch sizing"
+    "subject": "Drop the stretch mode: the controls HUD sizes itself to the window now"
   },
   "weather_fx": {
     "commit": "322b54f383ac59b58b80f1cf19d9d37397452634",
-    "pulled": "2026-09-13T07:00:52Z",
+    "pulled": "2026-09-13T07:13:18Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/weather-fx.git",
     "subject": "Show the clouds in the pink sky, with wind and leaves"
