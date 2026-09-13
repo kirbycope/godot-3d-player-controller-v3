@@ -108,9 +108,15 @@ func after_each() -> void:
 func after_all() -> void:
 	if sync == null or sync.world == null or not _is_last_script():
 		return
-	await barrier("session_end", null, RESYNC_TIMEOUT)
-	# The side that arrives second finds the other's mark waiting, marks its own and would close the peer before
-	# that last reliable packet leaves; a moment's grace lets it out, so the other side's wait ends cleanly.
+	# The end of the session is not a test of the game: the other side's last mark can be the one packet a relay
+	# stall holds back, so a missing one is noted and the session is closed either way. The side that arrives
+	# second finds the other's mark waiting and would close before its own left; a moment's grace lets it out.
+	sync.mark(_step_name("session_end"))
+	var deadline: int = Time.get_ticks_msec() + int(RESYNC_TIMEOUT * 1000.0)
+	while not sync.reached(_step_name("session_end")) and not sync.other_peer_gone and Time.get_ticks_msec() < deadline:
+		await get_tree().process_frame
+	if not sync.reached(_step_name("session_end")):
+		print("[steam_test] %s: the other side's session_end never arrived; closing anyway" % role)
 	await get_tree().create_timer(2.0).timeout
 	_end_session()
 
