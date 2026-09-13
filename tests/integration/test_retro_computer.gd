@@ -217,3 +217,24 @@ func test_looking_away_after_the_player_is_gone_hides_the_prompt() -> void:
 	player = null
 	computer.hide_menu()
 	assert_false(computer.action_prompt.visible, "The prompt hides without a Player to give the label back to")
+
+
+## Select/View still swaps perspective while DOOM plays: the Player's camera changes, so they stand up in the
+## perspective they chose, and the seat's view follows it, square on to the screen in first person.
+func test_the_perspective_button_swaps_the_seated_view_and_the_players_camera() -> void:
+	computer.equip(player)
+	await wait_physics_frames(2)
+	var camera: Camera = player.camera as Camera
+	assert_eq(camera.perspective, Camera.Perspective.THIRD_PERSON, "Seated in third person to begin with")
+	assert_eq(computer.screen_camera.fov, computer.seated_camera_fov, "over the shoulder")
+	var press: InputEventAction = InputEventAction.new()
+	press.action = "perspective"
+	press.pressed = true
+	computer._input(press)
+	assert_eq(camera.perspective, Camera.Perspective.FIRST_PERSON, "One press swaps the Player's own camera to first person")
+	assert_eq(computer.screen_camera.fov, computer.first_person_camera_fov, "and frames the screen square on")
+	await wait_seconds(computer.view_move_time + 0.2)
+	assert_almost_eq(computer.screen_camera.global_position, computer.to_global(computer.first_person_camera_position), Vector3(0.05, 0.05, 0.05), "with the view settled on the screen's axis")
+	computer._input(press)
+	assert_eq(camera.perspective, Camera.Perspective.THIRD_PERSON, "The next press comes back")
+	assert_eq(computer.screen_camera.fov, computer.seated_camera_fov, "to the over-the-shoulder shot")

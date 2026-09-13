@@ -58,6 +58,11 @@ func _input(event: InputEvent) -> void:
 	doom_controls._input(event)
 	if event.is_action_pressed("start"):
 		stop_using()
+	elif event.is_action_pressed("perspective") and player.camera is Camera:
+		# Select/View still swaps perspective at the keyboard: the Player's own camera changes, which is what they
+		# get back on standing, and the seat's view follows it, over the shoulder or square on to the screen
+		(player.camera as Camera).toggle_perspective()
+		_move_seated_view(screen_camera.global_transform)
 	else:
 		screen_viewport.push_input(event)
 	# Touch input is left for the on-screen buttons, which drive the same actions the game reads
@@ -183,17 +188,21 @@ func _on_player_locomotion_node_changed(state_path: String) -> void:
 ## Travels the view from wherever the Player's camera was into the seat, so sitting down is a move
 ## through the room rather than a cut to a screen.
 func _begin_seated_view() -> void:
-	var from: Transform3D = player.camera.global_transform if is_instance_valid(player.camera) \
-			else screen_camera.global_transform
-	# First person means the Player is looking through their own eyes, so give them the screen square on
-	# rather than the over-the-shoulder shot, and take the view off their camera to do it.
+	var from: Transform3D = player.camera.global_transform if is_instance_valid(player.camera) 			else screen_camera.global_transform
+	screen_camera.global_transform = from
+	screen_camera.current = true
+	_move_seated_view(from)
+
+
+## Moves the seat's view from [param from] to the shot the Player's perspective asks for. First person means the
+## Player is looking through their own eyes, so give them the screen square on rather than the over-the-shoulder
+## shot; the perspective button swaps between the two while seated as it does on foot.
+func _move_seated_view(from: Transform3D) -> void:
 	var view_camera: Camera = player.camera as Camera
 	var first_person: bool = view_camera != null and view_camera.perspective == Camera.Perspective.FIRST_PERSON
 	var where: Vector3 = first_person_camera_position if first_person else seated_camera_position
 	var to: Transform3D = Transform3D(Basis(), to_global(where)).looking_at(to_global(seated_camera_target), Vector3.UP)
 	screen_camera.fov = first_person_camera_fov if first_person else seated_camera_fov
-	screen_camera.global_transform = from
-	screen_camera.current = true
 	if _view_tween and _view_tween.is_valid():
 		_view_tween.kill()
 	_view_tween = create_tween()

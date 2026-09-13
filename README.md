@@ -68,7 +68,7 @@ the click or touch goes straight into the single-player world; there is no Steam
   pond.
 - **Retro computer** (`RetroComputer`): a beige desktop whose CRT runs DOOM through the GDExtension,
   behind a curved-glass shader (`scenes/crt_screen.gdshader`). One Player at a time: a chair another
-  peer's Player is already in is refused.
+  peer's Player is already in is refused. Select/View still swaps perspective at the keyboard: the seat's view moves between the over-the-shoulder shot and square on to the screen, and the Player's own camera changes with it, so they stand up in the perspective they chose.
 - **Water and props**: the pool with `Buoyancy` on its area, floating the beach ball (a bump on what
   it rolls into, never a weapon hit and never a chop) and rocking the boat on the weather addon's
   Gerstner waves; a bowling alley, balloons to shoot (the ring spins on every peer), choppable trees
