@@ -73,7 +73,7 @@ func test_input_reaches_the_game_and_start_leaves() -> void:
 	assert_true(player.camera.current, "Leaving should give the Player their camera back")
 	assert_false(computer.screen_camera.current)
 	assert_false(computer.is_processing_input())
-	assert_true(player.controls.visible, "Leaving should bring the on-screen controls back")
+	assert_eq(player.controls.visible, PlayerSettingsResource.load_or_create().hud_shown(player.controls.current_input_type, DisplayServer.is_touchscreen_available()), "Leaving should put the on-screen controls back to the saved rule")
 	assert_true(player.crosshair.visible, "Leaving should bring the crosshair back")
 	assert_false(computer.doom_controls.visible, "and DOOM's is put away")
 	assert_eq(computer.doom.screen, Doom.Screen.PROMPT, "The screen should drop back to the DOS prompt")

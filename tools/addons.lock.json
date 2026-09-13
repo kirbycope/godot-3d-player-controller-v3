@@ -1,17 +1,17 @@
 {
   "3d_player_controller": {
-    "commit": "7e7af6d9a400b0358dca24d1093b00ca3ad34f38",
-    "pulled": "2026-09-13T20:15:48Z",
+    "commit": "4af8bc933df7d44b4eefc1fd78f3bdb3988250d1",
+    "pulled": "2026-09-13T21:17:35Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Make the perspective swap a Camera method"
+    "subject": "Video settings: UI Scale and Controls options"
   },
   "controls": {
-    "commit": "e8639304fe6ea791c682bda72752b7ab5d38b400",
-    "pulled": "2026-09-13T20:15:50Z",
+    "commit": "e2a0835fbfd2c47f7d76e5ee395cda32cf40c019",
+    "pulled": "2026-09-13T21:17:37Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-controls.git",
-    "subject": "Hide a puppet's HUD, bind the d-pad keys, and take the pad in hand"
+    "subject": "README: the HUD keeps its size under a UI scale and is hidden with visible"
   },
   "date_and_time": {
     "commit": "a7cf4a647029df53c7723a6d0571b3a03ddfce35",

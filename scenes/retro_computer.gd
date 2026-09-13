@@ -166,7 +166,7 @@ func stop_using() -> void:
 	player.is_paused = false
 	player.set_head_look_at_target(null)
 	_end_seated_view()
-	player.controls.show()
+	player.apply_hud_visibility() # back to the saved rule: touch only unless the setting says otherwise
 	player.crosshair.show()
 	# A Player knocked out of the chair is already in Ragdolling, which travels itself back to Standing
 	if player.is_ragdolling:
