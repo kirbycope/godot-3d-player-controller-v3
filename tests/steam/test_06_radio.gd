@@ -68,7 +68,7 @@ func test_a_client_at_the_wheel_is_seen_driving_on_the_host() -> void:
 		await await_step("host_saw_driver")
 		me.dismount(true)
 		await wait_for(func() -> bool: return not me.is_riding and not car.is_multiplayer_authority(), "The client gets out and the car is the server's again")
-		assert_eq(car.current_driver_peer_id, Vehicle.SERVER_PEER, "with nobody at the wheel")
+		await wait_for(func() -> bool: return car.current_driver_peer_id == Vehicle.SERVER_PEER, "with nobody at the wheel once the server has taken the car back")
 		mark("client_out")
 		await await_step("host_saw_out")
 

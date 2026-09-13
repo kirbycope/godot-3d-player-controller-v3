@@ -144,7 +144,10 @@ func barrier(step: String, value: Variant = null, timeout: float = STEP_TIMEOUT)
 
 ## Steps are named per scenario file, so two scenarios can both have a "done".
 func _step_name(step: String) -> String:
-	return "%s/%s" % [(get_script() as Script).resource_path.get_file().get_basename(), step]
+	# The file and the test, so two tests in one file can both say "client_riding" without the second finding the
+	# first's mark already waiting (which is how a value of null once landed in an int); after_all has no test
+	var test_name: String = str(gut.get_current_test_object().name) if gut.get_current_test_object() else ""
+	return "%s/%s/%s" % [(get_script() as Script).resource_path.get_file().get_basename(), test_name, step]
 
 
 # --- Helpers ------------------------------------------------------------------------------------------------------

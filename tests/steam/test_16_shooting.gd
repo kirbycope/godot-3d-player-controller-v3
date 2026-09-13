@@ -15,9 +15,10 @@ func test_a_round_fired_on_the_client_flies_on_both_sides() -> void:
 	if is_host:
 		mark("host_watching") # a round is gone within a second; the host is looking before the client fires
 		await await_step("client_fired")
-		await wait_for(func() -> bool: return not _rounds.is_empty(), "The client's round is spawned on the host")
-		assert_true(_rounds[0]["is_projectile"], "as a Projectile")
-		assert_eq(_rounds[0]["shooter"], other_player(), "shot by the host's copy of the client")
+		var spawned: bool = await wait_for(func() -> bool: return not _rounds.is_empty(), "The client's round is spawned on the host")
+		if spawned:
+			assert_true(_rounds[0]["is_projectile"], "as a Projectile")
+			assert_eq(_rounds[0]["shooter"], other_player(), "shot by the host's copy of the client")
 		mark("host_saw_round")
 	else:
 		var me: Player = own_player()

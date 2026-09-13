@@ -13,7 +13,8 @@ extends Node
 
 signal marked(step: String) ## The other side reached [param step].
 
-const RESEND_MS: int = 2000 ## How often a waiting side repeats its own marks. Under a busy session a reliable RPC has gone missing once in a few hundred, which stalled both sides for the rest of the run; repeating what this side has already said makes one lost packet harmless.
+const RESEND_MS: int = 1000 ## How often a waiting side repeats its own marks. Marks travel unreliably, so a lost one costs this long and no more; repeating what this side has already said is what makes that safe.
+const RESEND_LAST: int = 4 ## How many of the newest marks a waiting side repeats; the rest have long since landed.
 
 var world: Node3D ## The world of the run; null until the session is up and again once it is torn down.
 var other_peer_gone: bool = false ## The other side's process has left the session; every wait ends at once.
@@ -37,7 +38,8 @@ func _process(_delta: float) -> void:
 ## Records that this side reached [param step], carrying [param value] to the other side (anything an RPC can carry).
 func mark(step: String, value: Variant = null) -> void:
 	_mine[step] = value
-	_mark.rpc(step, value)
+	print("[sync %d] send %s" % [Time.get_ticks_msec(), step])
+	_mark_sure.rpc(step, value)
 
 
 ## Whether the other side has marked [param step].
@@ -66,7 +68,9 @@ func await_step(step: String, timeout: float = 120.0) -> Variant:
 			return null
 		if Time.get_ticks_msec() >= resend_at:
 			# A mark is a fact, not an event, so saying it again costs nothing and covers the one that went astray
-			for mine: String in _mine:
+			# Only the newest few: a burst of a hundred datagrams loses its tail, which is exactly the mark that matters
+			var recent: Array = _mine.keys().slice(-RESEND_LAST)
+			for mine: String in recent:
 				_mark.rpc(mine, _mine[mine])
 			resend_at = Time.get_ticks_msec() + RESEND_MS
 		await get_tree().process_frame
@@ -79,8 +83,18 @@ func barrier(step: String, value: Variant = null, timeout: float = 120.0) -> Var
 	return await await_step(step, timeout)
 
 
+## A mark goes out once on the reliable stream, which delivers unless the relay stalls, and then again among the
+## newest few every second as unreliable datagrams, which get through a stall the moment the link is back.
+## Duplicates are harmless: a mark is a fact.
 @rpc("any_peer", "call_remote", "reliable")
+func _mark_sure(step: String, value: Variant = null) -> void:
+	_mark(step, value)
+
+
+@rpc("any_peer", "call_remote", "unreliable")
 func _mark(step: String, value: Variant = null) -> void:
+	if not _theirs.has(step):
+		print("[sync %d] got %s from %d" % [Time.get_ticks_msec(), step, multiplayer.get_remote_sender_id()])
 	_theirs[step] = value
 	marked.emit(step)
 
