@@ -1,56 +1,56 @@
 {
   "3d_player_controller": {
-    "commit": "f88cda75017b70cfe99915f257668065d92eb306",
-    "pulled": "2026-09-13T16:53:53Z",
+    "commit": "e316d5ff1fc14c2bc5a226d7e7613ea8920fd099",
+    "pulled": "2026-09-13T17:00:27Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Keep a remote player's camera from taking over the view"
+    "subject": "Claim the view from the controlled camera, not the scene flag"
   },
   "controls": {
     "commit": "e8639304fe6ea791c682bda72752b7ab5d38b400",
-    "pulled": "2026-09-13T16:53:55Z",
+    "pulled": "2026-09-13T17:00:29Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-controls.git",
     "subject": "Hide a puppet's HUD, bind the d-pad keys, and take the pad in hand"
   },
   "date_and_time": {
     "commit": "a7cf4a647029df53c7723a6d0571b3a03ddfce35",
-    "pulled": "2026-09-13T16:53:57Z",
+    "pulled": "2026-09-13T17:00:31Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/date-and-time.git",
     "subject": "ci: point the tests at the gutconfig where it now lives"
   },
   "godot_doom_gdextension": {
     "commit": "3a146eac500fce5097c0fbd3bfbde11334e6f711",
-    "pulled": "2026-09-13T16:54:01Z",
+    "pulled": "2026-09-13T17:00:35Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-doom-gdextension.git",
     "subject": "Take the peer-review fixes in the controls addon"
   },
   "gta": {
     "commit": "6dc3203438c3938672a5c62e58877a0a3d4ec9c9",
-    "pulled": "2026-09-13T16:53:58Z",
+    "pulled": "2026-09-13T17:00:32Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/gta.git",
     "subject": "Take the peer-review fixes in the controls and player controller addons"
   },
   "radi_ot": {
     "commit": "93aee33383208471e1cb57b8e93392ef3bcf0765",
-    "pulled": "2026-09-13T16:54:00Z",
+    "pulled": "2026-09-13T17:00:34Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/radi-ot.git",
     "subject": "ci: judge the test run by its report, not Godot's exit code"
   },
   "tcps": {
     "commit": "ac7f7c530776a6f317f3615ac70dbfc1f3a63f5b",
-    "pulled": "2026-09-13T16:53:59Z",
+    "pulled": "2026-09-13T17:00:33Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/tcps.git",
     "subject": "Take the peer-review fixes in the controls and player controller addons"
   },
   "weather_fx": {
     "commit": "322b54f383ac59b58b80f1cf19d9d37397452634",
-    "pulled": "2026-09-13T16:53:56Z",
+    "pulled": "2026-09-13T17:00:31Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/weather-fx.git",
     "subject": "Show the clouds in the pink sky, with wind and leaves"
