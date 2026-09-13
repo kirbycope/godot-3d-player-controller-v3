@@ -1,56 +1,56 @@
 {
   "3d_player_controller": {
-    "commit": "9a4934706ec7057f0b454cb57d63910f4112e487",
-    "pulled": "2026-09-13T17:11:17Z",
+    "commit": "5d10db4aa3c3e0a49060375568bcff45ddf59fbe",
+    "pulled": "2026-09-13T18:44:49Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Fade equipment with the body in stealth"
+    "subject": "Give an equipped piece its player's authority"
   },
   "controls": {
     "commit": "e8639304fe6ea791c682bda72752b7ab5d38b400",
-    "pulled": "2026-09-13T17:11:19Z",
+    "pulled": "2026-09-13T18:44:58Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-controls.git",
     "subject": "Hide a puppet's HUD, bind the d-pad keys, and take the pad in hand"
   },
   "date_and_time": {
     "commit": "a7cf4a647029df53c7723a6d0571b3a03ddfce35",
-    "pulled": "2026-09-13T17:11:21Z",
+    "pulled": "2026-09-13T18:45:03Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/date-and-time.git",
     "subject": "ci: point the tests at the gutconfig where it now lives"
   },
   "godot_doom_gdextension": {
     "commit": "3a146eac500fce5097c0fbd3bfbde11334e6f711",
-    "pulled": "2026-09-13T17:11:24Z",
+    "pulled": "2026-09-13T18:45:12Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-doom-gdextension.git",
     "subject": "Take the peer-review fixes in the controls addon"
   },
   "gta": {
-    "commit": "6dc3203438c3938672a5c62e58877a0a3d4ec9c9",
-    "pulled": "2026-09-13T17:11:22Z",
+    "commit": "bd011d8688072fa4ce37456d43ca147e150a4db4",
+    "pulled": "2026-09-13T18:45:07Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/gta.git",
-    "subject": "Take the peer-review fixes in the controls and player controller addons"
+    "subject": "Take the player controller's Steam session, equipment, camera and stealth fixes"
   },
   "radi_ot": {
     "commit": "93aee33383208471e1cb57b8e93392ef3bcf0765",
-    "pulled": "2026-09-13T17:11:24Z",
+    "pulled": "2026-09-13T18:45:11Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/radi-ot.git",
     "subject": "ci: judge the test run by its report, not Godot's exit code"
   },
   "tcps": {
-    "commit": "ac7f7c530776a6f317f3615ac70dbfc1f3a63f5b",
-    "pulled": "2026-09-13T17:11:23Z",
+    "commit": "713a9abda165a338e7ad9f64b9db4f63e2930e3d",
+    "pulled": "2026-09-13T18:45:10Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/tcps.git",
-    "subject": "Take the peer-review fixes in the controls and player controller addons"
+    "subject": "Take the player controller's Steam session, equipment, camera and stealth fixes"
   },
   "weather_fx": {
     "commit": "322b54f383ac59b58b80f1cf19d9d37397452634",
-    "pulled": "2026-09-13T17:11:21Z",
+    "pulled": "2026-09-13T18:45:03Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/weather-fx.git",
     "subject": "Show the clouds in the pink sky, with wind and leaves"
