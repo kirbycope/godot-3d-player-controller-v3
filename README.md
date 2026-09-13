@@ -33,12 +33,10 @@ are not in `addons.json`; the pull script leaves them alone. See
 
 ---
 
-The game starts in the single-player world with no title screen: `Main.straight_to_single_player` is on in
-`scenes/main.tscn`, so `main.gd` loads the world on ready. On the web the Click to Start overlay still comes
-first, since a browser lets the game capture the mouse and play audio only from inside a user gesture, and the
-click starts the world. Turning the flag off brings the title screen back with its Single-Player and
-Multiplayer buttons. A single-player world hosts a public Steam lobby as it always has, so a friend can still
-join through their own lobby list.
+The game has two starts on purpose. On the desktop, and when run from the editor, `scenes/main.tscn` opens on
+the title screen with its Single-Player and Multiplayer buttons. The web export opens on the Click to Start
+overlay, since a browser lets the game capture the mouse and play audio only from inside a user gesture, and
+the click or touch goes straight into the single-player world; there is no Steam on the web and no title screen.
 
 ## What is in the world
 

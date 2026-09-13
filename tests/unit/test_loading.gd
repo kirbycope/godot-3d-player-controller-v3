@@ -145,7 +145,6 @@ func test_main_multi_player_shows_lobby_explorer() -> void:
 
 func test_main_click_to_start_shows_title_screen_on_press_only() -> void:
 	var main = MAIN_SCENE.instantiate()
-	main.straight_to_single_player = false # this is the title-screen flow; the default goes straight into the game
 	add_child_autofree(main)
 	main.click_to_start.show()
 	main.title_screen.hide()
@@ -161,8 +160,8 @@ func test_main_click_to_start_shows_title_screen_on_press_only() -> void:
 	press.pressed = true
 	main._input(press)
 	assert_false(main.click_to_start.visible, "A press should dismiss click-to-start")
-	assert_true(main.title_screen.visible, "A press should reveal the title screen instead of loading the game")
-	assert_eq(main.loading._scene_path, "", "Click-to-start should not start loading a scene")
+	assert_false(main.title_screen.visible, "The click is the start of the game on the web, not a reveal of the title screen")
+	assert_eq(main.loading._scene_path, "res://scenes/world.tscn", "and it loads the single-player world")
 
 
 func test_main_unhandled_input_button_0_selects_focused_option() -> void:
@@ -185,32 +184,10 @@ func test_main_unhandled_input_button_0_selects_focused_option() -> void:
 	assert_signal_emitted(title_screen, "multi_player_pressed", "Button 0 (JOY_BUTTON_A) in _unhandled_input should activate focused button")
 
 
-## The game goes straight into the single-player world: no title screen, the world's load starts on ready.
-func test_main_starts_single_player_without_the_title_screen() -> void:
+## The desktop and the editor open on the title screen; nothing loads until a button is pressed.
+func test_main_opens_on_the_title_screen_on_desktop() -> void:
 	var main: Node3D = MAIN_SCENE.instantiate()
-	add_child_autofree(main)
-	assert_false(main.title_screen.visible, "The title screen stays hidden")
-	assert_eq(main.loading._scene_path, "res://scenes/world.tscn", "and the world is already loading")
-
-
-## A game that wants its title screen back turns the flag off and gets the old flow.
-func test_main_shows_the_title_screen_when_asked() -> void:
-	var main: Node3D = MAIN_SCENE.instantiate()
-	main.straight_to_single_player = false
 	add_child_autofree(main)
 	assert_true(main.title_screen.visible, "The title screen shows")
+	assert_false(main.click_to_start.visible, "no Click to Start on the desktop")
 	assert_eq(main.loading._scene_path, "", "and nothing loads until a button is pressed")
-
-
-## On the web the Click to Start overlay comes first, and the click starts the game rather than showing the title.
-func test_click_to_start_goes_straight_into_the_game() -> void:
-	var main: Node3D = MAIN_SCENE.instantiate()
-	main.straight_to_single_player = false # keep _ready from loading, so the click is what starts it
-	add_child_autofree(main)
-	main.straight_to_single_player = true
-	main.click_to_start.show()
-	main.title_screen.hide()
-	main._dismiss_click_to_start()
-	assert_false(main.click_to_start.visible, "The overlay is gone")
-	assert_false(main.title_screen.visible, "no title screen behind it")
-	assert_eq(main.loading._scene_path, "res://scenes/world.tscn", "the world loads from the click")
