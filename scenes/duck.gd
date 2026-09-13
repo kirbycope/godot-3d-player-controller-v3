@@ -1,6 +1,7 @@
 extends FollowerNpc
 ## A duck that follows the Player and quacks on impacts. Killing it, or letting it fall out of the world, brings it
-## back as a knife-wielding giant boss that hunts the Player; killing the giant returns the duckling.
+## back as a knife-wielding giant boss that hunts the Player; killing the giant returns the duckling. The size, the
+## animation and the health replicate from the server, so the puppets grow, walk and eat with it; hits relay.
 
 const GIANT_QUACK_BUS: StringName = &"GiantDuck"
 const GIANT_QUACK_BUS_LAYOUT: AudioBusLayout = preload("res://default_bus_layout.tres")
@@ -17,7 +18,25 @@ const ANIMATION_NAME: StringName = &"FBXExportClip_0_001"
 @export var giant_damage: float = 25.0 ## Health the giant's knife takes when it actually touches the Player.
 @export var melee_hit_damage: float = 25.0 ## Damage taken from one of the Player's melee swings.
 
-var _is_giant: bool = false
+var is_giant: bool = false: ## Replicated; the setter sizes the models, shows the knife and deepens the quack on every peer.
+	set(value):
+		if value == is_giant:
+			return
+		is_giant = value
+		if is_node_ready():
+			_apply_giant()
+var anim_state: StringName = &"idle": ## Replicated: which of the three models shows and plays (idle, walk or eat).
+	set(value):
+		anim_state = value
+		if not is_node_ready():
+			return
+		match value:
+			&"walk":
+				_play_walk_animation()
+			&"eat":
+				_play_eating_animation()
+			_:
+				_play_idle_animation()
 var _model_collision_shapes: Array[CollisionShape3D] = [] ## Per-model shapes toggled with the visible model while giant.
 var _player_range_initialized: bool = false
 var _player_was_in_range: bool = false
@@ -55,10 +74,8 @@ func _ready() -> void:
 	for shape: Node in find_children("*", "CollisionShape3D", true, false):
 		if shape != collision_shape and not shape.get_parent() is Area3D:
 			_model_collision_shapes.append(shape as CollisionShape3D)
-	knife.visible = _is_giant
-	knife_idle.visible = _is_giant
-	knife_walk.visible = _is_giant
-	knife_eat.visible = _is_giant
+	if is_giant:
+		_apply_giant()
 	_update_collision_shapes()
 	_stop_moving()
 
@@ -66,11 +83,11 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority():
 		return
-	if global_position.y < respawn_height and not _is_giant:
+	if global_position.y < respawn_height and not is_giant:
 		_respawn_as_giant()
 	if player:
 		_update_player_range(global_position.distance_to(player.global_position))
-		if _is_giant and (not player.health.is_alive() or player.global_position.distance_to(_spawn_transform.origin) > leash_distance):
+		if is_giant and (not player.health.is_alive() or player.global_position.distance_to(_spawn_transform.origin) > leash_distance):
 			# Nobody to hunt: give up, walk home and heal, like a leashed boss
 			if not _leashed:
 				_leashed = true
@@ -79,7 +96,7 @@ func _physics_process(delta: float) -> void:
 			_return_home(delta)
 			return
 		_leashed = false
-		if _is_giant and boss.target_peer == 0:
+		if is_giant and boss.target_peer == 0:
 			boss.engage(player.get_multiplayer_authority())
 			player.hunted_by(get_path(), true)
 	super(delta)
@@ -103,7 +120,7 @@ func _return_home(delta: float) -> void:
 
 ## A giant mid-attack commits to it while the player stays near.
 func _follow_player(delta: float) -> void:
-	if _is_giant and animation_player_eat.is_playing() \
+	if is_giant and animation_player_eat.is_playing() \
 	and global_position.distance_to(player.global_position) <= follow_distance * 1.5 \
 	and not (is_swimming and not player.is_swimming):
 		_face_player(delta)
@@ -154,7 +171,7 @@ func _request_hit(damage: float, from: Vector3) -> void:
 func _on_health_died() -> void:
 	if not is_multiplayer_authority():
 		return
-	if _is_giant:
+	if is_giant:
 		_become_duckling()
 	else:
 		_respawn_as_giant()
@@ -172,25 +189,40 @@ func _on_collided(impact_speed: float) -> void:
 func _move_with_control(control_velocity: Vector3) -> void:
 	super(control_velocity)
 	if control_velocity != Vector3.ZERO:
-		_play_walk_animation()
+		anim_state = &"walk"
 
 
 func _stop_moving() -> void:
 	super()
-	if _is_giant and not _leashed and player and global_position.distance_to(player.global_position) <= follow_distance * 1.5:
-		_play_eating_animation()
+	if is_giant and not _leashed and player and global_position.distance_to(player.global_position) <= follow_distance * 1.5:
+		anim_state = &"eat"
 	else:
-		_play_idle_animation()
+		anim_state = &"idle"
+
+
+## The giant's looks (size, knife, quack, collision, bars) for every peer through [member is_giant]; the rest of
+## the giant is the authority's own (how it moves, hunts and hurts) and stays in [method _respawn_as_giant].
+func _apply_giant() -> void:
+	var factor: float = giant_scale if is_giant else 1.0 / giant_scale
+	idle_model.scale *= factor
+	walk_model.scale *= factor
+	eat_model.scale *= factor
+	knife.visible = is_giant
+	knife_idle.visible = is_giant
+	knife_walk.visible = is_giant
+	knife_eat.visible = is_giant
+	audio_stream_player_3d.pitch_scale = giant_quack_pitch if is_giant else 1.0
+	audio_stream_player_3d.unit_size = _duckling["unit_size"] * (giant_scale if is_giant else 1.0)
+	audio_stream_player_3d.bus = GIANT_QUACK_BUS if is_giant else _duckling["bus"]
+	_update_collision_shapes()
+	status_bars.position.y = _duckling["bars_y"] * (giant_scale if is_giant else 1.0)
 
 
 func _respawn_as_giant() -> void:
-	_is_giant = true
+	is_giant = true
 	global_transform = _spawn_transform
 	velocity = Vector3.ZERO
 	knockback_velocity = Vector3.ZERO
-	idle_model.scale *= giant_scale
-	walk_model.scale *= giant_scale
-	eat_model.scale *= giant_scale
 	move_speed *= giant_move_speed_multiplier
 	follow_distance = giant_follow_distance
 	follow_height_tolerance = 2.5
@@ -200,16 +232,7 @@ func _respawn_as_giant() -> void:
 	swim_climb_speed = 4.5
 	swimming_depth_offset *= giant_scale
 	navigation_agent_3d.target_desired_distance = follow_distance
-	knife.visible = true
-	knife_idle.visible = true
-	knife_walk.visible = true
-	knife_eat.visible = true
 	knife_hitbox.damage = giant_damage
-	audio_stream_player_3d.pitch_scale = giant_quack_pitch
-	audio_stream_player_3d.unit_size *= giant_scale
-	audio_stream_player_3d.bus = GIANT_QUACK_BUS
-	_update_collision_shapes()
-	status_bars.position.y *= giant_scale
 	health.max_health = giant_health
 	health.health = giant_health
 	if player:
@@ -220,7 +243,7 @@ func _respawn_as_giant() -> void:
 
 ## Undoes [method _respawn_as_giant]: the duckling is back at its spawn with its own health.
 func _become_duckling() -> void:
-	_is_giant = false
+	is_giant = false
 	_leashed = false
 	boss.disengage()
 	if player:
@@ -228,9 +251,6 @@ func _become_duckling() -> void:
 	global_transform = _spawn_transform
 	velocity = Vector3.ZERO
 	knockback_velocity = Vector3.ZERO
-	idle_model.scale /= giant_scale
-	walk_model.scale /= giant_scale
-	eat_model.scale /= giant_scale
 	move_speed /= giant_move_speed_multiplier
 	follow_distance = _duckling["follow_distance"]
 	follow_height_tolerance = _duckling["follow_height_tolerance"]
@@ -240,15 +260,6 @@ func _become_duckling() -> void:
 	swim_climb_speed = _duckling["swim_climb_speed"]
 	swimming_depth_offset /= giant_scale
 	navigation_agent_3d.target_desired_distance = follow_distance
-	knife.visible = false
-	knife_idle.visible = false
-	knife_walk.visible = false
-	knife_eat.visible = false
-	audio_stream_player_3d.pitch_scale = 1.0
-	audio_stream_player_3d.unit_size = _duckling["unit_size"]
-	audio_stream_player_3d.bus = _duckling["bus"]
-	_update_collision_shapes()
-	status_bars.position.y = _duckling["bars_y"]
 	health.max_health = _duckling["max_health"]
 	health.health = health.max_health
 
@@ -278,7 +289,7 @@ func _play_walk_animation() -> void:
 	idle_model.visible = false
 	walk_model.visible = true
 	eat_model.visible = false
-	if _is_giant:
+	if is_giant:
 		_update_collision_shapes()
 	if not animation_player_walk.is_playing():
 		animation_player_walk.play(ANIMATION_NAME)
@@ -290,7 +301,7 @@ func _play_idle_animation() -> void:
 	idle_model.visible = true
 	walk_model.visible = false
 	eat_model.visible = false
-	if _is_giant:
+	if is_giant:
 		_update_collision_shapes()
 	animation_player_walk.pause()
 	animation_player_eat.stop()
@@ -302,15 +313,16 @@ func _play_eating_animation() -> void:
 	idle_model.visible = false
 	walk_model.visible = false
 	eat_model.visible = true
-	if _is_giant:
+	if is_giant:
 		_update_collision_shapes()
 	if not animation_player_eat.is_playing():
 		animation_player_eat.play(ANIMATION_NAME)
-	# Each quack is a bite: the giant's beak stays live for the cadence and hurts whatever it slams into
+	# Each quack is a bite: the giant's beak stays live for the cadence and hurts whatever it slams into (the
+	# server's beak; the puppets only quack)
 	if attack_quack_cooldown.is_stopped():
 		audio_stream_player_3d.play()
 		attack_quack_cooldown.start()
-		if _is_giant:
+		if is_giant and is_multiplayer_authority():
 			knife_hitbox.swing()
 	animation_player_idle.stop()
 	animation_player_walk.pause()
@@ -318,7 +330,7 @@ func _play_eating_animation() -> void:
 
 ## The giant uses the visible model's shapes instead of the small root shape.
 func _update_collision_shapes() -> void:
-	collision_shape.disabled = _is_giant
+	collision_shape.disabled = is_giant
 	for shape: CollisionShape3D in _model_collision_shapes:
 		var is_vis: bool = shape.is_visible_in_tree() if shape.is_inside_tree() else shape.visible
-		shape.disabled = not (_is_giant and is_vis)
+		shape.disabled = not (is_giant and is_vis)

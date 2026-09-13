@@ -31,11 +31,9 @@ func _ready() -> void:
 	play = play
 
 
-## Called every frame. 'delta' is the elapsed time since the previous frame.
+## Called every frame. 'delta' is the elapsed time since the previous frame. The ring is decoration, so it spins
+## on every peer rather than only on the authority.
 func _process(delta: float) -> void:
-	# Do nothing if not the authority
-	if not is_multiplayer_authority(): return
-
 	if pause_when_editor_unfocused and Engine.is_editor_hint() and not DisplayServer.window_is_focused():
 		return
 	if not play:

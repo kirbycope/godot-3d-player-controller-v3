@@ -25,11 +25,10 @@ func _ready() -> void:
 	set_physics_process(water != null)
 
 
-## Called when there is an input event.
+## Called when there is an input event. The gate is the looking Player's authority, not the boat's (the server
+## owns the boat), so a client can sit in it too.
 func _input(event: InputEvent) -> void:
-	if not is_multiplayer_authority(): return
-
-	if player and action_prompt.visible and not player.is_sitting and event.is_action_pressed("action"):
+	if player and player.is_multiplayer_authority() and action_prompt.visible and not player.is_sitting and event.is_action_pressed("action"):
 		player.state_changed.connect(_on_player_state_changed)
 		player.state_machine.travel(player.current_state, NodeStateMachine.States.SITTING)
 		hide_menu()

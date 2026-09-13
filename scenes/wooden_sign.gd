@@ -7,10 +7,10 @@ var is_read: bool = false ## Has the player read this sign?
 var player: Player ## Cached reference to the Player
 
 
-## Called when there is an input event.
+## Called when there is an input event. The gate is the reading Player's authority, not the sign's (the server owns
+## the sign), so a client can read it too.
 func _input(event: InputEvent) -> void:
-	# Do nothing if not the authority
-	if not is_multiplayer_authority(): return
+	if player == null or not player.is_multiplayer_authority(): return
 
 	# Show initial dialog
 	if player \

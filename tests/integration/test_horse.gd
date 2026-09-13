@@ -303,3 +303,30 @@ func test_a_second_whistle_while_coming_does_not_restart_it_but_another_player_r
 	await wait_physics_frames(60)
 	var to_other: Vector3 = (other.global_position - horse.global_position).slide(Vector3.UP).normalized()
 	assert_gt(horse.global_basis.z.dot(to_other), 0.9, "and it turns to head for them")
+
+
+func test_a_horse_somebody_else_rides_refuses_the_prompt_and_the_mount() -> void:
+	horse.rider_peer = 2 # what the synchronizer says while another peer's Player is up
+	player.warp_to(Transform3D(Basis(), horse.global_position + Vector3(1.5, 0.1, 0.0)))
+	await wait_physics_frames(3)
+	assert_false(horse.action_prompt.visible, "No Mount prompt while somebody is up")
+	assert_ne(player.controls.joypad_button_0_label.text, "Mount")
+	player.mount(horse)
+	await wait_physics_frames(3)
+	assert_ne(player.current_state, NodeStateMachine.States.RIDING, "The mount is refused")
+	assert_null(player.riding)
+	assert_eq(horse.rider_peer, 2, "The rider keeps the saddle")
+	assert_eq(horse.get_multiplayer_authority(), 1, "and the authority never moved")
+
+
+func test_getting_on_takes_the_saddle_and_getting_off_frees_it() -> void:
+	assert_eq(horse.rider_peer, 0, "A riderless horse is free")
+	player.mount(horse)
+	await wait_physics_frames(2)
+	assert_eq(horse.rider_peer, 1, "The rider's peer holds the saddle")
+	player.dismount()
+	await wait_physics_frames(2)
+	assert_eq(horse.rider_peer, 0, "Off again, the saddle is free")
+	horse.rider_peer = 2
+	horse._set_authority(Horse.SERVER_PEER) # what a dismount elsewhere sends every peer
+	assert_eq(horse.rider_peer, 0, "Handing the horse back to the server frees the saddle on every peer")

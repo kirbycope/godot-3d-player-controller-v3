@@ -245,7 +245,7 @@ func test_already_respawned_giant_duck_does_not_respawn_again() -> void:
 	duck.global_position.y = -41.0
 	await wait_physics_frames(1)
 	assert_almost_eq(duck.global_position.y, 5.0, 0.01)
-	assert_true(duck._is_giant)
+	assert_true(duck.is_giant)
 
 	# Second fall: Should NOT respawn again
 	duck.global_position = Vector3(10.0, -42.0, 15.0)
@@ -275,7 +275,7 @@ func test_killing_the_duckling_brings_the_giant_boss_who_bites_and_falls_back_to
 	assert_eq(duck.health.max_health, 60.0)
 
 	duck.take_hit(1000.0, player.global_position)
-	assert_true(duck._is_giant, "A dead duckling comes back as the giant")
+	assert_true(duck.is_giant, "A dead duckling comes back as the giant")
 	assert_eq(duck.health.health, 400.0, "The giant has its own health")
 	assert_eq(duck.boss.target_peer, 1, "The giant engages the Player it follows")
 	assert_true(player.controls.boss_bar.visible, "The boss bar shows on the Player's HUD")
@@ -290,7 +290,7 @@ func test_killing_the_duckling_brings_the_giant_boss_who_bites_and_falls_back_to
 	assert_lte(player.health.health, before - 2.0 * duck.giant_damage, "The beak slams down on the Player and keeps biting on its cadence while it rests on them")
 
 	duck.take_hit(1000.0, player.global_position)
-	assert_false(duck._is_giant, "A dead giant falls back to the duckling")
+	assert_false(duck.is_giant, "A dead giant falls back to the duckling")
 	assert_eq(duck.idle_model.scale, Vector3.ONE)
 	assert_eq(duck.health.max_health, 60.0)
 	assert_false(duck.knife.visible)
@@ -334,3 +334,31 @@ func test_the_giant_walks_home_and_heals_when_the_player_dies_or_runs_past_the_l
 	player.warp_to(Transform3D(Basis(), duck._spawn_transform.origin + Vector3(0.0, 0.0, duck.leash_distance + 5.0)))
 	await wait_physics_frames(2)
 	assert_true(duck._leashed, "Past the leash the giant gives up too")
+
+
+func test_a_puppet_grows_and_animates_from_the_replicated_flags() -> void:
+	var duck: CharacterBody3D = DUCK_SCENE.instantiate() as CharacterBody3D
+	duck.set_multiplayer_authority(2) # a client's copy: the server owns the duck
+	add_child_autofree(duck)
+	await wait_physics_frames(1)
+
+	duck.is_giant = true # what the synchronizer writes when the server's duck respawns as the giant
+	assert_eq(duck.idle_model.scale, Vector3.ONE * 10.0, "The models grow on the puppet")
+	assert_eq(duck.walk_model.scale, Vector3.ONE * 10.0)
+	assert_eq(duck.eat_model.scale, Vector3.ONE * 10.0)
+	assert_true(duck.knife.visible, "and the knife shows")
+	assert_eq(duck.audio_stream_player_3d.bus, &"GiantDuck")
+	assert_true(duck.collision_shape.disabled, "The giant uses the visible model's shapes")
+	duck.anim_state = &"walk"
+	assert_true(duck.walk_model.visible, "The replicated state picks the walking model")
+	assert_false(duck.idle_model.visible)
+	assert_true(duck.animation_player_walk.is_playing())
+	duck.anim_state = &"eat"
+	assert_true(duck.eat_model.visible)
+	assert_true(duck.animation_player_eat.is_playing())
+	duck.anim_state = &"idle"
+	assert_true(duck.idle_model.visible)
+	duck.is_giant = false
+	assert_eq(duck.idle_model.scale, Vector3.ONE, "Back to the duckling with the giant's death")
+	assert_false(duck.knife.visible)
+	assert_false(duck.collision_shape.disabled)

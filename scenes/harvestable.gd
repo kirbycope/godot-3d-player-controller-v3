@@ -39,12 +39,10 @@ func _ready() -> void:
 	progress_bar.max_value = hits_to_finish
 
 
-## Called when there is an input event.
+## Called when there is an input event. The gate is the looking Player's authority, not the harvestable's (the
+## server owns it), so a client can chop and mine too; the hit itself relays to the server.
 func _input(event: InputEvent) -> void:
-	# Do nothing if not the authority
-	if not is_multiplayer_authority(): return
-
-	if not player or is_depleted or not event.is_action_pressed("action"): return
+	if not player or not player.is_multiplayer_authority() or is_depleted or not event.is_action_pressed("action"): return
 	if player.is_locomotion_state_active_or_queued(harvest_animation): return
 	if not player.inventory.has_equipment_with_capability(capability): return
 

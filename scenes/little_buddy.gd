@@ -1,14 +1,22 @@
 extends FollowerNpc
-## A small companion that follows the Player and can be picked up, carried and thrown.
+## A small companion that follows the Player and can be picked up, carried and thrown. Picking it up hands it to the
+## carrier's peer, as mounting a horse does, and puts every peer's copy on that Player's spring arm; a drop hands it
+## back to the server, a throw once it lands. The walk and run blend replicates so the puppets' legs move too.
 
 const LOCOMOTION_BLEND_POSITION_PATH: String = "parameters/LocomotionStateMachine/LocomotionBlendSpace/blend_position"
 const LOCOMOTION_STATE_MACHINE_PLAYBACK_PATH: String = "parameters/LocomotionStateMachine/playback"
+const SERVER_PEER: int = 1
 
 @export var throw_force_horizontal: float = 16.0
 @export var throw_force_vertical: float = 3.5
 
 var is_held: bool = false
 var is_thrown: bool = false
+var locomotion_blend: float = 0.0: ## Replicated: 0 idle, 0.5 walk, 1 run; the setter feeds the blend space on every peer.
+	set(value):
+		locomotion_blend = value
+		if animation_tree:
+			animation_tree.set(LOCOMOTION_BLEND_POSITION_PATH, value)
 
 @onready var action_prompt: ActionPrompt = $ActionPrompt
 @onready var animation_tree: AnimationTree = $y_bot_root/AnimationTree
@@ -23,11 +31,13 @@ func _physics_process(delta: float) -> void:
 	super(delta)
 
 
-## Lets a throw carry the buddy until it lands, then resumes following.
+## Lets a throw carry the buddy until it lands, then hands it back to the server, which resumes following.
 func _follow_player(delta: float) -> void:
 	if is_thrown:
 		move_and_slide()
 		is_thrown = not is_on_floor()
+		if not is_thrown:
+			_hand_authority_to(SERVER_PEER)
 		return
 	super(delta)
 
@@ -42,9 +52,8 @@ func _move_with_control(control_velocity: Vector3) -> void:
 			target_blend = (actual_h_speed / maxf(walk_speed, 0.001)) * 0.5
 		else:
 			target_blend = 0.5 + clampf((actual_h_speed - walk_speed) / maxf(move_speed - walk_speed, 0.001), 0.0, 1.0) * 0.5
-	var current_blend: float = animation_tree.get(LOCOMOTION_BLEND_POSITION_PATH)
-	var blend_speed: float = 8.0 if target_blend < current_blend else 6.0
-	animation_tree.set(LOCOMOTION_BLEND_POSITION_PATH, move_toward(current_blend, target_blend, blend_speed * get_physics_process_delta_time()))
+	var blend_speed: float = 8.0 if target_blend < locomotion_blend else 6.0
+	locomotion_blend = move_toward(locomotion_blend, target_blend, blend_speed * get_physics_process_delta_time())
 
 
 ## Applies the avoidance-adjusted velocity requested in [method _follow_player].
@@ -97,34 +106,34 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
+## The carrier's peer takes the buddy; one already on somebody's arm stays theirs.
 func pick_up() -> void:
-	if not player or not player.item_spring_arm:
+	if not player or not player.item_spring_arm or get_parent() is SpringArm3D:
 		return
 	is_held = true
 	hide_menu()
 
 	velocity = Vector3.ZERO
 	knockback_velocity = Vector3.ZERO
-	collision_shape.disabled = true
-	animation_tree.set(LOCOMOTION_BLEND_POSITION_PATH, 0.0)
+	locomotion_blend = 0.0
 
-	reparent(player.item_spring_arm, false)
-	transform = Transform3D()
+	_hand_authority_to(player.get_multiplayer_authority())
+	_carry_by.rpc(player.get_multiplayer_authority())
 
 
 func drop() -> void:
 	is_held = false
 	is_thrown = false
-	collision_shape.disabled = false
-	_return_to_scene()
+	_hand_authority_to(SERVER_PEER)
+	_carry_by.rpc(0)
 	velocity = Vector3.ZERO
 
 
+## The thrower keeps the authority until the buddy lands, so the flight is theirs to move.
 func throw_with_direction(throw_dir: Vector3 = Vector3.ZERO, throw_power: float = 1.0) -> void:
 	is_held = false
 	is_thrown = true
-	collision_shape.disabled = false
-	_return_to_scene()
+	_carry_by.rpc(0)
 
 	if throw_dir.length_squared() < 0.001:
 		if player and player.camera:
@@ -137,6 +146,35 @@ func throw_with_direction(throw_dir: Vector3 = Vector3.ZERO, throw_power: float 
 	var throw_up: Vector3 = player.up_direction if player else up_direction
 	velocity = (throw_dir * throw_force_horizontal + throw_up * throw_force_vertical) * throw_power
 	knockback_velocity = Vector3.ZERO
+
+
+## Puts this copy on the spring arm of [param peer_id]'s Player (the copy in this branch of the tree, since a test can
+## run two), or back into the scene for 0; runs on every peer so the buddy shows in the carrier's hands everywhere.
+@rpc("any_peer", "call_local", "reliable")
+func _carry_by(peer_id: int) -> void:
+	collision_shape.disabled = peer_id != 0
+	if peer_id == 0:
+		_return_to_scene()
+		return
+	for node: Node in get_tree().get_nodes_in_group("Player"):
+		if node is Player and node.get_multiplayer_authority() == peer_id and node.multiplayer == multiplayer:
+			reparent((node as Player).item_spring_arm, false)
+			transform = Transform3D()
+			return
+
+
+## Hands the buddy (and so its synchronizer) to [param peer_id] on every peer, as the horse does for its rider.
+## Offline there is nobody to tell.
+func _hand_authority_to(peer_id: int) -> void:
+	if multiplayer.get_peers().is_empty():
+		set_multiplayer_authority(peer_id)
+	else:
+		_set_authority.rpc(peer_id)
+
+
+@rpc("any_peer", "call_local", "reliable")
+func _set_authority(peer_id: int) -> void:
+	set_multiplayer_authority(peer_id)
 
 
 ## Moves the buddy from the player's spring arm back into the current scene, keeping its world position.

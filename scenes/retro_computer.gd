@@ -75,13 +75,20 @@ func display_menu(_player: Player) -> void:
 
 ## Called by [Camera] when the player looks away from the computer.
 func hide_menu() -> void:
-	action_prompt.hide_for(player.controls)
+	if is_instance_valid(player):
+		action_prompt.hide_for(player.controls)
+	else:
+		action_prompt.hide()
 
 
-## Called by [Camera] when the player presses "action" while looking at the computer.
+## Called by [Camera] when the player presses "action" while looking at the computer. [member is_in_use] is this
+## peer's alone, so another peer's Player already in the chair is read off the seat instead.
 func equip(_player: Player) -> void:
 	if is_in_use or _player.is_riding or _player.is_ragdolling:
 		return
+	for other: Node in get_tree().get_nodes_in_group("Player"):
+		if other != _player and (other as Node3D).global_position.distance_to(player_seat.global_position) < 0.5:
+			return
 	player = _player
 	is_in_use = true
 	# A previous visit may still be waiting for the lead-out to finish before standing the Player up.

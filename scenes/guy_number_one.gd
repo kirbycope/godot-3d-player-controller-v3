@@ -1,5 +1,6 @@
 extends CharacterBody3D
-## A training dummy that plays a hit reaction facing whoever struck it.
+## A training dummy that plays a hit reaction facing whoever struck it. The striking peer picks the reaction and
+## sends it to every peer by RPC, so the dummy flinches on all of them.
 
 @onready var animation_tree: AnimationTree = $AnimationTree
 @onready var playback: AnimationNodeStateMachinePlayback = animation_tree.get("parameters/playback")
@@ -58,4 +59,9 @@ func _play_hit_reaction(source: Node, hit_node: Node = null) -> void:
 		else:
 			hit_state = "GettingHit"
 
+	_travel.rpc(hit_state)
+
+
+@rpc("any_peer", "call_local", "reliable")
+func _travel(hit_state: String) -> void:
 	playback.travel(hit_state)

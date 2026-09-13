@@ -14,6 +14,8 @@ extends RigidBody3D
 		_update_flame_state()
 
 @export var ignite_on_impact: bool = true
+@export var ignite_radius: float = 3.5 ## Metres around the impact the grass catches and anything burnable lights.
+@export var burn_duration: float = 18.0 ## Seconds a lit grass field keeps spreading from the impact.
 @export var flame_light_energy: float = 2.0
 
 @onready var fire_vfx: Node3D = $FireVFX
@@ -65,7 +67,8 @@ func _update_flame_state() -> void:
 		audio_loop.stop()
 
 
-## Ignites the ground grass field and any burnable entities at the torch's position.
+## Ignites the grass and anything burnable within [member ignite_radius] of the torch's position, the way a fire
+## arrow does where it lands ([method FireArrow.ignite_around]: on every peer through the ProjectileSpawner).
 func _on_body_entered(_body: Node) -> void:
 	if not is_lit or not ignite_on_impact or not impact_cooldown_timer.is_stopped():
 		return
@@ -74,15 +77,7 @@ func _on_body_entered(_body: Node) -> void:
 	if not impact_audio.playing:
 		impact_audio.play()
 
-	var contact_pos: Vector3 = global_position
-	# 1. Ignite MultiMesh GrassFields
-	get_tree().call_group("GrassField", "ignite_at", contact_pos, 3.5, 18.0)
-	# 2. Ignite individual BurnableGrass nodes if nearby
-	for node: Node in get_tree().get_nodes_in_group("BurnableGrass"):
-		if node is Node3D and node.has_method("ignite") and (node as Node3D).global_position.distance_to(contact_pos) <= 4.5:
-			node.call("ignite")
-	# 3. Anyone standing in it catches fire (on their own authority)
-	Ability.burn_around(get_tree(), contact_pos, 1.5)
+	FireArrow.ignite_around(self, global_position, ignite_radius, burn_duration)
 
 
 ## Extinguishes the torch (e.g. when submerged in water).

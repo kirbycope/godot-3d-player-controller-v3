@@ -196,3 +196,24 @@ func test_sitting_back_down_cancels_a_pending_stand_up() -> void:
 			"Sitting back down first must cancel it, or it stands them up at the keyboard")
 	assert_true(computer.is_in_use)
 	assert_true(player.is_sitting)
+
+
+func test_a_chair_another_player_sits_in_is_refused() -> void:
+	var other: Player = PLAYER_SCENE.instantiate() as Player
+	other.name = "Other"
+	root.add_child(other)
+	await wait_physics_frames(1)
+	other.global_position = computer.player_seat.global_position # where another peer's Player sits while using it
+	computer.equip(player)
+	assert_false(computer.is_in_use, "Somebody is already at the keyboard")
+	assert_false(player.is_paused)
+	assert_false(computer.screen_camera.current)
+
+
+func test_looking_away_after_the_player_is_gone_hides_the_prompt() -> void:
+	computer.display_menu(player)
+	assert_true(computer.action_prompt.visible)
+	player.free()
+	player = null
+	computer.hide_menu()
+	assert_false(computer.action_prompt.visible, "The prompt hides without a Player to give the label back to")

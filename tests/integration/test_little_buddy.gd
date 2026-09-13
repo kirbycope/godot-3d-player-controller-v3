@@ -68,3 +68,13 @@ func test_pickup_resets_blend_position_to_idle():
 	buddy.pick_up()
 	var idle_blend: float = buddy.animation_tree.get(buddy.LOCOMOTION_BLEND_POSITION_PATH)
 	assert_eq(idle_blend, 0.0, "Locomotion blend position should be 0.0 when picked up.")
+
+func test_the_replicated_blend_feeds_the_blend_space_on_a_puppet():
+	var buddy: CharacterBody3D = LITTLE_BUDDY_SCENE.instantiate() as CharacterBody3D
+	buddy.set_multiplayer_authority(2) # a client's copy: the server owns the buddy
+	root.add_child(buddy)
+	await wait_physics_frames(2)
+
+	buddy.locomotion_blend = 0.5 # what the synchronizer writes while the server's buddy walks
+	var blend: float = buddy.animation_tree.get(buddy.LOCOMOTION_BLEND_POSITION_PATH)
+	assert_eq(blend, 0.5, "The setter drives the blend space, so the puppet's legs move.")

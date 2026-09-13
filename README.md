@@ -47,11 +47,13 @@ are not in `addons.json`; the pull script leaves them alone. See
 - **Enemies** (`EnemyNpc`, `NpcCaster`): a swordsman, an archer, a rifleman and a spellcaster east of
   the spawn. They hunt over the navmesh, attack in reach, take headshots, and leash back to their
   post like a WoW mob.
-- **Companions** (`FollowerNpc`): a duck that respawns as a giant boss and a "little buddy" that can
-  be picked up and thrown.
+- **Companions** (`FollowerNpc`): a duck that respawns as a giant boss (its size, animation and
+  health replicate, so every peer sees the giant walk and eat) and a "little buddy" that can be
+  picked up and thrown: the carrier's peer owns it while it is in their hands, every peer sees it on
+  their arm, and its walk blend replicates.
 - **Horse** (`Horse`): a rideable on the player controller's `Riding` contract, with a whistle that
   summons the nearest one over the navmesh. It swims, replicates, and hands its authority to the
-  rider.
+  rider; a horse somebody else is riding refuses the prompt and the mount.
 - **Project spells** (`scenes/*_ability.gd`, `resources/abilities/`): the WoW-style set built on the
   addon's `Ability` resource - Firebolt, Fireball, Frostbolt, Lightning Bolt, Lightning, Chain
   Lightning, Flash of Light, Consecration, Shadowstep, Sword Slash and Freeze - arranged on the QA
@@ -60,19 +62,24 @@ are not in `addons.json`; the pull script leaves them alone. See
   `ice_block.tscn`): fire lights grass and sets enemies ablaze, ice freezes a walkable slab into the
   pond.
 - **Retro computer** (`RetroComputer`): a beige desktop whose CRT runs DOOM through the GDExtension,
-  behind a curved-glass shader (`scenes/crt_screen.gdshader`).
-- **Water and props**: the pool with `Buoyancy` on its area, floating the beach ball and rocking the
-  boat on the weather addon's Gerstner waves; a bowling alley, balloons to shoot, choppable trees and
-  mineable ore (`Harvestable`), a push button, warp zones, a kill zone and a moon with its own
-  gravity.
-- **Torch and fire** (`Torch`): a throwable that ignites grass fields, spreads downwind and goes out
-  in the pool.
+  behind a curved-glass shader (`scenes/crt_screen.gdshader`). One Player at a time: a chair another
+  peer's Player is already in is refused.
+- **Water and props**: the pool with `Buoyancy` on its area, floating the beach ball (a bump on what
+  it rolls into, never a weapon hit and never a chop) and rocking the boat on the weather addon's
+  Gerstner waves; a bowling alley, balloons to shoot (the ring spins on every peer), choppable trees
+  and mineable ore (`Harvestable`), a push button, warp zones, a kill zone, a wooden sign and a moon
+  with its own gravity. The boat, the harvestables and the sign answer a client's Action too.
+- **Torch and fire** (`Torch`): a throwable that ignites grass fields within its exported
+  `ignite_radius` for `burn_duration` seconds (the fire arrow's ignite, on every peer through the
+  spawner), spreads downwind and goes out in the pool.
 - **The QA kit**: `STARTING_ITEMS` in `scenes/world.gd` hands every spawned player lures, ammunition,
   throwables and a dagger, topped up on each spawn. The weapons and rod around the spawn are
   walk-over pickups.
 - **Steam multiplayer**: the world auto-creates a public lobby and hosts it (`SteamPeer`);
   `PlayerSpawner` spawns `scenes/world_player.tscn` per peer, the host owns the clock, weather, NPCs,
-  physics props and harvestables, and the car hands its authority to whoever drives it.
+  physics props and harvestables, the car and the horse hand their authority to whoever drives or
+  rides, the little buddy to whoever carries it, and the training dummy's hit reactions travel by
+  RPC so it flinches on every peer.
 
 ---
 
@@ -217,7 +224,8 @@ are two different trees: the QA world plays the first, the inventory demo plays 
 | `resources/items/dagger.tres` | `Item` | Equipment: `equipment_scene` is `scenes/dagger.tscn`, the world dagger's model and hand offsets with `is_throwable` and `throw_damage` 10; it lands as its own walk-over scene | The QA kit, stowed on spawn | `tests/integration/test_world.gd` |
 
 Not examples, just engine resources the scenes use: `resources/enemy_replication.tres` (a
-`SceneReplicationConfig` for `enemy_npc.tscn`), `resources/horse_replication.tres`, `resources/vfx/`
+`SceneReplicationConfig` for `enemy_npc.tscn`), `resources/horse_replication.tres`,
+`resources/duck_replication.tres`, `resources/little_buddy_replication.tres`, `resources/vfx/`
 (the harvestables' chip particles) and `resources/pool_water_material.tres` (the pool's
 `ShaderMaterial`).
 

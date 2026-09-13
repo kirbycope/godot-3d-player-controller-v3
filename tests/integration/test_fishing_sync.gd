@@ -111,12 +111,14 @@ func test_only_the_rods_owner_puts_bait_on_the_line_or_eats_it() -> void:
 	var host_pickup: FishingRod = ROD_SCENE.instantiate() as FishingRod
 	server_root.add_child(host_pickup)
 	assert_true(host_pickup.equip(host_player))
-	var client_pickup: FishingRod = ROD_SCENE.instantiate() as FishingRod
-	client_root.add_child(client_pickup)
-	assert_true(client_pickup.equip(client_player))
-	await wait_process_frames(2)
+	await wait_process_frames(5)
 	var host_rod: FishingRod = host_pickup.equipment_instance as FishingRod
-	var client_rod: FishingRod = client_pickup.equipment_instance as FishingRod
+	# The client's copy of the rod comes from the inventory's equipment sync, not from equipping one there.
+	var client_rod: FishingRod = null
+	for item: Equipment in client_player.inventory.get_all_weapons():
+		if item is FishingRod:
+			client_rod = item
+	assert_not_null(client_rod, "The equipment sync gives the client's copy of the player the rod")
 	assert_true(host_rod.is_multiplayer_authority())
 	assert_false(client_rod.is_multiplayer_authority())
 	host_player.inventory.add_item(WORM, 2)

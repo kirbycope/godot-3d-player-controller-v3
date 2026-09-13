@@ -138,13 +138,14 @@ func hook() -> void:
 	fish_hooked.emit(hooked_fish)
 
 
-## Brings the line back in with nothing on it.
+## Brings the line back in with nothing on it and gives the Action label back (unequipping ends up here too).
 func retract() -> void:
 	var lost: Fish = hooked_fish if state == State.BITE or state == State.REELING else null
 	if water and water.shadows:
 		water.shadows.release()
 	_clear_line()
 	state = State.IDLE
+	player.controls.release_action_label(self)
 	if player.is_fishing:
 		emote_state.start("FishingIdle")
 		update_labels()
@@ -354,12 +355,18 @@ func get_details() -> String:
 	return "\n".join(lines)
 
 
-## The Action prompt follows the fishing state while the rod is out; states yield the labels meanwhile.
+## The Action prompt follows the fishing state while the rod is out: the rod claims the label the way a world
+## prompt does, so every refresh keeps it. The old claim is given back before the reset, and a state with nothing
+## to press (the cast and the reel) blanks the button rather than leaving the last word or the state's own on it.
 func update_labels() -> void:
 	if not player.is_fishing:
 		return
+	player.controls.release_action_label(self)
 	player.controls.reset_labels()
-	player.controls.joypad_button_0_label.text = ACTION_LABELS[state]
+	if ACTION_LABELS[state].is_empty():
+		player.controls.joypad_button_0_label.text = ""
+	else:
+		player.controls.claim_action_label(ACTION_LABELS[state], self)
 	# The hook window is short: the Action button throbs green until it closes
 	if state == State.BITE:
 		if hook_pulse == null or not hook_pulse.is_valid():

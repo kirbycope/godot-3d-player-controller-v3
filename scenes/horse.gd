@@ -66,6 +66,7 @@ var disables_collision: bool = true ## The rider sits inside the horse's body (r
 var input_type: int = Controls.InputType.KEYBOARD_MOUSE ## Kept equal to the Player's input device by the Riding state.
 var speed: float = 0.0 ## Current forward speed along the facing; replicated so every peer's tree shows the pace.
 var is_jumping: bool = false ## Read by the tree: takes Locomotion into JumpStart; off again on landing. Replicated.
+var rider_peer: int = 0 ## The peer whose Player is up, 0 when the saddle is free; replicated, so a second Player is refused the prompt and the mount.
 var summoner: Player = null ## Who whistled; the horse comes to them and faces them once there. Authority only.
 var summon_state: SummonState = SummonState.IDLE: ## Where the summon is; replicated, so every peer hears the arrival.
 	set(value):
@@ -263,23 +264,33 @@ func _hand_authority_to(peer_id: int) -> void:
 		_set_authority.rpc(peer_id)
 
 
+## Getting off hands the horse back before its synchronizer could send the cleared [member rider_peer], so the
+## hand-back clears it on every peer itself; getting on replicates it, the rider's copy being the authority by then.
 @rpc("any_peer", "call_local", "reliable")
 func _set_authority(peer_id: int) -> void:
 	set_multiplayer_authority(peer_id)
+	if peer_id == SERVER_PEER:
+		rider_peer = 0
 
 
 ## A rider who drops out takes the authority with them; every peer hands the horse back to the server.
 func _on_peer_disconnected(peer_id: int) -> void:
 	if peer_id == get_multiplayer_authority():
 		set_multiplayer_authority(SERVER_PEER)
+		rider_peer = 0
 
 
 # --- Rideable contract --------------------------------------------------------------------------------------------
 
 ## The Riding state hands the Player over, already pinned to the seat; they play [member rider_animation]. Getting on
-## ends a summon and makes the rider's peer the authority.
+## ends a summon and makes the rider's peer the authority. A saddle another peer already sits in is refused: the
+## Player is put back off once the state has finished getting them on.
 func mount(_player: Player) -> void:
+	if rider_peer != 0 and rider_peer != _player.get_multiplayer_authority():
+		_player.dismount.call_deferred(true)
+		return
 	player = _player
+	rider_peer = _player.get_multiplayer_authority()
 	summoner = null
 	summon_state = SummonState.IDLE
 	_hand_authority_to(_player.get_multiplayer_authority())
@@ -288,12 +299,16 @@ func mount(_player: Player) -> void:
 	mounted.emit()
 
 
-## The Player gets off beside the horse; the server has the horse again.
+## The Player gets off beside the horse; the server has the horse again. Only the rider gets off it: a refused
+## Player leaving the Riding state must not hand somebody else's ride back.
 func dismount(_player: Player) -> void:
+	if _player.get_multiplayer_authority() != rider_peer:
+		return
 	_player.global_position = dismount_point.global_position
 	_player.velocity = Vector3.ZERO
 	speed = 0.0
 	player = null
+	rider_peer = 0
 	_hand_authority_to(SERVER_PEER)
 	dismounted.emit()
 
@@ -366,9 +381,9 @@ func _action(keyboard_action: StringName, pad_action: StringName) -> StringName:
 	return keyboard_action if input_type == Controls.InputType.KEYBOARD_MOUSE else pad_action
 
 
-## Wired to PlayerDetection.body_entered: the Player who walked up gets the prompt.
+## Wired to PlayerDetection.body_entered: the Player who walked up gets the prompt, unless somebody is already up.
 func _on_player_detection_body_entered(body: Node3D) -> void:
-	if body is Player and body.is_multiplayer_authority() and not (body as Player).is_riding:
+	if body is Player and body.is_multiplayer_authority() and not (body as Player).is_riding and rider_peer == 0:
 		player = body
 		action_prompt.update_text()
 		action_prompt.show_for(player.controls, "Mount")

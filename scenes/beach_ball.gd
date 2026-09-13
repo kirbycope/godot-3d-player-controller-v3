@@ -1,6 +1,8 @@
 class_name BeachBall
 extends RigidBody3D
-## A light ball that registers hits on whatever it bumps into; the pool's [Buoyancy] floats it.
+## A light ball that registers hits on whatever it bumps into; the pool's [Buoyancy] floats it. A bump is
+## [code]register_hit[/code], never [code]register_weapon_hit[/code], which the enemies and the duck take for a
+## sword swing; a [Harvestable] has no bump entry, so the ball never chops or mines.
 
 var _last_velocity: Vector3 = Vector3.ZERO
 
@@ -15,10 +17,7 @@ func _on_body_entered(body: Node) -> void:
 	if speed_sq > 1.0:
 		var node: Node = body
 		while node:
-			if node.has_method("register_weapon_hit"):
-				node.call("register_weapon_hit", self, body)
-				break
-			elif node.has_method("register_hit"):
+			if node.has_method("register_hit") and not node is Harvestable:
 				node.call("register_hit", body)
 				break
 			node = node.get_parent()

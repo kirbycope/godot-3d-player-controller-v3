@@ -46,3 +46,13 @@ func test_the_ring_spins_by_default_and_hides_strings_by_path() -> void:
 	for balloon: Node3D in circle.get_node("Pivot").get_children():
 		assert_true(balloon.get_node("Visuals/String").visible, "Toggling the export reaches every string by path")
 
+
+
+func test_the_ring_spins_on_a_puppet_too() -> void:
+	var circle: Node3D = CIRCLE_SCENE.instantiate()
+	circle.set_multiplayer_authority(2) # a client's copy: the server owns the world
+	add_child_autofree(circle)
+	await wait_physics_frames(1)
+	var before: float = circle.get_node("Pivot").rotation.z
+	await wait_seconds(0.3)
+	assert_ne(circle.get_node("Pivot").rotation.z, before, "Decoration spins on every peer, not only the authority")

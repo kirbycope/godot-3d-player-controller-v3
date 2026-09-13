@@ -362,13 +362,13 @@ func sfx_footsteps_play() -> void:
 ## Eases the blend toward what the navigation asked for (0 idle, 0.5 walk at walk_speed, 1 run at move_speed),
 ## as LittleBuddy does, so a wish that flickers at the follow distance never restarts a clip.
 func _update_locomotion() -> void:
-	var target: float = 0.0
+	var wanted_blend: float = 0.0
 	if _control_speed > 0.05:
 		if _control_speed <= walk_speed:
-			target = _control_speed / maxf(walk_speed, 0.001) * 0.5
+			wanted_blend = _control_speed / maxf(walk_speed, 0.001) * 0.5
 		else:
-			target = 0.5 + clampf((_control_speed - walk_speed) / maxf(move_speed - walk_speed, 0.001), 0.0, 1.0) * 0.5
-	locomotion_blend = move_toward(locomotion_blend, target, (8.0 if target < locomotion_blend else 6.0) * get_physics_process_delta_time())
+			wanted_blend = 0.5 + clampf((_control_speed - walk_speed) / maxf(move_speed - walk_speed, 0.001), 0.0, 1.0) * 0.5
+	locomotion_blend = move_toward(locomotion_blend, wanted_blend, (8.0 if wanted_blend < locomotion_blend else 6.0) * get_physics_process_delta_time())
 	if String(playback.get_current_node()) != LOCOMOTION_STATE and playback.get_travel_path().is_empty() and not playback.is_playing():
 		anim_state = LOCOMOTION_STATE
 
