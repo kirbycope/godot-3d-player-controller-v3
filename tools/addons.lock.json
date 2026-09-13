@@ -1,56 +1,56 @@
 {
   "3d_player_controller": {
-    "commit": "41bf0a0e6373991c0db24b64b458eb60b724e54d",
-    "pulled": "2026-09-13T06:25:19Z",
+    "commit": "0f76e19b913b8f5388dd92b08341340896e91443",
+    "pulled": "2026-09-13T07:00:49Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Take the controls addon's arrow-key touch movement"
+    "subject": "Take the controls addon's touch sizing"
   },
   "controls": {
-    "commit": "9e39d25f442346d7309b949316b1e0852868b32e",
-    "pulled": "2026-09-13T06:25:29Z",
+    "commit": "ca5297f3305706b41a4e8f8fb46c64cf0d128ae3",
+    "pulled": "2026-09-13T07:00:51Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-controls.git",
-    "subject": "Size the HUD for thumbs, on its own and apart from the project's stretch"
+    "subject": "Fit the HUD to the window on every device, and again on every resize"
   },
   "date_and_time": {
     "commit": "a7cf4a647029df53c7723a6d0571b3a03ddfce35",
-    "pulled": "2026-09-13T06:25:35Z",
+    "pulled": "2026-09-13T07:00:53Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/date-and-time.git",
     "subject": "ci: point the tests at the gutconfig where it now lives"
   },
   "godot_doom_gdextension": {
-    "commit": "35fbbcbb2267e1a25819cb5a2f1b806288049f62",
-    "pulled": "2026-09-13T06:25:45Z",
+    "commit": "f143e95a7b928f6513e87eead565ba5736e4c3ef",
+    "pulled": "2026-09-13T07:00:57Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-doom-gdextension.git",
-    "subject": "Take the controls addon's arrow-key touch movement"
+    "subject": "Retake the preview with the current HUD"
   },
   "gta": {
-    "commit": "67f08151a2883307ce748fd960fd0d9d789965dd",
-    "pulled": "2026-09-13T06:25:39Z",
+    "commit": "31f5cb43ace46961e8323fe2d4a7d58941dc47a7",
+    "pulled": "2026-09-13T07:00:54Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/gta.git",
-    "subject": "Take the controls addon's arrow-key touch movement"
+    "subject": "Take the controls addon's touch sizing"
   },
   "radi_ot": {
     "commit": "93aee33383208471e1cb57b8e93392ef3bcf0765",
-    "pulled": "2026-09-13T06:25:43Z",
+    "pulled": "2026-09-13T07:00:56Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/radi-ot.git",
     "subject": "ci: judge the test run by its report, not Godot's exit code"
   },
   "tcps": {
-    "commit": "fc420bff7ceee40c2b4a2da9753d41e6ea63247d",
-    "pulled": "2026-09-13T06:25:42Z",
+    "commit": "1595f7ea796721a2f1a6592fca2e44905de2816e",
+    "pulled": "2026-09-13T07:00:55Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/tcps.git",
-    "subject": "Take the controls addon's arrow-key touch movement"
+    "subject": "Take the controls addon's touch sizing"
   },
   "weather_fx": {
     "commit": "322b54f383ac59b58b80f1cf19d9d37397452634",
-    "pulled": "2026-09-13T06:25:34Z",
+    "pulled": "2026-09-13T07:00:52Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/weather-fx.git",
     "subject": "Show the clouds in the pink sky, with wind and leaves"
