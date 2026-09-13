@@ -237,3 +237,18 @@ func test_the_perspective_button_swaps_the_seated_view_and_the_players_camera() 
 	computer._input(press)
 	assert_eq(camera.perspective, Camera.Perspective.THIRD_PERSON, "The next press comes back")
 	assert_eq(computer.screen_camera.fov, computer.seated_camera_fov, "to the over-the-shoulder shot")
+
+
+## Hands on the keyboard hold nothing: sitting down stows what was equipped, standing up puts it back in hand.
+func test_sitting_stows_the_equipment_and_standing_puts_it_back() -> void:
+	var pickup: Equipment = Equipment.new()
+	pickup.equipment_type = Equipment.EquipmentType.SWORD_1H
+	pickup.bone_attachment_bone_name = "RightHand"
+	root.add_child(pickup)
+	var worn: Equipment = player.inventory.equip_pickup(pickup)
+	assert_not_null(worn, "The player holds a sword")
+	computer.equip(player)
+	assert_false(player.inventory.equipment.has(worn), "Sitting down stows it")
+	assert_true(player.inventory.get_all_weapons().has(worn), "into the backpack, not away")
+	computer.stop_using()
+	assert_true(player.inventory.equipment.has(worn), "and standing up puts it back in hand")

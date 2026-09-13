@@ -25,6 +25,7 @@ var is_in_use: bool = false
 
 var _view_tween: Tween
 var _view_from_eyes: bool = false ## Whether the seat's view is the Player's own eyes, which it follows while seated in first person.
+var _equipped_before_sitting: Array[Equipment] = [] ## What was in hand when the Player sat down, to put back when they stand.
 
 @onready var action_prompt: ActionPrompt = $ActionPrompt
 @onready var doom_controls: PureDoomControls = $DoomControls
@@ -133,6 +134,9 @@ func _seat_player() -> void:
 	player.warp_to(player_seat.global_transform)
 	player.state_machine.travel(player.current_state, NodeStateMachine.States.SITTING)
 	player.is_typing_at_keyboard = true
+	# Hands on the keyboard hold nothing: what was equipped is stowed for the session and comes back on standing
+	_equipped_before_sitting = player.inventory.equipment.duplicate()
+	player.inventory.unequip_all()
 	player.is_paused = true
 	# The typing animation holds the head straight ahead, which from this desk means staring past the
 	# monitor. The head-only modifier turns it down onto the CRT without disturbing the hands.
@@ -155,6 +159,10 @@ func stop_using() -> void:
 	# rather than being left showing whatever was in use when they sat down.
 	player.controls.current_input_type = doom_controls.current_input_type
 	player.is_typing_at_keyboard = false
+	for item: Equipment in _equipped_before_sitting:
+		if is_instance_valid(item):
+			player.inventory.equip_weapon(item)
+	_equipped_before_sitting.clear()
 	player.is_paused = false
 	player.set_head_look_at_target(null)
 	_end_seated_view()

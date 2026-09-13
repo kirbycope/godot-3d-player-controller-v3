@@ -255,28 +255,35 @@ func _end_summon(delta: float) -> void:
 
 # --- Authority ----------------------------------------------------------------------------------------------------
 
-## Hands the horse (and so its synchronizer) to [param peer_id] on every peer: the rider's while ridden, since their
-## Riding state moves the body, the server's again once they are off. Offline there is nobody to tell.
-func _hand_authority_to(peer_id: int) -> void:
+## Moves the horse to [param peer_id] on every peer, the server first, with [param rider] in the saddle (0 for
+## nobody). A client only asks: the server tells everyone who is up and then switches the authority, both on one
+## reliable stream, so the old authority has stopped sending before the new one starts and no peer is left
+## rejecting a stale packet as a non-authority's. Getting off, this side goes quiet first. Offline there is
+## nobody to ask. The rider is not tied to the authority: the host is a rider too while the horse stays the server's.
+func _hand_to(peer_id: int, rider: int) -> void:
 	if multiplayer.get_peers().is_empty():
+		rider_peer = rider
 		set_multiplayer_authority(peer_id)
+	elif multiplayer.is_server():
+		_grant(peer_id, rider)
 	else:
-		_set_authority.rpc(peer_id)
+		if peer_id == SERVER_PEER:
+			set_multiplayer_authority(SERVER_PEER)
+		_grant.rpc_id(SERVER_PEER, peer_id, rider)
+
+
+## The server's half of [method _hand_to]: who is up, then whose the horse is, in that order everywhere.
+@rpc("any_peer", "reliable")
+func _grant(peer_id: int, rider: int) -> void:
+	if not multiplayer.is_server():
+		return
+	_set_rider.rpc(rider)
+	_set_authority.rpc(peer_id)
 
 
 @rpc("any_peer", "call_local", "reliable")
 func _set_authority(peer_id: int) -> void:
 	set_multiplayer_authority(peer_id)
-
-
-## Who is in the saddle, told to every peer by the rider getting on or off. It is not tied to the authority: the
-## host is a rider too while the authority stays the server's, and getting off hands the horse back before its
-## synchronizer could send the cleared value, so the dismount says it itself. Offline there is nobody to tell.
-func _tell_rider(peer_id: int) -> void:
-	if multiplayer.get_peers().is_empty():
-		rider_peer = peer_id
-	else:
-		_set_rider.rpc(peer_id)
 
 
 @rpc("any_peer", "call_local", "reliable")
@@ -301,10 +308,9 @@ func mount(_player: Player) -> void:
 		_player.dismount.call_deferred(true)
 		return
 	player = _player
-	_tell_rider(_player.get_multiplayer_authority())
 	summoner = null
 	summon_state = SummonState.IDLE
-	_hand_authority_to(_player.get_multiplayer_authority())
+	_hand_to(_player.get_multiplayer_authority(), _player.get_multiplayer_authority())
 	_hide_prompt()
 	locomotion_requested.emit(rider_animation, true)
 	mounted.emit()
@@ -319,8 +325,7 @@ func dismount(_player: Player) -> void:
 	_player.velocity = Vector3.ZERO
 	speed = 0.0
 	player = null
-	_tell_rider(0)
-	_hand_authority_to(SERVER_PEER)
+	_hand_to(SERVER_PEER, 0)
 	dismounted.emit()
 
 

@@ -38,7 +38,7 @@ func _follow_player(delta: float) -> void:
 		move_and_slide()
 		is_thrown = not is_on_floor()
 		if not is_thrown:
-			_hand_authority_to(SERVER_PEER)
+			_hand_to(SERVER_PEER, -1)
 		return
 	super(delta)
 
@@ -118,15 +118,13 @@ func pick_up() -> void:
 	knockback_velocity = Vector3.ZERO
 	locomotion_blend = 0.0
 
-	_hand_authority_to(player.get_multiplayer_authority())
-	_carry_by.rpc(player.get_multiplayer_authority())
+	_hand_to(player.get_multiplayer_authority(), player.get_multiplayer_authority())
 
 
 func drop() -> void:
 	is_held = false
 	is_thrown = false
-	_hand_authority_to(SERVER_PEER)
-	_carry_by.rpc(0)
+	_hand_to(SERVER_PEER, 0)
 	velocity = Vector3.ZERO
 
 
@@ -164,13 +162,32 @@ func _carry_by(peer_id: int) -> void:
 			return
 
 
-## Hands the buddy (and so its synchronizer) to [param peer_id] on every peer, as the horse does for its rider.
-## Offline there is nobody to tell.
-func _hand_authority_to(peer_id: int) -> void:
+## Moves the buddy to [param peer_id] on every peer, the server first, and onto [param carrier]'s spring arm (0 the
+## world, -1 leave it where it is). A client only asks: the server puts the buddy where it goes everywhere and then
+## switches the authority, both on one reliable stream, so the old authority has stopped sending before the new
+## one starts and no peer is left rejecting a stale packet as a non-authority's. Giving it back, this side goes
+## quiet first, so the server's first packets find no rival. Offline there is nobody to ask.
+func _hand_to(peer_id: int, carrier: int) -> void:
 	if multiplayer.get_peers().is_empty():
+		if carrier >= 0:
+			_carry_by(carrier)
 		set_multiplayer_authority(peer_id)
+	elif multiplayer.is_server():
+		_grant(peer_id, carrier)
 	else:
-		_set_authority.rpc(peer_id)
+		if peer_id == SERVER_PEER:
+			set_multiplayer_authority(SERVER_PEER)
+		_grant.rpc_id(SERVER_PEER, peer_id, carrier)
+
+
+## The server's half of [method _hand_to]: where the buddy goes, then whose it is, in that order everywhere.
+@rpc("any_peer", "reliable")
+func _grant(peer_id: int, carrier: int) -> void:
+	if not multiplayer.is_server():
+		return
+	if carrier >= 0:
+		_carry_by.rpc(carrier)
+	_set_authority.rpc(peer_id)
 
 
 @rpc("any_peer", "call_local", "reliable")

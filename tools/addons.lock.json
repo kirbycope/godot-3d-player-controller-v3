@@ -1,56 +1,56 @@
 {
   "3d_player_controller": {
     "commit": "7e7af6d9a400b0358dca24d1093b00ca3ad34f38",
-    "pulled": "2026-09-13T19:50:52Z",
+    "pulled": "2026-09-13T20:11:43Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
     "subject": "Make the perspective swap a Camera method"
   },
   "controls": {
     "commit": "e8639304fe6ea791c682bda72752b7ab5d38b400",
-    "pulled": "2026-09-13T19:50:57Z",
+    "pulled": "2026-09-13T20:11:45Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-controls.git",
     "subject": "Hide a puppet's HUD, bind the d-pad keys, and take the pad in hand"
   },
   "date_and_time": {
     "commit": "a7cf4a647029df53c7723a6d0571b3a03ddfce35",
-    "pulled": "2026-09-13T19:51:01Z",
+    "pulled": "2026-09-13T20:11:47Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/date-and-time.git",
     "subject": "ci: point the tests at the gutconfig where it now lives"
   },
   "godot_doom_gdextension": {
     "commit": "3a146eac500fce5097c0fbd3bfbde11334e6f711",
-    "pulled": "2026-09-13T19:51:08Z",
+    "pulled": "2026-09-13T20:11:50Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-doom-gdextension.git",
     "subject": "Take the peer-review fixes in the controls addon"
   },
   "gta": {
-    "commit": "4470c6cd597ddf2427f72d979cce22a9518f1d43",
-    "pulled": "2026-09-13T19:51:04Z",
+    "commit": "d7c150454e6d4c0b2a0ea8e92e51416bbf82b942",
+    "pulled": "2026-09-13T20:11:48Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/gta.git",
-    "subject": "Take the car authority, the car-owned radio station, the broadcast bulletin and the emote blend"
+    "subject": "A client asks the server for the wheel rather than taking it"
   },
   "radi_ot": {
     "commit": "16fc3b20f0258b2321da6880f1d8d768f9e1aaca",
-    "pulled": "2026-09-13T19:51:07Z",
+    "pulled": "2026-09-13T20:11:50Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/radi-ot.git",
     "subject": "Broadcast a bulletin to every peer's own radio"
   },
   "tcps": {
-    "commit": "5df7a4090cc7a36d23c32696b29929eeec1c4ce8",
-    "pulled": "2026-09-13T19:51:06Z",
+    "commit": "7de2323595bf5afcb9f5a26471ca3bac66b3b251",
+    "pulled": "2026-09-13T20:11:49Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/tcps.git",
-    "subject": "Take the car authority, the car-owned radio station, the broadcast bulletin and the emote blend"
+    "subject": "Take the player controller's Camera.toggle_perspective"
   },
   "weather_fx": {
     "commit": "322b54f383ac59b58b80f1cf19d9d37397452634",
-    "pulled": "2026-09-13T19:51:01Z",
+    "pulled": "2026-09-13T20:11:46Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/weather-fx.git",
     "subject": "Show the clouds in the pink sky, with wind and leaves"
