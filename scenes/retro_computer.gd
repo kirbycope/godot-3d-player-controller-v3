@@ -17,7 +17,6 @@ extends StaticBody3D
 @export var seated_camera_position: Vector3 = Vector3(0.46, 1.5, 0.9) ## Where the view settles in third person, in the computer's own space. Over the Player's right shoulder: closer than this and their own upper arm swings across the lens.
 @export var seated_camera_target: Vector3 = Vector3(0.0, 1.06, 0.092) ## What it looks at: the middle of the CRT, up on its stand.
 @export var seated_camera_fov: float = 36.0 ## Narrow enough for the screen to be readable, wide enough to keep the bezel, the desk and the room around it.
-@export var first_person_camera_position: Vector3 = Vector3(0.0, 1.06, 0.40) ## Where the view sits when the Player's camera is in first person: level with the middle of the CRT and on its axis, so the screen is square to the view rather than seen across.
 @export var first_person_camera_fov: float = 50.0 ## Frames the whole monitor at that distance, with the room at the sides, since a 4:3 CRT never fills a 16:9 frame.
 @export var view_move_time: float = 0.7 ## Seconds the view takes to travel from the Player's own camera into the seat.
 
@@ -25,6 +24,7 @@ var player: Player ## The Player looking at or using the computer.
 var is_in_use: bool = false
 
 var _view_tween: Tween
+var _view_from_eyes: bool = false ## Whether the seat's view is the Player's own eyes, which it follows while seated in first person.
 
 @onready var action_prompt: ActionPrompt = $ActionPrompt
 @onready var doom_controls: PureDoomControls = $DoomControls
@@ -200,8 +200,12 @@ func _begin_seated_view() -> void:
 func _move_seated_view(from: Transform3D) -> void:
 	var view_camera: Camera = player.camera as Camera
 	var first_person: bool = view_camera != null and view_camera.perspective == Camera.Perspective.FIRST_PERSON
-	var where: Vector3 = first_person_camera_position if first_person else seated_camera_position
-	var to: Transform3D = Transform3D(Basis(), to_global(where)).looking_at(to_global(seated_camera_target), Vector3.UP)
+	# First person is the Player's own eyes: their camera sits at the head bone in that perspective, and the
+	# seat's view goes there and looks at the screen, rather than to a point in front of the CRT inside their hands
+	if first_person:
+		view_camera.move_camera_to_player_head() # it only goes there on the next physics tick by itself
+	_view_from_eyes = first_person
+	var to: Transform3D = _eye_shot() if first_person else Transform3D(Basis(), to_global(seated_camera_position)).looking_at(to_global(seated_camera_target), Vector3.UP)
 	screen_camera.fov = first_person_camera_fov if first_person else seated_camera_fov
 	if _view_tween and _view_tween.is_valid():
 		_view_tween.kill()
@@ -212,6 +216,17 @@ func _move_seated_view(from: Transform3D) -> void:
 
 func _set_view_progress(weight: float, from: Transform3D, to: Transform3D) -> void:
 	screen_camera.global_transform = from.interpolate_with(to, weight)
+
+
+## The first-person shot: from the Player's own eyes, at the screen. Their camera sits at the head bone in that
+## perspective, and the head settles as the sitting pose does, so the view follows it every physics tick.
+func _eye_shot() -> Transform3D:
+	return Transform3D(Basis(), player.camera.global_position).looking_at(to_global(seated_camera_target), Vector3.UP)
+
+
+func _physics_process(_delta: float) -> void:
+	if is_in_use and _view_from_eyes and is_instance_valid(player) and not (_view_tween and _view_tween.is_running()):
+		screen_camera.global_transform = _eye_shot()
 
 
 func _end_seated_view() -> void:

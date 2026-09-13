@@ -134,8 +134,7 @@ func test_first_person_gets_a_square_view_and_third_person_the_shoulder_shot() -
 	computer.equip(player)
 	assert_eq(computer.screen_camera.fov, computer.first_person_camera_fov,
 			"First person should take the square-on framing")
-	assert_almost_eq(computer.screen_camera.position.x, computer.first_person_camera_position.x, 0.001,
-			"and sit on the screen's own axis rather than off to one side")
+	assert_true(computer._view_from_eyes, "and the view is the Player's own eyes, followed as the sitting pose settles")
 	computer.stop_using()
 
 	(player.camera as Camera).perspective = Camera.Perspective.THIRD_PERSON
@@ -234,7 +233,7 @@ func test_the_perspective_button_swaps_the_seated_view_and_the_players_camera() 
 	assert_eq(camera.perspective, Camera.Perspective.FIRST_PERSON, "One press swaps the Player's own camera to first person")
 	assert_eq(computer.screen_camera.fov, computer.first_person_camera_fov, "and frames the screen square on")
 	await wait_seconds(computer.view_move_time + 0.2)
-	assert_almost_eq(computer.screen_camera.global_position, computer.to_global(computer.first_person_camera_position), Vector3(0.05, 0.05, 0.05), "with the view settled on the screen's axis")
+	assert_almost_eq(computer.screen_camera.global_position, camera.global_position, Vector3(0.05, 0.05, 0.05), "with the view settled at the Player's own eyes")
 	computer._input(press)
 	assert_eq(camera.perspective, Camera.Perspective.THIRD_PERSON, "The next press comes back")
 	assert_eq(computer.screen_camera.fov, computer.seated_camera_fov, "to the over-the-shoulder shot")
