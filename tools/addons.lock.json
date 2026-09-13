@@ -1,56 +1,56 @@
 {
   "3d_player_controller": {
-    "commit": "36ec249450c6cb85cc938a8532b618f3318431ad",
-    "pulled": "2026-09-13T00:24:19Z",
+    "commit": "41bf0a0e6373991c0db24b64b458eb60b724e54d",
+    "pulled": "2026-09-13T06:25:19Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Name the buttons the HUD stopped naming"
+    "subject": "Take the controls addon's arrow-key touch movement"
   },
   "controls": {
-    "commit": "941c2a9040d0808e40d5721fe94cf6861ea2f9c2",
-    "pulled": "2026-09-13T00:24:26Z",
+    "commit": "9e39d25f442346d7309b949316b1e0852868b32e",
+    "pulled": "2026-09-13T06:25:29Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-controls.git",
-    "subject": "Offer arrow keys instead of the touch joystick for movement"
+    "subject": "Size the HUD for thumbs, on its own and apart from the project's stretch"
   },
   "date_and_time": {
     "commit": "a7cf4a647029df53c7723a6d0571b3a03ddfce35",
-    "pulled": "2026-09-13T00:24:32Z",
+    "pulled": "2026-09-13T06:25:35Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/date-and-time.git",
     "subject": "ci: point the tests at the gutconfig where it now lives"
   },
   "godot_doom_gdextension": {
-    "commit": "73b5b1048d355749ef470b01fe273615854dcf93",
-    "pulled": "2026-09-13T00:24:41Z",
+    "commit": "35fbbcbb2267e1a25819cb5a2f1b806288049f62",
+    "pulled": "2026-09-13T06:25:45Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-doom-gdextension.git",
-    "subject": "Ignore the godot-cpp clone rather than committing it"
+    "subject": "Take the controls addon's arrow-key touch movement"
   },
   "gta": {
-    "commit": "09bb25d4ed9de45598213066d5804d875c842111",
-    "pulled": "2026-09-13T00:24:36Z",
+    "commit": "67f08151a2883307ce748fd960fd0d9d789965dd",
+    "pulled": "2026-09-13T06:25:39Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/gta.git",
-    "subject": "Take the HUD with its button labels back"
+    "subject": "Take the controls addon's arrow-key touch movement"
   },
   "radi_ot": {
     "commit": "93aee33383208471e1cb57b8e93392ef3bcf0765",
-    "pulled": "2026-09-13T00:24:39Z",
+    "pulled": "2026-09-13T06:25:43Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/radi-ot.git",
     "subject": "ci: judge the test run by its report, not Godot's exit code"
   },
   "tcps": {
-    "commit": "06ab493fcd0ac09f2194c95c634438d7916eab74",
-    "pulled": "2026-09-13T00:24:38Z",
+    "commit": "fc420bff7ceee40c2b4a2da9753d41e6ea63247d",
+    "pulled": "2026-09-13T06:25:42Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/tcps.git",
-    "subject": "Take the HUD with its button labels back"
+    "subject": "Take the controls addon's arrow-key touch movement"
   },
   "weather_fx": {
     "commit": "322b54f383ac59b58b80f1cf19d9d37397452634",
-    "pulled": "2026-09-13T00:24:31Z",
+    "pulled": "2026-09-13T06:25:34Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/weather-fx.git",
     "subject": "Show the clouds in the pink sky, with wind and leaves"
