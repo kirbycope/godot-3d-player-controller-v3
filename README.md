@@ -84,7 +84,9 @@ the click or touch goes straight into the single-player world; there is no Steam
   `PlayerSpawner` spawns `scenes/world_player.tscn` per peer, the host owns the clock, weather, NPCs,
   physics props and harvestables, the car and the horse hand their authority to whoever drives or
   rides, the little buddy to whoever carries it, and the training dummy's hit reactions travel by
-  RPC so it flinches on every peer.
+  RPC so it flinches on every peer. The car radio's station is the car's (`Vehicle.radio_station`,
+  replicated): the driver's next and previous station actions and the radial menu move it, and every
+  rider's own radio follows it while they are in the car, so two players in one car hear one station.
 
 ---
 
@@ -210,8 +212,7 @@ who is who, text chat, push-to-talk, emotes, weather, the car and its radio, the
 saddle, equipment, stealth, the little buddy, the giant duck, harvesting, the boat, a sign, drops
 and pickups, the training dummy, the torch, the retro computer, shooting, a thrown rock, the fishing
 float, the skateboard and a spell. Where something turned out not to cross the network the scenario
-says so in a pending test rather than pretending: the car radio's station, and the skateboard under a
-rider.
+says so in a pending test rather than pretending: the skateboard under a rider.
 
 ```powershell
 python tools/steam_test.py                      # the host here, the client on the Mac over SSH

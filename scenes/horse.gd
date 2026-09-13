@@ -264,13 +264,24 @@ func _hand_authority_to(peer_id: int) -> void:
 		_set_authority.rpc(peer_id)
 
 
-## Getting off hands the horse back before its synchronizer could send the cleared [member rider_peer], so the
-## hand-back clears it on every peer itself; getting on replicates it, the rider's copy being the authority by then.
 @rpc("any_peer", "call_local", "reliable")
 func _set_authority(peer_id: int) -> void:
 	set_multiplayer_authority(peer_id)
-	if peer_id == SERVER_PEER:
-		rider_peer = 0
+
+
+## Who is in the saddle, told to every peer by the rider getting on or off. It is not tied to the authority: the
+## host is a rider too while the authority stays the server's, and getting off hands the horse back before its
+## synchronizer could send the cleared value, so the dismount says it itself. Offline there is nobody to tell.
+func _tell_rider(peer_id: int) -> void:
+	if multiplayer.get_peers().is_empty():
+		rider_peer = peer_id
+	else:
+		_set_rider.rpc(peer_id)
+
+
+@rpc("any_peer", "call_local", "reliable")
+func _set_rider(peer_id: int) -> void:
+	rider_peer = peer_id
 
 
 ## A rider who drops out takes the authority with them; every peer hands the horse back to the server.
@@ -290,7 +301,7 @@ func mount(_player: Player) -> void:
 		_player.dismount.call_deferred(true)
 		return
 	player = _player
-	rider_peer = _player.get_multiplayer_authority()
+	_tell_rider(_player.get_multiplayer_authority())
 	summoner = null
 	summon_state = SummonState.IDLE
 	_hand_authority_to(_player.get_multiplayer_authority())
@@ -308,7 +319,7 @@ func dismount(_player: Player) -> void:
 	_player.velocity = Vector3.ZERO
 	speed = 0.0
 	player = null
-	rider_peer = 0
+	_tell_rider(0)
 	_hand_authority_to(SERVER_PEER)
 	dismounted.emit()
 

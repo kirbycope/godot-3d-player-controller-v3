@@ -328,5 +328,7 @@ func test_getting_on_takes_the_saddle_and_getting_off_frees_it() -> void:
 	await wait_physics_frames(2)
 	assert_eq(horse.rider_peer, 0, "Off again, the saddle is free")
 	horse.rider_peer = 2
-	horse._set_authority(Horse.SERVER_PEER) # what a dismount elsewhere sends every peer
-	assert_eq(horse.rider_peer, 0, "Handing the horse back to the server frees the saddle on every peer")
+	horse._set_authority(Horse.SERVER_PEER)
+	assert_eq(horse.rider_peer, 2, "The authority alone says nothing about the saddle: the host rides with the server's authority")
+	horse._set_rider(0) # what a dismount elsewhere sends every peer
+	assert_eq(horse.rider_peer, 0, "The dismount is what frees the saddle on every peer")

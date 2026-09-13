@@ -28,7 +28,8 @@ const STEAM_LOBBY_TYPE_PUBLIC: int = 2
 @export var max_lobby_players: int = 4
 
 var player: Player ## The player this peer controls, once spawned.
-var radi_ot_player: RadiOtPlayer3D ## The local player's car radio.
+var radi_ot_player: RadiOtPlayer3D ## The local player's car radio; it follows the station of the car they are in.
+var _radio_car: Vehicle ## The car the local Player is in, whose replicated station the radio follows.
 
 @onready var player_spawner: PlayerSpawner = $PlayerSpawner
 @onready var steam_peer: SteamPeer = $SteamPeer
@@ -131,9 +132,13 @@ func _sync_weather(biome: ClimateData.BiomeZone, weather: ClimateData.WeatherTyp
 	weather_fx.set_weather(weather)
 
 
-## Powers the car radio and its radial-menu stations while the local Player drives.
+## Powers the car radio and its radial-menu stations while the local Player drives. The station is the car's
+## (Vehicle.radio_station, replicated), so everyone in it hears the driver's pick and a rider's radio follows it.
 func _on_player_state_changed(from_state: int, to_state: int) -> void:
 	if to_state == NodeStateMachine.States.RIDING and player.riding is Vehicle:
+		_radio_car = player.riding as Vehicle
+		_radio_car.radio_station_changed.connect(_on_car_radio_station_changed)
+		radi_ot_player.tune_to_station_index(_radio_car.radio_station)
 		radi_ot_player.set_power(true)
 		radi_ot_player.get_hud().show_toast(5.0)
 		player.radial_menu.custom_item_provider = _provide_radio_items
@@ -141,6 +146,9 @@ func _on_player_state_changed(from_state: int, to_state: int) -> void:
 		player.radial_menu.custom_item_is_equipped = _is_radio_item_equipped
 		player.inventory.custom_cycle_handler = _on_cycle_radio_station
 	elif from_state == NodeStateMachine.States.RIDING:
+		if is_instance_valid(_radio_car):
+			_radio_car.radio_station_changed.disconnect(_on_car_radio_station_changed)
+		_radio_car = null
 		radi_ot_player.set_power(false)
 		radi_ot_player.get_hud().hide_toast()
 		player.radial_menu.custom_item_provider = Callable()
@@ -204,7 +212,7 @@ func _on_radio_item_selected(item: Variant, index: int) -> void:
 		radi_ot_player.set_power(false)
 	elif item is Dictionary and "station_index" in item:
 		radi_ot_player.set_power(true)
-		radi_ot_player.tune_to_station_index(item.station_index)
+		_radio_car.radio_station = item.station_index
 
 
 func _is_radio_item_equipped(item: Variant, index: int) -> bool:
@@ -215,14 +223,17 @@ func _is_radio_item_equipped(item: Variant, index: int) -> bool:
 	return false
 
 
+## The driver's next / previous station action moves the car's station; the radio follows through the car's signal.
 func _on_cycle_radio_station(direction: int) -> void:
 	if not radi_ot_player.is_power_on():
 		radi_ot_player.set_power(true)
 		return
-	if direction > 0:
-		radi_ot_player.tune_next_station()
-	else:
-		radi_ot_player.tune_previous_station()
+	_radio_car.radio_station = posmod(_radio_car.radio_station + direction, maxi(radi_ot_player.get_station_count(), 1))
+
+
+## The car was tuned, here or on the driver's peer: this rider's radio follows.
+func _on_car_radio_station_changed(station: int) -> void:
+	radi_ot_player.tune_to_station_index(station)
 
 
 func _on_radio_station_changed(_station: RadioStation) -> void:

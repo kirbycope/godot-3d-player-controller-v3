@@ -3,7 +3,7 @@ extends SteamTest
 ## host moves the server's horse and the client's copy follows; a whistle on the client is relayed to the host by
 ## Horse._request_summon and the horse comes to the host's copy of the client. While the client is up, the host's
 ## attempt to mount is refused and the saddle is seen taken; it frees once the client gets off. The other way
-## round is another matter, and the pending test records it.
+## round is the same rule with the roles swapped, and the saddle is told apart from the authority.
 
 const ARRIVE_SLACK: float = 1.5 ## Metres beyond arrive_distance the copy may lag its authority.
 const ARRIVAL_TIMEOUT: float = 60.0 ## Seconds for the horse to cross the yard at a walk.
@@ -68,8 +68,35 @@ func test_a_second_rider_is_refused_while_the_client_is_up() -> void:
 		await await_step("host_saw_free")
 
 
+## The host is a rider too while the authority stays the server's: the saddle is told apart from the authority.
 func test_a_second_rider_is_refused_while_the_host_is_up() -> void:
-	pending("A host in the saddle is not seen as one: Horse.mount hands the authority to the rider's peer through _set_authority, which clears rider_peer whenever that peer is the server (scenes/horse.gd:269-273), so the host's own mount leaves rider_peer at 0 on every peer and a client is not refused")
+	var horse: Horse = world_node("Horse") as Horse
+	var me: Player = own_player()
+	if is_host:
+		me.mount(horse)
+		await wait_for(func() -> bool: return me.is_riding and horse.rider_peer == 1, "The host gets on")
+		mark("host_mounted")
+		await await_step("client_refused")
+		assert_true(me.is_riding, "The host is still up")
+		assert_eq(horse.rider_peer, 1, "and keeps the saddle")
+		me.dismount(true)
+		await wait_for(func() -> bool: return not me.is_riding and horse.rider_peer == 0, "The host gets off and the saddle frees")
+		mark("host_off")
+		await await_step("client_saw_free")
+	else:
+		await await_step("host_mounted")
+		await wait_for(func() -> bool: return horse.rider_peer == 1, "The saddle is seen taken by the host")
+		assert_eq(horse.get_multiplayer_authority(), 1, "with the horse the server's, as it was")
+		me.mount(horse)
+		await wait_physics_frames(30)
+		assert_false(me.is_riding, "A second rider is put back off")
+		assert_eq(horse.rider_peer, 1, "and the host keeps the saddle")
+		if me.is_riding:
+			me.dismount(true)
+		mark("client_refused")
+		await await_step("host_off")
+		await wait_for(func() -> bool: return horse.rider_peer == 0, "The saddle is seen freed once the host is off")
+		mark("client_saw_free")
 
 
 func _assert_beside(horse: Horse, whistler: Player, bystander: Player) -> void:
