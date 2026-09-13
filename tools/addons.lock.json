@@ -1,56 +1,56 @@
 {
   "3d_player_controller": {
     "commit": "36ec249450c6cb85cc938a8532b618f3318431ad",
-    "pulled": "2026-09-12T03:34:25Z",
+    "pulled": "2026-09-13T00:24:19Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
     "subject": "Name the buttons the HUD stopped naming"
   },
   "controls": {
-    "commit": "88900e9dda5ea1ef8b3bac6652ad68bd5fadfb55",
-    "pulled": "2026-09-12T03:34:26Z",
+    "commit": "941c2a9040d0808e40d5721fe94cf6861ea2f9c2",
+    "pulled": "2026-09-13T00:24:26Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-controls.git",
-    "subject": "Keep both slots' events when two of them name one action"
+    "subject": "Offer arrow keys instead of the touch joystick for movement"
   },
   "date_and_time": {
     "commit": "a7cf4a647029df53c7723a6d0571b3a03ddfce35",
-    "pulled": "2026-09-12T03:34:30Z",
+    "pulled": "2026-09-13T00:24:32Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/date-and-time.git",
     "subject": "ci: point the tests at the gutconfig where it now lives"
   },
   "godot_doom_gdextension": {
     "commit": "73b5b1048d355749ef470b01fe273615854dcf93",
-    "pulled": "2026-09-12T14:12:10Z",
+    "pulled": "2026-09-13T00:24:41Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-doom-gdextension.git",
     "subject": "Ignore the godot-cpp clone rather than committing it"
   },
   "gta": {
     "commit": "09bb25d4ed9de45598213066d5804d875c842111",
-    "pulled": "2026-09-12T03:50:38Z",
+    "pulled": "2026-09-13T00:24:36Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/gta.git",
     "subject": "Take the HUD with its button labels back"
   },
   "radi_ot": {
     "commit": "93aee33383208471e1cb57b8e93392ef3bcf0765",
-    "pulled": "2026-09-12T03:34:36Z",
+    "pulled": "2026-09-13T00:24:39Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/radi-ot.git",
     "subject": "ci: judge the test run by its report, not Godot's exit code"
   },
   "tcps": {
     "commit": "06ab493fcd0ac09f2194c95c634438d7916eab74",
-    "pulled": "2026-09-12T03:50:39Z",
+    "pulled": "2026-09-13T00:24:38Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/tcps.git",
     "subject": "Take the HUD with its button labels back"
   },
   "weather_fx": {
     "commit": "322b54f383ac59b58b80f1cf19d9d37397452634",
-    "pulled": "2026-09-12T03:34:29Z",
+    "pulled": "2026-09-13T00:24:31Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/weather-fx.git",
     "subject": "Show the clouds in the pink sky, with wind and leaves"
