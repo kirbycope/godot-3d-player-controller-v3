@@ -139,6 +139,13 @@ rewrites the lock file. The addon's own scaffolding is never vendored: its `demo
 `.github/` workflows and git metadata stay upstream, while `scenes/demo/`, the demo scene inside the
 addon, is part of the addon and comes along.
 
+One file the mirror never touches: overwriting a DLL that a running program has loaded, the DOOM
+GDExtension held by an open Godot editor for instance, cannot delete the old file, so Windows swaps
+the new one in and parks the old one beside it, hidden, as `~<name>~RF<hex>.TMP`. The pull sweeps up
+any it can remove and names the file that is still held; `push_addons.py` neither copies one into an
+addon's clone nor counts it as a change, so the pre-push hook stays quiet. Close the editor and pull
+again and the leftover goes. `python -m unittest tools/test_addon_common.py` holds that behaviour.
+
 Because it is a mirror, a file sitting in `addons/<name>/` that upstream does not have would be
 deleted. That is how an upstream removal reaches this project, but it is also how unpushed work
 would be lost, so **the pull stops rather than delete anything**, names the files and leaves that

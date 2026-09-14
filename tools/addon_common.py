@@ -110,7 +110,44 @@ def local_checkout(addon: dict) -> Path | None:
 
 def payload_entries(source: Path) -> list[Path]:
     """The top-level entries of an addon repository that make up the addon itself."""
-    return sorted(p for p in source.iterdir() if p.name not in EXCLUDED_TOP_LEVEL)
+    return sorted(
+        p for p in source.iterdir() if p.name not in EXCLUDED_TOP_LEVEL and not is_replace_fragment(p.name)
+    )
+
+
+def is_replace_fragment(name: str) -> bool:
+    """Whether a file name is what Windows leaves behind when it replaces a file that is in use.
+
+    Overwriting a DLL that a running program has loaded (an open Godot editor holding a GDExtension,
+    say) cannot delete the old file, so Windows swaps the new one in and parks the old one beside it,
+    hidden, as ~<name>~RF<hex>.TMP until whatever holds it lets go. It is never addon content: not
+    something to copy into a repository, not something to count as a local change, and not something
+    to treat as an upstream deletion. The mirror skips it on both sides and the pull sweeps up any it
+    can remove.
+    """
+    upper = name.upper()
+    return name.startswith("~") and "~RF" in upper and upper.endswith(".TMP")
+
+
+def sweep_replace_fragments(root: Path) -> tuple[list[Path], list[Path]]:
+    """Remove every replace fragment under root that can be removed.
+
+    Returns (removed, held): a fragment whose original is still loaded by another program cannot be
+    deleted yet and is reported in `held` so the caller can say so rather than fail on it.
+    """
+    removed: list[Path] = []
+    held: list[Path] = []
+    if not root.exists():
+        return removed, held
+    for path in root.rglob("*"):
+        if not path.is_file() or not is_replace_fragment(path.name):
+            continue
+        try:
+            path.unlink()
+            removed.append(path)
+        except OSError:
+            held.append(path)
+    return removed, held
 
 
 def mirror(
@@ -134,7 +171,7 @@ def mirror(
 
     if dest.exists():
         for entry in dest.iterdir():
-            if entry.name in protect:
+            if entry.name in protect or is_replace_fragment(entry.name):
                 continue
             if entry.name not in wanted:
                 removed.extend(_files_under(entry))
@@ -160,7 +197,7 @@ def _mirror_dir(source: Path, dest: Path, dry_run: bool, removed: list[Path]) ->
     source_names = set()
 
     for entry in source.iterdir():
-        if entry.name in {"__pycache__", ".godot"}:
+        if entry.name in {"__pycache__", ".godot"} or is_replace_fragment(entry.name):
             continue
         source_names.add(entry.name)
         target = dest / entry.name
@@ -177,6 +214,8 @@ def _mirror_dir(source: Path, dest: Path, dry_run: bool, removed: list[Path]) ->
     # caller can show it, because a silent delete of unpushed work is exactly the trap to avoid.
     if dest.exists():
         for entry in dest.iterdir():
+            if is_replace_fragment(entry.name):
+                continue
             if entry.name not in source_names:
                 removed.extend(_files_under(entry))
                 if not dry_run:
@@ -214,8 +253,8 @@ def _digest(path: Path) -> str:
 
 def _files_under(path: Path) -> list[Path]:
     if path.is_file():
-        return [path]
-    return [p for p in path.rglob("*") if p.is_file()]
+        return [] if is_replace_fragment(path.name) else [path]
+    return [p for p in path.rglob("*") if p.is_file() and not is_replace_fragment(p.name)]
 
 
 def _rmtree(path: Path) -> None:

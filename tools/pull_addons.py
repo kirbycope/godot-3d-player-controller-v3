@@ -27,6 +27,7 @@ from addon_common import (
     mirror,
     run,
     save_lock,
+    sweep_replace_fragments,
     sync_cache,
 )
 
@@ -104,8 +105,13 @@ def main() -> int:
             blocked = True
             continue
 
+        held: list = []
         if not args.dry_run:
             copied, removed = mirror(origin, dest, dry_run=False)
+            # A file that another program has loaded, a GDExtension DLL held by an open editor, cannot be
+            # deleted when it is replaced; Windows parks the old copy beside the new one, hidden, as
+            # ~<name>~RF<hex>.TMP. Sweep up any that are free now; name the ones still held.
+            _swept, held = sweep_replace_fragments(dest)
 
         if copied or removed:
             changed = True
@@ -123,6 +129,10 @@ def main() -> int:
 
         if subject:
             print(f"{'':<28} {subject[:70]}")
+        for path in held:
+            original = path.name[1:].split("~RF")[0]
+            print(f"{'':<28} {original} is held open by another program (an open editor?); its old copy is "
+                  f"parked beside it until that closes")
 
         if not args.dry_run:
             lock[name] = {
