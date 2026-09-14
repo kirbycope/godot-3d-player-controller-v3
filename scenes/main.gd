@@ -50,6 +50,12 @@ func single_player() -> void:
 		loading.load_scene(single_player_scene)
 
 
+## Continue: the world loads as for a new game, and its SaveGame reads the file once the Player is in.
+func continue_game() -> void:
+	SaveGame.load_requested = true
+	single_player()
+
+
 func multi_player() -> void:
 	title_screen.hide()
 	lobby_explorer.show()

@@ -104,6 +104,11 @@
 [ext_resource type="Script" uid="uid://7e2gpht4wap6" path="res://addons/3d_player_controller/scripts/rifle.gd" id="r_riflegd"]
 [ext_resource type="PackedScene" path="res://addons/weather_fx/scenes/water_ripples.tscn" id="water_ripples_scene"]
 [ext_resource type="Script" uid="uid://bia70m5sxncj0" path="res://addons/weather_fx/scripts/weather_clouds.gd" id="weather_clouds"]
+[ext_resource type="PackedScene" uid="uid://c7killzone0001" path="res://addons/3d_player_controller/scenes/kill_zone.tscn" id="pc_kill_zone"]
+[ext_resource type="PackedScene" uid="uid://c7checkpoint01" path="res://addons/3d_player_controller/scenes/checkpoint.tscn" id="pc_checkpoint"]
+[ext_resource type="PackedScene" uid="uid://c7savegame0001" path="res://addons/3d_player_controller/scenes/save_game.tscn" id="pc_save_game"]
+[ext_resource type="PackedScene" uid="uid://c7talkingnpc01" path="res://addons/3d_player_controller/scenes/talking_npc.tscn" id="pc_talking_npc"]
+[ext_resource type="Resource" uid="uid://c7dialogueqa01" path="res://resources/dialogues/qa_guide.tres" id="qa_guide_dialogue"]
 
 [sub_resource type="Environment" id="Environment_aqk2v"]
 background_mode = 2
@@ -1379,11 +1384,22 @@ shape = SubResource("BoxShape3D_desert_zone")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 1.9000001, -7)
 physics_material_override = SubResource("PhysicsMaterial_torch")
 
-[node name="KillZone" type="Area3D" parent="." unique_id=1459251186]
+[node name="KillZone" parent="." instance=ExtResource("pc_kill_zone")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -50, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="KillZone" unique_id=1729524154]
+[node name="CollisionShape3D" parent="KillZone"]
 shape = SubResource("BoxShape3D_killzone")
+
+[node name="Checkpoint" parent="." instance=ExtResource("pc_checkpoint")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, 1)
+
+[node name="SaveGame" parent="." node_paths=PackedStringArray("player_spawner") instance=ExtResource("pc_save_game")]
+player_spawner = NodePath("../PlayerSpawner")
+
+[node name="Guide" parent="." instance=ExtResource("pc_talking_npc")]
+transform = Transform3D(0.5547, 0, -0.83205, 0, 1, 0, 0.83205, 0, 0.5547, 6, 0, 4)
+display_name = "Guide"
+dialogue = ExtResource("qa_guide_dialogue")
 
 [node name="Horse" parent="." unique_id=780231883 instance=ExtResource("87_xgy6y")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 8)
@@ -1418,7 +1434,6 @@ hidden_while_in_use = Array[NodePath]([NodePath("../HUD")])
 [connection signal="body_exited" from="Pool/WaterArea3D" to="Pool/WaterArea3D" method="_on_body_exited"]
 [connection signal="body_exited" from="Pool/WaterArea3D" to="Pool/WaterRipples" method="_on_body_exited"]
 [connection signal="body_exited" from="Pool/WaterArea3D" to="." method="_on_water_area_3d_body_exited" binds= [NodePath("Pool/WaterArea3D")]]
-[connection signal="body_entered" from="KillZone" to="." method="_on_kill_zone_body_entered"]
 
 [editable path="JustCreate3D/Weapon_02/Muzzle/MuzzleFlash/Flash"]
 [editable path="JustCreate3D/Weapon_01/Muzzle/MuzzleFlash/Flash"]

@@ -56,5 +56,6 @@ grow_vertical = 2
 text = "Click to start"
 label_settings = SubResource("LabelSettings_5xw05")
 
+[connection signal="continue_pressed" from="TitleScreen" to="." method="continue_game"]
 [connection signal="multi_player_pressed" from="TitleScreen" to="." method="multi_player"]
 [connection signal="single_player_pressed" from="TitleScreen" to="." method="single_player"]

@@ -47,6 +47,9 @@ func record_catch(fish: Fish, length_cm: float) -> bool:
 		held[id] = []
 	held[id].append(length_cm)
 	_changed()
+	var player: Player = get_parent() as Player
+	if player and player.quest_log:
+		player.quest_log.progress(&"catch_fish")
 	return is_record
 
 

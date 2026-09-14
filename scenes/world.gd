@@ -41,8 +41,36 @@ var _radio_car: Vehicle ## The car the local Player is in, whose replicated stat
 func _ready() -> void:
 	# Set the mouse mode to captured to hide the mouse cursor
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	add_to_group(SaveGame.GROUP)
+	for harvestable: Node in get_tree().get_nodes_in_group(&"Harvestable"):
+		(harvestable as Harvestable).depleted.connect(_on_harvestable_depleted.bind(harvestable))
 	_initialize_steam_lobby()
 	_apply_network_roles()
+
+
+## What a [SaveGame] keeps of the world itself: the clock and the weather. The Players, the enemies and the
+## harvestables save themselves.
+func save_state() -> Dictionary:
+	return {
+		"time": date_and_time.get_datetime_dict(),
+		"biome": weather_fx.current_biome,
+		"weather": weather_fx.active_weather,
+	}
+
+
+func load_state(state: Dictionary) -> void:
+	if state.get("time") is Dictionary:
+		date_and_time.set_from_datetime_dict(state["time"])
+	if state.has("biome") and not weather_fx.is_blending_zones():
+		weather_fx.current_biome = int(state["biome"]) as ClimateData.BiomeZone
+	if state.has("weather"):
+		weather_fx.set_weather(int(state["weather"]) as ClimateData.WeatherType)
+
+
+## A felled tree is firewood for the Guide's errand; ore is not.
+func _on_harvestable_depleted(harvestable: Harvestable) -> void:
+	if player and player.quest_log and harvestable is Choppable:
+		player.quest_log.progress(&"chop_tree")
 
 
 ## Tops the player's inventory up to the [constant STARTING_ITEMS] counts.
@@ -160,12 +188,6 @@ func _on_player_state_changed(from_state: int, to_state: int) -> void:
 func _on_warp_zone_body_entered(body: Node3D, marker_path: NodePath) -> void:
 	if body is Player and (body as Player).is_multiplayer_authority():
 		(body as Player).warp_to((get_node(marker_path) as Marker3D).global_transform)
-
-
-## Respawns a Player that fell out of the world at their starting position.
-func _on_kill_zone_body_entered(body: Node3D) -> void:
-	if body is Player and (body as Player).is_multiplayer_authority() and not (body as Player).is_riding and not (body as Player).is_flying:
-		(body as Player).warp_to((body as Player).initial_transform)
 
 
 func _on_water_area_3d_body_entered(body: Node3D, water_area_path: NodePath) -> void:

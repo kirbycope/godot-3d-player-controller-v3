@@ -1,6 +1,10 @@
 class_name Harvestable
 extends Node3D
 ## Something the Player harvests with the "action" interaction or a capable melee weapon; depleted after enough hits.
+## It joins the Harvestable group (the world listens for [signal depleted] on every one) and the Saveable group, so
+## a [SaveGame] keeps its hits and whether it is gone.
+
+signal depleted ## The last hit landed; on every peer, through the replicated flag.
 
 @export var hits_to_finish: int = 3 ## Number of hits before the harvestable is depleted.
 @export var hit_delay: float = 0.9 ## Seconds after the harvesting animation starts before the hit lands.
@@ -26,6 +30,7 @@ var is_depleted: bool = false: ## Replicated from the server; the setter swaps t
 		if value:
 			_on_depleted()
 			_play(depleted_sfx)
+			depleted.emit()
 var player: Player
 
 @onready var action_prompt: ActionPrompt = $ActionPrompt
@@ -36,7 +41,22 @@ var player: Player
 
 ## Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	add_to_group(&"Harvestable")
+	add_to_group(SaveGame.GROUP)
 	progress_bar.max_value = hits_to_finish
+
+
+## What a [SaveGame] keeps: how far along it is and whether it is gone.
+func save_state() -> Dictionary:
+	return {"hits_taken": hits_taken, "is_depleted": is_depleted}
+
+
+## Puts a [method save_state] back; a felled tree does not stand up again, so a save that has it intact leaves a
+## depleted one as it is.
+func load_state(state: Dictionary) -> void:
+	hits_taken = int(state.get("hits_taken", 0))
+	if bool(state.get("is_depleted", false)):
+		is_depleted = true
 
 
 ## Called when there is an input event. The gate is the looking Player's authority, not the harvestable's (the

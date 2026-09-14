@@ -18,7 +18,7 @@ features are documented**. This file covers only what belongs to the game projec
 
 | Addon | Repository | What it provides |
 | --- | --- | --- |
-| `addons/3d_player_controller` | [godot-3d-player-controller-addon](https://github.com/kirbycope/godot-3d-player-controller-addon) | The Player: locomotion state machine, camera, equipment and combat, projectiles, inventory and spell system, abilities, chat, throwing, toon shading, health, stamina, settings, Steam lobby UI and the multiplayer spawners |
+| `addons/3d_player_controller` | [godot-3d-player-controller-addon](https://github.com/kirbycope/godot-3d-player-controller-addon) | The Player: locomotion state machine, camera, equipment and combat, projectiles, inventory and spell system, abilities, chat, throwing, toon shading, health, stamina, settings, Zelda and GTA control schemes, checkpoints and the death flow, the save game, the NPCs (`FollowerNpc`, `EnemyNpc`, `NpcCaster`, `TalkingNpc`), dialogue and quests, local split screen, Steam lobby UI and the multiplayer spawners |
 | `addons/controls` | [godot-controls](https://github.com/kirbycope/godot-controls) | On-screen input hints and the world-space `ActionPrompt` |
 | `addons/weather_fx` | [weather-fx](https://github.com/kirbycope/weather-fx) | Biomes, precipitation, wind, wildfire, lightning, the sky and cloud driver, water shader and ripples |
 | `addons/date_and_time` | [date-and-time](https://github.com/kirbycope/date-and-time) | The in-game clock and calendar HUD |
@@ -34,7 +34,7 @@ are not in `addons.json`; the pull script leaves them alone. See
 ---
 
 The game has two starts on purpose. On the desktop, and when run from the editor, `scenes/main.tscn` opens on
-the title screen with its Single-Player and Multiplayer buttons. The web export opens on the Click to Start
+the title screen with its Single-Player and Multiplayer buttons, and a Continue button while a save exists. The web export opens on the Click to Start
 overlay, since a browser lets the game capture the mouse and play audio only from inside a user gesture, and
 the click or touch goes straight into the single-player world; there is no Steam on the web and no title screen.
 
@@ -49,9 +49,23 @@ the click or touch goes straight into the single-player world; there is no Steam
   lure and biome); lures (`resources/lures/`) are consumable items that go on the line. The catch
   screen holds the fish up Zelda style, the pause menu's Fish Index lists every species with its
   record, and the whole thing replicates through the `ProjectileSpawner`.
-- **Enemies** (`EnemyNpc`, `NpcCaster`): a swordsman, an archer, a rifleman and a spellcaster east of
-  the spawn. They hunt over the navmesh, attack in reach, take headshots, and leash back to their
-  post like a WoW mob.
+- **Enemies** (`enemy_swordsman.tscn`, `enemy_archer.tscn`, `enemy_rifleman.tscn`,
+  `enemy_spellcaster.tscn`): a swordsman, an archer, a rifleman and a spellcaster east of the spawn.
+  They hunt over the navmesh, attack in reach, take headshots, and leash back to their post like a
+  WoW mob. The scripts (`EnemyNpc`, `NpcCaster`, `FollowerNpc`) and the base scene are the addon's
+  now; this project's `scenes/enemy_npc.tscn` inherits it and hangs the weather addon's flame under
+  `BurnVFX`, and the four enemies inherit that, each with its N-Hance weapon.
+- **The Guide** (`TalkingNpc`, `resources/dialogues/qa_guide.tres`, `resources/quests/qa_errand.tres`):
+  stands by the spawn with an errand: talk to him, fell a tree with an axe and land a fish, and he pays
+  three apples. `world.gd` reports the tree through every `Harvestable`'s `depleted` signal and
+  `FishingLog.record_catch` reports the fish. The tracker sits top right and the Quests page is in the
+  pause menu.
+- **Checkpoint, kill zone and saving**: the beacon west of the spawn is the addon's `Checkpoint`; the
+  `KillZone` fifty metres down is lethal, so falling off the map is a death, the death screen and a
+  respawn at the checkpoint. The `SaveGame` node writes `user://savegame.tres` from the pause menu's
+  Save Game (and on every checkpoint), keeping the Player, the world's clock and weather (`world.gd` is
+  in the `Saveable` group), every `Harvestable`'s hits and the enemies; Load Game reads it back, and
+  the title screen shows Continue while the file exists.
 - **Companions** (`FollowerNpc`): a duck that respawns as a giant boss (its size, animation and
   health replicate, so every peer sees the giant walk and eat) and a "little buddy" that can be
   picked up and thrown: the carrier's peer owns it while it is in their hands, every peer sees it on
@@ -72,8 +86,8 @@ the click or touch goes straight into the single-player world; there is no Steam
 - **Water and props**: the pool with `Buoyancy` on its area, floating the beach ball (a bump on what
   it rolls into, never a weapon hit and never a chop) and rocking the boat on the weather addon's
   Gerstner waves; a bowling alley, balloons to shoot (the ring spins on every peer), choppable trees
-  and mineable ore (`Harvestable`), a push button, warp zones, a kill zone, a wooden sign and a moon
-  with its own gravity. The boat, the harvestables and the sign answer a client's Action too.
+  and mineable ore (`Harvestable`), a push button, warp zones, a wooden sign and a moon with its own
+  gravity. The boat, the harvestables and the sign answer a client's Action too.
 - **Torch and fire** (`Torch`): a throwable that ignites grass fields within its exported
   `ignite_radius` for `burn_duration` seconds (the fire arrow's ignite, on every peer through the
   spawner), spreads downwind and goes out in the pool.

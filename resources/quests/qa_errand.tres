@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="Quest" load_steps=7 format=3 uid="uid://c7questqa00001"]
+
+[ext_resource type="Script" path="res://addons/3d_player_controller/scripts/quest.gd" id="1_quest"]
+[ext_resource type="Script" path="res://addons/3d_player_controller/scripts/quest_objective.gd" id="2_objective"]
+[ext_resource type="Resource" path="res://resources/items/apple.tres" id="3_apple"]
+
+[sub_resource type="Resource" id="Resource_talk"]
+script = ExtResource("2_objective")
+id = &"talk_guide"
+description = "Talk to the Guide"
+required = 1
+
+[sub_resource type="Resource" id="Resource_chop"]
+script = ExtResource("2_objective")
+id = &"chop_tree"
+description = "Chop down a tree"
+required = 1
+
+[sub_resource type="Resource" id="Resource_fish"]
+script = ExtResource("2_objective")
+id = &"catch_fish"
+description = "Catch a fish"
+required = 1
+
+[resource]
+script = ExtResource("1_quest")
+id = &"qa_errand"
+title = "Provisions for the Guide"
+description = "The Guide by the spawn wants firewood and something for the pot: fell a tree with an axe and land a fish from the pool. Apples on delivery."
+objectives = Array[ExtResource("2_objective")]([SubResource("Resource_talk"), SubResource("Resource_chop"), SubResource("Resource_fish")])
+rewards = Dictionary[ExtResource("3_apple"), int]({
+ExtResource("3_apple"): 3
+})
+tracked_on_start = true

@@ -37,6 +37,19 @@ visible = false
 position = Vector2(290, 29)
 shape = SubResource("RectangleShape2D_kxxiu")
 
+[node name="Button_Continue" type="Button" parent="VBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(580, 58)
+layout_mode = 2
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 24
+text = "Continue"
+
+[node name="TouchScreenButton_Continue" type="TouchScreenButton" parent="VBoxContainer/Button_Continue"]
+visible = false
+position = Vector2(290, 29)
+shape = SubResource("RectangleShape2D_kxxiu")
+
 [node name="Button_MultiPlayer" type="Button" parent="VBoxContainer" unique_id=1092064221]
 custom_minimum_size = Vector2(580, 58)
 layout_mode = 2
@@ -115,6 +128,9 @@ text = "© Timothy Cope 2026"
 [connection signal="mouse_entered" from="VBoxContainer/HBoxContainer/Button_Quit" to="VBoxContainer/HBoxContainer/Button_Quit" method="grab_focus"]
 [connection signal="pressed" from="VBoxContainer/Button_SinglePlayer" to="." method="_on_button_single_player_pressed"]
 [connection signal="pressed" from="VBoxContainer/Button_SinglePlayer/TouchScreenButton_SinglePlayer" to="." method="_on_touch_screen_button_single_player_pressed"]
+[connection signal="mouse_entered" from="VBoxContainer/Button_Continue" to="VBoxContainer/Button_Continue" method="grab_focus"]
+[connection signal="pressed" from="VBoxContainer/Button_Continue" to="." method="_on_button_continue_pressed"]
+[connection signal="pressed" from="VBoxContainer/Button_Continue/TouchScreenButton_Continue" to="." method="_on_touch_screen_button_continue_pressed"]
 [connection signal="pressed" from="VBoxContainer/Button_MultiPlayer" to="." method="_on_button_multi_player_pressed"]
 [connection signal="pressed" from="VBoxContainer/Button_MultiPlayer/TouchScreenButton_MultiPlayer" to="." method="_on_touch_screen_button_multi_player_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Button_Options" to="." method="_on_button_options_pressed"]

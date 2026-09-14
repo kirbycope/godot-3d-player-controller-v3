@@ -1,14 +1,14 @@
 {
   "3d_player_controller": {
-    "commit": "8a56ebe377ab903c73efc854b0d1def8981ec376",
-    "pulled": "2026-09-14T02:40:42Z",
+    "commit": "635d97409da617a109b82a3972748f410d3383df",
+    "pulled": "2026-09-13T21:18:12Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Hide the chat window until it is wanted, and guard the blend position setter"
+    "subject": "Control schemes, checkpoints and death, save game, NPCs, dialogue and quests, split screen\n\nZelda and GTA control schemes (PlayerControls.ControlScheme, Player.control_scheme, a Scheme\nsetting), Checkpoint, KillZone and DeathScreen with Player.respawn_transform, SaveGame with the\nSaveable contract (the Player, its inventory and quests, enemies), FollowerNpc, EnemyNpc and NpcCaster\nmoved in from the host project plus TalkingNpc, Dialogue and Quest resources with DialogueScreen,\nQuestLog, QuestTracker and QuestScreen, and SplitScreen with PlayerView for pad-per-player co-op.\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
   },
   "controls": {
     "commit": "e2a0835fbfd2c47f7d76e5ee395cda32cf40c019",
-    "pulled": "2026-09-13T21:17:37Z",
+    "pulled": "2026-09-13T21:18:13Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-controls.git",
     "subject": "README: the HUD keeps its size under a UI scale and is hidden with visible"
@@ -28,11 +28,11 @@
     "subject": "Take the peer-review fixes in the controls addon"
   },
   "gta": {
-    "commit": "d7c150454e6d4c0b2a0ea8e92e51416bbf82b942",
-    "pulled": "2026-09-13T20:15:53Z",
+    "commit": "a7c6219afeb2dfe99af90008d9cd5db16e7d1162",
+    "pulled": "2026-09-14T20:47:25Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/gta.git",
-    "subject": "A client asks the server for the wheel rather than taking it"
+    "subject": "One Vehicle chassis, three cars built on it"
   },
   "radi_ot": {
     "commit": "16fc3b20f0258b2321da6880f1d8d768f9e1aaca",
@@ -43,7 +43,7 @@
   },
   "tcps": {
     "commit": "a9e8201e575e909ff21c79c47fcc579ad70e1f34",
-    "pulled": "2026-09-14T03:31:51Z",
+    "pulled": "2026-09-14T21:00:11Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/tcps.git",
     "subject": "Longer ramps for the drift along the wall; the autopilot's legs all land"
