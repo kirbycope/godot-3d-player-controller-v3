@@ -1,10 +1,10 @@
 {
   "3d_player_controller": {
-    "commit": "9d697ac378d4b5e710ddd9038aa509245fff6e72",
-    "pulled": "2026-09-14T02:14:01Z",
+    "commit": "8a56ebe377ab903c73efc854b0d1def8981ec376",
+    "pulled": "2026-09-14T02:40:42Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Add the uid file for the UI scale tests"
+    "subject": "Hide the chat window until it is wanted, and guard the blend position setter"
   },
   "controls": {
     "commit": "e2a0835fbfd2c47f7d76e5ee395cda32cf40c019",
@@ -42,11 +42,11 @@
     "subject": "Broadcast a bulletin to every peer's own radio"
   },
   "tcps": {
-    "commit": "7e9011efe0bdea06896907a76b735ac2b7f1cb12",
-    "pulled": "2026-09-14T02:14:03Z",
+    "commit": "583dd8e7ac8b31215ae5e01511947451bce85250",
+    "pulled": "2026-09-14T02:33:26Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/tcps.git",
-    "subject": "Add the uid files for the new tests"
+    "subject": "Skitching: hang off the back of a moving vehicle"
   },
   "weather_fx": {
     "commit": "322b54f383ac59b58b80f1cf19d9d37397452634",
