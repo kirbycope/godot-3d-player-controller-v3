@@ -84,7 +84,7 @@ the click or touch goes straight into the single-player world; there is no Steam
   `PlayerSpawner` spawns `scenes/world_player.tscn` per peer, the host owns the clock, weather, NPCs,
   physics props and harvestables, the car and the horse hand their authority to whoever drives or
   rides, the little buddy to whoever carries it, and the training dummy's hit reactions travel by
-  RPC so it flinches on every peer. The car radio's station is the car's (`Vehicle.radio_station`,
+  RPC so it flinches on every peer. The car radio's station is the car's (`GtaCar.radio_station`,
   replicated): the driver's next and previous station actions and the radial menu move it, and every
   rider's own radio follows it while they are in the car, so two players in one car hear one station.
 

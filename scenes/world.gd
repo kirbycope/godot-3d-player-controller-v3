@@ -29,7 +29,7 @@ const STEAM_LOBBY_TYPE_PUBLIC: int = 2
 
 var player: Player ## The player this peer controls, once spawned.
 var radi_ot_player: RadiOtPlayer3D ## The local player's car radio; it follows the station of the car they are in.
-var _radio_car: Vehicle ## The car the local Player is in, whose replicated station the radio follows.
+var _radio_car: GtaCar ## The road car the local Player is in, whose replicated station the radio follows.
 
 @onready var player_spawner: PlayerSpawner = $PlayerSpawner
 @onready var steam_peer: SteamPeer = $SteamPeer
@@ -133,10 +133,10 @@ func _sync_weather(biome: ClimateData.BiomeZone, weather: ClimateData.WeatherTyp
 
 
 ## Powers the car radio and its radial-menu stations while the local Player drives. The station is the car's
-## (Vehicle.radio_station, replicated), so everyone in it hears the driver's pick and a rider's radio follows it.
+## (GtaCar.radio_station, replicated), so everyone in it hears the driver's pick and a rider's radio follows it.
 func _on_player_state_changed(from_state: int, to_state: int) -> void:
-	if to_state == NodeStateMachine.States.RIDING and player.riding is Vehicle:
-		_radio_car = player.riding as Vehicle
+	if to_state == NodeStateMachine.States.RIDING and player.riding is GtaCar:
+		_radio_car = player.riding as GtaCar
 		_radio_car.radio_station_changed.connect(_on_car_radio_station_changed)
 		radi_ot_player.tune_to_station_index(_radio_car.radio_station)
 		radi_ot_player.set_power(true)
@@ -237,12 +237,12 @@ func _on_car_radio_station_changed(station: int) -> void:
 
 
 func _on_radio_station_changed(_station: RadioStation) -> void:
-	if player.riding is Vehicle:
+	if player.riding is GtaCar:
 		radi_ot_player.get_hud().show_toast(5.0)
 
 
 func _on_radio_toggled(_is_playing: bool) -> void:
-	if player.riding is Vehicle:
+	if player.riding is GtaCar:
 		radi_ot_player.get_hud().show_toast(5.0)
 
 
