@@ -1,56 +1,56 @@
 {
   "3d_player_controller": {
     "commit": "8a56ebe377ab903c73efc854b0d1def8981ec376",
-    "pulled": "2026-09-14T02:40:42Z",
+    "pulled": "2026-09-14T19:53:23Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
     "subject": "Hide the chat window until it is wanted, and guard the blend position setter"
   },
   "controls": {
     "commit": "e2a0835fbfd2c47f7d76e5ee395cda32cf40c019",
-    "pulled": "2026-09-13T21:17:37Z",
+    "pulled": "2026-09-14T19:53:25Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-controls.git",
     "subject": "README: the HUD keeps its size under a UI scale and is hidden with visible"
   },
   "date_and_time": {
     "commit": "a7cf4a647029df53c7723a6d0571b3a03ddfce35",
-    "pulled": "2026-09-13T20:15:52Z",
+    "pulled": "2026-09-14T19:53:27Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/date-and-time.git",
     "subject": "ci: point the tests at the gutconfig where it now lives"
   },
   "godot_doom_gdextension": {
     "commit": "3a146eac500fce5097c0fbd3bfbde11334e6f711",
-    "pulled": "2026-09-13T20:15:56Z",
+    "pulled": "2026-09-14T19:53:31Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-doom-gdextension.git",
     "subject": "Take the peer-review fixes in the controls addon"
   },
   "gta": {
-    "commit": "d7c150454e6d4c0b2a0ea8e92e51416bbf82b942",
-    "pulled": "2026-09-13T20:15:53Z",
+    "commit": "a7c6219afeb2dfe99af90008d9cd5db16e7d1162",
+    "pulled": "2026-09-14T19:53:29Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/gta.git",
-    "subject": "A client asks the server for the wheel rather than taking it"
+    "subject": "One Vehicle chassis, three cars built on it"
   },
   "radi_ot": {
     "commit": "16fc3b20f0258b2321da6880f1d8d768f9e1aaca",
-    "pulled": "2026-09-13T20:15:55Z",
+    "pulled": "2026-09-14T19:53:30Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/radi-ot.git",
     "subject": "Broadcast a bulletin to every peer's own radio"
   },
   "tcps": {
     "commit": "a9e8201e575e909ff21c79c47fcc579ad70e1f34",
-    "pulled": "2026-09-14T03:31:51Z",
+    "pulled": "2026-09-14T19:53:29Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/tcps.git",
     "subject": "Longer ramps for the drift along the wall; the autopilot's legs all land"
   },
   "weather_fx": {
     "commit": "322b54f383ac59b58b80f1cf19d9d37397452634",
-    "pulled": "2026-09-13T20:15:52Z",
+    "pulled": "2026-09-14T19:53:27Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/weather-fx.git",
     "subject": "Show the clouds in the pink sky, with wind and leaves"
