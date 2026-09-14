@@ -42,11 +42,11 @@
     "subject": "Broadcast a bulletin to every peer's own radio"
   },
   "tcps": {
-    "commit": "583dd8e7ac8b31215ae5e01511947451bce85250",
-    "pulled": "2026-09-14T02:33:26Z",
+    "commit": "a9e8201e575e909ff21c79c47fcc579ad70e1f34",
+    "pulled": "2026-09-14T03:31:51Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/tcps.git",
-    "subject": "Skitching: hang off the back of a moving vehicle"
+    "subject": "Longer ramps for the drift along the wall; the autopilot's legs all land"
   },
   "weather_fx": {
     "commit": "322b54f383ac59b58b80f1cf19d9d37397452634",
