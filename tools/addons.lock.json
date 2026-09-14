@@ -42,11 +42,11 @@
     "subject": "Broadcast a bulletin to every peer's own radio"
   },
   "tcps": {
-    "commit": "08527d32755c9de469d16adf4ed8c6c0f21251ac",
-    "pulled": "2026-09-13T20:15:54Z",
+    "commit": "70cad759d547ace2e003c877b3bd7b617471a46e",
+    "pulled": "2026-09-14T02:01:39Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/tcps.git",
-    "subject": "Ride the skateboard over the network"
+    "subject": "Getting on the board on foot consumes the press, so the Player's own whistle does not also answer it"
   },
   "weather_fx": {
     "commit": "322b54f383ac59b58b80f1cf19d9d37397452634",
