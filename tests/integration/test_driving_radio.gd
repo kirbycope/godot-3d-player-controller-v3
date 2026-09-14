@@ -139,8 +139,8 @@ class TestDrivingRadio:
 
 	func test_driving_contextual_controls_include_radio_labels():
 		var player = world_instance.get_node("Players/1") as Player
-		var car: Vehicle = world_instance.get_node("HondaCRV") as Vehicle
-		assert_not_null(car, "The world's car is a Vehicle")
+		var car: GtaCar = world_instance.get_node("HondaCRV") as GtaCar
+		assert_not_null(car, "The world's car is a GtaCar")
 
 		var kb_controls = car.get_contextual_controls(0)
 		assert_eq(kb_controls.get("key_j"), "Prev\nStation")

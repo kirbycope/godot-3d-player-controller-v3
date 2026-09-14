@@ -3,13 +3,13 @@ extends SteamTest
 ## the host's is, and the host's own radio powers up with the engine and goes off with it. Then the client drives:
 ## getting in hands the car's authority to the driver's peer on every peer (Vehicle._set_authority), so the host
 ## sees the client at the wheel and has the car back once they are out. And the station is the car's: the driver's
-## next-station action moves Vehicle.radio_station, which replicates, so the pick reaches the other side and every
+## next-station action moves GtaCar.radio_station, which replicates, so the pick reaches the other side and every
 ## rider's own RadiOtPlayer3D follows it.
 
 
 
 func test_the_host_drives_and_the_client_sees_the_driver_and_the_car_follow() -> void:
-	var car: Vehicle = world_node("HondaCRV") as Vehicle
+	var car: GtaCar = world_node("HondaCRV") as GtaCar
 	var start: Vector3 = car.global_position
 	if is_host:
 		var me: Player = own_player()
@@ -44,7 +44,7 @@ func test_the_host_drives_and_the_client_sees_the_driver_and_the_car_follow() ->
 
 
 func test_a_client_at_the_wheel_is_seen_driving_on_the_host() -> void:
-	var car: Vehicle = world_node("HondaCRV") as Vehicle
+	var car: GtaCar = world_node("HondaCRV") as GtaCar
 	if is_host:
 		var at: Vector3 = await await_step("client_driving")
 		await wait_for(func() -> bool: return other_player().is_riding, "The client's Player is seen riding")
@@ -74,7 +74,7 @@ func test_a_client_at_the_wheel_is_seen_driving_on_the_host() -> void:
 
 
 func test_the_station_the_driver_picks_reaches_the_other_side() -> void:
-	var car: Vehicle = world_node("HondaCRV") as Vehicle
+	var car: GtaCar = world_node("HondaCRV") as GtaCar
 	var radio: RadiOtPlayer3D = world.get("radi_ot_player") as RadiOtPlayer3D
 	if is_host:
 		var me: Player = own_player()
