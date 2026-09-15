@@ -1,58 +1,58 @@
 {
   "3d_player_controller": {
-    "commit": "7751130c81ad4b552cf45efd7b1b9aac8de10c44",
-    "pulled": "2026-09-15T16:46:32Z",
+    "commit": "85510491f2a5cc2e66fdb3957695245e31eb41c7",
+    "pulled": "2026-09-15T22:58:02Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Guard the editor plugin, which no other test reaches"
+    "subject": "The policy tool clears a committed size cap too"
   },
   "controls": {
-    "commit": "a87e8927d49c0c4dd959d6ab8b2124de3e6ce7be",
-    "pulled": "2026-09-15T16:46:33Z",
+    "commit": "1a34180f361aec2d2affbdfb290e19a24542c510",
+    "pulled": "2026-09-15T22:56:17Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-controls.git",
-    "subject": "Guard the editor plugin, which nothing else here reaches"
+    "subject": "Clear the committed 512 cap, and cap the web build in CI instead"
   },
   "date_and_time": {
-    "commit": "a7cf4a647029df53c7723a6d0571b3a03ddfce35",
-    "pulled": "2026-09-15T05:24:29Z",
+    "commit": "2a868c174ea356941e19969ef04d49887f0c34e1",
+    "pulled": "2026-09-15T22:56:19Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/date-and-time.git",
-    "subject": "ci: point the tests at the gutconfig where it now lives"
+    "subject": "Clear the committed 512 cap, and cap the web build in CI instead"
   },
   "godot_doom_gdextension": {
-    "commit": "3a146eac500fce5097c0fbd3bfbde11334e6f711",
-    "pulled": "2026-09-15T05:24:31Z",
+    "commit": "6a5691687c6c8499a2ad7e91e4c77fff456eaed3",
+    "pulled": "2026-09-15T22:56:21Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-doom-gdextension.git",
-    "subject": "Take the peer-review fixes in the controls addon"
+    "subject": "Clear the committed 512 cap, and cap the web build in CI instead"
   },
   "gta": {
-    "commit": "6cba58e324b1b0e4277086933f215d61ce8c2098",
-    "pulled": "2026-09-15T16:48:12Z",
+    "commit": "910f27eb13cc3dbcac2c358e4dc23f2eb1a28b5a",
+    "pulled": "2026-09-15T22:56:20Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/gta.git",
-    "subject": "Guard the plugin against the preload break that shipped"
+    "subject": "Textures import Lossless at full size, and the web build caps itself"
   },
   "radi_ot": {
-    "commit": "16fc3b20f0258b2321da6880f1d8d768f9e1aaca",
-    "pulled": "2026-09-15T05:24:30Z",
+    "commit": "068fcf27e43b65790b65c87628daaddfb90dd6f7",
+    "pulled": "2026-09-15T22:56:21Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/radi-ot.git",
-    "subject": "Broadcast a bulletin to every peer's own radio"
+    "subject": "Clear the committed 512 cap, and cap the web build in CI instead"
   },
   "tcps": {
-    "commit": "a9e8201e575e909ff21c79c47fcc579ad70e1f34",
-    "pulled": "2026-09-15T05:24:30Z",
+    "commit": "3aea789c0d9d178d6ccda9201e7279157cb7117d",
+    "pulled": "2026-09-15T22:56:20Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/tcps.git",
-    "subject": "Longer ramps for the drift along the wall; the autopilot's legs all land"
+    "subject": "Clear the committed 512 cap, and cap the web build in CI instead"
   },
   "weather_fx": {
-    "commit": "322b54f383ac59b58b80f1cf19d9d37397452634",
-    "pulled": "2026-09-15T05:24:29Z",
+    "commit": "44fe3c0eeb727dc34998b738b0f40c04b0b1c947",
+    "pulled": "2026-09-15T22:56:18Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/weather-fx.git",
-    "subject": "Show the clouds in the pink sky, with wind and leaves"
+    "subject": "Clear the committed 512 cap, and cap the web build in CI instead"
   }
 }
