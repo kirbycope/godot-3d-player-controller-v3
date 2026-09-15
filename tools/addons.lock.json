@@ -28,11 +28,11 @@
     "subject": "Take the peer-review fixes in the controls addon"
   },
   "gta": {
-    "commit": "a5ebd5220971d797737fea8bde1b5ce4f0041c5b",
-    "pulled": "2026-09-15T03:20:04Z",
+    "commit": "b71bbe0a4259419e3ed9d4bffed1bff487b855b6",
+    "pulled": "2026-09-15T14:29:46Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/gta.git",
-    "subject": "Fix the UIDs and main scene the folder move left behind"
+    "subject": "Fix the plugin's preload paths, which are relative"
   },
   "radi_ot": {
     "commit": "16fc3b20f0258b2321da6880f1d8d768f9e1aaca",
