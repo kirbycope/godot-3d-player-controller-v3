@@ -1,4 +1,13 @@
 name: GUT Unit Tests
+
+# This installs Godot rather than testing inside the barichello/godot-ci:4.7 container the addons
+# here used to share. The player controller's scenes are saved by a 4.8 build and carry a unique_id
+# that 4.7 cannot parse, so under 4.7 the addon's class names never register, tests/gut_pre_run.gd
+# fails to compile on the first one it names ("Identifier \"Inventory\" not declared in the current
+# scope"), GUT cannot instantiate its hook script and aborts the run. The job then exited zero and
+# reported success while running no tests at all, which is worse than a red tick. The Pages workflow
+# beside this one and the DOOM GDExtension already install the same build for the same reason.
+
 on:
   push:
     branches:
@@ -7,43 +16,71 @@ on:
     branches:
       - main
 
+env:
+  GODOT_VERSION: 4.8-dev4
+
 jobs:
   gut:
     runs-on: ubuntu-latest
-
-    env:
-      HOME: /tmp/godot-home
-      XDG_CONFIG_HOME: /tmp/godot-home/.config
-      XDG_CACHE_HOME: /tmp/godot-home/.cache
-
-    container:
-      image: "barichello/godot-ci:4.7"
 
     steps:
       - name: Checkout
         uses: actions/checkout@v5
 
+      - name: Fetch the addon dependencies
+        shell: bash
+        run: python tools/pull_addons.py
+
+      - name: Install Godot
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}"
+          curl -fsSL -o godot.zip "${base}/Godot_v${GODOT_VERSION}_linux.x86_64.zip"
+          unzip -q godot.zip
+          mv "Godot_v${GODOT_VERSION}_linux.x86_64" /usr/local/bin/godot
+          chmod +x /usr/local/bin/godot
+
       - name: Install Godot runtime deps
         shell: bash
         run: |
           set -euo pipefail
-          apt-get update
-          apt-get install -y --no-install-recommends blender libfontconfig1 python3-numpy
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libfontconfig1 python3-numpy
 
-      - name: Configure Blender path for headless import
+      - name: Install Blender when the project has a .blend
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p "$XDG_CONFIG_HOME/godot" "$XDG_CACHE_HOME"
-          cat > "$XDG_CONFIG_HOME/godot/editor_settings-4.7.tres" <<'EOF'
-          [gd_resource type="EditorSettings" format=3]
-
-          [resource]
-          filesystem/import/blender/blender_path = "/usr/bin/blender"
-          EOF
+          if ! find . -name '*.blend' -not -path './.git/*' | grep -q .; then
+            echo "No .blend in this repository; Godot will never reach for Blender."
+            exit 0
+          fi
+          echo "Found a .blend; installing Blender."
+          sudo apt-get install -y --no-install-recommends blender
+          # Godot must be told where Blender is. Without this it fails with "Cannot configure blender
+          # path in headless mode", and that error aborts the WHOLE import: no fonts, no textures, and
+          # an export a tenth of its proper size.
+          settings="$HOME/.config/godot/editor_settings-${GODOT_VERSION%%-*}.tres"
+          mkdir -p "$(dirname "$settings")"
+          {
+            echo '[gd_resource type="EditorSettings" format=3]'
+            echo
+            echo '[resource]'
+            echo 'filesystem/import/blender/blender_path = "/usr/bin/blender"'
+          } > "$settings"
+          blender --version | head -1
 
       - name: Import project
-        run: godot --headless --path "$PWD" --import --quit
+        shell: bash
+        run: |
+          set -euo pipefail
+          # One pass only registers the files; each further pass writes the resources whose
+          # dependencies the previous pass produced, and this project is asset-heavy enough to need
+          # several. The Pages workflow imports four times for the same reason.
+          for _ in 1 2 3 4; do
+            godot --headless --path "$PWD" --import
+          done
 
       - name: Run Tests
         env:
