@@ -1,28 +1,28 @@
 {
   "3d_player_controller": {
-    "commit": "faaf224bc9976b933bbb8ef216d80159615f1089",
-    "pulled": "2026-09-15T05:22:24Z",
+    "commit": "44008934e08c8cd65acf29d72bda95d95084efd4",
+    "pulled": "2026-09-15T05:24:28Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Let the polled-pad test skip where there is no pad"
+    "subject": "Wait for the pad press rather than a fixed frame"
   },
   "controls": {
     "commit": "581a7bba972397c10547406cec93833dd70903ec",
-    "pulled": "2026-09-15T05:22:25Z",
+    "pulled": "2026-09-15T05:24:28Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-controls.git",
     "subject": "Point a prompt at the action, turn it to the camera"
   },
   "date_and_time": {
     "commit": "a7cf4a647029df53c7723a6d0571b3a03ddfce35",
-    "pulled": "2026-09-15T05:22:25Z",
+    "pulled": "2026-09-15T05:24:29Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/date-and-time.git",
     "subject": "ci: point the tests at the gutconfig where it now lives"
   },
   "godot_doom_gdextension": {
     "commit": "3a146eac500fce5097c0fbd3bfbde11334e6f711",
-    "pulled": "2026-09-15T05:22:27Z",
+    "pulled": "2026-09-15T05:24:31Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-doom-gdextension.git",
     "subject": "Take the peer-review fixes in the controls addon"
@@ -36,21 +36,21 @@
   },
   "radi_ot": {
     "commit": "16fc3b20f0258b2321da6880f1d8d768f9e1aaca",
-    "pulled": "2026-09-15T05:22:27Z",
+    "pulled": "2026-09-15T05:24:30Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/radi-ot.git",
     "subject": "Broadcast a bulletin to every peer's own radio"
   },
   "tcps": {
     "commit": "a9e8201e575e909ff21c79c47fcc579ad70e1f34",
-    "pulled": "2026-09-15T05:22:26Z",
+    "pulled": "2026-09-15T05:24:30Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/tcps.git",
     "subject": "Longer ramps for the drift along the wall; the autopilot's legs all land"
   },
   "weather_fx": {
     "commit": "322b54f383ac59b58b80f1cf19d9d37397452634",
-    "pulled": "2026-09-15T05:22:25Z",
+    "pulled": "2026-09-15T05:24:29Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/weather-fx.git",
     "subject": "Show the clouds in the pink sky, with wind and leaves"
