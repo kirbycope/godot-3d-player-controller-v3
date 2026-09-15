@@ -1,17 +1,17 @@
 {
   "3d_player_controller": {
-    "commit": "44008934e08c8cd65acf29d72bda95d95084efd4",
-    "pulled": "2026-09-15T05:24:28Z",
+    "commit": "7751130c81ad4b552cf45efd7b1b9aac8de10c44",
+    "pulled": "2026-09-15T16:46:32Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Wait for the pad press rather than a fixed frame"
+    "subject": "Guard the editor plugin, which no other test reaches"
   },
   "controls": {
-    "commit": "581a7bba972397c10547406cec93833dd70903ec",
-    "pulled": "2026-09-15T05:24:28Z",
+    "commit": "a87e8927d49c0c4dd959d6ab8b2124de3e6ce7be",
+    "pulled": "2026-09-15T16:46:33Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-controls.git",
-    "subject": "Point a prompt at the action, turn it to the camera"
+    "subject": "Guard the editor plugin, which nothing else here reaches"
   },
   "date_and_time": {
     "commit": "a7cf4a647029df53c7723a6d0571b3a03ddfce35",
