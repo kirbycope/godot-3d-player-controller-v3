@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://addons/3d_player_controller/scripts/quest.gd" id="1_quest"]
 [ext_resource type="Script" path="res://addons/3d_player_controller/scripts/quest_objective.gd" id="2_objective"]
 [ext_resource type="Resource" path="res://resources/items/apple.tres" id="3_apple"]
+[ext_resource type="Script" path="res://addons/3d_player_controller/inventory/scripts/item.gd" id="item_script"]
 
 [sub_resource type="Resource" id="Resource_talk"]
 script = ExtResource("2_objective")
@@ -28,7 +29,7 @@ id = &"qa_errand"
 title = "Provisions for the Guide"
 description = "The Guide by the spawn wants firewood and something for the pot: fell a tree with an axe and land a fish from the pool. Apples on delivery."
 objectives = Array[ExtResource("2_objective")]([SubResource("Resource_talk"), SubResource("Resource_chop"), SubResource("Resource_fish")])
-rewards = Dictionary[ExtResource("3_apple"), int]({
+rewards = Dictionary[ExtResource("item_script"), int]({
 ExtResource("3_apple"): 3
 })
 tracked_on_start = true
