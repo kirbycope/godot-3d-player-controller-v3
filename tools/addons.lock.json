@@ -28,11 +28,11 @@
     "subject": "Take the peer-review fixes in the controls addon"
   },
   "gta": {
-    "commit": "e7768cb4d5eee3367f605fa7accd45e69bdd9e9d",
-    "pulled": "2026-09-14T23:32:27Z",
+    "commit": "a5ebd5220971d797737fea8bde1b5ce4f0041c5b",
+    "pulled": "2026-09-15T03:20:04Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/gta.git",
-    "subject": "The Twisted Metal levels and cars are nodes you can edit"
+    "subject": "Fix the UIDs and main scene the folder move left behind"
   },
   "radi_ot": {
     "commit": "16fc3b20f0258b2321da6880f1d8d768f9e1aaca",

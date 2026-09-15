@@ -1,6 +1,6 @@
 [gd_scene load_steps=14 format=3 uid="uid://b72r5jskemotf"]
 
-[ext_resource type="PackedScene" path="res://addons/gta/scenes/honda_crv.tscn" id="1_base"]
+[ext_resource type="PackedScene" path="res://addons/gta/gta/scenes/honda_crv.tscn" id="1_base"]
 [ext_resource type="PackedScene" uid="uid://djvf0i62xd1l0" path="res://assets/BinbunVFX/fire_effects/effects/Fire/fire_05.tscn" id="7_4mlnu"]
 [ext_resource type="AudioStream" uid="uid://dd25upq5fxyfr" path="res://assets/tommusic/fantasy_sfx/OGG Files/SFX/Torch/Light Torch with Starting Loop 1.ogg" id="8_2ij2w"]
 [ext_resource type="AudioStream" uid="uid://con25r1kd8woc" path="res://assets/tommusic/fantasy_sfx/OGG Files/SFX/Torch/Light Torch with Starting Loop 2.ogg" id="9_wsenh"]
