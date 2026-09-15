@@ -73,7 +73,11 @@ func test_input_reaches_the_game_and_start_leaves() -> void:
 	assert_true(player.camera.current, "Leaving should give the Player their camera back")
 	assert_false(computer.screen_camera.current)
 	assert_false(computer.is_processing_input())
-	assert_eq(player.controls.visible, PlayerSettingsResource.load_or_create().hud_shown(player.controls.current_input_type, DisplayServer.is_touchscreen_available()), "Leaving should put the on-screen controls back to the saved rule")
+	# The HUD node itself is no longer hidden to put it away: the addon leaves it visible and lets
+	# contextual_only decide whether the whole set of buttons is drawn or only the ones that mean something
+	# right now. So the saved rule is read off that, not off visible.
+	assert_true(player.controls.visible, "Leaving should give the Player their on-screen controls back")
+	assert_eq(player.controls.contextual_only, not PlayerSettingsResource.load_or_create().hud_shown(player.controls.current_input_type, DisplayServer.is_touchscreen_available()), "and the saved rule should decide whether the whole HUD or only the contextual buttons are drawn")
 	assert_true(player.crosshair.visible, "Leaving should bring the crosshair back")
 	assert_false(computer.doom_controls.visible, "and DOOM's is put away")
 	assert_eq(computer.doom.screen, Doom.Screen.PROMPT, "The screen should drop back to the DOS prompt")
