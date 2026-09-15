@@ -73,17 +73,33 @@ def build_png_text_metadata(image, original_size):
 
 
 def optimize_file(png_path: Path):
-	"""Re-encode one PNG losslessly. Returns (bytes before, bytes after)."""
+	"""Re-encode one PNG losslessly, and keep the result only if it is actually smaller.
+
+	Pillow's encoder is not always the best one that has touched a file. Something exported by a
+	dedicated tool can already be packed tighter than a re-encode manages, and writing that back
+	makes the file bigger for nothing: one 4K decal sheet here grew by 660K. So the re-encode goes
+	to a temporary file and is kept only when it wins. Returns (bytes before, bytes after), equal
+	when the original was left alone.
+	"""
 	image_module, _ = get_pillow_modules()
 	before: int = png_path.stat().st_size
+	candidate: Path = png_path.with_suffix(png_path.suffix + ".tinyify")
 
-	with image_module.open(png_path) as image:
-		original_size = image.size
-		png_info = build_png_text_metadata(image, original_size)
-		image.load()
-		image.save(png_path, format="PNG", optimize=True, pnginfo=png_info)
+	try:
+		with image_module.open(png_path) as image:
+			original_size = image.size
+			png_info = build_png_text_metadata(image, original_size)
+			image.load()
+			image.save(candidate, format="PNG", optimize=True, pnginfo=png_info)
 
-	return before, png_path.stat().st_size
+		after: int = candidate.stat().st_size
+		if after < before:
+			candidate.replace(png_path)
+			return before, after
+		return before, before
+	finally:
+		if candidate.exists():
+			candidate.unlink()
 
 
 def optimize_pngs(root_dir_path: Path) -> int:
@@ -94,6 +110,7 @@ def optimize_pngs(root_dir_path: Path) -> int:
 	total_before: int = 0
 	total_after: int = 0
 	optimized: int = 0
+	no_gain: int = 0
 	skipped: int = 0
 
 	for png_path in sorted(root_dir_path.rglob("*.png")):
@@ -109,12 +126,17 @@ def optimize_pngs(root_dir_path: Path) -> int:
 			continue
 		total_before += before
 		total_after += after
+		if after == before:
+			no_gain += 1
+			print(f"{png_path.name:<48} {before // 1024:>7}K  already packed tighter, left alone")
+			continue
 		optimized += 1
 		saved: float = 100.0 * (before - after) / before if before else 0.0
 		print(f"{png_path.name:<48} {before // 1024:>7}K -> {after // 1024:>7}K  ({saved:5.1f}%)")
 
 	print()
 	print(f"Optimized: {optimized}")
+	print(f"Left alone (no gain): {no_gain}")
 	print(f"Skipped (already stamped): {skipped}")
 	if total_before:
 		saved_total: float = 100.0 * (total_before - total_after) / total_before

@@ -2,27 +2,27 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cw8wgsxpub5he"
-path="res://.godot/imported/starmap_g8k_512.jpg-efb3489ba14d369f2b1e8a69b2ccf07f.ctex"
+uid="uid://db80nt4bg273v"
+path="res://.godot/imported/ldem_normal_4k.png-4cf063f05c31bb2bdfbfd0e23c858763.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/nasa/starmap_g8k_512.jpg"
-dest_files=["res://.godot/imported/starmap_g8k_512.jpg-efb3489ba14d369f2b1e8a69b2ccf07f.ctex"]
+source_file="res://assets/nasa/ldem_normal_4k.png"
+dest_files=["res://.godot/imported/ldem_normal_4k.png-4cf063f05c31bb2bdfbfd0e23c858763.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
 compress/high_quality_mode=0
 compress/lossy_quality=0.7
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
-compress/normal_map=0
+compress/normal_map=1
 compress/channel_pack=0
 mipmaps/generate=false
 mipmaps/limit=-1
@@ -38,4 +38,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=1

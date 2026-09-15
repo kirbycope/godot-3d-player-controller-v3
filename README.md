@@ -354,21 +354,31 @@ horse lost its saddle. Everything (`all_resources`) would be a 204 MB pack, so t
 GodotSteam has no wasm32 build and logs a warning at export; the code guards Steam behind
 `OS.has_feature("web")`.
 
-The build is meant to stay under 100 MB (GitHub refuses a larger file). It is 84 MB now: 27 MB of
-textures, 19 MB of scenes (9 MB of it the Honda's mesh), 17 MB of audio and 7.5 MB of Doom. Audio is
-the second lever after textures: every looping ambience clip is a 60 s Vorbis stream, and the six
-weather_fx forest loops came in at about 500 kbps (4 MB each) until they were re-encoded to 96 kbps
-(`ffmpeg -c:a libvorbis -q:a 2`, 0.8 MB each) along with the heavier rain and wind loops; keep new
-loops at that quality, since a `.ogg` goes into the pack byte for byte. Every image import
-(`[importer_defaults]` in `project.godot`, and every existing `.import`) is Lossy (WebP), capped at 512
-on its largest edge by `process/size_limit`, with `detect_3d/compress_to` off so a texture first seen
-in 3D is not switched back to VRAM compression.
+Nothing built is committed any more: GitHub Actions exports the Pages demo, so the 100 MB file
+limit no longer bears on anything in this repository. Download size still matters to a player
+waiting on the web build, and audio is the lever that is left: every looping ambience clip is a 60 s
+Vorbis stream, and the six weather_fx forest loops came in at about 500 kbps (4 MB each) until they
+were re-encoded to 96 kbps (`ffmpeg -c:a libvorbis -q:a 2`, 0.8 MB each) along with the heavier rain
+and wind loops. Keep new loops at that quality, since a `.ogg` goes into the pack byte for byte.
+
+Textures are not a lever here at all now. They import Lossless at full resolution
+(`[importer_defaults]` in `project.godot`, and every `.import` beside a texture), with
+`detect_3d/compress_to` on so the editor promotes one to VRAM Compressed when it sees it used in 3D.
+The web build alone caps the largest edge at 512, and because a size limit is an import-time setting
+rather than an export one, `python tools/web_texture_cap.py --size 512` runs in CI ahead of the
+import pass; nothing it changes is committed.
+
+`python tools/texture_import_policy.py` puts a repository back on that policy and `--check` reports
+without writing. `tests/unit/test_texture_import_policy.gd` asserts it on every run, because the old
+rule (Lossy at a 512 cap, promotion disabled) was a way of squeezing a committed `.pck` under the
+100 MB limit and cost real data in normal maps and ORM masks to buy nothing at run time.
 
 `tools/web_smoke_test.py` serves `docs/` and drives the export in headless Chromium through Playwright
 (`pip install playwright && playwright install chromium`): click to start, straight into the world,
 failing on any error the engine or the page logs, with screenshots and the console under
-`scratch/web_smoke/`. `tools/tinyify.py <folder> --engine local` downsizes the PNGs under a folder to
-512 and stamps them with `TINYIFY_*` metadata so they are skipped next time.
+`scratch/web_smoke/`. `python tools/tinyify.py <folder>` compresses the PNGs under a folder
+losslessly with Pillow, never resizing, and stamps them with `TINYIFY_*` metadata so they are
+skipped next time.
 
 ---
 
@@ -428,7 +438,7 @@ Third-party assets under `assets/`, with the license as recorded in each folder'
 | `assets/loop_box` | Ray mesh and line shader VFX | not recorded - fill in | not recorded - fill in | not recorded - fill in |
 | `assets/n_hance_studio` | Stylized Craft Assets (ore), Stylized Newbie Weapons Pack | N-Hance Studio | not recorded - fill in | https://assetstore.unity.com/packages/3d/props/stylized-craft-assets-204769, https://assetstore.unity.com/packages/3d/props/weapons/stylized-newbie-weapons-pack-200709 |
 | `assets/n_hance_studio/horse` | Horse (model, brown body and saddle textures, copied from the aethereal project) | N-Hance Studio | not recorded - fill in | https://assetstore.unity.com/publishers/34848 |
-| `assets/nasa` | Moon colour map, starmap | NASA SVS (normal map via NormalMap-Online) | not recorded - fill in (`credits.md` lists sources only) | https://svs.gsfc.nasa.gov/4720/, https://svs.gsfc.nasa.gov/vis/a000000/a003800/a003895/starmap_g8k.jpg |
+| `assets/nasa` | Moon colour map (`lroc_color_poles_4k.png`, the LROC WAC mosaic) and normal map (`ldem_normal_4k.png`, derived from LOLA elevation by `tools/make_moon_textures.py`), both 4096x2048 | NASA's Scientific Visualization Studio | Public domain | https://svs.gsfc.nasa.gov/4720/ |
 | `resources/fish/fish.svg`, `resources/lures/worm.svg`, `resources/lures/fly.svg` | Inventory icons for the fish and lures | Drawn for this project | CC0 | - |
 | `resources/fish/boot.svg` (`leather-boot`) | The Old Boot's icon | Lorc, [game-icons.net](https://game-icons.net/1x1/lorc/leather-boot.html) | CC BY 3.0 | - |
 | `resources/fish/crate.svg` (`wooden-crate`) | The Crate of Boots' icon | Delapouite, [game-icons.net](https://game-icons.net/1x1/delapouite/wooden-crate.html) | CC BY 3.0 | - |
