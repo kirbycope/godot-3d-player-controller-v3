@@ -75,20 +75,34 @@ func test_the_rifle_fires_without_its_firing_emote_while_moving() -> void:
 	Input.action_press("shoot")
 	await wait_physics_frames(3)
 	assert_true(player.is_shooting)
+	await _emote_reaches(emote, &"RifleFiringStanding")
 	assert_eq(emote.get_current_node(), &"RifleFiringStanding", "Standing still the firing emote plays")
 	assert_eq(player.animation_tree.get("parameters/EmoteSpineBlend2/blend_amount"), 1.0)
 	var rounds_before: int = rifle.rounds
 	Input.action_press("move_up")
 	await wait_physics_frames(3)
 	assert_true(player.has_move_input)
+	await _emote_reaches(emote, &"Idle")
 	assert_eq(emote.get_current_node(), &"Idle", "On the move the emote is dropped")
 	assert_eq(player.animation_tree.get("parameters/EmoteSpineBlend2/blend_amount"), 0.0)
 	await wait_seconds(0.3)
 	assert_lt(rifle.rounds, rounds_before, "It keeps firing while moving")
 	Input.action_release("move_up")
 	await wait_physics_frames(3)
+	await _emote_reaches(emote, &"RifleFiringStanding")
 	assert_eq(emote.get_current_node(), &"RifleFiringStanding", "Standing still again brings the emote back")
 	Input.action_release("shoot")
+
+
+## Wait for the emote state machine to arrive at a node, rather than for a number of frames.
+##
+## The emote lives on an AnimationTree, which advances on process frames, while the input that
+## drives it is read on physics frames, so how many physics frames the travel takes is a property
+## of the machine rather than of the behaviour. A fixed count passed on a Mac and failed on the CI
+## runner. This still fails the assertion that follows if the state never arrives, because the wait
+## gives up after a second and the caller asserts the node either way.
+func _emote_reaches(emote: AnimationNodeStateMachinePlayback, node: StringName) -> void:
+	await wait_until(func() -> bool: return emote.get_current_node() == node, 1.0)
 
 
 func test_the_rifle_and_pistol_carry_muzzle_flashes_wired_to_fired() -> void:
