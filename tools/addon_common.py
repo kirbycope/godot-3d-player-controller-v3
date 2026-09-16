@@ -95,7 +95,7 @@ def addon_source(cache: Path, name: str) -> Path:
 
 
 def local_checkout(addon: dict) -> Path | None:
-    """The sibling clone of the addon beside this project, if there is one.
+    r"""The sibling clone of the addon beside this project, if there is one.
 
     Every addon is also cloned under C:\GitHub with the name git clone produces, and that copy is
     the one worked in. Pushing through it rather than through .addon_cache/ means the local clone
@@ -190,6 +190,30 @@ def mirror(
                     shutil.copy2(entry, target)
 
     return copied, removed
+
+
+def local_edits(source: Path, dest: Path) -> list[Path]:
+    """Files in dest that differ from source, meaning they were changed here since that pull.
+
+    Pass the addon at the commit tools/addons.lock.json says was last pulled. A difference against
+    *that* is work done in this project's copy and never sent upstream; a difference against the
+    incoming commit would just be an upstream change, and the two are indistinguishable from the
+    filesystem alone. That is the whole reason the lock file is worth consulting here.
+
+    Only files that exist in both are edits. One that is missing from dest is simply new upstream,
+    and one that is missing from source is local-only, which mirror() already reports as a removal.
+    """
+    edited: list[Path] = []
+    for entry in payload_entries(source):
+        target = dest / entry.name
+        if entry.is_dir():
+            for path in _files_under(entry):
+                mirrored = target / path.relative_to(entry)
+                if mirrored.exists() and not _same_file(path, mirrored):
+                    edited.append(mirrored)
+        elif target.exists() and not _same_file(entry, target):
+            edited.append(target)
+    return sorted(edited)
 
 
 def _mirror_dir(source: Path, dest: Path, dry_run: bool, removed: list[Path]) -> int:

@@ -146,6 +146,26 @@ any it can remove and names the file that is still held; `push_addons.py` neithe
 addon's clone nor counts it as a change, so the pre-push hook stays quiet. Close the editor and pull
 again and the leftover goes. `python -m unittest tools/test_addon_common.py` holds that behaviour.
 
+A mirror also copies over a file that differs, which for a long time included a file edited here and
+never pushed. That is how the swim animations' hand-tuned Hips heights were lost twice: the pull
+counted them among "file(s) in" and said nothing about what it had written over. Deleting local work
+stopped the pull; silently replacing it did not.
+
+Telling the two apart needs `tools/addons.lock.json`. A file that differs from the commit the lock
+recorded was changed *here*; one that differs from the incoming commit is about to be *overwritten*.
+Only a file that differs from both is at risk, and the pull now stops on those as well, which keeps
+it quiet about an addon whose lock has merely fallen behind:
+
+```
+3d_player_controller  2e68721  STOPPED: 1 file(s) edited here since the last pull
+                        assets/mixamo/animations/root_motion/Swimming.tres
+                      push them first with tools/push_addons.py, or re-run with --force to overwrite
+```
+
+`--dry-run` reports the same files as `WOULD OVERWRITE` without stopping, and `--force` says
+`OVERWRITING` and does it anyway. `python -m unittest tools/test_addon_common.py` holds that
+behaviour.
+
 Because it is a mirror, a file sitting in `addons/<name>/` that upstream does not have would be
 deleted. That is how an upstream removal reaches this project, but it is also how unpushed work
 would be lost, so **the pull stops rather than delete anything**, names the files and leaves that

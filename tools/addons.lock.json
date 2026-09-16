@@ -1,10 +1,10 @@
 {
   "3d_player_controller": {
-    "commit": "2e68721e912be6f387b64383b6e6a5662edf46fa",
-    "pulled": "2026-09-16T23:08:40Z",
+    "commit": "997603cbb83ec764708432958e830aad31578f1e",
+    "pulled": "2026-09-16T23:50:03Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Guard every saved animation's Hips height, not the three that were noticed"
+    "subject": "A pull stops rather than write over work that was never pushed"
   },
   "controls": {
     "commit": "1a34180f361aec2d2affbdfb290e19a24542c510",
@@ -15,14 +15,14 @@
   },
   "date_and_time": {
     "commit": "2a868c174ea356941e19969ef04d49887f0c34e1",
-    "pulled": "2026-09-16T20:01:43Z",
+    "pulled": "2026-09-16T23:40:50Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/date-and-time.git",
     "subject": "Clear the committed 512 cap, and cap the web build in CI instead"
   },
   "godot_doom_gdextension": {
     "commit": "6a5691687c6c8499a2ad7e91e4c77fff456eaed3",
-    "pulled": "2026-09-16T20:01:46Z",
+    "pulled": "2026-09-16T23:40:52Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-doom-gdextension.git",
     "subject": "Clear the committed 512 cap, and cap the web build in CI instead"
@@ -36,7 +36,7 @@
   },
   "radi_ot": {
     "commit": "068fcf27e43b65790b65c87628daaddfb90dd6f7",
-    "pulled": "2026-09-16T20:01:45Z",
+    "pulled": "2026-09-16T23:40:52Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/radi-ot.git",
     "subject": "Clear the committed 512 cap, and cap the web build in CI instead"
