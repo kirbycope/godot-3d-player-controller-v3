@@ -419,6 +419,7 @@ Third-party assets under `assets/`, with the license as recorded in each folder'
 | `assets/Character`, `assets/Flower`, `assets/Misc`, `PolyBlocks` | WeisC character, flower, misc props, PolyBlocks effect blocks | not recorded - fill in | not recorded - fill in | not recorded - fill in |
 | `assets/ambientcg_com` | Grass001, Planks020, Wood073 PBR textures | ambientCG | not recorded - fill in | https://ambientcg.com |
 | `assets/cgtrader/bilalcreation` | Duck Rigged Animated (low-poly) | Bilal Creation | not recorded - fill in | https://www.cgtrader.com/3d-models/animal/bird/duck-animated |
+| `assets/cgtrader/remofair` | 32 Unique Stylized Cartoon Fish pack (the five the fishing scenes use, Fish_08, 09, 10, 14 and 23, are committed at the pack's own 2048 and 1024; the rest of the pack is still at the 512 it was reduced to) | remofair | not recorded - fill in | https://www.cgtrader.com/3d-models/animal/fish/32-unique-stylized-cartoon-fish-pack-game-ready |
 | `addons/gta/assets/cgtrader/honda_crv` | Wheel model and tyre texture | not recorded - fill in | not recorded - fill in | https://www.cgtrader.com |
 | `assets/fonts` | FOT-Rodin Pro B, Rodin Italic | Fontworks | not recorded - fill in | not recorded - fill in |
 | `assets/freesound` | fotballplast (117111) | blindmanonacid | not recorded - fill in (`.txt` is empty) | https://freesound.org/s/117111/ |
