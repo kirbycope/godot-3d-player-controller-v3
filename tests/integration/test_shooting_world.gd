@@ -23,6 +23,21 @@ func before_each() -> void:
 	pickup.equip(player)
 	rifle = player.inventory.get_equipment_by_type(Equipment.EquipmentType.RIFLE)
 	await wait_physics_frames(2)
+	await _stand_still()
+
+
+## Put the Player at a standstill before a test leans on it.
+##
+## One GUT run shares one Input state across every script in it, so a movement action another test
+## left pressed is still pressed here. Player.has_move_input is true for that, and also while the
+## Player is navigating, because click to move steers by writing the same motion vector. The rifle
+## only plays its firing emote while the Player stands still, so either one makes this suite fail in
+## a way that reads like an animation bug rather than leaked state.
+func _stand_still() -> void:
+	for action: StringName in [&"move_up", &"move_down", &"move_left", &"move_right", &"shoot"]:
+		Input.action_release(action)
+	player.is_navigating = false
+	await wait_until(func() -> bool: return not player.has_move_input, 1.0)
 
 
 func _aim_at(target: Vector3, offset: Vector3 = Vector3(0.0, -0.5, 6.0)) -> void:
@@ -72,6 +87,11 @@ func test_rifle_round_pushes_the_beach_ball() -> void:
 func test_the_rifle_fires_without_its_firing_emote_while_moving() -> void:
 	var emote: AnimationNodeStateMachinePlayback = player.animation_tree.get(Player.EMOTE_STATE_PLAYBACK_PATH)
 	rifle.reserve_rounds = 999
+	assert_false(
+		player.has_move_input,
+		"The Player stands still to begin with (motion %s, navigating %s)"
+			% [player.player_input.motion, player.is_navigating]
+	)
 	Input.action_press("shoot")
 	await wait_physics_frames(3)
 	assert_true(player.is_shooting)
