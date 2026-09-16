@@ -1,10 +1,10 @@
 {
   "3d_player_controller": {
-    "commit": "b6634cf8cd73666f0fb08bd9641550c44eefdd35",
-    "pulled": "2026-09-16T20:01:40Z",
+    "commit": "f3eccea56425d35e5a7dd09681455887b5ffb1a1",
+    "pulled": "2026-09-16T21:10:40Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "The remaining pad presses wait for the press, not for a frame count"
+    "subject": "Restore the swim animations' hand-tuned Hips heights"
   },
   "controls": {
     "commit": "1a34180f361aec2d2affbdfb290e19a24542c510",
