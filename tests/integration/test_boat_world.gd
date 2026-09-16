@@ -36,7 +36,10 @@ func _aim_at_the_boat() -> void:
 		mount.rotation.y = atan2(-to.x, -to.z)
 		mount.rotation.x = atan2(to.y, Vector2(to.x, to.z).length())
 		await wait_physics_frames(1)
-		if player.camera.looking_at == boat:
+		# Boat._input gates on its prompt being up, not on the ray, and the prompt only appears once
+		# the Camera has called display_menu, which is a frame or more behind looking_at. Waiting on
+		# the weaker of the two conditions is what let the press arrive too early to count.
+		if player.camera.looking_at == boat and boat.action_prompt.visible:
 			return
 
 
@@ -47,24 +50,35 @@ func test_the_camera_ray_reaches_the_boat_through_the_water() -> void:
 	assert_true(boat.action_prompt.visible, "The boat shows its prompt")
 
 
-func test_action_seats_the_player_in_the_boat() -> void:
-	await _look_at_the_boat_from_the_water()
-	assert_eq(player.camera.looking_at, boat, "Action needs the boat under the ray to seat anyone")
+## Send one Action press, the way the keyboard would.
+func _press_action() -> void:
 	var press := InputEventKey.new()
 	press.keycode = KEY_E
 	press.physical_keycode = KEY_E
 	press.pressed = true
 	Input.parse_input_event(press)
-	await wait_physics_frames(2)
 	var release := InputEventKey.new()
 	release.keycode = KEY_E
 	release.physical_keycode = KEY_E
 	Input.parse_input_event(release)
-	await wait_physics_frames(3)
-	# A parsed input event is delivered on a process frame, and a loaded machine can run several
-	# physics ticks between two of them, so a fixed physics frame count is not a wait for the press
-	# to have been seen at all. This still fails below if the Player never sits.
-	await wait_until(func() -> bool: return player.is_sitting, 1.0)
+
+
+func test_action_seats_the_player_in_the_boat() -> void:
+	await _look_at_the_boat_from_the_water()
+	assert_eq(player.camera.looking_at, boat, "Action needs the boat under the ray to seat anyone")
+	assert_true(boat.action_prompt.visible, "and Boat._input gates on the prompt, so that has to be up too")
+	# Pressing once into that window is still a race. A parsed event is delivered on a process frame,
+	# a loaded machine can run several physics ticks between two of them, and the Player is swimming
+	# the whole time, so by the time the event arrives they may have drifted far enough for the
+	# Camera to call hide_menu and take the prompt down again. Re-aim and press until it takes.
+	# Boat._input ignores a press while the Player is already sitting, so a repeat cannot un-seat.
+	for _attempt: int in 20:
+		await _aim_at_the_boat()
+		_press_action()
+		await wait_physics_frames(3)
+		if player.is_sitting:
+			break
+
 	assert_true(player.is_sitting, "Action sits the Player down")
 	assert_true(boat._seated)
 	assert_lt(player.global_position.distance_to(boat.seat_01.global_position), 0.2, "Pinned to the seat")
