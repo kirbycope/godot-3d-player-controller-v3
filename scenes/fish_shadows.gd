@@ -151,6 +151,40 @@ func scatter() -> void:
 			_wander(shadow, 4.0)
 
 
+## Test seam: parks [param shadow] at [param point] and sends the rest to the far side of the water,
+## leaving none of them wandering, so a test can act on a shadow in a known place.
+##
+## Shadows spawn at [method _random_point] and wander from there, so a test that swims up to
+## [code]shadows[0][/code] is really testing wherever the dice put it. Two can land within
+## [member scare_distance] of each other, and then the neighbour's area fires first and the test
+## fails having scared a real fish, just not the expected one. Nothing here changes how shadows
+## behave in the game; it only removes the randomness from under a test.
+func park_shadows_for_test(shadow: MeshInstance3D, point: Vector3) -> void:
+	for parked: MeshInstance3D in shadows:
+		if _tweens.has(parked):
+			_tweens[parked].kill()
+	shadow.global_position = _clamp_to_water(point)
+	var away: Vector3 = _furthest_water_point_from(shadow.global_position)
+	for other: MeshInstance3D in shadows:
+		if other != shadow:
+			other.global_position = away
+
+
+## The corner of the water quad furthest from [param point], where a shadow is out of the way.
+func _furthest_water_point_from(point: Vector3) -> Vector3:
+	var half: Vector2 = (water.water_mesh.mesh as QuadMesh).size * 0.4
+	var furthest: Vector3 = point
+	var distance: float = -1.0
+	for x: float in [-half.x, half.x]:
+		for z: float in [-half.y, half.y]:
+			var corner: Vector3 = water.water_mesh.to_global(Vector3(x, 0.0, z))
+			corner.y = _surface_y()
+			if corner.distance_to(point) > distance:
+				distance = corner.distance_to(point)
+				furthest = corner
+	return furthest
+
+
 func _spawn_shadow() -> void:
 	var shadow: MeshInstance3D = MeshInstance3D.new()
 	var mesh: SphereMesh = SphereMesh.new()

@@ -1,10 +1,10 @@
 {
   "3d_player_controller": {
-    "commit": "f3eccea56425d35e5a7dd09681455887b5ffb1a1",
-    "pulled": "2026-09-16T21:10:40Z",
+    "commit": "2e68721e912be6f387b64383b6e6a5662edf46fa",
+    "pulled": "2026-09-16T23:08:40Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Restore the swim animations' hand-tuned Hips heights"
+    "subject": "Guard every saved animation's Hips height, not the three that were noticed"
   },
   "controls": {
     "commit": "1a34180f361aec2d2affbdfb290e19a24542c510",

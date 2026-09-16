@@ -172,7 +172,17 @@ func test_swimming_up_to_a_fish_scares_it_off_until_it_returns_elsewhere() -> vo
 	shadows.hide_seconds = 0.5
 	watch_signals(shadows)
 	var fish: MeshInstance3D = shadows.shadows[0]
+	# Shadows spawn and wander at random, so without this the swimmer sometimes lands nearer a
+	# different one and that fish's area fires first. Park this one and send the others away.
+	shadows.park_shadows_for_test(fish, fish.global_position)
 	var start: Vector3 = fish.global_position
+	for other: MeshInstance3D in shadows.shadows:
+		if other != fish:
+			assert_gt(
+				other.global_position.distance_to(start),
+				shadows.scare_distance * 2.0,
+				"Parking should leave no other shadow close enough to take the scare first"
+			)
 	assert_true(fish.get_node("ScareArea") is Area3D, "Each shadow carries its scare volume")
 	# Swim right up to it
 	player.warp_to(Transform3D(Basis(), fish.global_position + Vector3(0.5, -0.3, 0.0)))
