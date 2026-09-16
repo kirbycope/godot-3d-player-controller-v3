@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b48bcnmbbl36v"
-path="res://.godot/imported/knife_low-poly_0.png-1735159afb63f55a1589f8ddf2ff1fa3.ctex"
+path.s3tc="res://.godot/imported/knife_low-poly_0.png-1735159afb63f55a1589f8ddf2ff1fa3.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "47a11c9755787c439a5fbc6fce5ed0eb"
@@ -14,11 +15,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/sketchfab/knife/knife_low-poly_0.png"
-dest_files=["res://.godot/imported/knife_low-poly_0.png-1735159afb63f55a1589f8ddf2ff1fa3.ctex"]
+dest_files=["res://.godot/imported/knife_low-poly_0.png-1735159afb63f55a1589f8ddf2ff1fa3.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/high_quality_mode=0
 compress/lossy_quality=0.7
@@ -29,6 +30,8 @@ compress/normal_map=0
 compress/channel_pack=0
 mipmaps/generate=true
 mipmaps/limit=-1
+mipmaps/preserve_alpha_test_coverage=false
+mipmaps/alpha_test_threshold=0.5
 roughness/mode=0
 roughness/src_normal=""
 process/channel_remap/red=0
@@ -41,4 +44,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

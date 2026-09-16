@@ -1,56 +1,56 @@
 {
   "3d_player_controller": {
-    "commit": "85510491f2a5cc2e66fdb3957695245e31eb41c7",
-    "pulled": "2026-09-15T22:58:02Z",
+    "commit": "b6634cf8cd73666f0fb08bd9641550c44eefdd35",
+    "pulled": "2026-09-16T20:01:40Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "The policy tool clears a committed size cap too"
+    "subject": "The remaining pad presses wait for the press, not for a frame count"
   },
   "controls": {
     "commit": "1a34180f361aec2d2affbdfb290e19a24542c510",
-    "pulled": "2026-09-15T22:56:17Z",
+    "pulled": "2026-09-16T20:01:41Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-controls.git",
     "subject": "Clear the committed 512 cap, and cap the web build in CI instead"
   },
   "date_and_time": {
     "commit": "2a868c174ea356941e19969ef04d49887f0c34e1",
-    "pulled": "2026-09-15T22:56:19Z",
+    "pulled": "2026-09-16T20:01:43Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/date-and-time.git",
     "subject": "Clear the committed 512 cap, and cap the web build in CI instead"
   },
   "godot_doom_gdextension": {
     "commit": "6a5691687c6c8499a2ad7e91e4c77fff456eaed3",
-    "pulled": "2026-09-15T22:56:21Z",
+    "pulled": "2026-09-16T20:01:46Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-doom-gdextension.git",
     "subject": "Clear the committed 512 cap, and cap the web build in CI instead"
   },
   "gta": {
     "commit": "910f27eb13cc3dbcac2c358e4dc23f2eb1a28b5a",
-    "pulled": "2026-09-15T22:56:20Z",
+    "pulled": "2026-09-16T20:01:44Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/gta.git",
     "subject": "Textures import Lossless at full size, and the web build caps itself"
   },
   "radi_ot": {
     "commit": "068fcf27e43b65790b65c87628daaddfb90dd6f7",
-    "pulled": "2026-09-15T22:56:21Z",
+    "pulled": "2026-09-16T20:01:45Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/radi-ot.git",
     "subject": "Clear the committed 512 cap, and cap the web build in CI instead"
   },
   "tcps": {
     "commit": "3aea789c0d9d178d6ccda9201e7279157cb7117d",
-    "pulled": "2026-09-15T22:56:20Z",
+    "pulled": "2026-09-16T20:01:44Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/tcps.git",
     "subject": "Clear the committed 512 cap, and cap the web build in CI instead"
   },
   "weather_fx": {
     "commit": "44fe3c0eeb727dc34998b738b0f40c04b0b1c947",
-    "pulled": "2026-09-15T22:56:18Z",
+    "pulled": "2026-09-16T20:01:43Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/weather-fx.git",
     "subject": "Clear the committed 512 cap, and cap the web build in CI instead"
