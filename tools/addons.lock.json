@@ -1,10 +1,10 @@
 {
   "3d_player_controller": {
-    "commit": "997603cbb83ec764708432958e830aad31578f1e",
-    "pulled": "2026-09-16T23:50:03Z",
+    "commit": "a2d32769ffae56a768766ae811870d1b63873c8f",
+    "pulled": "2026-09-17T02:28:27Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "A pull stops rather than write over work that was never pushed"
+    "subject": "Driving's straightened leg, and a guard that can see a reshaped curve"
   },
   "controls": {
     "commit": "1a34180f361aec2d2affbdfb290e19a24542c510",
