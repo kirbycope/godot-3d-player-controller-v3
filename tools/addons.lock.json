@@ -1,10 +1,10 @@
 {
   "3d_player_controller": {
-    "commit": "d94e4cb5c79f2e764417524c128a739f5ddb6743",
+    "commit": "1903b2fa8758ed1cd452572febd7039599c3962f",
     "pulled": "2026-09-18T01:20:43Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Let Godot expand the animation import blocks it was handed"
+    "subject": "Record the editor's 3D detection promoting textures to VRAM Compressed\n\nOpening the world scene let Godot's detect_3d see these textures used in a\n3D material for the first time, so it enabled mipmap generation and set\ncompression to VRAM Compressed (S3TC), which is the end state the texture\npolicy is aiming at. Recording it stops the same promotion happening again\non the next machine.\n\nCo-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
   },
   "controls": {
     "commit": "3681c4c8e029540341d7191378dbd5d71c1c0450",
