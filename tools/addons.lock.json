@@ -1,58 +1,58 @@
 {
   "3d_player_controller": {
     "commit": "1e11cff828cbcfcde615c1b2ea512c60bd77972a",
-    "pulled": "2026-09-17T03:57:48Z",
+    "pulled": "2026-09-18T00:06:48Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Record Godot 4.8's new mipmap import keys\n\nOpening a project in Godot 4.8 adds mipmaps/preserve_alpha_test_coverage\nand mipmaps/alpha_test_threshold to every texture .import file, both at the\nengine's own defaults, so nothing about how these textures are imported\nactually changes. Committing them stops the same diff reappearing on every\nmachine that opens the project.\n\nWhere animation .tres files are caught by the same pass, they are only\nre-serialized: the largest value change is 2e-07, float rounding rather\nthan edited animation, and every custom method track survives intact.\n\nCo-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
+    "subject": "Record Godot 4.8's new mipmap import keys"
   },
   "controls": {
     "commit": "3681c4c8e029540341d7191378dbd5d71c1c0450",
-    "pulled": "2026-09-16T20:01:41Z",
+    "pulled": "2026-09-18T00:06:50Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-controls.git",
-    "subject": "Record Godot 4.8's new mipmap import keys\n\nOpening a project in Godot 4.8 adds mipmaps/preserve_alpha_test_coverage\nand mipmaps/alpha_test_threshold to every texture .import file, both at the\nengine's own defaults, so nothing about how these textures are imported\nactually changes. Committing them stops the same diff reappearing on every\nmachine that opens the project.\n\nWhere animation .tres files are caught by the same pass, they are only\nre-serialized: the largest value change is 2e-07, float rounding rather\nthan edited animation, and every custom method track survives intact.\n\nCo-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
+    "subject": "Record Godot 4.8's new mipmap import keys"
   },
   "date_and_time": {
     "commit": "d50975dbd0d94edb87f64ed24cb6ec3d52fca243",
-    "pulled": "2026-09-16T23:40:50Z",
+    "pulled": "2026-09-18T00:06:52Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/date-and-time.git",
-    "subject": "Record Godot 4.8's new mipmap import keys\n\nOpening a project in Godot 4.8 adds mipmaps/preserve_alpha_test_coverage\nand mipmaps/alpha_test_threshold to every texture .import file, both at the\nengine's own defaults, so nothing about how these textures are imported\nactually changes. Committing them stops the same diff reappearing on every\nmachine that opens the project.\n\nWhere animation .tres files are caught by the same pass, they are only\nre-serialized: the largest value change is 2e-07, float rounding rather\nthan edited animation, and every custom method track survives intact.\n\nCo-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
+    "subject": "Record Godot 4.8's new mipmap import keys"
   },
   "godot_doom_gdextension": {
     "commit": "e245ea522caa56b85553d1d59bbd8e4a9146c6c7",
-    "pulled": "2026-09-16T23:40:52Z",
+    "pulled": "2026-09-18T00:06:55Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-doom-gdextension.git",
-    "subject": "Record Godot 4.8's new mipmap import keys\n\nOpening a project in Godot 4.8 adds mipmaps/preserve_alpha_test_coverage\nand mipmaps/alpha_test_threshold to every texture .import file, both at the\nengine's own defaults, so nothing about how these textures are imported\nactually changes. Committing them stops the same diff reappearing on every\nmachine that opens the project.\n\nWhere animation .tres files are caught by the same pass, they are only\nre-serialized: the largest value change is 2e-07, float rounding rather\nthan edited animation, and every custom method track survives intact.\n\nCo-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
+    "subject": "Record Godot 4.8's new mipmap import keys"
   },
   "gta": {
-    "commit": "b41c53301ceccab34d0288c614ef44fc9a2ac72f",
-    "pulled": "2026-09-17T04:03:36Z",
+    "commit": "02034996829beae06a12297c630803c06e115ebf",
+    "pulled": "2026-09-18T00:06:53Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/gta.git",
-    "subject": "Record Godot 4.8's new mipmap import keys\n\nOpening a project in Godot 4.8 adds mipmaps/preserve_alpha_test_coverage\nand mipmaps/alpha_test_threshold to every texture .import file, both at the\nengine's own defaults, so nothing about how these textures are imported\nactually changes. Committing them stops the same diff reappearing on every\nmachine that opens the project.\n\nWhere animation .tres files are caught by the same pass, they are only\nre-serialized: the largest value change is 2e-07, float rounding rather\nthan edited animation, and every custom method track survives intact.\n\nCo-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
+    "subject": "Guard the vendored addons against silent overwrites"
   },
   "radi_ot": {
     "commit": "8537966589f864914a5fdc7ee0e48bf0828465ea",
-    "pulled": "2026-09-16T23:40:52Z",
+    "pulled": "2026-09-18T00:06:54Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/radi-ot.git",
-    "subject": "Record Godot 4.8's new mipmap import keys\n\nOpening a project in Godot 4.8 adds mipmaps/preserve_alpha_test_coverage\nand mipmaps/alpha_test_threshold to every texture .import file, both at the\nengine's own defaults, so nothing about how these textures are imported\nactually changes. Committing them stops the same diff reappearing on every\nmachine that opens the project.\n\nWhere animation .tres files are caught by the same pass, they are only\nre-serialized: the largest value change is 2e-07, float rounding rather\nthan edited animation, and every custom method track survives intact.\n\nCo-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
+    "subject": "Record Godot 4.8's new mipmap import keys"
   },
   "tcps": {
-    "commit": "012aca3f4d8458d0668640e571e3e65a3a19f67f",
-    "pulled": "2026-09-16T20:01:44Z",
+    "commit": "cec6eacb766b3f6cee1a3f8067ed3e86598faa32",
+    "pulled": "2026-09-18T00:06:54Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/tcps.git",
-    "subject": "Record Godot 4.8's new mipmap import keys\n\nOpening a project in Godot 4.8 adds mipmaps/preserve_alpha_test_coverage\nand mipmaps/alpha_test_threshold to every texture .import file, both at the\nengine's own defaults, so nothing about how these textures are imported\nactually changes. Committing them stops the same diff reappearing on every\nmachine that opens the project.\n\nWhere animation .tres files are caught by the same pass, they are only\nre-serialized: the largest value change is 2e-07, float rounding rather\nthan edited animation, and every custom method track survives intact.\n\nCo-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
+    "subject": "Guard the vendored addons against silent overwrites"
   },
   "weather_fx": {
     "commit": "0cecc4fe2b0cd8e1420bf3fb7c07563c70f053b3",
-    "pulled": "2026-09-16T20:01:43Z",
+    "pulled": "2026-09-18T00:06:51Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/weather-fx.git",
-    "subject": "Record Godot 4.8's new mipmap import keys\n\nOpening a project in Godot 4.8 adds mipmaps/preserve_alpha_test_coverage\nand mipmaps/alpha_test_threshold to every texture .import file, both at the\nengine's own defaults, so nothing about how these textures are imported\nactually changes. Committing them stops the same diff reappearing on every\nmachine that opens the project.\n\nWhere animation .tres files are caught by the same pass, they are only\nre-serialized: the largest value change is 2e-07, float rounding rather\nthan edited animation, and every custom method track survives intact.\n\nCo-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
+    "subject": "Record Godot 4.8's new mipmap import keys"
   }
 }
