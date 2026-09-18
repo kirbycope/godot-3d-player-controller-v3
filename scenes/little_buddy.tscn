@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://bnuhx6pjxygby" path="res://addons/3d_player_controller/assets/mixamo/characters/y_bot_root.glb" id="1_xrax1"]
 [ext_resource type="AnimationLibrary" path="res://addons/3d_player_controller/assets/mixamo/animations/tuned/Swimming.tres" id="6_tfnjv"]
 [ext_resource type="AnimationLibrary" uid="uid://cqhv3e722j6b6" path="res://addons/3d_player_controller/assets/mixamo/animations/root_motion/Idle.glb" id="84_jtj55"]
-[ext_resource type="AnimationLibrary" uid="uid://dm6ef4yyxiibs" path="res://addons/3d_player_controller/assets/mixamo/animations/root_motion/Running.glb" id="131_1j3y2"]
+[ext_resource type="AnimationLibrary" path="res://addons/3d_player_controller/assets/mixamo/animations/tuned/Running.tres" id="131_1j3y2"]
 [ext_resource type="AnimationLibrary" uid="uid://dsnlxptdo6n1g" path="res://addons/3d_player_controller/assets/mixamo/animations/root_motion/Running Backward.glb" id="132_b6c0k"]
 [ext_resource type="AnimationLibrary" uid="uid://b66hh3ma67hrw" path="res://addons/3d_player_controller/assets/mixamo/animations/root_motion/Standard Walk.glb" id="133_walk"]
 [ext_resource type="AnimationLibrary" uid="uid://b05nay4slsc80" path="res://addons/3d_player_controller/assets/mixamo/animations/root_motion/Walking Backwards.glb" id="134_walkb"]
