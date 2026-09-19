@@ -45,7 +45,7 @@ func _cast_and_wait_for_water() -> void:
 
 func test_full_loop_catches_a_fish() -> void:
 	assert_true(player.is_fishing)
-	var action: Label = player.controls.joypad_button_0_label
+	var action: Label = player.controls.joypad_button_1_label
 	assert_eq(action.text, "Cast", "Holding the rod puts Cast on the Action prompt")
 	watch_signals(rod)
 	await _cast_and_wait_for_water()
@@ -80,7 +80,7 @@ func test_full_loop_catches_a_fish() -> void:
 	rod._on_bite_timer_timeout()
 	assert_eq(rod.state, FishingRod.State.BITE)
 	assert_eq(action.text, "Hook!", "The bite asks for the hook")
-	var button: CanvasItem = player.controls.joypad_button_0
+	var button: CanvasItem = player.controls.joypad_button_1
 	assert_null(shadows.interested, "The biting shadow dives under the float")
 	assert_true(rod.bobber.ring.visible, "The bite splashes")
 	await wait_seconds(0.5)
@@ -159,7 +159,7 @@ func test_changing_state_pulls_the_line_in() -> void:
 
 
 func test_unequipping_the_rod_hands_the_labels_back() -> void:
-	var action: Label = player.controls.joypad_button_0_label
+	var action: Label = player.controls.joypad_button_1_label
 	assert_eq(action.text, "Cast")
 	player.inventory.unequip_all()
 	await wait_physics_frames(1)

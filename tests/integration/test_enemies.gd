@@ -152,14 +152,14 @@ func test_a_boss_puts_its_name_and_health_on_the_hud() -> void:
 	var swordsman: EnemyNpc = _enemy("Swordsman")
 	swordsman.is_boss = true
 	var controls: Node = player.controls
-	assert_false(controls.boss_bar.visible)
+	assert_false(player.boss_bar.bar.visible)
 	swordsman.aggro(player)
-	assert_true(controls.boss_bar.visible, "Engaging a boss shows the bar")
-	assert_eq(controls.boss_name_label.text, "Swordsman")
+	assert_true(player.boss_bar.bar.visible, "Engaging a boss shows the bar")
+	assert_eq(player.boss_bar.name_label.text, "Swordsman")
 	swordsman.take_hit(50.0, player.global_position)
-	assert_almost_eq(controls.boss_health_bar.value, 0.5, 0.01, "The bar follows the boss's health")
+	assert_almost_eq(player.boss_bar.health_bar.value, 0.5, 0.01, "The bar follows the boss's health")
 	swordsman.take_hit(500.0, player.global_position)
-	assert_false(controls.boss_bar.visible, "The bar goes when the boss falls")
+	assert_false(player.boss_bar.bar.visible, "The bar goes when the boss falls")
 
 
 func test_a_swing_that_does_not_touch_the_player_costs_nothing() -> void:

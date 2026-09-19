@@ -364,13 +364,13 @@ func update_labels() -> void:
 	player.controls.release_action_label(self)
 	player.controls.reset_labels()
 	if ACTION_LABELS[state].is_empty():
-		player.controls.joypad_button_0_label.text = ""
+		player.controls.action_label(&"action", player.controls.joypad_button_0_label).text = ""
 	else:
 		player.controls.claim_action_label(ACTION_LABELS[state], self)
 	# The hook window is short: the Action button throbs green until it closes
 	if state == State.BITE:
 		if hook_pulse == null or not hook_pulse.is_valid():
-			var button: CanvasItem = player.controls.joypad_button_0
+			var button: CanvasItem = player.controls.action_button(&"action", player.controls.joypad_button_0)
 			hook_pulse = create_tween().set_loops().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 			hook_pulse.tween_property(button, "modulate", Color(0.55, 1.0, 0.55), 0.25)
 			hook_pulse.tween_property(button, "modulate", Color(0.0, 0.85, 0.0), 0.25)
@@ -384,7 +384,7 @@ func stop_hook_pulse() -> void:
 		hook_pulse.kill()
 	hook_pulse = null
 	if player and player.controls:
-		player.controls.joypad_button_0.modulate = Color.WHITE
+		player.controls.action_button(&"action", player.controls.joypad_button_0).modulate = Color.WHITE
 
 
 func _on_input_type_changed(_input_type: int) -> void:

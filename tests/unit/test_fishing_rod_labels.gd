@@ -17,14 +17,14 @@ func test_the_rod_claims_and_releases_the_action_label() -> void:
 	assert_not_null(rod, "Walking over the rod equips a copy")
 	assert_true(player.is_fishing)
 	assert_eq(player.controls.prompt_action_label, "Cast", "Holding the rod claims Cast")
-	assert_eq(player.controls.joypad_button_0_label.text, "Cast")
+	assert_eq(player.controls.joypad_button_1_label.text, "Cast")
 	rod.state = FishingRod.State.WAITING
 	rod.update_labels()
 	assert_eq(player.controls.prompt_action_label, "Reel In", "A line in the water claims Reel In")
 	rod.state = FishingRod.State.CASTING
 	rod.update_labels()
 	assert_eq(player.controls.prompt_action_label, "", "Nothing to press mid-cast: the claim is given back")
-	assert_eq(player.controls.joypad_button_0_label.text, "", "and the button is blank, not still reading Reel In")
+	assert_eq(player.controls.joypad_button_1_label.text, "", "and the button is blank, not still reading Reel In")
 	rod.state = FishingRod.State.WAITING
 	rod.update_labels()
 	rod.retract()

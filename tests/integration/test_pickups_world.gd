@@ -51,7 +51,7 @@ func test_every_world_pickup_has_a_detection_area_and_no_prompt() -> void:
 func test_walking_up_to_the_car_shows_its_prompt_and_get_in_label_until_you_leave() -> void:
 	var car: Node3D = world.get_node("HondaCRV")
 	var prompt: Node3D = car.get_node("ActionPrompt")
-	var action_label: Label = player.controls.joypad_button_0_label
+	var action_label: Label = player.controls.joypad_button_1_label
 	var default_text: String = action_label.text
 	assert_false(prompt.visible)
 	await _stand_at(car.global_position + Vector3(2.2, 0.0, 0.0))
@@ -85,7 +85,7 @@ func test_pressing_action_by_the_car_gets_in() -> void:
 
 func test_a_dropped_item_shows_its_model_and_its_label_only_while_in_range() -> void:
 	var rock: Item = load("res://resources/items/rock.tres")
-	var action_label: Label = player.controls.joypad_button_0_label
+	var action_label: Label = player.controls.joypad_button_1_label
 	player.refresh_contextual_controls()
 	var default_text: String = action_label.text
 	var slot: int = player.inventory.get_slots(rock.category).find_custom(func(entry: ItemSlot) -> bool: return entry != null and entry.item == rock)

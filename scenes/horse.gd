@@ -366,8 +366,10 @@ func get_contextual_controls(_input_type: int) -> Dictionary:
 		"left_joystick": "Ride",
 		"right_joystick": "Camera",
 		"joypad_button_3": "Jump",
-		"joypad_button_1": "Gallop",
-		"joypad_button_0": "Dismount",
+		# Named by slot rather than by action, so these follow the Zelda layout's own buttons: the bottom one
+		# sprints and the right one is Action
+		"joypad_button_0": "Gallop",
+		"joypad_button_1": "Dismount",
 	}
 
 
