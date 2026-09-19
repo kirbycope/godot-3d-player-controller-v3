@@ -51,8 +51,8 @@
 [ext_resource type="PackedScene" uid="uid://b72r5jskemotf" path="res://scenes/honda_crv.tscn" id="54_5hglh"]
 [ext_resource type="PackedScene" uid="uid://ci146l3tivu1p" path="res://scenes/duck.tscn" id="54_xiw03"]
 [ext_resource type="Script" uid="uid://b5icexjxoi6mg" path="res://addons/date_and_time/scripts/date_and_time.gd" id="55_dt"]
-[ext_resource type="PackedScene" uid="uid://do6j5qhjt8bsf" path="res://addons/weather_fx/scenes/weather_fx.tscn" id="56_wfx"]
 [ext_resource type="PackedScene" uid="uid://df2moxe7vqkyp" path="res://addons/weather_fx/scenes/bgs.tscn" id="56_bgs"]
+[ext_resource type="PackedScene" uid="uid://do6j5qhjt8bsf" path="res://addons/weather_fx/scenes/weather_fx.tscn" id="56_wfx"]
 [ext_resource type="Script" uid="uid://bhmeif0ssxubk" path="res://addons/weather_fx/scripts/weather_zone.gd" id="57_wzone"]
 [ext_resource type="PackedScene" path="res://addons/date_and_time/scenes/date_and_time_display.tscn" id="58_dtdisplay"]
 [ext_resource type="PackedScene" path="res://addons/weather_fx/scenes/weather_forecast_display.tscn" id="59_wfdisplay"]
@@ -62,18 +62,15 @@
 [ext_resource type="PackedScene" path="res://scenes/torch.tscn" id="63_torch"]
 [ext_resource type="PackedScene" path="res://scenes/horse.tscn" id="87_xgy6y"]
 [ext_resource type="PackedScene" path="res://scenes/retro_computer.tscn" id="88_retro"]
+[ext_resource type="AudioStream" uid="uid://d06jdg37cxec1" path="res://assets/audiohero/AirReleasePressureDeflation PEHD032101.ogg" id="90_ld7xo"]
+[ext_resource type="AudioStream" uid="uid://wdsp1grlmfrs" path="res://assets/audiohero/AirReleasePressureDeflation PEHD032102.ogg" id="91_l4n3p"]
+[ext_resource type="AudioStream" uid="uid://buk0utbp0l86o" path="res://assets/audiohero/AirReleasePressureDeflation PEHD032103.ogg" id="92_fmmry"]
 [ext_resource type="Resource" path="res://addons/3d_player_controller/resources/accuracy/bow.tres" id="accuracy_bow"]
-[ext_resource type="AudioStream" path="res://addons/3d_player_controller/resources/audio/bow_take_out.tres" id="bow_take_out"]
-[ext_resource type="AudioStream" path="res://addons/3d_player_controller/resources/audio/bow_put_away.tres" id="bow_put_away"]
-[ext_resource type="AudioStream" path="res://resources/audio/pistol_shot.tres" id="sfx_pistol_shot"]
-[ext_resource type="AudioStream" path="res://resources/audio/rifle_shot.tres" id="sfx_rifle_shot"]
-[ext_resource type="AudioStream" path="res://resources/audio/gun_draw.tres" id="sfx_gun_draw"]
-[ext_resource type="AudioStream" path="res://resources/audio/gun_holster.tres" id="sfx_gun_holster"]
-[ext_resource type="AudioStream" path="res://resources/audio/pistol_reload.tres" id="sfx_pistol_reload"]
-[ext_resource type="AudioStream" path="res://resources/audio/rifle_reload.tres" id="sfx_rifle_reload"]
 [ext_resource type="Resource" path="res://addons/3d_player_controller/resources/accuracy/pistol.tres" id="accuracy_pistol"]
 [ext_resource type="Resource" path="res://addons/3d_player_controller/resources/accuracy/rifle.tres" id="accuracy_rifle"]
 [ext_resource type="Sky" uid="uid://rvgdfly32rcm" path="res://addons/weather_fx/assets/BinbunSky/skies/stylized/stylized_sky_01.tres" id="binbun_sky"]
+[ext_resource type="AudioStream" path="res://addons/3d_player_controller/resources/audio/bow_put_away.tres" id="bow_put_away"]
+[ext_resource type="AudioStream" path="res://addons/3d_player_controller/resources/audio/bow_take_out.tres" id="bow_take_out"]
 [ext_resource type="Script" uid="uid://co2i2r08w3qms" path="res://scenes/buoyancy.gd" id="buoyancy_script"]
 [ext_resource type="PackedScene" uid="uid://drgmvkbg7fitw" path="res://scenes/enemy_archer.tscn" id="enemy_archer"]
 [ext_resource type="PackedScene" uid="uid://drgmvkr7bji2w" path="res://scenes/enemy_rifleman.tscn" id="enemy_rifleman"]
@@ -97,23 +94,31 @@
 [ext_resource type="Script" uid="uid://dgk0123inqplm" path="res://addons/3d_player_controller/scripts/steam_peer.gd" id="mp_steam_peer"]
 [ext_resource type="PackedScene" path="res://scenes/world_player.tscn" id="mp_world_player"]
 [ext_resource type="Script" uid="uid://d046dc2e6l7mn" path="res://addons/3d_player_controller/scripts/muzzle_flash.gd" id="muzzle_flash_gd"]
+[ext_resource type="PackedScene" uid="uid://dpamk5qeelx2w" path="res://addons/3d_player_controller/scenes/checkpoint.tscn" id="pc_checkpoint"]
+[ext_resource type="PackedScene" uid="uid://dxbtulpdax42w" path="res://addons/3d_player_controller/scenes/kill_zone.tscn" id="pc_kill_zone"]
+[ext_resource type="PackedScene" uid="uid://bn81yd2prab5" path="res://addons/3d_player_controller/scenes/save_game.tscn" id="pc_save_game"]
+[ext_resource type="PackedScene" uid="uid://cnx71qvyglb5" path="res://addons/3d_player_controller/scenes/talking_npc.tscn" id="pc_talking_npc"]
+[ext_resource type="Resource" uid="uid://dqbiuahkaoe2w" path="res://resources/dialogues/qa_guide.tres" id="qa_guide_dialogue"]
 [ext_resource type="Script" uid="uid://b03h8ijilon1x" path="res://addons/3d_player_controller/scripts/arrow.gd" id="r_arrowgd"]
 [ext_resource type="Texture2D" uid="uid://dqhgd83i0432v" path="res://addons/3d_player_controller/assets/game_icons/bow-arrow.svg" id="r_bowarrowsvg"]
 [ext_resource type="Script" uid="uid://7r16fm6kmk1p" path="res://addons/3d_player_controller/scripts/bow.gd" id="r_bowgd"]
 [ext_resource type="Texture2D" uid="uid://dba30et81gi40" path="res://addons/3d_player_controller/assets/game_icons/mp5.svg" id="r_mp5svg"]
 [ext_resource type="Script" uid="uid://7e2gpht4wap6" path="res://addons/3d_player_controller/scripts/rifle.gd" id="r_riflegd"]
+[ext_resource type="AudioStream" path="res://resources/audio/gun_draw.tres" id="sfx_gun_draw"]
+[ext_resource type="AudioStream" path="res://resources/audio/gun_holster.tres" id="sfx_gun_holster"]
+[ext_resource type="AudioStream" path="res://resources/audio/pistol_reload.tres" id="sfx_pistol_reload"]
+[ext_resource type="AudioStream" path="res://resources/audio/pistol_shot.tres" id="sfx_pistol_shot"]
+[ext_resource type="AudioStream" path="res://resources/audio/rifle_reload.tres" id="sfx_rifle_reload"]
+[ext_resource type="AudioStream" path="res://resources/audio/rifle_shot.tres" id="sfx_rifle_shot"]
 [ext_resource type="PackedScene" path="res://addons/weather_fx/scenes/water_ripples.tscn" id="water_ripples_scene"]
 [ext_resource type="Script" uid="uid://bia70m5sxncj0" path="res://addons/weather_fx/scripts/weather_clouds.gd" id="weather_clouds"]
-[ext_resource type="PackedScene" uid="uid://c7killzone0001" path="res://addons/3d_player_controller/scenes/kill_zone.tscn" id="pc_kill_zone"]
-[ext_resource type="PackedScene" uid="uid://c7checkpoint01" path="res://addons/3d_player_controller/scenes/checkpoint.tscn" id="pc_checkpoint"]
-[ext_resource type="PackedScene" uid="uid://c7savegame0001" path="res://addons/3d_player_controller/scenes/save_game.tscn" id="pc_save_game"]
-[ext_resource type="PackedScene" uid="uid://c7talkingnpc01" path="res://addons/3d_player_controller/scenes/talking_npc.tscn" id="pc_talking_npc"]
-[ext_resource type="Resource" uid="uid://c7dialogueqa01" path="res://resources/dialogues/qa_guide.tres" id="qa_guide_dialogue"]
+[ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/noise_meter.tscn" id="93_noise"]
 
 [sub_resource type="Environment" id="Environment_aqk2v"]
 background_mode = 2
 sky = ExtResource("binbun_sky")
 fog_density = 0.0
+fog_sky_affect = 0.3
 volumetric_fog_density = 0.0
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_time"]
@@ -437,6 +442,12 @@ size = Vector3(32, 6.6, 16)
 friction = 0.3
 bounce = 0.75
 
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_rksil"]
+streams_count = 3
+stream_0/stream = ExtResource("90_ld7xo")
+stream_1/stream = ExtResource("91_l4n3p")
+stream_2/stream = ExtResource("92_fmmry")
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o7ddy"]
 albedo_texture = ExtResource("51_wui3h")
 
@@ -511,9 +522,6 @@ size = Vector3(40, 20, 40)
 friction = 0.7
 bounce = 0.15
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_killzone"]
-size = Vector3(2000, 20, 2000)
-
 [node name="World" type="Node3D" unique_id=336392758]
 script = ExtResource("1_5hglh")
 
@@ -544,7 +552,7 @@ bgs_night_clear = NodePath("../../BackGroundSounds/BGS_Night_Clear")
 bgs_night_rain = NodePath("../../BackGroundSounds/BGS_Night_Rain")
 bgs_night_storm = NodePath("../../BackGroundSounds/BGS_Night_Storm")
 
-[node name="BackGroundSounds" parent="." instance=ExtResource("56_bgs")]
+[node name="BackGroundSounds" parent="." unique_id=1390929901 instance=ExtResource("56_bgs")]
 
 [node name="DateAndTime" type="Node" parent="." unique_id=98712301]
 script = ExtResource("55_dt")
@@ -568,6 +576,13 @@ offset_right = -257.0
 offset_bottom = -16.0
 grow_horizontal = 0
 grow_vertical = 0
+
+[node name="NoiseMeter" parent="HUD/BottomRight" instance=ExtResource("93_noise")]
+layout_mode = 0
+offset_left = -44.0
+offset_top = -38.0
+offset_right = -8.0
+offset_bottom = -2.0
 
 [node name="DateAndTimeDisplay" parent="HUD/BottomRight" unique_id=98712313 node_paths=PackedStringArray("date_and_time_node") instance=ExtResource("58_dtdisplay")]
 layout_mode = 0
@@ -811,13 +826,11 @@ base_energy = 3.0
 [node name="FireTimer" type="Timer" parent="JustCreate3D/Weapon_02" unique_id=1718678155]
 one_shot = true
 
-[node name="FireAudio" type="AudioStreamPlayer3D" parent="JustCreate3D/Weapon_02"]
+[node name="FireAudio" type="AudioStreamPlayer3D" parent="JustCreate3D/Weapon_02" unique_id=1065015245]
 stream = ExtResource("sfx_rifle_shot")
-bus = &"SFX"
 
-[node name="ReloadAudio" type="AudioStreamPlayer3D" parent="JustCreate3D/Weapon_02"]
+[node name="ReloadAudio" type="AudioStreamPlayer3D" parent="JustCreate3D/Weapon_02" unique_id=328294106]
 stream = ExtResource("sfx_rifle_reload")
-bus = &"SFX"
 
 [node name="LaserSight" parent="JustCreate3D/Weapon_02" unique_id=652437950 instance=ExtResource("15_laser")]
 visible = false
@@ -869,13 +882,11 @@ base_energy = 1.0
 [node name="FireTimer" type="Timer" parent="JustCreate3D/Weapon_01" unique_id=41256008]
 one_shot = true
 
-[node name="FireAudio" type="AudioStreamPlayer3D" parent="JustCreate3D/Weapon_01"]
+[node name="FireAudio" type="AudioStreamPlayer3D" parent="JustCreate3D/Weapon_01" unique_id=1994930430]
 stream = ExtResource("sfx_pistol_shot")
-bus = &"SFX"
 
-[node name="ReloadAudio" type="AudioStreamPlayer3D" parent="JustCreate3D/Weapon_01"]
+[node name="ReloadAudio" type="AudioStreamPlayer3D" parent="JustCreate3D/Weapon_01" unique_id=195128305]
 stream = ExtResource("sfx_pistol_reload")
-bus = &"SFX"
 
 [node name="LaserSight" parent="JustCreate3D/Weapon_01" unique_id=1387924823 instance=ExtResource("15_laser")]
 visible = false
@@ -961,10 +972,10 @@ equipment_type = 2
 icon = ExtResource("r_bowarrowsvg")
 is_exclusive = true
 accuracy = ExtResource("accuracy_bow")
-equip_sfx = ExtResource("bow_take_out")
-stow_sfx = ExtResource("bow_put_away")
 position_offset = Vector3(0, 0.1, 0.025)
 rotation_offset_degrees = Vector3(180, 90, 15)
+equip_sfx = ExtResource("bow_take_out")
+stow_sfx = ExtResource("bow_put_away")
 
 [node name="PlayerDetection" type="Area3D" parent="N_Hance_Studio_1/SK_Bow_Newbie_01" unique_id=326004096]
 
@@ -1265,6 +1276,7 @@ use_collision = true
 [node name="BeachBall" parent="." unique_id=1694960044 instance=ExtResource("49_mu18u")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -4)
 physics_material_override = SubResource("PhysicsMaterial_beach")
+deflate_sound = SubResource("AudioStreamRandomizer_rksil")
 
 [node name="GuyNumberOne" parent="." unique_id=1077715446 groups=["Focusable"] instance=ExtResource("50_7b7y8")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3)
@@ -1384,19 +1396,16 @@ shape = SubResource("BoxShape3D_desert_zone")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 1.9000001, -7)
 physics_material_override = SubResource("PhysicsMaterial_torch")
 
-[node name="KillZone" parent="." instance=ExtResource("pc_kill_zone")]
+[node name="KillZone" parent="." unique_id=1328016926 instance=ExtResource("pc_kill_zone")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -50, 0)
 
-[node name="CollisionShape3D" parent="KillZone"]
-shape = SubResource("BoxShape3D_killzone")
-
-[node name="Checkpoint" parent="." instance=ExtResource("pc_checkpoint")]
+[node name="Checkpoint" parent="." unique_id=774006358 instance=ExtResource("pc_checkpoint")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, 1)
 
-[node name="SaveGame" parent="." node_paths=PackedStringArray("player_spawner") instance=ExtResource("pc_save_game")]
+[node name="SaveGame" parent="." unique_id=556756288 node_paths=PackedStringArray("player_spawner") instance=ExtResource("pc_save_game")]
 player_spawner = NodePath("../PlayerSpawner")
 
-[node name="Guide" parent="." instance=ExtResource("pc_talking_npc")]
+[node name="Guide" parent="." unique_id=1935370704 instance=ExtResource("pc_talking_npc")]
 transform = Transform3D(0.5547, 0, -0.83205, 0, 1, 0, 0.83205, 0, 0.5547, 6, 0, 4)
 display_name = "Guide"
 dialogue = ExtResource("qa_guide_dialogue")

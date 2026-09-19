@@ -1,7 +1,7 @@
 extends GutTest
 
 ## Purpose: End-to-end shooting in world.tscn: the rifle equips with its muzzle, timer and laser sight,
-## a round fired at the balloon circle pops a balloon, and a round pushes the beach ball. The bow pickup equips with
+## a round fired at the balloon circle pops a balloon, and a round bursts the beach ball. The bow pickup equips with
 ## its template arrow, nocks the kind of arrow it will fire, and an ice arrow shot at the pool freezes it under the
 ## crosshair.
 
@@ -69,19 +69,25 @@ func test_rifle_round_pops_a_balloon() -> void:
 	assert_lt(pivot.get_child_count(), balloons_before, "A balloon should pop when a round reaches it")
 
 
-func test_rifle_round_pushes_the_beach_ball() -> void:
-	var ball: RigidBody3D = world.get_node("BeachBall")
+## A round used to knock the ball across the sand. It bursts it now, so the ball hands over to its SoftBody3D
+## twin and stops simulating, and the impulse the round applies afterwards has nothing left to push. What this
+## proves is the same end-to-end path either way: a round fired from the equipped rifle reaches the ball in the
+## real world scene and the ball reacts to it.
+func test_rifle_round_bursts_the_beach_ball() -> void:
+	var ball: BeachBall = world.get_node("BeachBall")
 	ball.sleeping = false
 	# Approach from the side so nothing in the world stands between the muzzle and the ball
 	await _aim_at(ball.global_position, Vector3(6.0, -0.5, 0.0))
-	var before: Vector3 = ball.linear_velocity
+	assert_false(ball.is_deflated, "It is a round ball before the shot")
 	var bullet: Projectile = rifle.fire()
 	var hits: Array[Node] = []
 	bullet.hit.connect(func(collider: Node, _point: Vector3, _normal: Vector3) -> void: hits.append(collider))
 	await wait_physics_frames(20)
 	assert_eq(hits.size(), 1, "The round reports exactly one hit")
 	assert_eq(hits[0], ball if hits.size() == 1 else null, "The hit lands on the beach ball")
-	assert_gt((ball.linear_velocity - before).length(), 0.3, "A round should knock the beach ball")
+	assert_true(ball.is_deflated, "and lets the air out of it")
+	assert_not_null(ball.soft_twin, "The limp twin is what you see afterwards")
+	assert_false(ball.mesh_instance.visible, "and the round ball is gone")
 
 
 func test_the_rifle_fires_without_its_firing_emote_while_moving() -> void:

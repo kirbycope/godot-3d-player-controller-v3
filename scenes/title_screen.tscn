@@ -37,19 +37,6 @@ visible = false
 position = Vector2(290, 29)
 shape = SubResource("RectangleShape2D_kxxiu")
 
-[node name="Button_Continue" type="Button" parent="VBoxContainer"]
-visible = false
-custom_minimum_size = Vector2(580, 58)
-layout_mode = 2
-theme_override_constants/outline_size = 8
-theme_override_font_sizes/font_size = 24
-text = "Continue"
-
-[node name="TouchScreenButton_Continue" type="TouchScreenButton" parent="VBoxContainer/Button_Continue"]
-visible = false
-position = Vector2(290, 29)
-shape = SubResource("RectangleShape2D_kxxiu")
-
 [node name="Button_MultiPlayer" type="Button" parent="VBoxContainer" unique_id=1092064221]
 custom_minimum_size = Vector2(580, 58)
 layout_mode = 2
@@ -97,6 +84,58 @@ visible = false
 position = Vector2(132, 29)
 shape = SubResource("RectangleShape2D_4v6o2")
 
+[node name="VBoxContainer_SinglePlayer" type="VBoxContainer" parent="."]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -290.0
+offset_top = -60.0
+offset_right = 290.0
+offset_bottom = 60.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 16
+
+[node name="Button_NewGame" type="Button" parent="VBoxContainer_SinglePlayer"]
+custom_minimum_size = Vector2(580, 58)
+layout_mode = 2
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 24
+text = "New Game"
+
+[node name="TouchScreenButton_NewGame" type="TouchScreenButton" parent="VBoxContainer_SinglePlayer/Button_NewGame"]
+visible = false
+position = Vector2(290, 29)
+shape = SubResource("RectangleShape2D_kxxiu")
+
+[node name="Button_Continue" type="Button" parent="VBoxContainer_SinglePlayer"]
+visible = false
+custom_minimum_size = Vector2(580, 58)
+layout_mode = 2
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 24
+text = "Continue"
+
+[node name="TouchScreenButton_Continue" type="TouchScreenButton" parent="VBoxContainer_SinglePlayer/Button_Continue"]
+visible = false
+position = Vector2(290, 29)
+shape = SubResource("RectangleShape2D_kxxiu")
+
+[node name="Button_Back" type="Button" parent="VBoxContainer_SinglePlayer"]
+custom_minimum_size = Vector2(580, 58)
+layout_mode = 2
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 24
+text = "Back"
+
+[node name="TouchScreenButton_Back" type="TouchScreenButton" parent="VBoxContainer_SinglePlayer/Button_Back"]
+visible = false
+position = Vector2(290, 29)
+shape = SubResource("RectangleShape2D_kxxiu")
+
 [node name="Label_Version" type="Label" parent="." unique_id=1067505784]
 anchors_preset = 2
 anchor_top = 1.0
@@ -123,17 +162,23 @@ grow_vertical = 0
 text = "© Timothy Cope 2026"
 
 [connection signal="mouse_entered" from="VBoxContainer/Button_SinglePlayer" to="VBoxContainer/Button_SinglePlayer" method="grab_focus"]
-[connection signal="mouse_entered" from="VBoxContainer/Button_MultiPlayer" to="VBoxContainer/Button_MultiPlayer" method="grab_focus"]
-[connection signal="mouse_entered" from="VBoxContainer/HBoxContainer/Button_Options" to="VBoxContainer/HBoxContainer/Button_Options" method="grab_focus"]
-[connection signal="mouse_entered" from="VBoxContainer/HBoxContainer/Button_Quit" to="VBoxContainer/HBoxContainer/Button_Quit" method="grab_focus"]
 [connection signal="pressed" from="VBoxContainer/Button_SinglePlayer" to="." method="_on_button_single_player_pressed"]
 [connection signal="pressed" from="VBoxContainer/Button_SinglePlayer/TouchScreenButton_SinglePlayer" to="." method="_on_touch_screen_button_single_player_pressed"]
-[connection signal="mouse_entered" from="VBoxContainer/Button_Continue" to="VBoxContainer/Button_Continue" method="grab_focus"]
-[connection signal="pressed" from="VBoxContainer/Button_Continue" to="." method="_on_button_continue_pressed"]
-[connection signal="pressed" from="VBoxContainer/Button_Continue/TouchScreenButton_Continue" to="." method="_on_touch_screen_button_continue_pressed"]
+[connection signal="mouse_entered" from="VBoxContainer/Button_MultiPlayer" to="VBoxContainer/Button_MultiPlayer" method="grab_focus"]
 [connection signal="pressed" from="VBoxContainer/Button_MultiPlayer" to="." method="_on_button_multi_player_pressed"]
 [connection signal="pressed" from="VBoxContainer/Button_MultiPlayer/TouchScreenButton_MultiPlayer" to="." method="_on_touch_screen_button_multi_player_pressed"]
+[connection signal="mouse_entered" from="VBoxContainer/HBoxContainer/Button_Options" to="VBoxContainer/HBoxContainer/Button_Options" method="grab_focus"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Button_Options" to="." method="_on_button_options_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Button_Options/TouchScreenButton_Options" to="." method="_on_touch_screen_button_options_pressed"]
+[connection signal="mouse_entered" from="VBoxContainer/HBoxContainer/Button_Quit" to="VBoxContainer/HBoxContainer/Button_Quit" method="grab_focus"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Button_Quit" to="." method="_on_button_quit_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Button_Quit/TouchScreenButton_Quit" to="." method="_on_touch_screen_button_quit_pressed"]
+[connection signal="mouse_entered" from="VBoxContainer_SinglePlayer/Button_NewGame" to="VBoxContainer_SinglePlayer/Button_NewGame" method="grab_focus"]
+[connection signal="pressed" from="VBoxContainer_SinglePlayer/Button_NewGame" to="." method="_on_button_new_game_pressed"]
+[connection signal="pressed" from="VBoxContainer_SinglePlayer/Button_NewGame/TouchScreenButton_NewGame" to="." method="_on_touch_screen_button_new_game_pressed"]
+[connection signal="mouse_entered" from="VBoxContainer_SinglePlayer/Button_Continue" to="VBoxContainer_SinglePlayer/Button_Continue" method="grab_focus"]
+[connection signal="pressed" from="VBoxContainer_SinglePlayer/Button_Continue" to="." method="_on_button_continue_pressed"]
+[connection signal="pressed" from="VBoxContainer_SinglePlayer/Button_Continue/TouchScreenButton_Continue" to="." method="_on_touch_screen_button_continue_pressed"]
+[connection signal="mouse_entered" from="VBoxContainer_SinglePlayer/Button_Back" to="VBoxContainer_SinglePlayer/Button_Back" method="grab_focus"]
+[connection signal="pressed" from="VBoxContainer_SinglePlayer/Button_Back" to="." method="_on_button_back_pressed"]
+[connection signal="pressed" from="VBoxContainer_SinglePlayer/Button_Back/TouchScreenButton_Back" to="." method="_on_touch_screen_button_back_pressed"]

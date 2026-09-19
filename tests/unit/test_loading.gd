@@ -40,26 +40,92 @@ func test_loading_node_ignores_second_request_while_loading() -> void:
 	assert_false(loading.details.get_parsed_text().contains("Requesting res://scenes/main.tscn"), "The second request should be ignored")
 
 
-func test_title_screen_emits_single_player_pressed_on_button() -> void:
-	var title_screen: CanvasLayer = TITLE_SCREEN_SCENE.instantiate()
+func test_title_screen_opens_on_the_main_menu() -> void:
+	var title_screen: TitleScreen = TITLE_SCREEN_SCENE.instantiate()
+	add_child_autofree(title_screen)
+
+	assert_true(title_screen.menu_main.visible, "The title screen opens on Single-Player, Multi-Player, Options and Quit")
+	assert_false(title_screen.menu_single_player.visible, "New Game and Continue live behind Single-Player, not on the main menu")
+	assert_true(title_screen.button_single_player.has_focus(), "Single-Player takes the opening focus")
+
+
+func test_title_screen_single_player_opens_the_new_game_menu() -> void:
+	var title_screen: TitleScreen = TITLE_SCREEN_SCENE.instantiate()
 	add_child_autofree(title_screen)
 	watch_signals(title_screen)
 
-	var button_sp: Button = title_screen.get_node("VBoxContainer/Button_SinglePlayer")
-	button_sp.emit_signal("pressed")
+	title_screen.button_single_player.emit_signal("pressed")
 
-	assert_signal_emitted(title_screen, "single_player_pressed", "Single-player button should emit single_player_pressed signal")
+	assert_false(title_screen.menu_main.visible, "The main menu gives way to the single-player panel")
+	assert_true(title_screen.menu_single_player.visible, "Single-Player presents New Game and Continue")
+	assert_signal_not_emitted(title_screen, "new_game_pressed", "Single-Player opens a menu, it does not start the game")
 
 
-func test_title_screen_emits_single_player_pressed_on_touch_button() -> void:
-	var title_screen: CanvasLayer = TITLE_SCREEN_SCENE.instantiate()
+func test_title_screen_single_player_opens_the_new_game_menu_on_touch_button() -> void:
+	var title_screen: TitleScreen = TITLE_SCREEN_SCENE.instantiate()
 	add_child_autofree(title_screen)
-	watch_signals(title_screen)
 
 	var touch_sp: TouchScreenButton = title_screen.get_node("VBoxContainer/Button_SinglePlayer/TouchScreenButton_SinglePlayer")
 	touch_sp.emit_signal("pressed")
 
-	assert_signal_emitted(title_screen, "single_player_pressed", "Touch button should emit single_player_pressed signal")
+	assert_true(title_screen.menu_single_player.visible, "The touch button opens the same panel as the button")
+
+
+func test_title_screen_emits_new_game_pressed_on_button() -> void:
+	var title_screen: TitleScreen = TITLE_SCREEN_SCENE.instantiate()
+	add_child_autofree(title_screen)
+	watch_signals(title_screen)
+
+	title_screen.button_single_player.emit_signal("pressed")
+	title_screen.button_new_game.emit_signal("pressed")
+
+	assert_signal_emitted(title_screen, "new_game_pressed", "New Game button should emit new_game_pressed signal")
+
+
+func test_title_screen_emits_new_game_pressed_on_touch_button() -> void:
+	var title_screen: TitleScreen = TITLE_SCREEN_SCENE.instantiate()
+	add_child_autofree(title_screen)
+	watch_signals(title_screen)
+
+	var touch_ng: TouchScreenButton = title_screen.get_node("VBoxContainer_SinglePlayer/Button_NewGame/TouchScreenButton_NewGame")
+	touch_ng.emit_signal("pressed")
+
+	assert_signal_emitted(title_screen, "new_game_pressed", "Touch button should emit new_game_pressed signal")
+
+
+func test_title_screen_back_returns_to_the_main_menu() -> void:
+	var title_screen: TitleScreen = TITLE_SCREEN_SCENE.instantiate()
+	add_child_autofree(title_screen)
+
+	title_screen.button_single_player.emit_signal("pressed")
+	title_screen.button_back.emit_signal("pressed")
+
+	assert_true(title_screen.menu_main.visible, "Back returns to the main menu")
+	assert_false(title_screen.menu_single_player.visible, "Back closes the single-player panel")
+	assert_true(title_screen.button_single_player.has_focus(), "Back puts the focus where it came from")
+
+
+func test_title_screen_cancel_backs_out_of_the_single_player_menu() -> void:
+	var title_screen: TitleScreen = TITLE_SCREEN_SCENE.instantiate()
+	add_child_autofree(title_screen)
+	title_screen.button_single_player.emit_signal("pressed")
+
+	var cancel: InputEventAction = InputEventAction.new()
+	cancel.action = &"ui_cancel"
+	cancel.pressed = true
+	title_screen._unhandled_input(cancel)
+
+	assert_true(title_screen.menu_main.visible, "Cancel backs out of the single-player panel")
+
+
+func test_title_screen_default_button_follows_the_open_panel() -> void:
+	var title_screen: TitleScreen = TITLE_SCREEN_SCENE.instantiate()
+	add_child_autofree(title_screen)
+
+	assert_eq(title_screen.default_button(), title_screen.button_single_player, "On the main menu, Accept means Single-Player")
+	title_screen.button_single_player.emit_signal("pressed")
+	var expected: Button = title_screen.button_continue if title_screen.button_continue.visible else title_screen.button_new_game
+	assert_eq(title_screen.default_button(), expected, "In the panel, Accept means Continue when there is a save and New Game otherwise")
 
 
 func test_title_screen_emits_multi_player_pressed_on_button() -> void:
@@ -125,8 +191,8 @@ func test_main_scene_wiring() -> void:
 
 	# Verify node-based signal connections
 	assert_true(
-		title_screen.is_connected("single_player_pressed", Callable(main, "single_player")),
-		"TitleScreen single_player_pressed signal should be connected to Main.single_player"
+		title_screen.is_connected("new_game_pressed", Callable(main, "single_player")),
+		"TitleScreen new_game_pressed signal should be connected to Main.single_player"
 	)
 	assert_true(
 		title_screen.is_connected("multi_player_pressed", Callable(main, "multi_player")),

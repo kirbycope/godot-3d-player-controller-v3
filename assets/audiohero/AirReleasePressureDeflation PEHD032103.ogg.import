@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://buk0utbp0l86o"
+path="res://.godot/imported/AirReleasePressureDeflation PEHD032103.ogg-ef219fef2e8ca097465344052c1da4e7.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audiohero/AirReleasePressureDeflation PEHD032103.ogg"
+dest_files=["res://.godot/imported/AirReleasePressureDeflation PEHD032103.ogg-ef219fef2e8ca097465344052c1da4e7.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

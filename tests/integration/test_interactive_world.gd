@@ -162,6 +162,10 @@ func test_burnable_grass_ignition_and_thermal_updraft() -> void:
 	var paragliding_node: Paragliding = player.get_node("NodeStateMachine/Paragliding") as Paragliding
 	assert_not_null(paragliding_node)
 
+	# is_in_updraft asks the Area3D what it overlaps, and the physics server builds that list on the step
+	# after the body moves, so a teleported player is in no overlap list until one has run
+	await wait_physics_frames(2)
+
 	# Verify paraglider detects thermal updraft
 	assert_true(player.is_in_updraft(), "Paraglider should detect thermal updraft above burning grass")
 

@@ -35,7 +35,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			if focused_control is BaseButton:
 				(focused_control as BaseButton).pressed.emit()
 			else:
-				title_screen.button_single_player.pressed.emit()
+				title_screen.default_button().pressed.emit()
 
 
 ## Hides the click-to-start overlay and goes straight into the single-player world: the click is the start of

@@ -85,8 +85,10 @@ func test_archer_and_rifleman_shoot_with_line_of_sight() -> void:
 		projectiles.child_entered_tree.disconnect(note)
 		assert_signal_emitted(shooter, "attacked", "%s takes a shot" % name)
 		assert_gt(shots.size(), 0, "%s fires a projectile through the spawner" % name)
-		shooter.target = null
-		shooter.player = null
+		# Call off the hunt properly rather than clearing target by hand. Assigning null leaves the enemy
+		# connected to the Player's died signal, and the noise sweep then re-aggroes it onto the same Player,
+		# which Godot refuses as a second connect. It also left this shooter hunting into the tests below.
+		shooter.lose_target()
 
 
 func test_a_wall_blocks_line_of_sight() -> void:
@@ -414,7 +416,9 @@ func test_the_rifleman_flashes_its_muzzle_down_the_barrel_on_every_shot() -> voi
 	rifleman.leash_distance = 200.0
 	player.warp_to(Transform3D(Basis(), rifleman.global_position - rifleman.global_basis.z * 8.0))
 	await wait_physics_frames(2)
-	rifleman.target = player
+	# Through aggro rather than by assigning target, so the enemy is in the state a real hunt puts it in and
+	# lose_target below has something to undo
+	rifleman.aggro(player)
 	var aim: Vector3 = rifleman.muzzle.global_position.direction_to(Focus.get_focus_target_position(player))
 	assert_lt(rad_to_deg(aim.angle_to(-rifleman.muzzle.global_basis.z)), 15.0, "Facing the Player, the shot leaves along the muzzle's -Z")
 	var rounds: Array[Projectile] = []
@@ -427,8 +431,7 @@ func test_the_rifleman_flashes_its_muzzle_down_the_barrel_on_every_shot() -> voi
 	var archer: EnemyNpc = _enemy("Archer")
 	assert_null(archer.get_node_or_null("Muzzle/MuzzleFlash"), "A bow has no muzzle flash")
 	bullet.queue_free()
-	rifleman.target = null
-	rifleman.player = null
+	rifleman.lose_target()
 
 
 func test_fire_sets_an_enemy_ablaze_for_three_seconds_of_ticking_damage() -> void:
