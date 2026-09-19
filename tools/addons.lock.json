@@ -1,10 +1,10 @@
 {
   "3d_player_controller": {
-    "commit": "d6af67a71dd0c60f409eace9617f1abc5fd69520",
-    "pulled": "2026-09-19T22:32:14Z",
+    "commit": "daa4c61af67f8650696896ebbd2dd6e1118008f6",
+    "pulled": "2026-09-19T22:56:00Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Name the layouts after the games they came from"
+    "subject": "Name the layouts after their files, and drop the settings migration"
   },
   "controls": {
     "commit": "3681c4c8e029540341d7191378dbd5d71c1c0450",
@@ -28,11 +28,11 @@
     "subject": "Record Godot 4.8's new mipmap import keys"
   },
   "gta": {
-    "commit": "8f89d2f2e93d7ced404b8b397aa9528d4502ef41",
-    "pulled": "2026-09-19T22:32:15Z",
+    "commit": "5c517758f41203c3be30959ac26a48ea4efd546f",
+    "pulled": "2026-09-19T23:03:10Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/gta.git",
-    "subject": "Put the GTA layout in a control_schemes folder"
+    "subject": "Pull the renamed scheme names and the dropped settings migration"
   },
   "radi_ot": {
     "commit": "8537966589f864914a5fdc7ee0e48bf0828465ea",
@@ -42,11 +42,11 @@
     "subject": "Record Godot 4.8's new mipmap import keys"
   },
   "tcps": {
-    "commit": "3c6da47e15aa5838dc683cd5eede8b1330c78ab7",
-    "pulled": "2026-09-19T22:32:16Z",
+    "commit": "ef4dbac1bbe10ff7e5dfebfdf93b955cc1a5b16b",
+    "pulled": "2026-09-19T23:03:11Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/tcps.git",
-    "subject": "Put the THPS layout in a control_schemes folder"
+    "subject": "Follow the layout rename: the walking scheme is TotK now"
   },
   "weather_fx": {
     "commit": "080410273aa6387be71aa763b8885d200e879f1a",
