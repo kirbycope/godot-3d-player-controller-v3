@@ -11,7 +11,7 @@ extends Node3D
 ## The layouts this game offers on top of the player controller's own, announced before any settings menu is
 ## built. GTA ships with the gta addon rather than the player controller, which must not preload across addons.
 const EXTRA_CONTROL_SCHEMES: Array[ControlScheme] = [
-	preload("res://addons/gta/resources/gta_controls.tres"),
+	preload("res://addons/gta/resources/control_schemes/gta.tres"),
 ]
 
 
