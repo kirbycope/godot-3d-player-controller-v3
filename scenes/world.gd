@@ -120,8 +120,13 @@ func _on_local_player_spawned(local_player: Player) -> void:
 	print("World ready: %s spawned as peer %d" % [player.name, multiplayer.get_unique_id()]) # what tools/web_smoke_test.py waits for
 
 
-## The local Player whistled: the nearest horse in earshot comes (Horse.summon relays the call to its authority).
+## The local Player whistled: the whistle is heard, and the nearest horse in earshot comes (Horse.summon relays
+## the call to its authority). The sound is an AudioStreamRandomizer on the Player's own WhistleAudio, so the
+## same player does not whistle identically twice; a scene that has no WhistleAudio simply whistles silently.
 func _on_player_whistled(whistler: Player) -> void:
+	var whistle_audio: AudioStreamPlayer3D = whistler.get_node_or_null("WhistleAudio") as AudioStreamPlayer3D
+	if whistle_audio:
+		whistle_audio.play()
 	Horse.summon_nearest(whistler)
 
 

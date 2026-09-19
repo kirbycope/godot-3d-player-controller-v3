@@ -77,7 +77,10 @@ the click or touch goes straight into the single-player world; there is no Steam
   picked up and thrown: the carrier's peer owns it while it is in their hands, every peer sees it on
   their arm, and its walk blend replicates.
 - **Horse** (`Horse`): a rideable on the player controller's `Riding` contract, with a whistle that
-  summons the nearest one over the navmesh. It swims, replicates, and hands its authority to the
+  summons the nearest one over the navmesh. The whistle is heard as well as answered: `WhistleAudio` on
+  `world_player.tscn` takes an `AudioStreamRandomizer` of the three AudioHero human whistles, so the same
+  player never whistles identically twice, and `world.gd` plays it on `Player.whistled` before
+  `Horse.summon_nearest` picks the horse. It swims, replicates, and hands its authority to the
   rider; a horse somebody else is riding refuses the prompt and the mount.
 - **Project spells** (`scenes/*_ability.gd`, `resources/abilities/`): the WoW-style set built on the
   addon's `Ability` resource - Firebolt, Fireball, Frostbolt, Lightning Bolt, Lightning, Chain
@@ -482,7 +485,7 @@ Third-party assets under `assets/`, with the license as recorded in each folder'
 | `assets/BinbunVFX_Vol2` | Battle, Dark Magic, Electric, Elemental Magic, Explosion, Flame, Frosted Glass, Status, Stylized Hit FX | Binbun (Binbun3D) | CC0 (each pack's `license.txt`) | https://binbun3d.itch.io (each pack folder has a `.url` to its page) |
 | `assets/BinbunGlassUI`, `assets/BinbunMaterials`, `assets/BinbunWater`, `assets/TransitionKit` | Fluid Glass UI, Ultimate Toon Shader, Water, Modular Transitions | Binbun (Binbun3D) | not recorded - fill in | https://binbun3d.itch.io (each folder has a `.url` to its page) |
 | `assets/Character`, `assets/Flower`, `assets/Misc`, `PolyBlocks` | WeisC character, flower, misc props, PolyBlocks effect blocks | not recorded - fill in | not recorded - fill in | not recorded - fill in |
-| `assets/audiohero` | AirReleasePressureDeflation PEHD032101, 032102 and 032103, the beach ball's deflation hiss. Converted from the pack's 256 kbps MP3 to Ogg Vorbis with `oggenc -q 6` | Audio Hero Inc. | Audio Hero End User License Agreement (`license.pdf`) | https://www.audiohero.com |
+| `assets/audiohero` | AirReleasePressureDeflation PEHD032101, 032102 and 032103, the beach ball's deflation hiss; Whistles-HumanWhistles-C-62, C-63 and C-64, the whistle that calls a horse. Converted from the pack's MP3 (256 kbps for the deflations, 320 for the whistles) to Ogg Vorbis with `oggenc -q 6` | Audio Hero Inc. | Audio Hero End User License Agreement (`license.pdf`) | https://www.audiohero.com |
 | `assets/ambientcg_com` | Grass001, Planks020, Wood073 PBR textures | ambientCG | not recorded - fill in | https://ambientcg.com |
 | `assets/cgtrader/bilalcreation` | Duck Rigged Animated (low-poly) | Bilal Creation | not recorded - fill in | https://www.cgtrader.com/3d-models/animal/bird/duck-animated |
 | `assets/cgtrader/remofair` | 32 Unique Stylized Cartoon Fish pack, all 126 maps at the resolution the pack ships (2048 for normal, roughness and metalness, 1024 for diffuse). The fishing scenes use five of the fish, Fish_08, 09, 10, 14 and 23; the rest are kept at full resolution so restoring them is not a job to do twice | remofair | not recorded - fill in | https://www.cgtrader.com/3d-models/animal/fish/32-unique-stylized-cartoon-fish-pack-game-ready |

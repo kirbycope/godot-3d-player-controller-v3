@@ -18,6 +18,15 @@
 [ext_resource type="Resource" path="res://resources/abilities/consecration.tres" id="consecration"]
 [ext_resource type="Resource" path="res://resources/abilities/shadowstep.tres" id="shadowstep"]
 [ext_resource type="Resource" path="res://resources/spells/qa_tree.tres" id="qa_tree"]
+[ext_resource type="AudioStream" path="res://assets/audiohero/Whistles-HumanWhistles-C-62_B05-09683.ogg" id="whistle_1"]
+[ext_resource type="AudioStream" path="res://assets/audiohero/Whistles-HumanWhistles-C-63_B05-09684.ogg" id="whistle_2"]
+[ext_resource type="AudioStream" path="res://assets/audiohero/Whistles-HumanWhistles-C-64_B05-09685.ogg" id="whistle_3"]
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_whistle"]
+streams_count = 3
+stream_0/stream = ExtResource("whistle_1")
+stream_1/stream = ExtResource("whistle_2")
+stream_2/stream = ExtResource("whistle_3")
+
 [node name="Player" unique_id=994458497 node_paths=PackedStringArray("animation_tree") instance=ExtResource("6_e6ckp")]
 animation_tree = NodePath("AnimationTree")
 paraglider_scene = ExtResource("7_mvg0v")
@@ -336,3 +345,9 @@ player = NodePath("..")
 [node name="Pause" parent="."]
 extra_screen_scene = "res://scenes/fish_index_screen.tscn"
 extra_screen_label = "Fish Index"
+
+[node name="WhistleAudio" type="AudioStreamPlayer3D" parent="."]
+editor_description = "The Player's own whistle, the one that calls a horse. An AudioStreamRandomizer of three AudioHero human whistles, so the same player does not whistle identically twice; world.gd plays it when Player.whistled fires."
+stream = SubResource("AudioStreamRandomizer_whistle")
+unit_size = 18.0
+max_distance = 60.0

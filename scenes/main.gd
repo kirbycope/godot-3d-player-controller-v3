@@ -8,8 +8,17 @@ extends Node3D
 @onready var loading: Loading = $Loading
 
 
+## The layouts this game offers on top of the player controller's own, announced before any settings menu is
+## built. GTA ships with the gta addon rather than the player controller, which must not preload across addons.
+const EXTRA_CONTROL_SCHEMES: Array[ControlScheme] = [
+	preload("res://addons/gta/resources/gta_controls.tres"),
+]
+
+
 ## Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	for scheme: ControlScheme in EXTRA_CONTROL_SCHEMES:
+		PlayerControls.register_scheme(scheme)
 	# [Webfix] Browsers require a user gesture before capturing the mouse and playing audio
 	var requires_input_activation: bool = ProjectSettings.get_setting("rendering/renderer/rendering_method") not in ["forward_plus", "mobile"]
 	# Two starts on purpose: the desktop and the editor open on the title screen and its buttons; the web export
