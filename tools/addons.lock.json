@@ -1,10 +1,10 @@
 {
   "3d_player_controller": {
-    "commit": "daa4c61af67f8650696896ebbd2dd6e1118008f6",
-    "pulled": "2026-09-19T22:56:00Z",
+    "commit": "cc13003f66fd681566652d00c648e567043ed67e",
+    "pulled": "2026-09-20T00:02:55Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Name the layouts after their files, and drop the settings migration"
+    "subject": "Let a layout move the shoulders and triggers, and add four sourced ones"
   },
   "controls": {
     "commit": "3681c4c8e029540341d7191378dbd5d71c1c0450",

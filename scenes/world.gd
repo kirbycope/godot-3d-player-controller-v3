@@ -25,6 +25,13 @@ const STARTING_ITEMS: Dictionary[Item, int] = {
 const STEAM_RESULT_OK: int = 1
 const STEAM_LOBBY_TYPE_PUBLIC: int = 2
 
+## The pad layout this world is played on, put on the Player as it spawns. Tears of the Kingdom's, the one the
+## world was built around: Focus locks on, the bottom button dashes and the right one is Action. Clear it to
+## leave the Player on whatever its own scene or the settings menu chose.
+@export var control_scheme: ControlScheme = preload("res://addons/3d_player_controller/resources/control_schemes/totk.tres")
+## Draws the whole on-screen control HUD rather than only the contextual buttons, so the layout is there to read.
+@export var show_controls: bool = true
+
 @export var max_lobby_players: int = 4
 
 var player: Player ## The player this peer controls, once spawned.
@@ -102,6 +109,12 @@ func _on_local_player_spawned(local_player: Player) -> void:
 	player = local_player
 	player.enable_paraglider = true
 	player.enable_stamina = true
+	# The buttons on screen, drawn in this world's own layout. The Player applies the saved settings in its own
+	# _ready, which runs before this, so setting it here is what makes the world's choice the one that sticks.
+	if control_scheme:
+		player.control_scheme = control_scheme
+	if show_controls:
+		player.hud_mode_override = PlayerSettingsResource.HudMode.SHOWN
 	player.state_changed.connect(_on_player_state_changed)
 	player.whistled.connect(_on_player_whistled)
 	_grant_starting_items(player)

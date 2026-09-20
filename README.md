@@ -131,6 +131,11 @@ the click or touch goes straight into the single-player world; there is no Steam
   (`scenes/beach_ball_replication.tres`) so a peer joining later gets a ball that is already empty with no
   deflation to watch. Each ball copies the scene's shared `ShaderMaterial` on ready, so deflating one cannot
   reach the others. `deflate_sound` takes an `AudioStreamRandomizer` of the three AudioHero air-release clips, so the same ball does not hiss identically twice. They run 4.3s, 5.4s and 9.3s against a deflation of about a second and a half, so `_go_limp` stops the player when the pressure reaches nothing: the hiss ends with the air rather than carrying on over a flat ball.
+- **The world's controls**: `world.gd` puts its own `control_scheme` on the Player as it spawns and turns the
+  whole on-screen HUD on (`show_controls`), so the world is played on Tears of the Kingdom's pad with every
+  button readable: A dashes, B is Action, X attacks, Y jumps, the triggers are Focus and Shoot. The Player
+  applies the saved settings in its own `_ready`, which runs first, so the world's choice is the one that
+  sticks; clear either export to leave the Player on whatever its scene or the settings menu chose.
 - **The noise meter** (`NoiseMeter`, mounted in `world.tscn` under `HUD/BottomRight`): the Breath of the
   Wild style readout of how much noise the Player is making, a flat line when they are quiet and a waveform
   that grows with the racket. Both it and the `PlayerNoise` that feeds it belong to the player controller
