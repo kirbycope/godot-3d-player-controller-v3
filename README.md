@@ -53,7 +53,7 @@ the click or touch goes straight into the single-player world; there is no Steam
   float dip, hook inside the window and the catch arcs into your hands and onto the Food tab of the
   inventory. Each water's `Buoyancy` holds its fish table (`resources/fish/`, keyed by hour, rain,
   lure and biome); lures (`resources/lures/`) are consumable items that go on the line. The catch
-  screen holds the fish up Zelda style, the pause menu's Fish Index lists every species with its
+  screen holds the fish up Zelda style (the fish keeps turning on its own clock while the world behind it is frozen), the pause menu's Fish Index lists every species with its
   record, and the whole thing replicates through the `ProjectileSpawner`.
 - **Enemies** (`enemy_swordsman.tscn`, `enemy_archer.tscn`, `enemy_rifleman.tscn`,
   `enemy_spellcaster.tscn`): a swordsman, an archer, a rifleman and a spellcaster east of the spawn.
@@ -81,7 +81,11 @@ the click or touch goes straight into the single-player world; there is no Steam
   `world_player.tscn` takes an `AudioStreamRandomizer` of the three AudioHero human whistles, so the same
   player never whistles identically twice, and `world.gd` plays it on `Player.whistled` before
   `Horse.summon_nearest` picks the horse. It swims, replicates, and hands its authority to the
-  rider; a horse somebody else is riding refuses the prompt and the mount.
+  rider; a horse somebody else is riding refuses the prompt and the mount. Getting on puts up Breath
+  of the Wild's horse layout (`resources/control_schemes/totk_horse.tres`, the horse's
+  `riding_control_scheme`): A gallops, B gets off, X jumps and the rest of the pad is cleared, with
+  the rider's own layout back on getting off, the way the skateboard swaps to Tony Hawk's. On the
+  keyboard Shift gallops and E gets off, and the HUD draws those keys on the buttons that do them.
 - **Project spells** (`scenes/*_ability.gd`, `resources/abilities/`): the WoW-style set built on the
   addon's `Ability` resource - Firebolt, Fireball, Frostbolt, Lightning Bolt, Lightning, Chain
   Lightning, Flash of Light, Consecration, Shadowstep, Sword Slash and Freeze - arranged on the QA
@@ -132,7 +136,7 @@ the click or touch goes straight into the single-player world; there is no Steam
   deflation to watch. Each ball copies the scene's shared `ShaderMaterial` on ready, so deflating one cannot
   reach the others. `deflate_sound` takes an `AudioStreamRandomizer` of the three AudioHero air-release clips, so the same ball does not hiss identically twice. They run 4.3s, 5.4s and 9.3s against a deflation of about a second and a half, so `_go_limp` stops the player when the pressure reaches nothing: the hiss ends with the air rather than carrying on over a flat ball.
 - **The world's controls**: `world.gd` puts its own `control_scheme` on the Player as it spawns and turns the
-  whole on-screen HUD on (`show_controls`), so the world is played on Tears of the Kingdom's pad with every
+  whole on-screen HUD on only when asked (`show_controls`, off by default, so the saved On-Screen setting decides: Auto shows the buttons on a touchscreen and otherwise only as contextual hints), so the world is played on Tears of the Kingdom's pad with every
   button readable: A dashes, B is Action, X attacks, Y jumps, the triggers are Focus and Shoot. The Player
   applies the saved settings in its own `_ready`, which runs first, so the world's choice is the one that
   sticks; clear either export to leave the Player on whatever its scene or the settings menu chose.

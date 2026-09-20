@@ -2,7 +2,9 @@ class_name Horse
 extends CharacterBody3D
 ## A rideable horse on the Player's [Riding] contract: walk up, Action mounts, the horse steers like the Player on
 ## foot (the move input points somewhere relative to the camera, the horse turns to face it and walks or runs that
-## way), Action gets off. The N-Hance model from aethereal is the body; its
+## way), Action gets off. Getting on puts up Breath of the Wild's horse layout ([member riding_control_scheme]: A
+## gallops, B gets off, X jumps, nothing else on the pad) and getting off gives the rider their own layout back,
+## as the skateboard does. The N-Hance model from aethereal is the body; its
 ## clips are in place, not root motion (no position track moves over a cycle), so the body is driven here and the
 ## [AnimationTree] in the scene only follows: a Locomotion blend space read up its middle for the pace (idle, walk,
 ## run; the body turns to face the way it goes, like the Player model, so the turning cycles at the sides are not
@@ -39,6 +41,11 @@ const SERVER_PEER: int = 1
 @export var pad_jump_action: StringName = &"jump"
 @export var pad_dismount_action: StringName = &"action"
 @export_group("")
+## The pad while up, Breath of the Wild's: A (Godot's B, the right button) speeds the horse up, B (Godot's A, the
+## bottom one) gets off, X (Godot's Y, the top one) jumps, and the rest of the pad is cleared, since the rider's
+## hands are on the reins. The rider's own layout comes back on getting off. Left empty, the horse leaves the
+## pad the way the rider had it.
+@export var riding_control_scheme: ControlScheme = preload("res://resources/control_schemes/totk_horse.tres")
 
 @export var walk_speed: float = 3.5 ## Metres per second on the move input.
 @export var run_speed: float = 11.0 ## Metres per second with sprint held: a gallop, three times the walk.
@@ -75,6 +82,7 @@ var summon_state: SummonState = SummonState.IDLE: ## Where the summon is; replic
 		if value == SummonState.ARRIVED and was != SummonState.ARRIVED:
 			arrived.emit()
 var _air_time: float = 0.0 ## Seconds off the ground; a drop longer than a spawn settle or a bump counts as a jump too.
+var _saved_control_scheme: ControlScheme = null ## The rider's own layout, put back on getting off.
 
 @onready var model: Node3D = $Horse
 @onready var animation_player: AnimationPlayer = $Horse/AnimationPlayer
@@ -312,6 +320,9 @@ func mount(_player: Player) -> void:
 	summon_state = SummonState.IDLE
 	_hand_to(_player.get_multiplayer_authority(), _player.get_multiplayer_authority())
 	_hide_prompt()
+	_saved_control_scheme = _player.control_scheme
+	if riding_control_scheme:
+		_player.control_scheme = riding_control_scheme
 	locomotion_requested.emit(rider_animation, true)
 	mounted.emit()
 
@@ -326,6 +337,9 @@ func dismount(_player: Player) -> void:
 	speed = 0.0
 	player = null
 	_hand_to(SERVER_PEER, 0)
+	if riding_control_scheme and _saved_control_scheme:
+		_player.control_scheme = _saved_control_scheme
+	_saved_control_scheme = null
 	dismounted.emit()
 
 
@@ -361,15 +375,17 @@ func ride_input(_player: Player, event: InputEvent) -> void:
 		jumped.emit()
 
 
-func get_contextual_controls(_input_type: int) -> Dictionary:
+## Keyed by action, so each word goes on the button carrying it wherever the rider's layout put it: under
+## [member riding_control_scheme] that is Breath of the Wild's A to gallop and B to get off, and on the keyboard
+## set Shift and E, which the HUD draws on those buttons.
+func get_contextual_controls(input_type_: int) -> Dictionary:
+	var keyboard: bool = input_type_ == Controls.InputType.KEYBOARD_MOUSE
 	return {
 		"left_joystick": "Ride",
 		"right_joystick": "Camera",
-		"joypad_button_3": "Jump",
-		# Named by slot rather than by action, so these follow the Zelda layout's own buttons: the bottom one
-		# sprints and the right one is Action
-		"joypad_button_0": "Gallop",
-		"joypad_button_1": "Dismount",
+		(keyboard_sprint_action if keyboard else pad_sprint_action): "Gallop",
+		(keyboard_dismount_action if keyboard else pad_dismount_action): "Dismount",
+		(keyboard_jump_action if keyboard else pad_jump_action): "Jump",
 	}
 
 

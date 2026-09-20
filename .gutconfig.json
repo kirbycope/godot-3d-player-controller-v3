@@ -47,7 +47,7 @@
 	"no_error_tracking": false,
 	"opacity": 100.0,
 	"paint_after": 0.1,
-	"post_run_script": "",
+	"post_run_script": "res://tests/gut_post_run.gd",
 	"pre_run_script": "res://tests/gut_pre_run.gd",
 	"prefix": "test_",
 	"should_exit": false,

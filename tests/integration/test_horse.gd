@@ -2,7 +2,9 @@ extends GutTest
 
 ## Purpose: the horse is a rideable on the Riding contract: the prompt reads Mount in range, Action mounts the
 ## Player onto the seat with hands off weapons, the move input walks and gallops the horse with the rider along,
-## Action again gets off beside it, and the AnimationTree's blend space and jump chain follow the pace.
+## Action again gets off beside it, and the AnimationTree's blend space and jump chain follow the pace. Getting on
+## lays the pad out the way Breath of the Wild does (A gallops, B gets off, X jumps) and the keyboard set is drawn
+## as the keys that do it; getting off gives the rider their own layout back.
 
 const PLAYER_SCENE: PackedScene = preload("res://addons/3d_player_controller/scenes/player.tscn")
 const HORSE_SCENE: PackedScene = preload("res://scenes/horse.tscn")
@@ -166,6 +168,64 @@ func test_action_gets_off_beside_the_horse() -> void:
 	assert_lt(player.global_position.distance_to(horse.dismount_point.global_position), 0.75, "Beside the horse, give or take the settle onto the ground")
 	assert_true(player.camera.current)
 	assert_eq(horse.speed, 0.0)
+
+
+## The key face a slot of the keyboard set is drawn with, by file name.
+func _key_face(slot: String) -> String:
+	var button: TouchScreenButton = player.controls.get("joypad_" + slot)
+	return button.texture_normal.resource_path.get_file()
+
+
+## Breath of the Wild's horse: A speeds it up, B gets off, X jumps (Nintendo's names; Godot's B, A and Y), and
+## nothing else is on the pad while the hands are on the reins. The keyboard set draws the keys that do those
+## things, Shift and E, on the buttons that carry them, which is what was wrong before: the bottom button read
+## [E] Gallop while [E] was what got off.
+func test_riding_lays_the_pad_out_the_way_breath_of_the_wild_does() -> void:
+	var walking: ControlScheme = player.control_scheme
+	assert_eq(walking.scheme_name, "TotK", "On foot the Player has the game's own layout")
+	assert_eq(_key_face("button_0"), "keyboard_shift_icon_outline.svg", "which sprints on the bottom button, drawn as [Shift]")
+
+	player.mount(horse)
+	await wait_physics_frames(2)
+
+	assert_eq(player.control_scheme, horse.riding_control_scheme, "Getting on puts the horse layout up")
+	assert_eq(player.controls.action_button_1, &"sprint", "A, the right button, gallops")
+	assert_eq(player.controls.action_button_0, &"action", "B, the bottom button, gets off")
+	assert_eq(player.controls.action_button_3, &"jump", "X, the top button, jumps")
+	assert_eq(player.controls.action_button_2, &"", "and the left button has nothing to do on horseback")
+	assert_eq(player.controls.joypad_button_1_label.text, "Gallop")
+	assert_eq(player.controls.joypad_button_0_label.text, "Dismount")
+	assert_eq(player.controls.joypad_button_3_label.text, "Jump")
+	assert_eq(player.controls.left_joystick_label.text, "Ride")
+	assert_false(player.controls.key_k.visible, "The whistle is off the pad while up")
+	assert_eq(_key_face("button_1"), "keyboard_shift_icon_outline.svg", "The right button is drawn as [Shift], the key that gallops")
+	assert_eq(_key_face("button_0"), "keyboard_e_outline.svg", "and the bottom one as [E], the key that gets off")
+
+	sender.action_down("action")
+	await wait_physics_frames(2)
+	sender.action_up("action")
+	await wait_physics_frames(2)
+
+	assert_null(player.riding, "E got off")
+	assert_eq(player.control_scheme, walking, "Getting off gives the rider their own layout back")
+	assert_eq(player.controls.action_button_0, &"sprint", "the bottom button sprinting again")
+	assert_eq(_key_face("button_0"), "keyboard_shift_icon_outline.svg", "drawn as [Shift] again")
+	assert_eq(_key_face("button_1"), "keyboard_e_outline.svg")
+	assert_true(player.controls.key_k.visible, "and the whistle back on the pad")
+
+
+func test_a_horse_can_leave_the_pad_alone() -> void:
+	horse.riding_control_scheme = null
+	var walking: ControlScheme = player.control_scheme
+
+	player.mount(horse)
+	await wait_physics_frames(2)
+
+	assert_eq(player.control_scheme, walking, "No riding layout set, the horse leaves the pad the way the rider had it")
+	assert_eq(player.controls.joypad_button_0_label.text, "Gallop", "so the words land on the buttons that layout gives the actions: sprint on the bottom one")
+	assert_eq(player.controls.joypad_button_1_label.text, "Dismount", "and Action on the right one")
+	assert_eq(_key_face("button_0"), "keyboard_shift_icon_outline.svg", "each drawn as the key that does it")
+	assert_eq(_key_face("button_1"), "keyboard_e_outline.svg")
 
 
 func test_mounting_jumping_and_dismounting_play_the_idle_horse_calls() -> void:

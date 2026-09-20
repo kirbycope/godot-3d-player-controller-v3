@@ -73,6 +73,7 @@ size_flags_horizontal = 4
 mouse_filter = 2
 
 [node name="Rays" type="ColorRect" parent="Center/VBox/Stage"]
+unique_name_in_owner = true
 material = SubResource("ShaderMaterial_shine")
 layout_mode = 1
 anchors_preset = 15

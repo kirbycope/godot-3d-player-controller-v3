@@ -16,6 +16,10 @@ var shown: Fish
 @onready var name_label: Label = %NameLabel
 @onready var size_label: Label = %SizeLabel
 @onready var flavor_label: Label = %FlavorLabel
+@onready var rays: ColorRect = %Rays
+
+var _last_tick_usec: int = 0 ## Wall clock at the last frame, since delta is zero while the world is frozen.
+var _spin_seconds: float = 0.0 ## Seconds the rays have turned, handed to the shine shader in place of TIME.
 
 
 func _ready() -> void:
@@ -42,6 +46,7 @@ func show_catch(fish: Fish, length_cm: float, is_record: bool = false) -> void:
 
 func show_menu() -> void:
 	super()
+	_last_tick_usec = Time.get_ticks_usec()
 	set_process(true)
 
 
@@ -50,8 +55,16 @@ func hide_menu() -> void:
 	set_process(false)
 
 
-func _process(delta: float) -> void:
-	model_pivot.rotate_y(delta * 0.8)
+## The world behind the screen is frozen ([method PlayerMenuLayer.freeze_time]), which makes [param _delta] zero
+## and stops the shader clock, so the fish turns and the rays wheel on the wall clock instead.
+func _process(_delta: float) -> void:
+	super(_delta)
+	var now: int = Time.get_ticks_usec()
+	var seconds: float = (now - _last_tick_usec) / 1_000_000.0
+	_last_tick_usec = now
+	model_pivot.rotate_y(seconds * 0.8)
+	_spin_seconds += seconds
+	(rays.material as ShaderMaterial).set_shader_parameter(&"spin_seconds", _spin_seconds)
 
 
 ## The species' model turning in the viewport, at its base size and centred as the inventory preview does; the icon

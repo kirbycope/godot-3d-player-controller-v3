@@ -29,8 +29,10 @@ const STEAM_LOBBY_TYPE_PUBLIC: int = 2
 ## world was built around: Focus locks on, the bottom button dashes and the right one is Action. Clear it to
 ## leave the Player on whatever its own scene or the settings menu chose.
 @export var control_scheme: ControlScheme = preload("res://addons/3d_player_controller/resources/control_schemes/totk.tres")
-## Draws the whole on-screen control HUD rather than only the contextual buttons, so the layout is there to read.
-@export var show_controls: bool = true
+## Forces the whole on-screen control HUD. Off, the saved On-Screen setting decides: Auto by default, so the
+## buttons show on a touchscreen and otherwise only as contextual hints. The demo levels draw the whole set,
+## which is where a layout is checked.
+@export var show_controls: bool = false
 
 @export var max_lobby_players: int = 4
 
@@ -113,6 +115,9 @@ func _on_local_player_spawned(local_player: Player) -> void:
 	# _ready, which runs before this, so setting it here is what makes the world's choice the one that sticks.
 	if control_scheme:
 		player.control_scheme = control_scheme
+	# Off by default: the saved On-Screen setting decides, which is Auto unless the player changed it, so the
+	# buttons show on a touchscreen and otherwise only as contextual hints; the demo levels are where the whole
+	# set is drawn to check a layout
 	if show_controls:
 		player.hud_mode_override = PlayerSettingsResource.HudMode.SHOWN
 	player.state_changed.connect(_on_player_state_changed)

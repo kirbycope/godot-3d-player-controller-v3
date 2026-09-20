@@ -13,6 +13,9 @@ var screen: FishCaughtScreen
 
 
 func before_each() -> void:
+	for action: StringName in [&"start", &"action"]: # a Player's controls add these; this suite has no Player
+		if not InputMap.has_action(action):
+			InputMap.add_action(action)
 	screen = SCREEN_SCENE.instantiate() as FishCaughtScreen
 	add_child_autofree(screen)
 	await wait_process_frames(1)
@@ -20,6 +23,8 @@ func before_each() -> void:
 
 func after_each() -> void:
 	get_tree().paused = false
+	Engine.time_scale = 1.0
+	PlayerMenuLayer._time_scale_before_freeze = -1.0
 
 
 func test_the_screen_names_the_catch_its_length_and_its_flavour_with_the_model_turning() -> void:
@@ -61,3 +66,17 @@ func test_action_puts_the_screen_away_and_it_pauses_the_world_alone() -> void:
 	screen._input(press)
 	assert_false(screen.visible, "Action puts it away")
 	assert_false(get_tree().paused, "and the world runs again")
+
+
+func test_the_fish_and_the_rays_keep_turning_while_the_world_behind_them_is_frozen() -> void:
+	screen.show_catch(CARP, 30.0)
+	assert_eq(Engine.time_scale, 0.0, "Alone, the catch freezes the engine clock with the tree, as the pause menu does")
+	var facing: float = screen.model_pivot.rotation.y
+	OS.delay_msec(30)
+	screen._process(0.0)
+	assert_gt(screen.model_pivot.rotation.y, facing, "A frame with a zero delta still turns the fish, on the wall clock")
+	var spin: float = (screen.rays.material as ShaderMaterial).get_shader_parameter(&"spin_seconds")
+	assert_gt(spin, 0.0, "and the rays wheel on the same clock rather than the frozen TIME")
+	screen.hide_menu()
+	assert_eq(Engine.time_scale, 1.0, "Putting the catch away thaws the clock")
+

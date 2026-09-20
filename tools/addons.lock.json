@@ -1,17 +1,17 @@
 {
   "3d_player_controller": {
-    "commit": "0cb960a3bd724df22ec8be110b5b429aa185c93b",
+    "commit": "e5422ca975b879d5f1e1a36bc74e0fffd86b9a03",
     "pulled": "2026-09-20T05:43:58Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Move the on-screen controls and scheme rows to a Controls settings page\n\nThe Video page kept two rows that had nothing to do with the viewport: whether the\non-screen controls are drawn, and which game's pad layout the Player answers to. They\nnow sit on their own page, Settings > Controls, with the handlers moved over unchanged.\nThe hub gains a Controls button between Audio and Video, the Player instances the page\nas ControlsSettings, and the tests and README follow.\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+    "subject": "Let the riding HUD test ask for the whole button set itself\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
   },
   "controls": {
-    "commit": "3681c4c8e029540341d7191378dbd5d71c1c0450",
+    "commit": "16569a90fb5cc706460c8df7806ee9ab34fea8af",
     "pulled": "2026-09-20T05:44:08Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-controls.git",
-    "subject": "Record Godot 4.8's new mipmap import keys"
+    "subject": "Let a slot's key art change live and expose the device an event names\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
   },
   "date_and_time": {
     "commit": "d50975dbd0d94edb87f64ed24cb6ec3d52fca243",
@@ -28,11 +28,11 @@
     "subject": "Record Godot 4.8's new mipmap import keys"
   },
   "gta": {
-    "commit": "9855773a65daf676b19e5ae478d85cef478118e7",
+    "commit": "0f6b23df7b315af529dbef0e9743a2a7a4d3bb6f",
     "pulled": "2026-09-20T05:44:21Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/gta.git",
-    "subject": "Give the GTA layout its whole pad, in the game's own words"
+    "subject": "Keep the walk-up prompt off a driver's Action button\n\nThe seat pulls the body through the detection area as a mount begins, before the Riding state is in, which put Get In back over Exit; the walk-up now checks the synchronous riding field and hiding the prompt always releases its claim.\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
   },
   "radi_ot": {
     "commit": "8537966589f864914a5fdc7ee0e48bf0828465ea",
@@ -42,11 +42,11 @@
     "subject": "Record Godot 4.8's new mipmap import keys"
   },
   "tcps": {
-    "commit": "9cfe415a3ba7274bd6ea5374ae5aad282d2cc54a",
+    "commit": "6eabfbf49aee41fedbaac01b3c45bfdbcb5c2855",
     "pulled": "2026-09-20T05:44:24Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/tcps.git",
-    "subject": "Give the THPS layout its triggers and its own words"
+    "subject": "Move the skate park to scenes/demo and key the board's labels by action\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
   },
   "weather_fx": {
     "commit": "080410273aa6387be71aa763b8885d200e879f1a",
