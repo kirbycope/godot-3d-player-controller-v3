@@ -1,10 +1,10 @@
 {
   "3d_player_controller": {
-    "commit": "70950d2f95267fe30cefa0b7bcaecea7b021345e",
+    "commit": "0cb960a3bd724df22ec8be110b5b429aa185c93b",
     "pulled": "2026-09-20T05:43:58Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "A layout is the whole of its game's pad, named in that game's words"
+    "subject": "Move the on-screen controls and scheme rows to a Controls settings page\n\nThe Video page kept two rows that had nothing to do with the viewport: whether the\non-screen controls are drawn, and which game's pad layout the Player answers to. They\nnow sit on their own page, Settings > Controls, with the handlers moved over unchanged.\nThe hub gains a Controls button between Audio and Video, the Player instances the page\nas ControlsSettings, and the tests and README follow.\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
   },
   "controls": {
     "commit": "3681c4c8e029540341d7191378dbd5d71c1c0450",
