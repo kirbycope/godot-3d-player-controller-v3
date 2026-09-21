@@ -1,10 +1,10 @@
 {
   "3d_player_controller": {
-    "commit": "c754943bd607e09fd6b14831a829e4941e294947",
+    "commit": "85465cd6269636c3b9475e239725915f1d7eff02",
     "pulled": "2026-09-21T22:53:35Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "The voice activation test drives its own frame, so a slow CI frame cannot decay the reading under the mark"
+    "subject": "The lobby entry and member rows read Steam only while the Steamworks session is up\n\nEngine.has_singleton is true whenever the GodotSteam extension loads, client or no client, and every lobby\ncall errors without one, which is what CI sees. The reads now wait for /root/Steamworks to report a signed-in\nsteam_id, the way the rest of the addon does, and two tests hold the extension-without-a-session case.\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
   },
   "GPUTrail": {
     "commit": "00a764775941c719847deeda8a31b4ebd8893895",

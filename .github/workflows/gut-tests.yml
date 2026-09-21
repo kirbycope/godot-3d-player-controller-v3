@@ -18,6 +18,7 @@ on:
 
 env:
   GODOT_VERSION: 4.8-dev4
+  BLENDER_VERSION: 5.2.0 # the LTS the .blend scenes were saved against
 
 jobs:
   gut:
@@ -57,7 +58,15 @@ jobs:
             exit 0
           fi
           echo "Found a .blend; installing Blender."
-          sudo apt-get install -y --no-install-recommends blender
+          # The same Blender the scenes were saved against, not Ubuntu's 4.0.2: each Blender release
+          # orders an exported armature its own way, so a SpringBoneSimulator3D's saved bone indices
+          # only match the armature when CI imports the .blend with the release that made them.
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libxi6 libxxf86vm1 libxfixes3 libxrender1 libgl1 libsm6 libxkbcommon0
+          curl -fsSL -o blender.tar.xz "https://download.blender.org/release/Blender${BLENDER_VERSION%.*}/blender-${BLENDER_VERSION}-linux-x64.tar.xz"
+          sudo mkdir -p /opt/blender
+          sudo tar -xJf blender.tar.xz -C /opt/blender --strip-components=1
+          rm blender.tar.xz
           # Godot must be told where Blender is. Without this it fails with "Cannot configure blender
           # path in headless mode", and that error aborts the WHOLE import: no fonts, no textures, and
           # an export a tenth of its proper size.
@@ -67,9 +76,9 @@ jobs:
             echo '[gd_resource type="EditorSettings" format=3]'
             echo
             echo '[resource]'
-            echo 'filesystem/import/blender/blender_path = "/usr/bin/blender"'
+            echo 'filesystem/import/blender/blender_path = "/opt/blender/blender"'
           } > "$settings"
-          blender --version | head -1
+          /opt/blender/blender --version | head -1
 
       - name: Import project
         shell: bash
@@ -87,9 +96,10 @@ jobs:
           GODOT_DISABLE_LEAK_CHECKS: "1"
         run: |
           mkdir -p test-results
+          # No -d: the CLI debugger breaks on a script error and waits for a prompt that never comes,
+          # so the process quits with exit 0 mid-run and the job goes green with the failures unseen
           godot \
             --headless \
-            -d \
             --path "$PWD" \
             -s addons/gut/gut_cmdln.gd \
             -gconfig=res://.gutconfig.json \
