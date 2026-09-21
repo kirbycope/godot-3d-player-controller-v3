@@ -7,7 +7,7 @@ extends Ability
 
 
 func _init() -> void:
-	target_mode = Target.FOCUS
+	target_kinds = Kind.NEUTRAL | Kind.HOSTILE
 
 
 func can_cast(caster: Node3D) -> bool:

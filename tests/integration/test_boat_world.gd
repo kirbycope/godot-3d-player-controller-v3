@@ -13,7 +13,7 @@ func before_each() -> void:
 	world = WORLD_SCENE.instantiate()
 	add_child_autofree(world)
 	await wait_physics_frames(2)
-	player = world.get_node("Players/1")
+	player = world.get_node("PlayerSpawner/1")
 	boat = world.get_node("Boat")
 
 

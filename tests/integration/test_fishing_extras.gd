@@ -4,7 +4,7 @@ extends GutTest
 ## coming when in range, a shot shadow turning into chum, the torch going out in water, the horse floating and
 ## swimming home, the inventory's 3D preview and the fish index.
 
-const PLAYER_SCENE = preload("res://scenes/world_player.tscn")
+const WORLD_PLAYER: GDScript = preload("res://tests/world_player_template.gd") ## The world's Player template, this game's Player as it spawns.
 const ROD_SCENE = preload("res://scenes/fishing_rod.tscn")
 const TORCH_SCENE = preload("res://scenes/torch.tscn")
 const HORSE_SCENE = preload("res://scenes/horse.tscn")
@@ -34,7 +34,7 @@ func before_each() -> void:
 	floor_body.add_child(floor_shape)
 	floor_body.position.y = -0.5
 	root.add_child(floor_body)
-	player = PLAYER_SCENE.instantiate() as Player
+	player = WORLD_PLAYER.take()
 	player.name = "Player"
 	# Never touch the real saves from a test
 	player.get_node("Hud/Inventory").persist = false

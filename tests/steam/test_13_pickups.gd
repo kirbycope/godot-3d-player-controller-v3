@@ -7,7 +7,7 @@ const APPLE: Item = preload("res://resources/items/apple.tres")
 
 
 func test_the_clients_drop_lands_on_the_host_who_takes_it_and_it_vanishes_on_both() -> void:
-	var players: Node = world_node("Players")
+	var players: Node = world_node("PlayerSpawner")
 	if is_host:
 		var pickup_name: String = await await_step("client_dropped")
 		await wait_for(func() -> bool: return players.has_node(pickup_name), "The client's drop lands on the host as %s" % pickup_name)

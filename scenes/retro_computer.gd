@@ -104,7 +104,7 @@ func equip(_player: Player) -> void:
 	action_prompt.hide_for(player.controls)
 	_seat_player()
 	_begin_seated_view()
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED # DOOM plays with the mouse, whatever the scheme; stop_using gives it back
 	player.crosshair.hide()
 	_set_level_hud_visible(false)
 	# DOOM's HUD takes the screen while the Player's steps aside. Both are the same buttons in the same
@@ -114,10 +114,8 @@ func equip(_player: Player) -> void:
 	doom_controls.show()
 	doom_controls.set_process(true)
 	# The weapon arms ask the engine what is in hand and what is being carried, and it does not exist until
-	# the boot text has finished running. On a platform the PureDoom library is not built for it never
-	# arrives at all, the raycaster stands in, and the arms stay quiet because there are no weapons to cycle.
-	if not doom.engine_started.is_connected(_on_engine_started):
-		doom.engine_started.connect(_on_engine_started)
+	# the boot text has finished running (Doom's engine_started is connected in the scene). On a platform the
+	# PureDoom library is not built for it never arrives at all, the raycaster stands in, and the arms stay quiet.
 	doom.boot()
 	set_process_input(true)
 
@@ -168,6 +166,7 @@ func stop_using() -> void:
 	_end_seated_view()
 	player.apply_hud_visibility() # back to the saved rule: touch only unless the setting says otherwise
 	player.crosshair.show()
+	Input.mouse_mode = player.cursor_mode() # captured, or visible under a scheme that frees it
 	# A Player knocked out of the chair is already in Ragdolling, which travels itself back to Standing
 	if player.is_ragdolling:
 		return

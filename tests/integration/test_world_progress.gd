@@ -22,7 +22,7 @@ func before_each() -> void:
 	world = WORLD_SCENE.instantiate()
 	add_child_autofree(world)
 	await wait_physics_frames(3)
-	player = world.get_node("Players/1")
+	player = world.get_node("PlayerSpawner/1")
 	saver = world.get_node("SaveGame")
 	saver.save_path = TEST_PATH
 	saver.save_on_checkpoint = false

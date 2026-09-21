@@ -39,7 +39,7 @@ func before_each() -> void:
 func test_the_resource_is_an_instant_self_targeted_sweep_with_the_trail_vfx_and_sounds() -> void:
 	assert_eq(SWORD_SLASH.display_name, "Sword Slash")
 	assert_eq(SWORD_SLASH.cast_time, 0.0, "Instant")
-	assert_eq(SWORD_SLASH.target_mode, Ability.Target.SELF, "Lands on the caster, then sweeps")
+	assert_eq(SWORD_SLASH.target_kinds, Ability.Kind.SELF, "Lands on the caster, then sweeps")
 	assert_eq(SWORD_SLASH.cast_style, Ability.CastStyle.SWEEPING_SIDEWAYS)
 	assert_true(SWORD_SLASH.can_cast(caster), "Needs no target")
 	assert_not_null(SWORD_SLASH.casting_vfx, "The swing has its trail")

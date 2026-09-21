@@ -14,7 +14,7 @@ func before_each() -> void:
 	world = WORLD_SCENE.instantiate()
 	add_child_autofree(world)
 	await wait_physics_frames(3)
-	player = world.get_node("Players/1")
+	player = world.get_node("PlayerSpawner/1")
 	player.enable_stamina = true
 
 
@@ -67,7 +67,7 @@ func test_swordsman_strikes_the_player_in_reach() -> void:
 
 
 func test_archer_and_rifleman_shoot_with_line_of_sight() -> void:
-	var projectiles: Node = world.get_node("Projectiles")
+	var projectiles: Node = world.get_node("ProjectileSpawner")
 	for name: String in ["Archer", "Rifleman"]:
 		var shooter: EnemyNpc = _enemy(name)
 		_stand_near(shooter, 6.0)

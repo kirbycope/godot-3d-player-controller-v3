@@ -79,7 +79,7 @@ func before_each() -> void:
 		fail_test("No Steam session; see the abort above")
 		return
 	if not is_instance_valid(own_player()):
-		fail_test("This side's Player has been freed; Players holds %s" % [world_node("Players").get_children()])
+		fail_test("This side's Player has been freed; the PlayerSpawner holds %s" % [world_node("PlayerSpawner").get_children()])
 		return
 	reset_own_player()
 	var test_name: String = str(gut.get_current_test_object().name)
@@ -263,8 +263,8 @@ func _start_session() -> void:
 		return
 	own_player().warp_to(Transform3D(Basis(), stand_position()))
 	# A Player that leaves the world mid-run is the end of every scenario after it, so say when and which
-	world_node("Players").child_exiting_tree.connect(func(node: Node) -> void:
-		print("[steam_test] %s: Players lost %s during %s" % [role, node.name, gut.get_current_test_object().name if gut.get_current_test_object() else "no test"]))
+	world_node("PlayerSpawner").child_exiting_tree.connect(func(node: Node) -> void:
+		print("[steam_test] %s: the PlayerSpawner lost %s during %s" % [role, node.name, gut.get_current_test_object().name if gut.get_current_test_object() else "no test"]))
 	print("[steam_test] %s: session up as peer %d, %d players" % [role, multiplayer.get_unique_id(), get_tree().get_nodes_in_group("Player").size()])
 
 

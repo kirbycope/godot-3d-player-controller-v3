@@ -5,7 +5,7 @@ extends SteamTest
 
 
 func test_a_cast_on_the_client_lands_the_float_on_both_sides_and_a_retract_takes_it_away() -> void:
-	var projectiles: Node = world_node("Projectiles")
+	var projectiles: Node = world_node("ProjectileSpawner")
 	if is_host:
 		await await_step("client_cast")
 		await wait_for(func() -> bool: return _bobber(projectiles) != null, "The client's float lands on the host")
@@ -22,7 +22,7 @@ func test_a_cast_on_the_client_lands_the_float_on_both_sides_and_a_retract_takes
 		print("[steam_test] client: rod %s under %s, cast timer %s, emote state %s, fishing %s" % [rod, rod.get_parent(), rod.cast_timer, rod.emote_state, me.is_fishing])
 		rod.cast()
 		await wait_for(func() -> bool: return rod.bobber != null, "The float leaves the rod", 10.0)
-		assert_eq(rod.bobber, _bobber(projectiles), "and is the copy under Projectiles")
+		assert_eq(rod.bobber, _bobber(projectiles), "and is the copy under the ProjectileSpawner")
 		assert_eq(rod.bobber.shooter, me, "cast by the client")
 		mark("client_cast")
 		await await_step("host_saw_float")

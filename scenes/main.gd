@@ -51,12 +51,21 @@ func _unhandled_input(event: InputEvent) -> void:
 ## the game on the web, not a reveal of the title screen.
 func _dismiss_click_to_start() -> void:
 	click_to_start.hide()
-	single_player()
+	new_game()
 
 
 func single_player() -> void:
 	if not single_player_scene.is_empty():
 		loading.load_scene(single_player_scene)
+
+
+## New Game: the controls go back to their defaults (Zelda's layout, on-screen controls on Auto) before the world
+## loads, so a layout or HUD mode picked in an earlier game does not carry in; Continue keeps them.
+func new_game() -> void:
+	var settings: PlayerSettingsResource = PlayerSettingsResource.load_or_create()
+	settings.reset_controls()
+	settings.save()
+	single_player()
 
 
 ## Continue: the world loads as for a new game, and its SaveGame reads the file once the Player is in.

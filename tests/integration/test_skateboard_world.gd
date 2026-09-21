@@ -10,7 +10,7 @@ func test_looking_at_the_skateboard_shows_its_prompt() -> void:
 	var world: Node = WORLD_SCENE.instantiate()
 	add_child_autofree(world)
 	await wait_physics_frames(3)
-	var player: Player = world.get_node("Players/1")
+	var player: Player = world.get_node("PlayerSpawner/1")
 	var board: Node3D = world.get_node("Skateboard")
 	assert_true(board.get_node_or_null("Area3D") is Area3D, "The board has a volume the interaction ray can hit")
 	player.warp_to(Transform3D(Basis(), board.global_position + Vector3(0.0, 0.0, 1.8)))

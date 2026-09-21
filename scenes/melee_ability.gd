@@ -13,7 +13,7 @@ var hit_anything: bool = false ## Whether the last [method impact] found a victi
 
 
 func _init() -> void:
-	target_mode = Target.SELF
+	target_kinds = Kind.SELF
 
 
 ## A swing can always start; it lands whether or not anything is there to hit.

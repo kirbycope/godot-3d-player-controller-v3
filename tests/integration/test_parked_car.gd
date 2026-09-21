@@ -15,7 +15,7 @@ func test_parked_car_freezes_and_wakes_for_a_driver() -> void:
 	var parked: Vector3 = car.global_position
 	await wait_seconds(2.0)
 	assert_almost_eq(car.global_position.distance_to(parked), 0.0, 0.001, "The parked car does not creep")
-	var player: Player = world.get_node("Players/1")
+	var player: Player = world.get_node("PlayerSpawner/1")
 	car.set_driver(player)
 	car.set_drive_input(true, false, false, 0.0)
 	assert_false(car.freeze, "Drive input wakes the car")

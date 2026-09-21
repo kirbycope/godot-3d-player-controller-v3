@@ -6,6 +6,13 @@ extends GutTest
 const WORLD: PackedScene = preload("res://scenes/world.tscn")
 
 
+func _has_node(state: SceneState, node_name: String) -> bool:
+	for i: int in state.get_node_count():
+		if state.get_node_name(i) == node_name:
+			return true
+	return false
+
+
 func _node_property(state: SceneState, node_name: String, property: String) -> Variant:
 	for i: int in state.get_node_count():
 		if state.get_node_name(i) != node_name:
@@ -42,6 +49,16 @@ func test_the_world_drives_the_binbun_sky_from_the_weather() -> void:
 	var environment: Environment = _node_property(state, "WorldEnvironment", "environment")
 	assert_true(environment.sky.resource_path.begins_with("res://addons/weather_fx/assets/BinbunSky/"), "The sky is a Binbun one from the weather_fx addon, a shader that runs everywhere")
 	assert_null(_node_property(state, "WorldEnvironment", "compositor"), "No compositor effects: nothing that needs Forward+")
-	assert_eq(_node_property(state, "WeatherClouds", "world_environment"), NodePath("../WorldEnvironment"))
-	assert_eq(_node_property(state, "WeatherClouds", "weather"), NodePath("../WeatherFX"))
-	assert_eq(_node_property(state, "WeatherClouds", "night_sun"), NodePath("../DirectionalLight3D"), "and the sky clouds dim with the sun")
+	assert_false(_has_node(state, "WeatherClouds"), "The clouds are WeatherFX's own: no separate node to wire")
+	# The same sky under a WeatherFX: the clouds are driven on a copy of it
+	var host: WorldEnvironment = WorldEnvironment.new()
+	host.environment = Environment.new()
+	host.environment.sky = environment.sky
+	add_child_autofree(host)
+	var weather: WeatherFX = load("res://addons/weather_fx/scenes/weather_fx.tscn").instantiate()
+	weather.world_environment = host
+	weather.set_weather(ClimateData.WeatherType.RAIN)
+	add_child_autofree(weather)
+	assert_not_null(weather.sky_material(), "WeatherFX drives that sky's clouds")
+	assert_ne(host.environment.sky, environment.sky, "on a copy of it, so the asset is untouched")
+	assert_almost_eq(float(weather.sky_material().get_shader_parameter(&"cloud_density")), weather.cloud_rain_density, 0.001, "thick in the rain")

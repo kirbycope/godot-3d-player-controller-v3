@@ -1,10 +1,10 @@
 extends SteamTest
 ## Purpose: the car over the network. The host drives: the client sees the host's Player riding and the car where
-## the host's is, and the host's own radio powers up with the engine and goes off with it. Then the client drives:
+## the host's is, and the car's radio powers up with the engine and goes off with it. Then the client drives:
 ## getting in hands the car's authority to the driver's peer on every peer (Vehicle._set_authority), so the host
 ## sees the client at the wheel and has the car back once they are out. And the station is the car's: the driver's
-## next-station action moves GtaCar.radio_station, which replicates, so the pick reaches the other side and every
-## rider's own RadiOtPlayer3D follows it.
+## next-station action moves GtaCar.radio_station, which replicates, and every peer's copy of the car tunes its
+## RadiOtPlayer3D to it.
 
 
 
@@ -13,8 +13,8 @@ func test_the_host_drives_and_the_client_sees_the_driver_and_the_car_follow() ->
 	var start: Vector3 = car.global_position
 	if is_host:
 		var me: Player = own_player()
-		var radio: RadiOtPlayer3D = world.get("radi_ot_player") as RadiOtPlayer3D
-		assert_false(radio.is_power_on(), "The radio is off on foot")
+		var radio: RadiOtPlayer3D = world_node("HondaCRV/RadiOtPlayer3D") as RadiOtPlayer3D
+		assert_false(radio.is_power_on(), "The car radio is off with nobody in it")
 		me.mount(car)
 		await wait_for(func() -> bool: return me.is_riding and car.current_driver_peer_id == 1, "The host is in the driver's seat")
 		await wait_for(func() -> bool: return radio.is_power_on(), "The car radio powers up for the driver")
@@ -75,7 +75,7 @@ func test_a_client_at_the_wheel_is_seen_driving_on_the_host() -> void:
 
 func test_the_station_the_driver_picks_reaches_the_other_side() -> void:
 	var car: GtaCar = world_node("HondaCRV") as GtaCar
-	var radio: RadiOtPlayer3D = world.get("radi_ot_player") as RadiOtPlayer3D
+	var radio: RadiOtPlayer3D = world_node("HondaCRV/RadiOtPlayer3D") as RadiOtPlayer3D
 	if is_host:
 		var me: Player = own_player()
 		me.mount(car)
@@ -83,7 +83,7 @@ func test_the_station_the_driver_picks_reaches_the_other_side() -> void:
 		var want: int = posmod(car.radio_station + 1, radio.get_station_count())
 		me.inventory.custom_cycle_handler.call(1) # the driver's next-station action, as world.gd wires it while driving
 		assert_eq(car.radio_station, want, "The tune action moves the car's station")
-		await wait_for(func() -> bool: return radio.current_station_index == want, "and the driver's own radio follows the car")
+		await wait_for(func() -> bool: return radio.current_station_index == want, "and the car's radio follows")
 		mark("host_tuned", want)
 		await await_step("client_saw_station")
 		me.dismount(true)
@@ -93,7 +93,8 @@ func test_the_station_the_driver_picks_reaches_the_other_side() -> void:
 	else:
 		var want: int = await await_step("host_tuned")
 		await wait_for(func() -> bool: return car.radio_station == want, "The car's station here is the one the host picked")
-		assert_false(radio.is_power_on(), "A Player on foot hears no radio; a rider's follows the car's station once in it")
+		assert_eq(radio.current_station_index, want, "and this side's copy of the car radio is tuned to it")
+		assert_false(radio.is_power_on(), "though off, since nobody on this side is in the car")
 		mark("client_saw_station")
 		await await_step("host_out")
 		await wait_for(func() -> bool: return not other_player().is_riding, "and the host's Player is seen on foot again")

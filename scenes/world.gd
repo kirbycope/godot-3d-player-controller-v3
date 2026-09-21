@@ -37,8 +37,8 @@ const STEAM_LOBBY_TYPE_PUBLIC: int = 2
 @export var max_lobby_players: int = 4
 
 var player: Player ## The player this peer controls, once spawned.
-var radi_ot_player: RadiOtPlayer3D ## The local player's car radio; it follows the station of the car they are in.
-var _radio_car: GtaCar ## The road car the local Player is in, whose replicated station the radio follows.
+var radi_ot_player: RadiOtPlayer3D ## The radio of the road car the local Player is in, null on foot; the car's own, heard around the car.
+var _radio_car: GtaCar ## The road car the local Player is in.
 
 @onready var player_spawner: PlayerSpawner = $PlayerSpawner
 @onready var steam_peer: SteamPeer = $SteamPeer
@@ -48,13 +48,13 @@ var _radio_car: GtaCar ## The road car the local Player is in, whose replicated 
 
 ## Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	# Set the mouse mode to captured to hide the mouse cursor
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	add_to_group(SaveGame.GROUP)
-	for harvestable: Node in get_tree().get_nodes_in_group(&"Harvestable"):
-		(harvestable as Harvestable).depleted.connect(_on_harvestable_depleted.bind(harvestable))
 	_initialize_steam_lobby()
 	_apply_network_roles()
+	# A car radio waits for a driver: off, with its HUD out of the way, until the local Player gets in
+	for radio: Node in get_tree().get_nodes_in_group(&"radio"):
+		(radio as RadiOtPlayer3D).set_power(false)
+		(radio as RadiOtPlayer3D).get_hud().hide_hud()
 
 
 ## What a [SaveGame] keeps of the world itself: the clock and the weather. The Players, the enemies and the
@@ -77,8 +77,9 @@ func load_state(state: Dictionary) -> void:
 
 
 ## A felled tree is firewood for the Guide's errand; ore is not.
-func _on_harvestable_depleted(harvestable: Harvestable) -> void:
-	if player and player.quest_log and harvestable is Choppable:
+## A tree came down (each tree's depleted is connected here in the scene): the chopping quest moves on.
+func _on_tree_chopped() -> void:
+	if player and player.quest_log:
 		player.quest_log.progress(&"chop_tree")
 
 
@@ -111,9 +112,9 @@ func _on_local_player_spawned(local_player: Player) -> void:
 	player = local_player
 	player.enable_paraglider = true
 	player.enable_stamina = true
-	# The buttons on screen, drawn in this world's own layout. The Player applies the saved settings in its own
-	# _ready, which runs before this, so setting it here is what makes the world's choice the one that sticks.
-	if control_scheme:
+	# The buttons on screen, drawn in this world's own layout unless the player picked one in the settings, which
+	# the Player applied in its own _ready and which wins over the world's default
+	if control_scheme and PlayerSettingsResource.load_or_create().picked_scheme() == null:
 		player.control_scheme = control_scheme
 	# Off by default: the saved On-Screen setting decides, which is Auto unless the player changed it, so the
 	# buttons show on a touchscreen and otherwise only as contextual hints; the demo levels are where the whole
@@ -123,12 +124,6 @@ func _on_local_player_spawned(local_player: Player) -> void:
 	player.state_changed.connect(_on_player_state_changed)
 	player.whistled.connect(_on_player_whistled)
 	_grant_starting_items(player)
-	radi_ot_player = player.get_node("RadiOtPlayer3D")
-	radi_ot_player.auto_play_on_ready = false
-	radi_ot_player.set_power(false)
-	radi_ot_player.get_hud().hide_hud()
-	radi_ot_player.radio_toggled.connect(_on_radio_toggled)
-	radi_ot_player.station_changed.connect(_on_radio_station_changed)
 	# The spawner readies before this node, so resolve siblings directly instead of through @onready
 	($WeatherFX as WeatherFX).target_node = player
 	# NPCs follow the server's player; clients only display them
@@ -148,47 +143,19 @@ func _on_player_whistled(whistler: Player) -> void:
 	Horse.summon_nearest(whistler)
 
 
-## The server runs the clock and weather; clients receive them.
+## The server runs the clock; clients receive it through the TimeSynchronizer, and the weather and biome through
+## the WeatherSynchronizer under WeatherFX (a client keeps its own biome while it reads the zones around its Player).
 func _apply_network_roles() -> void:
-	var is_server: bool = multiplayer.is_server()
-	date_and_time.is_running = is_server
-	if is_server:
-		if not weather_fx.weather_changed.is_connected(_on_weather_changed):
-			weather_fx.weather_changed.connect(_on_weather_changed)
-			weather_fx.biome_changed.connect(_on_biome_changed)
-			multiplayer.peer_connected.connect(_send_weather_to_peer)
+	date_and_time.is_running = multiplayer.is_server()
 
 
-func _on_weather_changed(new_weather: ClimateData.WeatherType, _old_weather: ClimateData.WeatherType) -> void:
-	if multiplayer.has_multiplayer_peer():
-		_sync_weather.rpc(weather_fx.current_biome, new_weather)
-
-
-func _on_biome_changed(new_biome: ClimateData.BiomeZone, _old_biome: ClimateData.BiomeZone) -> void:
-	if multiplayer.has_multiplayer_peer():
-		_sync_weather.rpc(new_biome, weather_fx.active_weather)
-
-
-func _send_weather_to_peer(peer_id: int) -> void:
-	_sync_weather.rpc_id(peer_id, weather_fx.current_biome, weather_fx.active_weather)
-
-
-## The host's weather lands on every client. The biome comes along for a client without a player of its own to
-## stand in a zone; one that has reads its biome off the zones around that player (WeatherFX.blend_zones), so the
-## grass and the sky match where they stand while the rain is still the host's.
-@rpc("authority", "call_remote", "reliable")
-func _sync_weather(biome: ClimateData.BiomeZone, weather: ClimateData.WeatherType) -> void:
-	if not weather_fx.is_blending_zones():
-		weather_fx.current_biome = biome
-	weather_fx.set_weather(weather)
-
-
-## Powers the car radio and its radial-menu stations while the local Player drives. The station is the car's
-## (GtaCar.radio_station, replicated), so everyone in it hears the driver's pick and a rider's radio follows it.
+## Powers the car's radio and puts its stations on the radial menu while the local Player is in it. The station is
+## the car's (GtaCar.radio_station, replicated), and the car's scene tunes its radio to it on every peer, so the
+## driver's pick is what everyone in and around the car hears.
 func _on_player_state_changed(from_state: int, to_state: int) -> void:
 	if to_state == NodeStateMachine.States.RIDING and player.riding is GtaCar:
 		_radio_car = player.riding as GtaCar
-		_radio_car.radio_station_changed.connect(_on_car_radio_station_changed)
+		radi_ot_player = _radio_car.get_node("RadiOtPlayer3D") as RadiOtPlayer3D
 		radi_ot_player.tune_to_station_index(_radio_car.radio_station)
 		radi_ot_player.set_power(true)
 		radi_ot_player.get_hud().show_toast(5.0)
@@ -197,11 +164,11 @@ func _on_player_state_changed(from_state: int, to_state: int) -> void:
 		player.radial_menu.custom_item_is_equipped = _is_radio_item_equipped
 		player.inventory.custom_cycle_handler = _on_cycle_radio_station
 	elif from_state == NodeStateMachine.States.RIDING:
-		if is_instance_valid(_radio_car):
-			_radio_car.radio_station_changed.disconnect(_on_car_radio_station_changed)
+		if is_instance_valid(radi_ot_player):
+			radi_ot_player.set_power(false)
+			radi_ot_player.get_hud().hide_toast()
+		radi_ot_player = null
 		_radio_car = null
-		radi_ot_player.set_power(false)
-		radi_ot_player.get_hud().hide_toast()
 		player.radial_menu.custom_item_provider = Callable()
 		player.radial_menu.custom_item_selected = Callable()
 		player.radial_menu.custom_item_is_equipped = Callable()
@@ -276,18 +243,14 @@ func _on_cycle_radio_station(direction: int) -> void:
 	_radio_car.radio_station = posmod(_radio_car.radio_station + direction, maxi(radi_ot_player.get_station_count(), 1))
 
 
-## The car was tuned, here or on the driver's peer: this rider's radio follows.
-func _on_car_radio_station_changed(station: int) -> void:
-	radi_ot_player.tune_to_station_index(station)
-
-
+## The car radio's signals are connected here in the scene; they matter while the local Player is in that car.
 func _on_radio_station_changed(_station: RadioStation) -> void:
-	if player.riding is GtaCar:
+	if radi_ot_player and player and player.riding == _radio_car:
 		radi_ot_player.get_hud().show_toast(5.0)
 
 
 func _on_radio_toggled(_is_playing: bool) -> void:
-	if player.riding is GtaCar:
+	if radi_ot_player and player and player.riding == _radio_car:
 		radi_ot_player.get_hud().show_toast(5.0)
 
 

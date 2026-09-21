@@ -1,10 +1,10 @@
 {
   "3d_player_controller": {
-    "commit": "cbb50f4604a4364cb89325fe155ee325bae36aff",
-    "pulled": "2026-09-21T14:09:07Z",
+    "commit": "d4b638039c3e0642fcebbde1034fcbb2a5e5e384",
+    "pulled": "2026-09-21T22:46:51Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "No shared icon on the library nodes, and a preview cast that is heard and explained\n\nThe entries and the library use the plain node icon again. A preview cast plays its sounds through a\nnon-positional player, so it is heard wherever the editor camera is, and prints which phases have\nVFX, which have only sound, and when an ability has nothing to show at all.\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+    "subject": "Targeting, the Player template, synchronizers over RPCs, and credits in CREDITS.md"
   },
   "GPUTrail": {
     "commit": "00a764775941c719847deeda8a31b4ebd8893895",
@@ -14,18 +14,18 @@
     "subject": "Set mask to null if it is not set"
   },
   "controls": {
-    "commit": "6d64ddea0bf423d2e3fe4dcdb36acb89810c7486",
-    "pulled": "2026-09-21T14:09:08Z",
+    "commit": "87f6e8b5e3b7e18596444fcc193564ba98e48700",
+    "pulled": "2026-09-21T22:46:52Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-controls.git",
-    "subject": "Reconfigure the console streams after the imports, not before"
+    "subject": "Targeting, the Player template, synchronizers over RPCs, and credits in CREDITS.md"
   },
   "date_and_time": {
-    "commit": "40439ef41915c8fb95c26c341f2fd211d06dc937",
-    "pulled": "2026-09-21T14:09:10Z",
+    "commit": "cb063aa855f1d28d014d2bdb3322f0bb08591d4c",
+    "pulled": "2026-09-21T22:46:53Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/date-and-time.git",
-    "subject": "Reconfigure the console streams after the imports, not before"
+    "subject": "Targeting, the Player template, synchronizers over RPCs, and credits in CREDITS.md"
   },
   "dialogic": {
     "commit": "e301e1bb5e62e6de22c6b7748c4372d0570bb4a7",
@@ -35,11 +35,11 @@
     "subject": "Alpha 20 Preparations (#2787)"
   },
   "godot_doom_gdextension": {
-    "commit": "4f9486f23b59ee535bc2e4b9537a8b020e140b23",
-    "pulled": "2026-09-21T14:09:13Z",
+    "commit": "0868c97e01a816242d6b7ca06494149eac8c876a",
+    "pulled": "2026-09-21T22:46:56Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-doom-gdextension.git",
-    "subject": "Let go of the stick when the HUD leaves, and put the engine back on E1M1 after a level change"
+    "subject": "Take the vendored addons at their latest"
   },
   "godotsteam": {
     "archive": "https://codeberg.org/godotsteam/godotsteam/archive/baa0b1c2c16b822c9641f94f7d38558b21a3daf2.zip",
@@ -48,8 +48,8 @@
     "subject": "baa0b1c2c16b822c9641f94f7d38558b21a3daf2.zip"
   },
   "gta": {
-    "commit": "1945e5f8bf224e25ce6f9241a116e5dfddeb089e",
-    "pulled": "2026-09-21T14:09:11Z",
+    "commit": "bcf594de701a2483cb874c2808e9a9636f3f708a",
+    "pulled": "2026-09-21T22:46:54Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/gta.git",
     "subject": "Take the vendored addons at their latest"
@@ -69,24 +69,24 @@
     "subject": "\u30d0\u30fc\u30b8\u30e7\u30f3\u6539\u8a02"
   },
   "radi_ot": {
-    "commit": "fb4541341a2f21edd4876aa7cc10ffb558e8466c",
-    "pulled": "2026-09-21T14:09:12Z",
+    "commit": "0880dd604d02cada5c4bd475f37458c18a6e5631",
+    "pulled": "2026-09-21T22:46:55Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/radi-ot.git",
-    "subject": "Reconfigure the console streams after the imports, not before"
+    "subject": "Targeting, the Player template, synchronizers over RPCs, and credits in CREDITS.md"
   },
   "tcps": {
-    "commit": "367630b75a5dd23e897c0de23efb0e7de9a01162",
-    "pulled": "2026-09-21T14:09:12Z",
+    "commit": "d54606fcbdafd6a92b33b98f22c3f358a06ee6a4",
+    "pulled": "2026-09-21T22:46:55Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/tcps.git",
     "subject": "Take the vendored addons at their latest"
   },
   "weather_fx": {
-    "commit": "ef53bd495d54a46d36d6fcdb554498262eddf468",
-    "pulled": "2026-09-21T14:09:10Z",
+    "commit": "719d6feb1a9d759fd843aa3160cfabab58164447",
+    "pulled": "2026-09-21T22:46:53Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/weather-fx.git",
-    "subject": "Reconfigure the console streams after the imports, not before"
+    "subject": "Targeting, the Player template, synchronizers over RPCs, and credits in CREDITS.md"
   }
 }

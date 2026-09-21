@@ -52,7 +52,6 @@
 [ext_resource type="PackedScene" uid="uid://b72r5jskemotf" path="res://scenes/honda_crv.tscn" id="54_5hglh"]
 [ext_resource type="PackedScene" uid="uid://ci146l3tivu1p" path="res://scenes/duck.tscn" id="54_xiw03"]
 [ext_resource type="Script" uid="uid://b5icexjxoi6mg" path="res://addons/date_and_time/scripts/date_and_time.gd" id="55_dt"]
-[ext_resource type="PackedScene" uid="uid://df2moxe7vqkyp" path="res://addons/weather_fx/scenes/bgs.tscn" id="56_bgs"]
 [ext_resource type="PackedScene" uid="uid://do6j5qhjt8bsf" path="res://addons/weather_fx/scenes/weather_fx.tscn" id="56_wfx"]
 [ext_resource type="Script" uid="uid://bhmeif0ssxubk" path="res://addons/weather_fx/scripts/weather_zone.gd" id="57_wzone"]
 [ext_resource type="PackedScene" path="res://addons/date_and_time/scenes/date_and_time_display.tscn" id="58_dtdisplay"]
@@ -93,7 +92,6 @@
 [ext_resource type="Script" uid="uid://b0h23y2uet4r" path="res://addons/3d_player_controller/scripts/player_spawner.gd" id="mp_player_spawner"]
 [ext_resource type="Script" uid="uid://d4lqkvawlhhn1" path="res://addons/3d_player_controller/scripts/projectile_spawner.gd" id="mp_projectile_spawner"]
 [ext_resource type="Script" uid="uid://dgk0123inqplm" path="res://addons/3d_player_controller/scripts/steam_peer.gd" id="mp_steam_peer"]
-[ext_resource type="PackedScene" path="res://scenes/world_player.tscn" id="mp_world_player"]
 [ext_resource type="Script" uid="uid://d046dc2e6l7mn" path="res://addons/3d_player_controller/scripts/muzzle_flash.gd" id="muzzle_flash_gd"]
 [ext_resource type="PackedScene" uid="uid://c7checkpoint01" path="res://addons/3d_player_controller/scenes/prop/checkpoint.tscn" id="pc_checkpoint"]
 [ext_resource type="PackedScene" uid="uid://c7killzone0001" path="res://addons/3d_player_controller/scenes/prop/kill_zone.tscn" id="pc_kill_zone"]
@@ -115,7 +113,6 @@
 [ext_resource type="AudioStream" path="res://resources/audio/rifle_reload.tres" id="sfx_rifle_reload"]
 [ext_resource type="AudioStream" path="res://resources/audio/rifle_shot.tres" id="sfx_rifle_shot"]
 [ext_resource type="PackedScene" path="res://addons/weather_fx/scenes/water_ripples.tscn" id="water_ripples_scene"]
-[ext_resource type="Script" uid="uid://bia70m5sxncj0" path="res://addons/weather_fx/scripts/weather_clouds.gd" id="weather_clouds"]
 [ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/ability_library.tscn" id="ability_library_scene"]
 [ext_resource type="Script" path="res://addons/3d_player_controller/scripts/ability_entry.gd" id="ability_entry_script"]
 [ext_resource type="Resource" path="res://resources/abilities/chain_lightning.tres" id="spell_chain_lightning"]
@@ -129,6 +126,18 @@
 [ext_resource type="Resource" uid="uid://dyboqfn7je42w" path="res://resources/abilities/lightning_bolt.tres" id="spell_lightning_bolt"]
 [ext_resource type="Resource" uid="uid://bum070844yb5" path="res://resources/abilities/shadowstep.tres" id="spell_shadowstep"]
 [ext_resource type="Resource" path="res://resources/abilities/sword_slash.tres" id="spell_sword_slash"]
+[ext_resource type="PackedScene" uid="uid://ct7n8imyllhbo" path="res://addons/3d_player_controller/scenes/player.tscn" id="player_scene"]
+[ext_resource type="PackedScene" uid="uid://bra3khigbuanl" path="res://addons/3d_player_controller/scenes/equipment/paraglider.tscn" id="paraglider_scene"]
+[ext_resource type="PackedScene" uid="uid://c7fishcard0001" path="res://scenes/fish_card.tscn" id="fish_card"]
+[ext_resource type="PackedScene" path="res://scenes/fish_caught_screen.tscn" id="fish_caught_screen"]
+[ext_resource type="PackedScene" uid="uid://cp8l5m7auhh4p" path="res://assets/loop_box/VFX.tscn" id="connector_vfx"]
+[ext_resource type="Script" uid="uid://2onin8lh303p" path="res://scenes/fishing_log.gd" id="fishing_log"]
+[ext_resource type="Script" uid="uid://klxo6bc3ftnp" path="res://addons/3d_player_controller/scripts/ability.gd" id="ability"]
+[ext_resource type="Resource" uid="uid://ywtv6gwnislu" path="res://addons/3d_player_controller/resources/abilities/stealth.tres" id="stealth"]
+[ext_resource type="Resource" uid="uid://qcky7ndpi2aa" path="res://resources/spells/qa_tree.tres" id="qa_tree"]
+[ext_resource type="AudioStream" uid="uid://dvlgd70b14y07" path="res://assets/audiohero/Whistles-HumanWhistles-C-62_B05-09683.ogg" id="whistle_1"]
+[ext_resource type="AudioStream" uid="uid://c6isi2ejxr68o" path="res://assets/audiohero/Whistles-HumanWhistles-C-63_B05-09684.ogg" id="whistle_2"]
+[ext_resource type="AudioStream" uid="uid://cxavok4kxrxqh" path="res://assets/audiohero/Whistles-HumanWhistles-C-64_B05-09685.ogg" id="whistle_3"]
 
 [sub_resource type="Environment" id="Environment_aqk2v"]
 background_mode = 2
@@ -136,6 +145,14 @@ sky = ExtResource("binbun_sky")
 fog_density = 0.0
 fog_sky_affect = 0.3
 volumetric_fog_density = 0.0
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_weather"]
+properties/0/path = NodePath(".:synced_biome")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:synced_weather")
+properties/1/spawn = true
+properties/1/replication_mode = 1
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_time"]
 properties/0/path = NodePath(".:current_time")
@@ -538,6 +555,12 @@ size = Vector3(40, 20, 40)
 friction = 0.7
 bounce = 0.15
 
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_whistle"]
+streams_count = 3
+stream_0/stream = ExtResource("whistle_1")
+stream_1/stream = ExtResource("whistle_2")
+stream_2/stream = ExtResource("whistle_3")
+
 [node name="World" type="Node3D" unique_id=336392758]
 script = ExtResource("1_5hglh")
 
@@ -549,26 +572,15 @@ transform = Transform3D(0.8660254, 0.5, 2.1855692e-08, 0, -4.371139e-08, 0.99999
 light_color = Color(1, 0.95, 0.85, 1)
 shadow_enabled = true
 
-[node name="WeatherClouds" type="Node" parent="." unique_id=769777904 node_paths=PackedStringArray("weather", "world_environment", "night_sun")]
-script = ExtResource("weather_clouds")
-weather = NodePath("../WeatherFX")
-world_environment = NodePath("../WorldEnvironment")
-night_sun = NodePath("../DirectionalLight3D")
-
 [node name="WeatherFX" parent="." unique_id=98712302 node_paths=PackedStringArray("date_and_time_node", "sun_light", "world_environment") instance=ExtResource("56_wfx")]
 date_and_time_node = NodePath("../DateAndTime")
 sun_light = NodePath("../DirectionalLight3D")
 world_environment = NodePath("../WorldEnvironment")
 
-[node name="WeatherAudio" parent="WeatherFX" node_paths=PackedStringArray("bgs_day_clear", "bgs_day_rain", "bgs_day_storm", "bgs_night_clear", "bgs_night_rain", "bgs_night_storm")]
-bgs_day_clear = NodePath("../../BackGroundSounds/BGS_Day_Clear")
-bgs_day_rain = NodePath("../../BackGroundSounds/BGS_Day_Rain")
-bgs_day_storm = NodePath("../../BackGroundSounds/BGS_Day_Storm")
-bgs_night_clear = NodePath("../../BackGroundSounds/BGS_Night_Clear")
-bgs_night_rain = NodePath("../../BackGroundSounds/BGS_Night_Rain")
-bgs_night_storm = NodePath("../../BackGroundSounds/BGS_Night_Storm")
-
-[node name="BackGroundSounds" parent="." unique_id=1390929901 instance=ExtResource("56_bgs")]
+[node name="WeatherSynchronizer" type="MultiplayerSynchronizer" parent="WeatherFX"]
+editor_description = "The host's weather and biome reach every peer through this, once a second: a client takes the weather as forced and the biome only when it has no Player of its own to read the zones around."
+replication_interval = 1.0
+replication_config = SubResource("SceneReplicationConfig_weather")
 
 [node name="DateAndTime" type="Node" parent="." unique_id=98712301]
 script = ExtResource("55_dt")
@@ -633,62 +645,94 @@ script = ExtResource("mp_steam_peer")
 [node name="AbilityLibrary" parent="." instance=ExtResource("ability_library_scene")]
 editor_description = "The addon's library with this game's spells added: every ability any Player, puppet or enemy casts, loaded once and warmed at start."
 
-[node name="ChainLightning" type="Node" parent="AbilityLibrary"]
+[node name="ChainLightning" type="Node3D" parent="AbilityLibrary"]
 script = ExtResource("ability_entry_script")
 ability = ExtResource("spell_chain_lightning")
 
-[node name="Consecration" type="Node" parent="AbilityLibrary"]
+[node name="Consecration" type="Node3D" parent="AbilityLibrary"]
 script = ExtResource("ability_entry_script")
 ability = ExtResource("spell_consecration")
 
-[node name="Fireball" type="Node" parent="AbilityLibrary"]
+[node name="Fireball" type="Node3D" parent="AbilityLibrary"]
 script = ExtResource("ability_entry_script")
 ability = ExtResource("spell_fireball")
 
-[node name="Firebolt" type="Node" parent="AbilityLibrary"]
+[node name="Firebolt" type="Node3D" parent="AbilityLibrary"]
 script = ExtResource("ability_entry_script")
 ability = ExtResource("spell_firebolt")
 
-[node name="FlashOfLight" type="Node" parent="AbilityLibrary"]
+[node name="FlashOfLight" type="Node3D" parent="AbilityLibrary"]
 script = ExtResource("ability_entry_script")
 ability = ExtResource("spell_flash_of_light")
 
-[node name="Freeze" type="Node" parent="AbilityLibrary"]
+[node name="Freeze" type="Node3D" parent="AbilityLibrary"]
 script = ExtResource("ability_entry_script")
 ability = ExtResource("spell_freeze")
 
-[node name="Frostbolt" type="Node" parent="AbilityLibrary"]
+[node name="Frostbolt" type="Node3D" parent="AbilityLibrary"]
 script = ExtResource("ability_entry_script")
 ability = ExtResource("spell_frostbolt")
 
-[node name="Lightning" type="Node" parent="AbilityLibrary"]
+[node name="Lightning" type="Node3D" parent="AbilityLibrary"]
 script = ExtResource("ability_entry_script")
 ability = ExtResource("spell_lightning")
 
-[node name="LightningBolt" type="Node" parent="AbilityLibrary"]
+[node name="LightningBolt" type="Node3D" parent="AbilityLibrary"]
 script = ExtResource("ability_entry_script")
 ability = ExtResource("spell_lightning_bolt")
 
-[node name="Shadowstep" type="Node" parent="AbilityLibrary"]
+[node name="Shadowstep" type="Node3D" parent="AbilityLibrary"]
 script = ExtResource("ability_entry_script")
 ability = ExtResource("spell_shadowstep")
 
-[node name="SwordSlash" type="Node" parent="AbilityLibrary"]
+[node name="SwordSlash" type="Node3D" parent="AbilityLibrary"]
 script = ExtResource("ability_entry_script")
 ability = ExtResource("spell_sword_slash")
 
-[node name="Players" type="Node3D" parent="." unique_id=839194789]
-
-[node name="Projectiles" type="Node3D" parent="." unique_id=618184642]
-
 [node name="PlayerSpawner" type="MultiplayerSpawner" parent="." unique_id=1708759852]
-_spawnable_scenes = PackedStringArray("res://scenes/world_player.tscn")
-spawn_path = NodePath("../Players")
+editor_description = "Spawns a copy of its Player child per peer under itself, named by peer id. The child is the template and never enters the tree itself; drag it to move the spawn point."
 script = ExtResource("mp_player_spawner")
-player_scene = ExtResource("mp_world_player")
+
+[node name="Player" parent="PlayerSpawner" node_paths=PackedStringArray("animation_tree") instance=ExtResource("player_scene")]
+editor_description = "The addon's Player as this game plays it: the template every peer's Player is a copy of. Its abilities, spellbook, fishing log, whistle and fish screens are set here, and where it stands is where players spawn."
+animation_tree = NodePath("AnimationTree")
+paraglider_scene = ExtResource("paraglider_scene")
+
+[node name="Abilities" parent="PlayerSpawner/Player/Hud"]
+abilities = Array[ExtResource("ability")]([ExtResource("stealth"), ExtResource("spell_flash_of_light")])
+
+[node name="Inventory" parent="PlayerSpawner/Player/Hud"]
+persist = true
+
+[node name="Spellbook" parent="PlayerSpawner/Player/Hud/Inventory"]
+tree = ExtResource("qa_tree")
+skill_points = 6
+
+[node name="Pause" parent="PlayerSpawner/Player/Hud"]
+extra_screen_scene = "res://scenes/fish_index_screen.tscn"
+extra_screen_label = "Fish Index"
+
+[node name="FishCard" parent="PlayerSpawner/Player/Hud/Controls" instance=ExtResource("fish_card")]
+visible = false
+
+[node name="HeldObject" parent="PlayerSpawner/Player"]
+connector_scene = ExtResource("connector_vfx")
+
+[node name="FishingLog" type="Node" parent="PlayerSpawner/Player"]
+script = ExtResource("fishing_log")
+persist = true
+
+[node name="FishCaughtScreen" parent="PlayerSpawner/Player" node_paths=PackedStringArray("player") instance=ExtResource("fish_caught_screen")]
+visible = false
+player = NodePath("..")
+
+[node name="WhistleAudio" type="AudioStreamPlayer3D" parent="PlayerSpawner/Player"]
+editor_description = "The Player's own whistle, the one that calls a horse. An AudioStreamRandomizer of three AudioHero human whistles, so the same player does not whistle identically twice; world.gd plays it when Player.whistled fires."
+stream = SubResource("AudioStreamRandomizer_whistle")
+unit_size = 18.0
+max_distance = 60.0
 
 [node name="ProjectileSpawner" type="MultiplayerSpawner" parent="." unique_id=629412626 groups=["ProjectileSpawner"]]
-spawn_path = NodePath("../Projectiles")
 script = ExtResource("mp_projectile_spawner")
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=1256611108]
@@ -1480,7 +1524,8 @@ player_spawner = NodePath("../PlayerSpawner")
 transform = Transform3D(0.5547, 0, -0.83205, 0, 1, 0, 0.83205, 0, 0.5547, 6, 0, 4)
 display_name = "Guide"
 
-[node name="Conversation" type="Node" parent="Guide"]
+[node name="Conversation" type="Node" parent="Guide" node_paths=PackedStringArray("npc")]
+npc = NodePath("..")
 script = ExtResource("conversation_script")
 timeline = ExtResource("qa_guide_timeline")
 quests = Array[ExtResource("quest_script")]([ExtResource("qa_errand_quest")])
@@ -1518,7 +1563,15 @@ hidden_while_in_use = Array[NodePath]([NodePath("../HUD")])
 [connection signal="body_exited" from="Pool/WaterArea3D" to="Pool/WaterArea3D" method="_on_body_exited"]
 [connection signal="body_exited" from="Pool/WaterArea3D" to="Pool/WaterRipples" method="_on_body_exited"]
 [connection signal="body_exited" from="Pool/WaterArea3D" to="." method="_on_water_area_3d_body_exited" binds= [NodePath("Pool/WaterArea3D")]]
+[connection signal="talked_to" from="Guide" to="Guide/Conversation" method="_on_talked_to"]
+[connection signal="radio_toggled" from="HondaCRV/RadiOtPlayer3D" to="." method="_on_radio_toggled"]
+[connection signal="station_changed" from="HondaCRV/RadiOtPlayer3D" to="." method="_on_radio_station_changed"]
+[connection signal="item_used" from="PlayerSpawner/Player/Hud/Inventory" to="PlayerSpawner/Player/FishingLog" method="_on_item_gone"]
+[connection signal="item_dropped" from="PlayerSpawner/Player/Hud/Inventory" to="PlayerSpawner/Player/FishingLog" method="_on_item_dropped"]
+[connection signal="depleted" from="Quaternius/Tree01" to="." method="_on_tree_chopped"]
 
 [editable path="JustCreate3D/Weapon_02/Muzzle/MuzzleFlash/Flash"]
 [editable path="JustCreate3D/Weapon_01/Muzzle/MuzzleFlash/Flash"]
 [editable path="AbilityLibrary"]
+[editable path="PlayerSpawner/Player"]
+[editable path="PlayerSpawner/Player/Hud"]

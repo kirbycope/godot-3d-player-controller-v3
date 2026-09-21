@@ -1,7 +1,7 @@
 extends GutTest
 
 ## Purpose: A Conversation under a TalkingNpc runs a Dialogic timeline when the NPC is talked to: the Player is
-## held still and the bottom button reads Continue while it runs, the quest log is published to Dialogic as
+## held still and the bottom button reads Next while it runs, the quest log is published to Dialogic as
 ## variables the timeline can branch on, a signal event in the timeline starts a quest or reports an objective,
 ## and the end of the timeline lets the NPC and the Player go.
 
@@ -36,6 +36,8 @@ func before_each() -> void:
 	npc = NPC_SCENE.instantiate()
 	conversation = Conversation.new()
 	conversation.name = "Conversation"
+	conversation.npc = npc # as world.tscn sets it, and connects the NPC's talked_to to the conversation
+	npc.talked_to.connect(conversation._on_talked_to)
 	conversation.quests = [quest]
 	npc.add_child(conversation)
 	root.add_child(npc)
@@ -63,7 +65,7 @@ func test_a_talk_runs_the_timeline_and_the_end_lets_everyone_go() -> void:
 	assert_true(conversation.is_talking())
 	assert_eq(Dialogic.current_timeline, conversation.timeline, "The NPC's timeline is the one running")
 	assert_true(player.is_paused, "The Player stands still while talking")
-	assert_eq(player.controls.prompt_action_label, "Continue", "The bottom button reads Continue")
+	assert_eq(player.controls.prompt_action_label, "Next", "The bottom button reads Next")
 	assert_eq(ProjectSettings.get_setting(Conversation.INPUT_ACTION_SETTING), "action", "Action advances the text")
 	conversation.end()
 	await wait_process_frames(3)
@@ -71,7 +73,7 @@ func test_a_talk_runs_the_timeline_and_the_end_lets_everyone_go() -> void:
 	assert_null(Dialogic.current_timeline)
 	assert_false(player.is_paused, "Let go when the timeline ends")
 	assert_null(npc.talker)
-	assert_eq(player.controls.prompt_action_label, "Talk", "Continue is given back; the NPC, still the camera's target, offers Talk again")
+	assert_eq(player.controls.prompt_action_label, "Talk", "Next is given back; the NPC, still the camera's target, offers Talk again")
 	assert_eq(ProjectSettings.get_setting(Conversation.INPUT_ACTION_SETTING), Conversation.DEFAULT_INPUT_ACTION)
 
 
@@ -139,3 +141,33 @@ func test_an_npc_with_nothing_to_say_lets_the_player_go_at_once() -> void:
 	assert_false(conversation.is_talking())
 	assert_null(npc.talker, "No timeline: the talk ends as it begins")
 	assert_false(player.is_paused)
+
+
+func test_a_question_reads_choose_and_action_picks_the_focused_choice() -> void:
+	conversation.timeline = _timeline("Pick one.\n- First\n\tFirst it is.\n- Second\n\tSecond it is.")
+	assert_true(npc.talk(player))
+	await wait_process_frames(3)
+	assert_eq(player.controls.prompt_action_label, "Next", "Text on its way: Next")
+	Dialogic.handle_next_event() # past the line, to the question
+	await wait_process_frames(3)
+	assert_eq(player.controls.prompt_action_label, "Pick", "A question up: the button reads Pick")
+	var focused: Control = get_viewport().gui_get_focus_owner()
+	assert_true(focused is DialogicNode_ChoiceButton, "and the first choice has the focus, so Pick means something")
+	if focused is DialogicNode_ChoiceButton:
+		assert_eq((focused as DialogicNode_ChoiceButton).text, "First")
+	await wait_seconds(0.3) # Dialogic blocks a choice for a moment after showing it
+	var press: InputEventAction = InputEventAction.new() # a real event, as the key gives; action_press only sets the polled state
+	press.action = &"action"
+	press.pressed = true
+	Input.parse_input_event(press)
+	Input.flush_buffered_events()
+	await wait_process_frames(1)
+	var release: InputEventAction = press.duplicate()
+	release.pressed = false
+	Input.parse_input_event(release)
+	Input.flush_buffered_events()
+	await wait_process_frames(3)
+	assert_eq(player.controls.prompt_action_label, "Next", "Chosen: the button reads Next again")
+	var any_choice_up: bool = get_tree().get_nodes_in_group("dialogic_choice_button").any(func(n: Node) -> bool: return (n as Control).is_visible_in_tree())
+	assert_false(any_choice_up, "and the question is gone, the first branch running")
+	assert_true(conversation.is_talking())

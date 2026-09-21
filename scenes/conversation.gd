@@ -7,25 +7,23 @@ extends Node
 ## [code]{objective.<id>}[/code] (true once met). A timeline drives the log back through Dialogic's signal
 ## event: [code][signal arg="start_quest <id>"][/code] starts one of [member quests],
 ## [code][signal arg="progress <objective id>"][/code] reports an objective (with a count after it if not 1).
-## The Action button advances the text while the conversation runs, Start ends it, and the bottom-action label
-## reads [member continue_label].
+## The Action button advances the text while the conversation runs and reads [member continue_label]; while a
+## question is up it reads [member choice_label] and picks the focused choice (Dialogic focuses the first one, and
+## the d-pad or stick moves the focus). Start ends the conversation.
 
 const DEFAULT_INPUT_ACTION: String = "dialogic_default_action" ## Dialogic's own action, back in force between conversations.
 const INPUT_ACTION_SETTING: String = "dialogic/text/input_action"
 
 @export var timeline: DialogicTimeline ## What this NPC says.
 @export var quests: Array[Quest] = [] ## The quests a [code]start_quest[/code] signal in the timeline may start, by their id.
-@export var continue_label: String = "Continue" ## What the bottom-action button reads while the conversation runs.
+@export var continue_label: String = "Next" ## What the bottom-action button reads while the conversation runs.
+@export var choice_label: String = "Pick" ## What it reads while a question is up, when Action picks the focused choice; short, since the face label is narrow.
 @export var advance_action: StringName = &"action" ## The Player action that advances the text; Dialogic listens for it while talking.
 
-var npc: TalkingNpc ## The NPC above this node.
+@export var npc: TalkingNpc ## The NPC this conversation belongs to; its talked_to is connected to [method _on_talked_to] in the scene.
+
 var player: Player ## Who is talking, while somebody is.
-
-
-func _ready() -> void:
-	npc = get_parent() as TalkingNpc
-	if npc:
-		npc.talked_to.connect(_on_talked_to)
+var _choosing: bool = false ## A question is up: Action picks the focused choice instead of advancing.
 
 
 func _on_talked_to(who: Player) -> void:
@@ -45,6 +43,8 @@ func start(who: Player) -> bool:
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	ProjectSettings.set_setting(INPUT_ACTION_SETTING, String(advance_action))
 	_dialogic().signal_event.connect(_on_signal_event)
+	_dialogic().Choices.question_shown.connect(_on_question_shown)
+	_dialogic().Choices.choice_selected.connect(_on_choice_selected)
 	_dialogic().timeline_ended.connect(_on_timeline_ended, CONNECT_ONE_SHOT)
 	_dialogic().start(timeline)
 	return true
@@ -97,24 +97,51 @@ func _on_signal_event(argument: Variant) -> void:
 	publish_quests(quest_log)
 
 
+## A question is up: the first choice has the focus (Dialogic's autofocus) and the button reads [member choice_label].
+func _on_question_shown(_info: Dictionary) -> void:
+	_choosing = true
+	if player and player.controls:
+		player.controls.claim_action_label(choice_label, self)
+	if not get_viewport().gui_get_focus_owner() is DialogicNode_ChoiceButton:
+		for node: Node in get_tree().get_nodes_in_group("dialogic_choice_button"):
+			if node is DialogicNode_ChoiceButton and (node as DialogicNode_ChoiceButton).is_visible_in_tree():
+				(node as DialogicNode_ChoiceButton).grab_focus()
+				break
+
+
+func _on_choice_selected(_info: Dictionary) -> void:
+	_choosing = false
+	if player and player.controls:
+		player.controls.claim_action_label(continue_label, self)
+
+
 func _on_timeline_ended() -> void:
 	var was: Player = player
 	player = null
+	_choosing = false
 	ProjectSettings.set_setting(INPUT_ACTION_SETTING, DEFAULT_INPUT_ACTION)
 	if _dialogic().signal_event.is_connected(_on_signal_event):
 		_dialogic().signal_event.disconnect(_on_signal_event)
+	if _dialogic().Choices.question_shown.is_connected(_on_question_shown):
+		_dialogic().Choices.question_shown.disconnect(_on_question_shown)
+		_dialogic().Choices.choice_selected.disconnect(_on_choice_selected)
 	if is_instance_valid(was):
 		if was.controls:
 			was.controls.release_action_label(self)
 		if was.uses_mouse:
-			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+			Input.mouse_mode = was.cursor_mode() # captured, or visible under a scheme that frees it
 	if npc:
 		npc.end_talk()
 
 
 func _input(event: InputEvent) -> void:
-	if player and event.is_action_pressed(&"start") and not event.is_echo():
+	if player == null or event.is_echo():
+		return
+	if event.is_action_pressed(&"start"):
 		end()
+		get_viewport().set_input_as_handled()
+	elif _choosing and event.is_action_pressed(advance_action):
+		_dialogic().Choices.select_focused_choice() # the button reads Choose: Action takes the focused choice
 		get_viewport().set_input_as_handled()
 
 

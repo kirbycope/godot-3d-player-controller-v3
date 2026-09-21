@@ -1,7 +1,7 @@
 extends SteamTest
-## Purpose: the host's weather is the client's weather. WeatherFX.set_weather on the host fires weather_changed,
-## world.gd relays it by RPC and the client's WeatherFX follows, once for a storm and again for snow, so it is the
-## change that is seen to cross and not a coincidence of forecasts.
+## Purpose: the host's weather is the client's weather. WeatherFX.set_weather on the host writes synced_weather, the
+## WeatherSynchronizer under it carries that to the client, whose WeatherFX takes it as forced weather, once for a
+## storm and again for snow, so it is the change that is seen to cross and not a coincidence of forecasts.
 
 
 func test_the_hosts_weather_reaches_the_client_and_changes_again() -> void:

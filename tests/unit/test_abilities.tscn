@@ -19,6 +19,7 @@
 [ext_resource type="PackedScene" uid="uid://drgmvkr7bji2w" path="res://scenes/enemy_rifleman.tscn" id="17_k1w2v"]
 [ext_resource type="PackedScene" uid="uid://drgmvkcyor42w" path="res://scenes/enemy_spellcaster.tscn" id="18_vc3n0"]
 [ext_resource type="Material" uid="uid://smkievpeajs3" path="res://assets/ambientcg_com/grass_001/Grass001_1K-JPG.tres" id="19_gh47e"]
+[ext_resource type="Script" path="res://tests/unit/ability_range.gd" id="range_script"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_rdjey"]
 size = Vector3(32, 1, 32)
@@ -27,11 +28,15 @@ size = Vector3(32, 1, 32)
 material = ExtResource("19_gh47e")
 size = Vector3(32, 1, 32)
 
-[node name="test_abilities" type="Node3D" unique_id=2105666466]
+[node name="test_abilities" type="Node3D" unique_id=2105666466 node_paths=PackedStringArray("library", "player", "enemies", "rows", "enemy_picker")]
+script = ExtResource("range_script")
+library = NodePath("AbilityLibrary")
+player = NodePath("Player")
+enemies = NodePath("Enemies")
+rows = NodePath("RangeHud/Panel/VBox/Rows")
+enemy_picker = NodePath("RangeHud/Panel/VBox/EnemyPicker")
 
-[node name="AbilityLibrary" parent="." unique_id=1742918114 node_paths=PackedStringArray("test_caster", "test_target") instance=ExtResource("1_boad6")]
-test_caster = NodePath("../Player")
-test_target = NodePath("../Enemies/Swordsman")
+[node name="AbilityLibrary" parent="." unique_id=1742918114 instance=ExtResource("1_boad6")]
 
 [node name="ChainLightning" type="Node3D" parent="AbilityLibrary" unique_id=366325015]
 script = ExtResource("2_c3yf4")
@@ -102,5 +107,20 @@ shape = SubResource("BoxShape3D_rdjey")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D" unique_id=360496699]
 mesh = SubResource("BoxMesh_u4d8o")
+
+[node name="RangeHud" type="CanvasLayer" parent="."]
+
+[node name="Panel" type="PanelContainer" parent="RangeHud"]
+offset_left = 16.0
+offset_top = 16.0
+
+[node name="VBox" type="VBoxContainer" parent="RangeHud/Panel"]
+
+[node name="Title" type="Label" parent="RangeHud/Panel/VBox"]
+text = "Ability range. Each row: what the Player casts it on, then what the picked enemy casts it on. A number key is the Player at the enemy, Shift and the number the enemy at the Player."
+
+[node name="EnemyPicker" type="OptionButton" parent="RangeHud/Panel/VBox"]
+
+[node name="Rows" type="VBoxContainer" parent="RangeHud/Panel/VBox"]
 
 [editable path="AbilityLibrary"]

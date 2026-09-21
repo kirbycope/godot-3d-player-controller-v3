@@ -10,7 +10,7 @@ func test_swimmer_climbs_out_over_a_flush_pool_rim() -> void:
 	var world: Node = WORLD_SCENE.instantiate()
 	add_child_autofree(world)
 	await wait_physics_frames(3)
-	var player: Player = world.get_node("Players/1")
+	var player: Player = world.get_node("PlayerSpawner/1")
 	player.global_position = Vector3(12.0, -1.0, -24.0)
 	player.camera_mount.rotation.y = -PI / 2.0 # camera forward = +X, toward the wall at x = 16
 	await wait_physics_frames(40)
@@ -46,7 +46,7 @@ func test_swimmer_climbs_out_onto_an_ice_block() -> void:
 	var world: Node = WORLD_SCENE.instantiate()
 	add_child_autofree(world)
 	await wait_physics_frames(3)
-	var player: Player = world.get_node("Players/1")
+	var player: Player = world.get_node("PlayerSpawner/1")
 	player.global_position = Vector3(-4.0, -1.0, -24.0)
 	player.camera_mount.rotation.y = -PI / 2.0 # camera forward = +X
 	await wait_physics_frames(40)

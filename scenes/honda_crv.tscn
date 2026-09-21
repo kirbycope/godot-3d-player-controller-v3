@@ -1,6 +1,7 @@
-[gd_scene load_steps=14 format=3 uid="uid://b72r5jskemotf"]
+[gd_scene load_steps=15 format=3 uid="uid://b72r5jskemotf"]
 
 [ext_resource type="PackedScene" path="res://addons/gta/gta/scenes/honda_crv.tscn" id="1_base"]
+[ext_resource type="PackedScene" path="res://addons/radi_ot/scenes/radi_ot_player_3d.tscn" id="radi_ot_player"]
 [ext_resource type="PackedScene" uid="uid://djvf0i62xd1l0" path="res://assets/BinbunVFX/fire_effects/effects/Fire/fire_05.tscn" id="7_4mlnu"]
 [ext_resource type="AudioStream" uid="uid://dd25upq5fxyfr" path="res://assets/tommusic/fantasy_sfx/OGG Files/SFX/Torch/Light Torch with Starting Loop 1.ogg" id="8_2ij2w"]
 [ext_resource type="AudioStream" uid="uid://con25r1kd8woc" path="res://assets/tommusic/fantasy_sfx/OGG Files/SFX/Torch/Light Torch with Starting Loop 2.ogg" id="9_wsenh"]
@@ -74,3 +75,7 @@ autoplay = false
 [node name="ExplosionSFX" type="AudioStreamPlayer3D" parent="VFXGroundExplosion_01" unique_id=13373813]
 stream = SubResource("AudioStreamRandomizer_klyh2")
 
+[node name="RadiOtPlayer3D" parent="." instance=ExtResource("radi_ot_player")]
+editor_description = "The car's radio, heard around the car. It follows the car's replicated radio_station through the connection below on every peer; the world powers it while the local Player is in the car and puts its stations on the radial menu."
+
+[connection signal="radio_station_changed" from="." to="RadiOtPlayer3D" method="tune_to_station_index"]

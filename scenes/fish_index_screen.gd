@@ -31,7 +31,6 @@ func _ready() -> void:
 		buttons.append(button)
 	if not buttons.is_empty():
 		focus_on_show = buttons[0]
-	back_button.pressed.connect(hide_menu)
 	set_process(false)
 	var fishing_log: FishingLog = _log()
 	if fishing_log:

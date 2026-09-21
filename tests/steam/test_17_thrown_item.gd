@@ -5,11 +5,11 @@ extends SteamTest
 
 const ROCK: Item = preload("res://resources/items/rock.tres")
 
-var _rocks: Array[Dictionary] = [] ## One per ThrownItem that entered Projectiles: its item id and its thrower.
+var _rocks: Array[Dictionary] = [] ## One per ThrownItem that entered the ProjectileSpawner: its item id and its thrower.
 
 
 func test_a_rock_thrown_on_the_host_flies_on_both_sides() -> void:
-	var projectiles: Node = world_node("Projectiles")
+	var projectiles: Node = world_node("ProjectileSpawner")
 	projectiles.child_entered_tree.connect(_on_projectile_entered)
 	if is_host:
 		var me: Player = own_player()

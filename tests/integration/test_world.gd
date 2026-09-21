@@ -31,7 +31,7 @@ func test_pool_sets_follower_npc_water_area() -> void:
 
 
 func test_the_spawned_player_carries_the_qa_kit() -> void:
-	var player: Player = world.get_node("Players/1") as Player
+	var player: Player = world.get_node("PlayerSpawner/1") as Player
 	var kit: Dictionary[Item, int] = world.STARTING_ITEMS
 	assert_eq(kit.size(), 10, "Worms, rifle clips, an incendiary clip, a pistol magazine, arrows, fire arrows, ice arrows, rocks, apples and a dagger")
 	for item: Item in kit:
@@ -58,8 +58,8 @@ func test_the_spawned_player_carries_the_qa_kit() -> void:
 
 
 func test_driving_state_powers_radio_and_radial_menu() -> void:
-	var player: Player = world.get_node("Players/1") as Player
-	var radio: RadiOtPlayer3D = world.get_node("Players/1/RadiOtPlayer3D") as RadiOtPlayer3D
+	var player: Player = world.get_node("PlayerSpawner/1") as Player
+	var radio: RadiOtPlayer3D = world.get_node("HondaCRV/RadiOtPlayer3D") as RadiOtPlayer3D
 	assert_false(radio.is_power_on())
 
 	player.riding = world.get_node("HondaCRV")
@@ -74,7 +74,7 @@ func test_driving_state_powers_radio_and_radial_menu() -> void:
 
 
 func test_warp_zone_and_warp_to() -> void:
-	var player: Player = world.get_node("Players/1") as Player
+	var player: Player = world.get_node("PlayerSpawner/1") as Player
 	var marker: Marker3D = world.get_node("WarpZone2/Marker3D") as Marker3D
 	player.velocity = Vector3(1.0, 2.0, 3.0)
 
@@ -93,12 +93,29 @@ func test_hud_temperature_gauge_stays_square() -> void:
 	assert_eq(gauge.size, Vector2(36.0, 36.0), "The gauge dial is 36x36; a stretched height means an unpinned offset_bottom")
 
 
-func test_the_world_plays_the_weather_fx_ambience() -> void:
-	var sounds: Node3D = world.get_node_or_null("BackGroundSounds")
-	assert_not_null(sounds, "world.tscn instances the addon's bgs.tscn (left in the addon)")
+func test_the_hosts_weather_reaches_peers_through_a_synchronizer() -> void:
+	var sync: MultiplayerSynchronizer = world.get_node("WeatherFX/WeatherSynchronizer")
+	var paths: Array = sync.replication_config.get_properties().map(func(p: NodePath) -> String: return String(p))
+	assert_true(paths.has(".:synced_weather"), "The weather rides the synchronizer, as the clock does")
+	assert_true(paths.has(".:synced_biome"), "and so does the biome")
+	assert_eq(sync.root_path, NodePath(".."), "on the WeatherFX node itself")
+	assert_false(world.has_method("_sync_weather"), "No RPC of the world's own any more")
+	var weather: WeatherFX = world.get_node("WeatherFX")
+	assert_false(weather.is_puppet(), "Offline this side is the authority")
+	weather.set_weather(ClimateData.WeatherType.SNOW)
+	assert_eq(weather.synced_weather, ClimateData.WeatherType.SNOW, "and what it would send is what it shows")
+
+
+func test_the_world_plays_the_weather_fx_ambience_by_biome() -> void:
+	var weather: WeatherFX = world.get_node("WeatherFX")
+	assert_false(weather.bgs_sets.is_empty(), "The ambience sets are WeatherFX's own, the addon's forest and beach loops")
+	assert_null(world.get_node_or_null("BackGroundSounds"), "with no extra node to wire")
 	var audio: WeatherAudio = world.get_node("WeatherFX/WeatherAudio")
-	assert_eq(audio.bgs_day_clear, sounds.get_node("BGS_Day_Clear"), "and points WeatherAudio's slots at its players")
-	assert_eq(audio.bgs_night_storm, sounds.get_node("BGS_Night_Storm"))
-	var target: Node = audio.get_target_bgs_player()
-	assert_not_null(target, "One of them matches the weather and the hour")
-	assert_true(bool(target.get("playing")), "and is playing")
+	weather.blend_zones = false
+	weather.current_biome = ClimateData.BiomeZone.ANCIENT_FOREST
+	var target: AudioStreamPlayer = audio.get_target_bgs_player()
+	assert_not_null(target, "In a forest WeatherAudio has a player for the loop the weather and the hour call for")
+	assert_true(target.playing, "and it is playing")
+	weather.current_biome = ClimateData.BiomeZone.TEMPERATE_PLAINS
+	assert_null(audio.get_target_bgs_player(), "The plains have no loops of their own, so they are quiet")
+	assert_false(target.playing)

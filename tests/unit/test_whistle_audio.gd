@@ -1,17 +1,17 @@
 extends GutTest
 
-## Purpose: the whistle that calls a horse is heard. world_player.tscn carries a WhistleAudio whose stream is an
+## Purpose: the whistle that calls a horse is heard. the world's Player template carries a WhistleAudio whose stream is an
 ## AudioStreamRandomizer of the three AudioHero human whistles, so the same player never whistles identically
 ## twice, and world.gd plays it when Player.whistled fires, before Horse.summon_nearest answers it.
 
-const WORLD_PLAYER_SCENE: PackedScene = preload("res://scenes/world_player.tscn")
+const WORLD_PLAYER: GDScript = preload("res://tests/world_player_template.gd")
 const WORLD_SCRIPT: Script = preload("res://scenes/world.gd")
 
 var player: Player
 
 
 func before_each() -> void:
-	player = WORLD_PLAYER_SCENE.instantiate() as Player
+	player = WORLD_PLAYER.take()
 	add_child_autofree(player)
 	await wait_physics_frames(1)
 

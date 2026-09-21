@@ -18,7 +18,7 @@ func before_each() -> void:
 	world = WORLD_SCENE.instantiate()
 	add_child_autofree(world)
 	await wait_physics_frames(2)
-	player = world.get_node("Players/1")
+	player = world.get_node("PlayerSpawner/1")
 	var pickup: Equipment = world.get_node("JustCreate3D/Weapon_02")
 	pickup.equip(player)
 	rifle = player.inventory.get_equipment_by_type(Equipment.EquipmentType.RIFLE)
@@ -233,7 +233,7 @@ func test_the_guns_draw_shoot_and_reload_with_the_gravity_sound_clips() -> void:
 	assert_eq(rifle.fire_sfx, rifle.get_node("FireAudio"), "The equipped copy carries the nodes")
 	player.weapon_audio.armed = true
 	await _aim_at(Vector3(0.0, 1.0, -30.0))
-	var projectiles: Node = world.get_node("Projectiles")
+	var projectiles: Node = world.get_node("ProjectileSpawner")
 	var bullet: Projectile = rifle.fire()
 	assert_not_null(bullet)
 	var speaker: AudioStreamPlayer3D = projectiles.get_node_or_null("LaunchSfx") as AudioStreamPlayer3D

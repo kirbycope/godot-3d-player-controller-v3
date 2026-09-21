@@ -191,8 +191,8 @@ func test_main_scene_wiring() -> void:
 
 	# Verify node-based signal connections
 	assert_true(
-		title_screen.is_connected("new_game_pressed", Callable(main, "single_player")),
-		"TitleScreen new_game_pressed signal should be connected to Main.single_player"
+		title_screen.is_connected("new_game_pressed", Callable(main, "new_game")),
+		"TitleScreen new_game_pressed is connected to Main.new_game, which resets the controls before loading the world"
 	)
 	assert_true(
 		title_screen.is_connected("multi_player_pressed", Callable(main, "multi_player")),
@@ -257,3 +257,21 @@ func test_main_opens_on_the_title_screen_on_desktop() -> void:
 	assert_true(main.title_screen.visible, "The title screen shows")
 	assert_false(main.click_to_start.visible, "no Click to Start on the desktop")
 	assert_eq(main.loading._scene_path, "", "and nothing loads until a button is pressed")
+
+
+func test_new_game_puts_the_controls_back_to_zelda_and_auto() -> void:
+	var settings: PlayerSettingsResource = PlayerSettingsResource.load_or_create()
+	settings.control_scheme_name = "WoW"
+	settings.hud_mode = PlayerSettingsResource.HudMode.SHOWN
+	settings.save()
+	var main: Node = MAIN_SCENE.instantiate()
+	main.single_player_scene = "" # no world to load here; what New Game does before loading is the point
+	add_child_autofree(main)
+	main.new_game()
+	assert_eq(settings.control_scheme_name, "", "New Game forgets the picked layout, so the world's own (Zelda) is what a new game starts on")
+	assert_eq(settings.hud_mode, PlayerSettingsResource.HudMode.AUTO, "and the on-screen controls are back on Auto")
+	PlayerSettingsResource._cached = null
+	var reloaded: PlayerSettingsResource = PlayerSettingsResource.load_or_create()
+	assert_eq(reloaded.control_scheme_name, "", "written to the file, so the world spawns the Player that way")
+	assert_eq(reloaded.hud_mode, PlayerSettingsResource.HudMode.AUTO)
+	assert_null(reloaded.picked_scheme(), "and the world applies its own layout, since nothing is picked")

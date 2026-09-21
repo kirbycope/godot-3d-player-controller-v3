@@ -16,19 +16,11 @@ var held: Dictionary[StringName, Array] = {} ## Species id -> lengths in the bag
 func _ready() -> void:
 	if persist:
 		load_log()
-	var player: Player = get_parent() as Player
-	if player == null:
-		return
-	if player.is_node_ready():
-		_watch_inventory(player)
-	else:
-		player.ready.connect(_watch_inventory.bind(player), CONNECT_ONE_SHOT)
 
 
-func _watch_inventory(player: Player) -> void:
-	if player.inventory:
-		player.inventory.item_used.connect(_on_item_gone)
-		player.inventory.item_dropped.connect(func(item: Item, count: int, _pickup: Node) -> void: _on_item_gone(item, count))
+## A carried fish was dropped (the Inventory's item_dropped is connected here in the scene): it leaves the log's count.
+func _on_item_dropped(item: Item, count: int, _pickup: Node) -> void:
+	_on_item_gone(item, count)
 
 
 ## Logs a landed fish; true when it is the biggest of its kind so far. Junk is logged as found (so the index shows

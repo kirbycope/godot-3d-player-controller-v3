@@ -130,3 +130,5 @@ custom_minimum_size = Vector2(96, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Back"
+
+[connection signal="pressed" from="Panel/VBox/Back" to="." method="hide_menu"]

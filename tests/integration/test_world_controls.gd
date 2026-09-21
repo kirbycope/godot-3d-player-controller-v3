@@ -18,7 +18,7 @@ func before_each() -> void:
 	world = WORLD_SCENE.instantiate()
 	add_child_autofree(world)
 	await wait_physics_frames(2)
-	player = world.get_node("Players/1")
+	player = world.get_node("PlayerSpawner/1")
 
 
 func test_the_world_is_played_on_the_zelda_layout() -> void:
@@ -42,6 +42,6 @@ func test_show_controls_forces_the_whole_set() -> void:
 	forced.show_controls = true
 	add_child_autofree(forced)
 	await wait_physics_frames(2)
-	var forced_player: Player = forced.get_node("Players/1")
+	var forced_player: Player = forced.get_node("PlayerSpawner/1")
 	assert_eq(forced_player.hud_mode_override, PlayerSettingsResource.HudMode.SHOWN, "The export still forces the whole HUD for a world that wants it")
 	assert_false(forced_player.controls.contextual_only)

@@ -69,7 +69,7 @@ func test_the_shipped_spells_load_with_their_effects_vfx_and_sounds() -> void:
 	assert_eq(consecration.fx_lifetime, consecration.get("duration"), "whose VFX lasts as long as the zone")
 	var shadowstep: Ability = load(SPELL_DIR + "shadowstep.tres")
 	assert_true(shadowstep is Shadowstep)
-	assert_eq(shadowstep.target_mode, Ability.Target.FOCUS)
+	assert_eq(shadowstep.target_kinds, Ability.Kind.NEUTRAL | Ability.Kind.HOSTILE, "Lands on an enemy or a bystander, never a friend")
 	assert_true(load(SPELL_DIR + "flash_of_light.tres") is HealAbility)
 	for name: String in ["firebolt", "fireball", "frostbolt", "lightning_bolt", "lightning", "chain_lightning", "flash_of_light", "consecration", "shadowstep", "freeze"]:
 		var spell: Ability = load(SPELL_DIR + name + ".tres")
@@ -259,5 +259,5 @@ func test_freeze_turns_the_water_under_the_crosshair_into_an_ice_block_and_refus
 	assert_almost_eq(block.global_position.y + IceBlock.SIZE.y * 0.5, pond.get_surface_height(at) + IceBlock.TOP_ABOVE_SURFACE, 0.1, "with its top at the surface")
 	var shipped: Ability = load(SPELL_DIR + "freeze.tres")
 	assert_true(shipped is FreezeAbility, "The shipped Freeze is a FreezeAbility")
-	assert_eq(shipped.target_mode, Ability.Target.FOCUS)
+	assert_eq(shipped.target_kinds, Ability.Kind.NEUTRAL | Ability.Kind.HOSTILE)
 	assert_true(bool(shipped.elements & Ability.Element.WATER), "and carries Water, so it douses fire where it lands")

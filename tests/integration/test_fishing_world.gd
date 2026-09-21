@@ -15,7 +15,7 @@ func before_each() -> void:
 	world = WORLD_SCENE.instantiate()
 	add_child_autofree(world)
 	await wait_physics_frames(3)
-	player = world.get_node("Players/1")
+	player = world.get_node("PlayerSpawner/1")
 	# South deck of the pool, looking north over the water
 	player.warp_to(Transform3D(Basis(), Vector3(6.0, 0.5, -13.5)))
 	player.camera_mount.rotation = Vector3(-0.35, 0.0, 0.0)
@@ -39,7 +39,7 @@ func _cast_and_wait_for_water() -> void:
 		if rod.water:
 			break
 	assert_eq(rod.water, world.get_node("Pool/WaterArea3D"), "The float lands in the pool")
-	assert_eq(rod.bobber.get_parent(), world.get_node("Projectiles"), "The float goes through the ProjectileSpawner so peers see it")
+	assert_eq(rod.bobber.get_parent(), world.get_node("ProjectileSpawner"), "The float goes through the ProjectileSpawner so peers see it")
 	assert_eq((rod.bobber.line.mesh as ImmediateMesh).get_surface_count(), 1, "The float draws its own line back to the rod")
 
 
@@ -105,7 +105,7 @@ func test_full_loop_catches_a_fish() -> void:
 	assert_eq(action.text, "Cast", "Back to Cast after the catch")
 	assert_null(rod.bobber, "The line is back in")
 	await wait_physics_frames(2)
-	assert_true(world.get_node("Projectiles").get_children().any(func(n: Node) -> bool: return n is FishModel or n.name.ends_with("Model")), "The catch model arcs out of the water")
+	assert_true(world.get_node("ProjectileSpawner").get_children().any(func(n: Node) -> bool: return n is FishModel or n.name.ends_with("Model")), "The catch model arcs out of the water")
 	var screen: FishCaughtScreen = player.get_node("FishCaughtScreen")
 	assert_false(screen.visible, "The screen waits for the catch to arc into the hands")
 	assert_false(rod.catch_screen_timer.is_stopped(), "on the rod's timer")
