@@ -547,6 +547,14 @@ date_and_time_node = NodePath("../DateAndTime")
 sun_light = NodePath("../DirectionalLight3D")
 world_environment = NodePath("../WorldEnvironment")
 
+[node name="WeatherAudio" parent="WeatherFX" node_paths=PackedStringArray("bgs_day_clear", "bgs_day_rain", "bgs_day_storm", "bgs_night_clear", "bgs_night_rain", "bgs_night_storm")]
+bgs_day_clear = NodePath("../../BackGroundSounds/BGS_Day_Clear")
+bgs_day_rain = NodePath("../../BackGroundSounds/BGS_Day_Rain")
+bgs_day_storm = NodePath("../../BackGroundSounds/BGS_Day_Storm")
+bgs_night_clear = NodePath("../../BackGroundSounds/BGS_Night_Clear")
+bgs_night_rain = NodePath("../../BackGroundSounds/BGS_Night_Rain")
+bgs_night_storm = NodePath("../../BackGroundSounds/BGS_Night_Storm")
+
 [node name="BackGroundSounds" parent="." unique_id=1390929901 instance=ExtResource("56_bgs")]
 
 [node name="DateAndTime" type="Node" parent="." unique_id=98712301]

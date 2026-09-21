@@ -71,7 +71,7 @@ func test_a_talk_runs_the_timeline_and_the_end_lets_everyone_go() -> void:
 	assert_null(Dialogic.current_timeline)
 	assert_false(player.is_paused, "Let go when the timeline ends")
 	assert_null(npc.talker)
-	assert_eq(player.controls.prompt_action_label, "", "The label is given back")
+	assert_eq(player.controls.prompt_action_label, "Talk", "Continue is given back; the NPC, still the camera's target, offers Talk again")
 	assert_eq(ProjectSettings.get_setting(Conversation.INPUT_ACTION_SETTING), Conversation.DEFAULT_INPUT_ACTION)
 
 

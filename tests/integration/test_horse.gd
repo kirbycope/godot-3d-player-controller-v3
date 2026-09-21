@@ -181,6 +181,9 @@ func _key_face(slot: String) -> String:
 ## things, Shift and E, on the buttons that carry them, which is what was wrong before: the bottom button read
 ## [E] Gallop while [E] was what got off.
 func test_riding_lays_the_pad_out_the_way_breath_of_the_wild_does() -> void:
+	# The whole pad, not the contextual set: a resting word like Whistle is only drawn with the HUD shown in full.
+	player.hud_mode_override = PlayerSettingsResource.HudMode.SHOWN
+	await wait_process_frames(1)
 	var walking: ControlScheme = player.control_scheme
 	assert_eq(walking.scheme_name, "TotK", "On foot the Player has the game's own layout")
 	assert_eq(_key_face("button_0"), "keyboard_shift_icon_outline.svg", "which sprints on the bottom button, drawn as [Shift]")

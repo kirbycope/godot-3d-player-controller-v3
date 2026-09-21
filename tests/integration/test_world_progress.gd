@@ -77,7 +77,7 @@ func test_the_guides_errand_counts_wood_and_fish() -> void:
 	assert_eq(Dialogic.current_timeline, conversation.timeline)
 	assert_true(player.is_paused)
 	Dialogic.handle_next_event() # past the greeting, to the question
-	await wait_process_frames(2)
+	await wait_seconds(0.4) # Dialogic ignores a choice for its block delay after showing the question
 	Dialogic.Choices.select_choice(1) # "What do you need?"
 	await wait_process_frames(3)
 	assert_true(quest_log.is_active(QA_QUEST), "Taking the errand starts it")
