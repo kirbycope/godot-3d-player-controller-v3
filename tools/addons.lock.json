@@ -1,10 +1,10 @@
 {
   "3d_player_controller": {
-    "commit": "253e988897bc0ca39479cb51022f694abe29881e",
+    "commit": "841ac4ba4928992e272c75c824dc348152cea430",
     "pulled": "2026-09-21T14:09:07Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "An ability library: every ability loaded once and kept warm, for any caster\n\nAbilityLibrary (scenes/ability_library.tscn, a class_name and a placed scene rather than an\nautoload) holds one AbilityEntry child per Ability, keyed by Ability.get_id (an id, or the file\nname), and at ready instances every phase VFX once for a frame so shaders and particles compile\nbefore a first cast. A project instances it in its world, marks it editable and adds entries.\nThe Player's Abilities and NpcCaster resolve their abilities through it, so every caster shares\nthe one loaded copy, and Abilities.cast_id casts by name; without a library they keep their own.\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+    "subject": "Carry the uid sidecars of the ability library scripts\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
   },
   "GPUTrail": {
     "commit": "00a764775941c719847deeda8a31b4ebd8893895",
