@@ -64,12 +64,12 @@ func nearest_distance(point: Vector3) -> float:
 
 ## The nearest shadow within [param range] takes an interest in the float: it swims up and hovers just beside it.
 ## A shadow further off stays where it is, so the bite comes from a fish you never saw.
-func attract(point: Vector3, range: float = INF) -> void:
+func attract(point: Vector3, reach: float = INF) -> void:
 	release()
 	interested = _nearest(point)
 	if interested == null:
 		return
-	if interested.global_position.distance_to(point) > range:
+	if interested.global_position.distance_to(point) > reach:
 		interested = null
 		return
 	_tweens[interested].kill()

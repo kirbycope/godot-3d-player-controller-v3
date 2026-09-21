@@ -371,6 +371,7 @@ func _draw() -> void:
 
 ## Eight bands each way from the horizon, darker as they recede, like the original's light diminishing.
 func draw_floor_and_ceiling() -> void:
+	@warning_ignore("integer_division")
 	var band: int = HALF_VIEW / 8
 	for i: int in 8:
 		var brightness: float = 0.35 + 0.65 * i / 7.0
@@ -428,17 +429,19 @@ func draw_demons(forward: Vector2, plane: Vector2) -> void:
 		var view_depth: float = inverse_determinant * (-plane.y * relative.x + plane.x * relative.y)
 		if view_depth <= 0.1:
 			continue
-		var size: int = int(VIEW_HEIGHT / view_depth)
-		var left: int = int(WIDTH * 0.5 * (1.0 + view_x / view_depth)) - size / 2
-		var top: float = HALF_VIEW - size * 0.5
+		var sprite_height: int = int(VIEW_HEIGHT / view_depth)
+		@warning_ignore("integer_division")
+		var left: int = int(WIDTH * 0.5 * (1.0 + view_x / view_depth)) - sprite_height / 2
+		var top: float = HALF_VIEW - sprite_height * 0.5
 		var brightness: float = clampf(1.0 - view_depth / 14.0, 0.2, 1.0)
 		var tint: Color = Color(brightness, brightness, brightness, 1.0 if demon.health > 0 else 1.0 - demon.dead_time / SPLAT_TIME)
 		var texture: ImageTexture = demon_texture if demon.health > 0 else splat_texture
-		for column: int in range(maxi(left, 0), mini(left + size, WIDTH)):
+		for column: int in range(maxi(left, 0), mini(left + sprite_height, WIDTH)):
 			if view_depth >= depth[column]:
 				continue
-			var texture_x: int = (column - left) * SPRITE_SIZE / size
-			draw_texture_rect_region(texture, Rect2(column, top, 1, size), Rect2(texture_x, 0, 1, SPRITE_SIZE), tint)
+			@warning_ignore("integer_division")
+			var texture_x: int = (column - left) * SPRITE_SIZE / sprite_height
+			draw_texture_rect_region(texture, Rect2(column, top, 1, sprite_height), Rect2(texture_x, 0, 1, SPRITE_SIZE), tint)
 
 
 ## The shotgun sways with your stride, kicks back when fired and flashes at the muzzle.
@@ -495,6 +498,7 @@ func make_wall_texture(kind: int) -> ImageTexture:
 				var light: bool = y % 32 > 26 and y % 32 < 31 and x % 32 > 7 and x % 32 < 25
 				color = Color(0.12, 0.13, 0.15) if seam else (Color(0.2, 0.9, 0.3) if light else Color(0.3, 0.32, 0.36))
 			else:
+				@warning_ignore("integer_division")
 				var row_offset: int = 8 if (y / 16) % 2 == 1 else 0
 				var mortar: bool = y % 16 < 2 or (x + row_offset) % 32 < 2
 				if kind == 0:

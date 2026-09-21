@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dg4mh1wco5j7o"
-path="res://.godot/imported/Fish_31_Roughness.png-63d1e92377854fb26e199563acd21562.ctex"
+path="res://.godot/imported/Fish_31_Roughness.png-73ad8b0d33e0349121b792e2419cd496.ctex"
 metadata={
 "vram_texture": false
 }
@@ -11,7 +11,7 @@ metadata={
 [deps]
 
 source_file="res://assets/cgtrader/remofair/textures/Fish_31_Roughness.png"
-dest_files=["res://.godot/imported/Fish_31_Roughness.png-63d1e92377854fb26e199563acd21562.ctex"]
+dest_files=["res://.godot/imported/Fish_31_Roughness.png-73ad8b0d33e0349121b792e2419cd496.ctex"]
 
 [params]
 

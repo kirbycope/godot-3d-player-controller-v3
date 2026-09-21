@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://be0himy5hwcyg"
-path="res://.godot/imported/Fish_16_diffuse.png-3e31d5a4a4da83df3e85608975bbe28b.ctex"
+path="res://.godot/imported/Fish_16_diffuse.png-614b27c07c383290c699ab06db1cf19b.ctex"
 metadata={
 "vram_texture": false
 }
@@ -11,7 +11,7 @@ metadata={
 [deps]
 
 source_file="res://assets/cgtrader/remofair/textures/Fish_16_diffuse.png"
-dest_files=["res://.godot/imported/Fish_16_diffuse.png-3e31d5a4a4da83df3e85608975bbe28b.ctex"]
+dest_files=["res://.godot/imported/Fish_16_diffuse.png-614b27c07c383290c699ab06db1cf19b.ctex"]
 
 [params]
 

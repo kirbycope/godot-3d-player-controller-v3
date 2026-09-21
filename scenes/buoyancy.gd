@@ -82,8 +82,8 @@ func get_wave_displacement(xz: Vector2) -> Vector3:
 
 
 ## A wave uniform of the water material, or the shader's default when the material leaves it unset.
-func _wave_parameter(name: String, default: float) -> float:
-	var value: Variant = _material.get_shader_parameter(name)
+func _wave_parameter(parameter: String, default: float) -> float:
+	var value: Variant = _material.get_shader_parameter(parameter)
 	return value if value != null else default
 
 

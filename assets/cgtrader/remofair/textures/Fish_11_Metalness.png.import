@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c8c0u71ij3gim"
-path="res://.godot/imported/Fish_11_Metalness.png-471bbe7bcb97a49793994b6d42fa7c5c.ctex"
+path="res://.godot/imported/Fish_11_Metalness.png-d92afc24db82d59819dd76dde004b3b5.ctex"
 metadata={
 "vram_texture": false
 }
@@ -11,7 +11,7 @@ metadata={
 [deps]
 
 source_file="res://assets/cgtrader/remofair/textures/Fish_11_Metalness.png"
-dest_files=["res://.godot/imported/Fish_11_Metalness.png-471bbe7bcb97a49793994b6d42fa7c5c.ctex"]
+dest_files=["res://.godot/imported/Fish_11_Metalness.png-d92afc24db82d59819dd76dde004b3b5.ctex"]
 
 [params]
 
