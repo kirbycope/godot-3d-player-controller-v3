@@ -38,7 +38,7 @@ func _melt_away() -> void:
 
 ## The "WATER" area ([Buoyancy]) whose surface lies over [param position]: the point is within its water mesh's
 ## footprint and no higher than [constant OVER_WATER_MARGIN] above the wave surface; null over ground or in the air.
-static func find_water(tree: SceneTree, at: Vector3) -> Buoyancy:
+static func find_water(tree: SceneTree, point: Vector3) -> Buoyancy:
 	for node: Node in tree.get_nodes_in_group(&"WATER"):
 		var water: Buoyancy = node as Buoyancy
 		if water == null or water.water_mesh == null or water.water_mesh.mesh == null:
@@ -46,24 +46,24 @@ static func find_water(tree: SceneTree, at: Vector3) -> Buoyancy:
 		var size: Variant = water.water_mesh.mesh.get(&"size") # QuadMesh and PlaneMesh both have one
 		if not size is Vector2:
 			continue
-		var local: Vector3 = water.water_mesh.to_local(at)
+		var local: Vector3 = water.water_mesh.to_local(point)
 		var half: Vector2 = (size as Vector2) * 0.5
-		if absf(local.x) <= half.x and absf(local.z) <= half.y and at.y <= water.get_surface_height(at) + OVER_WATER_MARGIN:
+		if absf(local.x) <= half.x and absf(local.z) <= half.y and point.y <= water.get_surface_height(point) + OVER_WATER_MARGIN:
 			return water
 	return null
 
 
-## Freezes the water under [param at] into a slab with its top at the wave surface; null when the point is
+## Freezes the water under [param point] into a slab with its top at the wave surface; null when the point is
 ## not over water. [param from] is the node asking (the arrow, the caster's VFX root): its session's
 ## [ProjectileSpawner] spawns the slab on every peer (the server's copy comes back, a client's arrives through the
 ## spawner, so a client gets null), or without a spawner the slab is added to the current scene.
-static func freeze_at(from: Node, at: Vector3) -> IceBlock:
+static func freeze_at(from: Node, point: Vector3) -> IceBlock:
 	if from == null or not from.is_inside_tree():
 		return null
-	var water: Buoyancy = find_water(from.get_tree(), at)
+	var water: Buoyancy = find_water(from.get_tree(), point)
 	if water == null:
 		return null
-	var at: Vector3 = Vector3(at.x, water.get_surface_height(at) + TOP_ABOVE_SURFACE - SIZE.y * 0.5, at.z)
+	var at: Vector3 = Vector3(point.x, water.get_surface_height(point) + TOP_ABOVE_SURFACE - SIZE.y * 0.5, point.z)
 	var spawner: ProjectileSpawner = ProjectileSpawner.find_for(from)
 	if spawner:
 		return spawner.place(load(SCENE_PATH) as PackedScene, at) as IceBlock if spawner.multiplayer.is_server() else null
