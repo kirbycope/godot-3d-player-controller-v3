@@ -1,92 +1,92 @@
 {
   "3d_player_controller": {
     "commit": "ef96eea85f536e9b3d2cc4d3abaa24325f83ee49",
-    "pulled": "2026-09-20T05:43:58Z",
+    "pulled": "2026-09-21T14:09:07Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Keep a Player's preset name when Steam is up\n\nA display_name given before ready (a spawner's, a test's) stands; only an unnamed Player asks\nSteam for the persona name, so the label test holds whether or not Steam is running.\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+    "subject": "Keep a Player's preset name when Steam is up"
   },
   "GPUTrail": {
     "commit": "00a764775941c719847deeda8a31b4ebd8893895",
-    "pulled": "2026-09-21T02:39:35Z",
+    "pulled": "2026-09-21T14:09:15Z",
     "ref": "00a764775941c719847deeda8a31b4ebd8893895",
     "repo": "https://github.com/celyk/GPUTrail.git",
     "subject": "Set mask to null if it is not set"
   },
   "controls": {
-    "commit": "16569a90fb5cc706460c8df7806ee9ab34fea8af",
-    "pulled": "2026-09-20T05:44:08Z",
+    "commit": "6d64ddea0bf423d2e3fe4dcdb36acb89810c7486",
+    "pulled": "2026-09-21T14:09:08Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-controls.git",
-    "subject": "Let a slot's key art change live and expose the device an event names\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+    "subject": "Reconfigure the console streams after the imports, not before"
   },
   "date_and_time": {
-    "commit": "d50975dbd0d94edb87f64ed24cb6ec3d52fca243",
-    "pulled": "2026-09-20T05:44:14Z",
+    "commit": "40439ef41915c8fb95c26c341f2fd211d06dc937",
+    "pulled": "2026-09-21T14:09:10Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/date-and-time.git",
-    "subject": "Record Godot 4.8's new mipmap import keys"
+    "subject": "Reconfigure the console streams after the imports, not before"
   },
   "dialogic": {
     "commit": "e301e1bb5e62e6de22c6b7748c4372d0570bb4a7",
-    "pulled": "2026-09-21T02:39:34Z",
+    "pulled": "2026-09-21T14:09:15Z",
     "ref": "2.0-alpha-20",
     "repo": "https://github.com/dialogic-godot/dialogic.git",
     "subject": "Alpha 20 Preparations (#2787)"
   },
   "godot_doom_gdextension": {
     "commit": "4f9486f23b59ee535bc2e4b9537a8b020e140b23",
-    "pulled": "2026-09-20T05:44:27Z",
+    "pulled": "2026-09-21T14:09:13Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-doom-gdextension.git",
-    "subject": "Let go of the stick when the HUD leaves, and put the engine back on E1M1 after a level change\n\nPureDoomControls drives a synthetic joypad axis for a thumb on the stick; freed with the thumb still\ndown, the last value it sent stood in Godot's joypad state and whatever read that pad next, the\nPlayer in the scene it hands over to, walked off on its own. It now centres every axis it drove\nand releases a held weapon key on the way out of the tree. The level-changing engine test warps\nback to E1M1, since the engine is one per process and every later node inherits its level.\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+    "subject": "Let go of the stick when the HUD leaves, and put the engine back on E1M1 after a level change"
   },
   "godotsteam": {
     "archive": "https://codeberg.org/godotsteam/godotsteam/archive/baa0b1c2c16b822c9641f94f7d38558b21a3daf2.zip",
     "commit": "aa31d7208c651f80ef1fccf1be96a4e476c1abf0fb018dd72d9db7bc2929971d",
-    "pulled": "2026-09-21T03:24:42Z",
+    "pulled": "2026-09-21T14:09:16Z",
     "subject": "baa0b1c2c16b822c9641f94f7d38558b21a3daf2.zip"
   },
   "gta": {
-    "commit": "0f6b23df7b315af529dbef0e9743a2a7a4d3bb6f",
-    "pulled": "2026-09-20T05:44:21Z",
+    "commit": "1945e5f8bf224e25ce6f9241a116e5dfddeb089e",
+    "pulled": "2026-09-21T14:09:11Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/gta.git",
-    "subject": "Keep the walk-up prompt off a driver's Action button\n\nThe seat pulls the body through the detection area as a mount begins, before the Riding state is in, which put Get In back over Exit; the walk-up now checks the synchronous riding field and hiding the prompt always releases its claim.\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+    "subject": "Take the vendored addons at their latest"
   },
   "gut": {
     "commit": "aeb5d4f3f7f0a6c9b5e178876d6c99b791fda605",
-    "pulled": "2026-09-21T02:39:32Z",
+    "pulled": "2026-09-21T14:09:14Z",
     "ref": "v9.7.1",
     "repo": "https://github.com/bitwes/Gut.git",
     "subject": "Version bump, documentation for 9.7.1 release (#847)"
   },
   "midi": {
     "commit": "252157b64e9a94686b363b3cce53f195cb828aa2",
-    "pulled": "2026-09-21T02:42:52Z",
+    "pulled": "2026-09-21T14:09:16Z",
     "ref": "252157b64e9a94686b363b3cce53f195cb828aa2",
     "repo": "https://bitbucket.org/arlez80/godot-midi-player-g4.git",
     "subject": "\u30d0\u30fc\u30b8\u30e7\u30f3\u6539\u8a02"
   },
   "radi_ot": {
-    "commit": "8537966589f864914a5fdc7ee0e48bf0828465ea",
-    "pulled": "2026-09-20T05:44:25Z",
+    "commit": "fb4541341a2f21edd4876aa7cc10ffb558e8466c",
+    "pulled": "2026-09-21T14:09:12Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/radi-ot.git",
-    "subject": "Record Godot 4.8's new mipmap import keys"
+    "subject": "Reconfigure the console streams after the imports, not before"
   },
   "tcps": {
-    "commit": "6eabfbf49aee41fedbaac01b3c45bfdbcb5c2855",
-    "pulled": "2026-09-20T05:44:24Z",
+    "commit": "367630b75a5dd23e897c0de23efb0e7de9a01162",
+    "pulled": "2026-09-21T14:09:12Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/tcps.git",
-    "subject": "Move the skate park to scenes/demo and key the board's labels by action\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+    "subject": "Take the vendored addons at their latest"
   },
   "weather_fx": {
-    "commit": "080410273aa6387be71aa763b8885d200e879f1a",
-    "pulled": "2026-09-20T05:44:13Z",
+    "commit": "ef53bd495d54a46d36d6fcdb554498262eddf468",
+    "pulled": "2026-09-21T14:09:10Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/weather-fx.git",
-    "subject": "Take the wind noise textures' 3D promotion from v3"
+    "subject": "Reconfigure the console streams after the imports, not before"
   }
 }
