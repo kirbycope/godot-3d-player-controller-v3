@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://dvkmvkyajfa0y"]
 
 [ext_resource type="PackedScene" path="res://Le_Lu/Trails_VFX/Objects/cyborg_oni.glb" id="1_isbl3"]
-[ext_resource type="Shader" path="res://addons/GPUTrail-main/shaders/trail.gdshader" id="2_ey6f8"]
-[ext_resource type="Shader" path="res://addons/GPUTrail-main/shaders/trail_draw_pass.gdshader" id="3_vk3mx"]
+[ext_resource type="Shader" path="res://addons/GPUTrail/shaders/trail.gdshader" id="2_ey6f8"]
+[ext_resource type="Shader" path="res://addons/GPUTrail/shaders/trail_draw_pass.gdshader" id="3_vk3mx"]
 [ext_resource type="Texture2D" path="res://Le_Lu/Trails_VFX/textures/T_VFX_trailG.PNG" id="4_l2pa5"]
-[ext_resource type="Script" path="res://addons/GPUTrail-main/GPUTrail3D.gd" id="6_es7jf"]
+[ext_resource type="Script" path="res://addons/GPUTrail/GPUTrail3D.gd" id="6_es7jf"]
 [ext_resource type="Texture2D" path="res://Le_Lu/Trails_VFX/textures/T_VFX_Trail43.png" id="6_n0hbh"]
 [ext_resource type="Texture2D" path="res://Le_Lu/Trails_VFX/Objects/Sci-fi_Floor_001_basecolor.jpg" id="7_lvibt"]
 [ext_resource type="Texture2D" path="res://Le_Lu/Trails_VFX/Objects/Sci-fi_Floor_001_ambientOcclusion.jpg" id="8_2kdt6"]

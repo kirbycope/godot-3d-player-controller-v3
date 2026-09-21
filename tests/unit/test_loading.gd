@@ -2,7 +2,7 @@ extends GutTest
 
 const MAIN_SCENE = preload("res://scenes/main.tscn")
 const TITLE_SCREEN_SCENE = preload("res://scenes/title_screen.tscn")
-const LOADING_SCENE = preload("res://addons/3d_player_controller/scenes/loading.tscn")
+const LOADING_SCENE = preload("res://addons/3d_player_controller/scenes/ui/loading.tscn")
 
 
 func test_loading_node_initial_state() -> void:

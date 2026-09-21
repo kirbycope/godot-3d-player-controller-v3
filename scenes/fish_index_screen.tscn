@@ -36,7 +36,6 @@ font_size = 14
 font_color = Color(1, 0.85, 0.35, 1)
 
 [node name="FishIndexScreen" type="CanvasLayer"]
-visible = false
 script = ExtResource("1_screen")
 species = Array[Resource]([ExtResource("3_carp"), ExtResource("4_perch"), ExtResource("5_catfish"), ExtResource("6_trout"), ExtResource("7_koi"), ExtResource("8_boot"), ExtResource("9_crate")])
 placeholder_model = ExtResource("2_model")

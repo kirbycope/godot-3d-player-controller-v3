@@ -4,7 +4,6 @@
 .DS_Store
 .env
 .mcp/
-addons/godotsteam/win64/~libgodotsteam.windows.template_debug.x86_64.dll
 scratch/
 *.log
 wfx_*.txt
@@ -19,8 +18,7 @@ __pycache__/
 # Clones of the addon repositories, filled by tools/pull_addons.py.
 .addon_cache/
 
-# Fetched by tools/pull_addons.py and never committed here. The third-party addons beside them
-# (gut, midi, godotsteam, GPUTrail-main) are not managed by any script and stay tracked.
+# Fetched by tools/pull_addons.py and never committed here, third-party ones included.
 addons/3d_player_controller/
 addons/controls/
 addons/date_and_time/
@@ -29,6 +27,11 @@ addons/gta/
 addons/radi_ot/
 addons/tcps/
 addons/weather_fx/
+addons/gut/
+addons/dialogic/
+addons/GPUTrail/
+addons/midi/
+addons/godotsteam/
 
 # The web export is built by .github/workflows/pages.yml and handed to Pages, never committed.
 build/

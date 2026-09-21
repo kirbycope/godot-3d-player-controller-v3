@@ -68,13 +68,25 @@ func test_the_save_keeps_the_clock_the_weather_the_player_and_the_trees() -> voi
 
 func test_the_guides_errand_counts_wood_and_fish() -> void:
 	var guide: TalkingNpc = world.get_node("Guide")
+	var conversation: Conversation = guide.get_node("Conversation")
 	var log: QuestLog = player.quest_log
-	player.dialogue_screen.characters_per_second = 0.0
+	Dialogic.Settings.text_speed = 0.0
 	assert_true(guide.talk(player))
-	await wait_process_frames(1)
-	player.dialogue_screen._choice_buttons[0].pressed.emit()
+	await wait_process_frames(3)
+	assert_true(conversation.is_talking(), "Talk starts the Guide's Dialogic timeline")
+	assert_eq(Dialogic.current_timeline, conversation.timeline)
+	assert_true(player.is_paused)
+	Dialogic.handle_next_event() # past the greeting, to the question
+	await wait_process_frames(2)
+	Dialogic.Choices.select_choice(1) # "What do you need?"
+	await wait_process_frames(3)
 	assert_true(log.is_active(QA_QUEST), "Taking the errand starts it")
-	player.dialogue_screen.end()
+	assert_true(log.is_objective_done(QA_QUEST, &"talk_guide"))
+	conversation.end()
+	await wait_process_frames(3)
+	assert_false(conversation.is_talking())
+	assert_false(player.is_paused, "The Player is let go when the conversation ends")
+	assert_null(guide.talker)
 	var tree: Choppable = world.find_child("Tree01", true, false)
 	for i: int in tree.hits_to_finish:
 		tree.register_hit()

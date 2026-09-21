@@ -1,5 +1,5 @@
 {
-  "_comment": "Addons vendored into addons/ by tools/pull_addons.py. 'ref' is the branch, tag or commit to take; 'main' means always the latest. tools/addons.lock.json records what was actually taken.",
+  "_comment": "Addons fetched into addons/ by tools/pull_addons.py and git-ignored: run the script after cloning. 'ref' is the branch, tag or commit to take; 'main' means always the latest. A 'third_party' addon is somebody else's work, pinned to a release and never pushed to. tools/addons.lock.json records what was actually taken.",
   "addons": [
     {
       "name": "3d_player_controller",
@@ -40,6 +40,35 @@
       "name": "godot_doom_gdextension",
       "repo": "https://github.com/kirbycope/godot-doom-gdextension.git",
       "ref": "main"
+    },
+    {
+      "name": "gut",
+      "repo": "https://github.com/bitwes/Gut.git",
+      "ref": "v9.7.1",
+      "third_party": true
+    },
+    {
+      "name": "dialogic",
+      "repo": "https://github.com/dialogic-godot/dialogic.git",
+      "ref": "2.0-alpha-20",
+      "third_party": true
+    },
+    {
+      "name": "GPUTrail",
+      "repo": "https://github.com/celyk/GPUTrail.git",
+      "ref": "00a764775941c719847deeda8a31b4ebd8893895",
+      "third_party": true
+    },
+    {
+      "name": "midi",
+      "repo": "https://bitbucket.org/arlez80/godot-midi-player-g4.git",
+      "ref": "252157b64e9a94686b363b3cce53f195cb828aa2",
+      "third_party": true
+    },
+    {
+      "name": "godotsteam",
+      "archive": "https://codeberg.org/godotsteam/godotsteam/archive/50cc0b515b749d98940fc3bb42624b139435b6f1.zip",
+      "third_party": true
     }
   ]
 }

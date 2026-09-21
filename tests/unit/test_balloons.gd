@@ -3,7 +3,7 @@ extends GutTest
 ## Purpose: Plushies ride inside their balloons while the circle spins and only start simulating once popped.
 
 const CIRCLE_SCENE: PackedScene = preload("res://scenes/ballon_circle.tscn")
-const BULLET_SCENE: PackedScene = preload("res://addons/3d_player_controller/scenes/bullet.tscn")
+const BULLET_SCENE: PackedScene = preload("res://addons/3d_player_controller/scenes/projectile/bullet.tscn")
 
 
 func test_plushies_stay_inside_orbiting_balloons() -> void:

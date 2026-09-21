@@ -3,11 +3,11 @@
 [ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/s_master_fire_fresnel_add.tres" id="1_xxfa0"]
 [ext_resource type="Texture2D" uid="uid://sfqnk8pph4px" path="res://Le_Lu/Fire_VFX/textures/T_VFX_Noise_075.png" id="2_re2va"]
 [ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/s_Disolver_Treshold_p_fc.tres" id="3_33o2g"]
-[ext_resource type="Shader" path="res://addons/GPUTrail-main/shaders/trail.gdshader" id="4_xyejo"]
-[ext_resource type="Shader" path="res://addons/GPUTrail-main/shaders/trail_draw_pass.gdshader" id="5_rjq6w"]
-[ext_resource type="Texture2D" uid="uid://ct31fhxvcragr" path="res://addons/GPUTrail-main/defaults/curve.tres" id="6_nqxph"]
+[ext_resource type="Shader" path="res://addons/GPUTrail/shaders/trail.gdshader" id="4_xyejo"]
+[ext_resource type="Shader" path="res://addons/GPUTrail/shaders/trail_draw_pass.gdshader" id="5_rjq6w"]
+[ext_resource type="Texture2D" uid="uid://ct31fhxvcragr" path="res://addons/GPUTrail/defaults/curve.tres" id="6_nqxph"]
 [ext_resource type="Texture2D" uid="uid://d0ilo60b4vudy" path="res://Le_Lu/Fire_VFX/textures/T_FireTrail_Desat.PNG" id="7_qgkrc"]
-[ext_resource type="Script" uid="uid://000wyuy1u8wj" path="res://addons/GPUTrail-main/GPUTrail3D.gd" id="8_iydkn"]
+[ext_resource type="Script" uid="uid://000wyuy1u8wj" path="res://addons/GPUTrail/GPUTrail3D.gd" id="8_iydkn"]
 
 [sub_resource type="Gradient" id="Gradient_o61ut"]
 offsets = PackedFloat32Array(0.136585, 0.312195, 0.64878, 0.853659)

@@ -1,0 +1,12 @@
+if {quest.qa_errand} == "not_started":
+	guide: New here? Everything on this field is for trying out. I could use a hand while you are at it.
+	- What do you need?
+		[signal arg="start_quest qa_errand"]
+		[signal arg="progress talk_guide"]
+		guide: Firewood and supper. Take an axe to one of the trees, then cast a line in the pool. I will make it worth your while.
+	- Maybe later.
+elif {quest.qa_errand} == "active":
+	guide: The axes are by the spawn and the rod is a walk-over pickup. The pool is south of here.
+else:
+	guide: Wood and fish, just as asked. The apples are yours.
+[end_timeline]

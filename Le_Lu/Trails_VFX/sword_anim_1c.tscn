@@ -2,9 +2,9 @@
 
 [ext_resource type="PackedScene" path="res://Le_Lu/Trails_VFX/Objects/sword_anim1c.glb" id="1_sybjg"]
 [ext_resource type="PackedScene" path="res://fire_sword.tscn" id="2_nxu18"]
-[ext_resource type="Shader" path="res://addons/GPUTrail-main/shaders/trail.gdshader" id="3_qvqkn"]
-[ext_resource type="Shader" path="res://addons/GPUTrail-main/shaders/trail_draw_pass.gdshader" id="4_bcskn"]
-[ext_resource type="Script" path="res://addons/GPUTrail-main/GPUTrail3D.gd" id="5_dn06t"]
+[ext_resource type="Shader" path="res://addons/GPUTrail/shaders/trail.gdshader" id="3_qvqkn"]
+[ext_resource type="Shader" path="res://addons/GPUTrail/shaders/trail_draw_pass.gdshader" id="4_bcskn"]
+[ext_resource type="Script" path="res://addons/GPUTrail/GPUTrail3D.gd" id="5_dn06t"]
 [ext_resource type="Texture2D" path="res://Le_Lu/Trails_VFX/textures/T_VFX_FireDrag.PNG" id="5_k47po"]
 [ext_resource type="Texture2D" path="res://Le_Lu/Trails_VFX/textures/text1.png" id="7_m7f5f"]
 

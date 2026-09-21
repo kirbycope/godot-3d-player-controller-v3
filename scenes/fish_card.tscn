@@ -32,7 +32,6 @@ outline_size = 4
 outline_color = Color(0, 0, 0, 1)
 
 [node name="FishCard" type="PanelContainer"]
-visible = false
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5

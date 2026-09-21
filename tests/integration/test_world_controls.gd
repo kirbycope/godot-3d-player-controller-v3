@@ -8,7 +8,7 @@ extends GutTest
 ## the Player alone.
 
 const WORLD_SCENE: PackedScene = preload("res://scenes/world.tscn")
-const TOTK: ControlScheme = preload("res://addons/3d_player_controller/resources/control_schemes/totk.tres")
+const TOTK: ControlScheme = preload("res://addons/3d_player_controller/resources/control_schemes/tears_of_the_kingdom.tres")
 
 var world: Node
 var player: Player

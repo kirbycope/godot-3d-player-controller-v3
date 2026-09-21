@@ -17,6 +17,7 @@ func before_each() -> void:
 		if not InputMap.has_action(action):
 			InputMap.add_action(action)
 	screen = SCREEN_SCENE.instantiate() as FishCaughtScreen
+	screen.hide() # as world_player.tscn does; the scene itself saves visible so it can be seen in the editor
 	add_child_autofree(screen)
 	await wait_process_frames(1)
 

@@ -28,7 +28,7 @@ const STEAM_LOBBY_TYPE_PUBLIC: int = 2
 ## The pad layout this world is played on, put on the Player as it spawns. Tears of the Kingdom's, the one the
 ## world was built around: Focus locks on, the bottom button dashes and the right one is Action. Clear it to
 ## leave the Player on whatever its own scene or the settings menu chose.
-@export var control_scheme: ControlScheme = preload("res://addons/3d_player_controller/resources/control_schemes/totk.tres")
+@export var control_scheme: ControlScheme = preload("res://addons/3d_player_controller/resources/control_schemes/tears_of_the_kingdom.tres")
 ## Forces the whole on-screen control HUD. Off, the saved On-Screen setting decides: Auto by default, so the
 ## buttons show on a touchscreen and otherwise only as contextual hints. The demo levels draw the whole set,
 ## which is where a layout is checked.

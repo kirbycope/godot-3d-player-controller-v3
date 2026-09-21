@@ -12,8 +12,8 @@ Click [here](https://timothycope.com/godot-3d-player-controller-v3/) to play!
 
 ## Addons
 
-Each addon is developed in its own repository and vendored into `addons/` here (see
-[The addons are vendored](#the-addons-are-vendored-not-submodules)), and **its README is where its
+Each addon is developed in its own repository and fetched into `addons/` here (see
+[Running and testing](#running-and-testing)), and **its README is where its
 features are documented**. This file covers only what belongs to the game project.
 
 | Addon | Repository | What it provides |
@@ -26,9 +26,10 @@ features are documented**. This file covers only what belongs to the game projec
 | `addons/tcps` | [tcps](https://github.com/kirbycope/tcps) | The skateboard |
 | `addons/radi_ot` | [radi-ot](https://github.com/kirbycope/radi-ot) | Internet radio, played through the car |
 | `addons/godot_doom_gdextension` | [godot-doom-gdextension](https://github.com/kirbycope/godot-doom-gdextension) | PureDOOM as a GDExtension, plus a fallback raycaster |
+| `addons/dialogic` | [dialogic](https://github.com/dialogic-godot/dialogic) (third party, 2.0 alpha 20) | The dialogue system: timelines, characters, the text box, choices and conditions |
 
-The third-party addons (`gut`, `midi`, `godotsteam`, `GPUTrail-main`) are other people's work and
-are not in `addons.json`; the pull script leaves them alone. See
+The third-party addons (`dialogic`, `gut`, `midi`, `godotsteam`, `GPUTrail`) are other people's work.
+They are fetched by the same script, pinned to a release, and never pushed to. See
 [Third-party addons](#third-party-addons) for each one's author, licence and upstream.
 
 ---
@@ -59,11 +60,17 @@ the click or touch goes straight into the single-player world; there is no Steam
   `enemy_spellcaster.tscn`): a swordsman, an archer, a rifleman and a spellcaster east of the spawn.
   They hunt over the navmesh, attack in reach, take headshots, and leash back to their post like a
   WoW mob. The scripts (`EnemyNpc`, `NpcCaster`, `FollowerNpc`) and the base scene are the addon's
-  now; this project's `scenes/enemy_npc.tscn` inherits it and hangs the weather addon's flame under
+  now; this project's `scenes/npc/enemy_npc.tscn` inherits it and hangs the weather addon's flame under
   `BurnVFX`, and the four enemies inherit that, each with its N-Hance weapon.
-- **The Guide** (`TalkingNpc`, `resources/dialogues/qa_guide.tres`, `resources/quests/qa_errand.tres`):
-  stands by the spawn with an errand: talk to him, fell a tree with an axe and land a fish, and he pays
-  three apples. `world.gd` reports the tree through every `Harvestable`'s `depleted` signal and
+- **The Guide** (`TalkingNpc` with a `Conversation` under it, `scenes/conversation.gd`,
+  `resources/dialogues/qa_guide.dtl` and `guide.dch`, `resources/quests/qa_errand.tres`): stands by the
+  spawn with an errand: talk to him, fell a tree with an axe and land a fish, and he pays three apples. The
+  addon's NPC only offers Talk, holds the Player still and emits `talked_to`; the conversation itself is
+  [Dialogic](https://github.com/dialogic-godot/dialogic), this project's. `Conversation` publishes the quest
+  log to Dialogic as `{quest.<id>}` (`not_started`, `active`, `complete`) and `{objective.<id>}`, so the
+  timeline branches on them, and the timeline drives the log back through Dialogic's signal event:
+  `[signal arg="start_quest qa_errand"]`, `[signal arg="progress talk_guide"]`. The Action button advances
+  the text, Start ends the conversation, and the bottom-action label reads Continue. `world.gd` reports the tree through every `Harvestable`'s `depleted` signal and
   `FishingLog.record_catch` reports the fish. The tracker sits top right and the Quests page is in the
   pause menu.
 - **Checkpoint, kill zone and saving**: the beacon west of the spawn is the addon's `Checkpoint`; the
@@ -170,317 +177,27 @@ python tools/pull_addons.py
 git config core.hooksPath .githooks   # once per clone, see below
 ```
 
-`addons/` is git-ignored for everything the manifest manages, so a fresh clone has empty addon
-folders until that runs. The four third-party addons beside them (`gut`, `midi`, `godotsteam`,
-`GPUTrail-main`) are not managed by any script and are committed here as normal files.
+`addons/` is git-ignored for everything the manifest manages, which is all of it, so a fresh clone has
+empty addon folders until that runs. The third-party addons are `"third_party": true` entries, pinned to
+a release tag or commit (GodotSteam, published only as an archive, to an `"archive"` URL), and
+`push_addons.py` never touches them.
 
-### The addons are vendored, not submodules
+### The third-party addons are pulled too, and only ever pulled
 
-Each addon is developed in its own repository, and a copy of it lives here under `addons/<name>/`,
-fetched rather than committed. `tools/addons.json` names the repository and branch each copy comes
-from, and `tools/addons.lock.json` records the exact commit each was taken at, so what is in the
-working tree is always traceable upstream even though it is not in this repository's history.
-
-Two scripts move code between here and those repositories. Both keep a clone of each addon under
-`.addon_cache/` (git-ignored) and compare by content, so only real changes show up.
-
-```powershell
-python tools/pull_addons.py                     # take the latest of every addon
-python tools/pull_addons.py controls gta        # only these
-python tools/pull_addons.py --dry-run           # report, change nothing
-python tools/pull_addons.py --locked            # the commits in the lock file, not the branch tip
-```
-
-`pull_addons.py` is the install step. It mirrors each addon's payload into `addons/<name>/` and
-rewrites the lock file. The addon's own scaffolding is never vendored: its `demo/` project,
-`.github/` workflows and git metadata stay upstream, while `scenes/demo/`, the demo scene inside the
-addon, is part of the addon and comes along.
-
-One file the mirror never touches: overwriting a DLL that a running program has loaded, the DOOM
-GDExtension held by an open Godot editor for instance, cannot delete the old file, so Windows swaps
-the new one in and parks the old one beside it, hidden, as `~<name>~RF<hex>.TMP`. The pull sweeps up
-any it can remove and names the file that is still held; `push_addons.py` neither copies one into an
-addon's clone nor counts it as a change, so the pre-push hook stays quiet. Close the editor and pull
-again and the leftover goes. `python -m unittest tools/test_addon_common.py` holds that behaviour.
-
-A mirror also copies over a file that differs, which for a long time included a file edited here and
-never pushed. That is how the swim animations' hand-tuned Hips heights were lost twice: the pull
-counted them among "file(s) in" and said nothing about what it had written over. Deleting local work
-stopped the pull; silently replacing it did not.
-
-Telling the two apart needs `tools/addons.lock.json`. A file that differs from the commit the lock
-recorded was changed *here*; one that differs from the incoming commit is about to be *overwritten*.
-Only a file that differs from both is at risk, and the pull now stops on those as well, which keeps
-it quiet about an addon whose lock has merely fallen behind:
-
-```
-3d_player_controller  2e68721  STOPPED: 1 file(s) edited here since the last pull
-                        assets/mixamo/animations/root_motion/Swimming.tres
-                      push them first with tools/push_addons.py, or re-run with --force to overwrite
-```
-
-`--dry-run` reports the same files as `WOULD OVERWRITE` without stopping, and `--force` says
-`OVERWRITING` and does it anyway. `python -m unittest tools/test_addon_common.py` holds that
-behaviour.
-
-Because it is a mirror, a file sitting in `addons/<name>/` that upstream does not have would be
-deleted. That is how an upstream removal reaches this project, but it is also how unpushed work
-would be lost, so **the pull stops rather than delete anything**, names the files and leaves that
-addon untouched:
-
-```
-3d_player_controller  18686a7  STOPPED: 8 local file(s) are not upstream
-                        assets\mixamonimations\source\Sitting Typing.fbx
-                        ...
-                      push them first, or re-run with --force to delete them
-```
-
-So the rule is **push before you pull**. `--force` is there for when the local files really are
-rubbish, but note that `addons/` is not committed here, so a forced pull is the one place where
-unpushed addon work is genuinely lost: there is no `git checkout` to bring it back.
-
-### Working on an addon from here
-
-Edit the addon in place under `addons/<name>/`, against the whole game, then send it upstream:
-
-```powershell
-python tools/push_addons.py --dry-run                         # always look first
-python tools/push_addons.py -m "fix the swim ledge ray"       # commit and push each addon that differs
-git add addons tools/addons.lock.json
-git commit -m "..."
-git push origin main
-```
-
-`push_addons.py` copies `addons/<name>/` over **that addon's own clone under `C:\GitHub`**, and
-where that produces a change, commits it there and pushes to the branch `addons.json` names. Going
-through the local clone rather than a hidden cache means that copy ends up holding the change too,
-instead of quietly falling behind its own origin; a clone with uncommitted work of its own is
-skipped rather than written over. `--no-push` commits without pushing, and naming an addon limits it
-to that one.
-
-Because `addons/` is not committed here, **nothing in this repository's history records an addon
-change**, which is the easy mistake: push the project, forget the addon, and the work exists only on
-this machine. A `pre-push` hook catches it:
-
-```powershell
-git config core.hooksPath .githooks   # once per clone
-```
-
-`.githooks/pre-push` runs `push_addons.py --dry-run` and refuses the push while any addon differs
-from its repository, naming the addon and the files. `git push --no-verify` bypasses it for one
-push.
-
-It pushes straight to the addon's `main`, with no branch and no pull request. That has one
-consequence worth remembering: `godot-3d-player-controller-addon` is the only addon that still
-publishes releases, and its `release-addon.yml` fires on a merged pull request, never on a direct
-push. So a player controller change sent this way cuts no release. Cut one when it is wanted by
-running that workflow from the Actions tab (`workflow_dispatch`), or by putting a later change
-through a pull request.
-
-Two more things to know. Run an addon's own tests in its own repository, against that repository's
-`demo/` project, rather than from here. And other projects vendor these addons too, so a push from
-here does not reach `seattle-emerald-city`, `gta` or `tcps`; update each of those separately.
-
-Open the project in Godot 4.8+ and run `scenes/main.tscn`, or the world directly with
-`scenes/world.tscn`.
-
-The project renders with D3D12 on Windows and sets
-`rendering/rendering_device/d3d12/max_resource_descriptors` to 1000000 (the Tier 3 hardware limit) in
-`project.godot`. The default of 16384 is exhausted once the editor has the world, player and main
-scenes open, and 131072 still ran out on some launches; every draw then fails with
-`Uniforms were never supplied for set (1)` spammed thousands of times in the Output panel, preceded
-once by `Cannot create uniform set because there's not enough room in the RESOURCES descriptor heap`.
-If it ever returns, that heap message is the one to look for.
-
-Each addon owns its own tests and runs them in its own repository against that repository's `demo/`
-project, which imports a fraction of this project's assets. This project runs only its own two
-suites:
-
-```powershell
-& 'C:\Godot\godot.exe' --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests/unit,res://tests/integration -gexit
-```
-
-### Two-machine Steam tests
-
-`tests/steam/` is a third suite that runs the game over a real Steam lobby: one Godot on this PC as
-the lobby host and one on the Mac as the client, each signed into its own Steam account, both
-against Spacewar (app id 480). It is the only place the multiplayer is exercised end to end rather
-than over ENet on localhost, so it covers what the world does between two peers: the session and
-who is who, text chat, push-to-talk, emotes, weather, the car and its radio, the horse's whistle and
-saddle, equipment, stealth, the little buddy, the giant duck, harvesting, the boat, a sign, drops
-and pickups, the training dummy, the torch, the retro computer, shooting, a thrown rock, the fishing
-float, the skateboard and a spell. Where something turned out not to cross the network the scenario
-says so in a pending test rather than pretending: the skateboard under a rider.
-
-```powershell
-python tools/steam_test.py                      # the host here, the client on the Mac over SSH
-python tools/steam_test.py --select test_07     # one scenario, by filename substring
-python tools/steam_test.py --role host          # one side by hand; give the other the same --run-id
-python tools/steam_test.py --windowed           # drop --headless if Steam or rendering wants a window
-```
-
-The runner makes a run id, launches both sides at once with `STEAM_TEST_ROLE` and `STEAM_TEST_ID`
-in their environment, streams both outputs with a `[host]` or `[client]` prefix, copies the Mac's
-JUnit XML back into `.steam_test/` and exits non-zero when either side failed or never reported.
-This PC resolves `Timothys-MacBook-Pro.local` only some of the time, so the runner reaches the Mac
-by IP (`--mac`, default `192.168.4.41`, printed at launch) and the client is not a foreground SSH
-command: it starts detached under `nohup` with its output in `.steam_test/client.log` on the Mac,
-the launch is retried while the name does not resolve, and the log and exit code are polled with
-short SSH calls that tolerate a failure. Godot runs there under `caffeinate -dis`, which keeps the
-Mac awake for exactly as long as the run lasts; that is the rule for every long SSH job on the Mac,
-and a bare `caffeinate` is never left running on its own. Every wait in the lockstep has a hard
-timeout that fails the test, and a side whose peer has left the session gives up its waits at once.
-The host's world creates a public lobby as it always does and tags it `steam_test=<run id>`; the
-client asks Steam for lobbies with exactly that tag, every two seconds for up to three minutes, joins it
-and loads the world, and both wait until two Players stand in it. From then on the two sides run
-the same scenario files in the same order and hand off through `SteamTestSync`, a node under
-`/root` with the same path on both machines: `mark(step)` tells the other side a step is done,
-`await_step(step)` waits for it, `barrier(step)` does both. Every assertion sits on the side that
-sees the effect. Both machines run headless; GodotSteam initialises without a window on either.
-
-It never runs in CI, and it is not in `.gutconfig.json`. It needs two machines signed into two
-Steam accounts with a lobby between them, which a runner does not have; the CI workflow runs GUT
-with `.gutconfig.json`, whose directories are the addon suites, `tests/unit` and
-`tests/integration`, with `include_subdirs` off, so `tests/steam` is never collected there.
-
-The runner passes `-gfailure_error_types=gut,push_error`, so an engine error line on its own does
-not fail a scenario. The game's authority handoffs (a horse mounted, the buddy picked up) and the
-spawner's despawn of a node a peer has already let go log bursts of `Ignoring sync data from
-non-authority` and `ERR_UNAUTHORIZED` on a run that behaves; the assertions are what count, and a
-lockstep timeout still fails through `push_error`.
-
----
-
-## Example resources
-
-The spells, fish, lures and items a designer edits are `.tres` files, and they live at two levels:
-
-- **Addon folders** hold only examples for that addon's own demo and tests, and reference nothing
-  outside the addon. Each addon documents its own:
-  [inventory](addons/3d_player_controller/inventory/README.md#example-resources),
-  [3D Player Controller](addons/3d_player_controller/README.md#example-resources),
-  [radi-ot](addons/radi_ot/README.md#custom-stations--collections-tres).
-- **`resources/` at the project root** holds this game's content. It may reference project scripts
-  (`scenes/*_ability.gd`, `scenes/fish.gd`, `scenes/lure.gd`), project assets and the addons.
-
-So `resources/spells/qa_tree.tres` and `addons/3d_player_controller/inventory/resources/spell_tree_demo.tres`
-are two different trees: the QA world plays the first, the inventory demo plays the second.
-
-| File | Class (script) | What it is | Used by | Tests that load it |
-|---|---|---|---|---|
-| `resources/spells/qa_tree.tres` | `SpellTree` (`addons/3d_player_controller/inventory/scripts/spell_tree.gd`) | The QA world's tree: every project ability plus Stealth, 12 nodes | `scenes/world_player.tscn` (`Inventory/Spellbook.tree`, with 6 skill points) | Anything that instances `world_player.tscn`: `tests/unit/test_world_player_connector.gd`, `tests/integration/test_fishing_extras.gd` |
-| `resources/abilities/*.tres` (11) | `DamageAbility` (`firebolt`, `fireball`, `frostbolt`, `lightning_bolt`), `AreaDamageAbility` (`consecration`), `ShadowstepAbility`, `MeleeAbility` (`sword_slash`), `LightningAbility`, `ChainLightningAbility`, `FreezeAbility` (`freeze`), all in `scenes/*_ability.gd`; `flash_of_light` is the addon's `HealAbility` | The shipped spells | `world_player.tscn` (`Abilities.abilities` starts with Stealth and Flash of Light; the rest come through the tree), `scenes/enemy_spellcaster.tscn` (Firebolt and the addon's Heal) | `tests/unit/test_wow_spells.gd` (loads `fireball`, `frostbolt`, `consecration`, `shadowstep`, `flash_of_light`, `firebolt`, `freeze` by file name), `test_lightning_spells.gd` (`lightning`, `chain_lightning`), `test_melee_ability.gd` (`sword_slash`) |
-| `resources/fish/*.tres` (7) | `Fish` (`scenes/fish.gd`, extends the inventory's `Item`) | Five species (`carp`, `perch`, `catfish`, `rainbow_trout`, `koi`) and two pieces of junk (`old_boot`, which bites on a bare hook, and `boot_crate`, which only takes a worm); each carries `bare_hook_chance`; the shared icons `fish.svg`, `boot.svg`, `crate.svg` sit beside them | The pool's water in `scenes/world.tscn` (`Pool/WaterArea3D`, its `Buoyancy.fish` table is what bites there) and `scenes/fish_index_screen.tscn` (`FishIndexScreen.species`, the Fish Index order) | `tests/unit/test_fishing.gd`, `test_fishing_rules.gd`, `test_fish_index_models.gd`, `tests/integration/test_fishing_extras.gd`, `test_fishing_sync.gd`, `test_fishing_world.gd` |
-| `resources/lures/*.tres` (3) | `Lure` (`scenes/lure.gd`, extends `Item`) | `worm`, `fly`, `chum`, all consumable (a bite eats one and the next goes on), with `worm.svg` and `fly.svg` | `worm` is in the QA kit (`STARTING_ITEMS` in `scenes/world.gd`) and is what the catfish and the crate of boots bite on; the trout wants `fly`; `chum` is what a shot fish turns into (`Pool/FishShadows.chum` in `world.tscn`) | `test_fishing.gd`, `test_fishing_rules.gd`, `test_fishing_extras.gd`, `test_fishing_world.gd`, `tests/integration/test_world.gd` |
-| `resources/items/*.tres` (6) | `AmmoItem` (`addons/3d_player_controller/scripts/ammo_item.gd`, extends the inventory's `Item`) | Ammunition: `arrow`, `fire_arrow`, `ice_arrow` (bow), `pistol_magazine`, `rifle_clip`, `rifle_clip_incendiary` (rifle); the special kinds name their `projectile_scene` under `scenes/` | The QA kit in `scenes/world.gd` | `tests/integration/test_world.gd` (the plain three; the addon's `test_ammo_items.gd` builds its own) |
-| `resources/audio/*.tres` (6) | `AudioStreamRandomizer` | The guns' sounds: `pistol_shot`, `rifle_shot`, `pistol_reload`, `rifle_reload` (three takes each) and the shared `gun_draw` / `gun_holster`, over the 96 kbps Vorbis clips in `assets/gravitysound/Gun SFX/` | The pistol's and rifle's `FireAudio` / `ReloadAudio` nodes and `equip_sfx` / `stow_sfx` in `scenes/world.tscn` | `tests/integration/test_shooting_world.gd` |
-| `resources/items/rock.tres`, `apple.tres` | `Item` | Throwables: `throwable` on both, the rock with `throw_damage` 5 and `scenes/rock.tscn` (the ore mesh at 0.3) as its model, the apple a consumable food that flies as its icon | The QA kit in `scenes/world.gd`; the seeker wheel lists them when not aiming | `tests/integration/test_world.gd`, the addon's `test_throwables.gd` |
-| `resources/items/dagger.tres` | `Item` | Equipment: `equipment_scene` is `scenes/dagger.tscn`, the world dagger's model and hand offsets with `is_throwable` and `throw_damage` 10; it lands as its own walk-over scene | The QA kit, stowed on spawn | `tests/integration/test_world.gd` |
-
-Not examples, just engine resources the scenes use: `resources/enemy_replication.tres` (a
-`SceneReplicationConfig` for `enemy_npc.tscn`), `resources/horse_replication.tres`,
-`resources/duck_replication.tres`, `resources/little_buddy_replication.tres`, `resources/vfx/`
-(the harvestables' chip particles) and `resources/pool_water_material.tres` (the pool's
-`ShaderMaterial`).
-
-**Adding a spell tree.** New Resource, `SpellTree`, save it under `resources/spells/`. Select the file
-in the FileSystem dock and the Spell Tree bottom panel opens (the inventory's
-`editor/spell_tree_editor.gd`); its palette lists every `.tres` whose script class extends `Ability`,
-from any folder. Assign the tree to `Inventory/Spellbook.tree` in the player scene, as
-`world_player.tscn` does.
-
-**Adding an ability.** New Resource, pick the class (`DamageAbility`, `AreaDamageAbility`,
-`MeleeAbility`, `ShadowstepAbility`, `LightningAbility`, `ChainLightningAbility` from
-`scenes/*_ability.gd`, or the addon's `HealAbility` and `StealthAbility`), or extend `Ability` in a
-new script under `scenes/`. Save it under `resources/abilities/`. The addon's README documents the
-fields. `test_wow_spells.gd` loads the shipped spells by file name, so renaming one breaks that test.
-
-**Adding a fish.** New Resource, `Fish`, save it under `resources/fish/`. A Fish is an Item, so it
-keeps `id`, `display_name`, `description`, `icon` (the shared `fish.svg`, tinted by `color`),
-`category`, `max_stack` and `consumable`, then adds the fishing fields: `from_hour` / `to_hour` (a
-later `from_hour` wraps past midnight), `rain`, `lures` (empty bites on anything), `biomes` (empty is
-every water), `weight`, `min_length_cm` / `max_length_cm`, `attract_range`, `shadow_scale`, `is_junk`
-and `model_scene`. Add it to the water's `fish` array in `world.tscn` and to `species` in
-`fish_index_screen.tscn`. The fishing tests preload species by file name.
-
-**Adding an item or a lure.** New Resource, `Item` (or `Lure` for bait: `bite_time_scale`,
-`attract_range_bonus`, and `consumable` means a bite eats it), save it under `resources/items/` or
-`resources/lures/`. Hand it out with the inventory's `item_pickup.tscn` in the level, or add it to
-`STARTING_ITEMS` in `world.gd` for the QA kit.
-
----
-
-## Web export
-
-The `Web` preset in `export_presets.cfg` exports only what the listed scenes reach
-(`export_filter="scenes"`) plus the include filter. Two rules keep that working. Anything a script
-reaches only by `preload`, `load` or a path in a String property (the pause menu's screens, the wind
-and lightning bolt scenes, spell projectiles) is not a scene dependency and has to be ticked in the
-export dialog, so it lands in `export_files`; tick those, not whole asset packs, since every ticked
-scene and all it reaches is exported (the VFX packs ticked wholesale made a 127 MB pack, over
-GitHub's 100 MB file limit; the referenced 79 scenes make 81 MB). The exporter takes dependencies from
-the editor's filesystem cache, `.godot/editor/filesystem_cache10`, not from the files; if a scene's
-files go missing from the pack although the scene is in it, delete that cache and export again.
-`tools/pck_report.py` on the exported pack shows what got in, and `tools/pck_missing.py` lists what it
-should carry but does not (a preload in a packed script, a scene a packed `.tres` names). A
-scene-filtered export walks only the scenes in `export_files`, so a listed `.tres` is copied but never
-walked. The include filter lists `*.gdshaderinc` (shader include files are not resources; without them
-the BinbunVFX shaders fail in the browser with `#include` errors) and every image extension, because a
-material that comes in through the `*.tres` filter is not walked for its textures, which is how the
-horse lost its saddle. Everything (`all_resources`) would be a 204 MB pack, so the scene list stays.
-GodotSteam has no wasm32 build and logs a warning at export; the code guards Steam behind
-`OS.has_feature("web")`.
-
-Nothing built is committed any more: GitHub Actions exports the Pages demo, so the 100 MB file
-limit no longer bears on anything in this repository. Download size still matters to a player
-waiting on the web build, and audio is the lever that is left: every looping ambience clip is a 60 s
-Vorbis stream, and the six weather_fx forest loops came in at about 500 kbps (4 MB each) until they
-were re-encoded to 96 kbps (`ffmpeg -c:a libvorbis -q:a 2`, 0.8 MB each) along with the heavier rain
-and wind loops. Keep new loops at that quality, since a `.ogg` goes into the pack byte for byte.
-
-Textures are not a lever here at all now. They import Lossless at full resolution
-(`[importer_defaults]` in `project.godot`, and every `.import` beside a texture), with
-`detect_3d/compress_to` on so the editor promotes one to VRAM Compressed when it sees it used in 3D.
-The web build alone caps the largest edge at 512, and because a size limit is an import-time setting
-rather than an export one, `python tools/web_texture_cap.py --size 512` runs in CI ahead of the
-import pass; nothing it changes is committed.
-
-`python tools/texture_import_policy.py` puts a repository back on that policy and `--check` reports
-without writing. `tests/unit/test_texture_import_policy.gd` asserts it on every run, because the old
-rule (Lossy at a 512 cap, promotion disabled) was a way of squeezing a committed `.pck` under the
-100 MB limit and cost real data in normal maps and ORM masks to buy nothing at run time.
-
-`tools/web_smoke_test.py` serves `docs/` and drives the export in headless Chromium through Playwright
-(`pip install playwright && playwright install chromium`): click to start, straight into the world,
-failing on any error the engine or the page logs, with screenshots and the console under
-`scratch/web_smoke/`. `python tools/tinyify.py <folder>` compresses the PNGs under a folder
-losslessly with Pillow, never resizing, and stamps them with `TINYIFY_*` metadata so they are
-skipped next time.
-
----
-
-## Credits & Asset Attributions
-
-### Third-party addons
-
-The addons written here come from their own repositories (see [Addons](#addons)) and are managed by
-`tools/pull_addons.py`. These four are other people's work, copied into `addons/` by hand and not
-listed in `tools/addons.json`, so the pull script never touches them.
-
-They are updated by hand rather than by script, because they are not developed here and their
-upstreams do not publish the addon at a repository root the way ours do: `gut` sits at `addons/gut/`
-inside a Godot project and `midi` at `addons/midi/`, while the two GodotSteam pieces ship through
-releases and the asset library. `GPUTrail-main` is the odd one out, an asset of this project rather
-than part of any addon developed here, kept as a copy of a downloaded zip (hence the `-main`
-suffix); the Le Lu trail effects are what use it. All four must credit their upstream rather than be
-republished as ours.
+None of them is developed here, so none is pushed to: `push_addons.py` skips a `third_party` entry, and a
+change one of them needs goes upstream, never into a fork. Each is pinned in `tools/addons.json`: `gut`
+and `dialogic` to a release tag, `midi` and `GPUTrail` to a commit (neither upstream tags releases), and
+`godotsteam` to an archive of the commit on its `gdextension-plugin` branch that carries the 4.21 binaries,
+since that plugin is published as a zip rather than at a repository root. All five must credit their
+upstream rather than be republished as ours.
 
 | Addon | What it is | Author | Version | License (as recorded in folder) | Upstream |
 | --- | --- | --- | --- | --- | --- |
+| `addons/dialogic` | Dialogic 2, the dialogue system the Guide talks through | Jowan Spooner, Emi, Cake, Zak and contributors | 2.0 alpha 20 | MIT (`LICENSE` upstream) | https://github.com/dialogic-godot/dialogic |
 | `addons/gut` | Godot Unit Test, the test runner the whole suite uses | Butch Wesley | 9.7.1 | MIT (`LICENSE.md`) | https://github.com/bitwes/Gut |
-| `addons/midi` | Godot MIDI Player, the SoundFont synthesiser DOOM's music plays through | arlez80 (Yui Kinomoto) | 4.5.0 | MIT (`LICENSE.txt`) | https://bitbucket.org/arlez80/godot-midi-player-g4 |
-| `addons/godotsteam` | GodotSteam GDExtension Updater; the Steamworks binding itself is the GDExtension it updates | GP Garcia, Chris Ridenour and contributors | 4.21 | MIT (`license.md`) | https://godotsteam.com |
-| `addons/GPUTrail-main` | GPUTrail; an asset of this project rather than part of any addon here, used by the Le Lu trail effects | celyk | 0.1 | MIT (`LICENSE`) | https://github.com/celyk/GPUTrail |
+| `addons/midi` | Godot MIDI Player, the SoundFont synthesiser DOOM's music plays through | arlez80 (Yui Kinomoto) | 4.5.0 | MIT (upstream `readme.md`) | https://bitbucket.org/arlez80/godot-midi-player-g4 |
+| `addons/godotsteam` | GodotSteam GDExtension Updater; the Steamworks binding itself is the GDExtension it updates | GP Garcia, Chris Ridenour and contributors | 4.21 | MIT (`license.md`) | https://codeberg.org/godotsteam/godotsteam (branch `gdextension-plugin`) |
+| `addons/GPUTrail` | GPUTrail, used by the Le Lu trail and fire effects | celyk | 0.1 | MIT (`LICENSE`) | https://github.com/celyk/GPUTrail |
 
 ### Assets
 
@@ -533,7 +250,7 @@ Third-party assets under `assets/`, with the license as recorded in each folder'
 | `addons/tcps/assets/sketchfab/skateboard` | Skateboard | Jamoues | CC BY 4.0 | https://sketchfab.com/3d-models/skateboard-0f7b8ea366654674b217a743959798e7 |
 | `assets/tommusic`, `addons/3d_player_controller/assets/tommusic` | Fantasy SFX (torch loop, impacts, spell sounds, the horse's Idle calls; the bow and sword attack, hit, sheath and unsheath sets live in the addon under `fantasy_sfx/Attacks/`) | TomMusic | not recorded - fill in (`ReadMe.txt` has no license) | https://tommusic.itch.io/ |
 | `Le_Lu/` | Fire, Elemental (Elementary Pack), Explosions, Full Screen, Healing & Protection, Level Up, Loot Drop, Magic Area, Puff, Smoke, Stylized Smoke, Trails, Vertical Beam and Wind VFX packs | Le Lu | not recorded - fill in (Patreon packs, no license file) | https://www.patreon.com/Le_Lu (each pack folder has a `.url` to its post) |
-| `addons/GPUTrail-main` | GPUTrail3D (used by the Le Lu fire projectiles) | celyk | MIT (`LICENSE`) | https://github.com/celyk/GPUTrail |
+| `addons/GPUTrail` | GPUTrail3D (used by the Le Lu fire projectiles) | celyk | MIT (`LICENSE`) | https://github.com/celyk/GPUTrail |
 
 Icons in the player addon HUD come from [Game-icons.net](https://game-icons.net) (**CC BY 3.0**, by
 Lorc, Delapouite and contributors) and [Kenney](https://kenney.nl) input prompts (**CC0**).

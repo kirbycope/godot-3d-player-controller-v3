@@ -7,11 +7,11 @@
 [ext_resource type="ArrayMesh" uid="uid://dlwx0ortvlt74" path="res://Le_Lu/Fire_VFX/objects/sm_teardrop2_high.obj" id="5_glqn6"]
 [ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/s_Disolver_Treshold_p_fc.tres" id="6_nxfoa"]
 [ext_resource type="Texture2D" uid="uid://bcl2qy81x1wcj" path="res://Le_Lu/Fire_VFX/textures/T_VFX_Flare_251.jpg" id="7_wp4jl"]
-[ext_resource type="Shader" path="res://addons/GPUTrail-main/shaders/trail.gdshader" id="8_wn8wt"]
-[ext_resource type="Shader" path="res://addons/GPUTrail-main/shaders/trail_draw_pass.gdshader" id="9_8fvm1"]
-[ext_resource type="Texture2D" uid="uid://ct31fhxvcragr" path="res://addons/GPUTrail-main/defaults/curve.tres" id="10_mu0kx"]
+[ext_resource type="Shader" path="res://addons/GPUTrail/shaders/trail.gdshader" id="8_wn8wt"]
+[ext_resource type="Shader" path="res://addons/GPUTrail/shaders/trail_draw_pass.gdshader" id="9_8fvm1"]
+[ext_resource type="Texture2D" uid="uid://ct31fhxvcragr" path="res://addons/GPUTrail/defaults/curve.tres" id="10_mu0kx"]
 [ext_resource type="Texture2D" uid="uid://d0ilo60b4vudy" path="res://Le_Lu/Fire_VFX/textures/T_FireTrail_Desat.PNG" id="11_i0dis"]
-[ext_resource type="Script" uid="uid://000wyuy1u8wj" path="res://addons/GPUTrail-main/GPUTrail3D.gd" id="12_vvpx7"]
+[ext_resource type="Script" uid="uid://000wyuy1u8wj" path="res://addons/GPUTrail/GPUTrail3D.gd" id="12_vvpx7"]
 
 [sub_resource type="Gradient" id="Gradient_73tdf"]
 interpolation_color_space = 2

@@ -1,26 +1,26 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene format=3]
 
-[ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/player.tscn" id="6_e6ckp"]
-[ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/paraglider.tscn" id="7_mvg0v"]
+[ext_resource type="PackedScene" uid="uid://ct7n8imyllhbo" path="res://addons/3d_player_controller/scenes/player.tscn" id="6_e6ckp"]
+[ext_resource type="PackedScene" uid="uid://bra3khigbuanl" path="res://addons/3d_player_controller/scenes/equipment/paraglider.tscn" id="7_mvg0v"]
 [ext_resource type="PackedScene" path="res://addons/radi_ot/scenes/radi_ot_player_3d.tscn" id="9_mvg0v"]
-[ext_resource type="Resource" path="res://addons/radi_ot/resources/stations/seattle_stations_default.tres" id="345_5hhec"]
-[ext_resource type="PackedScene" uid="uid://c7fishcard0001" path="res://scenes/fish_card.tscn" id="fish_card"]
+[ext_resource type="Resource" uid="uid://dy87f2jqj3wyr" path="res://addons/radi_ot/resources/stations/seattle_stations_default.tres" id="345_5hhec"]
+[ext_resource type="PackedScene" uid="uid://dsb1pwbg8x42w" path="res://scenes/fish_card.tscn" id="fish_card"]
 [ext_resource type="PackedScene" path="res://scenes/fish_caught_screen.tscn" id="fish_caught_screen"]
 [ext_resource type="PackedScene" uid="uid://cp8l5m7auhh4p" path="res://assets/loop_box/VFX.tscn" id="connector_vfx"]
-[ext_resource type="Script" path="res://scenes/fishing_log.gd" id="fishing_log"]
-[ext_resource type="Script" path="res://addons/3d_player_controller/scripts/ability.gd" id="ability"]
-[ext_resource type="Resource" path="res://addons/3d_player_controller/resources/abilities/stealth.tres" id="stealth"]
-[ext_resource type="Resource" path="res://resources/abilities/firebolt.tres" id="firebolt"]
-[ext_resource type="Resource" path="res://resources/abilities/flash_of_light.tres" id="flash_of_light"]
-[ext_resource type="Resource" path="res://resources/abilities/fireball.tres" id="fireball"]
-[ext_resource type="Resource" path="res://resources/abilities/frostbolt.tres" id="frostbolt"]
-[ext_resource type="Resource" path="res://resources/abilities/lightning_bolt.tres" id="lightning_bolt"]
-[ext_resource type="Resource" path="res://resources/abilities/consecration.tres" id="consecration"]
-[ext_resource type="Resource" path="res://resources/abilities/shadowstep.tres" id="shadowstep"]
-[ext_resource type="Resource" path="res://resources/spells/qa_tree.tres" id="qa_tree"]
-[ext_resource type="AudioStream" path="res://assets/audiohero/Whistles-HumanWhistles-C-62_B05-09683.ogg" id="whistle_1"]
-[ext_resource type="AudioStream" path="res://assets/audiohero/Whistles-HumanWhistles-C-63_B05-09684.ogg" id="whistle_2"]
-[ext_resource type="AudioStream" path="res://assets/audiohero/Whistles-HumanWhistles-C-64_B05-09685.ogg" id="whistle_3"]
+[ext_resource type="Script" uid="uid://2onin8lh303p" path="res://scenes/fishing_log.gd" id="fishing_log"]
+[ext_resource type="Script" uid="uid://klxo6bc3ftnp" path="res://addons/3d_player_controller/scripts/ability.gd" id="ability"]
+[ext_resource type="Resource" uid="uid://ywtv6gwnislu" path="res://addons/3d_player_controller/resources/abilities/stealth.tres" id="stealth"]
+[ext_resource type="Resource" uid="uid://vxyio2qd6nhi" path="res://resources/abilities/firebolt.tres" id="firebolt"]
+[ext_resource type="Resource" uid="uid://dsei12l7cfx2w" path="res://resources/abilities/flash_of_light.tres" id="flash_of_light"]
+[ext_resource type="Resource" uid="uid://dsb0mvbbhx42w" path="res://resources/abilities/fireball.tres" id="fireball"]
+[ext_resource type="Resource" uid="uid://dskw2fcehr42w" path="res://resources/abilities/frostbolt.tres" id="frostbolt"]
+[ext_resource type="Resource" uid="uid://dyboqfn7je42w" path="res://resources/abilities/lightning_bolt.tres" id="lightning_bolt"]
+[ext_resource type="Resource" uid="uid://dphv1ydg5ri2w" path="res://resources/abilities/consecration.tres" id="consecration"]
+[ext_resource type="Resource" uid="uid://bum070844yb5" path="res://resources/abilities/shadowstep.tres" id="shadowstep"]
+[ext_resource type="Resource" uid="uid://qcky7ndpi2aa" path="res://resources/spells/qa_tree.tres" id="qa_tree"]
+[ext_resource type="AudioStream" uid="uid://dvlgd70b14y07" path="res://assets/audiohero/Whistles-HumanWhistles-C-62_B05-09683.ogg" id="whistle_1"]
+[ext_resource type="AudioStream" uid="uid://c6isi2ejxr68o" path="res://assets/audiohero/Whistles-HumanWhistles-C-63_B05-09684.ogg" id="whistle_2"]
+[ext_resource type="AudioStream" uid="uid://cxavok4kxrxqh" path="res://assets/audiohero/Whistles-HumanWhistles-C-64_B05-09685.ogg" id="whistle_3"]
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_whistle"]
 streams_count = 3
 stream_0/stream = ExtResource("whistle_1")
@@ -334,12 +334,14 @@ station_collection = ExtResource("345_5hhec")
 [editable path="PlayerModel"]
 
 [node name="FishCard" parent="Controls" instance=ExtResource("fish_card")]
+visible = false
 
 [node name="FishingLog" type="Node" parent="."]
 script = ExtResource("fishing_log")
 persist = true
 
 [node name="FishCaughtScreen" parent="." node_paths=PackedStringArray("player") instance=ExtResource("fish_caught_screen")]
+visible = false
 player = NodePath("..")
 
 [node name="Pause" parent="."]

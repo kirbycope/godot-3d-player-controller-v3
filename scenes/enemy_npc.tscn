@@ -1,6 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://c7enemynpc001"]
+[gd_scene format=3 uid="uid://c7enemynpc001"]
 
-[ext_resource type="PackedScene" uid="uid://c7enemynpcbase" path="res://addons/3d_player_controller/scenes/enemy_npc.tscn" id="1_base"]
+[ext_resource type="PackedScene" uid="uid://drgmvkoe68eua" path="res://addons/3d_player_controller/scenes/npc/enemy_npc.tscn" id="1_base"]
 [ext_resource type="PackedScene" path="res://addons/weather_fx/scenes/vfx_flame.tscn" id="2_flame"]
 
 [node name="EnemyNpc" instance=ExtResource("1_base")]

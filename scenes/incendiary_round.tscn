@@ -1,7 +1,7 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene format=3]
 
-[ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/bullet.tscn" id="1_bullet"]
-[ext_resource type="Script" path="res://scenes/incendiary_round.gd" id="2_incendiary"]
+[ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/projectile/bullet.tscn" id="1_bullet"]
+[ext_resource type="Script" uid="uid://cepk41xhwm75i" path="res://scenes/incendiary_round.gd" id="2_incendiary"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tracer"]
 shading_mode = 0

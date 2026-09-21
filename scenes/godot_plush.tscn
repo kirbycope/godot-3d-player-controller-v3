@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://rmgs7cenq0xo" path="res://assets/galacticlake/godou.blend" id="1_dxr3v"]
 [ext_resource type="Script" path="res://addons/3d_player_controller/scripts/synced_body.gd" id="sync_script"]
-[ext_resource type="SceneReplicationConfig" path="res://addons/3d_player_controller/resources/rigid_body_replication.tres" id="sync_config"]
+[ext_resource type="SceneReplicationConfig" path="res://addons/3d_player_controller/resources/replication/rigid_body_replication.tres" id="sync_config"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_fk680"]
 radius = 0.14

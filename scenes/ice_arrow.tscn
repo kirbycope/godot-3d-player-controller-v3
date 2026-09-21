@@ -1,7 +1,7 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene format=3]
 
-[ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/arrow.tscn" id="1_arrow"]
-[ext_resource type="Script" path="res://scenes/ice_arrow.gd" id="2_ice"]
+[ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/projectile/arrow.tscn" id="1_arrow"]
+[ext_resource type="Script" uid="uid://c6hbttqln6yyr" path="res://scenes/ice_arrow.gd" id="2_ice"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_shaft"]
 albedo_color = Color(0.7, 0.85, 1, 1)

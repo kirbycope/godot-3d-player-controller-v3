@@ -1,9 +1,9 @@
 [gd_scene format=3]
 
 [ext_resource type="PackedScene" path="res://Le_Lu/Trails_VFX/fire_sword.tscn" id="1_sword"]
-[ext_resource type="Shader" path="res://addons/GPUTrail-main/shaders/trail.gdshader" id="2_trail"]
-[ext_resource type="Shader" path="res://addons/GPUTrail-main/shaders/trail_draw_pass.gdshader" id="3_draw"]
-[ext_resource type="Script" path="res://addons/GPUTrail-main/GPUTrail3D.gd" id="4_gputrail"]
+[ext_resource type="Shader" path="res://addons/GPUTrail/shaders/trail.gdshader" id="2_trail"]
+[ext_resource type="Shader" path="res://addons/GPUTrail/shaders/trail_draw_pass.gdshader" id="3_draw"]
+[ext_resource type="Script" path="res://addons/GPUTrail/GPUTrail3D.gd" id="4_gputrail"]
 [ext_resource type="Texture2D" path="res://Le_Lu/Trails_VFX/textures/T_VFX_FireDrag.PNG" id="5_texture"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_process"]

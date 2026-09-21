@@ -1,11 +1,11 @@
-[gd_scene format=3 uid="uid://c7enemyrifle01"]
+[gd_scene format=3 uid="uid://drgmvkr7bji2w"]
 
 [ext_resource type="PackedScene" uid="uid://c7enemynpc001" path="res://scenes/enemy_npc.tscn" id="1_base"]
-[ext_resource type="PackedScene" path="res://assets/justcreate3d/weapons_lite/Weapon_02.fbx" id="2_weapon"]
+[ext_resource type="PackedScene" uid="uid://dl71nqjm2psik" path="res://assets/justcreate3d/weapons_lite/Weapon_02.fbx" id="2_weapon"]
 [ext_resource type="Resource" path="res://addons/3d_player_controller/resources/accuracy/rifle.tres" id="4_accuracy"]
-[ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/bullet.tscn" id="3_projectile"]
-[ext_resource type="Script" path="res://addons/3d_player_controller/scripts/muzzle_flash.gd" id="5_flash_gd"]
-[ext_resource type="PackedScene" path="res://assets/BinbunVFX/muzzle_flash/effects/muzzle_flash/muzzle_flash_01.tscn" id="6_flash"]
+[ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/projectile/bullet.tscn" id="3_projectile"]
+[ext_resource type="Script" uid="uid://d046dc2e6l7mn" path="res://addons/3d_player_controller/scripts/muzzle_flash.gd" id="5_flash_gd"]
+[ext_resource type="PackedScene" uid="uid://dd7uf7xlh4l1w" path="res://assets/BinbunVFX/muzzle_flash/effects/muzzle_flash/muzzle_flash_01.tscn" id="6_flash"]
 
 [node name="EnemyRifleman" instance=ExtResource("1_base")]
 attack_animation = "RifleAttack"

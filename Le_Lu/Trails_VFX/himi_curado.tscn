@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://2vvvxrimwth0"]
 
 [ext_resource type="PackedScene" path="res://Le_Lu/Trails_VFX/Objects/himi_curado.glb" id="1_j87l0"]
-[ext_resource type="Shader" path="res://addons/GPUTrail-main/shaders/trail.gdshader" id="2_4ox6j"]
-[ext_resource type="Shader" path="res://addons/GPUTrail-main/shaders/trail_draw_pass.gdshader" id="3_42exd"]
+[ext_resource type="Shader" path="res://addons/GPUTrail/shaders/trail.gdshader" id="2_4ox6j"]
+[ext_resource type="Shader" path="res://addons/GPUTrail/shaders/trail_draw_pass.gdshader" id="3_42exd"]
 [ext_resource type="Texture2D" path="res://Le_Lu/Trails_VFX/textures/T_VFX_Sqr11.png" id="4_ewis2"]
-[ext_resource type="Script" path="res://addons/GPUTrail-main/GPUTrail3D.gd" id="4_g7xgw"]
+[ext_resource type="Script" path="res://addons/GPUTrail/GPUTrail3D.gd" id="4_g7xgw"]
 [ext_resource type="Texture2D" path="res://Le_Lu/Trails_VFX/Objects/pavement_05_diff_4k.jpg" id="6_l6bp0"]
 [ext_resource type="Texture2D" path="res://Le_Lu/Trails_VFX/Objects/pavement_05_ao_4k.jpg" id="7_f1swc"]
 [ext_resource type="Texture2D" path="res://Le_Lu/Trails_VFX/Objects/pavement_05_nor_dx_4k.jpg" id="8_1yrfv"]

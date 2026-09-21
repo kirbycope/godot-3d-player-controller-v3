@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://6s62lhtskj7w" path="res://scenes/beach_ball.gd" id="1_script"]
 [ext_resource type="AudioStream" uid="uid://bqylorbffg64t" path="res://assets/freesound/117111__blindmanonacid__fotballplast.wav" id="3_hupay"]
 [ext_resource type="Script" path="res://addons/3d_player_controller/scripts/synced_body.gd" id="sync_script"]
-[ext_resource type="SceneReplicationConfig" path="res://addons/3d_player_controller/resources/rigid_body_replication.tres" id="sync_config"]
+[ext_resource type="SceneReplicationConfig" path="res://addons/3d_player_controller/resources/replication/rigid_body_replication.tres" id="sync_config"]
 [ext_resource type="SceneReplicationConfig" path="res://scenes/beach_ball_replication.tres" id="deflate_config"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_beach"]

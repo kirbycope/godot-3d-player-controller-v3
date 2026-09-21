@@ -42,7 +42,7 @@ func test_a_bump_never_chops_a_tree() -> void:
 	assert_eq(tree.hits_taken, 0, "A rolling ball is no axe")
 
 
-const BULLET_SCENE: PackedScene = preload("res://addons/3d_player_controller/scenes/bullet.tscn")
+const BULLET_SCENE: PackedScene = preload("res://addons/3d_player_controller/scenes/projectile/bullet.tscn")
 
 
 ## The round only has to exist to be handed to the handler. It is parked well away and marked spent first,

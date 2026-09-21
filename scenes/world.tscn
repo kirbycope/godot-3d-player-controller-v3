@@ -11,9 +11,9 @@
 [ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://addons/controls/action_prompt.tscn" id="13_4kmvx"]
 [ext_resource type="PackedScene" uid="uid://b3tb2j1pwgw3u" path="res://assets/justcreate3d/weapons_lite/Weapon_01.fbx" id="14_myjip"]
 [ext_resource type="Script" uid="uid://d0u7oh1rirfy4" path="res://addons/3d_player_controller/scripts/equipment.gd" id="15_5nedk"]
-[ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/bullet.tscn" id="15_bullet"]
+[ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/projectile/bullet.tscn" id="15_bullet"]
 [ext_resource type="Script" uid="uid://cdjlwlo8bl8d5" path="res://addons/3d_player_controller/scripts/firearm.gd" id="15_firearm"]
-[ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/laser_sight.tscn" id="15_laser"]
+[ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/vfx/laser_sight.tscn" id="15_laser"]
 [ext_resource type="Texture2D" uid="uid://p600xet6ykq7" path="res://addons/3d_player_controller/assets/game_icons/pistol-gun.svg" id="16_40xph"]
 [ext_resource type="PackedScene" uid="uid://d2e1lgjtlptk8" path="res://assets/n_hance_studio/weapons/SK_Axe_1H_Newbie_01.fbx" id="17_8lgfd"]
 [ext_resource type="Texture2D" uid="uid://detj70cxgb1i5" path="res://addons/3d_player_controller/assets/game_icons/war-pick.svg" id="18_dyafi"]
@@ -42,6 +42,7 @@
 [ext_resource type="PackedScene" uid="uid://bea6xq7pi7e0a" path="res://scenes/moon.tscn" id="45_q6do4"]
 [ext_resource type="PackedScene" uid="uid://ceyrqy0cvueei" path="res://scenes/road.tscn" id="46_pb8sg"]
 [ext_resource type="PackedScene" uid="uid://buun545xrv5hr" path="res://scenes/fishing_rod.tscn" id="47_ce70q"]
+[ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/projectile/arrow.tscn" id="47_l4n3p"]
 [ext_resource type="PackedScene" uid="uid://d0k2lyf87ux7p" path="res://scenes/boat.tscn" id="48_odf6h"]
 [ext_resource type="PackedScene" uid="uid://c4b8e2a1h7qaq" path="res://scenes/beach_ball.tscn" id="49_mu18u"]
 [ext_resource type="PackedScene" uid="uid://bsuh86cuoff0k" path="res://scenes/guy_number_one.tscn" id="50_7b7y8"]
@@ -65,6 +66,7 @@
 [ext_resource type="AudioStream" uid="uid://d06jdg37cxec1" path="res://assets/audiohero/AirReleasePressureDeflation PEHD032101.ogg" id="90_ld7xo"]
 [ext_resource type="AudioStream" uid="uid://wdsp1grlmfrs" path="res://assets/audiohero/AirReleasePressureDeflation PEHD032102.ogg" id="91_l4n3p"]
 [ext_resource type="AudioStream" uid="uid://buk0utbp0l86o" path="res://assets/audiohero/AirReleasePressureDeflation PEHD032103.ogg" id="92_fmmry"]
+[ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/ui/noise_meter.tscn" id="93_noise"]
 [ext_resource type="Resource" path="res://addons/3d_player_controller/resources/accuracy/bow.tres" id="accuracy_bow"]
 [ext_resource type="Resource" path="res://addons/3d_player_controller/resources/accuracy/pistol.tres" id="accuracy_pistol"]
 [ext_resource type="Resource" path="res://addons/3d_player_controller/resources/accuracy/rifle.tres" id="accuracy_rifle"]
@@ -88,17 +90,19 @@
 [ext_resource type="PackedScene" uid="uid://calgbn1slkmss" path="res://assets/BinbunVFX/muzzle_flash/effects/short_flash/short_flash_01.tscn" id="flash_pistol"]
 [ext_resource type="PackedScene" uid="uid://dd7uf7xlh4l1w" path="res://assets/BinbunVFX/muzzle_flash/effects/muzzle_flash/muzzle_flash_01.tscn" id="flash_rifle"]
 [ext_resource type="Resource" path="res://resources/lures/chum.tres" id="lure_chum"]
-[ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/arrow.tscn" id="mp_arrow"]
 [ext_resource type="Script" uid="uid://b0h23y2uet4r" path="res://addons/3d_player_controller/scripts/player_spawner.gd" id="mp_player_spawner"]
 [ext_resource type="Script" uid="uid://d4lqkvawlhhn1" path="res://addons/3d_player_controller/scripts/projectile_spawner.gd" id="mp_projectile_spawner"]
 [ext_resource type="Script" uid="uid://dgk0123inqplm" path="res://addons/3d_player_controller/scripts/steam_peer.gd" id="mp_steam_peer"]
 [ext_resource type="PackedScene" path="res://scenes/world_player.tscn" id="mp_world_player"]
 [ext_resource type="Script" uid="uid://d046dc2e6l7mn" path="res://addons/3d_player_controller/scripts/muzzle_flash.gd" id="muzzle_flash_gd"]
-[ext_resource type="PackedScene" uid="uid://dpamk5qeelx2w" path="res://addons/3d_player_controller/scenes/checkpoint.tscn" id="pc_checkpoint"]
-[ext_resource type="PackedScene" uid="uid://dxbtulpdax42w" path="res://addons/3d_player_controller/scenes/kill_zone.tscn" id="pc_kill_zone"]
-[ext_resource type="PackedScene" uid="uid://bn81yd2prab5" path="res://addons/3d_player_controller/scenes/save_game.tscn" id="pc_save_game"]
-[ext_resource type="PackedScene" uid="uid://cnx71qvyglb5" path="res://addons/3d_player_controller/scenes/talking_npc.tscn" id="pc_talking_npc"]
-[ext_resource type="Resource" uid="uid://dqbiuahkaoe2w" path="res://resources/dialogues/qa_guide.tres" id="qa_guide_dialogue"]
+[ext_resource type="PackedScene" uid="uid://dpamk5qeelx2w" path="res://addons/3d_player_controller/scenes/prop/checkpoint.tscn" id="pc_checkpoint"]
+[ext_resource type="PackedScene" uid="uid://dxbtulpdax42w" path="res://addons/3d_player_controller/scenes/prop/kill_zone.tscn" id="pc_kill_zone"]
+[ext_resource type="PackedScene" uid="uid://bn81yd2prab5" path="res://addons/3d_player_controller/scenes/ui/save_game.tscn" id="pc_save_game"]
+[ext_resource type="PackedScene" uid="uid://cnx71qvyglb5" path="res://addons/3d_player_controller/scenes/npc/talking_npc.tscn" id="pc_talking_npc"]
+[ext_resource type="Script" path="res://scenes/conversation.gd" id="conversation_script"]
+[ext_resource type="Resource" path="res://resources/dialogues/qa_guide.dtl" id="qa_guide_timeline"]
+[ext_resource type="Script" uid="uid://fs2ibpqajtwc" path="res://addons/3d_player_controller/scripts/quest.gd" id="quest_script"]
+[ext_resource type="Resource" uid="uid://d4nm2fqyvx42w" path="res://resources/quests/qa_errand.tres" id="qa_errand_quest"]
 [ext_resource type="Script" uid="uid://b03h8ijilon1x" path="res://addons/3d_player_controller/scripts/arrow.gd" id="r_arrowgd"]
 [ext_resource type="Texture2D" uid="uid://dqhgd83i0432v" path="res://addons/3d_player_controller/assets/game_icons/bow-arrow.svg" id="r_bowarrowsvg"]
 [ext_resource type="Script" uid="uid://7r16fm6kmk1p" path="res://addons/3d_player_controller/scripts/bow.gd" id="r_bowgd"]
@@ -112,7 +116,6 @@
 [ext_resource type="AudioStream" path="res://resources/audio/rifle_shot.tres" id="sfx_rifle_shot"]
 [ext_resource type="PackedScene" path="res://addons/weather_fx/scenes/water_ripples.tscn" id="water_ripples_scene"]
 [ext_resource type="Script" uid="uid://bia70m5sxncj0" path="res://addons/weather_fx/scripts/weather_clouds.gd" id="weather_clouds"]
-[ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/noise_meter.tscn" id="93_noise"]
 
 [sub_resource type="Environment" id="Environment_aqk2v"]
 background_mode = 2
@@ -544,14 +547,6 @@ date_and_time_node = NodePath("../DateAndTime")
 sun_light = NodePath("../DirectionalLight3D")
 world_environment = NodePath("../WorldEnvironment")
 
-[node name="WeatherAudio" parent="WeatherFX" node_paths=PackedStringArray("bgs_day_clear", "bgs_day_rain", "bgs_day_storm", "bgs_night_clear", "bgs_night_rain", "bgs_night_storm")]
-bgs_day_clear = NodePath("../../BackGroundSounds/BGS_Day_Clear")
-bgs_day_rain = NodePath("../../BackGroundSounds/BGS_Day_Rain")
-bgs_day_storm = NodePath("../../BackGroundSounds/BGS_Day_Storm")
-bgs_night_clear = NodePath("../../BackGroundSounds/BGS_Night_Clear")
-bgs_night_rain = NodePath("../../BackGroundSounds/BGS_Night_Rain")
-bgs_night_storm = NodePath("../../BackGroundSounds/BGS_Night_Storm")
-
 [node name="BackGroundSounds" parent="." unique_id=1390929901 instance=ExtResource("56_bgs")]
 
 [node name="DateAndTime" type="Node" parent="." unique_id=98712301]
@@ -577,31 +572,39 @@ offset_bottom = -16.0
 grow_horizontal = 0
 grow_vertical = 0
 
-[node name="NoiseMeter" parent="HUD/BottomRight" instance=ExtResource("93_noise")]
-layout_mode = 0
-offset_left = -44.0
-offset_top = -38.0
-offset_right = -8.0
-offset_bottom = -2.0
-
-[node name="DateAndTimeDisplay" parent="HUD/BottomRight" unique_id=98712313 node_paths=PackedStringArray("date_and_time_node") instance=ExtResource("58_dtdisplay")]
-layout_mode = 0
-offset_top = -38.0
-theme_override_styles/panel = SubResource("StyleBoxEmpty_panel")
-date_and_time_node = NodePath("../../../DateAndTime")
-
-[node name="WeatherForecastDisplay" parent="HUD/BottomRight" unique_id=98712314 node_paths=PackedStringArray("weather_fx") instance=ExtResource("59_wfdisplay")]
-layout_mode = 0
-weather_fx = NodePath("../../../WeatherFX")
-temperature_unit = 1
-
 [node name="TemperatureGaugeDisplay" parent="HUD/BottomRight" unique_id=98712312 node_paths=PackedStringArray("weather_fx") instance=ExtResource("60_tgdisplay")]
 anchors_preset = 0
 offset_left = 100.0
-offset_top = -36.0
+offset_top = -77.0
 offset_right = 136.0
-offset_bottom = 0.0
+offset_bottom = -41.0
 weather_fx = NodePath("../../../WeatherFX")
+
+[node name="NoiseMeter" parent="HUD/BottomRight" unique_id=696652272 instance=ExtResource("93_noise")]
+layout_mode = 0
+offset_left = 100.0
+offset_top = -34.0
+offset_right = 136.0
+offset_bottom = 2.0
+
+[node name="WeatherForecastDisplay" parent="HUD/BottomRight" unique_id=98712314 node_paths=PackedStringArray("weather_fx") instance=ExtResource("59_wfdisplay")]
+layout_mode = 0
+offset_left = 26.0
+offset_top = 10.0
+offset_right = 136.0
+offset_bottom = 46.0
+weather_fx = NodePath("../../../WeatherFX")
+show_temperature = false
+temperature_unit = 1
+show_biome_name = false
+
+[node name="DateAndTimeDisplay" parent="HUD/BottomRight" unique_id=98712313 node_paths=PackedStringArray("date_and_time_node") instance=ExtResource("58_dtdisplay")]
+layout_mode = 0
+offset_left = 26.0
+offset_top = -38.0
+offset_right = 74.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_panel")
+date_and_time_node = NodePath("../../../DateAndTime")
 
 [node name="SteamPeer" type="Node" parent="." unique_id=38257544]
 script = ExtResource("mp_steam_peer")
@@ -964,7 +967,7 @@ shape = SubResource("BoxShape3D_hbax2")
 [node name="SK_Bow_Newbie_01" parent="N_Hance_Studio_1" unique_id=1222899704 instance=ExtResource("21_ntuqo")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 1.5)
 script = ExtResource("r_bowgd")
-arrow_scene = ExtResource("mp_arrow")
+arrow_scene = ExtResource("47_l4n3p")
 bone_attachment_bone_name = "LeftHand"
 can_attack = true
 can_shoot = true
@@ -1408,7 +1411,11 @@ player_spawner = NodePath("../PlayerSpawner")
 [node name="Guide" parent="." unique_id=1935370704 instance=ExtResource("pc_talking_npc")]
 transform = Transform3D(0.5547, 0, -0.83205, 0, 1, 0, 0.83205, 0, 0.5547, 6, 0, 4)
 display_name = "Guide"
-dialogue = ExtResource("qa_guide_dialogue")
+
+[node name="Conversation" type="Node" parent="Guide"]
+script = ExtResource("conversation_script")
+timeline = ExtResource("qa_guide_timeline")
+quests = Array[ExtResource("quest_script")]([ExtResource("qa_errand_quest")])
 
 [node name="Horse" parent="." unique_id=780231883 instance=ExtResource("87_xgy6y")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 8)

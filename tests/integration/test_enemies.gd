@@ -315,7 +315,7 @@ func test_a_round_on_the_head_kills_outright_while_a_body_shot_only_wounds() -> 
 	var rifleman: EnemyNpc = _enemy("Rifleman")
 	var swordsman: EnemyNpc = _enemy("Swordsman")
 	watch_signals(swordsman)
-	var bullet: Projectile = preload("res://addons/3d_player_controller/scenes/bullet.tscn").instantiate()
+	var bullet: Projectile = preload("res://addons/3d_player_controller/scenes/projectile/bullet.tscn").instantiate()
 	add_child_autofree(bullet)
 	bullet.shooter = player
 	rifleman.register_projectile_hit(bullet, rifleman.global_position + Vector3(0.0, 1.0, 0.0), Vector3.FORWARD)
