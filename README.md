@@ -187,7 +187,7 @@ a release tag or commit (GodotSteam, published only as an archive, to an `"archi
 None of them is developed here, so none is pushed to: `push_addons.py` skips a `third_party` entry, and a
 change one of them needs goes upstream, never into a fork. Each is pinned in `tools/addons.json`: `gut`
 and `dialogic` to a release tag, `midi` and `GPUTrail` to a commit (neither upstream tags releases), and
-`godotsteam` to an archive of the commit on its `gdextension-plugin` branch that carries the 4.21 binaries,
+`godotsteam` to an archive of the commit on its `gdextension-plugin` branch that carries the 4.22.1 binaries,
 since that plugin is published as a zip rather than at a repository root. All five must credit their
 upstream rather than be republished as ours.
 
@@ -196,7 +196,7 @@ upstream rather than be republished as ours.
 | `addons/dialogic` | Dialogic 2, the dialogue system the Guide talks through | Jowan Spooner, Emi, Cake, Zak and contributors | 2.0 alpha 20 | MIT (`LICENSE` upstream) | https://github.com/dialogic-godot/dialogic |
 | `addons/gut` | Godot Unit Test, the test runner the whole suite uses | Butch Wesley | 9.7.1 | MIT (`LICENSE.md`) | https://github.com/bitwes/Gut |
 | `addons/midi` | Godot MIDI Player, the SoundFont synthesiser DOOM's music plays through | arlez80 (Yui Kinomoto) | 4.5.0 | MIT (upstream `readme.md`) | https://bitbucket.org/arlez80/godot-midi-player-g4 |
-| `addons/godotsteam` | GodotSteam GDExtension Updater; the Steamworks binding itself is the GDExtension it updates | GP Garcia, Chris Ridenour and contributors | 4.21 | MIT (`license.md`) | https://codeberg.org/godotsteam/godotsteam (branch `gdextension-plugin`) |
+| `addons/godotsteam` | GodotSteam GDExtension Updater; the Steamworks binding itself is the GDExtension it updates | GP Garcia, Chris Ridenour and contributors | 4.22.1 | MIT (`license.md`) | https://codeberg.org/godotsteam/godotsteam (branch `gdextension-plugin`) |
 | `addons/GPUTrail` | GPUTrail, used by the Le Lu trail and fire effects | celyk | 0.1 | MIT (`LICENSE`) | https://github.com/celyk/GPUTrail |
 
 ### Assets
