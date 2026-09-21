@@ -1,10 +1,10 @@
 {
   "3d_player_controller": {
     "commit": "c754943bd607e09fd6b14831a829e4941e294947",
-    "pulled": "2026-09-21T22:46:51Z",
+    "pulled": "2026-09-21T22:53:35Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "The voice activation test drives its own frame, so a slow CI frame cannot decay the reading under the mark\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+    "subject": "The voice activation test drives its own frame, so a slow CI frame cannot decay the reading under the mark"
   },
   "GPUTrail": {
     "commit": "00a764775941c719847deeda8a31b4ebd8893895",
@@ -15,14 +15,14 @@
   },
   "controls": {
     "commit": "87f6e8b5e3b7e18596444fcc193564ba98e48700",
-    "pulled": "2026-09-21T22:46:52Z",
+    "pulled": "2026-09-21T22:53:36Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-controls.git",
     "subject": "Targeting, the Player template, synchronizers over RPCs, and credits in CREDITS.md"
   },
   "date_and_time": {
     "commit": "cb063aa855f1d28d014d2bdb3322f0bb08591d4c",
-    "pulled": "2026-09-21T22:46:53Z",
+    "pulled": "2026-09-21T22:53:37Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/date-and-time.git",
     "subject": "Targeting, the Player template, synchronizers over RPCs, and credits in CREDITS.md"
@@ -35,8 +35,8 @@
     "subject": "Alpha 20 Preparations (#2787)"
   },
   "godot_doom_gdextension": {
-    "commit": "0868c97e01a816242d6b7ca06494149eac8c876a",
-    "pulled": "2026-09-21T22:46:56Z",
+    "commit": "b6f4def9541ee3b0e3e67bc021f1e69dc303ea8b",
+    "pulled": "2026-09-21T22:53:40Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-doom-gdextension.git",
     "subject": "Take the vendored addons at their latest"
@@ -48,8 +48,8 @@
     "subject": "baa0b1c2c16b822c9641f94f7d38558b21a3daf2.zip"
   },
   "gta": {
-    "commit": "bcf594de701a2483cb874c2808e9a9636f3f708a",
-    "pulled": "2026-09-21T22:46:54Z",
+    "commit": "831016fa414313b8828cbb2193810332480a5c6b",
+    "pulled": "2026-09-21T22:53:38Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/gta.git",
     "subject": "Take the vendored addons at their latest"
@@ -70,21 +70,21 @@
   },
   "radi_ot": {
     "commit": "0880dd604d02cada5c4bd475f37458c18a6e5631",
-    "pulled": "2026-09-21T22:46:55Z",
+    "pulled": "2026-09-21T22:53:39Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/radi-ot.git",
     "subject": "Targeting, the Player template, synchronizers over RPCs, and credits in CREDITS.md"
   },
   "tcps": {
-    "commit": "d54606fcbdafd6a92b33b98f22c3f358a06ee6a4",
-    "pulled": "2026-09-21T22:46:55Z",
+    "commit": "63803b5d72b11928e1c79dcc720e230545dd2858",
+    "pulled": "2026-09-21T22:53:38Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/tcps.git",
     "subject": "Take the vendored addons at their latest"
   },
   "weather_fx": {
     "commit": "719d6feb1a9d759fd843aa3160cfabab58164447",
-    "pulled": "2026-09-21T22:46:53Z",
+    "pulled": "2026-09-21T22:53:36Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/weather-fx.git",
     "subject": "Targeting, the Player template, synchronizers over RPCs, and credits in CREDITS.md"
