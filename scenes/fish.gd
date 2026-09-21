@@ -64,12 +64,12 @@ func get_icon_color() -> Color:
 
 ## The lengths in the bag, biggest first with a star on the record, for the inventory entry under the description.
 func get_details(owner: Node) -> String:
-	var log: FishingLog = owner.get_node_or_null(^"FishingLog") as FishingLog if owner else null
-	if log == null or is_junk:
+	var fishing_log: FishingLog = owner.get_node_or_null(^"FishingLog") as FishingLog if owner else null
+	if fishing_log == null or is_junk:
 		return ""
 	var lines: PackedStringArray = []
-	var record: float = log.record_of(self)
-	var lengths: Array[float] = log.lengths_of(self)
+	var record: float = fishing_log.record_of(self)
+	var lengths: Array[float] = fishing_log.lengths_of(self)
 	lengths.sort()
 	lengths.reverse()
 	for length: float in lengths:

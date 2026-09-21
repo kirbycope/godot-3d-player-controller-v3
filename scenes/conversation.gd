@@ -61,14 +61,14 @@ func is_talking() -> bool:
 
 
 ## Writes the quest log into Dialogic's variables: [code]{quest.<id>}[/code] and [code]{objective.<id>}[/code].
-func publish_quests(log: QuestLog) -> void:
+func publish_quests(quest_log: QuestLog) -> void:
 	var by_quest: Dictionary = {}
 	var by_objective: Dictionary = {}
-	if log:
-		for quest: Quest in log.get_all():
-			by_quest[String(quest.get_id())] = _status_name(log.get_status(quest))
+	if quest_log:
+		for quest: Quest in quest_log.get_all():
+			by_quest[String(quest.get_id())] = _status_name(quest_log.get_status(quest))
 			for objective: QuestObjective in quest.objectives:
-				by_objective[String(objective.id)] = log.is_objective_done(quest, objective.id)
+				by_objective[String(objective.id)] = quest_log.is_objective_done(quest, objective.id)
 		for quest: Quest in quests:
 			if not by_quest.has(String(quest.get_id())):
 				by_quest[String(quest.get_id())] = _status_name(QuestLog.Status.NOT_STARTED)
@@ -84,17 +84,17 @@ func _on_signal_event(argument: Variant) -> void:
 	var words: PackedStringArray = (argument as String).split(" ", false)
 	if words.size() < 2:
 		return
-	var log: QuestLog = player.quest_log
-	if log == null:
+	var quest_log: QuestLog = player.quest_log
+	if quest_log == null:
 		return
 	match words[0]:
 		"start_quest":
 			var quest: Quest = _find_quest(words[1])
 			if quest:
-				log.start(quest)
+				quest_log.start(quest)
 		"progress":
-			log.progress(StringName(words[1]), int(words[2]) if words.size() > 2 else 1)
-	publish_quests(log)
+			quest_log.progress(StringName(words[1]), int(words[2]) if words.size() > 2 else 1)
+	publish_quests(quest_log)
 
 
 func _on_timeline_ended() -> void:

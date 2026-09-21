@@ -97,7 +97,7 @@ func test_a_shot_on_the_host_flashes_the_muzzle_on_the_client() -> void:
 	remote.fired.connect(func(projectile: Projectile) -> void: remote_shots.append(projectile))
 	# The client's round can land on its Player and free itself within the wait, so note it as it arrives
 	var client_rounds: Array[Node] = []
-	client_root.get_node("Projectiles").child_entered_tree.connect(func(round: Node) -> void: client_rounds.append(round))
+	client_root.get_node("Projectiles").child_entered_tree.connect(func(shot: Node) -> void: client_rounds.append(shot))
 	var bullet: Projectile = host._fire()
 	assert_not_null(bullet, "The host's spawner hands the round back")
 	assert_eq(host_shots, [bullet] as Array[Projectile], "fired carries the round on the authority")

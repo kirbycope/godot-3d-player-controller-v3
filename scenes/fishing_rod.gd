@@ -295,8 +295,8 @@ func _on_reel_timer_timeout() -> void:
 	emote_state.start("FishingIdle")
 	update_labels()
 	# The log keeps every length in the bag and the record per species; the screen says when this one is the record
-	var log: FishingLog = player.get_node_or_null(^"FishingLog") as FishingLog
-	var is_record: bool = log.record_catch(fish, length) if log else false
+	var fishing_log: FishingLog = player.get_node_or_null(^"FishingLog") as FishingLog
+	var is_record: bool = fishing_log.record_catch(fish, length) if fishing_log else false
 	landed_fish = fish
 	landed_length = length
 	landed_record = is_record

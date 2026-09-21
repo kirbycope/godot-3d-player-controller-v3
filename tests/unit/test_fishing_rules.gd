@@ -37,48 +37,48 @@ func test_chum_is_consumable_bait_with_effects() -> void:
 
 
 func test_fishing_log_records_and_bag() -> void:
-	var log: FishingLog = LOG_SCRIPT.new()
-	add_child_autofree(log)
-	assert_true(log.record_catch(CARP, 30.0), "The first catch is the record")
-	assert_false(log.record_catch(CARP, 25.0))
-	assert_true(log.record_catch(CARP, 45.5))
-	assert_eq(log.record_of(CARP), 45.5)
-	assert_eq(log.lengths_of(CARP), [30.0, 25.0, 45.5])
-	assert_true(log.has_caught(CARP))
-	assert_false(log.has_caught(CATFISH))
-	assert_false(log.record_catch(BOOT, 0.0), "Junk is not logged")
-	log._on_item_gone(CARP, 2)
-	assert_eq(log.lengths_of(CARP), [45.5], "Eating takes the oldest out of the bag")
-	assert_eq(log.record_of(CARP), 45.5, "The record stays")
+	var fishing_log: FishingLog = LOG_SCRIPT.new()
+	add_child_autofree(fishing_log)
+	assert_true(fishing_log.record_catch(CARP, 30.0), "The first catch is the record")
+	assert_false(fishing_log.record_catch(CARP, 25.0))
+	assert_true(fishing_log.record_catch(CARP, 45.5))
+	assert_eq(fishing_log.record_of(CARP), 45.5)
+	assert_eq(fishing_log.lengths_of(CARP), [30.0, 25.0, 45.5])
+	assert_true(fishing_log.has_caught(CARP))
+	assert_false(fishing_log.has_caught(CATFISH))
+	assert_false(fishing_log.record_catch(BOOT, 0.0), "Junk is not logged")
+	fishing_log._on_item_gone(CARP, 2)
+	assert_eq(fishing_log.lengths_of(CARP), [45.5], "Eating takes the oldest out of the bag")
+	assert_eq(fishing_log.record_of(CARP), 45.5, "The record stays")
 
 
 func test_fish_details_list_the_bag_with_a_star_on_the_record() -> void:
 	var owner := Node.new()
 	add_child_autofree(owner)
-	var log: FishingLog = LOG_SCRIPT.new()
-	log.name = "FishingLog"
-	owner.add_child(log)
+	var fishing_log: FishingLog = LOG_SCRIPT.new()
+	fishing_log.name = "FishingLog"
+	owner.add_child(fishing_log)
 	assert_eq(CARP.get_details(owner), "", "Nothing in the bag, nothing to list")
-	log.record_catch(CARP, 30.0)
-	log.record_catch(CARP, 52.3)
+	fishing_log.record_catch(CARP, 30.0)
+	fishing_log.record_catch(CARP, 52.3)
 	var details := CARP.get_details(owner)
 	assert_true(details.begins_with("In the bag:\n52.3 cm *\n30.0 cm"), details)
 	assert_true(details.ends_with("* record catch"))
 
 
 func test_fishing_log_saves_and_loads() -> void:
-	var log: FishingLog = LOG_SCRIPT.new()
-	log.persist = true
-	log.save_path = "user://test_fishing_log.cfg"
-	add_child_autofree(log)
-	log.record_catch(CARP, 33.0)
+	var fishing_log: FishingLog = LOG_SCRIPT.new()
+	fishing_log.persist = true
+	fishing_log.save_path = "user://test_fishing_log.cfg"
+	add_child_autofree(fishing_log)
+	fishing_log.record_catch(CARP, 33.0)
 	var other: FishingLog = LOG_SCRIPT.new()
-	other.save_path = log.save_path
+	other.save_path = fishing_log.save_path
 	add_child_autofree(other)
 	other.load_log()
 	assert_eq(other.record_of(CARP), 33.0)
 	assert_eq(other.lengths_of(CARP), [33.0])
-	DirAccess.remove_absolute(log.save_path)
+	DirAccess.remove_absolute(fishing_log.save_path)
 
 
 func test_conditions_describe_the_resource() -> void:

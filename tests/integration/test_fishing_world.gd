@@ -94,8 +94,8 @@ func test_full_loop_catches_a_fish() -> void:
 	assert_eq(rod.state, FishingRod.State.REELING)
 	assert_signal_emitted(rod, "fish_hooked")
 	var fish: Fish = rod.hooked_fish
-	var log: FishingLog = player.get_node("FishingLog")
-	var first_of_its_kind: bool = log.record_of(fish) == 0.0 # the world player's log persists, so a saved record may stand
+	var fishing_log: FishingLog = player.get_node("FishingLog")
+	var first_of_its_kind: bool = fishing_log.record_of(fish) == 0.0 # the world player's log persists, so a saved record may stand
 	rod.reel_timer.stop()
 	rod._on_reel_timer_timeout()
 	assert_signal_emitted(rod, "fish_caught")

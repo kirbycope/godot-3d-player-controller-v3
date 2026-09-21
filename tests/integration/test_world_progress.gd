@@ -69,7 +69,7 @@ func test_the_save_keeps_the_clock_the_weather_the_player_and_the_trees() -> voi
 func test_the_guides_errand_counts_wood_and_fish() -> void:
 	var guide: TalkingNpc = world.get_node("Guide")
 	var conversation: Conversation = guide.get_node("Conversation")
-	var log: QuestLog = player.quest_log
+	var quest_log: QuestLog = player.quest_log
 	Dialogic.Settings.text_speed = 0.0
 	assert_true(guide.talk(player))
 	await wait_process_frames(3)
@@ -80,8 +80,8 @@ func test_the_guides_errand_counts_wood_and_fish() -> void:
 	await wait_process_frames(2)
 	Dialogic.Choices.select_choice(1) # "What do you need?"
 	await wait_process_frames(3)
-	assert_true(log.is_active(QA_QUEST), "Taking the errand starts it")
-	assert_true(log.is_objective_done(QA_QUEST, &"talk_guide"))
+	assert_true(quest_log.is_active(QA_QUEST), "Taking the errand starts it")
+	assert_true(quest_log.is_objective_done(QA_QUEST, &"talk_guide"))
 	conversation.end()
 	await wait_process_frames(3)
 	assert_false(conversation.is_talking())
@@ -91,11 +91,11 @@ func test_the_guides_errand_counts_wood_and_fish() -> void:
 	for i: int in tree.hits_to_finish:
 		tree.register_hit()
 	assert_true(tree.is_depleted)
-	assert_true(log.is_objective_done(QA_QUEST, &"chop_tree"), "Felling a tree is the firewood")
+	assert_true(quest_log.is_objective_done(QA_QUEST, &"chop_tree"), "Felling a tree is the firewood")
 	var fishing_log: FishingLog = player.get_node("FishingLog")
 	fishing_log.record_catch(CARP, 30.0)
-	assert_true(log.is_objective_done(QA_QUEST, &"catch_fish"), "Landing a fish is supper")
-	assert_true(log.is_complete(QA_QUEST))
+	assert_true(quest_log.is_objective_done(QA_QUEST, &"catch_fish"), "Landing a fish is supper")
+	assert_true(quest_log.is_complete(QA_QUEST))
 	assert_eq(player.inventory.count_of(preload("res://resources/items/apple.tres")), 3 + 3, "Three apples on top of the QA kit's three")
 
 

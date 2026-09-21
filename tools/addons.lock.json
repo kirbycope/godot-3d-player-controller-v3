@@ -1,10 +1,10 @@
 {
   "3d_player_controller": {
-    "commit": "2d8f9955b8750d186b282a4fcd29a4b267dc9b19",
+    "commit": "8db762c6da6cfa4be5073e15d5c29bf6a05683e5",
     "pulled": "2026-09-20T05:43:58Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Name the audio scene as it is in the README\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+    "subject": "Stop shadowing GDScript's built-in functions\n\nVariables named log, range and len drew the editor's shadowing warning on every open; they are\nquest_log, bounds and total now.\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
   },
   "GPUTrail": {
     "commit": "00a764775941c719847deeda8a31b4ebd8893895",

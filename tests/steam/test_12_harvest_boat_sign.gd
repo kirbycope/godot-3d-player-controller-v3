@@ -58,23 +58,23 @@ func test_the_client_sits_in_the_boat_and_the_host_sees_them_there() -> void:
 
 
 func test_the_client_reads_a_sign_and_the_hosts_copy_is_untouched() -> void:
-	var sign: Node3D = SIGN_SCENE.instantiate() as Node3D
-	sign.name = "SteamTestSign"
-	world.add_child(sign)
-	sign.global_position = SIGN_POSITION
-	var dialog: CanvasLayer = sign.get_node("CanvasLayer") as CanvasLayer
+	var signpost: Node3D = SIGN_SCENE.instantiate() as Node3D
+	signpost.name = "SteamTestSign"
+	world.add_child(signpost)
+	signpost.global_position = SIGN_POSITION
+	var dialog: CanvasLayer = signpost.get_node("CanvasLayer") as CanvasLayer
 	if is_host:
 		await await_step("client_read")
-		assert_false(sign.get("is_read"), "Reading a sign is the reader's alone; the host's copy is unread")
+		assert_false(signpost.get("is_read"), "Reading a sign is the reader's alone; the host's copy is unread")
 		assert_false(dialog.visible, "and its dialog is down")
 	else:
 		var me: Player = own_player()
-		sign.call("_on_player_detection_body_entered", me)
-		sign.call("_input", action_press(&"action"))
+		signpost.call("_on_player_detection_body_entered", me)
+		signpost.call("_input", action_press(&"action"))
 		assert_true(dialog.visible, "The client opens the sign")
-		sign.call("_input", action_press(&"action"))
-		assert_true(sign.get("is_read"), "and reads it through")
+		signpost.call("_input", action_press(&"action"))
+		assert_true(signpost.get("is_read"), "and reads it through")
 		assert_false(dialog.visible)
 		mark("client_read")
 	await barrier("sign_done")
-	sign.free()
+	signpost.free()

@@ -98,25 +98,25 @@ func test_the_quest_log_is_published_as_dialogic_variables() -> void:
 
 func test_signal_events_in_the_timeline_drive_the_quest_log() -> void:
 	conversation.timeline = _timeline('[signal arg="start_quest errand"]\n[signal arg="progress talk"]\nDone.')
-	var log: QuestLog = player.quest_log
+	var quest_log: QuestLog = player.quest_log
 	assert_true(npc.talk(player))
 	await wait_process_frames(4)
-	assert_true(log.is_complete(quest), "start_quest took the errand and progress met its one objective")
+	assert_true(quest_log.is_complete(quest), "start_quest took the errand and progress met its one objective")
 	assert_eq(Dialogic.VAR.get_variable("quest.errand"), "complete", "The variables follow the log as it changes")
 
 
 func test_a_timeline_can_branch_on_the_quest() -> void:
 	conversation.timeline = _timeline('if {quest.errand} == "active":\n\t[signal arg="progress talk"]\nelse:\n\t[signal arg="start_quest errand"]\nDone.')
-	var log: QuestLog = player.quest_log
+	var quest_log: QuestLog = player.quest_log
 	assert_true(npc.talk(player))
 	await wait_process_frames(4)
-	assert_true(log.is_active(quest), "Not started: the else branch starts it")
-	assert_false(log.is_complete(quest))
+	assert_true(quest_log.is_active(quest), "Not started: the else branch starts it")
+	assert_false(quest_log.is_complete(quest))
 	conversation.end()
 	await wait_process_frames(3)
 	assert_true(npc.talk(player))
 	await wait_process_frames(4)
-	assert_true(log.is_complete(quest), "Active: the if branch reports the objective")
+	assert_true(quest_log.is_complete(quest), "Active: the if branch reports the objective")
 
 
 func test_the_start_button_ends_a_conversation() -> void:

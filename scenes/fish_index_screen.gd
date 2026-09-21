@@ -33,9 +33,9 @@ func _ready() -> void:
 		focus_on_show = buttons[0]
 	back_button.pressed.connect(hide_menu)
 	set_process(false)
-	var log: FishingLog = _log()
-	if log:
-		log.changed.connect(refresh)
+	var fishing_log: FishingLog = _log()
+	if fishing_log:
+		fishing_log.changed.connect(refresh)
 
 
 func _input(event: InputEvent) -> void:
@@ -69,8 +69,8 @@ func refresh() -> void:
 
 
 func _has_caught(fish: Fish) -> bool:
-	var log: FishingLog = _log()
-	return log != null and log.has_caught(fish)
+	var fishing_log: FishingLog = _log()
+	return fishing_log != null and fishing_log.has_caught(fish)
 
 
 func _log() -> FishingLog:
@@ -83,8 +83,8 @@ func _show(fish: Fish) -> void:
 	var caught: bool = _has_caught(fish)
 	name_label.text = fish.get_display_name() if caught else "???"
 	conditions_label.text = "\n".join(fish.describe_conditions())
-	var log: FishingLog = _log()
-	record_label.text = "Record: %.1f cm" % log.record_of(fish) if caught and not fish.is_junk else ("Found" if caught else "Not yet caught")
+	var fishing_log: FishingLog = _log()
+	record_label.text = "Record: %.1f cm" % fishing_log.record_of(fish) if caught and not fish.is_junk else ("Found" if caught else "Not yet caught")
 	for child: Node in model_pivot.get_children():
 		child.queue_free()
 	var scene: PackedScene = fish.get_model_scene() if fish.get_model_scene() else placeholder_model

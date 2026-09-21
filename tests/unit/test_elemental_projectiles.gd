@@ -107,11 +107,11 @@ func test_the_flame_and_the_frost_sit_on_the_tip_marker_riding_the_arrow() -> vo
 
 ## Fires [param scene] straight down from [param from]; an [param authority] other than 1 makes it a copy off the authority.
 func _shoot(scene: PackedScene, from: Vector3, authority: int = 1) -> Projectile:
-	var round: Projectile = scene.instantiate()
-	round.set_multiplayer_authority(authority)
-	root.add_child(round)
-	round.launch(Transform3D(Basis.IDENTITY, from), Vector3.DOWN, 30.0, null)
-	return round
+	var shot: Projectile = scene.instantiate()
+	shot.set_multiplayer_authority(authority)
+	root.add_child(shot)
+	shot.launch(Transform3D(Basis.IDENTITY, from), Vector3.DOWN, 30.0, null)
+	return shot
 
 
 func test_a_fire_arrow_lights_the_grass_where_it_lands_and_burns_on_where_it_sticks() -> void:
@@ -138,11 +138,11 @@ func test_rain_stops_a_fire_arrow_lighting_anything() -> void:
 func test_an_incendiary_round_lights_the_grass_and_is_spent() -> void:
 	var field: GrassField = _field()
 	await wait_physics_frames(2)
-	var round: Projectile = _shoot(INCENDIARY_SCENE, Vector3(0.0, 3.0, 0.0))
-	assert_true(round is IncendiaryRound)
+	var shot: Projectile = _shoot(INCENDIARY_SCENE, Vector3(0.0, 3.0, 0.0))
+	assert_true(shot is IncendiaryRound)
 	await wait_physics_frames(20)
 	assert_gt(field._burning_cells.size(), 0, "The round lights the grass where it lands")
-	assert_false(is_instance_valid(round) and round.is_inside_tree(), "A bullet frees itself after hitting")
+	assert_false(is_instance_valid(shot) and shot.is_inside_tree(), "A bullet frees itself after hitting")
 
 
 func test_a_copy_off_the_authority_lights_nothing() -> void:
