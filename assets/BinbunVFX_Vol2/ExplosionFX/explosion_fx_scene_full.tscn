@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://b02l4q1b7ffdc"]
 
 [ext_resource type="Texture2D" uid="uid://ed44j8f3a8us" path="res://assets/BinbunVFX_Vol2/shared/story_studio_02_1k.hdr" id="1_k5cc6"]
-[ext_resource type="Shader" uid="uid://mvwi25cb826n" path="res://assets/BinbunVFX_Vol2/shared/shader/checker.gdshader" id="2_tnfe4"]
+[ext_resource type="Shader" uid="uid://c8by76imbamhc" path="res://assets/BinbunVFX_Vol2/shared/shader/checker.gdshader" id="2_tnfe4"]
 [ext_resource type="PackedScene" uid="uid://b1sdmuxmleu6q" path="res://assets/BinbunVFX_Vol2/ExplosionFX/effects/ground/vfx_ground_explosion_00.tscn" id="3_0c8vj"]
 [ext_resource type="PackedScene" uid="uid://cr647rtrn44tm" path="res://assets/BinbunVFX_Vol2/ExplosionFX/effects/burst/vfx_burst_explosion_01.tscn" id="3_bcb1d"]
 [ext_resource type="PackedScene" uid="uid://6okj4uhag0tm" path="res://assets/BinbunVFX_Vol2/ExplosionFX/effects/air/vfx_air_explosion_01.tscn" id="4_paar2"]

@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://dwrhoyfs10hb0" path="res://Le_Lu/Puff_VFX/Textures/T_VFX_sSmoke.jpg" id="2_dsfh8"]
 [ext_resource type="Texture2D" uid="uid://b72jwrmxaksvc" path="res://Le_Lu/Puff_VFX/Textures/T_VFX_sSmoke_mask1.jpg" id="3_jeif0"]
 [ext_resource type="Shader" path="res://Le_Lu/Puff_VFX/Shaders/s_simple1.tres" id="4_xqs2t"]
-[ext_resource type="Texture2D" uid="uid://djtd4uc4abq6f" path="res://Le_Lu/Puff_VFX/Textures/T_VFX_Glo31.png" id="5_yqcxv"]
+[ext_resource type="Texture2D" uid="uid://d3kpiycqkcbrw" path="res://Le_Lu/Puff_VFX/Textures/T_VFX_Glo31.png" id="5_yqcxv"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_cev4c"]
 render_priority = 1

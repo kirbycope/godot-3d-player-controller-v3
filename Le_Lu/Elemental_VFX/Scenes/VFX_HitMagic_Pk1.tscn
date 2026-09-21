@@ -1,10 +1,10 @@
 [gd_scene format=4 uid="uid://0syfi6mplmd0"]
 
-[ext_resource type="Shader" uid="uid://se0vxgit4i2r" path="res://Le_Lu/Elemental_VFX/shaders/s_MasterSlash_unShaded_1.tres" id="1_dorbv"]
+[ext_resource type="Shader" path="res://Le_Lu/Elemental_VFX/shaders/s_MasterSlash_unShaded_1.tres" id="1_dorbv"]
 [ext_resource type="Texture2D" uid="uid://bheudhnmjwpme" path="res://Le_Lu/Elemental_VFX/textures/T_VFX_Noise_14.PNG" id="2_4egqa"]
-[ext_resource type="Texture2D" uid="uid://citnc32hcv51f" path="res://Le_Lu/Elemental_VFX/textures/T_VFX_Glow_1.PNG" id="3_8ltg0"]
+[ext_resource type="Texture2D" uid="uid://bja1pelt6xqno" path="res://Le_Lu/Elemental_VFX/textures/T_VFX_Glow_1.PNG" id="3_8ltg0"]
 [ext_resource type="Texture2D" uid="uid://x204srgh33o" path="res://Le_Lu/Elemental_VFX/textures/T_circle_transparent1.png" id="4_2670n"]
-[ext_resource type="Shader" uid="uid://cqn0iqbcvqk0u" path="res://Le_Lu/Loot_Drop_VFX/Shaders/s_Disolver_advanced_B.tres" id="5_b1q10"]
+[ext_resource type="Shader" path="res://Le_Lu/Loot_Drop_VFX/Shaders/s_Disolver_advanced_B.tres" id="5_b1q10"]
 [ext_resource type="Texture2D" uid="uid://dkujiwg37cnsk" path="res://Le_Lu/Elemental_VFX/textures/T_NHU85.png" id="6_txv7k"]
 [ext_resource type="Shader" path="res://Le_Lu/Vertical_Beam_VFX/Shaders/s_simple_pfc.tres" id="7_toqo7"]
 [ext_resource type="Texture2D" uid="uid://625j4lcmn1kr" path="res://Le_Lu/Elemental_VFX/textures/T_VFX_Flare67z.jpg" id="8_0rqb3"]

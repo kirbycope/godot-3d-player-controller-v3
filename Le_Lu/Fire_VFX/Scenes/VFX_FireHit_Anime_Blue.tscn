@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://fhav5c1xoaj4"]
 
 [ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/s_multi_disolver_p_ds.gdshader" id="1_2d0a7"]
-[ext_resource type="Texture2D" uid="uid://sfqnk8pph4px" path="res://Le_Lu/Fire_VFX/textures/T_VFX_Noise_075.png" id="2_0toeb"]
+[ext_resource type="Texture2D" uid="uid://clxxf8gxxul74" path="res://Le_Lu/Fire_VFX/textures/T_VFX_Noise_075.png" id="2_0toeb"]
 [ext_resource type="Texture2D" uid="uid://cf0wwjbguxdp" path="res://Le_Lu/Fire_VFX/textures/T_VFX_Ex1d.jpg" id="3_ifdqn"]
 [ext_resource type="ArrayMesh" uid="uid://dlv6qb2avrq8m" path="res://Le_Lu/Fire_VFX/objects/sm_plane_coned_spiked2.obj" id="4_dkori"]
 [ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/s_Disolver_small_Liquid_p_Treshold_ds_us.tres" id="5_57cek"]

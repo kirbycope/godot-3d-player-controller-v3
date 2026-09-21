@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://b23fij0njcsb7" path="res://Le_Lu/Heal_Protection_VFX/textures/T_BlastUi7t.png" id="1_gil1v"]
 [ext_resource type="ArrayMesh" uid="uid://bmi0bbugbvf62" path="res://Le_Lu/Heal_Protection_VFX/objects/sm_muzzle_crossplanes.obj" id="2_txssx"]
 [ext_resource type="Shader" path="res://Le_Lu/Heal_Protection_VFX/shaders/s_simple_pfc_2.tres" id="3_dniuy"]
-[ext_resource type="Texture2D" uid="uid://bcl2qy81x1wcj" path="res://Le_Lu/Heal_Protection_VFX/textures/T_VFX_Flare_251.jpg" id="4_oc07l"]
+[ext_resource type="Texture2D" uid="uid://dyb3yrdw4b3kw" path="res://Le_Lu/Heal_Protection_VFX/textures/T_VFX_Flare_251.jpg" id="4_oc07l"]
 [ext_resource type="Shader" path="res://Le_Lu/Wind_VFX/shaders/s_PolarPanning.tres" id="6_ts4ts"]
 [ext_resource type="Texture2D" uid="uid://drd5cabdks7hv" path="res://Le_Lu/Full_Screen_VFX/textures/T_Noise_6Yu1.png" id="7_q7fvl"]
 [ext_resource type="Texture2D" uid="uid://dkujiwg37cnsk" path="res://Le_Lu/Elemental_VFX/textures/T_NHU85.png" id="8_8xghj"]

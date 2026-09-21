@@ -1,7 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Shader" path="res://Le_Lu/Stylized_Smoke_VFX/Shaders/s_simple3_disolver.tres" id="1_tlmou"]
-[ext_resource type="Texture2D" uid="uid://df8cxy61v7wmd" path="res://Le_Lu/Stylized_Smoke_VFX/Textures/T_VFX_SparklesF21.jpg" id="2_4i5lo"]
+[ext_resource type="Texture2D" uid="uid://mtcekmg04n6o" path="res://Le_Lu/Stylized_Smoke_VFX/Textures/T_VFX_SparklesF21.jpg" id="2_4i5lo"]
 
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_l8jkh"]

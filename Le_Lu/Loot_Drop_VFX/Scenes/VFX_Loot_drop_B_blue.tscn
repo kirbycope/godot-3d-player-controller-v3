@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://ypyqav1rtr04"]
 
 [ext_resource type="Texture2D" uid="uid://y14xfpo4p83r" path="res://Le_Lu/Loot_Drop_VFX/Textures/T_VFX_Noise_5.PNG" id="1_v8bpj"]
-[ext_resource type="Texture2D" uid="uid://fp0tqfa1tfb" path="res://Le_Lu/Loot_Drop_VFX/Textures/T_VFX_Noise_a13.PNG" id="2_nxpvu"]
+[ext_resource type="Texture2D" uid="uid://bcyaip5py2i5f" path="res://Le_Lu/Loot_Drop_VFX/Textures/T_VFX_Noise_a13.PNG" id="2_nxpvu"]
 [ext_resource type="ArrayMesh" uid="uid://dmihciuav716f" path="res://Le_Lu/Loot_Drop_VFX/Objects/sm_windCylinder_projectedUVs.obj" id="3_xgd30"]
 [ext_resource type="Shader" path="res://Le_Lu/Loot_Drop_VFX/Shaders/s_scrolling_over_pY.tres" id="4_5josa"]
 [ext_resource type="Shader" path="res://Le_Lu/Loot_Drop_VFX/Shaders/s_simple_p_2.tres" id="5_22880"]

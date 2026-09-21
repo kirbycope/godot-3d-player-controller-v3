@@ -1,13 +1,13 @@
 [gd_scene format=3 uid="uid://bamfl7lddpkrn"]
 
-[ext_resource type="Shader" uid="uid://bjpefljwjundo" path="res://Le_Lu/Elemental_VFX/shaders/s_master_fire_ds_disolver.tres" id="2_f6ems"]
+[ext_resource type="Shader" path="res://Le_Lu/Elemental_VFX/shaders/s_master_fire_ds_disolver.tres" id="2_f6ems"]
 [ext_resource type="Texture2D" uid="uid://dsi0gdw8k65c1" path="res://Le_Lu/Elemental_VFX/textures/T_VFX_WindNoise1.png" id="3_14vvr"]
-[ext_resource type="Curve" uid="uid://egg2rvkxhhhp" path="res://Le_Lu/Fire_VFX/textures/curves/c_fireringed1.tres" id="4_s2rum"]
+[ext_resource type="Curve" path="res://Le_Lu/Fire_VFX/textures/curves/c_fireringed1.tres" id="4_s2rum"]
 [ext_resource type="ArrayMesh" uid="uid://bjoly6p7083m2" path="res://Le_Lu/Elemental_VFX/objects/sm_cyclinderTopped42.obj" id="5_21yis"]
-[ext_resource type="Shader" uid="uid://cvqtg54f3egrb" path="res://Le_Lu/Elemental_VFX/shaders/s_Disolver_Treshold.tres" id="20_vb0u1"]
+[ext_resource type="Shader" path="res://Le_Lu/Elemental_VFX/shaders/s_Disolver_Treshold.tres" id="20_vb0u1"]
 [ext_resource type="Texture2D" uid="uid://sfqnk8pph4px" path="res://Le_Lu/Elemental_VFX/textures/T_VFX_Noise_075.png" id="21_6egxx"]
 [ext_resource type="Shader" uid="uid://c81384jpukeew" path="res://Le_Lu/Elemental_VFX/shaders/s_fakedecal.gdshader" id="22_hssnw"]
-[ext_resource type="Texture2D" uid="uid://ch53yvmy4g8v3" path="res://Le_Lu/Elemental_VFX/textures/T_cracks35.png" id="23_foquf"]
+[ext_resource type="Texture2D" uid="uid://c1daw8jsqmpbt" path="res://Le_Lu/Elemental_VFX/textures/T_cracks35.png" id="23_foquf"]
 [ext_resource type="Texture2D" uid="uid://c0j6r3drrpr3x" path="res://Le_Lu/Elemental_VFX/textures/T_cracks35_emisivex.png" id="24_qx0qq"]
 
 

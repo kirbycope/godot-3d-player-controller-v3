@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://l7hqeuvbqkyp" path="res://Le_Lu/Heal_Protection_VFX/textures/T_magic_circle_leaf.png" id="3_2ofom"]
 [ext_resource type="Texture2D" uid="uid://cpfhbysmf7l0d" path="res://Le_Lu/Heal_Protection_VFX/textures/T_VFX_Noise_3.PNG" id="4_vco1a"]
 [ext_resource type="Shader" path="res://Le_Lu/Heal_Protection_VFX/shaders/s_simple_pfc_2.tres" id="5_amjb3"]
-[ext_resource type="Texture2D" uid="uid://dra25la2m0shx" path="res://Le_Lu/Loot_Drop_VFX/Textures/T_VFX_Flare_2.PNG" id="6_7s3u2"]
+[ext_resource type="Texture2D" uid="uid://bmywee75kidoj" path="res://Le_Lu/Loot_Drop_VFX/Textures/T_VFX_Flare_2.PNG" id="6_7s3u2"]
 [ext_resource type="Shader" path="res://Le_Lu/Heal_Protection_VFX/shaders/s_master_fire2_distortion_add.tres" id="7_tfqwh"]
 [ext_resource type="Texture2D" uid="uid://bheudhnmjwpme" path="res://Le_Lu/Elemental_VFX/textures/T_VFX_Noise_14.PNG" id="8_pp8or"]
 [ext_resource type="Texture2D" uid="uid://dpsct3n8gl7jl" path="res://Le_Lu/Full_Screen_VFX/textures/T_VFX_Noise_3c.png" id="9_c3cu5"]

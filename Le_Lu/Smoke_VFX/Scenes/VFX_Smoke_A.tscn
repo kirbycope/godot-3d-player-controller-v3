@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cv0u43rpk4mp1"]
 
-[ext_resource type="Texture2D" uid="uid://brnp67jnwwro6" path="res://Le_Lu/Smoke_VFX/Textures/T_smoke_K97.png" id="1_2jyjn"]
+[ext_resource type="Texture2D" uid="uid://dbhnp5knjt6lj" path="res://Le_Lu/Smoke_VFX/Textures/T_smoke_K97.png" id="1_2jyjn"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v1g0s"]
 transparency = 1

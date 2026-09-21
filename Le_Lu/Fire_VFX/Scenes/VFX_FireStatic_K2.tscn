@@ -2,7 +2,7 @@
 
 [ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/ss_fireTorch_T1.gdshader" id="1_1l8be"]
 [ext_resource type="Texture2D" uid="uid://bw86kohsh5kmy" path="res://Le_Lu/Fire_VFX/textures/T_VFX_Noise_4.PNG" id="2_2ovji"]
-[ext_resource type="Texture2D" uid="uid://cysmp3e3kel3y" path="res://Le_Lu/Fire_VFX/textures/T_VFX_N35.png" id="3_cioma"]
+[ext_resource type="Texture2D" uid="uid://6ans4r602yp4" path="res://Le_Lu/Fire_VFX/textures/T_VFX_N35.png" id="3_cioma"]
 [ext_resource type="ArrayMesh" uid="uid://dlwx0ortvlt74" path="res://Le_Lu/Fire_VFX/objects/sm_teardrop2_high.obj" id="4_phe71"]
 [ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/s_Disolver_Treshold_p_fc.tres" id="5_7udht"]
 

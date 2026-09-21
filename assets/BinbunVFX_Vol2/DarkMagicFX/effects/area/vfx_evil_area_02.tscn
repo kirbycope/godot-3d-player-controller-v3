@@ -4,7 +4,7 @@
 [ext_resource type="Shader" uid="uid://b2v6ty6lfvw7q" path="res://assets/BinbunVFX_Vol2/DarkMagicFX/shader/dark_lift.gdshader" id="1_ippk3"]
 [ext_resource type="Shader" uid="uid://bb53a0jss6n04" path="res://assets/BinbunVFX_Vol2/DarkMagicFX/shader/dark_ring.gdshader" id="2_igwdk"]
 [ext_resource type="Shader" uid="uid://s4o4j48gdsfr" path="res://assets/BinbunVFX_Vol2/DarkMagicFX/shader/area_dark.gdshader" id="3_xtakm"]
-[ext_resource type="Script" uid="uid://bwmucxp58uvvt" path="res://assets/BinbunVFX_Vol2/shared/script/VFXOmniLightBB.gd" id="4_58nsr"]
+[ext_resource type="Script" uid="uid://cd2lwk3owlb8u" path="res://assets/BinbunVFX_Vol2/shared/script/VFXOmniLightBB.gd" id="4_58nsr"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_excg5"]
 seed = 3

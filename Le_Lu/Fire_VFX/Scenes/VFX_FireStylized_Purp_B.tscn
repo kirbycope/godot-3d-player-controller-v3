@@ -3,7 +3,7 @@
 [ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/ss_fireTorch_T1_fresnel.gdshader" id="1_g04ks"]
 [ext_resource type="Texture2D" uid="uid://dce3jblveb1iw" path="res://Le_Lu/Fire_VFX/textures/T_Noise_w03A.png" id="2_q35b0"]
 [ext_resource type="Texture2D" uid="uid://8l1m4bj1kmvu" path="res://Le_Lu/Fire_VFX/textures/T_Noise_4eb1.png" id="3_7kf6a"]
-[ext_resource type="Texture2D" uid="uid://dkujiwg37cnsk" path="res://Le_Lu/Fire_VFX/textures/T_NHU85.png" id="4_mrnsc"]
+[ext_resource type="Texture2D" uid="uid://cmadsbfmyyvfl" path="res://Le_Lu/Fire_VFX/textures/T_NHU85.png" id="4_mrnsc"]
 [ext_resource type="ArrayMesh" uid="uid://dlwx0ortvlt74" path="res://Le_Lu/Fire_VFX/objects/sm_teardrop2_high.obj" id="5_mruqx"]
 [ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/s_Disolver_Treshold_p_fc.tres" id="6_ug3pb"]
 [ext_resource type="Texture2D" uid="uid://bcl2qy81x1wcj" path="res://Le_Lu/Fire_VFX/textures/T_VFX_Flare_251.jpg" id="7_cw2ef"]

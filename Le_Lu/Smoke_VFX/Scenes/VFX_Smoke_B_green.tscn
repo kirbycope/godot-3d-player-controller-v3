@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://db588q10cueuw"]
 
-[ext_resource type="Texture2D" uid="uid://brnp67jnwwro6" path="res://Le_Lu/Smoke_VFX/Textures/T_smoke_K97.png" id="1_5cq7f"]
+[ext_resource type="Texture2D" uid="uid://dbhnp5knjt6lj" path="res://Le_Lu/Smoke_VFX/Textures/T_smoke_K97.png" id="1_5cq7f"]
 [ext_resource type="Gradient" uid="uid://cyq8a14xjppds" path="res://Le_Lu/Smoke_VFX/Textures/gradients/g_greenYellow_smoke.tres" id="2_qget5"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rnakr"]

@@ -1,6 +1,6 @@
 [gd_resource type="VisualShader" format=3]
 
-[ext_resource type="Texture2D" uid="uid://dcfxifvj17wot" path="res://icon.svg" id="1_42pq8"]
+[ext_resource type="Texture2D" uid="uid://18cldrvjkyux" path="res://icon.svg" id="1_42pq8"]
 [ext_resource type="Texture2D" uid="uid://bxwnk5gueof1e" path="res://Le_Lu/Magic_Area_VFX/Textures/T_csa1.png" id="1_woy52"]
 
 [sub_resource type="VisualShaderNodeFloatConstant" id="VisualShaderNodeFloatConstant_mx6oh"]

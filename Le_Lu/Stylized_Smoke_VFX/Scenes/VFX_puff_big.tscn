@@ -2,8 +2,8 @@
 
 [ext_resource type="Shader" path="res://Le_Lu/Stylized_Smoke_VFX/Shaders/s_puff.tres" id="1_p4ear"]
 [ext_resource type="Shader" path="res://Le_Lu/Stylized_Smoke_VFX/Shaders/s_simple1.tres" id="1_s6jba"]
-[ext_resource type="Texture2D" uid="uid://cj0t7xony6e4r" path="res://Le_Lu/Stylized_Smoke_VFX/Textures/T_fl81_vfx.png" id="2_j0ej6"]
-[ext_resource type="Texture2D" uid="uid://4yxd0gw486dx" path="res://Le_Lu/Stylized_Smoke_VFX/Textures/T_PerlinNoise_Tiled.png" id="2_rqqmb"]
+[ext_resource type="Texture2D" uid="uid://dihm3pj8temyk" path="res://Le_Lu/Stylized_Smoke_VFX/Textures/T_fl81_vfx.png" id="2_j0ej6"]
+[ext_resource type="Texture2D" uid="uid://ce7kw1wptpgga" path="res://Le_Lu/Stylized_Smoke_VFX/Textures/T_PerlinNoise_Tiled.png" id="2_rqqmb"]
 [ext_resource type="Shader" path="res://Le_Lu/Stylized_Smoke_VFX/Shaders/s_simple2.tres" id="3_s01gx"]
 [ext_resource type="Texture2D" uid="uid://cwvrbxp50g3f7" path="res://Le_Lu/Stylized_Smoke_VFX/Textures/T_basic1_vfx.PNG" id="4_84v3w"]
 

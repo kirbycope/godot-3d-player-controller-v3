@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://c7u7abwai4glk"]
 
 [ext_resource type="Texture2D" uid="uid://brnp67jnwwro6" path="res://Le_Lu/Fire_VFX/textures/T_smoke_K97.png" id="1_12aen"]
-[ext_resource type="Texture2D" uid="uid://x204srgh33o" path="res://Le_Lu/Fire_VFX/textures/T_circle_transparent1.png" id="2_owj8o"]
+[ext_resource type="Texture2D" uid="uid://cyiqndvfebnyr" path="res://Le_Lu/Fire_VFX/textures/T_circle_transparent1.png" id="2_owj8o"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ny2vw"]
 transparency = 1

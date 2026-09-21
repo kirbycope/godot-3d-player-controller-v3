@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://6vnvomekuig7" path="res://assets/BinbunVFX_Vol2/FlameFX/script/VFXFireBB.gd" id="1_ipkx5"]
 [ext_resource type="Shader" uid="uid://c5hlagu83e1rl" path="res://assets/BinbunVFX_Vol2/FlameFX/shader/fire_particle.gdshader" id="2_igxc0"]
 [ext_resource type="Shader" uid="uid://b270y40usoppb" path="res://assets/BinbunVFX_Vol2/FlameFX/shader/fire_core.gdshader" id="3_34n1m"]
-[ext_resource type="Script" uid="uid://bwmucxp58uvvt" path="res://assets/BinbunVFX_Vol2/shared/script/VFXOmniLightBB.gd" id="4_rsvlb"]
+[ext_resource type="Script" uid="uid://cd2lwk3owlb8u" path="res://assets/BinbunVFX_Vol2/shared/script/VFXOmniLightBB.gd" id="4_rsvlb"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_ipkx5"]
 noise_type = 0

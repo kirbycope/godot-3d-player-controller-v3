@@ -6,7 +6,7 @@
 [ext_resource type="Shader" uid="uid://dba5w3lqevcaf" path="res://assets/BinbunVFX_Vol2/StylizedHitFX/shader/impact_core.gdshader" id="4_2a7eb"]
 [ext_resource type="Shader" uid="uid://h85jq2lrhiro" path="res://assets/BinbunVFX_Vol2/StylizedHitFX/shader/glow.gdshader" id="5_bcftt"]
 [ext_resource type="Shader" uid="uid://b0hbwcivw7wta" path="res://assets/BinbunVFX_Vol2/StylizedHitFX/shader/spiral_dust.gdshader" id="6_s6w6r"]
-[ext_resource type="Script" uid="uid://bwmucxp58uvvt" path="res://assets/BinbunVFX_Vol2/shared/script/VFXOmniLightBB.gd" id="7_c468c"]
+[ext_resource type="Script" uid="uid://cd2lwk3owlb8u" path="res://assets/BinbunVFX_Vol2/shared/script/VFXOmniLightBB.gd" id="7_c468c"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_2vgnw"]
 noise_type = 2

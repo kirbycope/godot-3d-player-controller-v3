@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://d2pgcsipjulhc"]
 
 [ext_resource type="Shader" path="res://Le_Lu/Stylized_Smoke_VFX/Shaders/s_simple_wmask.tres" id="1_60g5g"]
-[ext_resource type="Texture2D" uid="uid://dwrhoyfs10hb0" path="res://Le_Lu/Stylized_Smoke_VFX/Textures/T_VFX_sSmoke.jpg" id="2_2yfi4"]
-[ext_resource type="Texture2D" uid="uid://b72jwrmxaksvc" path="res://Le_Lu/Stylized_Smoke_VFX/Textures/T_VFX_sSmoke_mask1.jpg" id="3_drgog"]
+[ext_resource type="Texture2D" uid="uid://cmsqr4m5soqw4" path="res://Le_Lu/Stylized_Smoke_VFX/Textures/T_VFX_sSmoke.jpg" id="2_2yfi4"]
+[ext_resource type="Texture2D" uid="uid://ywgxidh3irin" path="res://Le_Lu/Stylized_Smoke_VFX/Textures/T_VFX_sSmoke_mask1.jpg" id="3_drgog"]
 
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7717a"]

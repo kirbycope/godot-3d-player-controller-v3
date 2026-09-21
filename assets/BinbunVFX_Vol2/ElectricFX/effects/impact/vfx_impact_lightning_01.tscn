@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://bipgogxsg6bex" path="res://assets/BinbunVFX_Vol2/ElectricFX/script/VFXImpactLightningBB.gd" id="1_n0654"]
 [ext_resource type="Shader" uid="uid://ckd2xixbhks07" path="res://assets/BinbunVFX_Vol2/ElectricFX/shader/electric_particle.gdshader" id="1_uexls"]
 [ext_resource type="Shader" uid="uid://dys78owbw23os" path="res://assets/BinbunVFX_Vol2/ElectricFX/shader/glow.gdshader" id="2_n0654"]
-[ext_resource type="Script" uid="uid://bwmucxp58uvvt" path="res://assets/BinbunVFX_Vol2/shared/script/VFXOmniLightBB.gd" id="4_5n32a"]
+[ext_resource type="Script" uid="uid://cd2lwk3owlb8u" path="res://assets/BinbunVFX_Vol2/shared/script/VFXOmniLightBB.gd" id="4_5n32a"]
 
 [sub_resource type="Gradient" id="Gradient_yxxev"]
 

@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://bra3khigbuanl" path="res://addons/3d_player_controller/scenes/equipment/paraglider.tscn" id="7_mvg0v"]
 [ext_resource type="PackedScene" path="res://addons/radi_ot/scenes/radi_ot_player_3d.tscn" id="9_mvg0v"]
 [ext_resource type="Resource" uid="uid://dy87f2jqj3wyr" path="res://addons/radi_ot/resources/stations/seattle_stations_default.tres" id="345_5hhec"]
-[ext_resource type="PackedScene" uid="uid://dsb1pwbg8x42w" path="res://scenes/fish_card.tscn" id="fish_card"]
+[ext_resource type="PackedScene" uid="uid://c7fishcard0001" path="res://scenes/fish_card.tscn" id="fish_card"]
 [ext_resource type="PackedScene" path="res://scenes/fish_caught_screen.tscn" id="fish_caught_screen"]
 [ext_resource type="PackedScene" uid="uid://cp8l5m7auhh4p" path="res://assets/loop_box/VFX.tscn" id="connector_vfx"]
 [ext_resource type="Script" uid="uid://2onin8lh303p" path="res://scenes/fishing_log.gd" id="fishing_log"]

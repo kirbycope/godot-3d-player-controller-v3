@@ -1,10 +1,10 @@
 [gd_scene format=3]
 
 [ext_resource type="Shader" path="res://Le_Lu/Stylized_Smoke_VFX/Shaders/s_puff.tres" id="1_lljds"]
-[ext_resource type="Texture2D" uid="uid://4yxd0gw486dx" path="res://Le_Lu/Stylized_Smoke_VFX/Textures/T_PerlinNoise_Tiled.png" id="2_1t6tx"]
+[ext_resource type="Texture2D" uid="uid://ce7kw1wptpgga" path="res://Le_Lu/Stylized_Smoke_VFX/Textures/T_PerlinNoise_Tiled.png" id="2_1t6tx"]
 [ext_resource type="Shader" path="res://Le_Lu/Stylized_Smoke_VFX/Shaders/s_puff_putliner.tres" id="3_pcmyd"]
 [ext_resource type="Shader" path="res://Le_Lu/Stylized_Smoke_VFX/Shaders/s_simple2_disolver_edge.tres" id="4_dpr6n"]
-[ext_resource type="Texture2D" uid="uid://df8cxy61v7wmd" path="res://Le_Lu/Stylized_Smoke_VFX/Textures/T_VFX_SparklesF21.jpg" id="5_wvw38"]
+[ext_resource type="Texture2D" uid="uid://mtcekmg04n6o" path="res://Le_Lu/Stylized_Smoke_VFX/Textures/T_VFX_SparklesF21.jpg" id="5_wvw38"]
 [ext_resource type="Shader" path="res://Le_Lu/Stylized_Smoke_VFX/Shaders/s_circle_shader.tres" id="6_rl12m"]
 [ext_resource type="ArrayMesh" uid="uid://bydcd1ucm4tko" path="res://Le_Lu/Stylized_Smoke_VFX/Objects/sm_circular_plane1.obj" id="7_tyuhn"]
 

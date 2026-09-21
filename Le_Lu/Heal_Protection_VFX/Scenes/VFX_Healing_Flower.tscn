@@ -1,6 +1,6 @@
 [gd_scene format=4 uid="uid://ck18rykofcffc"]
 
-[ext_resource type="Texture2D" uid="uid://brnp67jnwwro6" path="res://Le_Lu/Heal_Protection_VFX/textures/T_smoke_K97.png" id="1_p0vun"]
+[ext_resource type="Texture2D" uid="uid://bjjjyd5h71gse" path="res://Le_Lu/Heal_Protection_VFX/textures/T_smoke_K97.png" id="1_p0vun"]
 [ext_resource type="Texture2D" uid="uid://ddtp1ipxx65ik" path="res://Le_Lu/Heal_Protection_VFX/textures/T_flower_004.png" id="2_of3jk"]
 [ext_resource type="Texture2D" uid="uid://blgs3cb0bov2k" path="res://Le_Lu/Heal_Protection_VFX/textures/T_Leaf_001.png" id="3_ho5ac"]
 [ext_resource type="Texture2D" uid="uid://bn8njkpeloyju" path="res://Le_Lu/Heal_Protection_VFX/textures/T_Leaf_001gray.png" id="4_fd3e3"]

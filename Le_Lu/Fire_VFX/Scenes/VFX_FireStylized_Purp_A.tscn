@@ -2,11 +2,11 @@
 
 [ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/ss_fireTorch_T1.gdshader" id="1_e7276"]
 [ext_resource type="Texture2D" uid="uid://dce3jblveb1iw" path="res://Le_Lu/Fire_VFX/textures/T_Noise_w03A.png" id="2_xdypy"]
-[ext_resource type="Texture2D" uid="uid://dkujiwg37cnsk" path="res://Le_Lu/Fire_VFX/textures/T_NHU85.png" id="4_ka8bx"]
+[ext_resource type="Texture2D" uid="uid://cmadsbfmyyvfl" path="res://Le_Lu/Fire_VFX/textures/T_NHU85.png" id="4_ka8bx"]
 [ext_resource type="ArrayMesh" uid="uid://dlwx0ortvlt74" path="res://Le_Lu/Fire_VFX/objects/sm_teardrop2_high.obj" id="5_rpdfl"]
 [ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/s_stylized_smoke_t1_p.tres" id="6_n1b6w"]
-[ext_resource type="Texture2D" uid="uid://sfqnk8pph4px" path="res://Le_Lu/Fire_VFX/textures/T_VFX_Noise_075.png" id="7_ntaex"]
-[ext_resource type="ArrayMesh" uid="uid://d2v6ytf52lvyo" path="res://Le_Lu/Fire_VFX/objects/sm_sphere_A1_diagonal.obj" id="8_7mket"]
+[ext_resource type="Texture2D" uid="uid://clxxf8gxxul74" path="res://Le_Lu/Fire_VFX/textures/T_VFX_Noise_075.png" id="7_ntaex"]
+[ext_resource type="ArrayMesh" uid="uid://j5tike0j76qw" path="res://Le_Lu/Fire_VFX/objects/sm_sphere_A1_diagonal.obj" id="8_7mket"]
 
 [sub_resource type="Gradient" id="Gradient_ay40h"]
 offsets = PackedFloat32Array(0.610442, 0.923695, 1)

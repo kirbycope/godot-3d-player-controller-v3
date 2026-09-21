@@ -6,7 +6,7 @@
 [ext_resource type="Shader" uid="uid://do6vcxbky7k1h" path="res://assets/BinbunVFX_Vol2/ElectricFX/shader/impact_sphere.gdshader" id="4_mxa08"]
 [ext_resource type="Shader" uid="uid://dys78owbw23os" path="res://assets/BinbunVFX_Vol2/ElectricFX/shader/glow.gdshader" id="5_s37ko"]
 [ext_resource type="Shader" uid="uid://baqwcpk22w30" path="res://assets/BinbunVFX_Vol2/ElectricFX/shader/ground_streaks.gdshader" id="6_5fx1j"]
-[ext_resource type="Script" uid="uid://bwmucxp58uvvt" path="res://assets/BinbunVFX_Vol2/shared/script/VFXOmniLightBB.gd" id="7_fq65a"]
+[ext_resource type="Script" uid="uid://cd2lwk3owlb8u" path="res://assets/BinbunVFX_Vol2/shared/script/VFXOmniLightBB.gd" id="7_fq65a"]
 
 [sub_resource type="Gradient" id="Gradient_0478b"]
 

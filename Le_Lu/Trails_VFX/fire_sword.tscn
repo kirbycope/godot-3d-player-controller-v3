@@ -2,7 +2,7 @@
 
 [ext_resource type="Shader" path="res://Le_Lu/Trails_VFX/shaders/magic_aura.tres" id="1_q5684"]
 [ext_resource type="Texture2D" uid="uid://bbltihik6p6px" path="res://Le_Lu/Trails_VFX/textures/PerlinNoise_Tiled.png" id="2_jead2"]
-[ext_resource type="ArrayMesh" uid="uid://ktvjti6ttc2a" path="res://Le_Lu/Trails_VFX/Objects/sword_model.res" id="3_2agtp"]
+[ext_resource type="ArrayMesh" path="res://Le_Lu/Trails_VFX/Objects/sword_model.res" id="3_2agtp"]
 [ext_resource type="Texture2D" uid="uid://bijf7tw5qels5" path="res://Le_Lu/Trails_VFX/Objects/sword_mask.jpg" id="3_ereuq"]
 [ext_resource type="Texture2D" uid="uid://d3rx634c4sisv" path="res://Le_Lu/Trails_VFX/textures/T_VFX_gas12.png" id="5_trr52"]
 

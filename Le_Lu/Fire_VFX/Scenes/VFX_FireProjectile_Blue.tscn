@@ -6,7 +6,7 @@
 [ext_resource type="ArrayMesh" uid="uid://dlwx0ortvlt74" path="res://Le_Lu/Fire_VFX/objects/sm_teardrop2_high.obj" id="4_ldm8t"]
 [ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/s_Disolver_Treshold_p_fc.tres" id="5_8lshy"]
 [ext_resource type="Texture2D" uid="uid://bcl2qy81x1wcj" path="res://Le_Lu/Fire_VFX/textures/T_VFX_Flare_251.jpg" id="6_1t1jj"]
-[ext_resource type="Shader" uid="uid://cxs8yy4k6k3uw" path="res://Le_Lu/Fire_VFX/shaders/s_stylized_smoke_t1_p.tres" id="7_agty7"]
+[ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/s_stylized_smoke_t1_p.tres" id="7_agty7"]
 [ext_resource type="Texture2D" uid="uid://sfqnk8pph4px" path="res://Le_Lu/Elemental_VFX/textures/T_VFX_Noise_075.png" id="8_d3dc8"]
 [ext_resource type="ArrayMesh" uid="uid://d2v6ytf52lvyo" path="res://Le_Lu/Elemental_VFX/objects/sm_sphere_A1_diagonal.obj" id="9_k8tqn"]
 [ext_resource type="Shader" path="res://addons/GPUTrail/shaders/trail.gdshader" id="10_urnsj"]

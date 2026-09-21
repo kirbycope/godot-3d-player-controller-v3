@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bpyucc60pgywb"]
 
 [ext_resource type="Shader" path="res://Le_Lu/Loot_Drop_VFX/Shaders/s_fresnel_blink_unlit.tres" id="1_i5wq5"]
-[ext_resource type="Texture2D" uid="uid://ohya0mffk8p1" path="res://Le_Lu/Loot_Drop_VFX/Textures/T_VFX_Noise_7.PNG" id="2_tlrs6"]
+[ext_resource type="Texture2D" uid="uid://2r188gvm2hik" path="res://Le_Lu/Loot_Drop_VFX/Textures/T_VFX_Noise_7.PNG" id="2_tlrs6"]
 
 [sub_resource type="Gradient" id="Gradient_v7oyg"]
 offsets = PackedFloat32Array(0.150215, 0.244635, 0.579399, 0.922747, 1)

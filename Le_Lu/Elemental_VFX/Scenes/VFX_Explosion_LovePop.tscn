@@ -1,17 +1,17 @@
 [gd_scene format=3 uid="uid://brwyquscr4t85"]
 
-[ext_resource type="Shader" uid="uid://bhk5cs5wj4u1x" path="res://Le_Lu/Elemental_VFX/shaders/s_master_explosion_X2.tres" id="1_fpsd6"]
+[ext_resource type="Shader" uid="uid://boo4aoaprjmet" path="res://Le_Lu/Elemental_VFX/shaders/s_master_explosion_X2.tres" id="1_fpsd6"]
 [ext_resource type="Texture2D" uid="uid://bi58oq2oh63dp" path="res://Le_Lu/Heal_Protection_VFX/textures/T_NHU85.png" id="2_8pk4w"]
 [ext_resource type="Texture2D" uid="uid://ct4uygs7cju6p" path="res://Le_Lu/Elemental_VFX/textures/T_NKQ443.png" id="3_08fx5"]
 [ext_resource type="Texture2D" uid="uid://b013b0txvomqg" path="res://Le_Lu/Elemental_VFX/textures/T_VFX_Noise_5.PNG" id="4_b2cod"]
 [ext_resource type="ArrayMesh" uid="uid://d2v6ytf52lvyo" path="res://Le_Lu/Elemental_VFX/objects/sm_sphere_A1_diagonal.obj" id="5_so610"]
-[ext_resource type="Shader" uid="uid://dr4k127px7kkc" path="res://Le_Lu/Elemental_VFX/shaders/s_Disolver_Treshold_masked.tres" id="6_uu63t"]
+[ext_resource type="Shader" uid="uid://cmhkc278hh8jt" path="res://Le_Lu/Elemental_VFX/shaders/s_Disolver_Treshold_masked.tres" id="6_uu63t"]
 [ext_resource type="Texture2D" uid="uid://b3jjlypqvx2yt" path="res://Le_Lu/Elemental_VFX/textures/T_wavesKI96.png" id="7_05jms"]
-[ext_resource type="Texture2D" uid="uid://nyyc5vq2e8a8" path="res://Le_Lu/Elemental_VFX/textures/T_VFX_Noise_44xainv.png" id="8_h26vn"]
+[ext_resource type="Texture2D" uid="uid://btcsvb2n25tht" path="res://Le_Lu/Elemental_VFX/textures/T_VFX_Noise_44xainv.png" id="8_h26vn"]
 [ext_resource type="Texture2D" uid="uid://b5qcjndx0tklv" path="res://Le_Lu/Elemental_VFX/textures/T_EarthBasic413d.png" id="9_yhqkb"]
 [ext_resource type="Shader" path="res://Le_Lu/Wind_VFX/shaders/s_Disolver2.tres" id="10_jbunm"]
 [ext_resource type="ArrayMesh" uid="uid://b18oh0krlikc" path="res://Le_Lu/Elemental_VFX/objects/sm_ring211.obj" id="12_ipcjn"]
-[ext_resource type="Shader" uid="uid://1q6lsrjyrqr1" path="res://Le_Lu/Elemental_VFX/shaders/s_simple_pfc.tres" id="13_28inw"]
+[ext_resource type="Shader" path="res://Le_Lu/Elemental_VFX/shaders/s_simple_pfc.tres" id="13_28inw"]
 [ext_resource type="Texture2D" uid="uid://625j4lcmn1kr" path="res://Le_Lu/Elemental_VFX/textures/T_VFX_Flare67z.jpg" id="14_vm3t6"]
 
 

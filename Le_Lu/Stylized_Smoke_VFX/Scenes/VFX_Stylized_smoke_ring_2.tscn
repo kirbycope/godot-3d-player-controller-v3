@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dqm6n877wj6px"]
 
 [ext_resource type="Shader" path="res://Le_Lu/Stylized_Smoke_VFX/Shaders/ss_stylized_smoke_Q1_p.gdshader" id="1_xxsc1"]
-[ext_resource type="Texture2D" uid="uid://c58fuw3g11jq0" path="res://Le_Lu/Stylized_Smoke_VFX/Textures/T_PerlinNoise_Tiled11_inv.png" id="2_u3tyj"]
+[ext_resource type="Texture2D" uid="uid://yxlfx104mywn" path="res://Le_Lu/Stylized_Smoke_VFX/Textures/T_PerlinNoise_Tiled11_inv.png" id="2_u3tyj"]
 
 [sub_resource type="Gradient" id="Gradient_f7f1a"]
 interpolation_mode = 1

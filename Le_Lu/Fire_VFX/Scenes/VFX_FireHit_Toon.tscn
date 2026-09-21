@@ -2,7 +2,7 @@
 
 [ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/s_Disolver_small_Liquid_p_Treshold_ds_us.tres" id="1_1ik6e"]
 [ext_resource type="Texture2D" uid="uid://dv6fsjgo3oep8" path="res://Le_Lu/Fire_VFX/textures/T_Blood_Leash_FE1.png" id="2_xn75y"]
-[ext_resource type="ArrayMesh" uid="uid://cbs6u7qd6xpp0" path="res://Le_Lu/Fire_VFX/objects/sm_smoke1.obj" id="3_ejhih"]
+[ext_resource type="ArrayMesh" uid="uid://citxg5i007o2r" path="res://Le_Lu/Fire_VFX/objects/sm_smoke1.obj" id="3_ejhih"]
 
 [sub_resource type="Gradient" id="Gradient_gpae7"]
 offsets = PackedFloat32Array(0, 0.534137)

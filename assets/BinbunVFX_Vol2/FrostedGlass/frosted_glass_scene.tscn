@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://b8gny0ytjbesg"]
 
 [ext_resource type="Texture2D" uid="uid://ed44j8f3a8us" path="res://assets/BinbunVFX_Vol2/shared/story_studio_02_1k.hdr" id="1_1nner"]
-[ext_resource type="Shader" uid="uid://mvwi25cb826n" path="res://assets/BinbunVFX_Vol2/shared/shader/checker.gdshader" id="2_05c4a"]
+[ext_resource type="Shader" uid="uid://c8by76imbamhc" path="res://assets/BinbunVFX_Vol2/shared/shader/checker.gdshader" id="2_05c4a"]
 [ext_resource type="Material" uid="uid://bgtrwfexuvmwc" path="res://assets/BinbunVFX_Vol2/FrostedGlass/effects/frosted_basic/frosted_basic_01.tres" id="4_6sigg"]
 [ext_resource type="Material" uid="uid://c3q57x4mnlvvq" path="res://assets/BinbunVFX_Vol2/FrostedGlass/effects/frosted_basic/frosted_basic_03.tres" id="4_uthxb"]
 [ext_resource type="Material" uid="uid://c3ciejpi1wx0l" path="res://assets/BinbunVFX_Vol2/FrostedGlass/effects/frosted_basic/frosted_basic_04.tres" id="5_uthxb"]

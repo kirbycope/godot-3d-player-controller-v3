@@ -4,7 +4,7 @@
 [ext_resource type="Shader" uid="uid://ckd2xixbhks07" path="res://assets/BinbunVFX_Vol2/ElectricFX/shader/electric_particle.gdshader" id="2_536ss"]
 [ext_resource type="Shader" uid="uid://dys78owbw23os" path="res://assets/BinbunVFX_Vol2/ElectricFX/shader/glow.gdshader" id="3_h86gb"]
 [ext_resource type="Shader" uid="uid://c2sfkl20ravap" path="res://assets/BinbunVFX_Vol2/ElectricFX/shader/four_point_star.gdshader" id="4_kyab5"]
-[ext_resource type="Script" uid="uid://bwmucxp58uvvt" path="res://assets/BinbunVFX_Vol2/shared/script/VFXOmniLightBB.gd" id="5_58oji"]
+[ext_resource type="Script" uid="uid://cd2lwk3owlb8u" path="res://assets/BinbunVFX_Vol2/shared/script/VFXOmniLightBB.gd" id="5_58oji"]
 
 [sub_resource type="Gradient" id="Gradient_y1vg3"]
 

@@ -1,15 +1,15 @@
 [gd_scene format=3 uid="uid://pjhrq8ilhqlg"]
 
 [ext_resource type="Texture2D" uid="uid://c1t3ptjn34muf" path="res://Le_Lu/Elemental_VFX/textures/T_VFX_Trail_211.png" id="1_0ry5j"]
-[ext_resource type="Shader" uid="uid://bhk5cs5wj4u1x" path="res://Le_Lu/Elemental_VFX/shaders/s_master_explosion_X2.tres" id="2_erdss"]
+[ext_resource type="Shader" uid="uid://boo4aoaprjmet" path="res://Le_Lu/Elemental_VFX/shaders/s_master_explosion_X2.tres" id="2_erdss"]
 [ext_resource type="Texture2D" uid="uid://dkujiwg37cnsk" path="res://Le_Lu/Elemental_VFX/textures/T_NHU85.png" id="3_wgmoj"]
 [ext_resource type="Texture2D" uid="uid://ct4uygs7cju6p" path="res://Le_Lu/Elemental_VFX/textures/T_NKQ443.png" id="4_x3tkf"]
 [ext_resource type="Texture2D" uid="uid://dxvc4qtejomuh" path="res://Le_Lu/Elemental_VFX/textures/T_Noise_01.PNG" id="5_yh2wt"]
 [ext_resource type="ArrayMesh" uid="uid://b1hib6ma7rkaa" path="res://Le_Lu/Elemental_VFX/objects/sm_sphere3sp.obj" id="6_i8p3a"]
-[ext_resource type="Shader" uid="uid://dr4k127px7kkc" path="res://Le_Lu/Elemental_VFX/shaders/s_Disolver_Treshold_masked.tres" id="7_j2lc8"]
+[ext_resource type="Shader" uid="uid://cmhkc278hh8jt" path="res://Le_Lu/Elemental_VFX/shaders/s_Disolver_Treshold_masked.tres" id="7_j2lc8"]
 [ext_resource type="Texture2D" uid="uid://b3jjlypqvx2yt" path="res://Le_Lu/Elemental_VFX/textures/T_wavesKI96.png" id="8_oteq8"]
-[ext_resource type="Texture2D" uid="uid://nyyc5vq2e8a8" path="res://Le_Lu/Elemental_VFX/textures/T_VFX_Noise_44xainv.png" id="9_wkoq6"]
-[ext_resource type="Shader" uid="uid://cxs8yy4k6k3uw" path="res://Le_Lu/Stylized_Smoke_VFX/Shaders/s_stylized_smoke_t1_p.tres" id="10_h13w2"]
+[ext_resource type="Texture2D" uid="uid://btcsvb2n25tht" path="res://Le_Lu/Elemental_VFX/textures/T_VFX_Noise_44xainv.png" id="9_wkoq6"]
+[ext_resource type="Shader" uid="uid://chawrph66n7h0" path="res://Le_Lu/Stylized_Smoke_VFX/Shaders/s_stylized_smoke_t1_p.tres" id="10_h13w2"]
 [ext_resource type="Texture2D" uid="uid://c3512cy1at8fc" path="res://Le_Lu/Elemental_VFX/textures/T_VFX_SparkDak14.png" id="11_j4tjr"]
 
 

@@ -14,9 +14,9 @@
 [ext_resource type="AudioStream" uid="uid://dw7jihkky3b17" path="res://assets/gravitysound/Animal SFX/Duck_5.ogg" id="10_t4sxs"]
 [ext_resource type="AudioStream" uid="uid://1tij4jh6i0jx" path="res://assets/gravitysound/Animal SFX/Duck_6.ogg" id="11_7o3gr"]
 [ext_resource type="SceneReplicationConfig" path="res://resources/duck_replication.tres" id="sync_config"]
-[ext_resource type="PackedScene" uid="uid://dt6iufipvx42w" path="res://addons/3d_player_controller/scenes/ui/health.tscn" id="health_scene"]
+[ext_resource type="PackedScene" uid="uid://c7health000001" path="res://addons/3d_player_controller/scenes/ui/health.tscn" id="health_scene"]
 [ext_resource type="PackedScene" uid="uid://b7nievqli2b5" path="res://addons/3d_player_controller/scenes/ui/status_bars_3d.tscn" id="bars_scene"]
-[ext_resource type="PackedScene" uid="uid://doh12l1pvx42w" path="res://addons/3d_player_controller/scenes/npc/boss.tscn" id="boss_scene"]
+[ext_resource type="PackedScene" uid="uid://c7boss00000001" path="res://addons/3d_player_controller/scenes/npc/boss.tscn" id="boss_scene"]
 [ext_resource type="PackedScene" uid="uid://dy6tmyh7o8s0w" path="res://addons/3d_player_controller/scenes/npc/melee_hitbox.tscn" id="hitbox_scene"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hwgnm"]

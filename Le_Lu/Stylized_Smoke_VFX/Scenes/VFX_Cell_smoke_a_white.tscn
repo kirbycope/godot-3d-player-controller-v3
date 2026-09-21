@@ -2,7 +2,7 @@
 
 [ext_resource type="Shader" path="res://Le_Lu/Stylized_Smoke_VFX/Shaders/ss_stylized_smoke_Q1_p.gdshader" id="1_2qwye"]
 [ext_resource type="Texture2D" uid="uid://c58fuw3g11jq0" path="res://Le_Lu/Elemental_VFX/textures/T_PerlinNoise_Tiled11_inv.png" id="2_qcwrd"]
-[ext_resource type="ArrayMesh" uid="uid://buu1yfi8wd1jq" path="res://Le_Lu/Stylized_Smoke_VFX/Objects/sm_sphere5sft.obj" id="3_cctps"]
+[ext_resource type="ArrayMesh" uid="uid://bt3n7xbor2o5q" path="res://Le_Lu/Stylized_Smoke_VFX/Objects/sm_sphere5sft.obj" id="3_cctps"]
 
 
 [sub_resource type="Gradient" id="Gradient_k5gwm"]

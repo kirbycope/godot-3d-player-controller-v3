@@ -1,11 +1,11 @@
 [gd_scene format=3 uid="uid://dua7gcibl3i76"]
 
 [ext_resource type="Texture2D" uid="uid://y14xfpo4p83r" path="res://Le_Lu/Loot_Drop_VFX/Textures/T_VFX_Noise_5.PNG" id="4_tjgof"]
-[ext_resource type="Texture2D" uid="uid://fp0tqfa1tfb" path="res://Le_Lu/Loot_Drop_VFX/Textures/T_VFX_Noise_a13.PNG" id="5_lb1ua"]
+[ext_resource type="Texture2D" uid="uid://bcyaip5py2i5f" path="res://Le_Lu/Loot_Drop_VFX/Textures/T_VFX_Noise_a13.PNG" id="5_lb1ua"]
 [ext_resource type="ArrayMesh" uid="uid://dmihciuav716f" path="res://Le_Lu/Loot_Drop_VFX/Objects/sm_windCylinder_projectedUVs.obj" id="6_eh5ri"]
 [ext_resource type="Shader" path="res://Le_Lu/Loot_Drop_VFX/Shaders/s_scrolling_over_pY.tres" id="7_o7bad"]
 [ext_resource type="Shader" path="res://Le_Lu/Loot_Drop_VFX/Shaders/s_simple_p_2.tres" id="8_2mbhd"]
-[ext_resource type="Texture2D" uid="uid://dra25la2m0shx" path="res://Le_Lu/Loot_Drop_VFX/Textures/T_VFX_Flare_2.PNG" id="9_ce7hg"]
+[ext_resource type="Texture2D" uid="uid://bmywee75kidoj" path="res://Le_Lu/Loot_Drop_VFX/Textures/T_VFX_Flare_2.PNG" id="9_ce7hg"]
 [ext_resource type="Shader" path="res://Le_Lu/Loot_Drop_VFX/Shaders/s_simple_blink_unlit_fc.tres" id="10_dp0n1"]
 [ext_resource type="Texture2D" uid="uid://cjr717ot2vpqf" path="res://Le_Lu/Loot_Drop_VFX/Textures/T_VFX_Flare_678.png" id="11_vdo7h"]
 [ext_resource type="Texture2D" uid="uid://dfede0wdplce0" path="res://Le_Lu/Loot_Drop_VFX/Textures/T_VFX_Mask_6.PNG" id="12_epd72"]

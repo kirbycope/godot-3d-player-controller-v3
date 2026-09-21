@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://cj0t7xony6e4r" path="res://Le_Lu/Puff_VFX/Textures/T_fl81_vfx.png" id="2_j0ej6"]
 [ext_resource type="Texture2D" uid="uid://4yxd0gw486dx" path="res://Le_Lu/Puff_VFX/Textures/T_PerlinNoise_Tiled.png" id="2_rqqmb"]
 [ext_resource type="Shader" path="res://Le_Lu/Puff_VFX/Shaders/s_simple2.tres" id="3_s01gx"]
-[ext_resource type="Texture2D" uid="uid://cdga0j4g0dlx3" path="res://Le_Lu/Puff_VFX/Textures/T_basic1_vfx.PNG" id="4_84v3w"]
+[ext_resource type="Texture2D" uid="uid://c8oue3ip25mjl" path="res://Le_Lu/Puff_VFX/Textures/T_basic1_vfx.PNG" id="4_84v3w"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ixvty"]
 render_priority = 0

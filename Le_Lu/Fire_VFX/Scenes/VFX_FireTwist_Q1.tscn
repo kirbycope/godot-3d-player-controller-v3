@@ -6,7 +6,7 @@
 [ext_resource type="ArrayMesh" uid="uid://0tljl8cfvda1" path="res://Le_Lu/Fire_VFX/objects/sm_cylinder_fire3tw.obj" id="3_rmwme"]
 [ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/s_Disolver_small_Liquid_p_Treshold_ds_us.tres" id="4_ofucu"]
 [ext_resource type="Texture2D" uid="uid://dv6fsjgo3oep8" path="res://Le_Lu/Fire_VFX/textures/T_Blood_Leash_FE1.png" id="5_2a1wj"]
-[ext_resource type="ArrayMesh" uid="uid://cbs6u7qd6xpp0" path="res://Le_Lu/Fire_VFX/objects/sm_smoke1.obj" id="6_b3fwf"]
+[ext_resource type="ArrayMesh" uid="uid://citxg5i007o2r" path="res://Le_Lu/Fire_VFX/objects/sm_smoke1.obj" id="6_b3fwf"]
 
 [sub_resource type="Gradient" id="Gradient_aq8ue"]
 offsets = PackedFloat32Array(0.00803213, 0.48996, 1)

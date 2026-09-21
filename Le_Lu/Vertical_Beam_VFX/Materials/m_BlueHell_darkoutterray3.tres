@@ -1,7 +1,7 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://bsi6ixmhl3aco"]
 
-[ext_resource type="Shader" uid="uid://ccdqpctojp701" path="res://Le_Lu/Vertical_Beam_VFX/Shaders/s_dual_master_disolver.tres" id="1_cytg0"]
-[ext_resource type="Texture2D" uid="uid://dd1pmd840fclm" path="res://Le_Lu/Vertical_Beam_VFX/Textures/T_NHU85.png" id="2_m082p"]
+[ext_resource type="Shader" path="res://Le_Lu/Vertical_Beam_VFX/Shaders/s_dual_master_disolver.tres" id="1_cytg0"]
+[ext_resource type="Texture2D" uid="uid://b3ymd7xjr7bge" path="res://Le_Lu/Vertical_Beam_VFX/Textures/T_NHU85.png" id="2_m082p"]
 
 
 [sub_resource type="Gradient" id="Gradient_e5dav"]

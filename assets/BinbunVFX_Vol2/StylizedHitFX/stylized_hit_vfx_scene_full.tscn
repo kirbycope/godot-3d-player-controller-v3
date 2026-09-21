@@ -1,6 +1,6 @@
 [gd_scene format=3]
 
-[ext_resource type="Shader" uid="uid://mvwi25cb826n" path="res://assets/BinbunVFX_Vol2/shared/shader/checker.gdshader" id="1_xino6"]
+[ext_resource type="Shader" uid="uid://c8by76imbamhc" path="res://assets/BinbunVFX_Vol2/shared/shader/checker.gdshader" id="1_xino6"]
 [ext_resource type="PackedScene" uid="uid://dpntm33m1fs4l" path="res://assets/BinbunVFX_Vol2/StylizedHitFX/effects/big_impact/vfx_big_impact_01.tscn" id="2_r6r3s"]
 [ext_resource type="PackedScene" uid="uid://dsbj3443hx0xe" path="res://assets/BinbunVFX_Vol2/StylizedHitFX/effects/big_impact/vfx_big_impact_02.tscn" id="3_qyxm6"]
 [ext_resource type="PackedScene" uid="uid://cicpcjja8ggbv" path="res://assets/BinbunVFX_Vol2/StylizedHitFX/effects/big_impact/vfx_big_impact_03.tscn" id="4_gy1x8"]

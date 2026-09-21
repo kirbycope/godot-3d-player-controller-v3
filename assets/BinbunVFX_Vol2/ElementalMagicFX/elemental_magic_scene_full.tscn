@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://b1alo2yhq8c8j"]
 
 [ext_resource type="Texture2D" uid="uid://ed44j8f3a8us" path="res://assets/BinbunVFX_Vol2/shared/story_studio_02_1k.hdr" id="1_eiomo"]
-[ext_resource type="Shader" uid="uid://mvwi25cb826n" path="res://assets/BinbunVFX_Vol2/shared/shader/checker.gdshader" id="2_a01x7"]
+[ext_resource type="Shader" uid="uid://c8by76imbamhc" path="res://assets/BinbunVFX_Vol2/shared/shader/checker.gdshader" id="2_a01x7"]
 [ext_resource type="PackedScene" uid="uid://c4jq7s82wru52" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/effects/projectile/vfx_fire_projectile_01.tscn" id="3_a01x7"]
 [ext_resource type="PackedScene" uid="uid://cljj8wvvd3nl2" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/effects/projectile/vfx_fire_projectile_02.tscn" id="4_w2eh1"]
 [ext_resource type="PackedScene" uid="uid://daugjhgej3dy5" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/effects/projectile/vfx_water_projectile_01.tscn" id="5_6drxn"]

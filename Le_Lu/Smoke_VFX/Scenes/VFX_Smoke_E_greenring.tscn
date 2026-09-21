@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cefgedo0vabuk"]
 
 [ext_resource type="Shader" path="res://Le_Lu/Smoke_VFX/Shaders/s_stylized_smoke1_p_fc.tres" id="1_64ca7"]
-[ext_resource type="Texture2D" uid="uid://yyhxvy2wfomg" path="res://Le_Lu/Smoke_VFX/Textures/T_smoke_bb4.png" id="2_ms2i6"]
+[ext_resource type="Texture2D" uid="uid://cxqosq10wa4fy" path="res://Le_Lu/Smoke_VFX/Textures/T_smoke_bb4.png" id="2_ms2i6"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_unjbo"]
 render_priority = 0

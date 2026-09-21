@@ -1,7 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Shader" path="res://Le_Lu/Stylized_Smoke_VFX/Shaders/s_puff.tres" id="1_6vebj"]
-[ext_resource type="Texture2D" uid="uid://4yxd0gw486dx" path="res://Le_Lu/Stylized_Smoke_VFX/Textures/T_PerlinNoise_Tiled.png" id="2_in4ho"]
+[ext_resource type="Texture2D" uid="uid://ce7kw1wptpgga" path="res://Le_Lu/Stylized_Smoke_VFX/Textures/T_PerlinNoise_Tiled.png" id="2_in4ho"]
 
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_bx2os"]

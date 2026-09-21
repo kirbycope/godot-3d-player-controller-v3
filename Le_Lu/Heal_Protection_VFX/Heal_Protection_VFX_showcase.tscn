@@ -14,8 +14,8 @@
 [ext_resource type="ArrayMesh" uid="uid://vgiyxw3yneoh" path="res://Le_Lu/Elemental_VFX/objects/sm_cylinder_based.obj" id="12_ivpcr"]
 [ext_resource type="Shader" path="res://Le_Lu/Wind_VFX/shaders/s_master_fire2_fresnel_ds.tres" id="13_5y5kd"]
 [ext_resource type="Texture2D" uid="uid://bi58oq2oh63dp" path="res://Le_Lu/Heal_Protection_VFX/textures/T_NHU85.png" id="14_l1q1v"]
-[ext_resource type="ArrayMesh" uid="uid://cpq7r88qokqyt" path="res://Le_Lu/Heal_Protection_VFX/objects/sm_shockwaveW5.obj" id="15_o2gn5"]
-[ext_resource type="ArrayMesh" uid="uid://ct8qu8sekhktw" path="res://Le_Lu/Heal_Protection_VFX/Misc/sm_character_base1.obj" id="16_cedfk"]
+[ext_resource type="ArrayMesh" uid="uid://by64ys3522e5a" path="res://Le_Lu/Heal_Protection_VFX/objects/sm_shockwaveW5.obj" id="15_o2gn5"]
+[ext_resource type="ArrayMesh" uid="uid://bjx1c3t8tnmjk" path="res://Le_Lu/Heal_Protection_VFX/Misc/sm_character_base1.obj" id="16_cedfk"]
 [ext_resource type="Shader" path="res://Le_Lu/Heal_Protection_VFX/shaders/s_animated_ds_unlit_bw_aT_instanced.gdshader" id="17_07yex"]
 [ext_resource type="Texture2D" uid="uid://bbyxbtx7n504o" path="res://Le_Lu/Heal_Protection_VFX/Misc/textures/T_Text_H34L1NG_ATTLAS.png" id="18_v8hct"]
 

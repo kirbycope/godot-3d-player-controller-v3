@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://bgn2iqm866w2o" path="res://assets/BinbunVFX_Vol2/DarkMagicFX/script/VFXDarkVortexBB.gd" id="1_at22f"]
 [ext_resource type="Shader" uid="uid://cad00j0afue5o" path="res://assets/BinbunVFX_Vol2/DarkMagicFX/shader/dark_vortex.gdshader" id="1_vwh8n"]
 [ext_resource type="Shader" uid="uid://s4o4j48gdsfr" path="res://assets/BinbunVFX_Vol2/DarkMagicFX/shader/area_dark.gdshader" id="2_o06rl"]
-[ext_resource type="Script" uid="uid://bwmucxp58uvvt" path="res://assets/BinbunVFX_Vol2/shared/script/VFXOmniLightBB.gd" id="3_o06rl"]
+[ext_resource type="Script" uid="uid://cd2lwk3owlb8u" path="res://assets/BinbunVFX_Vol2/shared/script/VFXOmniLightBB.gd" id="3_o06rl"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_excg5"]
 seed = 3

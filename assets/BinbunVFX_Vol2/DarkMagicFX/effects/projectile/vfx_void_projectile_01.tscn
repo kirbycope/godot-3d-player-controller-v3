@@ -5,7 +5,7 @@
 [ext_resource type="Shader" uid="uid://glxve0o3j42w" path="res://assets/BinbunVFX_Vol2/DarkMagicFX/shader/dark_projectile_trail.gdshader" id="2_xlb8n"]
 [ext_resource type="Shader" uid="uid://h5qbn31kq4qw" path="res://assets/BinbunVFX_Vol2/DarkMagicFX/shader/dark_projectile_glow.gdshader" id="3_vhalc"]
 [ext_resource type="Shader" uid="uid://c21trxc3o2ee7" path="res://assets/BinbunVFX_Vol2/DarkMagicFX/shader/void_core.gdshader" id="4_c0lb3"]
-[ext_resource type="Script" uid="uid://bwmucxp58uvvt" path="res://assets/BinbunVFX_Vol2/shared/script/VFXOmniLightBB.gd" id="5_ckho1"]
+[ext_resource type="Script" uid="uid://cd2lwk3owlb8u" path="res://assets/BinbunVFX_Vol2/shared/script/VFXOmniLightBB.gd" id="5_ckho1"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_x2qa8"]
 seed = 3

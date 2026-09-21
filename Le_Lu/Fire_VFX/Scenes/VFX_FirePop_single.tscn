@@ -2,7 +2,7 @@
 
 [ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/s_Disolver_small_Liquid_p_Treshold_ds_us.tres" id="1_vx7qj"]
 [ext_resource type="Texture2D" uid="uid://lkuaxmotust5" path="res://Le_Lu/Fire_VFX/textures/T_VFX_FireBall_s1_alpha.jpg" id="2_eqv82"]
-[ext_resource type="ArrayMesh" uid="uid://cbs6u7qd6xpp0" path="res://Le_Lu/Fire_VFX/objects/sm_smoke1.obj" id="3_c41kx"]
+[ext_resource type="ArrayMesh" uid="uid://citxg5i007o2r" path="res://Le_Lu/Fire_VFX/objects/sm_smoke1.obj" id="3_c41kx"]
 [ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/s_animated_ds_unlit_bw.gdshader" id="4_00cmq"]
 [ext_resource type="Texture2D" uid="uid://blyul2rws0dg2" path="res://Le_Lu/Fire_VFX/textures/T_firex_shot88_billboard_bw.png" id="5_qbhfx"]
 [ext_resource type="ArrayMesh" uid="uid://hgvjcdwlaxxr" path="res://Le_Lu/Fire_VFX/objects/sm_flamethrower23.obj" id="6_6h0kr"]

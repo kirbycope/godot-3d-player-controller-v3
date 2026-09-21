@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bt8bb07h64lnr"]
 
-[ext_resource type="Shader" uid="uid://l5v251hdrj6v" path="res://Le_Lu/Fire_VFX/shaders/s_Disolver_Firex_p_Treshold.tres" id="1_ly04q"]
+[ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/s_Disolver_Firex_p_Treshold.tres" id="1_ly04q"]
 [ext_resource type="Texture2D" uid="uid://b44akniah0svb" path="res://Le_Lu/Fire_VFX/textures/T_VFX_smoke_2.jpg" id="2_702yg"]
 [ext_resource type="Texture2D" uid="uid://df1wsak3bk0m4" path="res://Le_Lu/Fire_VFX/textures/T_VFX_Noise_44xainv.png" id="3_7vwc5"]
 

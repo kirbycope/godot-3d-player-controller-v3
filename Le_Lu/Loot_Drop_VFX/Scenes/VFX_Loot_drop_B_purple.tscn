@@ -1,16 +1,16 @@
 [gd_scene format=3 uid="uid://defxm4re80123"]
 
 [ext_resource type="Texture2D" uid="uid://y14xfpo4p83r" path="res://Le_Lu/Loot_Drop_VFX/Textures/T_VFX_Noise_5.PNG" id="1_0in34"]
-[ext_resource type="Texture2D" uid="uid://fp0tqfa1tfb" path="res://Le_Lu/Loot_Drop_VFX/Textures/T_VFX_Noise_a13.PNG" id="2_vt7nq"]
-[ext_resource type="ArrayMesh" uid="uid://dmihciuav716f" path="res://Le_Lu/Vertical_Beam_VFX/Objects/sm_windCylinder_projectedUVs.obj" id="3_ghmeh"]
+[ext_resource type="Texture2D" uid="uid://bcyaip5py2i5f" path="res://Le_Lu/Loot_Drop_VFX/Textures/T_VFX_Noise_a13.PNG" id="2_vt7nq"]
+[ext_resource type="ArrayMesh" uid="uid://dgxqt6dqw0hen" path="res://Le_Lu/Vertical_Beam_VFX/Objects/sm_windCylinder_projectedUVs.obj" id="3_ghmeh"]
 [ext_resource type="Shader" path="res://Le_Lu/Wind_VFX/shaders/s_scrolling_over_pY.tres" id="4_p1vl6"]
 [ext_resource type="Shader" path="res://Le_Lu/Vertical_Beam_VFX/Shaders/s_simple_p_2.tres" id="5_bfw6i"]
 [ext_resource type="Texture2D" uid="uid://de6yh8gsjelk6" path="res://Le_Lu/Loot_Drop_VFX/Textures/T_VFX_Mask_15.jpg" id="6_5h55x"]
 [ext_resource type="Shader" path="res://Le_Lu/Loot_Drop_VFX/Shaders/s_simple_blink_unlit_Y.tres" id="7_t4iug"]
 [ext_resource type="Texture2D" uid="uid://dg60ll3b3h658" path="res://Le_Lu/Loot_Drop_VFX/Textures/T_Mask681.jpg" id="8_2pomu"]
-[ext_resource type="Texture2D" uid="uid://bcl2qy81x1wcj" path="res://Le_Lu/Loot_Drop_VFX/Textures/T_VFX_Flare_251.jpg" id="9_m5nn5"]
+[ext_resource type="Texture2D" uid="uid://cfqmasi5nmm2n" path="res://Le_Lu/Loot_Drop_VFX/Textures/T_VFX_Flare_251.jpg" id="9_m5nn5"]
 [ext_resource type="Shader" path="res://Le_Lu/Loot_Drop_VFX/Shaders/s_simple_blink_unlit_fc.tres" id="13_5enlx"]
-[ext_resource type="Texture2D" uid="uid://c8eymxxmcsrmq" path="res://Le_Lu/Loot_Drop_VFX/Textures/T_VFX_Flare_6.PNG" id="14_hplkr"]
+[ext_resource type="Texture2D" uid="uid://chddj0aynhcpo" path="res://Le_Lu/Loot_Drop_VFX/Textures/T_VFX_Flare_6.PNG" id="14_hplkr"]
 
 [sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_mweyg"]
 parameter_name = "Texture_Substract"

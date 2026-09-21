@@ -5,7 +5,7 @@
 [ext_resource type="Shader" uid="uid://dap4pgwovc5jo" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/shader/projectile_tail.gdshader" id="3_moekt"]
 [ext_resource type="Shader" uid="uid://12n2qixdehjl" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/shader/projectile_streaks.gdshader" id="4_ctcr6"]
 [ext_resource type="Shader" uid="uid://bwdcjcgu2bvq8" path="res://assets/BinbunVFX_Vol2/ElementalMagicFX/shader/projectile_particles.gdshader" id="5_521mb"]
-[ext_resource type="Script" uid="uid://bwmucxp58uvvt" path="res://assets/BinbunVFX_Vol2/shared/script/VFXOmniLightBB.gd" id="6_susv0"]
+[ext_resource type="Script" uid="uid://cd2lwk3owlb8u" path="res://assets/BinbunVFX_Vol2/shared/script/VFXOmniLightBB.gd" id="6_susv0"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_fqdwg"]
 noise_type = 2

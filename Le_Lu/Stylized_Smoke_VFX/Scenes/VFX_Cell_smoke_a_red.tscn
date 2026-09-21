@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://c3ncyu8kxcjcf"]
 
 [ext_resource type="Shader" path="res://Le_Lu/Stylized_Smoke_VFX/Shaders/ss_stylized_smoke_Q1_p.gdshader" id="1_avrgd"]
-[ext_resource type="Texture2D" uid="uid://du4o44wboryvw" path="res://Le_Lu/Stylized_Smoke_VFX/Textures/T_Noise_001R.png" id="2_3euun"]
-[ext_resource type="ArrayMesh" uid="uid://buu1yfi8wd1jq" path="res://Le_Lu/Stylized_Smoke_VFX/Objects/sm_sphere5sft.obj" id="3_4rggg"]
+[ext_resource type="Texture2D" uid="uid://beetya7bt8nks" path="res://Le_Lu/Stylized_Smoke_VFX/Textures/T_Noise_001R.png" id="2_3euun"]
+[ext_resource type="ArrayMesh" uid="uid://bt3n7xbor2o5q" path="res://Le_Lu/Stylized_Smoke_VFX/Objects/sm_sphere5sft.obj" id="3_4rggg"]
 
 
 [sub_resource type="Gradient" id="Gradient_k5gwm"]

@@ -61,7 +61,7 @@
 [ext_resource type="PackedScene" uid="uid://xkju7gsgmw57" path="res://Le_Lu/Fire_VFX/Scenes/VFX_FireArea_A.tscn" id="59_1tbxm"]
 [ext_resource type="PackedScene" uid="uid://cxaiemrleny0v" path="res://Le_Lu/Fire_VFX/Scenes/VFX_Fire_1_SUBemitter.tscn" id="60_u03pa"]
 [ext_resource type="ArrayMesh" uid="uid://bvmmh7vcrvo3k" path="res://Le_Lu/Fire_VFX/Misc/sm_barrell001.obj" id="61_15ibn"]
-[ext_resource type="ArrayMesh" uid="uid://7qxbf5xhof0h" path="res://Le_Lu/Fire_VFX/objects/sm_sphere_A1.obj" id="62_7wu0k"]
+[ext_resource type="ArrayMesh" uid="uid://bcsxmcdlay6ww" path="res://Le_Lu/Fire_VFX/objects/sm_sphere_A1.obj" id="62_7wu0k"]
 [ext_resource type="PackedScene" uid="uid://dvtinf7vnu8o7" path="res://Le_Lu/Fire_VFX/Scenes/VFX_Flamethrower_B.tscn" id="63_bpxdd"]
 [ext_resource type="ArrayMesh" uid="uid://bq5j3c3ruyk86" path="res://Le_Lu/Fire_VFX/Misc/sm_car_asset1.obj" id="65_erlwb"]
 [ext_resource type="Material" uid="uid://c52qfwbn7xtij" path="res://Le_Lu/Fire_VFX/materials/m_fire_overlay_IE1.tres" id="66_mni6e"]

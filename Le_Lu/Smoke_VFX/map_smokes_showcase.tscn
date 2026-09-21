@@ -17,7 +17,7 @@
 [ext_resource type="PackedScene" uid="uid://drkar5y8g70pa" path="res://Le_Lu/Smoke_VFX/Scenes/VFX_Smoke_E.tscn" id="15_d1q8c"]
 [ext_resource type="PackedScene" uid="uid://brh367h7skxqn" path="res://Le_Lu/Smoke_VFX/Scenes/VFX_Smoke_F.tscn" id="16_2dpb2"]
 [ext_resource type="PackedScene" uid="uid://cnriac7anmbu6" path="res://Le_Lu/Smoke_VFX/Scenes/VFX_Smoke_F_purple.tscn" id="17_p1t7i"]
-[ext_resource type="PackedScene" uid="uid://chg52jgockkvt" path="res://Le_Lu/Smoke_VFX/Scenes/VFX_Puff_Reallistic1.tscn" id="32_0u7sb"]
+[ext_resource type="PackedScene" path="res://Le_Lu/Smoke_VFX/Scenes/VFX_Puff_Reallistic1.tscn" id="32_0u7sb"]
 [ext_resource type="Texture2D" uid="uid://bqy267pnvahao" path="res://Le_Lu/Smoke_VFX/Misc/T_C0L0R3DPUFF.png" id="38_vjl87"]
 [ext_resource type="Texture2D" uid="uid://b4ybiialjuvc" path="res://Le_Lu/Smoke_VFX/Misc/T_C0L0R3DSM0K3.png" id="39_8ilhk"]
 [ext_resource type="Texture2D" uid="uid://d35nyjnyvep6y" path="res://Le_Lu/Smoke_VFX/Misc/T_R34LL1STSM0K3.png" id="41_2qqwr"]

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cdcvidx4u2wtw"]
 
 [ext_resource type="Shader" path="res://Le_Lu/Full_Screen_VFX/shaders/ss_fullscreen_underwater.gdshader" id="1_l3poo"]
-[ext_resource type="Texture2D" uid="uid://c0awlx26qatxa" path="res://Le_Lu/Full_Screen_VFX/textures/T_GW_WaterNormal_01_b.PNG" id="2_1fqhm"]
+[ext_resource type="Texture2D" uid="uid://875ul7kwth6x" path="res://Le_Lu/Full_Screen_VFX/textures/T_GW_WaterNormal_01_b.PNG" id="2_1fqhm"]
 
 
 [sub_resource type="Gradient" id="Gradient_pkvmh"]

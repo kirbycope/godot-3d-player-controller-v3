@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://66ty4me1retr"]
 
 [ext_resource type="Texture2D" uid="uid://b7o42cok7gvd4" path="res://Le_Lu/Fire_VFX/textures/T_Blood_bulb_UJ1test111.png" id="1_pf06l"]
-[ext_resource type="ArrayMesh" uid="uid://cbs6u7qd6xpp0" path="res://Le_Lu/Fire_VFX/objects/sm_smoke1.obj" id="2_0xadc"]
+[ext_resource type="ArrayMesh" uid="uid://citxg5i007o2r" path="res://Le_Lu/Fire_VFX/objects/sm_smoke1.obj" id="2_0xadc"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_30hfw"]
 transparency = 2

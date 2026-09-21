@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bah06ppliaf10"]
 
 [ext_resource type="Shader" path="res://Le_Lu/Full_Screen_VFX/shaders/s_fullscreen_disolver_A.tres" id="1_p6ylw"]
-[ext_resource type="Texture2D" uid="uid://biqgxpwwr01ye" path="res://Le_Lu/Full_Screen_VFX/textures/T_CloudNoise_Tiled.png" id="2_e0e4x"]
+[ext_resource type="Texture2D" uid="uid://by1v3qtjbhngu" path="res://Le_Lu/Full_Screen_VFX/textures/T_CloudNoise_Tiled.png" id="2_e0e4x"]
 [ext_resource type="Texture2D" uid="uid://bheudhnmjwpme" path="res://Le_Lu/Elemental_VFX/textures/T_VFX_Noise_14.PNG" id="3_bdr0f"]
 
 

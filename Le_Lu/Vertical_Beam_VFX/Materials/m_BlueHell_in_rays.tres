@@ -1,7 +1,7 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://cyjawx0rdfqpd"]
 
 [ext_resource type="Shader" path="res://Le_Lu/Vertical_Beam_VFX/Shaders/s_dual_master_dis_fres_ds.tres" id="1_weuxa"]
-[ext_resource type="Texture2D" uid="uid://3qsqjj5denl7" path="res://Le_Lu/Vertical_Beam_VFX/Textures/T_NJO1.png" id="2_oix7v"]
+[ext_resource type="Texture2D" uid="uid://cror78afkns6w" path="res://Le_Lu/Vertical_Beam_VFX/Textures/T_NJO1.png" id="2_oix7v"]
 
 
 [sub_resource type="Gradient" id="Gradient_f44yv"]

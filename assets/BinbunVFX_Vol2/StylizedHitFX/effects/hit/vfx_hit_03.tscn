@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://cn4o6yqjafnm4" path="res://assets/BinbunVFX_Vol2/StylizedHitFX/script/VFXImpactBB.gd" id="1_67uww"]
 [ext_resource type="Shader" uid="uid://h85jq2lrhiro" path="res://assets/BinbunVFX_Vol2/StylizedHitFX/shader/glow.gdshader" id="1_uinh1"]
 [ext_resource type="Shader" uid="uid://buns0o5yl6slt" path="res://assets/BinbunVFX_Vol2/StylizedHitFX/shader/streaks.gdshader" id="2_uo4vl"]
-[ext_resource type="Script" uid="uid://bwmucxp58uvvt" path="res://assets/BinbunVFX_Vol2/shared/script/VFXOmniLightBB.gd" id="3_67uww"]
+[ext_resource type="Script" uid="uid://cd2lwk3owlb8u" path="res://assets/BinbunVFX_Vol2/shared/script/VFXOmniLightBB.gd" id="3_67uww"]
 [ext_resource type="Shader" uid="uid://c8de4erouomxb" path="res://assets/BinbunVFX_Vol2/StylizedHitFX/shader/four_point_star.gdshader" id="4_2jew4"]
 [ext_resource type="Shader" uid="uid://b0hbwcivw7wta" path="res://assets/BinbunVFX_Vol2/StylizedHitFX/shader/spiral_dust.gdshader" id="5_uo4vl"]
 

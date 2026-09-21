@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://deswf4w61kmp0"]
 
 [ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/s_master_fire_fresnel_add.tres" id="1_xxfa0"]
-[ext_resource type="Texture2D" uid="uid://sfqnk8pph4px" path="res://Le_Lu/Fire_VFX/textures/T_VFX_Noise_075.png" id="2_re2va"]
+[ext_resource type="Texture2D" uid="uid://clxxf8gxxul74" path="res://Le_Lu/Fire_VFX/textures/T_VFX_Noise_075.png" id="2_re2va"]
 [ext_resource type="Shader" path="res://Le_Lu/Fire_VFX/shaders/s_Disolver_Treshold_p_fc.tres" id="3_33o2g"]
 [ext_resource type="Shader" path="res://addons/GPUTrail/shaders/trail.gdshader" id="4_xyejo"]
 [ext_resource type="Shader" path="res://addons/GPUTrail/shaders/trail_draw_pass.gdshader" id="5_rjq6w"]

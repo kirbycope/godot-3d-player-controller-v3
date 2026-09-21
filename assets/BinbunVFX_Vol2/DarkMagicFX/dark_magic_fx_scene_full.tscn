@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://b2kag0m8md31y"]
 
 [ext_resource type="Texture2D" uid="uid://ed44j8f3a8us" path="res://assets/BinbunVFX_Vol2/shared/story_studio_02_1k.hdr" id="1_jsw4i"]
-[ext_resource type="Shader" uid="uid://mvwi25cb826n" path="res://assets/BinbunVFX_Vol2/shared/shader/checker.gdshader" id="2_hnjuy"]
+[ext_resource type="Shader" uid="uid://c8by76imbamhc" path="res://assets/BinbunVFX_Vol2/shared/shader/checker.gdshader" id="2_hnjuy"]
 [ext_resource type="PackedScene" uid="uid://ns87fyqh00q8" path="res://assets/BinbunVFX_Vol2/DarkMagicFX/effects/ball/vfx_ball_evil_01.tscn" id="3_vumtk"]
 [ext_resource type="PackedScene" uid="uid://88ydvnsl6kts" path="res://assets/BinbunVFX_Vol2/DarkMagicFX/effects/ball/vfx_ball_evil_02.tscn" id="4_edg77"]
 [ext_resource type="PackedScene" uid="uid://de0w1s5dbpqlu" path="res://assets/BinbunVFX_Vol2/DarkMagicFX/effects/ball/vfx_ball_void_01.tscn" id="5_mxx15"]

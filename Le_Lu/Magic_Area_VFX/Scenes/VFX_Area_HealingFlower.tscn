@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://081ilq2h8k5i"]
 
 [ext_resource type="Shader" path="res://Le_Lu/Magic_Area_VFX/Shaders/s_flower1s.tres" id="1_xuqdl"]
-[ext_resource type="ArrayMesh" uid="uid://bxomypfk3elm3" path="res://assets/Flower/flower_mesh.res" id="2_d27bh"]
+[ext_resource type="ArrayMesh" path="res://assets/Flower/flower_mesh.res" id="2_d27bh"]
 [ext_resource type="Shader" path="res://Le_Lu/Magic_Area_VFX/Shaders/s_Circle.tres" id="3_dcfir"]
 [ext_resource type="Gradient" uid="uid://vyx3tqhhavmc" path="res://Le_Lu/Magic_Area_VFX/Textures/T_gradient circle 1.tres" id="4_qhyyj"]
 [ext_resource type="ArrayMesh" uid="uid://kh3ehaul666h" path="res://Le_Lu/Magic_Area_VFX/Objects/sm_circle.obj" id="5_63h08"]

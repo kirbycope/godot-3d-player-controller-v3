@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cy1g735hqtfwc"]
 
 [ext_resource type="Texture2D" uid="uid://ed44j8f3a8us" path="res://assets/BinbunVFX_Vol2/shared/story_studio_02_1k.hdr" id="1_kgkxf"]
-[ext_resource type="Shader" uid="uid://mvwi25cb826n" path="res://assets/BinbunVFX_Vol2/shared/shader/checker.gdshader" id="2_xya25"]
+[ext_resource type="Shader" uid="uid://c8by76imbamhc" path="res://assets/BinbunVFX_Vol2/shared/shader/checker.gdshader" id="2_xya25"]
 [ext_resource type="PackedScene" uid="uid://d24a2kluit1it" path="res://assets/BinbunVFX_Vol2/ElectricFX/effects/zap/vfx_zap_lightning_01.tscn" id="3_q41g0"]
 [ext_resource type="PackedScene" uid="uid://bnx11xkel6i5o" path="res://assets/BinbunVFX_Vol2/ElectricFX/effects/zap/vfx_zap_lightning_02.tscn" id="4_4bg1v"]
 [ext_resource type="PackedScene" uid="uid://cw5mdnv8xkixw" path="res://assets/BinbunVFX_Vol2/ElectricFX/effects/zap/vfx_zap_lightning_03.tscn" id="5_5hpxc"]

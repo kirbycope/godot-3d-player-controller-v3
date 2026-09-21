@@ -6,7 +6,7 @@
 [ext_resource type="ArrayMesh" uid="uid://dai884pwf0uti" path="res://Le_Lu/Elemental_VFX/objects/sm_cloud5cp.obj" id="4_yvaqn"]
 [ext_resource type="Shader" path="res://Le_Lu/Elemental_VFX/shaders/s_Disolver_Treshold_masked.tres" id="5_bxj6x"]
 [ext_resource type="Texture2D" uid="uid://b3jjlypqvx2yt" path="res://Le_Lu/Elemental_VFX/textures/T_wavesKI96.png" id="6_bexi2"]
-[ext_resource type="Texture2D" uid="uid://nyyc5vq2e8a8" path="res://Le_Lu/Elemental_VFX/textures/T_VFX_Noise_44xainv.png" id="7_sca0n"]
+[ext_resource type="Texture2D" uid="uid://btcsvb2n25tht" path="res://Le_Lu/Elemental_VFX/textures/T_VFX_Noise_44xainv.png" id="7_sca0n"]
 [ext_resource type="Texture2D" uid="uid://bweor6vqcu0t2" path="res://Le_Lu/Elemental_VFX/textures/T_VFX_StarSt51.png" id="8_ebf61"]
 [ext_resource type="Shader" path="res://Le_Lu/Elemental_VFX/shaders/s_master_disolver_fc.tres" id="10_bbyq6"]
 
