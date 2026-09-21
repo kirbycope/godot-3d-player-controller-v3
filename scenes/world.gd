@@ -256,14 +256,12 @@ func _on_radio_toggled(_is_playing: bool) -> void:
 
 ## Joins the lobby we arrived through (SteamPeer connects on ready) or creates one and hosts it.
 func _initialize_steam_lobby() -> void:
-	if not Engine.has_singleton("Steam"):
+	# The session, not the client: the lobby calls error until Steamworks has initialised
+	var steamworks: Node = get_node_or_null("/root/Steamworks")
+	if steamworks == null or steamworks.steam_id == 0 or not Engine.has_singleton("Steam"):
 		return
 	var steam: Object = Engine.get_singleton("Steam")
-	if not steam.isSteamRunning():
-		return
-
-	var steamworks: Node = get_node_or_null("/root/Steamworks")
-	var current_lobby_id: int = steamworks.lobby_id if steamworks else 0
+	var current_lobby_id: int = steamworks.lobby_id
 
 	# Only create a lobby if not already in one
 	if current_lobby_id == 0:
