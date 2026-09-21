@@ -1,10 +1,10 @@
 {
   "3d_player_controller": {
-    "commit": "5e2717b3d7e59abf04523f015f87756a61709402",
+    "commit": "922fcc5003ede0d6eeeea6b19261fe22bb709be9",
     "pulled": "2026-09-20T05:43:58Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Follow the control scheme files to their game names in the scripts\n\ntotk.tres and smo.tres were renamed to tears_of_the_kingdom.tres and super_mario_odyssey.tres in\nthe editor, which updates scenes but not preload strings; player_controls.gd, the scheme test and\nthe README now name the files as they are.\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+    "subject": "Follow the Player's audio node and scene to their new names\n\nThe Audio node under the Player became PlayerAudio and its scene player_audio.tscn in the editor;\nplayer.gd and the two audio tests now look for them where they are, so a Player spawns without\na Node not found error.\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
   },
   "GPUTrail": {
     "commit": "00a764775941c719847deeda8a31b4ebd8893895",
