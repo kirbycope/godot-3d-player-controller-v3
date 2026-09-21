@@ -353,3 +353,4 @@ editor_description = "The Player's own whistle, the one that calls a horse. An A
 stream = SubResource("AudioStreamRandomizer_whistle")
 unit_size = 18.0
 max_distance = 60.0
+[editable path="Hud"]

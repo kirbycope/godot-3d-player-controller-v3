@@ -78,7 +78,7 @@ func spawn_phase(phase: Phase, at: Vector3, fx_root: Node3D, audio: AudioStreamP
 	var node: Node3D = super.spawn_phase(phase, at, fx_root, audio, target, destination)
 	if node == null or phase != Phase.CASTING:
 		return node
-	var caster: Node3D = fx_root.get_parent() as Node3D # The Player's AbilityFx sits right under it
+	var caster: Node3D = fx_root.get_parent() as Node3D # The Player's SFX_Ability sits right under it
 	if caster:
 		node.global_position = at + Vector3.UP * SWING_HEIGHT
 		node.global_basis = Basis.looking_at(forward_of(caster), Vector3.UP).scaled(node.scale)
