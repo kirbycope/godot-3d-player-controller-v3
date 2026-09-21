@@ -1,10 +1,10 @@
 {
   "3d_player_controller": {
-    "commit": "a24e77a36796b8861ffa22e113ace442a92b8c44",
+    "commit": "253e988897bc0ca39479cb51022f694abe29881e",
     "pulled": "2026-09-21T14:09:07Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Follow the renamed audio nodes, and keep the HUD wiring through an editor save\n\nPlayerAudio, AbilityFx and WeaponAudio are SFX_Footsteps, SFX_Ability and SFX_Weapons. The Hud\ninstance is editable now, so the editor keeps the overrides on its children and the eleven\nconnections from them, which it had dropped on save; the weapon players are back on the SFX bus.\nPlayerHud hands its player down to its children, and Abilities finds its effects root, casting\nhand and audio under the Player when nothing else is wired.\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+    "subject": "An ability library: every ability loaded once and kept warm, for any caster\n\nAbilityLibrary (scenes/ability_library.tscn, a class_name and a placed scene rather than an\nautoload) holds one AbilityEntry child per Ability, keyed by Ability.get_id (an id, or the file\nname), and at ready instances every phase VFX once for a frame so shaders and particles compile\nbefore a first cast. A project instances it in its world, marks it editable and adds entries.\nThe Player's Abilities and NpcCaster resolve their abilities through it, so every caster shares\nthe one loaded copy, and Abilities.cast_id casts by name; without a library they keep their own.\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
   },
   "GPUTrail": {
     "commit": "00a764775941c719847deeda8a31b4ebd8893895",

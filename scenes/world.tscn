@@ -116,6 +116,19 @@
 [ext_resource type="AudioStream" path="res://resources/audio/rifle_shot.tres" id="sfx_rifle_shot"]
 [ext_resource type="PackedScene" path="res://addons/weather_fx/scenes/water_ripples.tscn" id="water_ripples_scene"]
 [ext_resource type="Script" uid="uid://bia70m5sxncj0" path="res://addons/weather_fx/scripts/weather_clouds.gd" id="weather_clouds"]
+[ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/ability_library.tscn" id="ability_library_scene"]
+[ext_resource type="Script" path="res://addons/3d_player_controller/scripts/ability_entry.gd" id="ability_entry_script"]
+[ext_resource type="Resource" path="res://resources/abilities/chain_lightning.tres" id="spell_chain_lightning"]
+[ext_resource type="Resource" uid="uid://dphv1ydg5ri2w" path="res://resources/abilities/consecration.tres" id="spell_consecration"]
+[ext_resource type="Resource" uid="uid://dsb0mvbbhx42w" path="res://resources/abilities/fireball.tres" id="spell_fireball"]
+[ext_resource type="Resource" uid="uid://vxyio2qd6nhi" path="res://resources/abilities/firebolt.tres" id="spell_firebolt"]
+[ext_resource type="Resource" uid="uid://dsei12l7cfx2w" path="res://resources/abilities/flash_of_light.tres" id="spell_flash_of_light"]
+[ext_resource type="Resource" path="res://resources/abilities/freeze.tres" id="spell_freeze"]
+[ext_resource type="Resource" uid="uid://dskw2fcehr42w" path="res://resources/abilities/frostbolt.tres" id="spell_frostbolt"]
+[ext_resource type="Resource" path="res://resources/abilities/lightning.tres" id="spell_lightning"]
+[ext_resource type="Resource" uid="uid://dyboqfn7je42w" path="res://resources/abilities/lightning_bolt.tres" id="spell_lightning_bolt"]
+[ext_resource type="Resource" uid="uid://bum070844yb5" path="res://resources/abilities/shadowstep.tres" id="spell_shadowstep"]
+[ext_resource type="Resource" path="res://resources/abilities/sword_slash.tres" id="spell_sword_slash"]
 
 [sub_resource type="Environment" id="Environment_aqk2v"]
 background_mode = 2
@@ -616,6 +629,53 @@ date_and_time_node = NodePath("../../../DateAndTime")
 
 [node name="SteamPeer" type="Node" parent="." unique_id=38257544]
 script = ExtResource("mp_steam_peer")
+
+[node name="AbilityLibrary" parent="." instance=ExtResource("ability_library_scene")]
+editor_description = "The addon's library with this game's spells added: every ability any Player, puppet or enemy casts, loaded once and warmed at start."
+
+[node name="ChainLightning" type="Node" parent="AbilityLibrary"]
+script = ExtResource("ability_entry_script")
+ability = ExtResource("spell_chain_lightning")
+
+[node name="Consecration" type="Node" parent="AbilityLibrary"]
+script = ExtResource("ability_entry_script")
+ability = ExtResource("spell_consecration")
+
+[node name="Fireball" type="Node" parent="AbilityLibrary"]
+script = ExtResource("ability_entry_script")
+ability = ExtResource("spell_fireball")
+
+[node name="Firebolt" type="Node" parent="AbilityLibrary"]
+script = ExtResource("ability_entry_script")
+ability = ExtResource("spell_firebolt")
+
+[node name="FlashOfLight" type="Node" parent="AbilityLibrary"]
+script = ExtResource("ability_entry_script")
+ability = ExtResource("spell_flash_of_light")
+
+[node name="Freeze" type="Node" parent="AbilityLibrary"]
+script = ExtResource("ability_entry_script")
+ability = ExtResource("spell_freeze")
+
+[node name="Frostbolt" type="Node" parent="AbilityLibrary"]
+script = ExtResource("ability_entry_script")
+ability = ExtResource("spell_frostbolt")
+
+[node name="Lightning" type="Node" parent="AbilityLibrary"]
+script = ExtResource("ability_entry_script")
+ability = ExtResource("spell_lightning")
+
+[node name="LightningBolt" type="Node" parent="AbilityLibrary"]
+script = ExtResource("ability_entry_script")
+ability = ExtResource("spell_lightning_bolt")
+
+[node name="Shadowstep" type="Node" parent="AbilityLibrary"]
+script = ExtResource("ability_entry_script")
+ability = ExtResource("spell_shadowstep")
+
+[node name="SwordSlash" type="Node" parent="AbilityLibrary"]
+script = ExtResource("ability_entry_script")
+ability = ExtResource("spell_sword_slash")
 
 [node name="Players" type="Node3D" parent="." unique_id=839194789]
 
@@ -1461,3 +1521,4 @@ hidden_while_in_use = Array[NodePath]([NodePath("../HUD")])
 
 [editable path="JustCreate3D/Weapon_02/Muzzle/MuzzleFlash/Flash"]
 [editable path="JustCreate3D/Weapon_01/Muzzle/MuzzleFlash/Flash"]
+[editable path="AbilityLibrary"]

@@ -62,6 +62,7 @@ the click or touch goes straight into the single-player world; there is no Steam
   WoW mob. The scripts (`EnemyNpc`, `NpcCaster`, `FollowerNpc`) and the base scene are the addon's
   now; this project's `scenes/npc/enemy_npc.tscn` inherits it and hangs the weather addon's flame under
   `BurnVFX`, and the four enemies inherit that, each with its N-Hance weapon.
+- **The ability library**: `AbilityLibrary` in `world.tscn` is the addon's `scenes/ability_library.tscn` made editable, with the game's eleven spells (`resources/abilities/`) added as `AbilityEntry` children beside the addon's Heal and Stealth. It warms every spell's VFX at start, and the Player's `Abilities` and every `NpcCaster` take their abilities from it, so the enemy spellcaster and the Player share one loaded copy of each.
 - **The Guide** (`TalkingNpc` with a `Conversation` under it, `scenes/conversation.gd`,
   `resources/dialogues/qa_guide.dtl` and `guide.dch`, `resources/quests/qa_errand.tres`): stands by the
   spawn with an errand: talk to him, fell a tree with an axe and land a fish, and he pays three apples. The
