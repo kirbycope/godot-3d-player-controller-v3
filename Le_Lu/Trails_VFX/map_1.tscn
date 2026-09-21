@@ -4,7 +4,7 @@
 [ext_resource type="Shader" path="res://addons/GPUTrail/shaders/trail_draw_pass.gdshader" id="2_5uk6o"]
 [ext_resource type="Texture2D" uid="uid://cl5xfpgbok336" path="res://Le_Lu/Trails_VFX/textures/T_VFX_BlueTRails1.png" id="3_4tyxt"]
 [ext_resource type="Shader" path="res://Le_Lu/Trails_VFX/Objects/stylized_sword(1).glb" id="5_17oe8"]
-[ext_resource type="Script" uid="uid://000wyuy1u8wj" path="res://addons/GPUTrail/GPUTrail3D.gd" id="6_vpkar"]
+[ext_resource type="Script" path="res://addons/GPUTrail/GPUTrail3D.gd" id="6_vpkar"]
 [ext_resource type="Texture2D" uid="uid://b18lwai1jk53" path="res://Le_Lu/Trails_VFX/textures/text1a.png" id="7_xhf68"]
 [ext_resource type="ArrayMesh" uid="uid://dh8esh3c2nqqq" path="res://Le_Lu/Trails_VFX/sword_mesh1.res" id="8_55pnp"]
 

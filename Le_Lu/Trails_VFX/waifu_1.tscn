@@ -7,7 +7,7 @@
 [ext_resource type="Shader" path="res://addons/GPUTrail/shaders/trail.gdshader" id="5_kjvr4"]
 [ext_resource type="Shader" path="res://addons/GPUTrail/shaders/trail_draw_pass.gdshader" id="6_6puw0"]
 [ext_resource type="Texture2D" path="res://Le_Lu/Trails_VFX/textures/T_VFX_N14.PNG" id="8_4mlxf"]
-[ext_resource type="Texture2D" uid="uid://ct31fhxvcragr" path="res://addons/GPUTrail/defaults/curve.tres" id="8_arupc"]
+[ext_resource type="Texture2D" path="res://addons/GPUTrail/defaults/curve.tres" id="8_arupc"]
 [ext_resource type="Script" path="res://addons/GPUTrail/GPUTrail3D.gd" id="10_5a3gk"]
 [ext_resource type="Shader" path="res://Le_Lu/Trails_VFX/shaders/Simple_particle2.tres" id="10_42dbj"]
 [ext_resource type="Texture2D" path="res://Le_Lu/Trails_VFX/Objects/pavement_05_diff_4k.jpg" id="11_bg3bd"]

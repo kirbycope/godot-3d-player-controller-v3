@@ -8,7 +8,7 @@
 [ext_resource type="Shader" path="res://addons/GPUTrail/shaders/trail.gdshader" id="6_02634"]
 [ext_resource type="Shader" path="res://addons/GPUTrail/shaders/trail_draw_pass.gdshader" id="7_j7shv"]
 [ext_resource type="Texture2D" uid="uid://d0ilo60b4vudy" path="res://Le_Lu/Fire_VFX/textures/T_FireTrail_Desat.PNG" id="8_i4cqu"]
-[ext_resource type="Script" uid="uid://000wyuy1u8wj" path="res://addons/GPUTrail/GPUTrail3D.gd" id="9_024v8"]
+[ext_resource type="Script" path="res://addons/GPUTrail/GPUTrail3D.gd" id="9_024v8"]
 
 [sub_resource type="Gradient" id="Gradient_baq7u"]
 interpolation_color_space = 1
