@@ -37,7 +37,7 @@ func before_each() -> void:
 	player = PLAYER_SCENE.instantiate() as Player
 	player.name = "Player"
 	# Never touch the real saves from a test
-	player.get_node("Inventory").persist = false
+	player.get_node("Hud/Inventory").persist = false
 	player.get_node("FishingLog").persist = false
 	root.add_child(player)
 	await wait_physics_frames(2)
@@ -217,7 +217,7 @@ func test_horse_floats_and_swims_back_to_land() -> void:
 
 
 func test_inventory_preview_shows_the_model_for_a_fish() -> void:
-	var pause: Node = player.get_node("Pause")
+	var pause: Node = player.get_node("Hud/Pause")
 	await wait_physics_frames(1)
 	var screen: InventoryScreen = pause.inventory_screen as InventoryScreen
 	assert_not_null(screen, "The pause menu instances the inventory screen")
@@ -233,7 +233,7 @@ func test_inventory_preview_shows_the_model_for_a_fish() -> void:
 
 
 func test_fish_index_hides_species_until_caught() -> void:
-	var pause: Node = player.get_node("Pause")
+	var pause: Node = player.get_node("Hud/Pause")
 	await wait_physics_frames(1)
 	var index: FishIndexScreen = pause.extra_screen as FishIndexScreen
 	assert_not_null(index, "The pause menu instances the fish index")
@@ -333,7 +333,7 @@ func test_the_bite_eats_the_bait_and_the_next_goes_on_even_when_the_fish_escapes
 
 func test_the_inventory_screen_redraws_the_rod_details_when_the_bait_changes() -> void:
 	var rod: FishingRod = await _equip_rod()
-	var pause: Node = player.get_node("Pause")
+	var pause: Node = player.get_node("Hud/Pause")
 	var screen: InventoryScreen = pause.inventory_screen as InventoryScreen
 	screen.show_menu()
 	screen._select_tab(Item.Category.EQUIPMENT)

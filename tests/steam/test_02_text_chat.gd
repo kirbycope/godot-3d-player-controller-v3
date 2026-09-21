@@ -5,7 +5,7 @@ extends SteamTest
 
 
 func test_a_line_from_each_side_lands_in_the_others_history() -> void:
-	var chat: ChatWindow = own_player().get_node("Chat") as ChatWindow
+	var chat: ChatWindow = own_player().get_node("Hud/Chat") as ChatWindow
 	var line: Dictionary = {"name": chat.get_display_name(), "text": "%s says hello in run %s" % [role, run_id]}
 	if is_host:
 		chat.send(line["text"])

@@ -1,10 +1,10 @@
 {
   "3d_player_controller": {
-    "commit": "ba68496cf5988947db3d3c4db77913cda581c9ce",
+    "commit": "b267f92ed1a7c7f90e266cae780d2b243df7fc3c",
     "pulled": "2026-09-20T05:43:58Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Point the tests and the README at the moved vfx and equipment scenes\n\nThe paraglider, laser sight, toon filter, water splash and muzzle flash scenes moved into\nscenes/equipment/ and scenes/vfx/ in the editor; five test preloads and the README now say so.\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+    "subject": "Put the Player's screen in one scene, and its animation graph in a resource\n\nEverything the Player draws in 2D (the on-screen controls, crosshair, stamina and health bars, the\nboss, ammo, cast and throw readouts, seeker wheel, chat, debug, inventory, abilities, quest\ntracker, underwater overlay, death screen, and every menu and settings page) now lives in\nscenes/ui/player_hud.tscn, instanced under the Player as Hud (PlayerHud). The Player keeps every\nproperty it had, resolved through the Hud, so nothing outside changes; the ten signal\nconnections and the held object's charge bar path follow. The AnimationTree's graph is\nresources/animation/player_animation_tree.tres. player.tscn drops from 4673 to 2350 lines.\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
   },
   "GPUTrail": {
     "commit": "00a764775941c719847deeda8a31b4ebd8893895",

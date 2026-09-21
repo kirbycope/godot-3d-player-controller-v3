@@ -31,13 +31,13 @@ stream_2/stream = ExtResource("whistle_3")
 animation_tree = NodePath("AnimationTree")
 paraglider_scene = ExtResource("7_mvg0v")
 
-[node name="Abilities" parent="."]
+[node name="Abilities" parent="Hud"]
 abilities = Array[ExtResource("ability")]([ExtResource("stealth"), ExtResource("flash_of_light")])
 
-[node name="Inventory" parent="."]
+[node name="Inventory" parent="Hud"]
 persist = true
 
-[node name="Spellbook" parent="Inventory"]
+[node name="Spellbook" parent="Hud/Inventory"]
 tree = ExtResource("qa_tree")
 skill_points = 6
 
@@ -333,7 +333,7 @@ station_collection = ExtResource("345_5hhec")
 
 [editable path="PlayerModel"]
 
-[node name="FishCard" parent="Controls" instance=ExtResource("fish_card")]
+[node name="FishCard" parent="Hud/Controls" instance=ExtResource("fish_card")]
 visible = false
 
 [node name="FishingLog" type="Node" parent="."]
@@ -344,7 +344,7 @@ persist = true
 visible = false
 player = NodePath("..")
 
-[node name="Pause" parent="."]
+[node name="Pause" parent="Hud"]
 extra_screen_scene = "res://scenes/fish_index_screen.tscn"
 extra_screen_label = "Fish Index"
 
