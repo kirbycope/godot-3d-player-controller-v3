@@ -1,0 +1,106 @@
+[gd_scene format=3 uid="uid://wp0w7vu3ve5"]
+
+[ext_resource type="PackedScene" uid="uid://m3qt3uohgf2w" path="res://addons/3d_player_controller/scenes/ability_library.tscn" id="1_boad6"]
+[ext_resource type="Script" uid="uid://coviqux1yghj3" path="res://addons/3d_player_controller/scripts/ability_entry.gd" id="2_c3yf4"]
+[ext_resource type="Resource" path="res://resources/abilities/chain_lightning.tres" id="3_p6bnl"]
+[ext_resource type="Resource" uid="uid://dphv1ydg5ri2w" path="res://resources/abilities/consecration.tres" id="4_pjajk"]
+[ext_resource type="Resource" uid="uid://dsb0mvbbhx42w" path="res://resources/abilities/fireball.tres" id="5_ya1ac"]
+[ext_resource type="Resource" uid="uid://vxyio2qd6nhi" path="res://resources/abilities/firebolt.tres" id="6_8x3oq"]
+[ext_resource type="Resource" uid="uid://dsei12l7cfx2w" path="res://resources/abilities/flash_of_light.tres" id="7_o2h73"]
+[ext_resource type="Resource" path="res://resources/abilities/freeze.tres" id="8_rsqf4"]
+[ext_resource type="Resource" uid="uid://dskw2fcehr42w" path="res://resources/abilities/frostbolt.tres" id="9_opcwg"]
+[ext_resource type="Resource" path="res://resources/abilities/lightning.tres" id="10_cd4n6"]
+[ext_resource type="Resource" uid="uid://dyboqfn7je42w" path="res://resources/abilities/lightning_bolt.tres" id="11_w160l"]
+[ext_resource type="Resource" uid="uid://bum070844yb5" path="res://resources/abilities/shadowstep.tres" id="12_7ggga"]
+[ext_resource type="Resource" path="res://resources/abilities/sword_slash.tres" id="13_j6edp"]
+[ext_resource type="PackedScene" uid="uid://ct7n8imyllhbo" path="res://addons/3d_player_controller/scenes/player.tscn" id="14_qcp4i"]
+[ext_resource type="PackedScene" uid="uid://drgmvktmkph2w" path="res://scenes/enemy_swordsman.tscn" id="15_nkd8p"]
+[ext_resource type="PackedScene" uid="uid://drgmvkbg7fitw" path="res://scenes/enemy_archer.tscn" id="16_174aa"]
+[ext_resource type="PackedScene" uid="uid://drgmvkr7bji2w" path="res://scenes/enemy_rifleman.tscn" id="17_k1w2v"]
+[ext_resource type="PackedScene" uid="uid://drgmvkcyor42w" path="res://scenes/enemy_spellcaster.tscn" id="18_vc3n0"]
+[ext_resource type="Material" uid="uid://smkievpeajs3" path="res://assets/ambientcg_com/grass_001/Grass001_1K-JPG.tres" id="19_gh47e"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rdjey"]
+size = Vector3(32, 1, 32)
+
+[sub_resource type="BoxMesh" id="BoxMesh_u4d8o"]
+material = ExtResource("19_gh47e")
+size = Vector3(32, 1, 32)
+
+[node name="test_abilities" type="Node3D" unique_id=2105666466]
+
+[node name="AbilityLibrary" parent="." unique_id=1742918114 node_paths=PackedStringArray("test_caster", "test_target") instance=ExtResource("1_boad6")]
+test_caster = NodePath("../Player")
+test_target = NodePath("../Enemies/Swordsman")
+
+[node name="ChainLightning" type="Node3D" parent="AbilityLibrary" unique_id=366325015]
+script = ExtResource("2_c3yf4")
+ability = ExtResource("3_p6bnl")
+
+[node name="Consecration" type="Node3D" parent="AbilityLibrary" unique_id=83333267]
+script = ExtResource("2_c3yf4")
+ability = ExtResource("4_pjajk")
+
+[node name="Fireball" type="Node3D" parent="AbilityLibrary" unique_id=1956199800]
+script = ExtResource("2_c3yf4")
+ability = ExtResource("5_ya1ac")
+
+[node name="Firebolt" type="Node3D" parent="AbilityLibrary" unique_id=621524047]
+script = ExtResource("2_c3yf4")
+ability = ExtResource("6_8x3oq")
+
+[node name="FlashOfLight" type="Node3D" parent="AbilityLibrary" unique_id=861342004]
+script = ExtResource("2_c3yf4")
+ability = ExtResource("7_o2h73")
+
+[node name="Freeze" type="Node3D" parent="AbilityLibrary" unique_id=1712750038]
+script = ExtResource("2_c3yf4")
+ability = ExtResource("8_rsqf4")
+
+[node name="Frostbolt" type="Node3D" parent="AbilityLibrary" unique_id=1634119920]
+script = ExtResource("2_c3yf4")
+ability = ExtResource("9_opcwg")
+
+[node name="Lightning" type="Node3D" parent="AbilityLibrary" unique_id=87194297]
+script = ExtResource("2_c3yf4")
+ability = ExtResource("10_cd4n6")
+
+[node name="LightningBolt" type="Node3D" parent="AbilityLibrary" unique_id=1186112353]
+script = ExtResource("2_c3yf4")
+ability = ExtResource("11_w160l")
+
+[node name="Shadowstep" type="Node3D" parent="AbilityLibrary" unique_id=51597093]
+script = ExtResource("2_c3yf4")
+ability = ExtResource("12_7ggga")
+
+[node name="SwordSlash" type="Node3D" parent="AbilityLibrary" unique_id=1054650083]
+script = ExtResource("2_c3yf4")
+ability = ExtResource("13_j6edp")
+
+[node name="Player" parent="." unique_id=548622605 instance=ExtResource("14_qcp4i")]
+
+[node name="Enemies" type="Node3D" parent="." unique_id=1718625824]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, -15)
+
+[node name="Swordsman" parent="Enemies" unique_id=1854302240 instance=ExtResource("15_nkd8p")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 0)
+
+[node name="Archer" parent="Enemies" unique_id=518957293 instance=ExtResource("16_174aa")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
+
+[node name="Rifleman" parent="Enemies" unique_id=433052538 instance=ExtResource("17_k1w2v")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 0)
+
+[node name="Spellcaster" parent="Enemies" unique_id=1329017616 instance=ExtResource("18_vc3n0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1273955753]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=724789914]
+shape = SubResource("BoxShape3D_rdjey")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D" unique_id=360496699]
+mesh = SubResource("BoxMesh_u4d8o")
+
+[editable path="AbilityLibrary"]

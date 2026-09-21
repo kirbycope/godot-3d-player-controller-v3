@@ -1,10 +1,10 @@
 {
   "3d_player_controller": {
-    "commit": "841ac4ba4928992e272c75c824dc348152cea430",
+    "commit": "cbb50f4604a4364cb89325fe155ee325bae36aff",
     "pulled": "2026-09-21T14:09:07Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Carry the uid sidecars of the ability library scripts\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+    "subject": "No shared icon on the library nodes, and a preview cast that is heard and explained\n\nThe entries and the library use the plain node icon again. A preview cast plays its sounds through a\nnon-positional player, so it is heard wherever the editor camera is, and prints which phases have\nVFX, which have only sound, and when an ability has nothing to show at all.\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
   },
   "GPUTrail": {
     "commit": "00a764775941c719847deeda8a31b4ebd8893895",
