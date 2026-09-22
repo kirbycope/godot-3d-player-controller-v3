@@ -1,10 +1,10 @@
 {
   "3d_player_controller": {
-    "commit": "5d680dfc5035cea460510abe1ade8f653c87a746",
+    "commit": "e832803c10ce91956475ba68b12ee8c0a97906b6",
     "pulled": "2026-09-21T22:53:35Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Rifle and pistol aiming drive the spine look-at, which now pitches relative to the stance"
+    "subject": "First person rides the view with the hands, the bow draws on its own string, and the Souls roll dives"
   },
   "GPUTrail": {
     "commit": "00a764775941c719847deeda8a31b4ebd8893895",

@@ -908,6 +908,8 @@ fire_timer = NodePath("FireTimer")
 laser_sight = NodePath("LaserSight")
 fire_sfx = NodePath("FireAudio")
 reload_sfx = NodePath("ReloadAudio")
+first_person_right_hand = Transform3D(0.09393078, 0.016666729, -0.9954393, 0.98032635, 0.17279899, 0.0953979, 0.17360091, -0.9848161, -0.00010769069, 0.035273314, -0.21444452, -0.016236901)
+first_person_left_hand = Transform3D(0.72278875, 0.69052356, 0.027455647, -0.039797347, 0.0019278526, 0.9992059, 0.6899223, -0.7233074, 0.028874427, -0.052876115, -0.14267331, -0.3455246)
 bone_attachment_bone_name = "RightHand"
 can_attack = true
 can_shoot = true
@@ -1127,6 +1129,22 @@ libraries/ = SubResource("AnimationLibrary_26xuy")
 [node name="AnimationTree2" type="AnimationTree" parent="N_Hance_Studio_1/SK_Bow_Newbie_01" unique_id=339113822]
 tree_root = SubResource("AnimationNodeStateMachine_qktwf")
 anim_player = NodePath("../AnimationPlayer2")
+
+[node name="StringNocked" type="Marker3D" parent="N_Hance_Studio_1/SK_Bow_Newbie_01" unique_id=1222899710]
+editor_description = "Where the string hand holds the string at rest, in the bow's space: the draw slides StringHand from here to StringDrawn (first person)."
+transform = Transform3D(0.49996012, -0.14458247, 0.85389453, -0.18469268, -0.9810846, -0.057979837, 0.84612566, -0.12872045, -0.5172065, 0.027397275, 0.42, 0.23907387)
+
+[node name="StringDrawn" type="Marker3D" parent="N_Hance_Studio_1/SK_Bow_Newbie_01" unique_id=1222899711]
+editor_description = "The string hand at full draw, read off the archery clip: 0.39 m back along the string from StringNocked."
+transform = Transform3D(0.49996012, -0.14458247, 0.85389453, -0.18469268, -0.9810846, -0.057979837, 0.84612566, -0.12872045, -0.5172065, 0.027397275, 0.8057726, 0.23907387)
+
+[node name="StringHand" type="Marker3D" parent="N_Hance_Studio_1/SK_Bow_Newbie_01" unique_id=1222899712]
+editor_description = "What the string hand is pulled onto in first person: the Bow slides it between StringNocked and StringDrawn with the draw, and the nocked arrow comes back with it."
+transform = Transform3D(0.49996012, -0.14458247, 0.85389453, -0.18469268, -0.9810846, -0.057979837, 0.84612566, -0.12872045, -0.5172065, 0.027397275, 0.42, 0.23907387)
+
+[node name="DrawElbow" type="Marker3D" parent="N_Hance_Studio_1/SK_Bow_Newbie_01" unique_id=1222899713]
+editor_description = "The pole aiming the drawing arm's elbow while the string hand is on the bow: back along the draw and out, the way an archer's elbow goes."
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.34, 1.38, 0.55)
 
 [node name="BowDrawArrow" type="AudioStreamPlayer3D" parent="N_Hance_Studio_1/SK_Bow_Newbie_01" unique_id=166312361]
 stream = ExtResource("27_ygn2i")
