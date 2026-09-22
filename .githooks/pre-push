@@ -21,12 +21,16 @@ fi
 
 report=$("$python" tools/push_addons.py --dry-run 2>/dev/null)
 
-if printf '%s' "$report" | grep -q 'file(s) differ'; then
+# An addon whose own clone has uncommitted work is SKIPPED rather than compared, which says nothing about
+# whether this project's copy matches it, so it stops the push as surely as a copy that differs does: the
+# project half of a change would otherwise go out ahead of the addon half, and CI would fetch the old addon.
+if printf '%s' "$report" | grep -qE 'file\(s\) differ|SKIPPED'; then
     printf '\n' >&2
     printf 'Addon changes here have not been pushed to their own repositories:\n\n' >&2
-    printf '%s\n' "$report" | grep -E 'differ from|^ +[MADRU?]{1,2} ' >&2
+    printf '%s\n' "$report" | grep -E 'differ from|SKIPPED|commit or stash|^ +[MADRU?]{1,2} ' >&2
     printf '\n' >&2
-    printf 'Send them upstream first, so the addon and the project land together:\n' >&2
+    printf 'Commit any work waiting in an addon clone, then send the addons upstream first,\n' >&2
+    printf 'so the addon and the project land together:\n' >&2
     printf '  %s tools/push_addons.py -m "what changed"\n\n' "$python" >&2
     printf 'Or push anyway with:  git push --no-verify\n\n' >&2
     exit 1

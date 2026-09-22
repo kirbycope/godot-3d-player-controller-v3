@@ -169,6 +169,7 @@ const GRASS_FIELD_SCENE: PackedScene = preload("res://addons/weather_fx/scenes/g
 
 func _field_under_the_player() -> GrassField:
 	var field: GrassField = GRASS_FIELD_SCENE.instantiate()
+	field.ground_group = &"" # Flat: these tests light grass, they are not about the ground under it
 	field.field_size = Vector2(20.0, 20.0)
 	field.instance_count = 400
 	player.get_parent().add_child(field)

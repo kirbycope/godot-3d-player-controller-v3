@@ -139,6 +139,7 @@ func test_the_hosts_ice_arrow_freezes_the_pond_on_every_peer_once() -> void:
 
 func test_the_hosts_fire_arrow_lights_the_grass_on_every_peer() -> void:
 	var field: GrassField = GRASS_FIELD_SCENE.instantiate()
+	field.ground_group = &"" # Flat: these tests light grass, they are not about the ground under it
 	field.field_size = Vector2(20.0, 20.0)
 	field.instance_count = 400
 	world.add_child(field)

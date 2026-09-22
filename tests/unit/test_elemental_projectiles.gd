@@ -69,6 +69,7 @@ func _pond() -> Buoyancy:
 
 func _field() -> GrassField:
 	var field: GrassField = GRASS_FIELD_SCENE.instantiate()
+	field.ground_group = &"" # Flat: these tests light grass, they are not about the ground under it
 	field.field_size = Vector2(20.0, 20.0)
 	field.instance_count = 400
 	root.add_child(field)

@@ -83,10 +83,10 @@
     "subject": "Take the vendored addons at their latest"
   },
   "weather_fx": {
-    "commit": "719d6feb1a9d759fd843aa3160cfabab58164447",
-    "pulled": "2026-09-21T22:53:36Z",
+    "commit": "0a878823929ab10bca8151c657116d84b45eb3b9",
+    "pulled": "2026-09-22T20:55:08Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/weather-fx.git",
-    "subject": "Targeting, the Player template, synchronizers over RPCs, and credits in CREDITS.md"
+    "subject": "Editor-promoted demo textures and the GUT pull time"
   }
 }

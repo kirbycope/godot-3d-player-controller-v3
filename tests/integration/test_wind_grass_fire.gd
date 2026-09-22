@@ -96,6 +96,7 @@ func test_grass_field_wildfire_wind_advance() -> void:
 	WeatherFX.active_wind_strength = 5.0
 
 	var field: GrassField = GrassFieldScript.new()
+	field.ground_group = &"" # Flat: these tests light grass, they are not about the ground under it
 	field.field_size = Vector2(40.0, 40.0)
 	field.instance_count = 400
 	root.add_child(field)
