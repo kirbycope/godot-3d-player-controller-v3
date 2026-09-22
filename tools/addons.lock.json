@@ -1,10 +1,10 @@
 {
   "3d_player_controller": {
-    "commit": "3de236e7196386b0720596651dcdc08b6684dfe2",
+    "commit": "77f1132132cac4791c2bea3535975fd2ef407b24",
     "pulled": "2026-09-21T22:53:35Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Every Steam call waits for the Steamworks session, not just the client\n\nThe explorer, the manager, the multiplayer peer and the voice code guarded on the extension being loaded or\nthe client running. Neither is the session: Steamworks only initialises on a desktop Forward+ build, so a\nheadless run on a machine with Steam open, and CI, errored on every lobby and voice call. They all read the\nautoload's steam_id now, with a test each for the extension-without-a-session case.\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+    "subject": "The crosshair cuts the gapped plus out of the Kenney sheet again\n\nThe region had drifted to Rect2(2, 28, 18, 18), empty space beside the dot, so the reticle was on screen, visible\nand centred, and drew nothing. It is Rect2(4, 75, 52, 52) now, and the HUD test rasterises the sheet and checks\nthe region holds a shape.\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
   },
   "GPUTrail": {
     "commit": "00a764775941c719847deeda8a31b4ebd8893895",
