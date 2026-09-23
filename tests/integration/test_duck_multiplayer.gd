@@ -2,8 +2,9 @@ extends GutTest
 
 ## Purpose: the giant duck and its animation show on a client. The server's duck respawns as the giant and picks
 ## the walking or eating model; `is_giant`, `anim_state` and the health replicate through its BodySynchronizer, and
-## their setters size the client's copy, show its knife and switch its model. Two scene branches with their own
-## MultiplayerAPI talk over ENet on localhost, as test_horse_multiplayer does.
+## their setters size the client's copy, show its knife and switch its model. Its quacks are the server's and play
+## on the client too. Two scene branches with their own MultiplayerAPI talk over ENet on localhost, as
+## test_horse_multiplayer does.
 
 const PORT: int = 47398
 const DUCK_SCENE: PackedScene = preload("res://scenes/duck.tscn")
@@ -103,3 +104,39 @@ func test_the_giant_its_animation_and_its_health_reach_the_client() -> void:
 		if remote.health.health < host.giant_health:
 			break
 	assert_eq(remote.health.health, host.health.health, "The health follows")
+
+
+## L26: a quack the server's duck makes (a hit, here) plays on the client's copy as well.
+func test_the_servers_quacks_play_on_the_client() -> void:
+	await wait_physics_frames(10)
+	var host: CharacterBody3D = server_root.get_node("Duck")
+	var remote: CharacterBody3D = client_root.get_node("Duck")
+	remote.audio_stream_player_3d.stop()
+	host.collision_quack_cooldown.stop()
+	host.take_hit(1.0, host.global_position)
+	assert_true(host.audio_stream_player_3d.playing, "The hit quacks on the server")
+	assert_true(await wait_until(func() -> bool: return remote.audio_stream_player_3d.playing, 2.0), "and on the client")
+
+
+## H3: a client's swing reaches the server's duck with the swinging Player's path, and the server takes it only from
+## the peer that owns that Player; one in another peer's name, or with a negative amount, changes nothing.
+func test_a_clients_swing_counts_once_and_one_in_another_players_name_is_refused() -> void:
+	await wait_physics_frames(10)
+	var host: CharacterBody3D = server_root.get_node("Duck")
+	var remote: CharacterBody3D = client_root.get_node("Duck")
+	var client_id: int = client_api.get_unique_id()
+	var mine := Node3D.new() # the client's Player, as far as a swing is concerned: a body the client owns
+	mine.name = "Swinger"
+	mine.set_multiplayer_authority(client_id)
+	client_root.add_child(mine)
+	var hosts := Node3D.new() # the host's Player, as the client sees it
+	hosts.name = "HostSwinger"
+	client_root.add_child(hosts)
+	var before: float = host.health.health
+	remote.register_weapon_hit(hosts)
+	remote.take_hit(-50.0, remote.global_position, mine.get_path())
+	await wait_process_frames(20)
+	assert_eq(host.health.health, before, "A swing in the host's name and a negative hit change nothing")
+	remote.register_weapon_hit(mine)
+	assert_true(await wait_until(func() -> bool: return host.health.health < before, 2.0), "The client's own swing lands on the server")
+	assert_eq(host.health.health, before - host.melee_hit_damage, "once")

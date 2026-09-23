@@ -1,132 +1,92 @@
 class_name Harvestable
-extends Node3D
-## Something the Player harvests with the "action" interaction or a capable melee weapon; depleted after enough hits.
-## It joins the Harvestable group (the world listens for [signal depleted] on every one) and the Saveable group, so
-## a [SaveGame] keeps its hits and whether it is gone.
+extends Gatherable
+## A tree or an ore deposit of this world: the player controller's [Gatherable], which counts the strikes on the
+## server, puts [member Gatherable.item] in the striker's bag and replicates [member Gatherable.is_spent], with what
+## this game adds to it. Action while looking at it swings the tool it needs and the strike lands [member hit_delay]
+## later; every strike the server counts throws the chips, plays [member hit_sfx] (the spending one
+## [member depleted_sfx]) and fills the progress bar on every peer ([method _on_struck], wired to
+## [signal Gatherable.struck] in the scene); a spent one stays standing as its spent model (the scenes turn
+## [member Gatherable.hide_when_spent] off, and [method _on_depleted], wired to depleted, swaps the model) rather than
+## vanishing; and it is Saveable, so a [SaveGame] keeps how far along it is. The scenes inherit the addon's
+## [code]scenes/prop/gatherable.tscn[/code].
 
-signal depleted ## The last hit landed; on every peer, through the replicated flag.
-
-@export var hits_to_finish: int = 3 ## Number of hits before the harvestable is depleted.
-@export var hit_delay: float = 0.9 ## Seconds after the harvesting animation starts before the hit lands.
-@export var capability: StringName = &"can_log" ## Equipment capability needed to harvest (see [Equipment]).
+@export var hit_delay: float = 0.9 ## Seconds after the harvesting animation starts before the strike lands.
 @export var harvest_animation: String = "Logging" ## Locomotion node played inside the equipped weapon group while harvesting.
 @export_group("Strike Effects")
 @export var hit_sfx: AudioStream ## Played on every strike, on every peer.
-@export var depleted_sfx: AudioStream ## Played when the last strike lands.
+@export var depleted_sfx: AudioStream ## Played instead on the strike that spends it.
 
-var hits_taken: int = 0: ## Replicated from the server; the setter keeps the progress bar in step and plays each strike.
-	set(value):
-		var struck: bool = value > hits_taken
-		hits_taken = value
-		if progress_bar:
-			progress_bar.value = value
-		if struck:
-			play_strike()
-var is_depleted: bool = false: ## Replicated from the server; the setter swaps the visuals.
-	set(value):
-		if value == is_depleted:
-			return
-		is_depleted = value
-		if value:
-			_on_depleted()
-			_play(depleted_sfx)
-			depleted.emit()
-var player: Player
+var player: Player ## The local Player looking at it, while one is.
 
 @onready var action_prompt: ActionPrompt = $ActionPrompt
-@onready var progress_bar: ProgressBar3D = $ProgressBar3D
+@onready var progress_bar: ProgressBar3D = $ProgressBar3D ## Reads 0 to 1, the fraction [signal Gatherable.struck] reports.
 @onready var hit_audio: AudioStreamPlayer3D = $HitAudio
 @onready var hit_particles: GPUParticles3D = $HitParticles ## One-shot chips at strike height.
 
 
-## Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	add_to_group(&"Harvestable")
+	super()
 	add_to_group(SaveGame.GROUP)
-	progress_bar.max_value = hits_to_finish
 
 
-## What a [SaveGame] keeps: how far along it is and whether it is gone.
+## What a [SaveGame] keeps: how far along it is and whether it is spent.
 func save_state() -> Dictionary:
-	return {"hits_taken": hits_taken, "is_depleted": is_depleted}
+	return {"hits": hits, "yields_given": yields_given, "is_spent": is_spent}
 
 
-## Puts a [method save_state] back; a felled tree does not stand up again, so a save that has it intact leaves a
-## depleted one as it is.
+## Puts a [method save_state] back; a spent one does not grow back from a save that has it standing.
 func load_state(state: Dictionary) -> void:
-	hits_taken = int(state.get("hits_taken", 0))
-	if bool(state.get("is_depleted", false)):
-		is_depleted = true
+	hits = int(state.get("hits", 0))
+	yields_given = int(state.get("yields_given", 0))
+	if bool(state.get("is_spent", false)):
+		is_spent = true
 
 
-## Called when there is an input event. The gate is the looking Player's authority, not the harvestable's (the
-## server owns it), so a client can chop and mine too; the hit itself relays to the server.
+## Action while the local Player looks at it swings the tool it needs, if the Player holds one: the harvesting clip
+## plays and the strike lands [member hit_delay] later through [method Gatherable.register_weapon_hit], which asks
+## the server. The gate is the looking Player's authority, not this node's (the server owns it), so a client
+## harvests too.
 func _input(event: InputEvent) -> void:
-	if not player or not player.is_multiplayer_authority() or is_depleted or not event.is_action_pressed("action"): return
-	if player.is_locomotion_state_active_or_queued(harvest_animation): return
-	if not player.inventory.has_equipment_with_capability(capability): return
-
-	player.rotate_model_to_direction(global_position - player.global_position)
-	# Heavy equipment uses the GreatSword locomotion group.
-	var group: String = "GreatSword" if player.inventory.has_heavy_weapon_equipped() else "Shield"
-	player.travel_locomotion(group + "/" + harvest_animation)
-	# Land the hit once the swing connects
-	get_tree().create_timer(hit_delay).timeout.connect(register_hit)
-
-
-## Called by [HitDetection] when a melee weapon connects with this object.
-func register_weapon_hit(equipment: Node = null, _hit_node: Node = null) -> void:
-	if equipment and equipment.get(capability):
-		register_hit()
-
-
-## Applies one hit of damage; depletes the harvestable once enough hits land.
-## Counts a hit on the server (clients relay theirs); `hits_taken`/`is_depleted` replicate back to every peer.
-func register_hit() -> void:
-	if is_depleted:
+	if not player or not player.is_multiplayer_authority() or player.is_typing or player.is_paused or is_spent \
+			or not event.is_action_pressed("action") or player.is_locomotion_state_active_or_queued(harvest_animation):
 		return
-	if not multiplayer.is_server():
-		_request_hit.rpc_id(1)
-		return
-	hits_taken += 1
-	if hits_taken >= hits_to_finish:
-		is_depleted = true
-		hide_menu()
+	for tool: Equipment in player.inventory.equipment:
+		if can_harvest_with(tool):
+			player.rotate_model_to_direction(global_position - player.global_position)
+			# Heavy equipment uses the GreatSword locomotion group
+			var group: String = "GreatSword" if player.inventory.has_heavy_weapon_equipped() else "Shield"
+			player.travel_locomotion(group + "/" + harvest_animation)
+			get_tree().create_timer(hit_delay).timeout.connect(register_weapon_hit.bind(tool))
+			return
 
 
-@rpc("any_peer", "call_remote", "reliable")
-func _request_hit() -> void:
-	if multiplayer.is_server():
-		register_hit()
-
-
-## Chips fly and the strike sound plays; runs on every peer through the replicated hit count.
-func play_strike() -> void:
-	if hit_particles:
-		hit_particles.restart()
-	_play(hit_sfx)
-
-
-func _play(stream: AudioStream) -> void:
-	if hit_audio and stream:
+## Wired to [signal Gatherable.struck] in the scene: a strike the server counted, on every peer. The chips, the strike
+## sound (the spending strike's own at [param fraction] 1) and the progress bar at [param fraction]; it reads the
+## fraction alone, so it plays the same whether a client hears of the strike or of [signal Gatherable.depleted] first.
+func _on_struck(fraction: float) -> void:
+	progress_bar.value = fraction
+	hit_particles.restart()
+	var stream: AudioStream = depleted_sfx if fraction >= 1.0 else hit_sfx
+	if stream:
 		hit_audio.stream = stream
 		hit_audio.play()
 
 
-## Swaps the intact model for its depleted version. Overridden by subclasses.
+## Wired to depleted in the scene, on every peer: lets go of the Player looking on; the subclasses swap in the spent
+## model, which stays where it stood.
 func _on_depleted() -> void:
-	pass
+	hide_menu()
 
 
-## Called by [Camera] while the player looks at this object.
-func display_menu(_player: Player) -> void:
-	if is_depleted:
+## Called by [Camera] while the local Player looks at it.
+func display_menu(looking: Player) -> void:
+	if is_spent:
 		return
-	player = _player
+	player = looking
 	action_prompt.show_for(player.controls)
 
 
-## Called by [Camera] when the player looks away from this object.
+## Called by [Camera] when the Player looks away, and as it is spent.
 func hide_menu() -> void:
-	action_prompt.hide()
+	action_prompt.hide_for(player.controls if player else null)
 	player = null

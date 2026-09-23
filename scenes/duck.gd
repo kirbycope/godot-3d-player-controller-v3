@@ -1,10 +1,10 @@
 extends FollowerNpc
 ## A duck that follows the Player and quacks on impacts. Killing it, or letting it fall out of the world, brings it
 ## back as a knife-wielding giant boss that hunts the Player; killing the giant returns the duckling. The size, the
-## animation and the health replicate from the server, so the puppets grow, walk and eat with it; hits relay.
+## animation and the health replicate from the server, so the puppets grow, walk and eat with it; hits relay, and
+## every quack is the server's, sent to every peer. The giant's bite runs on AttackQuackCooldown's timeout.
 
-const GIANT_QUACK_BUS: StringName = &"GiantDuck"
-const GIANT_QUACK_BUS_LAYOUT: AudioBusLayout = preload("res://default_bus_layout.tres")
+const GIANT_QUACK_BUS: StringName = &"GiantDuck" ## A bus of the project's default_bus_layout.tres, with the giant's reverb and delay.
 const ANIMATION_NAME: StringName = &"FBXExportClip_0_001"
 
 @export var respawn_height: float = -40.0
@@ -25,18 +25,13 @@ var is_giant: bool = false: ## Replicated; the setter sizes the models, shows th
 		is_giant = value
 		if is_node_ready():
 			_apply_giant()
-var anim_state: StringName = &"idle": ## Replicated: which of the three models shows and plays (idle, walk or eat).
+var anim_state: StringName = &"idle": ## Replicated: which of the three models shows and plays (idle, walk or eat); only a change switches them.
 	set(value):
-		anim_state = value
-		if not is_node_ready():
+		if value == anim_state:
 			return
-		match value:
-			&"walk":
-				_play_walk_animation()
-			&"eat":
-				_play_eating_animation()
-			_:
-				_play_idle_animation()
+		anim_state = value
+		if is_node_ready():
+			_apply_anim_state()
 var _model_collision_shapes: Array[CollisionShape3D] = [] ## Per-model shapes toggled with the visible model while giant.
 var _player_range_initialized: bool = false
 var _player_was_in_range: bool = false
@@ -66,8 +61,6 @@ var _duckling: Dictionary = {} ## The small duck's tunables, restored when the g
 
 func _ready() -> void:
 	super()
-	if AudioServer.get_bus_index(GIANT_QUACK_BUS) < 0:
-		AudioServer.set_bus_layout(GIANT_QUACK_BUS_LAYOUT)
 	_spawn_transform = global_transform
 	_duckling = {"follow_distance": follow_distance, "follow_height_tolerance": follow_height_tolerance, "swim_climb_speed": swim_climb_speed, "max_health": health.max_health, "bus": audio_stream_player_3d.bus, "unit_size": audio_stream_player_3d.unit_size, "bars_y": status_bars.position.y}
 	navigation_agent_3d.path_desired_distance = 0.5
@@ -78,6 +71,7 @@ func _ready() -> void:
 		_apply_giant()
 	_update_collision_shapes()
 	_stop_moving()
+	_apply_anim_state()
 
 
 func _physics_process(delta: float) -> void:
@@ -132,39 +126,45 @@ func _follow_player(delta: float) -> void:
 ## Adds an instantaneous velocity change, e.g. when hit by a vehicle.
 func apply_impulse(impulse: Vector3, _position: Vector3 = Vector3.ZERO) -> void:
 	super(impulse, _position)
-	if impulse.length() >= collision_quack_speed:
-		_play_quack()
+	if impulse.length() >= collision_quack_speed and is_multiplayer_authority():
+		_play_quack.rpc()
 
 
 ## Responds to physics props, such as the beach ball, registering a hit.
 func register_hit(_hit_node: Node = null) -> void:
-	_play_quack()
+	if is_multiplayer_authority():
+		_play_quack.rpc()
 
 
-## Called by [HitDetection]; unarmed swings pass the Player itself as the equipment.
+## Called by [HitDetection] on the swinging Player's peer; unarmed swings pass the Player itself as the equipment,
+## and the swinging Player is named as the hit's source.
 func register_weapon_hit(equipment: Node = null, _hit_node: Node = null) -> void:
-	var attacker: Node = (equipment as Equipment).player if equipment is Equipment else equipment
-	take_hit(melee_hit_damage, (attacker as Node3D).global_position if attacker is Node3D else global_position)
+	var attacker: Node3D = (equipment as Equipment).player if equipment is Equipment else equipment as Node3D
+	if is_instance_valid(attacker) and attacker.is_inside_tree():
+		take_hit(melee_hit_damage, attacker.global_position, attacker.get_path())
+	else:
+		take_hit(melee_hit_damage, global_position)
 
 
-## Called by a landing [Projectile].
+## Called by a landing [Projectile], on the server's copy of the round alone; the shooter is named as the source.
 func register_projectile_hit(projectile: Projectile, point: Vector3, _normal: Vector3) -> void:
-	take_hit(projectile.damage, point)
+	take_hit(projectile.damage, point, projectile.shooter.get_path() if is_instance_valid(projectile.shooter) else ^"")
 
 
-## Damage counts on the server; clients relay theirs.
-func take_hit(damage: float, from: Vector3) -> void:
+## Damage counts on the server; a client relays its own, which the server takes only from the peer that owns the
+## attacker [param source_path] names ([method FollowerNpc._may_affect]). A negative amount does nothing.
+func take_hit(damage: float, from: Vector3, source_path: NodePath = ^"") -> void:
 	if not multiplayer.is_server():
-		_request_hit.rpc_id(1, damage, from)
+		_request_hit.rpc_id(1, damage, from, source_path)
 		return
-	_play_quack()
-	health.damage(damage, from)
+	_play_quack.rpc()
+	health.damage(maxf(damage, 0.0), from)
 
 
 @rpc("any_peer", "call_remote", "reliable")
-func _request_hit(damage: float, from: Vector3) -> void:
-	if multiplayer.is_server():
-		take_hit(damage, from)
+func _request_hit(damage: float, from: Vector3, source_path: NodePath) -> void:
+	if multiplayer.is_server() and _may_affect(source_path):
+		take_hit(damage, from, source_path)
 
 
 ## Wired to Health.died: a dead duckling comes back as the giant, a dead giant as the duckling.
@@ -178,12 +178,12 @@ func _on_health_died() -> void:
 
 
 func _on_knife_hitbox_hit(_body: Node3D) -> void:
-	_play_quack()
+	_play_quack.rpc()
 
 
 func _on_collided(impact_speed: float) -> void:
 	if impact_speed >= collision_quack_speed:
-		_play_quack()
+		_play_quack.rpc()
 
 
 func _move_with_control(control_velocity: Vector3) -> void:
@@ -238,7 +238,7 @@ func _respawn_as_giant() -> void:
 	if player:
 		boss.engage(player.get_multiplayer_authority())
 		player.hunted_by(get_path(), true)
-	audio_stream_player_3d.play()
+	_play_quack.rpc()
 
 
 ## Undoes [method _respawn_as_giant]: the duckling is back at its spawn with its own health.
@@ -264,6 +264,8 @@ func _become_duckling() -> void:
 	health.health = health.max_health
 
 
+## A quack on every peer, sent by the server; CollisionQuackCooldown keeps a run of bumps to one.
+@rpc("authority", "call_local")
 func _play_quack() -> void:
 	if not collision_quack_cooldown.is_stopped():
 		return
@@ -282,7 +284,18 @@ func _update_player_range(distance_to_player: float) -> void:
 	if is_in_range == _player_was_in_range:
 		return
 	_player_was_in_range = is_in_range
-	audio_stream_player_3d.play()
+	_play_quack.rpc()
+
+
+## Shows and plays the model for [member anim_state].
+func _apply_anim_state() -> void:
+	match anim_state:
+		&"walk":
+			_play_walk_animation()
+		&"eat":
+			_play_eating_animation()
+		_:
+			_play_idle_animation()
 
 
 func _play_walk_animation() -> void:
@@ -317,15 +330,26 @@ func _play_eating_animation() -> void:
 		_update_collision_shapes()
 	if not animation_player_eat.is_playing():
 		animation_player_eat.play(ANIMATION_NAME)
-	# Each quack is a bite: the giant's beak stays live for the cadence and hurts whatever it slams into (the
-	# server's beak; the puppets only quack)
-	if attack_quack_cooldown.is_stopped():
-		audio_stream_player_3d.play()
-		attack_quack_cooldown.start()
-		if is_giant and is_multiplayer_authority():
-			knife_hitbox.swing()
+	# The first bite lands as the eating starts; AttackQuackCooldown times the rest
+	if is_multiplayer_authority() and attack_quack_cooldown.is_stopped():
+		_bite()
 	animation_player_idle.stop()
 	animation_player_walk.pause()
+
+
+## One bite of the eating cadence, on the server: a quack every peer hears, and the giant's beak live for the swing so
+## it hurts whatever it slams into.
+func _bite() -> void:
+	_play_quack.rpc()
+	attack_quack_cooldown.start()
+	if is_giant:
+		knife_hitbox.swing()
+
+
+## Wired to AttackQuackCooldown.timeout: the server bites again for as long as the duck is still eating.
+func _on_attack_quack_cooldown_timeout() -> void:
+	if is_multiplayer_authority() and anim_state == &"eat":
+		_bite()
 
 
 ## The giant uses the visible model's shapes instead of the small root shape.

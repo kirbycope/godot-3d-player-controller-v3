@@ -55,6 +55,18 @@ func test_no_texture_in_the_project_is_imported_as_lossy() -> void:
 	)
 
 
+func test_every_lossless_texture_is_promoted_once_seen_in_3d() -> void:
+	var never_promoted: PackedStringArray = []
+	for path: String in _import_files("res://"):
+		if _compress_mode(path) == LOSSLESS and _int_setting(path, "detect_3d/compress_to") != DETECT_3D_VRAM_COMPRESSED:
+			never_promoted.append(path)
+	assert_eq(
+		never_promoted.size(),
+		0,
+		"A lossless texture keeps detect_3d/compress_to=1, so a 3D material still gets VRAM Compressed. Off: %s" % ", ".join(never_promoted)
+	)
+
+
 func test_no_committed_texture_carries_a_size_limit() -> void:
 	var capped: PackedStringArray = []
 	for path: String in _import_files("res://"):
@@ -68,7 +80,8 @@ func test_no_committed_texture_carries_a_size_limit() -> void:
 	)
 
 
-## Every .import file in the project, skipping the addons that are pulled from elsewhere.
+## Every texture's .import file in the project, skipping the addons that are pulled from elsewhere. Only the
+## "texture" importer counts: a WAV's .import carries a compress/mode of its own that means something else.
 func _import_files(from: String) -> PackedStringArray:
 	var found: PackedStringArray = []
 	var directory := DirAccess.open(from)
@@ -81,7 +94,7 @@ func _import_files(from: String) -> PackedStringArray:
 		if directory.current_is_dir():
 			if not name.begins_with(".") and not _vendored.has(path):
 				found.append_array(_import_files(path))
-		elif name.ends_with(".import"):
+		elif name.ends_with(".import") and _importer(path) == "texture":
 			found.append(path)
 		name = directory.get_next()
 	directory.list_dir_end()
@@ -90,6 +103,13 @@ func _import_files(from: String) -> PackedStringArray:
 
 func _compress_mode(import_path: String) -> int:
 	return _int_setting(import_path, "compress/mode")
+
+
+func _importer(import_path: String) -> String:
+	var config := ConfigFile.new()
+	if config.load(import_path) != OK:
+		return ""
+	return str(config.get_value("remap", "importer", ""))
 
 
 ## An .import file is a ConfigFile whose [params] section holds the importer's settings.

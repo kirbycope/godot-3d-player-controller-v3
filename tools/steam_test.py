@@ -8,6 +8,11 @@ prefix, the Mac's JUnit XML is copied back, and the exit code is non-zero when e
     python tools/steam_test.py --role host          # one side by hand; pair it with --run-id on the other machine
     python tools/steam_test.py --windowed           # no --headless, if Steam or rendering needs a window
 
+Before anything starts, an earlier run still going is stopped on each machine this run launches on: a Godot whose
+command line carries -gdir=res://tests/steam, found by its command line on this PC and killed with taskkill, and
+killed with pkill on the Mac. Left running, an old client writes the client.exit and client.xml this run reads as its
+own. Whatever ends the run, a failure, Ctrl+C or the timeout, its own host and client are killed on the way out.
+
 This PC resolves the Mac's .local name only some of the time, so the Mac is reached by IP (--mac), and the client
 is not a foreground SSH command:
 it is started detached under nohup with its output in .steam_test/client.log on the Mac, the launch is retried
@@ -33,7 +38,11 @@ MAC_PROJECT = "/Users/timothycope/GitHub/godot-3d-player-controller-v3"
 # Engine errors are not failures here: the game's own authority handoffs (a horse mounted, the buddy picked up) and
 # spawner despawns of nodes a peer has already let go log "Ignoring sync data" and "ERR_UNAUTHORIZED" bursts on
 # a run that behaves; what a scenario asserts is what counts, and push_error (the lockstep's timeouts) still fails.
-GUT_ARGS = ["-s", "addons/gut/gut_cmdln.gd", "-gdir=res://tests/steam", "-gexit", "-gfailure_error_types=gut,push_error"]
+STEAM_GDIR = "-gdir=res://tests/steam" ## What marks a Godot running this suite, and nothing else, on either machine.
+GUT_ARGS = ["-s", "addons/gut/gut_cmdln.gd", STEAM_GDIR, "-gexit", "-gfailure_error_types=gut,push_error"]
+# The brackets match the same text but not themselves, so pkill passes over the SSH shell whose own command line
+# carries this pattern; a bare "tests/steam" would kill that shell along with the Godot it was sent for.
+MAC_STOP = "pkill -f 'gdir=res://[t]ests/steam' || true"
 SSH_OPTIONS = ["-o", "BatchMode=yes", "-o", "ConnectTimeout=15", "-o", "StrictHostKeyChecking=accept-new"]
 LAUNCH_RETRY_SECONDS = 150.0 ## How long the client launch keeps trying while the Mac's name does not resolve.
 POLL_SECONDS = 3.0
@@ -94,7 +103,9 @@ class Client:
 		print("[client] ssh %s %s" % (self.mac.target, remote), flush=True)
 		deadline = time.time() + LAUNCH_RETRY_SECONDS
 		while True:
-			result = self.mac.run(remote)
+			result = self.mac.run(MAC_STOP) # an earlier run's client first, or its results pass for this run's
+			if result.returncode == 0:
+				result = self.mac.run(remote)
 			if result.returncode == 0:
 				self.launched = True
 				return True
@@ -118,7 +129,7 @@ class Client:
 			self.returncode = int(exit_text.strip())
 
 	def kill(self) -> None:
-		self.mac.run("pkill -f gut_cmdln || true")
+		self.mac.run(MAC_STOP)
 
 	def fetch_xml(self) -> bool:
 		"""Copies the Mac's JUnit XML back; a few tries, since the name may be down again."""
@@ -129,6 +140,20 @@ class Client:
 			print("[client] could not copy the JUnit XML back (%d/6): %s" % (attempt + 1, result.stderr.strip()), flush=True)
 			time.sleep(10)
 		return False
+
+
+def stop_earlier_hosts() -> None:
+	"""Kills every Godot on this machine still running the Steam suite; never the editor, which has no -gdir."""
+	if os.name != "nt":
+		subprocess.run(["pkill", "-f", "gdir=res://[t]ests/steam"], capture_output=True)
+		return
+	# tasklist cannot show a command line, and the image name alone would take the editor too
+	query = ("Get-CimInstance Win32_Process -Filter \"Name like '%godot%'\" | "
+		"Where-Object { $_.CommandLine -like '*" + STEAM_GDIR + "*' } | ForEach-Object { $_.ProcessId }")
+	found = subprocess.run(["powershell", "-NoProfile", "-Command", query], capture_output=True, text=True)
+	for pid in found.stdout.split():
+		print("[host] stopping pid %s, left over from an earlier run" % pid, flush=True)
+		subprocess.run(["taskkill", "/PID", pid, "/T", "/F"], capture_output=True)
 
 
 def start_host(args, run_id: str) -> subprocess.Popen:
@@ -225,24 +250,33 @@ def main() -> int:
 
 	host = None
 	client = None
-	if args.role in ("client", "both"):
-		client = Client(Mac(args), args, run_id)
-		if not client.launch():
-			print("[client] the Mac stayed unreachable for %.0f s; giving up" % LAUNCH_RETRY_SECONDS, flush=True)
-			return 1
-	if args.role in ("host", "both"):
-		host = start_host(args, run_id)
-		stream(host, "host")
-	wait_all(host, client, args)
+	try:
+		if args.role in ("host", "both"):
+			stop_earlier_hosts()
+		if args.role in ("client", "both"):
+			client = Client(Mac(args), args, run_id)
+			if not client.launch():
+				print("[client] the Mac stayed unreachable for %.0f s; giving up" % LAUNCH_RETRY_SECONDS, flush=True)
+				return 1
+		if args.role in ("host", "both"):
+			host = start_host(args, run_id)
+			stream(host, "host")
+		wait_all(host, client, args)
 
-	ok = True
-	if host:
-		ok = report("host", os.path.join(RESULTS, "host.xml"), host.returncode) and ok
-	if client:
-		client.fetch_xml()
-		ok = report("client", os.path.join(RESULTS, "client.xml"), client.returncode) and ok
-	print("PASS" if ok else "FAIL", flush=True)
-	return 0 if ok else 1
+		ok = True
+		if host:
+			ok = report("host", os.path.join(RESULTS, "host.xml"), host.returncode) and ok
+		if client:
+			client.fetch_xml()
+			ok = report("client", os.path.join(RESULTS, "client.xml"), client.returncode) and ok
+		print("PASS" if ok else "FAIL", flush=True)
+		return 0 if ok else 1
+	finally:
+		# Nothing this run started outlives it, however it ended
+		if host and host.poll() is None:
+			host.kill()
+		if client and client.launched and client.returncode is None:
+			client.kill()
 
 
 if __name__ == "__main__":

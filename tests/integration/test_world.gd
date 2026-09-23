@@ -122,3 +122,42 @@ func test_the_world_plays_the_weather_fx_ambience_by_biome() -> void:
 	assert_ne(plains, target, "not the forest's")
 	assert_true(plains.playing, "and they take over")
 	assert_false(target.playing)
+
+
+## The world scene wires the Player this peer controls to what follows it: the HUD's noise meter reads that Player's
+## noise (M14), the SaveGame hears the spawn (H8), and the end of the Steam session goes back to the title (H10). The
+## updraft aura the addon no longer loads hangs on the Player template, hidden.
+func test_the_local_player_is_wired_to_the_hud_the_save_and_the_session() -> void:
+	var player: Player = world.get_node("PlayerSpawner/1") as Player
+	var meter: NoiseMeter = world.get_node("HUD/BottomRight/NoiseMeter/Line") as NoiseMeter
+	assert_eq(meter.noise, player.get_node("PlayerNoise"), "The noise meter reads the local Player's noise")
+	var spawner: PlayerSpawner = world.get_node("PlayerSpawner") as PlayerSpawner
+	assert_true(spawner.local_player_spawned.is_connected((world.get_node("SaveGame") as SaveGame).load_for_player), "The SaveGame hears the spawn")
+	assert_true((world.get_node("SteamPeer") as SteamPeer).session_ended.is_connected(world._on_session_ended), "The end of the session is the world's to handle")
+	assert_true(ResourceLoader.exists(world.title_scene), "and it goes back to a real title scene")
+	world._on_session_ended()
+	assert_true(is_instance_valid(world) and world.is_inside_tree(), "A world that is not the current scene (a test's) stays put")
+	assert_not_null(player.updraft_aura, "The Player carries weather_fx's updraft aura")
+	assert_false(player.updraft_aura.visible, "hidden until a thermal lifts it")
+
+
+## The host spawns a client's round, throw or drop only for a scene on the ProjectileSpawner's list (M1), so
+## everything a client in this world fires, throws or drops is listed: the world's firearms' rounds and the bow's
+## arrows, the ammunition the QA kit hands out, the fishing float, a thrown item, a dropped item's pickup and the
+## equipment that drops as its own scene.
+func test_the_projectile_spawner_lists_everything_a_client_spawns() -> void:
+	var spawner: ProjectileSpawner = world.get_node("ProjectileSpawner")
+	var scenes: Array[PackedScene] = [Inventory.ITEM_PICKUP_SCENE, HeldObject.THROWN_ITEM_SCENE, load("res://scenes/fishing_rod.tscn")]
+	for firearm: Node in world.find_children("*", "Firearm", true, false):
+		scenes.append((firearm as Firearm).projectile_scene)
+	for bow: Node in world.find_children("*", "Bow", true, false):
+		scenes.append((bow as Bow).arrow_scene)
+	scenes.append((world.get_node("FishingRod") as FishingRod).bobber_scene)
+	for item: Item in world.STARTING_ITEMS:
+		if item is AmmoItem and (item as AmmoItem).projectile_scene:
+			scenes.append((item as AmmoItem).projectile_scene)
+		if item.equipment_scene:
+			scenes.append(item.equipment_scene)
+	assert_gt(scenes.size(), 8)
+	for scene: PackedScene in scenes:
+		assert_true(spawner._is_spawnable(scene.resource_path), "%s is on the Auto Spawn List" % scene.resource_path)

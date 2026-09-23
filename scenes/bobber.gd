@@ -3,15 +3,15 @@ extends Projectile
 ## A fishing float: flies on the rod's cast, floats on [Buoyancy] water and dips on nibbles and bites.
 ##
 ## Spawned through the ProjectileSpawner, so every peer simulates its own copy from the same launch
-## and sees the line, the dips and the catch. The line runs from the caster's rod tip when that peer
-## has the rod, or from their left hand otherwise (equipment is not replicated). It never sweeps for
-## hits. Its lift saturates within a few centimetres ([member probe_depth]) and its centre of mass sits below
-## the probe, so it rights itself after the tumble of the cast and rides on the surface.
+## and sees the line, the dips and the catch, and hears the rod's sounds at the float (each [method splash] carries
+## one). The line runs from the caster's rod tip when that peer has the rod, or from their left hand otherwise, and a
+## hooked fish spins that rod's reel on every peer. It never sweeps for hits. Its lift saturates within a few
+## centimetres ([member probe_depth]) and its centre of mass sits below the probe, so it rights itself after the
+## tumble of the cast and rides on the surface. A caster who leaves takes their float with them.
 
 signal landed_in_water(water: Area3D) ## Emitted once when the float first enters a "WATER" area.
 signal landed_dry ## Emitted when the float touches something before reaching water.
 
-@export var fish_scene: PackedScene ## Placeholder catch model for any [Fish] without one of its own.
 @export var probe_depth: float = 0.08 ## Read by [Buoyancy]: depth at which the float's lift is at full strength.
 
 var in_water: bool = false
@@ -21,6 +21,7 @@ var in_water: bool = false
 @onready var splash_particles: GPUParticles3D = $SplashParticles
 @onready var ring: MeshInstance3D = $Ring ## Top-level expanding ripple ring.
 @onready var bait_icon: Sprite3D = $BaitIcon ## The bait's icon, floated off the hook when the bite takes it.
+@onready var audio: AudioStreamPlayer3D = $Audio ## Plays the rod's sounds at the float, on every peer.
 
 
 func _init() -> void:
@@ -31,6 +32,13 @@ func _init() -> void:
 func _ready() -> void:
 	line.mesh = ImmediateMesh.new()
 	super()
+
+
+## Also ties the float to its caster: when they leave, the server takes it in (see [method retract]).
+func launch(origin: Transform3D, direction: Vector3, speed: float, from_shooter: Node3D, from_weapon: Equipment = null) -> void:
+	super(origin, direction, speed, from_shooter, from_weapon)
+	if is_instance_valid(shooter):
+		shooter.tree_exiting.connect(retract, CONNECT_ONE_SHOT)
 
 
 ## Draws the line from the caster to the float; only flies, no swept hits.
@@ -50,11 +58,19 @@ func _line_anchor() -> Vector3:
 	var player: Player = shooter as Player
 	if player == null:
 		return shooter.global_position
-	var rod: FishingRod = player.inventory.get_equipment_by_type(Equipment.EquipmentType.FISHING_ROD) as FishingRod
+	var rod: FishingRod = _rod()
 	if rod:
 		return rod.get_rod_tip()
 	var skeleton: Skeleton3D = player.skeleton
 	return skeleton.global_transform * skeleton.get_bone_global_pose(skeleton.find_bone("LeftHand")).origin
+
+
+## The caster's rod on this peer, or null when their copy here has none out.
+func _rod() -> FishingRod:
+	var player: Player = shooter as Player
+	if not is_instance_valid(player) or player.inventory == null:
+		return null
+	return player.inventory.get_equipment_by_type(Equipment.EquipmentType.FISHING_ROD) as FishingRod
 
 
 ## Wired to body_entered: ground before water means a bad cast. The caster's own body never counts.
@@ -79,9 +95,13 @@ func plunge(depth: float, duration: float) -> void:
 	tween.tween_property(float_mesh, "position:y", 0.0, duration * 0.7).set_trans(Tween.TRANS_BOUNCE)
 
 
-## Droplets and an expanding ring at the float, on every peer; [param strength] sizes both.
+## Droplets and an expanding ring at the float, on every peer; [param strength] sizes both. The rod's sound for the
+## moment (at [param sfx_path]) plays at the float with them; an empty path is a silent splash.
 @rpc("any_peer", "call_local", "reliable")
-func splash(strength: float) -> void:
+func splash(strength: float, sfx_path: String = "") -> void:
+	if not sfx_path.is_empty():
+		audio.stream = load(sfx_path) as AudioStream
+		audio.play()
 	splash_particles.amount_ratio = clampf(strength, 0.2, 1.0)
 	splash_particles.restart()
 	ring.global_transform = Transform3D(Basis().scaled(Vector3(0.3, 1.0, 0.3)), global_position + Vector3.UP * 0.02)
@@ -109,9 +129,12 @@ func show_bait_taken(icon_path: String, tint: Color) -> void:
 	tween.tween_callback(bait_icon.hide)
 
 
-## A hooked fish drags the float about for [param duration] seconds, on every peer.
+## A hooked fish drags the float about for [param duration] seconds and spins the caster's reel, on every peer.
 @rpc("any_peer", "call_local", "reliable")
 func thrash(duration: float) -> void:
+	var rod: FishingRod = _rod()
+	if rod and rod.animation_player.has_animation(FishingRod.REEL_ANIMATION):
+		rod.animation_player.play(FishingRod.REEL_ANIMATION)
 	var tween: Tween = create_tween().set_loops(maxi(1, int(duration / 0.15)))
 	tween.tween_callback(_thrash_step)
 	tween.tween_interval(0.15)
@@ -128,8 +151,7 @@ func present_catch(fish_path: String, length_cm: float) -> void:
 	if fish_path.is_empty() or not is_instance_valid(shooter):
 		return
 	var fish: Fish = load(fish_path)
-	var scene: PackedScene = fish.get_model_scene() if fish.get_model_scene() else fish_scene
-	var model: Node3D = scene.instantiate()
+	var model: Node3D = fish.get_model_scene().instantiate()
 	get_parent().add_child(model)
 	var from: Vector3 = global_position
 	model.global_position = from
@@ -141,8 +163,12 @@ func present_catch(fish_path: String, length_cm: float) -> void:
 	tween.tween_callback(model.queue_free)
 
 
-## Frees the float on the server, which despawns it everywhere.
+## Stops the caster's reel and frees the float on the server, which despawns it everywhere. The caster's rod calls it
+## when the line comes in; the caster leaving calls it too, so their float never waits out its lifetime.
 @rpc("any_peer", "call_local", "reliable")
 func retract() -> void:
-	if multiplayer.is_server():
+	var rod: FishingRod = _rod()
+	if rod:
+		rod.animation_player.stop()
+	if is_inside_tree() and multiplayer.is_server():
 		queue_free()

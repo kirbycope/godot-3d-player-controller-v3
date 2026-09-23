@@ -5,7 +5,9 @@ extends Area3D
 ## Bodies are lifted at their "BuoyancyProbe" Marker3D children (or at their origin without any) in
 ## proportion to how deep each probe sits below the wave surface, so offset probes make hulls roll and
 ## pitch. Forces have no signal, so they are applied per physics frame while any body is inside.
-## [method get_wave_offset] mirrors the vertex waves of pond_water.gdshader so kinematic bodies ride them too.
+## [method get_wave_offset] mirrors the vertex waves of pond_water.gdshader so kinematic bodies ride them too. The
+## wind and the shader's wave uniforms are read once per physics frame ([method read_waves]) and handed to every
+## sample taken in it, rather than looked up again for each one.
 ## The water also owns what can be fished out of it: [member fish], picked by the in-game hour and rain.
 
 const WAVE_TIME_ROLLOVER: float = 3600.0 ## Shader TIME wraps at rendering/limits/time/time_rollover_secs.
@@ -19,6 +21,21 @@ const WAVES: Array[Vector3] = [
 	Vector3(-1.1, 2.3, 0.10),
 	Vector3(0.2, 3.2, 0.08),
 ]
+const WAVE_SPEED: StringName = &"wave_speed" ## The water material's wave uniforms.
+const WAVE_AMPLITUDE: StringName = &"wave_amplitude"
+const WAVE_FREQUENCY: StringName = &"wave_frequency"
+const WAVE_STEEPNESS: StringName = &"wave_steepness"
+
+
+## The wave inputs at one moment: the wind, the uniforms scaled by it and the shader's clock, as [method read_waves]
+## found them. One serves every sample of a physics frame.
+class Waves:
+	var wind_dir: Vector2 = Vector2.RIGHT
+	var tempo: float = 1.0
+	var amplitude: float = 0.04
+	var frequency: float = 3.5
+	var steepness: float = 0.85
+	var time: float = 0.0
 
 @export var water_mesh: MeshInstance3D ## Quad drawn with pond_water.gdshader; its height and wave uniforms define the surface.
 @export var weather: WeatherFX ## Source of the wind the shader reads from its globals; without it the shader's fallbacks apply.
@@ -41,39 +58,50 @@ func _ready() -> void:
 	set_physics_process(false)
 
 
-## Wave height above the resting surface at [param point], matching pond_water.gdshader's Gerstner waves.
+## The wind and the water material's wave uniforms now, read once for all the samples of a physics frame.
+func read_waves() -> Waves:
+	var waves: Waves = Waves.new()
+	# Reading the shader globals back is editor-only, so the wind comes from WeatherFX itself
+	var wind: Vector3 = weather.wind_direction if weather else Vector3.RIGHT
+	var wind_dir: Vector2 = Vector2(wind.x, wind.z)
+	waves.wind_dir = wind_dir.normalized() if wind_dir.length() >= 0.001 else Vector2.RIGHT
+	var wind_speed: float = maxf(0.1, weather.current_wind_strength if weather else 0.0)
+	waves.tempo = _wave_parameter(WAVE_SPEED, 1.0) * (1.0 + wind_speed * 0.15)
+	waves.amplitude = _wave_parameter(WAVE_AMPLITUDE, 0.04) * (0.6 + clampf(wind_speed * 0.1, 0.0, 2.0))
+	waves.frequency = _wave_parameter(WAVE_FREQUENCY, 3.5)
+	waves.steepness = _wave_parameter(WAVE_STEEPNESS, 0.85)
+	waves.time = fmod(Time.get_ticks_msec() / 1000.0, WAVE_TIME_ROLLOVER)
+	return waves
+
+
+## Wave height above the resting surface at [param point], matching pond_water.gdshader's Gerstner waves, for the
+## [param waves] of this frame (read afresh when none are passed, for a one-off sample).
 ## The waves move the surface sideways as well as up, so the parameter point whose displaced position
 ## lands on [param point] is found by a few fixed-point steps before its height is read.
-func get_wave_offset(point: Vector3) -> float:
+func get_wave_offset(point: Vector3, waves: Waves = null) -> float:
+	if waves == null:
+		waves = read_waves()
 	var local: Vector3 = water_mesh.to_local(point)
 	var xz: Vector2 = Vector2(local.x, local.z)
 	var parameter: Vector2 = xz
 	for i: int in 3:
-		var displacement: Vector3 = get_wave_displacement(parameter)
+		var displacement: Vector3 = get_wave_displacement(parameter, waves)
 		parameter = xz - Vector2(displacement.x, displacement.z)
-	return get_wave_displacement(parameter).y
+	return get_wave_displacement(parameter, waves).y
 
 
 ## Where the wave surface carries the water that rests at mesh-local [param xz]: sideways toward the
 ## nearest crest and up, summed over the shader's wave table and damped toward the pond edge.
-func get_wave_displacement(xz: Vector2) -> Vector3:
-	# Reading the shader globals back is editor-only, so the wind comes from WeatherFX itself
-	var wind: Vector3 = weather.wind_direction if weather else Vector3.RIGHT
-	var wind_dir: Vector2 = Vector2(wind.x, wind.z)
-	wind_dir = wind_dir.normalized() if wind_dir.length() >= 0.001 else Vector2.RIGHT
-	var wind_speed: float = maxf(0.1, weather.current_wind_strength if weather else 0.0)
-	var tempo: float = _wave_parameter("wave_speed", 1.0) * (1.0 + wind_speed * 0.15)
-	var amplitude: float = _wave_parameter("wave_amplitude", 0.04) * (0.6 + clampf(wind_speed * 0.1, 0.0, 2.0))
-	var frequency: float = _wave_parameter("wave_frequency", 3.5)
-	var steepness: float = _wave_parameter("wave_steepness", 0.85)
-	var time: float = fmod(Time.get_ticks_msec() / 1000.0, WAVE_TIME_ROLLOVER)
+func get_wave_displacement(xz: Vector2, waves: Waves = null) -> Vector3:
+	if waves == null:
+		waves = read_waves()
 	var displacement: Vector3 = Vector3.ZERO
 	for wave: Vector3 in WAVES:
-		var direction: Vector2 = wind_dir.rotated(wave.x)
-		var k: float = frequency * wave.y
-		var a: float = amplitude * wave.z
-		var q: float = steepness / (k * a * WAVES.size() + 0.0001)
-		var phase: float = k * direction.dot(xz) - sqrt(WAVE_GRAVITY * k) * tempo * time
+		var direction: Vector2 = waves.wind_dir.rotated(wave.x)
+		var k: float = waves.frequency * wave.y
+		var a: float = waves.amplitude * wave.z
+		var q: float = waves.steepness / (k * a * WAVES.size() + 0.0001)
+		var phase: float = k * direction.dot(xz) - sqrt(WAVE_GRAVITY * k) * waves.tempo * waves.time
 		displacement += Vector3(q * a * direction.x * cos(phase), a * sin(phase), q * a * direction.y * cos(phase))
 	# Waves fade toward the edges so the water stays sealed in the pond
 	var size: Vector2 = (water_mesh.mesh as QuadMesh).size
@@ -82,24 +110,25 @@ func get_wave_displacement(xz: Vector2) -> Vector3:
 
 
 ## A wave uniform of the water material, or the shader's default when the material leaves it unset.
-func _wave_parameter(parameter: String, default: float) -> float:
+func _wave_parameter(parameter: StringName, default: float) -> float:
 	var value: Variant = _material.get_shader_parameter(parameter)
 	return value if value != null else default
 
 
-## World height of the wave surface at [param point].
-func get_surface_height(point: Vector3) -> float:
-	return water_mesh.global_position.y + get_wave_offset(point)
+## World height of the wave surface at [param point], for this frame's [param waves] (read afresh when none are passed).
+func get_surface_height(point: Vector3, waves: Waves = null) -> float:
+	return water_mesh.global_position.y + get_wave_offset(point, waves)
 
 
 func _physics_process(_delta: float) -> void:
+	var waves: Waves = read_waves()
 	for body: RigidBody3D in bodies:
 		var probes: Array = bodies[body]
 		var own_depth: Variant = body.get("probe_depth")
 		var depth_scale: float = own_depth if own_depth != null else probe_depth
 		var submersion: float = 0.0
 		for probe: Node3D in probes:
-			var ratio: float = clampf((get_surface_height(probe.global_position) - probe.global_position.y) / depth_scale, 0.0, 1.0)
+			var ratio: float = clampf((get_surface_height(probe.global_position, waves) - probe.global_position.y) / depth_scale, 0.0, 1.0)
 			submersion += ratio / probes.size()
 			body.apply_force(-body.get_gravity() * body.mass * buoyancy * ratio / probes.size(), probe.global_position - body.global_position)
 		body.apply_central_force(-body.linear_velocity * drag * submersion * body.mass)

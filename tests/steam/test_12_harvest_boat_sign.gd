@@ -1,33 +1,39 @@
 extends SteamTest
-## Purpose: the client can use what the server owns. A strike on a harvestable relays to the server and the count
-## comes back to both; the boat seats the client and the host sees them sitting in it; a sign is read on the
-## client alone, since its dialog is the reader's own.
+## Purpose: the client can use what the server owns. A strike on a tree (the player controller's Gatherable) asks
+## the server, which counts it and sends the count back to both, and the felling strike's log lands in the striker's
+## own bag; the boat seats the client and the host sees them sitting in it; a sign is read on the client alone,
+## since its dialog is the reader's own.
 
 const SIGN_SCENE: PackedScene = preload("res://scenes/wooden_sign.tscn")
 const SIGN_POSITION: Vector3 = Vector3(3.0, 0.0, 3.0)
 
 
-func test_strikes_from_both_sides_count_on_the_server_and_deplete_the_tree_everywhere() -> void:
-	var tree: Harvestable = world_node("Quaternius/Tree01") as Harvestable
+func test_strikes_from_both_sides_count_on_the_server_and_fell_the_tree_everywhere() -> void:
+	var tree: Choppable = world_node("Quaternius/Tree01") as Choppable
+	var axe: Equipment = autofree(Equipment.new())
+	axe.can_log = true
+	axe.player = own_player()
 	if is_host:
 		assert_true(tree.is_multiplayer_authority(), "The server owns the tree")
 		await await_step("client_struck")
-		await wait_for(func() -> bool: return tree.hits_taken == 1, "The client's strike counts on the server")
-		tree.register_hit()
-		assert_eq(tree.hits_taken, 2, "The host's strike counts at once")
+		await wait_for(func() -> bool: return tree.hits == 1, "The client's strike counts on the server")
+		tree.register_weapon_hit(axe)
+		assert_eq(tree.hits, 2, "The host's strike counts at once")
 		mark("host_struck")
 		await await_step("client_finished")
-		await wait_for(func() -> bool: return tree.is_depleted, "The client's last strike depletes it on the server")
+		await wait_for(func() -> bool: return tree.is_spent, "The client's last strike fells it on the server")
 	else:
 		assert_false(tree.is_multiplayer_authority(), "The client only mirrors the tree")
-		tree.register_hit()
-		await wait_for(func() -> bool: return tree.hits_taken == 1, "The client's strike comes back to the client")
+		var logs: int = own_player().inventory.count_of(tree.item)
+		tree.register_weapon_hit(axe)
+		await wait_for(func() -> bool: return tree.hits == 1, "The client's strike comes back to the client")
 		mark("client_struck")
 		await await_step("host_struck")
-		await wait_for(func() -> bool: return tree.hits_taken == 2, "The host's strike reaches the client")
-		for hit: int in tree.hits_to_finish - 2:
-			tree.register_hit()
-		await wait_for(func() -> bool: return tree.is_depleted, "The client's strikes deplete it on the client")
+		await wait_for(func() -> bool: return tree.hits == 2, "The host's strike reaches the client")
+		for hit: int in tree.hits_per_yield * tree.total_yields - 2:
+			tree.register_weapon_hit(axe)
+		await wait_for(func() -> bool: return tree.is_spent, "The client's strikes fell it on the client")
+		await wait_for(func() -> bool: return own_player().inventory.count_of(tree.item) == logs + 1, "and its log is in the client's own bag")
 		mark("client_finished")
 	await barrier("tree_done")
 

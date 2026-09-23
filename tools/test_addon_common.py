@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Tests for the addon tooling's handling of Windows replace fragments.
+"""Tests for the addon tooling: Windows replace fragments, the pull's edit guard, and the push and pull
+exit codes and refusals, the last driven end to end against throwaway git repositories.
 
 Run with:  python -m unittest tools/test_addon_common.py
 
@@ -13,15 +14,24 @@ mirror ignores it on both sides, and the sweep removes what it can and reports w
 
 from __future__ import annotations
 
+import contextlib
+import io
+import json
 import os
+import subprocess
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+import addon_common  # noqa: E402
+import pull_addons  # noqa: E402
+import push_addons  # noqa: E402
 from addon_common import (  # noqa: E402
+    _rmtree,
     is_replace_fragment,
     local_edits,
     mirror,
@@ -114,10 +124,6 @@ class SweepFragments(unittest.TestCase):
         self.assertTrue(keep.exists())
 
 
-if __name__ == "__main__":
-    unittest.main()
-
-
 class LocalEdits(unittest.TestCase):
     """The check that stops a pull writing over work that was never pushed.
 
@@ -183,3 +189,199 @@ class LocalEdits(unittest.TestCase):
         second = self.write(self.dest, "animations/Sprint.tres", "tuned\n")
 
         self.assertEqual(local_edits(self.source, self.dest), sorted([first, second]))
+
+
+def git(cwd: Path, *args: str) -> str:
+    return subprocess.run(["git", *args], cwd=cwd, check=True, capture_output=True, text=True).stdout.strip()
+
+
+class AddonRepositories(unittest.TestCase):
+    """push_addons.py and pull_addons.py run for real against repositories made in a temporary folder.
+
+    `remotes/widget.git` is the addon's origin, `other` is somebody else's clone of it (gta or tcps
+    pushing to the same addon), and `project` vendors the addon under addons/widget/ the way this
+    project does. A clone at `widget`, beside the project, is the one a push goes through when present.
+    """
+
+    NAME = "widget"
+
+    def setUp(self) -> None:
+        self._temp = tempfile.TemporaryDirectory()
+        self.base = Path(self._temp.name)
+        self.addCleanup(self._temp.cleanup)
+        self.addCleanup(_rmtree, self.base)  # git leaves read-only objects that Windows will not delete
+
+        # Git with an identity for the commits and nothing of this machine's own configuration.
+        config = self.base / "gitconfig"
+        config.write_text("[user]\n\tname = Test\n\temail = test@example.com\n")
+        environment = mock.patch.dict(os.environ, {"GIT_CONFIG_GLOBAL": str(config), "GIT_CONFIG_NOSYSTEM": "1"})
+        environment.start()
+        self.addCleanup(environment.stop)
+
+        self.origin = self.base / "remotes" / "widget.git"
+        self.origin.mkdir(parents=True)
+        git(self.origin, "init", "--quiet", "--bare", "--initial-branch=main")
+        self.other = self.base / "other"
+        git(self.base, "clone", "--quiet", self.origin.as_uri(), str(self.other))
+        git(self.other, "symbolic-ref", "HEAD", "refs/heads/main")
+        self.commit_upstream("addons/widget/plugin.cfg", "[plugin]\n")
+
+        self.project = self.base / "project"
+        (self.project / "tools").mkdir(parents=True)
+        self.addons = [{"name": self.NAME, "repo": self.origin.as_uri(), "ref": "main"}]
+        self.write_manifest()
+        for module, name, value in [
+            (addon_common, "ROOT", self.project),
+            (addon_common, "MANIFEST", self.project / "tools" / "addons.json"),
+            (addon_common, "LOCKFILE", self.project / "tools" / "addons.lock.json"),
+            (addon_common, "CACHE", self.project / ".addon_cache"),
+            (pull_addons, "ROOT", self.project),
+            (push_addons, "ROOT", self.project),
+        ]:
+            patch = mock.patch.object(module, name, value)
+            patch.start()
+            self.addCleanup(patch.stop)
+
+        code, out = self.call(pull_addons.main)
+        self.assertEqual(code, 0, out)
+        self.vendored = self.project / "addons" / self.NAME
+        self.assertTrue((self.vendored / "plugin.cfg").exists(), out)
+
+    def write_manifest(self) -> None:
+        (self.project / "tools" / "addons.json").write_text(json.dumps({"addons": self.addons}))
+
+    def commit_upstream(self, relative: str, text: str) -> str:
+        """Somebody else commits to the addon and pushes it."""
+        path = self.other / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text)
+        git(self.other, "add", "-A")
+        git(self.other, "commit", "--quiet", "-m", f"change {relative}")
+        git(self.other, "push", "--quiet", "origin", "main")
+        return git(self.other, "rev-parse", "HEAD")
+
+    def origin_head(self) -> str:
+        return git(self.origin, "rev-parse", "main")
+
+    def origin_file(self, relative: str) -> str:
+        return git(self.origin, "show", f"main:{relative}")
+
+    def edit_here(self) -> None:
+        (self.vendored / "plugin.cfg").write_text("[plugin]\nname=\"edited here\"\n")
+
+    def call(self, main, *argv: str) -> tuple[int, str]:
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            code = main(list(argv))
+        return code, out.getvalue()
+
+    def test_a_push_in_step_with_origin_goes_through(self) -> None:
+        self.edit_here()
+
+        code, out = self.call(push_addons.main, "-m", "edited here")
+
+        self.assertEqual(code, 0, out)
+        self.assertIn("edited here", self.origin_file("addons/widget/plugin.cfg"))
+        lock = json.loads((self.project / "tools" / "addons.lock.json").read_text())
+        self.assertEqual(lock[self.NAME]["commit"], self.origin_head(), "the lock records what was pushed")
+
+    def test_a_push_from_a_copy_older_than_origin_is_refused(self) -> None:
+        # H18: gta or tcps pushed since this project pulled. Copying the older copy over origin would
+        # delete their file and publish the deletion; the push has to stop and ask for a pull.
+        self.edit_here()
+        theirs = self.commit_upstream("addons/widget/theirs.gd", "extends Node\n")
+
+        code, out = self.call(push_addons.main, "-m", "edited here")
+
+        self.assertEqual(code, 1, out)
+        self.assertIn("BEHIND", out)
+        self.assertIn("pull first", out)
+        self.assertEqual(self.origin_head(), theirs, "nothing was pushed")
+        self.assertEqual(self.origin_file("addons/widget/theirs.gd"), "extends Node", "their work stands")
+
+    def test_a_dry_run_behind_origin_fails_too(self) -> None:
+        self.commit_upstream("addons/widget/theirs.gd", "extends Node\n")
+
+        code, out = self.call(push_addons.main, "--dry-run")
+
+        self.assertEqual(code, 1, out)
+        self.assertIn("BEHIND", out)
+
+    def test_a_dry_run_exits_non_zero_when_a_copy_differs_and_zero_when_none_does(self) -> None:
+        code, out = self.call(push_addons.main, "--dry-run")
+        self.assertEqual(code, 0, out)
+
+        self.edit_here()
+        code, out = self.call(push_addons.main, "--dry-run")
+        self.assertEqual(code, 1, out)
+        self.assertIn("file(s) differ", out)
+
+    def test_a_dry_run_never_checks_out_or_merges_in_the_clone_beside_the_project(self) -> None:
+        # M35: the pre-push hook runs the dry run, and it used to check out main in the clones under
+        # C:\GitHub, switching a branch somebody was working on.
+        clone = self.base / self.NAME
+        git(self.base, "clone", "--quiet", self.origin.as_uri(), str(clone))
+        git(clone, "checkout", "--quiet", "-b", "feature")
+        (clone / "addons" / "widget" / "feature.gd").write_text("extends Node\n")
+        git(clone, "add", "-A")
+        git(clone, "commit", "--quiet", "-m", "feature work")
+        before = git(clone, "rev-parse", "HEAD")
+        self.commit_upstream("addons/widget/theirs.gd", "extends Node\n")  # something a merge would take
+        self.call(pull_addons.main)
+        self.edit_here()
+
+        code, out = self.call(push_addons.main, "--dry-run")
+
+        self.assertEqual(code, 1, out)
+        self.assertIn("file(s) differ", out)
+        self.assertEqual(git(clone, "rev-parse", "--abbrev-ref", "HEAD"), "feature", "still on its own branch")
+        self.assertEqual(git(clone, "rev-parse", "HEAD"), before, "and at its own commit")
+        self.assertEqual(git(clone, "status", "--porcelain"), "", "with nothing written into it")
+        self.assertNotEqual(git(clone, "rev-parse", "main"), self.origin_head(), "its main was not merged")
+
+    def test_a_clone_beside_the_project_with_unpushed_commits_is_refused(self) -> None:
+        clone = self.base / self.NAME
+        git(self.base, "clone", "--quiet", self.origin.as_uri(), str(clone))
+        (clone / "addons" / "widget" / "mine.gd").write_text("extends Node\n")
+        git(clone, "add", "-A")
+        git(clone, "commit", "--quiet", "-m", "not pushed yet")
+        before = self.origin_head()
+        self.edit_here()
+
+        code, out = self.call(push_addons.main, "-m", "edited here")
+
+        self.assertEqual(code, 1, out)
+        self.assertIn("AHEAD", out)
+        self.assertEqual(self.origin_head(), before, "neither commit went out")
+
+    def test_a_clone_beside_the_project_is_where_a_push_lands(self) -> None:
+        clone = self.base / self.NAME
+        git(self.base, "clone", "--quiet", self.origin.as_uri(), str(clone))
+        self.edit_here()
+
+        code, out = self.call(push_addons.main, "-m", "edited here")
+
+        self.assertEqual(code, 0, out)
+        self.assertIn("local clone", out)
+        self.assertEqual(git(clone, "rev-parse", "HEAD"), self.origin_head())
+
+    def test_an_addon_that_cannot_be_fetched_fails_the_pull_and_the_push(self) -> None:
+        # M34 and M35: a FAILED addon used to leave both scripts exiting 0, so CI carried on with a
+        # partial addons/ and the hook let the push through.
+        self.addons.append({"name": "missing", "repo": (self.base / "remotes" / "missing.git").as_uri(), "ref": "main"})
+        self.write_manifest()
+
+        code, out = self.call(pull_addons.main)
+        self.assertEqual(code, 1, out)
+        self.assertIn("FAILED", out)
+        self.assertTrue((self.vendored / "plugin.cfg").exists(), "the addon that could be fetched still is")
+
+        (self.project / "addons" / "missing").mkdir(parents=True)
+        (self.project / "addons" / "missing" / "plugin.cfg").write_text("[plugin]\n")
+        code, out = self.call(push_addons.main, "--dry-run")
+        self.assertEqual(code, 1, out)
+        self.assertIn("FAILED", out)
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -40,3 +40,6 @@ docs/
 # Results of the two-machine Steam run, tools/steam_test.py; local only.
 .steam_test/
 .diagnostics/
+
+# Peer review reports written for reading, not for committing.
+reviews/

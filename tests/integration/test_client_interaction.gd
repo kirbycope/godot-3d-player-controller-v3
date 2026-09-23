@@ -50,7 +50,7 @@ func test_a_client_sits_in_the_boat() -> void:
 
 
 func test_a_client_chops_a_tree() -> void:
-	var tree: Harvestable = TREE_SCENE.instantiate() as Harvestable
+	var tree: Choppable = TREE_SCENE.instantiate() as Choppable
 	tree.set_multiplayer_authority(2) # a client's copy: the server owns the tree
 	tree.position = Vector3(0.0, 0.0, -2.0)
 	root.add_child(tree)
@@ -65,4 +65,4 @@ func test_a_client_chops_a_tree() -> void:
 	assert_true(tree.action_prompt.visible)
 	_press_action(tree)
 	await wait_seconds(tree.hit_delay + 0.2)
-	assert_eq(tree.hits_taken, 1, "A client's swing lands on the tree")
+	assert_eq(tree.hits, 1, "A client's swing lands on the tree")

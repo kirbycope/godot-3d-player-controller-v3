@@ -30,68 +30,99 @@ func after_each() -> void:
 	player = null
 
 
+## A tool in [member player]'s hand that can log, or mine.
+func _tool(logs: bool) -> Equipment:
+	var tool: Equipment = autofree(Equipment.new())
+	tool.can_log = logs
+	tool.can_mine = not logs
+	tool.player = player
+	return tool
+
+
 func test_choppable_tree_logging_and_felling() -> void:
 	var choppable: Choppable = TREE_01_SCENE.instantiate() as Choppable
 	root.add_child(choppable)
-	choppable.hits_to_finish = 3
+	var axe: Equipment = _tool(true)
+	await wait_physics_frames(1)
 
 	# Initial state
-	assert_false(choppable.is_depleted, "Tree should start intact")
-	assert_eq(choppable.hits_taken, 0)
-	assert_eq(choppable.progress_bar.max_value, 3)
+	assert_true(choppable is Gatherable, "The tree is the player controller's Gatherable")
+	assert_false(choppable.is_spent, "Tree should start intact")
+	assert_eq(choppable.hits, 0)
+	assert_eq(choppable.progress_bar.max_value, 1.0, "The bar reads the fraction Gatherable.struck reports")
 	assert_true(choppable.standing_node.visible, "Standing tree should be visible")
 	assert_false(choppable.stump_node.visible, "Stump should be hidden")
 
 	# First chop
-	choppable.register_hit()
-	assert_eq(choppable.hits_taken, 1)
-	assert_eq(choppable.progress_bar.value, 1)
-	assert_false(choppable.is_depleted)
+	choppable.register_weapon_hit(axe)
+	assert_eq(choppable.hits, 1)
+	assert_almost_eq(choppable.progress_bar.value, 1.0 / 3.0, 0.001)
+	assert_false(choppable.is_spent)
 
 	# Second chop
-	choppable.register_hit()
-	assert_eq(choppable.hits_taken, 2)
-	assert_eq(choppable.progress_bar.value, 2)
-	assert_false(choppable.is_depleted)
+	choppable.register_weapon_hit(axe)
+	assert_eq(choppable.hits, 2)
+	assert_almost_eq(choppable.progress_bar.value, 2.0 / 3.0, 0.001)
+	assert_false(choppable.is_spent)
 
 	# Third chop should fell the tree
-	choppable.register_hit()
-	assert_true(choppable.is_depleted, "Tree should be felled after 3 chops")
+	choppable.register_weapon_hit(axe)
+	assert_true(choppable.is_spent, "Tree should be felled after 3 chops")
+	assert_true(choppable.visible, "The felled tree stays in sight as its stump")
 	assert_false(choppable.standing_node.visible, "Standing tree should be hidden after felling")
 	assert_true(choppable.stump_node.visible, "Stump should be shown after felling")
+	assert_true(choppable.log_body.visible, "and the log lies beside it")
+	assert_eq(player.inventory.count_of(choppable.item), 1, "The felling chop puts the log in the striker's bag")
+	await wait_physics_frames(1)
+	for shape: CollisionShape3D in choppable.log_body.find_children("*", "CollisionShape3D", false, false):
+		assert_false(shape.disabled, "The fallen log collides")
+	assert_true((choppable.get_node("CollisionShape3D") as CollisionShape3D).disabled, "The trunk's shape went with the tree")
+	var stump_shapes: Array[Node] = choppable.stump_node.find_children("*", "CollisionShape3D", true, false)
+	assert_gt(stump_shapes.size(), 0)
+	for shape: Node in stump_shapes:
+		assert_false((shape as CollisionShape3D).disabled, "The stump stays solid")
 
 	# Subsequent chops ignored
-	choppable.register_hit()
-	assert_eq(choppable.hits_taken, 3)
+	choppable.register_weapon_hit(axe)
+	assert_eq(player.inventory.count_of(choppable.item), 1)
 
 
 func test_mineable_ore_depletion() -> void:
 	var mineable: Mineable = ORE_SMALL_SCENE.instantiate() as Mineable
 	root.add_child(mineable)
-	mineable.hits_to_finish = 2
+	var pickaxe: Equipment = _tool(false)
+	await wait_physics_frames(1)
 
 	# Initial state
-	assert_false(mineable.is_depleted, "Ore should start intact")
-	assert_eq(mineable.hits_taken, 0)
-	assert_eq(mineable.progress_bar.max_value, 2)
+	assert_false(mineable.is_spent, "Ore should start intact")
+	assert_eq(mineable.hits, 0)
+	assert_eq(mineable.progress_bar.max_value, 1.0)
 	assert_true(mineable.with_nodes.visible, "Unmined ore nodes should be visible")
 	assert_false(mineable.without_nodes.visible, "Depleted ore base should be hidden")
 
+	# An axe does not mine
+	mineable.register_weapon_hit(_tool(true))
+	assert_eq(mineable.hits, 0, "The wrong tool does nothing")
+
 	# First hit
-	mineable.register_hit()
-	assert_eq(mineable.hits_taken, 1)
-	assert_eq(mineable.progress_bar.value, 1)
-	assert_false(mineable.is_depleted)
+	mineable.register_weapon_hit(pickaxe)
+	assert_eq(mineable.hits, 1)
+	assert_almost_eq(mineable.progress_bar.value, 0.5, 0.001)
+	assert_false(mineable.is_spent)
 
 	# Second hit depletes ore
-	mineable.register_hit()
-	assert_true(mineable.is_depleted, "Ore should be depleted after 2 hits")
+	mineable.register_weapon_hit(pickaxe)
+	assert_true(mineable.is_spent, "Ore should be depleted after 2 hits")
+	assert_true(mineable.visible, "The bare rock stays in sight")
 	assert_false(mineable.with_nodes.visible, "Unmined ore nodes should be hidden")
 	assert_true(mineable.without_nodes.visible, "Depleted ore base should be shown")
+	assert_eq(player.inventory.count_of(mineable.item), 1, "The ore is in the striker's bag")
+	await wait_physics_frames(1)
+	assert_false((mineable.get_node("CollisionShape3D") as CollisionShape3D).disabled, "and the bare rock is still solid")
 
 	# Subsequent hits ignored
-	mineable.register_hit()
-	assert_eq(mineable.hits_taken, 2)
+	mineable.register_weapon_hit(pickaxe)
+	assert_eq(player.inventory.count_of(mineable.item), 1)
 
 
 func test_player_water_area_swimming_transition() -> void:

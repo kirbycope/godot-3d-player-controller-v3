@@ -1,6 +1,10 @@
 [gd_scene format=3 uid="uid://jpcg14pa7e45"]
 
 [ext_resource type="Script" uid="uid://cxftc6tm3yvva" path="res://scenes/title_screen.gd" id="1_3tmcg"]
+[ext_resource type="PackedScene" uid="uid://2crtfw6co0ss" path="res://addons/3d_player_controller/scenes/ui/settings.tscn" id="2_settings"]
+[ext_resource type="PackedScene" uid="uid://caww8bymbfsli" path="res://addons/3d_player_controller/scenes/ui/audio_settings.tscn" id="3_audio"]
+[ext_resource type="PackedScene" uid="uid://bsmatt41d3g3p" path="res://addons/3d_player_controller/scenes/ui/video_settings.tscn" id="4_video"]
+[ext_resource type="PackedScene" uid="uid://0f7ibqfdtbhv" path="res://addons/3d_player_controller/scenes/ui/controls_settings.tscn" id="5_controls"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kxxiu"]
 size = Vector2(580, 58)
@@ -33,7 +37,6 @@ theme_override_font_sizes/font_size = 24
 text = "Single-Player"
 
 [node name="TouchScreenButton_SinglePlayer" type="TouchScreenButton" parent="VBoxContainer/Button_SinglePlayer" unique_id=170033853]
-visible = false
 position = Vector2(290, 29)
 shape = SubResource("RectangleShape2D_kxxiu")
 
@@ -45,7 +48,6 @@ theme_override_font_sizes/font_size = 24
 text = "Multi-Player"
 
 [node name="TouchScreenButton_MultiPlayer" type="TouchScreenButton" parent="VBoxContainer/Button_MultiPlayer" unique_id=1366291274]
-visible = false
 position = Vector2(290, 29)
 shape = SubResource("RectangleShape2D_kxxiu")
 
@@ -66,7 +68,6 @@ theme_override_font_sizes/font_size = 24
 text = "Options..."
 
 [node name="TouchScreenButton_Options" type="TouchScreenButton" parent="VBoxContainer/HBoxContainer/Button_Options" unique_id=1241019840]
-visible = false
 position = Vector2(132, 29)
 shape = SubResource("RectangleShape2D_4v6o2")
 
@@ -80,7 +81,6 @@ theme_override_font_sizes/font_size = 24
 text = "Quit Game"
 
 [node name="TouchScreenButton_Quit" type="TouchScreenButton" parent="VBoxContainer/HBoxContainer/Button_Quit" unique_id=830131086]
-visible = false
 position = Vector2(132, 29)
 shape = SubResource("RectangleShape2D_4v6o2")
 
@@ -107,7 +107,6 @@ theme_override_font_sizes/font_size = 24
 text = "New Game"
 
 [node name="TouchScreenButton_NewGame" type="TouchScreenButton" parent="VBoxContainer_SinglePlayer/Button_NewGame"]
-visible = false
 position = Vector2(290, 29)
 shape = SubResource("RectangleShape2D_kxxiu")
 
@@ -120,7 +119,6 @@ theme_override_font_sizes/font_size = 24
 text = "Continue"
 
 [node name="TouchScreenButton_Continue" type="TouchScreenButton" parent="VBoxContainer_SinglePlayer/Button_Continue"]
-visible = false
 position = Vector2(290, 29)
 shape = SubResource("RectangleShape2D_kxxiu")
 
@@ -132,7 +130,6 @@ theme_override_font_sizes/font_size = 24
 text = "Back"
 
 [node name="TouchScreenButton_Back" type="TouchScreenButton" parent="VBoxContainer_SinglePlayer/Button_Back"]
-visible = false
 position = Vector2(290, 29)
 shape = SubResource("RectangleShape2D_kxxiu")
 
@@ -161,6 +158,18 @@ grow_horizontal = 0
 grow_vertical = 0
 text = "© Timothy Cope 2026"
 
+[node name="Settings" parent="." instance=ExtResource("2_settings")]
+visible = false
+
+[node name="AudioSettings" parent="." instance=ExtResource("3_audio")]
+visible = false
+
+[node name="VideoSettings" parent="." instance=ExtResource("4_video")]
+visible = false
+
+[node name="ControlsSettings" parent="." instance=ExtResource("5_controls")]
+visible = false
+
 [connection signal="mouse_entered" from="VBoxContainer/Button_SinglePlayer" to="VBoxContainer/Button_SinglePlayer" method="grab_focus"]
 [connection signal="pressed" from="VBoxContainer/Button_SinglePlayer" to="." method="_on_button_single_player_pressed"]
 [connection signal="pressed" from="VBoxContainer/Button_SinglePlayer/TouchScreenButton_SinglePlayer" to="." method="_on_touch_screen_button_single_player_pressed"]
@@ -182,3 +191,29 @@ text = "© Timothy Cope 2026"
 [connection signal="mouse_entered" from="VBoxContainer_SinglePlayer/Button_Back" to="VBoxContainer_SinglePlayer/Button_Back" method="grab_focus"]
 [connection signal="pressed" from="VBoxContainer_SinglePlayer/Button_Back" to="." method="_on_button_back_pressed"]
 [connection signal="pressed" from="VBoxContainer_SinglePlayer/Button_Back/TouchScreenButton_Back" to="." method="_on_touch_screen_button_back_pressed"]
+[connection signal="pressed" from="Settings/Panel/VBoxContainer/Audio" to="Settings" method="hide"]
+[connection signal="pressed" from="Settings/Panel/VBoxContainer/Audio" to="AudioSettings" method="show_menu"]
+[connection signal="pressed" from="Settings/Panel/VBoxContainer/Audio/AudioTouchScreenButton" to="Settings" method="hide"]
+[connection signal="pressed" from="Settings/Panel/VBoxContainer/Audio/AudioTouchScreenButton" to="AudioSettings" method="show_menu"]
+[connection signal="pressed" from="Settings/Panel/VBoxContainer/Controls" to="Settings" method="hide"]
+[connection signal="pressed" from="Settings/Panel/VBoxContainer/Controls" to="ControlsSettings" method="show_menu"]
+[connection signal="pressed" from="Settings/Panel/VBoxContainer/Controls/ControlsTouchScreenButton" to="Settings" method="hide"]
+[connection signal="pressed" from="Settings/Panel/VBoxContainer/Controls/ControlsTouchScreenButton" to="ControlsSettings" method="show_menu"]
+[connection signal="pressed" from="Settings/Panel/VBoxContainer/Video" to="Settings" method="hide"]
+[connection signal="pressed" from="Settings/Panel/VBoxContainer/Video" to="VideoSettings" method="show_menu"]
+[connection signal="pressed" from="Settings/Panel/VBoxContainer/Video/VideoTouchScreenButton" to="Settings" method="hide"]
+[connection signal="pressed" from="Settings/Panel/VBoxContainer/Video/VideoTouchScreenButton" to="VideoSettings" method="show_menu"]
+[connection signal="pressed" from="Settings/Panel/VBoxContainer/BACK" to="." method="_on_settings_back_pressed"]
+[connection signal="pressed" from="Settings/Panel/VBoxContainer/BACK/BACKTouchScreenButton" to="." method="_on_settings_back_pressed"]
+[connection signal="pressed" from="AudioSettings/Panel/VBoxContainer/BACK" to="AudioSettings" method="hide"]
+[connection signal="pressed" from="AudioSettings/Panel/VBoxContainer/BACK" to="Settings" method="show_menu"]
+[connection signal="pressed" from="AudioSettings/Panel/VBoxContainer/BACK/BACKTouchScreenButton" to="AudioSettings" method="hide"]
+[connection signal="pressed" from="AudioSettings/Panel/VBoxContainer/BACK/BACKTouchScreenButton" to="Settings" method="show_menu"]
+[connection signal="pressed" from="VideoSettings/Panel/VBoxContainer/BACK" to="VideoSettings" method="hide"]
+[connection signal="pressed" from="VideoSettings/Panel/VBoxContainer/BACK" to="Settings" method="show_menu"]
+[connection signal="pressed" from="VideoSettings/Panel/VBoxContainer/BACK/BACKTouchScreenButton" to="VideoSettings" method="hide"]
+[connection signal="pressed" from="VideoSettings/Panel/VBoxContainer/BACK/BACKTouchScreenButton" to="Settings" method="show_menu"]
+[connection signal="pressed" from="ControlsSettings/Panel/VBoxContainer/BACK" to="ControlsSettings" method="hide"]
+[connection signal="pressed" from="ControlsSettings/Panel/VBoxContainer/BACK" to="Settings" method="show_menu"]
+[connection signal="pressed" from="ControlsSettings/Panel/VBoxContainer/BACK/BACKTouchScreenButton" to="ControlsSettings" method="hide"]
+[connection signal="pressed" from="ControlsSettings/Panel/VBoxContainer/BACK/BACKTouchScreenButton" to="Settings" method="show_menu"]

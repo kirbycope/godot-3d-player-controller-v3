@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://d3o4cq6mgg8ni"]
 
+[ext_resource type="PackedScene" uid="uid://c7gatherable01" path="res://addons/3d_player_controller/scenes/prop/gatherable.tscn" id="gatherable"]
+[ext_resource type="Resource" path="res://addons/3d_player_controller/inventory/resources/items/wood_log.tres" id="wood_log"]
 [ext_resource type="Script" uid="uid://bm34tsmkx4rsr" path="res://scenes/choppable.gd" id="1_1a2o8"]
 [ext_resource type="PackedScene" uid="uid://bttr7p1xafvaw" path="res://assets/quaternius/logs/Tree_Bark_1.gltf" id="1_je8fs"]
 [ext_resource type="PackedScene" uid="uid://bmcjd7cwj2fb1" path="res://assets/quaternius/logs/Tree_Log_1.gltf" id="2_4cdo8"]
@@ -8,7 +10,8 @@
 [ext_resource type="PackedScene" uid="uid://dprg3ba60c1vw" path="res://addons/3d_player_controller/scenes/ui/progress_bar_3d.tscn" id="5_pb3d"]
 [ext_resource type="Material" uid="uid://cy88j74yep2kd" path="res://addons/weather_fx/resources/tree_bark_material.tres" id="6_bark"]
 [ext_resource type="Material" uid="uid://b7vswk0jfeq7b" path="res://addons/weather_fx/resources/tree_leaves_material.tres" id="7_leaves"]
-[ext_resource type="SceneReplicationConfig" path="res://scenes/harvestable_replication.tres" id="sync_config"]
+[ext_resource type="Script" path="res://addons/3d_player_controller/scripts/synced_body.gd" id="body_sync_script"]
+[ext_resource type="SceneReplicationConfig" path="res://addons/3d_player_controller/resources/replication/rigid_body_replication.tres" id="body_sync_config"]
 [ext_resource type="ParticleProcessMaterial" path="res://resources/vfx/wood_chips.tres" id="fx_process"]
 [ext_resource type="BoxMesh" uid="uid://cpwh2y6rbxqnu" path="res://resources/vfx/wood_chip_mesh.tres" id="fx_mesh"]
 
@@ -25,8 +28,13 @@ points = PackedVector3Array(0.19050527, -0.35128313, 2.1207623, -0.41494545, -0.
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_yhurs"]
 points = PackedVector3Array(0.18100923, 1.5538889, 1.8739758, 0.65018725, 1.556662, 0.3186713, 0.67647374, 1.6043577, 1.6994097, 0.321607, 3.2664986, 1.4025598, -0.09793818, 3.1746197, 1.5511601, -0.32085395, 1.4923282, 1.7223928, -0.6373286, 1.4427837, 1.302908, -0.3473133, 1.4444475, 0.34165433, 0.14832413, 1.4949163, 0.16708831, -0.1145401, 3.121193, 0.081647456, 0.30829084, 3.2234244, 0.21358077, 0.9664891, 1.6062063, 0.7381561, 0.9766923, 1.6243234, 1.2657139, 0.5777267, 3.31327, 1.0300937, -0.52059615, 3.072573, 1.4190514, -0.78501683, 2.9991808, 1.056761, -0.647359, 1.4246668, 0.77535003, -0.790032, 2.9827275, 0.6027139, -0.5340853, 3.029314, 0.23024788, 0.57271147, 3.296632, 0.5758711)
 
-[node name="Tree01" type="StaticBody3D" unique_id=1863010419 node_paths=PackedStringArray("standing_node", "stump_node", "log_node", "log_body")]
+[node name="Tree01" node_paths=PackedStringArray("shake_node", "standing_node", "stump_node", "log_node", "log_body") instance=ExtResource("gatherable")]
 script = ExtResource("1_1a2o8")
+item = ExtResource("wood_log")
+total_yields = 1
+needs = 1
+shake_node = NodePath("CommonTree_12")
+hide_when_spent = false
 standing_node = NodePath("CommonTree_12")
 stump_node = NodePath("Tree_Bark_12")
 log_node = NodePath("RigidBody3D/Tree_Log_12")
@@ -64,6 +72,10 @@ shape = SubResource("ConvexPolygonShape3D_cj257")
 transform = Transform3D(0.35176885, 0, 0, 0, -0.0116847325, 0.35157478, 0, -0.35157478, -0.0116847325, 0, 0, 0)
 shape = SubResource("ConvexPolygonShape3D_yhurs")
 
+[node name="BodySynchronizer" type="MultiplayerSynchronizer" parent="RigidBody3D"]
+script = ExtResource("body_sync_script")
+replication_config = ExtResource("body_sync_config")
+
 [node name="CommonTree_12" parent="." unique_id=390053289 instance=ExtResource("3_1a2o8")]
 
 [node name="Tree_Bark_1" parent="Tree_Bark_12" index="0"]
@@ -82,6 +94,7 @@ message_end = "to cut tree"
 
 [node name="ProgressBar3D" parent="." unique_id=1111108943 instance=ExtResource("5_pb3d")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+max_value = 1.0
 
 [node name="LogCollisionTimer" type="Timer" parent="."]
 wait_time = 0.5
@@ -100,12 +113,10 @@ explosiveness = 1.0
 process_material = ExtResource("fx_process")
 draw_pass_1 = ExtResource("fx_mesh")
 
-[node name="StateSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_config = ExtResource("sync_config")
-
+[connection signal="depleted" from="." to="." method="_on_depleted"]
+[connection signal="struck" from="." to="." method="_on_struck"]
 [connection signal="timeout" from="LogCollisionTimer" to="." method="_on_log_collision_timer_timeout"]
 
 [editable path="Tree_Bark_12"]
 [editable path="RigidBody3D/Tree_Log_12"]
 [editable path="CommonTree_12"]
-

@@ -1,7 +1,6 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scenes/fish_caught_screen.gd" id="1_screen"]
-[ext_resource type="PackedScene" path="res://scenes/fish_model.tscn" id="2_model"]
 [ext_resource type="Shader" path="res://resources/shaders/radial_shine.gdshader" id="3_shine"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_shine"]
@@ -40,7 +39,6 @@ outline_color = Color(0, 0, 0, 1)
 [node name="FishCaughtScreen" type="CanvasLayer"]
 layer = 2
 script = ExtResource("1_screen")
-placeholder_model = ExtResource("2_model")
 pauses_world = true
 
 [node name="Dim" type="ColorRect" parent="."]
@@ -110,25 +108,6 @@ size = 0.5
 
 [node name="Light" type="DirectionalLight3D" parent="Center/VBox/Stage/Preview/SubViewport"]
 transform = Transform3D(0.86603, -0.38302, 0.32139, 0, 0.64279, 0.76604, -0.5, -0.66341, 0.55667, 0, 2, 2)
-
-[node name="Icon" type="TextureRect" parent="Center/VBox/Stage"]
-unique_name_in_owner = true
-visible = false
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -80.0
-offset_top = -80.0
-offset_right = 80.0
-offset_bottom = 80.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-expand_mode = 1
-stretch_mode = 5
 
 [node name="NameLabel" type="Label" parent="Center/VBox"]
 unique_name_in_owner = true

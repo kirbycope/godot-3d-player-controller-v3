@@ -12,7 +12,8 @@ func test_beach_ball_floats_in_the_pool_and_the_boat_is_moored() -> void:
 	var pool: Buoyancy = world.get_node("Pool/WaterArea3D")
 	var ball: RigidBody3D = world.get_node("BeachBall")
 	ball.global_position = Vector3(4.0, 1.0, -24.0)
-	await wait_seconds(3.0)
+	# Settled: in the pool, afloat and nearly still
+	await wait_until(func() -> bool: return pool.bodies.has(ball) and ball.global_position.y > -1.0 and ball.linear_velocity.length() < 0.3, 6.0)
 	assert_true(pool.bodies.has(ball), "The pool tracks the ball")
 	assert_gt(ball.global_position.y, -1.0, "The ball floats instead of sinking to the pool floor")
 	assert_lt(ball.global_position.y, 0.5)

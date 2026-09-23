@@ -44,3 +44,26 @@ func test_a_client_reads_the_sign() -> void:
 	wooden_sign._on_player_detection_body_exited(player)
 	assert_false(wooden_sign.is_read, "Walking away resets it")
 	assert_null(wooden_sign.player)
+
+
+func test_another_peers_player_neither_takes_nor_clears_the_sign() -> void:
+	var puppet: Player = PLAYER_SCENE.instantiate() as Player
+	puppet.name = "2" # a Player named by its peer id belongs to that peer, so on this peer it is a puppet
+	puppet.position = Vector3(3.0, 0.0, 0.0)
+	root.add_child(puppet)
+	await wait_physics_frames(1)
+	assert_false(puppet.is_multiplayer_authority(), "the second Player is another peer's")
+
+	wooden_sign._on_player_detection_body_entered(player)
+	wooden_sign._on_player_detection_body_entered(puppet)
+	assert_eq(wooden_sign.player, player, "The puppet arriving does not take the sign from the local Player")
+	_press_action()
+	assert_true(wooden_sign.canvas_layer.visible, "so the local Player can still read it")
+
+	wooden_sign._on_player_detection_body_exited(puppet)
+	assert_eq(wooden_sign.player, player, "The puppet leaving does not clear the local Player")
+	assert_true(wooden_sign.canvas_layer.visible, "nor close the local Player's dialog")
+
+	wooden_sign._on_player_detection_body_exited(player)
+	assert_null(wooden_sign.player, "The local Player leaving after the puppet clears it without an error")
+	assert_false(wooden_sign.canvas_layer.visible)

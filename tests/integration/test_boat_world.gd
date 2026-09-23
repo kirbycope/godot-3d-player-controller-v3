@@ -83,3 +83,26 @@ func test_action_seats_the_player_in_the_boat() -> void:
 	assert_true(boat._seated)
 	assert_lt(player.global_position.distance_to(boat.seat_01.global_position), 0.2, "Pinned to the seat")
 	assert_false(boat.action_prompt.visible, "The prompt is gone once seated")
+
+
+## M23: an E typed into the focused chat field reaches the boat's _input before the field; it does not sit anyone down.
+func test_typing_in_chat_by_the_boat_does_not_sit_down() -> void:
+	var press := InputEventAction.new()
+	press.action = "action"
+	press.pressed = true
+	var chat: ChatWindow = player.get_node("Hud/Chat")
+	await _look_at_the_boat_from_the_water()
+	boat.display_menu(player) # what looking at it does
+	chat.open_input()
+	assert_true(player.is_typing, "The chat field has the keyboard")
+	boat._input(press)
+	await wait_physics_frames(2)
+	assert_false(player.is_sitting, "Typing an E into the chat does not sit the Player down")
+	assert_eq(boat.occupant_peer, 0, "nor ask for the seat")
+	chat.close_input()
+	boat.display_menu(player)
+	boat._input(press)
+	await wait_physics_frames(2)
+	assert_true(player.is_sitting, "With the chat closed, Action sits them down")
+	assert_eq(boat.occupant_peer, 1, "in the seat the server gave them")
+	assert_false(boat.seat_01_dummy.visible, "where the dummy passenger no longer shows")

@@ -41,7 +41,7 @@ func test_enemies_idle_until_the_player_comes_within_five_yards() -> void:
 	assert_eq(swordsman.target, player, "Stepping inside five yards starts the hunt")
 	var start: float = swordsman.global_position.distance_to(player.global_position)
 	_stand_near(swordsman, 6.0)
-	await wait_seconds(1.5)
+	await wait_until(func() -> bool: return swordsman.global_position.distance_to(player.global_position) < 6.0, 3.0)
 	assert_lt(swordsman.global_position.distance_to(player.global_position), 6.0, "The swordsman closes the gap over the navmesh")
 
 
@@ -59,7 +59,7 @@ func test_swordsman_strikes_the_player_in_reach() -> void:
 	watch_signals(swordsman)
 	_stand_near(swordsman, 1.2)
 	var before: float = player.health.health
-	await wait_seconds(2.5)
+	await wait_for_signal(swordsman.struck, 4.0)
 	assert_signal_emitted(swordsman, "attacked")
 	assert_signal_emitted(swordsman, "struck", "The blade connects with the Player standing in it")
 	assert_lt(player.health.health, before, "A landed swing costs the Player health")
@@ -81,7 +81,7 @@ func test_archer_and_rifleman_shoot_with_line_of_sight() -> void:
 				if n is Projectile and (n as Projectile).shooter == shooter:
 					shots.append(n.name))
 		projectiles.child_entered_tree.connect(note)
-		await wait_seconds(3.0)
+		await wait_until(func() -> bool: return not shots.is_empty(), 4.0)
 		projectiles.child_entered_tree.disconnect(note)
 		assert_signal_emitted(shooter, "attacked", "%s takes a shot" % name)
 		assert_gt(shots.size(), 0, "%s fires a projectile through the spawner" % name)
@@ -110,19 +110,20 @@ func test_spellcaster_casts_firebolt_and_heals_when_low() -> void:
 	watch_signals(caster.caster)
 	_stand_near(caster, 6.0)
 	caster.aggro(player)
-	await wait_seconds(0.5)
+	await wait_for_signal(caster.caster.cast_started, 2.0)
 	assert_signal_emitted(caster.caster, "cast_started", "A target in range and sight starts a cast")
 	assert_eq(caster.caster.casting.display_name, "Firebolt")
 	var before: float = player.health.health
-	await wait_seconds(1.0)
-	assert_true(caster.get_node("FxRoot").get_children().any(func(n: Node) -> bool: return n is SpellProjectile), "The Firebolt flies as a bolt")
-	await wait_seconds(1.5)
+	var fx_root: Node = caster.get_node("FxRoot")
+	await wait_until(func() -> bool: return fx_root.get_children().any(func(n: Node) -> bool: return n is SpellProjectile), 3.0)
+	assert_true(fx_root.get_children().any(func(n: Node) -> bool: return n is SpellProjectile), "The Firebolt flies as a bolt")
+	await wait_until(func() -> bool: return player.health.health < before, 3.0)
 	assert_signal_emitted(caster.caster, "ability_activated")
 	assert_lt(player.health.health, before, "The bolt's impact costs the Player health")
 	assert_lt(caster.health.energy, caster.health.max_energy, "Firebolt spends the caster's energy")
 	caster.health.health = 20.0
 	caster.caster.interrupt()
-	await wait_seconds(4.0)
+	await wait_until(func() -> bool: return caster.health.health > 20.0, 6.0)
 	assert_gt(caster.health.health, 20.0, "Below half health the spellcaster heals itself")
 
 
@@ -144,8 +145,7 @@ func test_stealth_calls_off_the_attack() -> void:
 	_stand_near(swordsman, 1.2)
 	player.is_stealthed = true
 	swordsman.aggro(player)
-	await wait_seconds(2.0)
-	assert_signal_not_emitted(swordsman, "attacked", "A stealthed Player is not attacked")
+	assert_false(await wait_for_signal(swordsman.attacked, 2.0), "A stealthed Player is not attacked")
 
 
 func test_a_boss_puts_its_name_and_health_on_the_hud() -> void:
@@ -171,7 +171,8 @@ func test_a_swing_that_does_not_touch_the_player_costs_nothing() -> void:
 	swordsman.follow_distance = 10.0
 	var before: float = player.health.health
 	swordsman._attack()
-	await wait_seconds(1.2)
+	var struck: bool = await wait_for_signal(swordsman.struck, 1.2) # the swing's whole active window
+	assert_false(struck, "The swing ends without a strike")
 	assert_signal_emitted(swordsman, "attacked")
 	assert_signal_not_emitted(swordsman, "struck", "The blade never touched the Player")
 	assert_eq(player.health.health, before, "No contact, no damage")
@@ -192,14 +193,14 @@ func test_the_hunter_walks_home_when_its_player_dies() -> void:
 	watch_signals(swordsman)
 	var home: Vector3 = swordsman.global_position
 	_stand_near(swordsman, 3.5)
-	await wait_seconds(1.0)
+	await wait_until(func() -> bool: return swordsman.target == player and swordsman.global_position.distance_to(home) > 0.5, 2.0)
 	assert_eq(swordsman.target, player, "Hunting")
 	assert_gt(swordsman.global_position.distance_to(home), 0.5, "It left its post to close in")
 	player.take_hit(1000.0, swordsman.global_position)
 	await wait_physics_frames(2)
 	assert_null(swordsman.target, "A dead Player is no target")
 	assert_true(swordsman.is_returning_home)
-	await wait_seconds(2.5)
+	await wait_for_signal(swordsman.returned_home, 4.0)
 	assert_lt(swordsman.global_position.distance_to(home), 0.8, "Back at its post before the Player respawns")
 	assert_signal_emitted(swordsman, "returned_home")
 	assert_false(swordsman.is_returning_home)
@@ -220,7 +221,7 @@ func test_a_player_past_the_leash_resets_the_enemy_who_heals_at_its_post() -> vo
 	var home: Vector3 = swordsman.global_position
 	swordsman.take_hit(40.0, player.global_position)
 	_stand_near(swordsman, 3.0)
-	await wait_seconds(1.0)
+	await wait_until(func() -> bool: return swordsman.target == player and swordsman.global_position.distance_to(home) > 0.5, 2.0) # off its post, closing in
 	assert_eq(swordsman.target, player)
 	# The Player respawns far away: past the leash, the hunt is over
 	player.warp_to(Transform3D(Basis(), home + Vector3(0.0, 0.0, swordsman.leash_distance + 5.0)))
@@ -228,7 +229,7 @@ func test_a_player_past_the_leash_resets_the_enemy_who_heals_at_its_post() -> vo
 	assert_null(swordsman.target, "Nobody is hunted past the leash")
 	assert_true(swordsman.is_returning_home)
 	assert_false(player.health.regen_paused, "The Player is out of combat again")
-	await wait_seconds(2.5)
+	await wait_for_signal(swordsman.returned_home, 4.0)
 	assert_lt(swordsman.global_position.distance_to(home), 0.8, "Back at its post")
 	assert_signal_emitted(swordsman, "returned_home")
 	assert_eq(swordsman.health.health, swordsman.health.max_health, "Healed to full on the reset")
@@ -241,13 +242,13 @@ func test_a_driving_player_is_attacked_in_reach_but_never_chased_and_dropped_whe
 	player.is_riding = true
 	_stand_near(swordsman, 1.2)
 	swordsman.aggro(player)
-	await wait_seconds(1.5)
+	await wait_for_signal(swordsman.attacked, 3.0)
 	assert_signal_emitted(swordsman, "attacked", "In reach, a driver still gets hit")
 	assert_lt(swordsman.global_position.distance_to(post), 0.3, "But the swordsman never leaves its post after a car")
 	_stand_near(swordsman, 5.0)
 	await wait_physics_frames(2)
 	assert_null(swordsman.target, "Driven out of reach: the hunt is dropped")
-	await wait_seconds(0.5)
+	await wait_until(func() -> bool: return swordsman.global_position.distance_to(post) >= 0.3, 0.5)
 	assert_lt(swordsman.global_position.distance_to(post), 0.3, "It stays put instead of following the car")
 	player.is_riding = false
 
@@ -277,7 +278,7 @@ func test_enemies_move_by_root_motion_with_the_model_staying_on_its_body() -> vo
 	var start: Vector3 = swordsman.global_position
 	_stand_near(swordsman, 10.0)
 	swordsman.aggro(player)
-	await wait_seconds(0.8)
+	await wait_until(func() -> bool: return swordsman.locomotion_blend > 0.9 and swordsman.global_position.distance_to(start) > 0.5, 2.0)
 	assert_eq(swordsman.anim_state, "Locomotion")
 	assert_gt(swordsman.locomotion_blend, 0.9, "Full chase: the blend sits at run")
 	assert_gt(swordsman.animation_tree.get_root_motion_position().length(), 0.0, "The run clip's Root bone travel is extracted")
@@ -290,7 +291,8 @@ func test_hovering_at_the_follow_distance_does_not_shuffle() -> void:
 	archer.attack_range = 0.0 # never shoots, so it only holds its follow distance
 	_stand_near(archer, archer.follow_distance + 0.3)
 	archer.aggro(player)
-	await wait_seconds(1.0)
+	await wait_until(func() -> bool: return archer._control_speed > 0.05, 1.0) # closes the last few centimetres
+	await wait_until(func() -> bool: return archer._control_speed < 0.05, 2.0) # and holds its follow distance
 	# The Player backs away slowly: without slack the wish would flip between walk and stop every few frames
 	var flips: int = 0
 	var was_moving: bool = archer._control_speed > 0.05
@@ -343,14 +345,14 @@ func test_a_pistol_round_sweeps_to_the_head_bone_behind_the_capsule() -> void:
 	await wait_physics_frames(3)
 	var bullet: Projectile = gun.fire()
 	var round_damage: float = bullet.damage
-	await wait_seconds(0.4)
+	await wait_for_signal(archer.headshot, 1.0)
 	assert_signal_emitted(archer, "headshot", "The sweep finds the Head hurtbox behind the capsule")
 	assert_true(archer.is_dead)
 	_aim(rifleman.global_position + Vector3(0.0, 0.9, 0.0))
 	await wait_physics_frames(3)
 	gun.fire_timer.stop()
 	gun.fire()
-	await wait_seconds(0.4)
+	await wait_until(func() -> bool: return rifleman.health.health < rifleman.health.max_health, 1.0)
 	assert_false(rifleman.is_dead, "A round in the body is a wound")
 	assert_eq(rifleman.health.health, rifleman.health.max_health - round_damage)
 
@@ -445,10 +447,10 @@ func test_fire_sets_an_enemy_ablaze_for_three_seconds_of_ticking_damage() -> voi
 	assert_true(swordsman.is_burning, "Ablaze")
 	assert_true(swordsman.burn_vfx.visible, "with the flame showing")
 	assert_false(swordsman.burn_tick_timer.is_stopped(), "and the ticks running")
-	await wait_seconds(1.1)
+	await wait_until(func() -> bool: return swordsman.health.health < before, 2.0)
 	assert_lt(swordsman.health.health, before, "The fire costs health in ticks")
 	assert_eq(swordsman.anim_state, EnemyNpc.LOCOMOTION_STATE, "without a flinch per tick")
-	await wait_seconds(2.6)
+	await wait_until(func() -> bool: return not swordsman.is_burning, 4.0)
 	assert_false(swordsman.is_burning, "Out after three seconds")
 	assert_false(swordsman.burn_vfx.visible)
 	assert_almost_eq(before - swordsman.health.health, Ability.BURN_SECONDS * Ability.BURN_DAMAGE_PER_SECOND, 0.01, "Fifteen damage over the three seconds")

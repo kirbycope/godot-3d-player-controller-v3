@@ -36,6 +36,8 @@ func test_the_old_boot_has_the_peasant_boot_model_and_the_index_turns_it() -> vo
 		var box: AABB = (index.model_pivot.global_transform.affine_inverse() * visual.global_transform) * visual.get_aabb()
 		longest = maxf(longest, box.get_longest_axis_size())
 	assert_almost_eq(longest, FishModel.BASE_LENGTH_CM / 100.0, 0.02, "Sized to the placeholder's length, like any catch")
+	assert_almost_eq(Fish.model_bounds(model, index.model_pivot).get_longest_axis_size(), longest, 0.001, "Fish.model_bounds measures what the index shows")
+	assert_almost_eq(Fish.model_bounds(model, index.model_pivot).get_center(), Vector3.ZERO, Vector3.ONE * 0.001, "and the index centres the model on its pivot with it")
 	assert_true(index.record_label.text.begins_with("Not yet"), "Without a log nothing is caught")
 	assert_not_null((meshes[0] as GeometryInstance3D).material_override, "and the boot is a silhouette until it is")
 

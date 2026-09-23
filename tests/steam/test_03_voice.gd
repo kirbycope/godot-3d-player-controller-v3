@@ -19,13 +19,13 @@ func test_the_speaking_indicator_and_a_voice_packet_cross_both_ways() -> void:
 
 func _speak(who: String) -> void:
 	var me: Player = own_player()
-	me.start_broadcasting()
-	assert_true(me.is_broadcasting, "%s is broadcasting" % who)
-	assert_true(me.voice_chat_indicator.visible, "with the indicator up over their own head")
-	me._receive_voice_packet.rpc(_synthetic_packet())
+	me.voice_chat.start_broadcasting()
+	assert_true(me.voice_chat.is_broadcasting, "%s is broadcasting" % who)
+	assert_true(me.voice_chat.indicator.visible, "with the indicator up over their own head")
+	me.voice_chat._receive_voice_packet.rpc(_synthetic_packet())
 	mark(who + "_talking")
 	await await_step(who + "_heard")
-	me.stop_broadcasting()
+	me.voice_chat.stop_broadcasting()
 	mark(who + "_quiet")
 	await await_step(who + "_silence_seen")
 
@@ -33,10 +33,10 @@ func _speak(who: String) -> void:
 func _listen(who: String) -> void:
 	await await_step(who + "_talking")
 	var them: Player = other_player()
-	await wait_for(func() -> bool: return them.voice_chat_indicator.visible, "The indicator over the %s's head shows here" % who)
+	await wait_for(func() -> bool: return them.voice_chat.indicator.visible, "The indicator over the %s's head shows here" % who)
 	mark(who + "_heard")
 	await await_step(who + "_quiet")
-	await wait_for(func() -> bool: return not them.voice_chat_indicator.visible, "and goes when the %s stops" % who)
+	await wait_for(func() -> bool: return not them.voice_chat.indicator.visible, "and goes when the %s stops" % who)
 	mark(who + "_silence_seen")
 
 

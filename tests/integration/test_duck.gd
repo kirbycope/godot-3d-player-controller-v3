@@ -123,6 +123,7 @@ func test_player_crossing_detection_range_plays_quack() -> void:
 	assert_true(duck.audio_stream_player_3d.playing)
 
 	duck.audio_stream_player_3d.stop()
+	duck.collision_quack_cooldown.stop() # every quack shares the cooldown now, and the crossings here come back to back
 	duck.call("_update_player_range", duck.max_follow_distance + 1.0)
 	assert_true(duck.audio_stream_player_3d.playing)
 
@@ -160,6 +161,30 @@ func test_rigid_body_collision_plays_quack() -> void:
 			break
 
 	assert_true(quack_played)
+
+
+## L26: the giant's bite runs on AttackQuackCooldown's timeout on the server, not on anim_state being set again every
+## frame; setting the state it is already in changes nothing.
+func test_the_giant_bites_on_the_cooldowns_timeout_while_it_eats() -> void:
+	var duck: CharacterBody3D = DUCK_SCENE.instantiate() as CharacterBody3D
+	add_child_autofree(duck)
+	await wait_physics_frames(1)
+	duck.set_physics_process(false) # nothing writes anim_state again each frame
+	duck.is_giant = true
+	duck.collision_quack_cooldown.stop()
+	duck.audio_stream_player_3d.stop()
+	duck.anim_state = &"eat"
+	assert_true(duck.knife_hitbox.live, "The first bite lands as the eating starts")
+	assert_true(duck.audio_stream_player_3d.playing, "with a quack")
+	duck.eat_model.visible = false
+	duck.anim_state = &"eat" # the same state again, as each frame of _stop_moving writes it
+	assert_false(duck.eat_model.visible, "Only a change of state switches the models")
+	duck.eat_model.visible = true
+	await wait_until(func() -> bool: return not duck.knife_hitbox.live, 1.0)
+	assert_true(await wait_until(func() -> bool: return duck.knife_hitbox.live, 2.0), "AttackQuackCooldown's timeout lands the next bite")
+	duck.anim_state = &"idle"
+	await wait_until(func() -> bool: return not duck.knife_hitbox.live, 1.0)
+	assert_false(await wait_until(func() -> bool: return duck.knife_hitbox.live, 1.5), "Done eating, no more bites")
 
 
 func test_normal_duck_collision_shapes() -> void:
@@ -280,6 +305,8 @@ func test_killing_the_duckling_brings_the_giant_boss_who_bites_and_falls_back_to
 	assert_eq(duck.boss.target_peer, 1, "The giant engages the Player it follows")
 	assert_true(player.boss_bar.bar.visible, "The boss bar shows on the Player's HUD")
 	assert_eq(player.boss_bar.name_label.text, "Giant Duck")
+	duck.take_hit(100.0, player.global_position)
+	assert_almost_eq(player.boss_bar.health_bar.value, player.boss_bar.health_bar.max_value * 0.75, 0.01, "The bar follows the giant's Health, wired to the Boss in duck.tscn")
 
 	# Stand where the beak comes down: four metres in front of the giant
 	player.warp_to(Transform3D(Basis(), duck.global_position + Vector3(0.0, 0.0, 4.0)))

@@ -5,11 +5,26 @@ const TITLE_SCREEN_SCENE = preload("res://scenes/title_screen.tscn")
 const LOADING_SCENE = preload("res://addons/3d_player_controller/scenes/ui/loading.tscn")
 
 
-func test_loading_node_initial_state() -> void:
-	var loading: Loading = LOADING_SCENE.instantiate() as Loading
-	add_child_autofree(loading)
+## A real finger on the middle of [param control], pressed and lifted, pushed through the viewport as the display
+## server delivers it. Only a TouchScreenButton that is shown in the tree answers it. The containers lay their
+## buttons out at the end of a frame, so the finger waits for that first.
+func _touch(control: Control) -> void:
+	await wait_process_frames(1)
+	for pressed: bool in [true, false]:
+		var touch := InputEventScreenTouch.new()
+		touch.index = 0
+		touch.position = control.get_global_rect().get_center()
+		touch.pressed = pressed
+		get_viewport().push_input(touch, true)
 
-	assert_false(loading.visible, "Loading screen should start hidden")
+
+## The loading screen's own scene is saved shown, so it can be seen in its own tab; main.tscn hides its instance.
+func test_loading_node_initial_state() -> void:
+	var main: Node = MAIN_SCENE.instantiate()
+	add_child_autofree(main)
+	var loading: Loading = main.get_node("Loading") as Loading
+
+	assert_false(loading.visible, "Main hides its loading screen until something loads")
 	assert_false(loading.is_processing(), "Loading screen should not poll while idle")
 	assert_gt(loading.tips.size(), 0, "Tips array should not be empty")
 	assert_eq(loading._scene_path, "", "Initial scene path should be empty")
@@ -65,10 +80,13 @@ func test_title_screen_single_player_opens_the_new_game_menu_on_touch_button() -
 	var title_screen: TitleScreen = TITLE_SCREEN_SCENE.instantiate()
 	add_child_autofree(title_screen)
 
-	var touch_sp: TouchScreenButton = title_screen.get_node("VBoxContainer/Button_SinglePlayer/TouchScreenButton_SinglePlayer")
-	touch_sp.emit_signal("pressed")
+	watch_signals(title_screen)
 
-	assert_true(title_screen.menu_single_player.visible, "The touch button opens the same panel as the button")
+	assert_true(title_screen.get_node("VBoxContainer/Button_SinglePlayer/TouchScreenButton_SinglePlayer").is_visible_in_tree(), "The touch buttons are not saved hidden")
+	await _touch(title_screen.button_single_player)
+
+	assert_true(title_screen.menu_single_player.visible, "A touch on Single-Player opens the same panel as the button")
+	assert_signal_not_emitted(title_screen, "multi_player_pressed", "and presses nothing else")
 
 
 func test_title_screen_emits_new_game_pressed_on_button() -> void:
@@ -87,10 +105,11 @@ func test_title_screen_emits_new_game_pressed_on_touch_button() -> void:
 	add_child_autofree(title_screen)
 	watch_signals(title_screen)
 
-	var touch_ng: TouchScreenButton = title_screen.get_node("VBoxContainer_SinglePlayer/Button_NewGame/TouchScreenButton_NewGame")
-	touch_ng.emit_signal("pressed")
+	await _touch(title_screen.button_single_player)
+	assert_signal_not_emitted(title_screen, "new_game_pressed", "The touch that opens the panel does not also start the game")
+	await _touch(title_screen.button_new_game)
 
-	assert_signal_emitted(title_screen, "new_game_pressed", "Touch button should emit new_game_pressed signal")
+	assert_signal_emitted(title_screen, "new_game_pressed", "A touch on New Game emits new_game_pressed")
 
 
 func test_title_screen_back_returns_to_the_main_menu() -> void:
@@ -144,10 +163,9 @@ func test_title_screen_emits_multi_player_pressed_on_touch_button() -> void:
 	add_child_autofree(title_screen)
 	watch_signals(title_screen)
 
-	var touch_mp: TouchScreenButton = title_screen.get_node("VBoxContainer/Button_MultiPlayer/TouchScreenButton_MultiPlayer")
-	touch_mp.emit_signal("pressed")
+	await _touch(title_screen.get_node("VBoxContainer/Button_MultiPlayer"))
 
-	assert_signal_emitted(title_screen, "multi_player_pressed", "Touch button should emit multi_player_pressed signal")
+	assert_signal_emitted(title_screen, "multi_player_pressed", "A touch on Multi-Player emits multi_player_pressed")
 
 
 func test_title_screen_version_and_copyright_labels() -> void:
@@ -275,3 +293,102 @@ func test_new_game_puts_the_controls_back_to_zelda_and_auto() -> void:
 	assert_eq(reloaded.control_scheme_name, "", "written to the file, so the world spawns the Player that way")
 	assert_eq(reloaded.hud_mode, PlayerSettingsResource.HudMode.AUTO)
 	assert_null(reloaded.picked_scheme(), "and the world applies its own layout, since nothing is picked")
+
+
+func test_title_screen_options_opens_the_settings_and_back_returns() -> void:
+	var title_screen: TitleScreen = TITLE_SCREEN_SCENE.instantiate()
+	add_child_autofree(title_screen)
+	assert_false(title_screen.settings.visible, "The settings are instanced hidden")
+
+	title_screen.button_options.pressed.emit()
+	assert_true(title_screen.settings.visible, "Options opens the player controller's settings")
+	assert_false(title_screen.menu_main.visible, "over the main menu, which steps aside")
+	assert_true(title_screen.get_node("Settings/Panel/VBoxContainer/Audio").has_focus(), "The settings take the focus")
+	assert_null(title_screen.default_button(), "A controller's Accept has no title button to fall back on meanwhile")
+
+	title_screen.get_node("Settings/Panel/VBoxContainer/BACK").pressed.emit()
+	assert_false(title_screen.settings.visible, "Back closes the settings")
+	assert_true(title_screen.menu_main.visible, "and the main menu is back")
+	assert_true(title_screen.button_options.has_focus(), "with the focus on Options, where it came from")
+
+
+func test_title_screen_options_opens_on_a_touch() -> void:
+	var title_screen: TitleScreen = TITLE_SCREEN_SCENE.instantiate()
+	add_child_autofree(title_screen)
+	await _touch(title_screen.button_options)
+	assert_true(title_screen.settings.visible, "A touch on Options opens the settings")
+
+
+func test_title_screen_settings_pages_lead_to_one_another() -> void:
+	var title_screen: TitleScreen = TITLE_SCREEN_SCENE.instantiate()
+	add_child_autofree(title_screen)
+	title_screen.button_options.pressed.emit()
+	for page: String in ["Audio", "Video", "Controls"]:
+		var page_menu: PlayerMenuLayer = title_screen.get_node(page + "Settings")
+		assert_false(page_menu.visible, "%s is instanced hidden" % page)
+		title_screen.get_node("Settings/Panel/VBoxContainer/" + page).pressed.emit()
+		assert_true(page_menu.visible, "The %s button opens its page with no Player about" % page)
+		assert_false(title_screen.settings.visible, "in place of the settings")
+		page_menu.get_node("Panel/VBoxContainer/BACK").pressed.emit()
+		assert_false(page_menu.visible, "Back on %s closes it" % page)
+		assert_true(title_screen.settings.visible, "and returns to the settings")
+
+
+## The pages close on "start", an action only a Player registers; on the title, with no Player, they keep their own
+## input and look for the action before asking for it, so a mouse move is no InputMap error.
+func test_title_screen_settings_take_input_without_a_player() -> void:
+	var title_screen: TitleScreen = TITLE_SCREEN_SCENE.instantiate()
+	add_child_autofree(title_screen)
+	title_screen.button_options.pressed.emit()
+	for page: Node in title_screen.get_children():
+		if page is PlayerMenuLayer:
+			assert_true(page.is_processing_input(), "%s keeps its own input" % page.name)
+			page._input(InputEventMouseMotion.new())
+	assert_true(title_screen.settings.visible, "and a mouse move closes nothing")
+
+
+func test_main_controls_page_lists_the_projects_own_layouts() -> void:
+	PlayerControls.forget_registered_schemes()
+	var main: Node = MAIN_SCENE.instantiate()
+	add_child_autofree(main)
+	var scheme_button: OptionButton = main.get_node("TitleScreen/ControlsSettings/Panel/VBoxContainer/ControlScheme")
+	var names: Array[String] = []
+	for i: int in scheme_button.item_count:
+		names.append(scheme_button.get_item_text(i))
+	assert_has(names, "GTA", "Main registers its layouts before the title's Controls page fills its list")
+
+
+func test_main_accept_does_nothing_while_the_title_is_hidden() -> void:
+	var main = MAIN_SCENE.instantiate()
+	add_child_autofree(main)
+	main.click_to_start.hide()
+	main.multi_player() # the lobby explorer replaces the title screen
+	var focused: Control = get_viewport().gui_get_focus_owner()
+	if focused:
+		focused.release_focus()
+	watch_signals(main.title_screen)
+
+	var joy_event = InputEventJoypadButton.new()
+	joy_event.button_index = JOY_BUTTON_A
+	joy_event.pressed = true
+	main._unhandled_input(joy_event)
+
+	assert_false(main.title_screen.menu_single_player.visible, "A in the lobby explorer does not press Single-Player behind it")
+	assert_signal_not_emitted(main.title_screen, "new_game_pressed")
+
+
+func test_main_accept_does_not_reach_behind_the_settings() -> void:
+	var main = MAIN_SCENE.instantiate()
+	add_child_autofree(main)
+	main.click_to_start.hide()
+	main.title_screen.show()
+	main.title_screen.button_options.pressed.emit()
+	main.title_screen.get_node("Settings/Panel/VBoxContainer/Audio").pressed.emit()
+	(main.title_screen.get_node("AudioSettings/Panel/VBoxContainer/Music/VolumeSlider") as Control).grab_focus() # focused, but not a button
+
+	var joy_event = InputEventJoypadButton.new()
+	joy_event.button_index = JOY_BUTTON_A
+	joy_event.pressed = true
+	main._unhandled_input(joy_event)
+
+	assert_false(main.title_screen.menu_single_player.visible, "A on a slider in the settings does not press Single-Player behind them")

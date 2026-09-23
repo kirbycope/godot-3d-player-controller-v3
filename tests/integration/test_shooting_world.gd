@@ -3,7 +3,7 @@ extends GutTest
 ## Purpose: End-to-end shooting in world.tscn: the rifle equips with its muzzle, timer and laser sight,
 ## a round fired at the balloon circle pops a balloon, and a round bursts the beach ball. The bow pickup equips with
 ## its template arrow, nocks the kind of arrow it will fire, and an ice arrow shot at the pool freezes it under the
-## crosshair.
+## crosshair, passing over a fish a metre away, while a round aimed at the fish itself ruins it.
 
 const WORLD_SCENE: PackedScene = preload("res://scenes/world.tscn")
 const FIRE_ARROWS: AmmoItem = preload("res://resources/items/fire_arrow.tres")
@@ -57,7 +57,6 @@ func test_equipped_rifle_carries_its_muzzle_timer_and_laser() -> void:
 
 func test_rifle_round_pops_a_balloon() -> void:
 	var pivot: Node3D = world.get_node("BallonCircle4/Pivot")
-	var balloons_before: int = pivot.get_child_count()
 	var target: Node3D = pivot.get_child(0)
 	await _aim_at(target.global_position)
 	var bullet: Projectile = rifle.fire()
@@ -66,7 +65,8 @@ func test_rifle_round_pops_a_balloon() -> void:
 	bullet.hit.connect(func(collider: Node, _point: Vector3, _normal: Vector3) -> void: hits.append(collider))
 	await wait_physics_frames(20)
 	assert_eq(hits.size(), 1, "The round reports exactly one hit (it frees itself afterwards, so no signal watching)")
-	assert_lt(pivot.get_child_count(), balloons_before, "A balloon should pop when a round reaches it")
+	var popped: int = pivot.get_children().filter(func(balloon: RedBalloon) -> bool: return balloon.is_popped).size()
+	assert_eq(popped, 1, "A balloon should pop when a round reaches it")
 
 
 ## A round used to knock the ball across the sand. It bursts it now, so the ball hands over to its SoftBody3D
@@ -193,8 +193,10 @@ func test_the_equipped_bow_nocks_the_arrows_it_will_fire() -> void:
 func test_an_ice_arrow_freezes_the_pool_under_the_crosshair() -> void:
 	var bow: Bow = await _bow()
 	player.skill_level = 100 # an expert: the spread is next to nothing
-	for area: Node in world.get_node("Pool/FishShadows").find_children("*", "Area3D", true, false):
-		(area as Area3D).collision_layer = 0 # the fish wander under the surface; neither the crosshair nor the arrow should find one
+	# A fish a metre from the aim point, well inside its 1.5 m scare sphere: the sphere is on no layer, so neither
+	# the crosshair nor the arrow finds it, and the fish itself is not on the line
+	var shadows: FishShadows = world.get_node("Pool/FishShadows")
+	shadows.park_shadows_for_test(shadows.shadows[0], Vector3(9.0, 0.0, -24.0))
 	player.inventory.add_item(ICE_ARROWS, 1)
 	_use(ICE_ARROWS)
 	assert_true(bow.nocked_arrow is IceArrow, "An ice arrow is nocked")
@@ -202,6 +204,7 @@ func test_an_ice_arrow_freezes_the_pool_under_the_crosshair() -> void:
 	var ray: RayCast3D = player.projectile_raycast
 	ray.force_raycast_update()
 	assert_true(ray.is_colliding(), "The crosshair is on the water")
+	assert_eq(ray.get_collider(), world.get_node("Pool/WaterArea3D"), "not on the fish's scare sphere")
 	var aim: Vector3 = ray.get_collision_point()
 	assert_almost_eq(aim.y, 0.0, 0.1, "at the surface")
 	var carried: int = player.inventory.count_of(ICE_ARROWS)
@@ -214,6 +217,24 @@ func test_an_ice_arrow_freezes_the_pool_under_the_crosshair() -> void:
 		return
 	var at: Vector3 = (blocks[0] as Node3D).global_position
 	assert_lt(Vector2(at.x - aim.x, at.z - aim.z).length(), 1.0, "The pool freezes within a metre of where the crosshair pointed (the arrow breaks the surface a little past the aim point on its arc): %s for %s" % [at, aim])
+
+
+## A round aimed at a fish hits the small shape the size of its shadow: the fish sinks and the shooter pockets chum.
+func test_a_round_through_a_fish_ruins_it_for_chum() -> void:
+	var shadows: FishShadows = world.get_node("Pool/FishShadows")
+	var fish: MeshInstance3D = shadows.shadows[0]
+	shadows.park_shadows_for_test(fish, Vector3(8.0, 0.0, -24.0))
+	await wait_physics_frames(2)
+	await _aim_at(fish.global_position, Vector3(0.0, 0.49, 9.0)) # from the south deck
+	var chum: Item = shadows.chum
+	var carried: int = player.inventory.count_of(chum)
+	watch_signals(shadows)
+	rifle.accuracy = null # an aim test: a novice's spread could miss a fish this small
+	assert_not_null(rifle.fire())
+	await wait_until(func() -> bool: return get_signal_emit_count(shadows, "shot") > 0, 1.0)
+	assert_signal_emitted(shadows, "shot", "The round finds the fish under the shadow")
+	assert_signal_emitted_with_parameters(shadows, "shot", [fish])
+	assert_eq(player.inventory.count_of(chum), carried + 1, "and the shooter pockets it as chum")
 
 
 func test_the_guns_draw_shoot_and_reload_with_the_gravity_sound_clips() -> void:

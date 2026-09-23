@@ -151,3 +151,31 @@ class TestDrivingRadio:
 		var pad_controls = car.get_contextual_controls(1)
 		assert_eq(pad_controls.get("joypad_button_13"), "Prev\nStation")
 		assert_eq(pad_controls.get("joypad_button_14"), "Next\nStation")
+
+	func test_the_car_radio_toast_is_wired_in_the_scene() -> void:
+		var radio = world_instance.get_node("HondaCRV/RadiOtPlayer3D") as RadiOtPlayer3D
+		var station_toast: Callable = Callable(world_instance, "_on_radio_station_changed").bind(NodePath("HondaCRV"))
+		var power_toast: Callable = Callable(world_instance, "_on_radio_toggled").bind(NodePath("HondaCRV"))
+		assert_true(radio.station_changed.is_connected(station_toast), "A station change reaches the world's toast, bound to its car")
+		assert_true(radio.radio_toggled.is_connected(power_toast), "and so does the power switch")
+
+	func test_the_radio_toast_shows_only_to_a_player_in_the_car() -> void:
+		var player = world_instance.get_node("PlayerSpawner/1") as Player
+		var radio = world_instance.get_node("HondaCRV/RadiOtPlayer3D") as RadiOtPlayer3D
+		var hud: RadiOtHUD = radio.get_hud()
+
+		# On foot: the car being retuned (by its driver, on another peer) shows nothing here
+		radio.station_changed.emit(radio.get_current_station())
+		radio.radio_toggled.emit(true)
+		assert_false(hud._panel_container.visible, "No toast for a Player who is not in the car")
+
+		player.riding = world_instance.get_node("HondaCRV")
+		player.current_state = NodeStateMachine.States.RIDING
+		await wait_physics_frames(2)
+		hud.hide_hud()
+		radio.station_changed.emit(radio.get_current_station())
+		assert_true(hud._panel_container.visible, "In the car, a new station shows the toast")
+		assert_almost_eq(hud._auto_hide_timer.time_left, 5.0, 0.1, "for the world's five seconds")
+		hud.hide_hud()
+		radio.radio_toggled.emit(false)
+		assert_true(hud._panel_container.visible, "and so does switching the radio off")

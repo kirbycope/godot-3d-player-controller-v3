@@ -108,6 +108,22 @@ func test_waves_carry_the_water_sideways_toward_the_crests() -> void:
 	assert_almost_eq(water.get_wave_offset(point), water.get_wave_displacement(parameter).y, 0.0005, "get_wave_offset undoes the sideways travel before reading the height")
 
 
+## L29: the wind, the uniforms and the clock are read once into a Buoyancy.Waves and every sample of the frame uses
+## it: the same snapshot gives the same surface however much later it is sampled, and a fresh read moves on.
+func test_the_waves_are_read_once_and_handed_to_every_sample() -> void:
+	var waves: Buoyancy.Waves = water.read_waves()
+	var amplitude: float = POND_MATERIAL.get_shader_parameter(Buoyancy.WAVE_AMPLITUDE)
+	assert_almost_eq(waves.amplitude, amplitude * (0.6 + clampf(0.1 * 0.1, 0.0, 2.0)), 0.0001, "The uniform, scaled by the wind, is in the snapshot")
+	assert_almost_eq(waves.frequency, float(POND_MATERIAL.get_shader_parameter(Buoyancy.WAVE_FREQUENCY)), 0.0001)
+	assert_almost_eq(waves.steepness, float(POND_MATERIAL.get_shader_parameter(Buoyancy.WAVE_STEEPNESS)), 0.0001)
+	var point := Vector3(1.0, 0.0, -0.5)
+	var held: float = water.get_wave_offset(point, waves)
+	await wait_seconds(0.3)
+	assert_eq(water.get_wave_offset(point, waves), held, "The snapshot holds its clock: one frame's samples all agree")
+	assert_ne(water.get_wave_offset(point), held, "while a fresh read has moved on with the waves")
+	assert_eq(water.get_surface_height(point, waves), water.water_mesh.global_position.y + held, "The surface height takes the same snapshot")
+
+
 func test_the_wave_table_matches_the_shader() -> void:
 	var code: String = (POND_MATERIAL as ShaderMaterial).shader.code
 	var table_start: int = code.find("WAVES[WAVE_COUNT] = {")

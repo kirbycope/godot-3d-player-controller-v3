@@ -5,14 +5,11 @@ extends PlayerMenuLayer
 ## [PlayerMenuLayer], so the Player stands still and, alone, the world pauses; Action, Confirm, Cancel or Start puts it
 ## away. The rod on the Player opens it once the catch has arced into their hands; junk reads "Junk" for its size.
 
-@export var placeholder_model: PackedScene ## Model for a species without a [member Item.model_scene] of its own.
-
 var shown: Fish
 
 @onready var model_pivot: Node3D = %ModelPivot
 @onready var model_camera: Camera3D = %ModelCamera
 @onready var preview: SubViewportContainer = %Preview
-@onready var icon: TextureRect = %Icon
 @onready var name_label: Label = %NameLabel
 @onready var size_label: Label = %SizeLabel
 @onready var flavor_label: Label = %FlavorLabel
@@ -67,28 +64,14 @@ func _process(_delta: float) -> void:
 	(rays.material as ShaderMaterial).set_shader_parameter(&"spin_seconds", _spin_seconds)
 
 
-## The species' model turning in the viewport, at its base size and centred as the inventory preview does; the icon
-## stands in when there is no model at all.
+## The species' model ([method Fish.get_model_scene]) turning in the viewport, at its base size and centred as the
+## inventory preview does.
 func _show_model(fish: Fish) -> void:
 	for child: Node in model_pivot.get_children():
 		child.queue_free()
-	var scene: PackedScene = fish.get_model_scene() if fish.get_model_scene() else placeholder_model
-	preview.visible = scene != null
-	icon.visible = scene == null
-	if scene == null:
-		icon.texture = fish.icon
-		icon.modulate = fish.get_icon_color()
-		return
-	var model: Node3D = scene.instantiate() as Node3D
+	var model: Node3D = fish.get_model_scene().instantiate() as Node3D
 	model_pivot.add_child(model)
 	fish.prepare_model(model) # once in the tree, so the model's own ready nodes exist
-	var bounds: AABB = AABB()
-	var first: bool = true
-	for geometry: Node in model.find_children("*", "GeometryInstance3D", true, false):
-		var visual: GeometryInstance3D = geometry as GeometryInstance3D
-		var box: AABB = (model_pivot.global_transform.affine_inverse() * visual.global_transform) * visual.get_aabb()
-		bounds = box if first else bounds.merge(box)
-		first = false
-	if not first:
-		model.position = -bounds.get_center()
-		model_camera.size = maxf(bounds.get_longest_axis_size() * 1.4, 0.1)
+	var bounds: AABB = Fish.model_bounds(model, model_pivot)
+	model.position = -bounds.get_center()
+	model_camera.size = maxf(bounds.get_longest_axis_size() * 1.4, 0.1)

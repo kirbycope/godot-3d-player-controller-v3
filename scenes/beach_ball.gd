@@ -2,7 +2,7 @@ class_name BeachBall
 extends RigidBody3D
 ## A light ball that registers hits on whatever it bumps into; the pool's [Buoyancy] floats it. A bump is
 ## [code]register_hit[/code], never [code]register_weapon_hit[/code], which the enemies and the duck take for a
-## sword swing; a [Harvestable] has no bump entry, so the ball never chops or mines.
+## sword swing and a tree or ore ([Gatherable]) for a tool, so the ball never chops or mines.
 ##
 ## Shoot it and it deflates. A round ball is this [RigidBody3D]; a burst one is the [SoftBody3D] twin asleep
 ## beside it, which takes over on the hit. Squashing the rigid ball's mesh instead would only ever look like a
@@ -60,25 +60,17 @@ func _ready() -> void:
 		deflate_player.stream = deflate_sound
 
 
-## A round from a firearm or an arrow. Anything that reaches here lets the air out.
+## A round from a firearm or an arrow lets the air out. Only the round's authority reports it, the server for every
+## shot through the [ProjectileSpawner] (a client's too), so this runs on the server's ball.
 func register_projectile_hit(_projectile: Projectile, _point: Vector3, _normal: Vector3) -> void:
 	deflate()
 
 
-## Lets the air out on every peer; a client asks the server so a hit resolved anywhere deflates it everywhere.
+## Lets the air out on every peer; the server's call, since the rounds that burst it land there.
 func deflate() -> void:
-	if is_deflated or is_queued_for_deletion():
-		return
-	if not multiplayer.is_server():
-		_request_deflate.rpc_id(1)
+	if is_deflated or is_queued_for_deletion() or not multiplayer.is_server():
 		return
 	_deflate.rpc()
-
-
-@rpc("any_peer", "call_remote", "reliable")
-func _request_deflate() -> void:
-	if multiplayer.is_server() and not is_deflated and not is_queued_for_deletion():
-		_deflate.rpc()
 
 
 @rpc("authority", "call_local", "reliable")
@@ -148,7 +140,7 @@ func _on_body_entered(body: Node) -> void:
 	if speed_sq > 1.0 and not is_deflated:
 		var node: Node = body
 		while node:
-			if node.has_method("register_hit") and not node is Harvestable:
+			if node.has_method("register_hit"):
 				node.call("register_hit", body)
 				break
 			node = node.get_parent()

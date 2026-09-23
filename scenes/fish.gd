@@ -90,15 +90,8 @@ func dress_model(model: Node3D, length_cm: float) -> void:
 	if model is FishModel:
 		(model as FishModel).setup(self, length_cm)
 		return
-	var bounds: AABB = AABB()
-	var first: bool = true
-	for geometry: Node in model.find_children("*", "GeometryInstance3D", true, false):
-		var visual: GeometryInstance3D = geometry as GeometryInstance3D
-		var box: AABB = (model.global_transform.affine_inverse() * visual.global_transform) * visual.get_aabb()
-		bounds = box if first else bounds.merge(box)
-		first = false
-	var longest: float = bounds.get_longest_axis_size()
-	if not first and longest > 0.001:
+	var longest: float = model_bounds(model, model).get_longest_axis_size()
+	if longest > 0.001:
 		model.scale = Vector3.ONE * (length_cm / 100.0 / longest)
 	for animator: Node in model.find_children("*", "AnimationPlayer", true, false):
 		var player: AnimationPlayer = animator as AnimationPlayer
@@ -108,9 +101,23 @@ func dress_model(model: Node3D, length_cm: float) -> void:
 			player.play(clips[0])
 
 
-## A species without a model of its own shows the shared placeholder fish, as the catch does.
+## The one place a fish's model comes from: its [member Item.model_scene], or the shared placeholder fish for a
+## species without one, so the catch, the catch screen, the index and the inventory never need a fallback of their own.
 func get_model_scene() -> PackedScene:
 	return model_scene if model_scene else load("res://scenes/fish_model.tscn")
+
+
+## The box around every mesh under [param model], in [param space]'s frame (the model's own to size it, a preview's
+## pivot to centre it there); an empty box for a model with no meshes.
+static func model_bounds(model: Node3D, space: Node3D) -> AABB:
+	var bounds: AABB = AABB()
+	var first: bool = true
+	for geometry: Node in model.find_children("*", "GeometryInstance3D", true, false):
+		var visual: GeometryInstance3D = geometry as GeometryInstance3D
+		var box: AABB = (space.global_transform.affine_inverse() * visual.global_transform) * visual.get_aabb()
+		bounds = box if first else bounds.merge(box)
+		first = false
+	return bounds
 
 
 ## Plain lines describing when and how it bites, for the fish index.

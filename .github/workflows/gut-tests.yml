@@ -107,6 +107,19 @@ jobs:
             -gcompact_mode \
             -gexit
 
+      - name: Fail a run that ran no tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          # GUT that cannot load its hook scripts or its test folders exits 0 having run nothing, and a
+          # green tick over zero tests is worse than a red one. A missing JUnit file fails here too.
+          count=$(python3 -c "import xml.etree.ElementTree as E; print(sum(1 for _ in E.parse('test-results/gut-junit.xml').iter('testcase')))")
+          echo "JUnit test cases: ${count}"
+          if [ "${count}" -eq 0 ]; then
+            echo "::error::The GUT run reported no test cases"
+            exit 1
+          fi
+
       - name: Archive test reports
         if: always()
         uses: actions/upload-artifact@v7

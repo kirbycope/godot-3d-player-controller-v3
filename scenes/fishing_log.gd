@@ -23,9 +23,10 @@ func _on_item_dropped(item: Item, count: int, _pickup: Node) -> void:
 	_on_item_gone(item, count)
 
 
-## Logs a landed fish; true when it is the biggest of its kind so far. Junk is logged as found (so the index shows
-## it) but never as a record, and its lengths are not kept.
-func record_catch(fish: Fish, length_cm: float) -> bool:
+## Logs a landed fish; true when it is the biggest of its kind so far. Its length joins the bag's only when
+## [param in_bag] (a full tab leaves the catch out of the inventory); the record counts either way. Junk is logged as
+## found (so the index shows it) but never as a record, and its lengths are not kept.
+func record_catch(fish: Fish, length_cm: float, in_bag: bool = true) -> bool:
 	var id: StringName = fish.get_id()
 	if fish.is_junk:
 		if not records.has(id):
@@ -35,9 +36,10 @@ func record_catch(fish: Fish, length_cm: float) -> bool:
 	var is_record: bool = length_cm > records.get(id, 0.0)
 	if is_record:
 		records[id] = length_cm
-	if not held.has(id):
-		held[id] = []
-	held[id].append(length_cm)
+	if in_bag:
+		if not held.has(id):
+			held[id] = []
+		held[id].append(length_cm)
 	_changed()
 	var player: Player = get_parent() as Player
 	if player and player.quest_log:

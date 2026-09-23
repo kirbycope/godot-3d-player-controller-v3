@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Smoke-test the Web export in a real browser: serve docs/, open it in headless Chromium, get past the
-click-to-start overlay straight into the world, wait for it to load, and fail on any error the engine or the
-page logs. Screenshots of each step land in scratch/web_smoke/.
+"""Smoke-test the Web export in a real browser: serve build/, where the Web preset exports, open it in headless
+Chromium, get past the click-to-start overlay straight into the world, wait for it to load, and fail on any error
+the engine or the page logs. Screenshots of each step land in scratch/web_smoke/.
 
     pip install playwright && playwright install chromium
     python tools/web_smoke_test.py [--port 8123] [--headed] [--timeout 180]
@@ -18,7 +18,7 @@ import threading
 import time
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DOCS = os.path.join(ROOT, "docs")
+BUILD = os.path.join(ROOT, "build")
 OUT = os.path.join(ROOT, "scratch", "web_smoke")
 ERROR_PATTERN = re.compile(r"\b(ERROR|SCRIPT ERROR|USER ERROR|Uncaught|RuntimeError|Aborted)\b")
 WARNING_PATTERN = re.compile(r"\bWARNING\b")
@@ -34,7 +34,7 @@ IGNORED = (
 
 class Handler(http.server.SimpleHTTPRequestHandler):
 	def __init__(self, *args, **kwargs):
-		super().__init__(*args, directory=DOCS, **kwargs)
+		super().__init__(*args, directory=BUILD, **kwargs)
 
 	def end_headers(self) -> None:
 		# The shell asks for cross-origin isolation; give it the headers so it never reloads itself
@@ -67,16 +67,16 @@ def serve(port: int) -> socketserver.TCPServer:
 
 
 def main() -> int:
-	global DOCS
+	global BUILD
 	parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
 	parser.add_argument("--port", type=int, default=8123)
 	parser.add_argument("--headed", action="store_true", help="show the browser")
 	parser.add_argument("--timeout", type=int, default=180, help="seconds to allow for the world to load")
-	parser.add_argument("--docs", default=DOCS, help="the exported folder to serve (default docs/)")
+	parser.add_argument("--build", default=BUILD, help="the exported folder to serve (default build/)")
 	args = parser.parse_args()
 	from playwright.sync_api import sync_playwright
 
-	DOCS = os.path.abspath(args.docs)
+	BUILD = os.path.abspath(args.build)
 	os.makedirs(OUT, exist_ok=True)
 	server = serve(args.port)
 	url = f"http://127.0.0.1:{args.port}/index.html"

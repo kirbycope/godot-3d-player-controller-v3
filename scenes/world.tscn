@@ -21,7 +21,6 @@
 [ext_resource type="Texture2D" uid="uid://pcypw62urbyw" path="res://addons/3d_player_controller/assets/game_icons/battle-axe.svg" id="20_1m1ue"]
 [ext_resource type="PackedScene" uid="uid://bsybqxf7immya" path="res://assets/n_hance_studio/weapons/SK_Bow_Newbie_01.fbx" id="21_ntuqo"]
 [ext_resource type="AudioStream" uid="uid://bxuo1psaadb7n" path="res://addons/3d_player_controller/assets/pixabay/djartmusic-arrow-swish_03-306040.mp3" id="25_shehe"]
-[ext_resource type="AudioStream" uid="uid://14v2pascfajw" path="res://addons/3d_player_controller/assets/pixabay/djartmusic-arrow-twang_01-306041.mp3" id="26_l137e"]
 [ext_resource type="AudioStream" uid="uid://bo6duef7adfmo" path="res://assets/pixabay/freesound_community-bow-loading-38752.mp3" id="27_ygn2i"]
 [ext_resource type="AudioStream" path="res://addons/3d_player_controller/resources/audio/bow_attack.tres" id="28_swu3i"]
 [ext_resource type="PackedScene" uid="uid://blo6m8lpjri0d" path="res://assets/n_hance_studio/weapons/SK_Dagger_1H_Newbie_01.fbx" id="29_oexs8"]
@@ -101,12 +100,12 @@
 [ext_resource type="Script" uid="uid://d4lqkvawlhhn1" path="res://addons/3d_player_controller/scripts/projectile_spawner.gd" id="mp_projectile_spawner"]
 [ext_resource type="Script" uid="uid://dgk0123inqplm" path="res://addons/3d_player_controller/scripts/steam_peer.gd" id="mp_steam_peer"]
 [ext_resource type="Script" uid="uid://d046dc2e6l7mn" path="res://addons/3d_player_controller/scripts/muzzle_flash.gd" id="muzzle_flash_gd"]
-[ext_resource type="PackedScene" uid="uid://bra3khigbuanl" path="res://addons/3d_player_controller/scenes/equipment/paraglider.tscn" id="paraglider_scene"]
 [ext_resource type="PackedScene" uid="uid://c7checkpoint01" path="res://addons/3d_player_controller/scenes/prop/checkpoint.tscn" id="pc_checkpoint"]
 [ext_resource type="PackedScene" uid="uid://c7killzone0001" path="res://addons/3d_player_controller/scenes/prop/kill_zone.tscn" id="pc_kill_zone"]
 [ext_resource type="PackedScene" uid="uid://c7savegame0001" path="res://addons/3d_player_controller/scenes/ui/save_game.tscn" id="pc_save_game"]
 [ext_resource type="PackedScene" uid="uid://c7talkingnpc01" path="res://addons/3d_player_controller/scenes/npc/talking_npc.tscn" id="pc_talking_npc"]
 [ext_resource type="PackedScene" uid="uid://ct7n8imyllhbo" path="res://addons/3d_player_controller/scenes/player.tscn" id="player_scene"]
+[ext_resource type="PackedScene" path="res://addons/weather_fx/assets/vfx/wind/Scenes/VFX_AirFlowUP.tscn" id="updraft_aura"]
 [ext_resource type="Resource" uid="uid://d4nm2fqyvx42w" path="res://resources/quests/qa_errand.tres" id="qa_errand_quest"]
 [ext_resource type="Resource" uid="uid://blceajapib7ep" path="res://resources/dialogues/qa_guide.dtl" id="qa_guide_timeline"]
 [ext_resource type="Script" uid="uid://fs2ibpqajtwc" path="res://addons/3d_player_controller/scripts/quest.gd" id="quest_script"]
@@ -700,7 +699,6 @@ script = ExtResource("mp_player_spawner")
 
 [node name="Player" parent="PlayerSpawner" unique_id=1629663290 instance=ExtResource("player_scene")]
 editor_description = "The addon's Player as this game plays it: the template every peer's Player is a copy of. Its abilities, spellbook, fishing log, whistle and fish screens are set here, and where it stands is where players spawn."
-paraglider_scene = ExtResource("paraglider_scene")
 
 [node name="GeneralSkeleton" parent="PlayerSpawner/Player/PlayerModel/Armature" parent_id_path=PackedInt32Array(1629663290, 1771073607, 419987457) index="0" unique_id=166061220]
 bones/1/rotation = Quaternion(-0.032523718, -0.04591752, -0.028654862, 0.9980044)
@@ -1042,7 +1040,14 @@ stream = SubResource("AudioStreamRandomizer_whistle")
 unit_size = 18.0
 max_distance = 60.0
 
+[node name="UpdraftAura" parent="PlayerSpawner/Player" instance=ExtResource("updraft_aura")]
+editor_description = "weather_fx's rising air, hung on the Player by name: the Player shows it on every peer while it is in a thermal or within five metres of one, and hides it on ready."
+visible = false
+transform = Transform3D(1.2, 0, 0, 0, 1.6, 0, 0, 0, 1.2, 0, 0, 0)
+
 [node name="ProjectileSpawner" type="MultiplayerSpawner" parent="." unique_id=629412626 groups=["ProjectileSpawner"]]
+editor_description = "Rounds, throws and drops reach every peer through here. The host spawns a client's request only for a scene on the Auto Spawn List, so it lists everything a client fires, throws or drops: the bullets and arrows (the fire and ice arrows and the incendiary round too), the fishing float, a thrown item, a dropped item's pickup and the equipment that drops as its own scene (the dagger, the fishing rod). The world's weapons drop as copies of their pickups and need no entry."
+_spawnable_scenes = PackedStringArray("res://addons/3d_player_controller/scenes/projectile/bullet.tscn", "res://addons/3d_player_controller/scenes/projectile/arrow.tscn", "res://addons/3d_player_controller/scenes/projectile/thrown_item.tscn", "res://addons/3d_player_controller/inventory/scenes/item_pickup.tscn", "res://scenes/fire_arrow.tscn", "res://scenes/ice_arrow.tscn", "res://scenes/incendiary_round.tscn", "res://scenes/bobber.tscn", "res://scenes/dagger.tscn", "res://scenes/fishing_rod.tscn")
 script = ExtResource("mp_projectile_spawner")
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=1256611108]
@@ -1446,11 +1451,6 @@ stream = ExtResource("25_shehe")
 volume_db = -6.0
 max_db = -6.0
 
-[node name="Twang" type="AudioStreamPlayer3D" parent="N_Hance_Studio_1/SK_Bow_Newbie_01/Arrow" unique_id=1680174531]
-stream = ExtResource("26_l137e")
-volume_db = -6.0
-max_db = -6.0
-
 [node name="AnimationPlayer2" type="AnimationPlayer" parent="N_Hance_Studio_1/SK_Bow_Newbie_01" unique_id=2231464]
 libraries/ = SubResource("AnimationLibrary_26xuy")
 
@@ -1625,6 +1625,12 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 2.5,
 
 [node name="Tree01" parent="Quaternius" unique_id=38701300 instance=ExtResource("43_ufs10")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -4.7683716e-07, 0, 1)
+
+[node name="Tree02" parent="Quaternius" instance=ExtResource("43_ufs10")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 0, -2)
+
+[node name="Tree03" parent="Quaternius" instance=ExtResource("43_ufs10")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -5.5, 0, -1)
 
 [node name="Skateboard" parent="." unique_id=1958283666 instance=ExtResource("8_h3odw")]
 transform = Transform3D(2.9802322e-08, -1, 0, -4.371139e-08, -1.3027009e-15, 1, -1, -2.9802322e-08, -4.371139e-08, 4.3889647, 0.7169763, 3.982221)
@@ -1866,8 +1872,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -50, 0)
 [node name="Checkpoint" parent="." unique_id=774006358 instance=ExtResource("pc_checkpoint")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, 1)
 
-[node name="SaveGame" parent="." unique_id=556756288 node_paths=PackedStringArray("player_spawner") instance=ExtResource("pc_save_game")]
-player_spawner = NodePath("../PlayerSpawner")
+[node name="SaveGame" parent="." unique_id=556756288 instance=ExtResource("pc_save_game")]
 
 [node name="Guide" parent="." unique_id=1935370704 instance=ExtResource("pc_talking_npc")]
 transform = Transform3D(0.5547, 0, -0.83205, 0, 1, 0, 0.83205, 0, 0.5547, 6, 0, 4)
@@ -1886,7 +1891,10 @@ transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0
 transform = Transform3D(0.9028605, 0, -0.4299335, 0, 1, 0, 0.4299335, 0, 0.9028605, 2, 0, -4.2)
 hidden_while_in_use = Array[NodePath]([NodePath("../HUD")])
 
+[connection signal="session_ended" from="SteamPeer" to="." method="_on_session_ended"]
 [connection signal="local_player_spawned" from="PlayerSpawner" to="." method="_on_local_player_spawned"]
+[connection signal="local_player_spawned" from="PlayerSpawner" to="SaveGame" method="load_for_player"]
+[connection signal="local_player_spawned" from="PlayerSpawner" to="HUD/BottomRight/NoiseMeter/Line" method="follow"]
 [connection signal="item_dropped" from="PlayerSpawner/Player/Hud/Inventory" to="PlayerSpawner/Player/FishingLog" method="_on_item_dropped"]
 [connection signal="item_used" from="PlayerSpawner/Player/Hud/Inventory" to="PlayerSpawner/Player/FishingLog" method="_on_item_gone"]
 [connection signal="fired" from="JustCreate3D/Weapon_02" to="JustCreate3D/Weapon_02/Muzzle/MuzzleFlash" method="flash"]
@@ -1906,6 +1914,10 @@ hidden_while_in_use = Array[NodePath]([NodePath("../HUD")])
 [connection signal="body_entered" from="N_Hance_Studio_1/SK_Sword_1H_Newbie_01/PlayerDetection" to="N_Hance_Studio_1/SK_Sword_1H_Newbie_01" method="_on_player_detection_body_entered"]
 [connection signal="body_entered" from="N_Hance_Studio_1/SK_Sword_2H_Newbie_01/PlayerDetection" to="N_Hance_Studio_1/SK_Sword_2H_Newbie_01" method="_on_player_detection_body_entered"]
 [connection signal="depleted" from="Quaternius/Tree01" to="." method="_on_tree_chopped"]
+[connection signal="depleted" from="Quaternius/Tree02" to="." method="_on_tree_chopped"]
+[connection signal="depleted" from="Quaternius/Tree03" to="." method="_on_tree_chopped"]
+[connection signal="station_changed" from="HondaCRV/RadiOtPlayer3D" to="." method="_on_radio_station_changed" binds=[NodePath("HondaCRV")]]
+[connection signal="radio_toggled" from="HondaCRV/RadiOtPlayer3D" to="." method="_on_radio_toggled" binds=[NodePath("HondaCRV")]]
 [connection signal="body_entered" from="WarpZone" to="." method="_on_warp_zone_body_entered" binds= [NodePath("WarpZone/Marker3D")]]
 [connection signal="body_entered" from="WarpZone2" to="." method="_on_warp_zone_body_entered" binds= [NodePath("WarpZone2/Marker3D")]]
 [connection signal="body_entered" from="WarpZone3" to="." method="_on_warp_zone_body_entered" binds= [NodePath("WarpZone3/Marker3D")]]

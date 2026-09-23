@@ -3,7 +3,7 @@
 source folder each imported file came from (mapped back through the .import files). No dependencies.
 
 Usage, from the project root:
-    python tools/pck_report.py docs/index.pck [top_n]
+    python tools/pck_report.py build/index.pck [top_n]
 """
 import os
 import re

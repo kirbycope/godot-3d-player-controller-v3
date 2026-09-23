@@ -16,6 +16,7 @@ signal multi_player_pressed
 @onready var button_back: Button = $VBoxContainer_SinglePlayer/Button_Back
 @onready var label_version: Label = $Label_Version
 @onready var label_copyright: Label = $Label_Copyright
+@onready var settings: PlayerMenuLayer = $Settings ## The player controller's settings menu, opened by Options. Its pages are siblings, wired to one another in the scene.
 
 
 ## Called when the node enters the scene tree for the first time.
@@ -52,11 +53,11 @@ func show_single_player_menu() -> void:
 		button_new_game.grab_focus()
 
 
-## The button a controller's Accept press should activate while nothing holds focus.
+## The button a controller's Accept press should activate while nothing holds focus; none while the settings are up.
 func default_button() -> Button:
-	if not menu_single_player.visible:
-		return button_single_player
-	return button_continue if button_continue.visible else button_new_game
+	if menu_single_player.visible:
+		return button_continue if button_continue.visible else button_new_game
+	return button_single_player if menu_main.visible else null
 
 
 func _on_button_single_player_pressed() -> void:
@@ -100,7 +101,8 @@ func _on_touch_screen_button_multi_player_pressed() -> void:
 
 
 func _on_button_options_pressed() -> void:
-	pass # Options screen not implemented yet.
+	menu_main.hide()
+	settings.show_menu()
 
 
 func _on_touch_screen_button_options_pressed() -> void:
@@ -113,3 +115,10 @@ func _on_button_quit_pressed() -> void:
 
 func _on_touch_screen_button_quit_pressed() -> void:
 	_on_button_quit_pressed()
+
+
+## The settings menu's Back (connected in the scene) closes it and gives the title its menu back, focus on Options.
+func _on_settings_back_pressed() -> void:
+	settings.hide()
+	menu_main.show()
+	button_options.grab_focus()

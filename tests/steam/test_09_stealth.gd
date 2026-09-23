@@ -1,7 +1,8 @@
 extends SteamTest
 ## Purpose: stealth ghosts the other side's copy, body and equipment alike, and lifts again. is_stealthed
-## replicates and its setter runs Player._apply_stealth_look on the puppet, which swaps every mesh under the
-## skeleton for the stealth shader; clearing it fades the ghosts out and puts the original materials back.
+## replicates and its setter has the puppet's StealthLook swap every mesh under the skeleton for its ghost (a depth
+## pass with the stealth shader drawn after it); clearing it fades the ghosts out and puts the original materials
+## back.
 
 
 func test_stealth_ghosts_the_other_sides_copy_body_and_equipment_and_lifts_again() -> void:
@@ -49,11 +50,12 @@ func _watch(who: String) -> void:
 	mark(who + "_ghost_seen")
 	await await_step(who + "_shown")
 	await wait_for(func() -> bool: return not them.is_stealthed, "The flag clears on the copy")
-	await wait_for(func() -> bool: return _ghosted_meshes(them).is_empty(), "and it is solid again once the fade lands", them.stealth_fade_time + 5.0)
+	await wait_for(func() -> bool: return _ghosted_meshes(them).is_empty(), "and it is solid again once the fade lands", them.stealth_look.fade_time + 5.0)
 	mark(who + "_solid_seen")
 
 
-## Every mesh under [param player]'s skeleton that wears the stealth shader on any surface.
+## Every mesh under [param player]'s skeleton that wears the stealth ghost on any surface: the depth pass, with the
+## stealth shader as its next pass.
 func _ghosted_meshes(player: Player) -> Array[MeshInstance3D]:
 	var ghosted: Array[MeshInstance3D] = []
 	for node: Node in player.skeleton.find_children("*", "MeshInstance3D", true, false):
@@ -62,7 +64,7 @@ func _ghosted_meshes(player: Player) -> Array[MeshInstance3D]:
 			continue
 		for surface: int in mesh.mesh.get_surface_count():
 			var material: Material = mesh.get_surface_override_material(surface)
-			if material is ShaderMaterial and (material as ShaderMaterial).shader == Player.STEALTH_SHADER:
+			if material is ShaderMaterial and material.next_pass is ShaderMaterial and (material.next_pass as ShaderMaterial).shader == StealthLook.STEALTH_SHADER:
 				ghosted.append(mesh)
 				break
 	return ghosted

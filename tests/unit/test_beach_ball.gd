@@ -1,7 +1,7 @@
 extends GutTest
 
 ## Purpose: a beach ball's bump is a bump. It calls register_hit on what it rolls into, never register_weapon_hit
-## (a sword swing to the enemies and the duck), and leaves the harvestables alone, so it never chops a tree.
+## (a sword swing to the enemies and the duck, a tool's strike to a tree or ore), so it never chops a tree.
 ## Shot, it deflates by handing over to the SoftBody3D twin asleep beside it: the rigid ball stops simulating
 ## and hides, the twin wakes where it stood and its pressure falls to nothing.
 
@@ -34,12 +34,12 @@ func test_a_bump_is_a_hit_not_a_weapon_swing() -> void:
 func test_a_bump_never_chops_a_tree() -> void:
 	var ball: BeachBall = BALL_SCENE.instantiate() as BeachBall
 	add_child_autofree(ball)
-	var tree: Harvestable = TREE_SCENE.instantiate() as Harvestable
+	var tree: Choppable = TREE_SCENE.instantiate() as Choppable
 	add_child_autofree(tree)
 	await wait_physics_frames(1)
 	ball.linear_velocity = Vector3(3.0, 0.0, 0.0)
 	ball._on_body_entered(tree)
-	assert_eq(tree.hits_taken, 0, "A rolling ball is no axe")
+	assert_eq(tree.hits, 0, "A rolling ball is no axe")
 
 
 const BULLET_SCENE: PackedScene = preload("res://addons/3d_player_controller/scenes/projectile/bullet.tscn")

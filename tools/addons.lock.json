@@ -1,10 +1,10 @@
 {
   "3d_player_controller": {
-    "commit": "212b5b37df1fefeb6957b2dfb67bc1979231883e",
-    "pulled": "2026-09-23T02:44:11Z",
+    "commit": "d0f82d5be3e5afa61df0bb10c5c0a7de79b38835",
+    "pulled": "2026-09-23T19:22:24Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Stealth draws in two passes, so the body reads as one frosted shape"
+    "subject": "Peer review fixes: multiplayer authority, input gates, saves and cleanups"
   },
   "GPUTrail": {
     "commit": "00a764775941c719847deeda8a31b4ebd8893895",

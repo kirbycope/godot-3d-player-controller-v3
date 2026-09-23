@@ -6,7 +6,9 @@ extends RigidBody3D
 
 ## A physics-driven throwable flaming torch that ignites grass fields upon impact.
 ## Can be picked up with Ultrahand / HeldObject and thrown across the environment.
-## Flame VFX is kept upright in world space (+Y up) regardless of torch rotation.
+## Flame VFX is kept upright in world space (+Y up) regardless of torch rotation: the flame and its light are top
+## level in the scene, and RemoteTransform3D anchors carry only their position (FlameAnchor at the torch head moves
+## the flame, and LightAnchor on the upright flame moves the light 10 cm above it).
 
 @export var is_lit: bool = true:
 	set(val):
@@ -27,20 +29,6 @@ extends RigidBody3D
 
 func _ready() -> void:
 	_update_flame_state()
-
-	# Detach flame from parent rotation so it always burns strictly upwards in world space
-	fire_vfx.top_level = true
-	for particles: Node in fire_vfx.find_children("*", "GPUParticles3D", true, false):
-		(particles as GPUParticles3D).local_coords = false
-	omni_light.top_level = true
-
-
-func _process(_delta: float) -> void:
-	# Keep flame and light attached to torch head, always aligned with world UP (+Y)
-	var head_world_pos: Vector3 = to_global(Vector3(0.0, 0.52, 0.0))
-	fire_vfx.global_position = head_world_pos
-	fire_vfx.global_basis = Basis().scaled(Vector3(0.7, 0.7, 0.7)) # Upright in world space
-	omni_light.global_position = head_world_pos + Vector3(0.0, 0.1, 0.0)
 
 
 ## Leaving the tree stops the crackle (a pickup reparents the torch onto the Player's spring arm, a drop puts it

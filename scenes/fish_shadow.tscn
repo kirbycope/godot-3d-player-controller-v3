@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://c7fishshadow1"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_shadow"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.02, 0.05, 0.08, 0.6)
+
+[sub_resource type="SphereMesh" id="SphereMesh_shadow"]
+material = SubResource("StandardMaterial3D_shadow")
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_scare"]
+radius = 1.5
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_shoot"]
+size = Vector3(0.6, 0.1, 0.3)
+
+[node name="FishShadow" type="MeshInstance3D"]
+transform = Transform3D(0.6, 0, 0, 0, 0.08, 0, 0, 0, 0.3, 0, 0, 0)
+mesh = SubResource("SphereMesh_shadow")
+
+[node name="ScareArea" type="Area3D" parent="."]
+editor_description = "A Player who swims this close scares the fish off. On no layer, so neither a round nor the crosshair can find it; it only watches for Players (layer 1). Counter-scaled so the flat shadow does not squash the sphere."
+transform = Transform3D(1.6666666, 0, 0, 0, 12.5, 0, 0, 0, 3.3333333, 0, 0, 0)
+collision_layer = 0
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ScareArea"]
+shape = SubResource("SphereShape3D_scare")
+
+[node name="ShootArea" type="Area3D" parent="."]
+editor_description = "The fish itself, the size of the shadow, on the projectile layer so a round or an arrow can ruin it. FishShadows disables its shape while the shadow is hidden. Counter-scaled like ScareArea."
+transform = Transform3D(1.6666666, 0, 0, 0, 12.5, 0, 0, 0, 3.3333333, 0, 0, 0)
+collision_mask = 0
+monitoring = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ShootArea"]
+shape = SubResource("BoxShape3D_shoot")

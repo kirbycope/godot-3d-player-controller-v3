@@ -19,8 +19,9 @@ func _ready() -> void:
 	get_tree().create_timer(duration).timeout.connect(queue_free)
 
 
-## Wired to the TickTimer's timeout. Damage comes "from" the body itself, so a hit's shove never repeats.
+## Wired to the TickTimer's timeout. Damage comes "from" the body itself, so a hit's shove never repeats, and names
+## the caster ([method Ability.affect]), so the server takes a client's zone's ticks as that client's hits.
 func _on_tick_timer_timeout() -> void:
 	for body: Node3D in get_overlapping_bodies():
 		if body != caster and body.has_method("take_hit"):
-			body.call("take_hit", damage_per_tick, body.global_position)
+			Ability.affect(body, &"take_hit", [damage_per_tick, body.global_position], caster)

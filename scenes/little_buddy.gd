@@ -1,7 +1,10 @@
 extends FollowerNpc
 ## A small companion that follows the Player and can be picked up, carried and thrown. Picking it up hands it to the
 ## carrier's peer, as mounting a horse does, and puts every peer's copy on that Player's spring arm; a drop hands it
-## back to the server, a throw once it lands. The walk and run blend replicates so the puppets' legs move too.
+## back to the server, a throw once it lands. The server arbitrates every hand-off: a pick-up only counts once the
+## server has put the buddy on that Player's arm, so of two Players reaching for it only one ever holds it, and a
+## carrier or thrower who drops out leaves it back in the scene, the server's again. The walk and run blend
+## replicates so the puppets' legs move too.
 
 const LOCOMOTION_BLEND_POSITION_PATH: String = "parameters/LocomotionStateMachine/LocomotionBlendSpace/blend_position"
 const LOCOMOTION_STATE_MACHINE_PLAYBACK_PATH: String = "parameters/LocomotionStateMachine/playback"
@@ -10,8 +13,9 @@ const SERVER_PEER: int = 1
 @export var throw_force_horizontal: float = 16.0
 @export var throw_force_vertical: float = 3.5
 
-var is_held: bool = false
-var is_thrown: bool = false
+var is_held: bool = false ## On this peer's own Player's arm; set when the server puts it there.
+var is_thrown: bool = false ## In the air from this peer's throw, until it lands.
+var carried_by: int = 0 ## The peer whose Player has the buddy on its arm, 0 when it is in the scene; the same on every peer.
 var locomotion_blend: float = 0.0: ## Replicated: 0 idle, 0.5 walk, 1 run; the setter feeds the blend space on every peer.
 	set(value):
 		locomotion_blend = value
@@ -24,11 +28,16 @@ var locomotion_blend: float = 0.0: ## Replicated: 0 idle, 0.5 walk, 1 run; the s
 @onready var _home: Node = get_parent() ## Where the buddy stood before anyone picked it up; where a drop puts it back on every peer.
 
 
+func _ready() -> void:
+	super()
+	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
+
+
 func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority():
 		return
-	if is_held:
-		return
+	if is_held or carried_by != 0:
+		return # in somebody's hands, or thrown and not yet off the arm
 	super(delta)
 
 
@@ -86,6 +95,8 @@ func hide_menu() -> void:
 
 
 func _input(event: InputEvent) -> void:
+	if player and (player.is_typing or player.is_paused):
+		return
 	if is_held:
 		if event.is_action_pressed("action") and not event.is_echo():
 			drop()
@@ -107,11 +118,11 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
-## The carrier's peer takes the buddy; one already on somebody's arm stays theirs.
+## Asks the server for the buddy; it is in the hands once the server has put it on this Player's arm. One already on
+## somebody's arm stays theirs.
 func pick_up() -> void:
 	if not player or not player.item_spring_arm or get_parent() is SpringArm3D:
 		return
-	is_held = true
 	hide_menu()
 
 	velocity = Vector3.ZERO
@@ -132,7 +143,7 @@ func drop() -> void:
 func throw_with_direction(throw_dir: Vector3 = Vector3.ZERO, throw_power: float = 1.0) -> void:
 	is_held = false
 	is_thrown = true
-	_carry_by.rpc(0)
+	_hand_to(get_multiplayer_authority(), 0)
 
 	if throw_dir.length_squared() < 0.001:
 		if player and player.camera:
@@ -148,9 +159,14 @@ func throw_with_direction(throw_dir: Vector3 = Vector3.ZERO, throw_power: float 
 
 
 ## Puts this copy on the spring arm of [param peer_id]'s Player (the copy in this branch of the tree, since a test can
-## run two), or back into the scene for 0; runs on every peer so the buddy shows in the carrier's hands everywhere.
+## run two), or back into the scene for 0; sent by the server to every peer so the buddy shows in the carrier's hands
+## everywhere, and refused from anyone else.
 @rpc("any_peer", "call_local", "reliable")
 func _carry_by(peer_id: int) -> void:
+	if multiplayer.get_remote_sender_id() > SERVER_PEER:
+		return
+	carried_by = peer_id
+	is_held = peer_id != 0 and peer_id == multiplayer.get_unique_id()
 	collision_shape.disabled = peer_id != 0
 	if peer_id == 0:
 		_return_to_scene()
@@ -180,23 +196,55 @@ func _hand_to(peer_id: int, carrier: int) -> void:
 		_grant.rpc_id(SERVER_PEER, peer_id, carrier)
 
 
-## The server's half of [method _hand_to]: where the buddy goes, then whose it is, in that order everywhere.
+## The server's half of [method _hand_to]: where the buddy goes, then whose it is, in that order everywhere. The
+## server arbitrates: a peer only picks it up for itself and only while nobody else has it (on an arm, or in the air
+## from their throw), and only whoever has it lets go of it. A refused pick-up needs no answer: the buddy was never
+## in the sender's hands, since only the server's [method _carry_by] puts it there.
 @rpc("any_peer", "reliable")
 func _grant(peer_id: int, carrier: int) -> void:
 	if not multiplayer.is_server():
+		return
+	var sender: int = multiplayer.get_remote_sender_id()
+	if sender == 0:
+		sender = SERVER_PEER # the server's own call
+	var holder: int = carried_by
+	if holder == 0 and (get_multiplayer_authority() != SERVER_PEER or is_thrown):
+		holder = get_multiplayer_authority() # a throw is the thrower's until it lands
+	if carrier > 0:
+		if carrier != sender or peer_id != sender or (holder != 0 and holder != sender):
+			return
+	elif holder != sender or (peer_id != SERVER_PEER and peer_id != sender):
 		return
 	if carrier >= 0:
 		_carry_by.rpc(carrier)
 	_set_authority.rpc(peer_id)
 
 
+## From the server only (or this peer's own call): the buddy is [param peer_id]'s.
 @rpc("any_peer", "call_local", "reliable")
 func _set_authority(peer_id: int) -> void:
-	set_multiplayer_authority(peer_id)
+	if multiplayer.get_remote_sender_id() <= SERVER_PEER:
+		set_multiplayer_authority(peer_id)
+
+
+## A carrier or thrower who drops out takes the authority with them, and a carried buddy would go with their Player:
+## every peer puts it back into the scene, lets go of it and hands it to the server, as the horse does.
+func _on_peer_disconnected(peer_id: int) -> void:
+	if peer_id != get_multiplayer_authority() and peer_id != carried_by:
+		return
+	carried_by = 0
+	collision_shape.disabled = false
+	_return_to_scene()
+	set_multiplayer_authority(SERVER_PEER)
+	is_held = false
+	is_thrown = false
+	velocity = Vector3.ZERO
 
 
 ## Moves the buddy from the player's spring arm back to where it lived before, keeping its world position. The
 ## same parent on every peer, or the copies end up under different paths and the synchronizer's data lands on
-## a node the other side cannot find.
+## a node the other side cannot find. One already there stays put.
 func _return_to_scene() -> void:
-	reparent(_home if is_instance_valid(_home) else get_tree().root)
+	var home: Node = _home if is_instance_valid(_home) else get_tree().root
+	if get_parent() != home:
+		reparent(home)

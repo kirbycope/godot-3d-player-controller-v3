@@ -9,7 +9,7 @@ const WORLD_SCENE: PackedScene = preload("res://scenes/world.tscn")
 const TITLE_SCENE: PackedScene = preload("res://scenes/title_screen.tscn")
 const QA_QUEST: Quest = preload("res://resources/quests/qa_errand.tres")
 const CARP: Fish = preload("res://resources/fish/carp.tres")
-const TEST_PATH: String = "user://test_world_savegame.tres"
+const TEST_PATH: String = "user://gut/test_world_savegame.json"
 
 var world: Node
 var player: Player
@@ -40,7 +40,7 @@ func test_the_world_has_the_progression_kit() -> void:
 	assert_true((world.get_node("KillZone") as KillZone).lethal, "Falling off the map is a death, not a teleport")
 	assert_true(world.get_node("Guide") is TalkingNpc)
 	assert_eq((world.get_node("Guide") as TalkingNpc).display_name, "Guide")
-	assert_eq(saver.player_spawner, world.get_node("PlayerSpawner"), "A requested load waits for the spawned Player")
+	assert_true((world.get_node("PlayerSpawner") as PlayerSpawner).local_player_spawned.is_connected(saver.load_for_player), "A requested load waits for the spawned Player, wired in the scene")
 	assert_true(world.is_in_group(SaveGame.GROUP), "The world saves its clock and weather")
 	assert_true(world.get_node("Enemies/Swordsman").is_in_group(SaveGame.GROUP))
 
@@ -51,19 +51,19 @@ func test_the_save_keeps_the_clock_the_weather_the_player_and_the_trees() -> voi
 	clock.set_time(21, 30)
 	weather.set_weather(ClimateData.WeatherType.RAIN)
 	player.warp_to(Transform3D(Basis(), Vector3(6.0, 0.0, 6.0)))
-	var tree: Harvestable = world.find_child("Tree01", true, false)
-	tree.hits_taken = 1
+	var tree: Choppable = world.find_child("Tree01", true, false)
+	tree.hits = 1
 	assert_eq(saver.save_game(), OK)
 	clock.set_time(6, 0)
 	weather.set_weather(ClimateData.WeatherType.BLUE_SKY)
 	player.warp_to(Transform3D(Basis(), Vector3.ZERO))
-	tree.hits_taken = 0
+	tree.hits = 0
 	assert_true(saver.load_game())
 	assert_eq(clock.get_hour(), 21)
 	assert_eq(clock.get_minute(), 30)
 	assert_eq(weather.active_weather, ClimateData.WeatherType.RAIN)
 	assert_almost_eq(player.global_position, Vector3(6.0, 0.0, 6.0), Vector3.ONE * 0.1)
-	assert_eq(tree.hits_taken, 1, "A tree keeps its hits")
+	assert_eq(tree.hits, 1, "A tree keeps its hits")
 
 
 func test_the_guides_errand_counts_wood_and_fish() -> void:
@@ -88,9 +88,12 @@ func test_the_guides_errand_counts_wood_and_fish() -> void:
 	assert_false(player.is_paused, "The Player is let go when the conversation ends")
 	assert_null(guide.talker)
 	var tree: Choppable = world.find_child("Tree01", true, false)
-	for i: int in tree.hits_to_finish:
-		tree.register_hit()
-	assert_true(tree.is_depleted)
+	var axe: Equipment = autofree(Equipment.new())
+	axe.can_log = true
+	axe.player = player
+	for i: int in tree.hits_per_yield * tree.total_yields:
+		tree.register_weapon_hit(axe)
+	assert_true(tree.is_spent)
 	assert_true(quest_log.is_objective_done(QA_QUEST, &"chop_tree"), "Felling a tree is the firewood")
 	var fishing_log: FishingLog = player.get_node("FishingLog")
 	fishing_log.record_catch(CARP, 30.0)
@@ -99,11 +102,11 @@ func test_the_guides_errand_counts_wood_and_fish() -> void:
 	assert_eq(player.inventory.count_of(preload("res://resources/items/apple.tres")), 3 + 3, "Three apples on top of the QA kit's three")
 
 
+## The run's own save path (tests/gut_pre_run.gd points SaveGame.DEFAULT_SAVE_PATH under user://gut/), so the
+## player's save is never touched.
 func test_continue_shows_only_with_a_save_and_requests_a_load() -> void:
-	var had_file: bool = FileAccess.file_exists(SaveGame.DEFAULT_SAVE_PATH)
-	var backup: PackedByteArray = FileAccess.get_file_as_bytes(SaveGame.DEFAULT_SAVE_PATH) if had_file else PackedByteArray()
-	if had_file:
-		DirAccess.remove_absolute(SaveGame.DEFAULT_SAVE_PATH)
+	assert_true(SaveGame.DEFAULT_SAVE_PATH.begins_with("user://gut/"), "The run saves in its own folder")
+	DirAccess.remove_absolute(SaveGame.DEFAULT_SAVE_PATH)
 	var title: TitleScreen = TITLE_SCENE.instantiate()
 	add_child_autofree(title)
 	assert_false(title.button_continue.visible, "No save, no Continue")
@@ -121,7 +124,22 @@ func test_continue_shows_only_with_a_save_and_requests_a_load() -> void:
 	title._on_button_continue_pressed()
 	assert_signal_emitted(title, "continue_pressed")
 	DirAccess.remove_absolute(SaveGame.DEFAULT_SAVE_PATH)
-	if had_file:
-		var file: FileAccess = FileAccess.open(SaveGame.DEFAULT_SAVE_PATH, FileAccess.WRITE)
-		file.store_buffer(backup)
-		file.close()
+
+
+## H8: Continue loads the save into a fresh world, whose PlayerSpawner sits before the SaveGame and spawns the Player
+## in its own _ready, before the SaveGame is ready (world.tscn wires the spawn to SaveGame.load_for_player, which
+## test_the_world_has_the_progression_kit checks).
+func test_continue_loads_the_save_once_the_spawned_player_is_in() -> void:
+	(world.get_node("DateAndTime") as DateAndTime).set_time(21, 30)
+	saver.save_path = SaveGame.DEFAULT_SAVE_PATH
+	assert_eq(saver.save_game(), OK)
+	world.free()
+	SaveGame.load_requested = true
+	var fresh: Node = WORLD_SCENE.instantiate()
+	add_child_autofree(fresh)
+	await wait_physics_frames(3)
+	var clock: DateAndTime = fresh.get_node("DateAndTime")
+	assert_false(SaveGame.load_requested, "The request was taken")
+	assert_eq(clock.get_hour(), 21, "and the save is back in the world")
+	assert_eq(clock.get_minute(), 30)
+	DirAccess.remove_absolute(SaveGame.DEFAULT_SAVE_PATH)

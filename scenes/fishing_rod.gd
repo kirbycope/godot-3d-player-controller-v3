@@ -9,8 +9,10 @@ extends Equipment
 ## the line, the bite eats it and the next one in the bag takes its place, and a bare hook mostly pulls up junk
 ## (see [member Fish.bare_hook_chance]). A landed fish is an inventory [Item], so it goes into the Player's inventory. The float goes
 ## through the ProjectileSpawner when the scene has one, so every peer sees the float, its line, the dips and
-## the catch; the rod itself only runs on its owner, and so does the bait: what is on the line, the pick it filters
-## and its consumption are the owner's alone, since nothing on a peer's copy shows the bait.
+## the catch; the rod's sounds ride the float's splashes, the reel spins through its thrash, and the shadows' moves at
+## the float go out as [FishShadows] RPCs, so every peer sees and hears the whole bite. The rod itself only runs on
+## its owner, and so does the bait: what is on the line, the pick it filters and its consumption are the owner's
+## alone, since nothing on a peer's copy shows the bait.
 
 signal line_cast ## The float has left the rod.
 signal bite(fish: Fish) ## The hook window is open.
@@ -25,6 +27,7 @@ const FISHING_EMOTES: Array[String] = ["FishingIdle", "FishingCast", "FishingRee
 const LINE_STATES: Array[int] = [NodeStateMachine.States.STANDING, NodeStateMachine.States.SPRINTING, NodeStateMachine.States.CROUCHING, NodeStateMachine.States.NONE] ## States the line stays out through; anything else pulls it in.
 const ACTION_LABELS: Dictionary[int, String] = {State.IDLE: "Cast", State.CASTING: "", State.WAITING: "Reel In", State.BITE: "Hook!", State.REELING: ""} ## Action prompt per state.
 const CAST_ANIMATION: StringName = &"Fishing Cast/mixamo_com"
+const REEL_ANIMATION: StringName = &"Take 001" ## The rod model's own clip, the reel spinning; [method Bobber.thrash] plays it on every peer.
 
 @export var fishing_action: StringName = &"action"
 @export var bobber_scene: PackedScene
@@ -40,7 +43,7 @@ const CAST_ANIMATION: StringName = &"Fishing Cast/mixamo_com"
 @export var hook_window: float = 1.0 ## Seconds after the bite in which Action hooks the fish.
 @export var shadow_bonus_distance: float = 2.5 ## Landing within this of a shadow shortens the wait.
 @export_group("Sounds")
-@export var splash_sfx: AudioStream
+@export var splash_sfx: AudioStream ## Each sound plays at the float on every peer, with the splash of its moment.
 @export var nibble_sfx: AudioStream
 @export var bite_sfx: AudioStream
 @export var reel_sfx: AudioStream
@@ -72,7 +75,6 @@ var _posture_shown: bool = false ## What the last posture write said, so the sta
 var hook_pulse: Tween ## Pulses the Action button green while the hook window is open.
 @onready var reel_timer: Timer = $ReelTimer
 @onready var catch_screen_timer: Timer = $CatchScreenTimer ## Delays the catch screen until the catch has arced into the hands.
-@onready var audio: AudioStreamPlayer3D = $Audio
 
 
 ## Runs for the equipped copy (which has [member player] set); the world pickup does nothing.
@@ -95,8 +97,8 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	# No casting from a menu or from behind the wheel; a horse or a boat is fine
-	if not player or not player.is_fishing or player.is_paused or player.riding is Vehicle \
+	# No casting from a menu, a chat line or behind the wheel; a horse or a boat is fine
+	if not player or not player.is_fishing or player.is_paused or player.is_typing or player.riding is Vehicle \
 			or not event.is_action_pressed(fishing_action):
 		return
 	match state:
@@ -129,12 +131,9 @@ func hook() -> void:
 	player.is_reeling_line = true
 	update_labels()
 	emote_state.start("FishingReel")
-	if animation_player.has_animation("Take 001"):
-		animation_player.play("Take 001")
 	reel_timer.start(1.0 + hooked_length / 40.0)
-	bobber.splash.rpc(0.8)
+	bobber.splash.rpc(0.8, _sfx_path(reel_sfx))
 	bobber.thrash.rpc(reel_timer.wait_time)
-	_play(reel_sfx)
 	fish_hooked.emit(hooked_fish)
 
 
@@ -142,7 +141,7 @@ func hook() -> void:
 func retract() -> void:
 	var lost: Fish = hooked_fish if state == State.BITE or state == State.REELING else null
 	if water and water.shadows:
-		water.shadows.release()
+		water.shadows.release.rpc()
 	_clear_line()
 	state = State.IDLE
 	player.controls.release_action_label(self)
@@ -207,10 +206,16 @@ func _on_cast_timer_timeout() -> void:
 	line_cast.emit()
 
 
-## The spawner hands a client its own float once the server has spawned it.
+## The spawner hands a client its own float once the server has spawned it. One that arrives after the line was
+## reeled in during the round trip (or after another cast took its place) is nobody's float, so it goes straight back.
 func _on_spawner_spawned(node: Node) -> void:
-	if bobber == null and state == State.WAITING and node is Bobber and (node as Bobber).shooter == player:
-		_adopt_bobber(node as Bobber)
+	var float_node: Bobber = node as Bobber
+	if float_node == null or float_node.shooter != player:
+		return
+	if bobber == null and state == State.WAITING:
+		_adopt_bobber(float_node)
+	else:
+		float_node.retract.rpc()
 
 
 ## A float that lands on dry ground just lies there until the player reels in; only water starts the bite.
@@ -223,8 +228,7 @@ func _adopt_bobber(float_node: Bobber) -> void:
 func _on_bobber_landed_in_water(area: Area3D) -> void:
 	water = area as Buoyancy
 	bobber.plunge.rpc(0.08, 0.5)
-	bobber.splash.rpc(0.6)
-	_play(splash_sfx)
+	bobber.splash.rpc(0.6, _sfx_path(splash_sfx))
 	hooked_fish = water.pick_fish(lure) if water else null
 	if hooked_fish == null:
 		return
@@ -240,17 +244,16 @@ func _on_bobber_landed_in_water(area: Area3D) -> void:
 	nibble_timer.start(randf_range(nibble_interval.x, nibble_interval.y))
 	if water.shadows:
 		# Only a shadow already close takes the bait; the species says how close, the bait can stretch it, a bare hook shrinks it
-		water.shadows.attract(bobber.global_position, hooked_fish.attract_range_for(lure))
+		water.shadows.attract.rpc(bobber.global_position, hooked_fish.attract_range_for(lure))
 
 
 func _on_nibble_timer_timeout() -> void:
 	if state != State.WAITING or bite_timer.time_left < 0.6:
 		return
 	bobber.plunge.rpc(0.04, 0.4)
-	bobber.splash.rpc(0.25)
+	bobber.splash.rpc(0.25, _sfx_path(nibble_sfx))
 	if water.shadows:
-		water.shadows.nibble(bobber.global_position)
-	_play(nibble_sfx)
+		water.shadows.nibble.rpc(bobber.global_position)
 	nibble_timer.start(randf_range(nibble_interval.x, nibble_interval.y))
 
 
@@ -262,10 +265,9 @@ func _on_bite_timer_timeout() -> void:
 	hooked_length = hooked_fish.roll_length()
 	consume_lure()
 	bobber.plunge.rpc(0.35, 0.8)
-	bobber.splash.rpc(1.0)
+	bobber.splash.rpc(1.0, _sfx_path(bite_sfx))
 	if water.shadows:
-		water.shadows.dive(bobber.global_position)
-	_play(bite_sfx)
+		water.shadows.dive.rpc(bobber.global_position)
 	Input.start_joy_vibration(0, 0.5, 0.7, 0.3)
 	hook_timer.start(hook_window)
 	update_labels()
@@ -276,9 +278,9 @@ func _on_bite_timer_timeout() -> void:
 func _on_hook_timer_timeout() -> void:
 	if state != State.BITE:
 		return
-	bobber.splash.rpc(0.4)
+	bobber.splash.rpc(0.4, "")
 	if water.shadows:
-		water.shadows.scatter()
+		water.shadows.scatter.rpc()
 	retract()
 
 
@@ -287,16 +289,18 @@ func _on_reel_timer_timeout() -> void:
 		return
 	var fish: Fish = hooked_fish
 	var length: float = hooked_length
-	# Every peer watches the catch arc out of the water; the card is the caster's alone
-	bobber.splash.rpc(1.0)
+	# Every peer watches the catch arc out of the water and hears it land; the card is the caster's alone
+	bobber.splash.rpc(1.0, _sfx_path(catch_sfx))
 	bobber.present_catch.rpc(fish.resource_path, length)
 	state = State.IDLE
 	_clear_line()
 	emote_state.start("FishingIdle")
 	update_labels()
-	# The log keeps every length in the bag and the record per species; the screen says when this one is the record
+	# The bag first: a full tab leaves the catch on the screen only, and then the log keeps no length for it. The
+	# record per species counts either way, and the screen says when this one is the record
+	var in_bag: bool = player.inventory.add_item(fish) == 0
 	var fishing_log: FishingLog = player.get_node_or_null(^"FishingLog") as FishingLog
-	var is_record: bool = fishing_log.record_catch(fish, length) if fishing_log else false
+	var is_record: bool = fishing_log.record_catch(fish, length, in_bag) if fishing_log else false
 	landed_fish = fish
 	landed_length = length
 	landed_record = is_record
@@ -306,8 +310,6 @@ func _on_reel_timer_timeout() -> void:
 		var card: FishCard = player.controls.get_node_or_null(^"FishCard") as FishCard
 		if card:
 			card.show_catch(fish, length, is_record)
-	_play(catch_sfx)
-	player.inventory.add_item(fish) # a full tab leaves it on the screen only
 	fish_caught.emit(fish, length)
 
 
@@ -401,10 +403,9 @@ func _on_item_used(item: Item, _count: int) -> void:
 	lure = item
 
 
-func _play(stream: AudioStream) -> void:
-	if stream:
-		audio.stream = stream
-		audio.play()
+## Where [param stream] loads from on every peer, for a splash to play it at the float; empty for no sound.
+func _sfx_path(stream: AudioStream) -> String:
+	return stream.resource_path if stream else ""
 
 
 ## Standing still has no signal, so it alone is polled: only with the line in, and the blend is written on a change.

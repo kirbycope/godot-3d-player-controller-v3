@@ -3,8 +3,10 @@ extends GutTest
 ## Purpose: a whistle on the client brings the server's horse, and the client's copy follows it. Horse.summon on a
 ## copy that is not the authority relays the request to the authority by RPC; the summon movement runs there and the
 ## horse's BodySynchronizer carries its transform, pace and summon state back, so the client's copy arrives too and
-## plays SummonAudio. Getting on hands the horse to the rider's peer and getting off hands it back. Two scene
-## branches with their own MultiplayerAPI talk over ENet on localhost, as test_enemy_multiplayer does.
+## plays SummonAudio. Getting on hands the horse to the rider's peer and getting off hands it back. The server
+## arbitrates the saddle: of two Players getting on at once only the first gets it, the other is put back off, and
+## the hand-off setters take orders from the server alone. Two scene branches with their own MultiplayerAPI talk over
+## ENet on localhost, as test_enemy_multiplayer does.
 
 const PORT: int = 47395
 const PLAYER_SCENE: PackedScene = preload("res://addons/3d_player_controller/scenes/player.tscn")
@@ -162,3 +164,35 @@ func test_a_client_rider_takes_the_horse_with_them_and_hands_it_back_on_dismount
 	assert_eq(remote_horse.get_multiplayer_authority(), 1, "Off again, the server has the horse back")
 	assert_eq(host_horse.get_multiplayer_authority(), 1)
 	assert_eq(host_sync.get_multiplayer_authority(), 1)
+
+
+## M24: the host and the client get on in the same frame, before either has heard of the other. The server grants the
+## saddle to the first request it sees (the host's own, at once) and refuses the client's, whose Player gets back off
+## with its own layout; nobody but the server can move the horse's authority or its rider.
+func test_two_riders_at_once_get_one_saddle_and_only_the_server_hands_it_out() -> void:
+	var client_id: int = client_api.get_unique_id()
+	var client_player: Player = await _client_player()
+	var host_player: Player = server_root.get_node("Players/1")
+	await wait_physics_frames(20)
+	var host_horse: Horse = server_root.get_node("Horse")
+	var remote_horse: Horse = client_root.get_node("Horse")
+	var own_scheme: ControlScheme = client_player.control_scheme
+	host_player.mount(host_horse)
+	client_player.mount(remote_horse)
+	await wait_until(func() -> bool: return not client_player.is_riding, 2.0)
+	await wait_physics_frames(5)
+	assert_eq(host_player.riding, host_horse, "The host got up first")
+	assert_eq(host_horse.rider_peer, 1, "and the saddle is the host's on the server")
+	assert_eq(remote_horse.rider_peer, 1, "and on the client")
+	assert_eq(host_horse.get_multiplayer_authority(), 1, "The horse stays the server's")
+	assert_eq(remote_horse.get_multiplayer_authority(), 1)
+	assert_false(client_player.is_riding, "The client's Player is put back off")
+	assert_eq(client_player.control_scheme, own_scheme, "with its own layout back")
+	remote_horse._set_authority.rpc(client_id)
+	remote_horse._set_rider.rpc(client_id)
+	await wait_physics_frames(10)
+	assert_eq(host_horse.get_multiplayer_authority(), 1, "A client cannot take the horse by calling the setters itself")
+	assert_eq(host_horse.rider_peer, 1, "nor put itself in the saddle")
+	host_player.dismount(true)
+	await wait_physics_frames(5)
+	assert_eq(host_horse.rider_peer, 0, "Getting off frees the saddle")

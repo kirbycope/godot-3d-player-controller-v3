@@ -6,7 +6,6 @@ extends PlayerMenuLayer
 ## [FishingLog] as it changes, so a catch made with the index open shows up at once.
 
 @export var species: Array[Fish] = [] ## The species listed, in this order.
-@export var placeholder_model: PackedScene ## Model for species without a [member Item.model_scene] of their own.
 
 var shown: Fish
 var buttons: Array[Button] = []
@@ -86,24 +85,15 @@ func _show(fish: Fish) -> void:
 	record_label.text = "Record: %.1f cm" % fishing_log.record_of(fish) if caught and not fish.is_junk else ("Found" if caught else "Not yet caught")
 	for child: Node in model_pivot.get_children():
 		child.queue_free()
-	var scene: PackedScene = fish.get_model_scene() if fish.get_model_scene() else placeholder_model
-	if scene == null:
-		return
-	var model: Node3D = scene.instantiate() as Node3D
+	var model: Node3D = fish.get_model_scene().instantiate() as Node3D
 	model_pivot.add_child(model)
 	fish.prepare_model(model) # once in the tree, so the model's own ready nodes exist
-	var shadow: StandardMaterial3D = StandardMaterial3D.new()
-	shadow.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	shadow.albedo_color = Color(0.05, 0.05, 0.08)
-	var bounds: AABB = AABB()
-	var first: bool = true
-	for geometry: Node in model.find_children("*", "GeometryInstance3D", true, false):
-		var visual: GeometryInstance3D = geometry as GeometryInstance3D
-		if not caught:
-			visual.material_override = shadow # a dark shape until you have landed one
-		var box: AABB = (model_pivot.global_transform.affine_inverse() * visual.global_transform) * visual.get_aabb()
-		bounds = box if first else bounds.merge(box)
-		first = false
-	if not first:
-		model.position = -bounds.get_center()
-		model_camera.size = maxf(bounds.get_longest_axis_size() * 1.4, 0.1)
+	if not caught:
+		var shadow: StandardMaterial3D = StandardMaterial3D.new()
+		shadow.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		shadow.albedo_color = Color(0.05, 0.05, 0.08)
+		for geometry: Node in model.find_children("*", "GeometryInstance3D", true, false):
+			(geometry as GeometryInstance3D).material_override = shadow # a dark shape until you have landed one
+	var bounds: AABB = Fish.model_bounds(model, model_pivot)
+	model.position = -bounds.get_center()
+	model_camera.size = maxf(bounds.get_longest_axis_size() * 1.4, 0.1)

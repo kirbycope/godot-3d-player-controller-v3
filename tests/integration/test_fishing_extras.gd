@@ -138,6 +138,20 @@ func test_rod_ignores_the_cast_from_a_menu() -> void:
 	player.is_paused = false
 
 
+## M23: a key typed into the focused chat field reaches every node's _input before the field; the rod lets it pass.
+func test_rod_ignores_the_cast_while_typing_in_chat() -> void:
+	var rod: FishingRod = await _equip_rod()
+	player.is_fishing = true
+	var chat: ChatWindow = player.get_node("Hud/Chat")
+	chat.open_input()
+	assert_true(player.is_typing, "The chat field has the keyboard")
+	rod._input(_press_action())
+	assert_eq(rod.state, FishingRod.State.IDLE, "Typing an E into the chat does not cast")
+	chat.close_input()
+	rod._input(_press_action())
+	assert_eq(rod.state, FishingRod.State.CASTING, "With the chat closed, Action casts again")
+
+
 func test_rod_ignores_the_cast_from_the_drivers_seat_but_not_a_horse() -> void:
 	var rod: FishingRod = await _equip_rod()
 	player.is_fishing = true
@@ -188,6 +202,89 @@ func test_a_shot_shadow_gives_the_shooter_chum() -> void:
 	shadows.register_projectile_hit(bullet, shadow.global_position, Vector3.UP)
 	assert_signal_emitted(shadows, "shot")
 	assert_eq(player.inventory.count_of(CHUM), 1, "The ruined fish is chum in the shooter's bag")
+
+
+## H16, L28: each shadow is an instance of fish_shadow.tscn. Its ScareArea sits on no layer, so rays pass it by; only
+## its small ShootArea, the size of the shadow, is on the projectile layer, and it lets rounds through while hidden.
+func test_the_scare_sphere_is_on_no_layer_and_only_the_fish_itself_can_be_shot() -> void:
+	var water := _make_water()
+	var shadows: FishShadows = SHADOWS_SCRIPT.new()
+	shadows.water = water
+	shadows.count = 1
+	root.add_child(shadows)
+	await wait_physics_frames(1)
+	var shadow: MeshInstance3D = shadows.shadows[0]
+	assert_eq(shadow.scene_file_path, "res://scenes/fish_shadow.tscn", "The shadow is an instance of its own scene")
+	var scare: Area3D = shadow.get_node("ScareArea")
+	var shoot: Area3D = shadow.get_node("ShootArea")
+	assert_eq(scare.collision_layer, 0, "The scare sphere is on no layer")
+	assert_eq(scare.collision_mask, 1, "and watches the Players' layer")
+	assert_eq(shoot.collision_layer, 1, "The fish is on the projectile layer")
+	shadows.park_shadows_for_test(shadow, water.global_position + Vector3(0.0, 2.0, 0.0))
+	await wait_physics_frames(2)
+	var space: PhysicsDirectSpaceState3D = root.get_world_3d().direct_space_state
+	var down := func(at: Vector3) -> Dictionary:
+		var query := PhysicsRayQueryParameters3D.create(at + Vector3.UP * 3.0, at + Vector3.DOWN * 0.2, 1)
+		query.collide_with_areas = true
+		query.exclude = [water.get_rid()]
+		return space.intersect_ray(query)
+	assert_eq(down.call(shadow.global_position).get("collider"), shoot, "A shot straight at the shadow hits the fish")
+	assert_true(down.call(shadow.global_position + Vector3(1.0, 0.0, 0.0)).is_empty(), "A metre off, inside the scare sphere, the shot passes over the water")
+	shadow.hide()
+	await wait_physics_frames(2)
+	assert_true(down.call(shadow.global_position).is_empty(), "A hidden shadow has no fish under it to hit")
+	shadow.show()
+	await wait_physics_frames(2)
+	assert_eq(down.call(shadow.global_position).get("collider"), shoot, "and the fish is back when the shadow is")
+
+
+## L27: the bag first, then the log. A catch the full tab cannot hold keeps its record but adds no length to the bag.
+func test_a_catch_the_bag_cannot_hold_sets_the_record_but_adds_no_length() -> void:
+	var rod: FishingRod = await _equip_rod()
+	var water := _make_water()
+	var slots: Array = player.inventory.get_slots(CARP.category)
+	for i: int in slots.size():
+		slots[i] = ItemSlot.make(CARP, CARP.max_stack)
+	var fishing_log: FishingLog = player.get_node("FishingLog")
+	_land_float(rod, water, CARP)
+	rod.state = FishingRod.State.REELING
+	rod.hooked_length = 48.0
+	rod._on_reel_timer_timeout()
+	assert_eq(player.inventory.count_of(CARP), slots.size() * CARP.max_stack, "The full tab took nothing")
+	assert_eq(fishing_log.lengths_of(CARP), [] as Array[float], "so the log keeps no length in the bag for it")
+	assert_eq(fishing_log.record_of(CARP), 48.0, "but the record counts")
+	slots[0] = null
+	_land_float(rod, water, CARP)
+	rod.state = FishingRod.State.REELING
+	rod.hooked_length = 30.0
+	rod._on_reel_timer_timeout()
+	assert_eq(fishing_log.lengths_of(CARP), [30.0] as Array[float], "With room, the catch is in the bag and in the log")
+	assert_eq(fishing_log.record_of(CARP), 48.0)
+	rod.catch_screen_timer.stop() # the catch screen would pause the tree
+
+
+## L32: a float that arrives after its line was reeled in is nobody's, so it goes straight back; a caster who leaves
+## takes their float with them; ReelTimer runs once per catch.
+func test_a_float_nobody_adopted_goes_back_and_so_does_a_leaving_casters() -> void:
+	var rod: FishingRod = await _equip_rod()
+	assert_true(rod.reel_timer.one_shot, "The reel runs once per catch")
+	assert_true(rod.catch_screen_timer.one_shot)
+	var late: Bobber = BOBBER_SCENE.instantiate() as Bobber
+	root.add_child(late)
+	late.launch(Transform3D(Basis(), Vector3(0.0, 2.0, 0.0)), Vector3.FORWARD, 1.0, player, rod)
+	assert_eq(rod.state, FishingRod.State.IDLE, "The line was reeled in during the round trip")
+	rod._on_spawner_spawned(late)
+	assert_null(rod.bobber, "The late float is not adopted")
+	await wait_process_frames(1)
+	assert_false(is_instance_valid(late), "and goes straight back")
+	var caster := StaticBody3D.new()
+	root.add_child(caster)
+	var left_behind: Bobber = BOBBER_SCENE.instantiate() as Bobber
+	root.add_child(left_behind)
+	left_behind.launch(Transform3D(Basis(), Vector3(0.0, 2.0, 0.0)), Vector3.FORWARD, 1.0, caster)
+	caster.queue_free()
+	await wait_process_frames(2)
+	assert_false(is_instance_valid(left_behind), "A caster who leaves takes their float with them")
 
 
 func test_torch_goes_out_in_water() -> void:

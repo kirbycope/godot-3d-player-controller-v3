@@ -77,11 +77,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
 shape = SubResource("CapsuleShape3D_torch")
 
 [node name="FireVFX" type="Node3D" parent="." unique_id=987654326 instance=ExtResource("2_fire_vfx")]
+top_level = true
 transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, 0, 0, 0.7, 0, 0.52, 0)
 script = ExtResource("3_ndh0a")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=987654327]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+top_level = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.62, 0)
 light_color = Color(1, 0.65, 0.25, 1)
 light_energy = 2.0
 shadow_enabled = true
@@ -100,6 +102,18 @@ max_distance = 20.0
 [node name="ImpactCooldownTimer" type="Timer" parent="."]
 wait_time = 0.5
 one_shot = true
+
+[node name="FlameAnchor" type="RemoteTransform3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.52, 0)
+remote_path = NodePath("../FireVFX")
+update_rotation = false
+update_scale = false
+
+[node name="LightAnchor" type="RemoteTransform3D" parent="FireVFX"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.14285715, 0)
+remote_path = NodePath("../../OmniLight3D")
+update_rotation = false
+update_scale = false
 
 [node name="BodySynchronizer" type="MultiplayerSynchronizer" parent="."]
 script = ExtResource("sync_script")

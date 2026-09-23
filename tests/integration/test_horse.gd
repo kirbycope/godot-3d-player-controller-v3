@@ -89,6 +89,27 @@ func test_walking_up_and_pressing_action_mounts() -> void:
 	assert_false(horse.action_prompt.visible)
 
 
+## M23: an E typed into the focused chat field reaches the horse's _input before the field; it does not mount.
+func test_typing_in_chat_beside_the_horse_does_not_mount() -> void:
+	player.warp_to(Transform3D(Basis(), horse.global_position + Vector3(1.5, 0.1, 0.0)))
+	await wait_physics_frames(3)
+	assert_true(horse.action_prompt.visible, "In range the prompt is up")
+	var chat: ChatWindow = player.get_node("Hud/Chat")
+	chat.open_input()
+	assert_true(player.is_typing, "The chat field has the keyboard")
+	sender.action_down("action")
+	await wait_physics_frames(2)
+	sender.action_up("action")
+	await wait_physics_frames(2)
+	assert_false(player.is_riding, "Typing an E into the chat does not mount")
+	chat.close_input()
+	sender.action_down("action")
+	await wait_physics_frames(2)
+	sender.action_up("action")
+	await wait_physics_frames(2)
+	assert_true(player.is_riding, "With the chat closed, Action mounts")
+
+
 func test_the_move_input_rides_the_horse_and_the_blend_space_follows_the_pace() -> void:
 	player.mount(horse)
 	await wait_physics_frames(2)

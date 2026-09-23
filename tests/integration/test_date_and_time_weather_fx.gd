@@ -100,7 +100,26 @@ func test_hud_date_time_and_weather_forecast_coexistence() -> void:
 	wf_display.weather_fx = wfx
 	hud.add_child(wf_display)
 
-	assert_not_null(dt_display)
-	assert_not_null(wf_display)
+	# The clock face: Breath of the Wild styling, 12-hour, rounded down to the five minutes
+	dt.set_time(13, 47, 0)
+	var rich_time: RichTextLabel = dt_display.get_node("%TimeRichLabel")
+	assert_true((dt_display.get_node("%BotwBox") as Control).visible, "The BotW face shows")
+	assert_false((dt_display.get_node("%TimeLabel") as Control).visible, "and the plain label does not")
+	assert_eq(rich_time.text, "[i]1:45[/i]", "13:47 reads 1:45 on the BotW face")
+	# The forecast beside it: the biome and temperature, and one icon per forecast cycle, the current one first
+	var info: Label = wf_display.get_node("%InfoLabel")
+	assert_true(info.text.begins_with(ClimateData.get_biome_display_name(wfx.current_biome)), "The forecast names the biome: " + info.text)
+	assert_true(info.text.ends_with("°C"), "and the temperature: " + info.text)
+	var icons: HBoxContainer = wf_display.get_node("%ForecastIcons")
+	var forecast: Array[ClimateData.WeatherType] = wfx.get_forecast()
+	assert_eq(icons.get_child_count(), forecast.size(), "One icon per forecast cycle")
+	assert_eq((icons.get_child(0) as TextureRect).texture, ClimateData.get_weather_icon(forecast[0]), "the current weather first")
+	# Both keep drawing while the other runs: the clock moves on and the forecast rolls over
+	dt.set_time(22, 3, 0)
+	assert_eq(rich_time.text, "[i]10:00[/i]", "The clock face follows the time")
+	wfx.advance_cycle()
+	assert_eq(icons.get_child_count(), wfx.forecast_length, "The forecast strip redraws on the next cycle")
+	assert_eq((icons.get_child(0) as TextureRect).texture, ClimateData.get_weather_icon(wfx.get_forecast()[0]))
+	assert_eq(rich_time.text, "[i]10:00[/i]", "with the clock face untouched")
 
 

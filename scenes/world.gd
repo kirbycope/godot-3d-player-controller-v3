@@ -35,6 +35,7 @@ const STEAM_LOBBY_TYPE_PUBLIC: int = 2
 @export var show_controls: bool = false
 
 @export var max_lobby_players: int = 4
+@export_file("*.tscn") var title_scene: String = "res://scenes/main.tscn" ## Where the game goes when the session ends.
 
 var player: Player ## The player this peer controls, once spawned.
 var radi_ot_player: RadiOtPlayer3D ## The radio of the road car the local Player is in, null on foot; the car's own, heard around the car.
@@ -77,8 +78,18 @@ func load_state(state: Dictionary) -> void:
 
 
 ## A felled tree is firewood for the Guide's errand; ore is not.
-## A tree came down (each tree's depleted is connected here in the scene): the chopping quest moves on.
+## A tree came down (each tree's depleted is connected here in the scene). The server hears the felling hit as it
+## lands, relayed from the peer whose Player struck it, so it credits that peer's chopping quest and no one else's.
+## The other peers see the tree fall through its replicated flag and pass over it here.
 func _on_tree_chopped() -> void:
+	if not multiplayer.is_server():
+		return
+	var feller: int = multiplayer.get_remote_sender_id()
+	_credit_chop.rpc_id(feller if feller != 0 else multiplayer.get_unique_id())
+
+
+@rpc("authority", "call_local", "reliable")
+func _credit_chop() -> void:
 	if player and player.quest_log:
 		player.quest_log.progress(&"chop_tree")
 
@@ -243,15 +254,24 @@ func _on_cycle_radio_station(direction: int) -> void:
 	_radio_car.radio_station = posmod(_radio_car.radio_station + direction, maxi(radi_ot_player.get_station_count(), 1))
 
 
-## The car radio's signals are connected here in the scene; they matter while the local Player is in that car.
-func _on_radio_station_changed(_station: RadioStation) -> void:
-	if radi_ot_player and player and player.riding == _radio_car:
+## The car radio's station_changed and radio_toggled are connected here in the scene, each bound to its car: the
+## toast shows only on the screen of a Player in that car, never to anyone it drives past.
+func _on_radio_station_changed(_station: RadioStation, car_path: NodePath) -> void:
+	if radi_ot_player and player and player.riding == get_node(car_path):
 		radi_ot_player.get_hud().show_toast(5.0)
 
 
-func _on_radio_toggled(_is_playing: bool) -> void:
-	if radi_ot_player and player and player.riding == _radio_car:
+func _on_radio_toggled(_is_playing: bool, car_path: NodePath) -> void:
+	if radi_ot_player and player and player.riding == get_node(car_path):
 		radi_ot_player.get_hud().show_toast(5.0)
+
+
+## Wired to SteamPeer.session_ended in the scene: this peer left the lobby, the host went away or the join failed,
+## so the game goes back to [member title_scene]. A world a test put in the tree beside its runner, rather than
+## as the current scene, stays where it is.
+func _on_session_ended() -> void:
+	if get_tree().current_scene == self:
+		get_tree().change_scene_to_file(title_scene)
 
 
 ## Joins the lobby we arrived through (SteamPeer connects on ready) or creates one and hosts it.

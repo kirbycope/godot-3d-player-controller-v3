@@ -6,18 +6,18 @@ a .tres (an ammunition's projectile_scene) or a clip preloaded by a script shows
 export_files (scenes) or hang them on an exported scene (other resources). No dependencies.
 
 Usage, from the project root:
-    python tools/pck_missing.py [docs/index.pck]
+    python tools/pck_missing.py [build/index.pck]
 """
 import os,re,sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from pck_report import read_pack
-packed=set(p.replace('res://','') for _,p in read_pack(sys.argv[1] if len(sys.argv)>1 else 'docs/index.pck'))
+packed=set(p.replace('res://','') for _,p in read_pack(sys.argv[1] if len(sys.argv)>1 else 'build/index.pck'))
 def in_pack(rel):
     return rel in packed or (rel+'.import') in packed or (rel+'.remap') in packed or rel.replace('.gd','.gdc') in packed
 missing={}
 skip=('tests/','addons/gut/','scratch/','.godot/','addons/godotsteam/editor/','tools/')
 for root,dirs,files in os.walk('.'):
-    dirs[:]=[d for d in dirs if d not in ('.godot','.git','scratch','.venv','docs','.mcp')]
+    dirs[:]=[d for d in dirs if d not in ('.godot','.git','scratch','.venv','build','docs','.mcp')]
     for n in files:
         p=os.path.join(root,n).replace(os.sep,'/')[2:]
         if any(s in p for s in skip): continue

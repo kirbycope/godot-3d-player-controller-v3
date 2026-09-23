@@ -3,8 +3,9 @@ extends GutTest
 ## Purpose: a client carrying the buddy owns it while it is in their hands. Picking it up hands its authority (and
 ## so its synchronizer) to the carrier's peer and puts every copy on that Player's spring arm, so the server's copy
 ## rides along instead of writing its old position back; dropping it hands it back to the server and puts every
-## copy back into the scene. Two scene branches with their own MultiplayerAPI talk over ENet on localhost, as
-## test_horse_multiplayer does.
+## copy back into the scene. The server arbitrates: of two Players picking it up at once only the first gets it,
+## and a carrier or thrower who drops out leaves it back in the scene, the server's. Two scene branches with their
+## own MultiplayerAPI talk over ENet on localhost, as test_horse_multiplayer does.
 
 const PORT: int = 47399
 const PLAYER_SCENE: PackedScene = preload("res://addons/3d_player_controller/scenes/player.tscn")
@@ -13,6 +14,7 @@ const PLAYER_SPAWNER: Script = preload("res://addons/3d_player_controller/script
 
 var server_root: Node3D
 var client_root: Node3D
+var client_path: NodePath
 var server_api: SceneMultiplayer
 var client_api: SceneMultiplayer
 
@@ -47,6 +49,7 @@ func before_each() -> void:
 	client_root.name = "ClientBranch"
 	add_child(server_root)
 	add_child(client_root)
+	client_path = client_root.get_path()
 	server_api = SceneMultiplayer.new()
 	client_api = SceneMultiplayer.new()
 	get_tree().set_multiplayer(server_api, server_root.get_path())
@@ -71,11 +74,12 @@ func before_each() -> void:
 
 
 func after_each() -> void:
-	# Free the branches while their APIs still exist so synchronizers and spawners unregister cleanly
+	# Free the branches while their APIs still exist so synchronizers and spawners unregister cleanly; a test where
+	# the client quits has freed its branch already
 	var server_path: NodePath = server_root.get_path()
-	var client_path: NodePath = client_root.get_path()
 	server_root.free()
-	client_root.free()
+	if is_instance_valid(client_root):
+		client_root.free()
 	server_api.multiplayer_peer.close()
 	client_api.multiplayer_peer.close()
 	get_tree().set_multiplayer(null, server_path)
@@ -142,3 +146,79 @@ func test_a_client_carrier_takes_the_buddy_with_them_and_hands_it_back_on_drop()
 	for buddy: Node in [host_buddy, remote_buddy]:
 		if not server_root.is_ancestor_of(buddy) and not client_root.is_ancestor_of(buddy):
 			buddy.free() # a drop returns to the current scene, which the test runner has none of
+
+
+## The buddy on the client's arm or in the air from its throw, and then the client quits: its game is gone and its
+## connection closes.
+func _client_leaves_with_the_buddy(thrown: bool) -> void:
+	var client_id: int = client_api.get_unique_id()
+	var client_player: Player = await _client_player()
+	await wait_physics_frames(20)
+	var host_buddy: CharacterBody3D = server_root.get_node("LittleBuddy")
+	var remote_buddy: CharacterBody3D = client_root.get_node("LittleBuddy")
+	var home: Node = host_buddy.get_parent()
+	remote_buddy.player = client_player
+	remote_buddy.pick_up()
+	await wait_until(func() -> bool: return remote_buddy.is_held, 2.0)
+	if thrown:
+		remote_buddy.throw_with_direction(Vector3.UP, 1.0) # straight up, so it is still in the air when the client goes
+		await wait_until(func() -> bool: return host_buddy.get_parent() == home, 2.0)
+		assert_eq(host_buddy.get_multiplayer_authority(), client_id, "The thrower keeps it while it flies")
+	else:
+		assert_ne(host_buddy.get_parent(), home, "On the carrier's arm on the server")
+	client_root.free()
+	client_api.multiplayer_peer.close()
+	await wait_until(func() -> bool: return server_api.get_peers().is_empty(), 2.0)
+	await wait_process_frames(2) # the server frees its copy of the leaver's Player at the end of the frame
+	assert_true(is_instance_valid(host_buddy), "The buddy is not freed with the leaver's Player")
+	assert_eq(host_buddy.get_parent(), home, "It is back where it stood before anyone picked it up")
+	assert_eq(host_buddy.get_multiplayer_authority(), 1, "and the server's again")
+	assert_eq((host_buddy.get_node("BodySynchronizer") as MultiplayerSynchronizer).get_multiplayer_authority(), 1, "synchronizer included")
+	assert_eq(host_buddy.carried_by, 0)
+	assert_false(host_buddy.is_thrown)
+	assert_false(host_buddy.collision_shape.disabled, "It bumps into things again")
+
+
+## H17: a carrier who drops out does not take the buddy with their Player.
+func test_a_carrier_who_drops_out_leaves_the_buddy_to_the_server() -> void:
+	await _client_leaves_with_the_buddy(false)
+
+
+## H17: a thrower who drops out mid-flight does not leave the buddy's authority on a peer that is gone.
+func test_a_thrower_who_drops_out_mid_flight_leaves_the_buddy_to_the_server() -> void:
+	await _client_leaves_with_the_buddy(true)
+
+
+## M24: the host throws the buddy straight up and the client reaches for it in the air. A throw is the thrower's until
+## it lands, so the server refuses the client, which never holds it; nobody but the server can move it onto an arm or
+## hand its authority over.
+func test_a_pick_up_while_somebody_else_has_it_is_refused() -> void:
+	var client_id: int = client_api.get_unique_id()
+	var client_player: Player = await _client_player()
+	var host_player: Player = server_root.get_node("Players/1")
+	await wait_physics_frames(20)
+	var host_buddy: CharacterBody3D = server_root.get_node("LittleBuddy")
+	var remote_buddy: CharacterBody3D = client_root.get_node("LittleBuddy")
+	var home: Node = host_buddy.get_parent()
+	host_buddy.player = host_player
+	host_buddy.pick_up()
+	assert_true(host_buddy.is_held, "The host has it")
+	host_buddy.throw_with_direction(Vector3.UP, 1.0)
+	await wait_until(func() -> bool: return remote_buddy.get_parent() == client_root, 2.0)
+	remote_buddy.player = client_player
+	remote_buddy.pick_up()
+	await wait_physics_frames(10)
+	assert_false(remote_buddy.is_held, "The client's reach for somebody else's throw is refused")
+	assert_eq(host_buddy.get_parent(), home, "The buddy flies on, on nobody's arm")
+	assert_eq(remote_buddy.get_parent(), client_root)
+	assert_eq(host_buddy.get_multiplayer_authority(), 1, "still the host's throw")
+	assert_eq(remote_buddy.get_multiplayer_authority(), 1)
+	remote_buddy._carry_by.rpc(client_id)
+	remote_buddy._set_authority.rpc(client_id)
+	await wait_physics_frames(10)
+	assert_eq(host_buddy.get_parent(), home, "A client cannot pull it onto its own arm by calling the setters")
+	assert_eq(remote_buddy.get_parent(), client_root, "not even on its own screen")
+	assert_eq(host_buddy.get_multiplayer_authority(), 1, "nor take its authority")
+	for buddy: Node in [host_buddy, remote_buddy]:
+		if not server_root.is_ancestor_of(buddy) and not client_root.is_ancestor_of(buddy):
+			buddy.free()

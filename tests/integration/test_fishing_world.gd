@@ -43,6 +43,27 @@ func _cast_and_wait_for_water() -> void:
 	assert_eq((rod.bobber.line.mesh as ImmediateMesh).get_surface_count(), 1, "The float draws its own line back to the rod")
 
 
+## H16: a fish a metre from where the crosshair meets the pool, inside its 1.5 m scare sphere, neither stops the
+## aim ray short nor the cast: the float lands where the crosshair pointed.
+func test_the_cast_passes_over_a_fish_near_the_aim_point() -> void:
+	var shadows: FishShadows = world.get_node("Pool/FishShadows")
+	var water: Buoyancy = world.get_node("Pool/WaterArea3D")
+	var ray: RayCast3D = player.projectile_raycast
+	shadows.park_shadows_for_test(shadows.shadows[0], Vector3(0.0, 0.0, -24.0))
+	await wait_physics_frames(2)
+	ray.force_raycast_update()
+	assert_eq(ray.get_collider(), water, "The crosshair is on the pool")
+	var aim: Vector3 = ray.get_collision_point()
+	shadows.park_shadows_for_test(shadows.shadows[0], aim + Vector3(1.0, 0.0, 0.0))
+	await wait_physics_frames(2)
+	ray.force_raycast_update()
+	assert_eq(ray.get_collider(), water, "A fish a metre off does not stop the aim ray")
+	assert_almost_eq(ray.get_collision_point(), aim, Vector3.ONE * 0.05, "which still meets the water where it did")
+	await _cast_and_wait_for_water()
+	var landed: Vector3 = rod.bobber.global_position
+	assert_lt(Vector2(landed.x - aim.x, landed.z - aim.z).length(), 1.5, "The float lands by the point the crosshair gave the cast: %s for %s" % [landed, aim])
+
+
 func test_full_loop_catches_a_fish() -> void:
 	assert_true(player.is_fishing)
 	var action: Label = player.controls.joypad_button_1_label
@@ -95,7 +116,7 @@ func test_full_loop_catches_a_fish() -> void:
 	assert_signal_emitted(rod, "fish_hooked")
 	var fish: Fish = rod.hooked_fish
 	var fishing_log: FishingLog = player.get_node("FishingLog")
-	var first_of_its_kind: bool = fishing_log.record_of(fish) == 0.0 # the world player's log persists, so a saved record may stand
+	assert_eq(fishing_log.record_of(fish), 0.0, "The run's own log (tests/gut_pre_run.gd) starts empty, never the player's")
 	rod.reel_timer.stop()
 	rod._on_reel_timer_timeout()
 	assert_signal_emitted(rod, "fish_caught")
@@ -113,8 +134,7 @@ func test_full_loop_catches_a_fish() -> void:
 	assert_true(screen.visible, "then holds the catch up")
 	assert_eq(screen.name_label.text, fish.get_display_name(), "by name")
 	assert_true(screen.size_label.text.ends_with("cm") or screen.size_label.text.ends_with("* record") or screen.size_label.text == "Junk", "with its length")
-	if first_of_its_kind and not fish.is_junk:
-		assert_true(screen.size_label.text.ends_with("* record"), "A first catch is the record")
+	assert_true(screen.size_label.text.ends_with("* record"), "A first catch is the record")
 	assert_eq(screen.flavor_label.text, fish.description, "with its flavour text")
 	assert_true(get_tree().paused, "Playing alone, the world waits")
 	var card: FishCard = player.controls.get_node("FishCard")
@@ -176,11 +196,12 @@ func test_swimming_up_to_a_fish_scares_it_off_until_it_returns_elsewhere() -> vo
 	# different one and that fish's area fires first. Park this one and send the others away.
 	shadows.park_shadows_for_test(fish, fish.global_position)
 	var start: Vector3 = fish.global_position
+	var scare_radius: float = (fish.get_node("ScareArea/CollisionShape3D").shape as SphereShape3D).radius
 	for other: MeshInstance3D in shadows.shadows:
 		if other != fish:
 			assert_gt(
 				other.global_position.distance_to(start),
-				shadows.scare_distance * 2.0,
+				scare_radius * 2.0,
 				"Parking should leave no other shadow close enough to take the scare first"
 			)
 	assert_true(fish.get_node("ScareArea") is Area3D, "Each shadow carries its scare volume")

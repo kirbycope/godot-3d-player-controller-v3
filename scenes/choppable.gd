@@ -1,6 +1,7 @@
 class_name Choppable
 extends Harvestable
-## A tree felled after enough chops from the "action" interaction or melee weapon attacks.
+## A tree felled with an axe, by its swings or the Action interaction: once spent it shows its stump, and its log
+## falls where the trunk stood.
 
 @export var standing_node: Node3D ## The intact tree model.
 @export var stump_node: Node3D ## The stump model shown after the tree falls.
@@ -22,16 +23,18 @@ func _ready() -> void:
 		_set_collision_shapes_disabled(log_node, true)
 
 
-## Swaps the standing tree for the stump and fallen log.
+## Swaps the standing tree for the stump and fallen log: the trunk's own shapes on the root go with the tree, the
+## stump's stay, and the log's come on.
 func _on_depleted() -> void:
+	var looking: Player = player # the base lets go of the Player looking on
+	super()
 	if standing_node:
 		standing_node.hide()
 	if stump_node:
 		stump_node.show()
-	# Remove the standing trunk collision on the root, if any
 	for child: Node in get_children():
 		if child is CollisionShape3D:
-			(child as CollisionShape3D).disabled = true
+			(child as CollisionShape3D).set_deferred(&"disabled", true)
 	if log_body:
 		log_body.show()
 		# The log spawns overlapping the stump; temporary exceptions prevent a depenetration launch
@@ -44,7 +47,11 @@ func _on_depleted() -> void:
 		# Only the body's own shapes; the model's imported static colliders stay disabled
 		for child: Node in log_body.get_children():
 			if child is CollisionShape3D:
-				(child as CollisionShape3D).disabled = false
+				(child as CollisionShape3D).set_deferred(&"disabled", false)
+		# The log's authority (the server) simulates the fall; its BodySynchronizer carries it to every other peer,
+		# where SyncedBody keeps the log frozen under the replicated transform
+		if not log_body.is_multiplayer_authority():
+			return
 		log_body.freeze = false
 		# Tip the log away from the stump so it does not balance on its cut end
 		var up: Vector3 = global_transform.basis.y
@@ -54,8 +61,8 @@ func _on_depleted() -> void:
 			away = -global_transform.basis.z
 		log_body.angular_velocity = up.cross(away.normalized()) * 2.0
 		# Nudge the log away from the player
-		if player:
-			var push: Vector3 = log_body.global_position - player.global_position
+		if looking:
+			var push: Vector3 = log_body.global_position - looking.global_position
 			push = push - push.project(up)
 			if push.length_squared() > 0.001:
 				log_body.apply_central_impulse(push.normalized() * log_body.mass * 2.0)
@@ -88,6 +95,7 @@ func _on_log_collision_timer_timeout() -> void:
 		log_body.remove_collision_exception_with(body as PhysicsBody3D)
 
 
+## Deferred, since a tree can fall inside a physics callback, where shapes cannot change.
 func _set_collision_shapes_disabled(node: Node3D, disabled: bool) -> void:
 	for shape: Node in node.find_children("*", "CollisionShape3D", true, false):
-		(shape as CollisionShape3D).disabled = disabled
+		(shape as CollisionShape3D).set_deferred(&"disabled", disabled)

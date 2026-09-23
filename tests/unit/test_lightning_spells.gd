@@ -7,6 +7,7 @@ extends GutTest
 const LIGHTNING: LightningAbility = preload("res://resources/abilities/lightning.tres")
 const CHAIN: ChainLightningAbility = preload("res://resources/abilities/chain_lightning.tres")
 const WEATHER_SCENE = preload("res://addons/weather_fx/scenes/weather_fx.tscn")
+const PLAYER_SCENE: PackedScene = preload("res://addons/3d_player_controller/scenes/player.tscn")
 
 var root: Node3D
 var lightning: LightningFX
@@ -67,9 +68,14 @@ func test_chain_lightning_jumps_to_nearby_enemies_with_falloff() -> void:
 func test_chain_lightning_skips_the_caster_and_players() -> void:
 	var caster := _enemy(Vector3(0, 0, 0)) # a caster that could take hits must not zap itself
 	var first := _enemy(Vector3(3, 0, 0))
-	var ally := _enemy(Vector3(5, 0, 0))
-	ally.set_script(null)
+	var player: Player = PLAYER_SCENE.instantiate()
+	root.add_child(player)
+	player.global_position = Vector3(5, 0, 0) # well within a jump of the first enemy
+	await wait_physics_frames(1)
+	assert_true(player.is_in_group(&"Focusable") and player.has_method(&"take_hit"), "The Player is Focusable and takes hits, so only being a Player rules it out")
+	var health_before: float = player.health.health
 	CHAIN.impact(caster, first)
 	assert_true(caster.hits.is_empty(), "Never back to the caster")
 	assert_eq(first.hits.size(), 1)
-	assert_null(CHAIN.next_link(caster, first, [first]), "Nothing left that can take a hit")
+	assert_eq(player.health.health, health_before, "Never on to a Player")
+	assert_null(CHAIN.next_link(caster, first, [first]), "The Player in reach is no link")

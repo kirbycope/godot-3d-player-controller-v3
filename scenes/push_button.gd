@@ -1,8 +1,7 @@
 class_name PushButton
 extends StaticBody3D
-## A button the Player pushes with the "action" interaction, reaching out with hand IK.
-
-signal button_pushed ## Emitted when the button is pressed down.
+## A button the Player pushes with the "action" interaction, reaching out with hand IK. The push runs on the
+## pusher's peer, and the button going down is sent to every peer.
 
 @export var reach_start_ratio: float = 0.1 ## Emote progress where the hand starts reaching.
 @export var reach_full_ratio: float = 0.35 ## Emote progress where the hand is fully on the button.
@@ -11,6 +10,7 @@ signal button_pushed ## Emitted when the button is pressed down.
 @export var press_ratio: float = 0.4 ## Emote progress where the button is pressed down.
 @export var stand_distance: float = 0.5 ## How close the Player stands to the button so the hand can reach it.
 @export var approach_speed: float = 2.0 ## Speed the Player slides into stand_distance during the wind-up.
+@export var press_reach: float = 3.0 ## How near the sender's Player must be for a press from its peer to count.
 
 var has_pressed: bool = false
 var is_pushing: bool = false
@@ -56,8 +56,18 @@ func _physics_process(delta: float) -> void:
 	# Press the button once the hand connects.
 	if ratio >= press_ratio and not has_pressed:
 		has_pressed = true
-		animation_player.play("push")
-		button_pushed.emit()
+		_press.rpc()
+
+
+## The button goes down on every peer. Sent by the pusher's peer, so it only counts when that peer's Player stands
+## at the button: no peer presses it from across the map.
+@rpc("any_peer", "call_local", "reliable")
+func _press() -> void:
+	var sender: int = multiplayer.get_remote_sender_id()
+	for pusher: Node in get_tree().get_nodes_in_group(&"Player"):
+		if pusher.get_multiplayer_authority() == sender and (pusher as Node3D).global_position.distance_to(global_position) <= press_reach:
+			animation_player.play("push")
+			return
 
 
 ## Called by [Camera] when the player looks at the button and presses "action".

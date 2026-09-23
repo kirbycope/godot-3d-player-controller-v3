@@ -14,10 +14,10 @@
 [ext_resource type="Resource" uid="uid://bum070844yb5" path="res://resources/abilities/shadowstep.tres" id="12_7ggga"]
 [ext_resource type="Resource" path="res://resources/abilities/sword_slash.tres" id="13_j6edp"]
 [ext_resource type="PackedScene" uid="uid://ct7n8imyllhbo" path="res://addons/3d_player_controller/scenes/player.tscn" id="14_qcp4i"]
-[ext_resource type="PackedScene" uid="uid://drgmvktmkph2w" path="res://scenes/enemy_swordsman.tscn" id="15_nkd8p"]
+[ext_resource type="PackedScene" uid="uid://c7enemysword01" path="res://scenes/enemy_swordsman.tscn" id="15_nkd8p"]
 [ext_resource type="PackedScene" uid="uid://drgmvkbg7fitw" path="res://scenes/enemy_archer.tscn" id="16_174aa"]
 [ext_resource type="PackedScene" uid="uid://drgmvkr7bji2w" path="res://scenes/enemy_rifleman.tscn" id="17_k1w2v"]
-[ext_resource type="PackedScene" uid="uid://drgmvkcyor42w" path="res://scenes/enemy_spellcaster.tscn" id="18_vc3n0"]
+[ext_resource type="PackedScene" uid="uid://c7enemycast001" path="res://scenes/enemy_spellcaster.tscn" id="18_vc3n0"]
 [ext_resource type="Material" uid="uid://smkievpeajs3" path="res://assets/ambientcg_com/grass_001/Grass001_1K-JPG.tres" id="19_gh47e"]
 [ext_resource type="Script" path="res://tests/unit/ability_range.gd" id="range_script"]
 

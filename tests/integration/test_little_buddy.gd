@@ -21,12 +21,15 @@ func test_stop_moving_resets_blend_position_to_idle():
 	root.add_child(buddy)
 	await wait_physics_frames(2)
 
-	# Simulate moving (blend_position = 1.0 for running)
-	buddy.animation_tree.set(buddy.LOCOMOTION_BLEND_POSITION_PATH, 1.0)
+	# Running: the replicated blend is what the easing starts from, and its setter feeds the blend space
+	buddy.locomotion_blend = 1.0
 	var moving_blend: float = buddy.animation_tree.get(buddy.LOCOMOTION_BLEND_POSITION_PATH)
 	assert_eq(moving_blend, 1.0, "Locomotion blend position should be 1.0 while moving.")
 
 	# Stop moving (standing next to player); the blend eases toward idle over physics frames
+	buddy.call("_stop_moving")
+	var easing: float = buddy.animation_tree.get(buddy.LOCOMOTION_BLEND_POSITION_PATH)
+	assert_between(easing, 0.01, 0.99, "One step eases the blend down rather than snapping it to idle")
 	for i: int in range(60):
 		buddy.call("_stop_moving")
 	var idle_blend: float = buddy.animation_tree.get(buddy.LOCOMOTION_BLEND_POSITION_PATH)
@@ -61,12 +64,13 @@ func test_pickup_resets_blend_position_to_idle():
 	root.add_child(buddy)
 	await wait_physics_frames(2)
 
-	# Set moving
-	buddy.animation_tree.set(buddy.LOCOMOTION_BLEND_POSITION_PATH, 1.0)
+	# Running when it is picked up
+	buddy.locomotion_blend = 1.0
 
 	buddy.player = player
 	buddy.pick_up()
 	var idle_blend: float = buddy.animation_tree.get(buddy.LOCOMOTION_BLEND_POSITION_PATH)
+	assert_eq(buddy.locomotion_blend, 0.0, "The replicated blend drops to idle in the hands")
 	assert_eq(idle_blend, 0.0, "Locomotion blend position should be 0.0 when picked up.")
 
 func test_the_replicated_blend_feeds_the_blend_space_on_a_puppet():
@@ -98,3 +102,30 @@ func test_a_drop_returns_the_buddy_to_where_it_stood() -> void:
 	buddy.drop()
 	await wait_physics_frames(2)
 	assert_eq(buddy.get_parent(), home, "and back under Home when dropped, current scene or not")
+
+
+## M23: an E typed into the focused chat field reaches the buddy's _input before the field; it neither picks the
+## buddy up nor, once it is in the hands, drops it.
+func test_typing_in_chat_neither_picks_up_nor_drops_the_buddy() -> void:
+	var player: Player = PLAYER_SCENE.instantiate() as Player
+	root.add_child(player)
+	var buddy: CharacterBody3D = LITTLE_BUDDY_SCENE.instantiate() as CharacterBody3D
+	root.add_child(buddy)
+	await wait_physics_frames(2)
+	var press := InputEventAction.new()
+	press.action = "action"
+	press.pressed = true
+	var chat: ChatWindow = player.get_node("Hud/Chat")
+	buddy.display_menu(player) # what looking at it does
+	chat.open_input()
+	assert_true(player.is_typing, "The chat field has the keyboard")
+	buddy._input(press)
+	assert_false(buddy.is_held, "Typing an E into the chat does not pick the buddy up")
+	chat.close_input()
+	buddy._input(press)
+	assert_true(buddy.is_held, "With the chat closed, Action picks it up")
+	chat.open_input()
+	buddy._input(press)
+	assert_true(buddy.is_held, "and typing does not drop it")
+	chat.close_input()
+	buddy.drop()

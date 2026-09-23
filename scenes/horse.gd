@@ -101,7 +101,7 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if player == null or player.is_riding or not menu_displayed:
+	if player == null or player.is_riding or not menu_displayed or player.is_typing or player.is_paused:
 		return
 	if event.is_action_pressed("action"):
 		player.mount(self)
@@ -280,23 +280,45 @@ func _hand_to(peer_id: int, rider: int) -> void:
 		_grant.rpc_id(SERVER_PEER, peer_id, rider)
 
 
-## The server's half of [method _hand_to]: who is up, then whose the horse is, in that order everywhere.
+## The server's half of [method _hand_to]: who is up, then whose the horse is, in that order everywhere. The server
+## arbitrates: a peer only gets itself on, only the rider gets off, and a mount while another peer's rider is up is
+## refused and the sender told to get back off ([method _refuse]), so two riders never share the saddle.
 @rpc("any_peer", "reliable")
 func _grant(peer_id: int, rider: int) -> void:
 	if not multiplayer.is_server():
+		return
+	var sender: int = multiplayer.get_remote_sender_id()
+	if sender == 0:
+		sender = SERVER_PEER # the server's own call
+	var mounting: bool = rider != 0
+	if (mounting and (rider != sender or peer_id != sender)) or (not mounting and (sender != rider_peer or peer_id != SERVER_PEER)):
+		return
+	if mounting and rider_peer != 0 and rider_peer != sender:
+		_refuse.rpc_id(sender)
 		return
 	_set_rider.rpc(rider)
 	_set_authority.rpc(peer_id)
 
 
+## From the server only (or this peer's own call): the horse is [param peer_id]'s.
 @rpc("any_peer", "call_local", "reliable")
 func _set_authority(peer_id: int) -> void:
-	set_multiplayer_authority(peer_id)
+	if multiplayer.get_remote_sender_id() <= SERVER_PEER:
+		set_multiplayer_authority(peer_id)
 
 
+## From the server only (or this peer's own call): [param peer_id]'s Player is up, 0 for nobody.
 @rpc("any_peer", "call_local", "reliable")
 func _set_rider(peer_id: int) -> void:
-	rider_peer = peer_id
+	if multiplayer.get_remote_sender_id() <= SERVER_PEER:
+		rider_peer = peer_id
+
+
+## The server refused this peer's mount: somebody else got up first, so the Player here gets back off.
+@rpc("any_peer", "call_local", "reliable")
+func _refuse() -> void:
+	if multiplayer.get_remote_sender_id() <= SERVER_PEER and player and player.riding == self:
+		player.dismount(true)
 
 
 ## A rider who drops out takes the authority with them; every peer hands the horse back to the server.
@@ -328,8 +350,11 @@ func mount(_player: Player) -> void:
 
 
 ## The Player gets off beside the horse; the server has the horse again. Only the rider gets off it: a refused
-## Player leaving the Riding state must not hand somebody else's ride back.
+## Player leaving the Riding state must not hand somebody else's ride back, though it gets its own layout back.
 func dismount(_player: Player) -> void:
+	if riding_control_scheme and _saved_control_scheme:
+		_player.control_scheme = _saved_control_scheme
+	_saved_control_scheme = null
 	if _player.get_multiplayer_authority() != rider_peer:
 		return
 	_player.global_position = dismount_point.global_position
@@ -337,9 +362,6 @@ func dismount(_player: Player) -> void:
 	speed = 0.0
 	player = null
 	_hand_to(SERVER_PEER, 0)
-	if riding_control_scheme and _saved_control_scheme:
-		_player.control_scheme = _saved_control_scheme
-	_saved_control_scheme = null
 	dismounted.emit()
 
 

@@ -15,10 +15,14 @@ const EXTRA_CONTROL_SCHEMES: Array[ControlScheme] = [
 ]
 
 
-## Called when the node enters the scene tree for the first time.
-func _ready() -> void:
+## Registers the extra layouts before any child is ready, so the title's Controls settings page lists them too.
+func _enter_tree() -> void:
 	for scheme: ControlScheme in EXTRA_CONTROL_SCHEMES:
 		PlayerControls.register_scheme(scheme)
+
+
+## Called when the node enters the scene tree for the first time.
+func _ready() -> void:
 	# [Webfix] Browsers require a user gesture before capturing the mouse and playing audio
 	var requires_input_activation: bool = ProjectSettings.get_setting("rendering/renderer/rendering_method") not in ["forward_plus", "mobile"]
 	# Two starts on purpose: the desktop and the editor open on the title screen and its buttons; the web export
@@ -40,10 +44,13 @@ func _unhandled_input(event: InputEvent) -> void:
 			if click_to_start.visible:
 				_dismiss_click_to_start()
 				return
+			# The lobby explorer and the loading screen answer A themselves; only the title's buttons are pressed here
+			if not title_screen.visible:
+				return
 			var focused_control: Control = get_viewport().gui_get_focus_owner()
 			if focused_control is BaseButton:
 				(focused_control as BaseButton).pressed.emit()
-			else:
+			elif title_screen.default_button():
 				title_screen.default_button().pressed.emit()
 
 

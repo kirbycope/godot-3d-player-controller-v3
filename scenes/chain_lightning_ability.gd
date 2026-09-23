@@ -3,7 +3,9 @@ extends DamageAbility
 ## Strikes the target, then jumps from it to the nearest enemy within [member jump_range] that has not been
 ## hit yet, up to [member max_jumps] times, the damage shrinking by [member jump_damage_scale] each jump. The
 ## jumps look for Focusable bodies that can take a hit and are not the caster or another Player; each one is
-## drawn as an arc by the weather's [LightningFX].
+## drawn as an arc by the weather's [LightningFX], on every peer through the world's [ProjectileSpawner]
+## ([method ProjectileSpawner.arc_lightning]), or on this peer alone without one. A jump's hit names the caster
+## ([method Ability.affect]), so a client's chain is taken by the server like any other hit of its.
 
 @export var max_jumps: int = 3
 @export var jump_range: float = 8.0 ## Metres a jump can reach from the last body hit.
@@ -19,6 +21,7 @@ func impact(caster: Node3D, target: Node3D) -> void:
 	super.impact(caster, target)
 	if not is_instance_valid(target):
 		return
+	var spawner: ProjectileSpawner = ProjectileSpawner.find_for(caster)
 	var lightning: LightningFX = caster.get_tree().get_first_node_in_group(&"LightningFX") as LightningFX
 	var hit: Array[Node3D] = [target]
 	var last: Node3D = target
@@ -28,9 +31,13 @@ func impact(caster: Node3D, target: Node3D) -> void:
 		if next == null:
 			return
 		jump_damage *= jump_damage_scale
-		next.call(&"take_hit", jump_damage, Focus.get_focus_target_position(last))
-		if lightning:
-			lightning.arc.rpc(Focus.get_focus_target_position(last), Focus.get_focus_target_position(next))
+		var from: Vector3 = Focus.get_focus_target_position(last)
+		var to: Vector3 = Focus.get_focus_target_position(next)
+		Ability.affect(next, &"take_hit", [jump_damage, from], caster)
+		if spawner:
+			spawner.arc_lightning(from, to, caster)
+		elif lightning:
+			lightning.arc(from, to)
 		hit.append(next)
 		last = next
 

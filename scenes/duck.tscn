@@ -1121,8 +1121,10 @@ boss_name = "Giant Duck"
 health = NodePath("../Health")
 
 [connection signal="collided" from="." to="." method="_on_collided"]
+[connection signal="timeout" from="AttackQuackCooldown" to="." method="_on_attack_quack_cooldown_timeout"]
 [connection signal="hit" from="EAT2/EAT/Skeleton3D/BoneAttachment3D/KnifeHitbox" to="." method="_on_knife_hitbox_hit"]
 [connection signal="health_changed" from="Health" to="StatusBars3D" method="set_health"]
+[connection signal="health_changed" from="Health" to="Boss" method="_on_health_changed"]
 [connection signal="died" from="Health" to="." method="_on_health_died"]
 
 [editable path="IDLE2"]

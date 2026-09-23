@@ -7,6 +7,7 @@
 [ext_resource type="AnimationLibrary" uid="uid://cj72elgwwlpq3" path="res://addons/3d_player_controller/assets/mixamo/animations/root_motion/Sitting On Idle.glb" id="4_bt8vh"]
 [ext_resource type="PackedScene" uid="uid://ci4cski5ljr6o" path="res://addons/3d_player_controller/assets/mixamo/characters/x_bot.fbx" id="5_wo52m"]
 [ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://addons/controls/action_prompt.tscn" id="6_action_prompt"]
+[ext_resource type="SceneReplicationConfig" path="res://resources/boat_replication.tres" id="7_seat_sync"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0063d"]
 render_priority = -1
@@ -180,6 +181,10 @@ autoplay = &"Sitting On Idle/mixamo_com"
 
 [node name="ActionPrompt" parent="." unique_id=1664152999 instance=ExtResource("6_action_prompt")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+
+[node name="SeatSynchronizer" type="MultiplayerSynchronizer" parent="."]
+editor_description = "Carries the server's occupant_peer to every peer, so each hides the dummy passenger while a real Player sits in Seat01."
+replication_config = ExtResource("7_seat_sync")
 
 [editable path="Seat01/y_bot_root"]
 [editable path="Seat02/x_bot"]
