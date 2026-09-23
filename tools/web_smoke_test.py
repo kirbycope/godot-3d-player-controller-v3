@@ -5,6 +5,9 @@ the engine or the page logs. Screenshots of each step land in scratch/web_smoke/
 
     pip install playwright && playwright install chromium
     python tools/web_smoke_test.py [--port 8123] [--headed] [--timeout 180]
+    python tools/web_smoke_test.py --url https://kirbycope.github.io/godot-3d-player-controller-v3/
+
+With --url it tests a deployed build instead of serving build/.
 
 Exit code 0 means the world loaded with no errors; 1 means it did not, and the log says why.
 """
@@ -73,13 +76,14 @@ def main() -> int:
 	parser.add_argument("--headed", action="store_true", help="show the browser")
 	parser.add_argument("--timeout", type=int, default=180, help="seconds to allow for the world to load")
 	parser.add_argument("--build", default=BUILD, help="the exported folder to serve (default build/)")
+	parser.add_argument("--url", help="test this deployed build instead of serving --build")
 	args = parser.parse_args()
 	from playwright.sync_api import sync_playwright
 
 	BUILD = os.path.abspath(args.build)
 	os.makedirs(OUT, exist_ok=True)
-	server = serve(args.port)
-	url = f"http://127.0.0.1:{args.port}/index.html"
+	server = None if args.url else serve(args.port)
+	url = args.url or f"http://127.0.0.1:{args.port}/index.html"
 	console: list[str] = []
 	errors: list[str] = []
 	warnings: list[str] = []
@@ -138,7 +142,8 @@ def main() -> int:
 				errors.append(f"[sky] the sky is one flat colour {sky[0]}: the sky shader is not drawing")
 			browser.close()
 	finally:
-		server.shutdown()
+		if server:
+			server.shutdown()
 		with open(os.path.join(OUT, "console.log"), "w", encoding="utf-8") as log:
 			log.write("\n".join(console))
 
