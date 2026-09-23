@@ -108,7 +108,7 @@ func test_the_hosts_weather_reaches_peers_through_a_synchronizer() -> void:
 
 func test_the_world_plays_the_weather_fx_ambience_by_biome() -> void:
 	var weather: WeatherFX = world.get_node("WeatherFX")
-	assert_false(weather.bgs_sets.is_empty(), "The ambience sets are WeatherFX's own, the addon's forest and beach loops")
+	assert_false(weather.bgs_sets.is_empty(), "The ambience sets are WeatherFX's own, a set for every biome")
 	assert_null(world.get_node_or_null("BackGroundSounds"), "with no extra node to wire")
 	var audio: WeatherAudio = world.get_node("WeatherFX/WeatherAudio")
 	weather.blend_zones = false
@@ -117,5 +117,8 @@ func test_the_world_plays_the_weather_fx_ambience_by_biome() -> void:
 	assert_not_null(target, "In a forest WeatherAudio has a player for the loop the weather and the hour call for")
 	assert_true(target.playing, "and it is playing")
 	weather.current_biome = ClimateData.BiomeZone.TEMPERATE_PLAINS
-	assert_null(audio.get_target_bgs_player(), "The plains have no loops of their own, so they are quiet")
+	var plains: AudioStreamPlayer = audio.get_target_bgs_player()
+	assert_not_null(plains, "The plains have loops of their own")
+	assert_ne(plains, target, "not the forest's")
+	assert_true(plains.playing, "and they take over")
 	assert_false(target.playing)
