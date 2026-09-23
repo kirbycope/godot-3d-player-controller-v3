@@ -275,6 +275,20 @@ class AddonRepositories(unittest.TestCase):
             code = main(list(argv))
         return code, out.getvalue()
 
+    def test_a_pull_that_changes_nothing_leaves_the_lock_alone(self) -> None:
+        # Every pull used to stamp a fresh "pulled" time into the lock, leaving a clone dirty with nothing
+        # worth committing; a pull that takes the same commit must not touch the file at all.
+        lock = addon_common.load_lock()
+        lock[self.NAME]["pulled"] = "2000-01-01T00:00:00Z"
+        addon_common.save_lock(lock)
+        before = (self.project / "tools" / "addons.lock.json").read_bytes()
+
+        code, out = self.call(pull_addons.main)
+
+        self.assertEqual(code, 0, out)
+        self.assertIn("up to date", out)
+        self.assertEqual((self.project / "tools" / "addons.lock.json").read_bytes(), before)
+
     def test_a_push_in_step_with_origin_goes_through(self) -> None:
         self.edit_here()
 

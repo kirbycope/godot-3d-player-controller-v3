@@ -1,10 +1,10 @@
 {
   "3d_player_controller": {
-    "commit": "602dd25129e1951828fa5b0d758b93a83aff9d7b",
-    "pulled": "2026-09-23T21:41:23Z",
+    "commit": "ed03a2e126919fca9106a57cd663ca70ab2d7b0a",
+    "pulled": "2026-09-23T21:50:41Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Removal guard lets an upstream deletion through, and still stops on local files"
+    "subject": "A pull that changes nothing leaves addons.lock.json alone"
   },
   "GPUTrail": {
     "commit": "00a764775941c719847deeda8a31b4ebd8893895",
@@ -14,18 +14,18 @@
     "subject": "Set mask to null if it is not set"
   },
   "controls": {
-    "commit": "b01da76397b182e6f572056da8ecf1ffdd373210",
-    "pulled": "2026-09-23T21:41:26Z",
+    "commit": "9d51a77dd7c9b94c94f4518e892c0e3b98a3ff4f",
+    "pulled": "2026-09-23T21:50:44Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-controls.git",
-    "subject": "Removal guard lets an upstream deletion through, and still stops on local files"
+    "subject": "A pull that changes nothing leaves addons.lock.json alone"
   },
   "date_and_time": {
-    "commit": "918e7856f0974163c5ee8c19b9e344881bb192be",
-    "pulled": "2026-09-23T21:41:29Z",
+    "commit": "43aaf82704ba6e9a1ccba2ece5987d1f25e52106",
+    "pulled": "2026-09-23T21:50:48Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/date-and-time.git",
-    "subject": "Removal guard lets an upstream deletion through, and still stops on local files"
+    "subject": "A pull that changes nothing leaves addons.lock.json alone"
   },
   "dialogic": {
     "commit": "e301e1bb5e62e6de22c6b7748c4372d0570bb4a7",
@@ -35,11 +35,11 @@
     "subject": "Alpha 20 Preparations (#2787)"
   },
   "godot_doom_gdextension": {
-    "commit": "53e5325a00af88e71f9d2cf49ab75f3d170998cb",
-    "pulled": "2026-09-23T21:41:35Z",
+    "commit": "d784052dd970a404bc0f1807ef2c1be5292fa56c",
+    "pulled": "2026-09-23T21:50:54Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-doom-gdextension.git",
-    "subject": "Removal guard lets an upstream deletion through, and still stops on local files"
+    "subject": "A pull that changes nothing leaves addons.lock.json alone"
   },
   "godotsteam": {
     "archive": "https://codeberg.org/godotsteam/godotsteam/archive/baa0b1c2c16b822c9641f94f7d38558b21a3daf2.zip",
@@ -48,11 +48,11 @@
     "subject": "baa0b1c2c16b822c9641f94f7d38558b21a3daf2.zip"
   },
   "gta": {
-    "commit": "d9fad620f9d0226c43750cd4f0119fa7c399e984",
-    "pulled": "2026-09-23T21:41:32Z",
+    "commit": "dc5017f6ec5d40fd5a3782f20f2141b2c1580f6a",
+    "pulled": "2026-09-23T21:50:50Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/gta.git",
-    "subject": "Take the player controller at 5ddd3fa, with the pull guard's removal fix"
+    "subject": "A pull that changes nothing leaves addons.lock.json alone"
   },
   "gut": {
     "commit": "aeb5d4f3f7f0a6c9b5e178876d6c99b791fda605",
@@ -69,24 +69,24 @@
     "subject": "\u30d0\u30fc\u30b8\u30e7\u30f3\u6539\u8a02"
   },
   "radi_ot": {
-    "commit": "8378540397556642bd76bd842aa26ef93eaa58cc",
-    "pulled": "2026-09-23T21:41:34Z",
+    "commit": "4d787006044cb18783b3d35019d04d4728be685e",
+    "pulled": "2026-09-23T21:50:53Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/radi-ot.git",
-    "subject": "Removal guard lets an upstream deletion through, and still stops on local files"
+    "subject": "A pull that changes nothing leaves addons.lock.json alone"
   },
   "tcps": {
-    "commit": "c4036fb4baa54949c51fcb4a565c72b548129d77",
-    "pulled": "2026-09-23T21:41:33Z",
+    "commit": "07cc4afe7cec2b8a58a9077bc302d3074a2e86bc",
+    "pulled": "2026-09-23T21:50:52Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/tcps.git",
-    "subject": "Take the player controller at 5ddd3fa, with the pull guard's removal fix"
+    "subject": "A pull that changes nothing leaves addons.lock.json alone"
   },
   "weather_fx": {
-    "commit": "44cab7d716a8d21080a07ef0cc0163d554cafb99",
-    "pulled": "2026-09-23T21:41:29Z",
+    "commit": "ccf0107f53cdb3e003ffebfe5c3ff117c119d952",
+    "pulled": "2026-09-23T21:50:47Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/weather-fx.git",
-    "subject": "Removal guard lets an upstream deletion through, and still stops on local files"
+    "subject": "A pull that changes nothing leaves addons.lock.json alone"
   }
 }
