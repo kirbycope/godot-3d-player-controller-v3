@@ -33,6 +33,7 @@ IGNORED = (
 	"powerPreference",  # WebGL hints the browser does not honour
 	"GPU stall due to ReadPixels",
 	"A user gesture is required to request Pointer Lock",  # the synthetic click is no gesture to a headless browser
+	"not valid for pointer lock",  # the same refusal from a visible browser (--gpu) whose window is not focused
 )
 
 
