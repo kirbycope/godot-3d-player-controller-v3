@@ -3,9 +3,9 @@ extends GutTest
 ## Purpose: A float fired through the ProjectileSpawner on the host appears on a real ENet client with the
 ## caster as its shooter, draws its own line there, and the host's plunge and catch RPCs reach the client. The bait on
 ## the line is the rod owner's alone: a peer's copy of the rod neither takes a used lure nor eats one. The rest of the
-## bite reaches the client too: the shadow drawn to the float and diving on the bite, the reel spinning on the
-## client's copy of the rod and the rod's sounds at the float. A shot fish sinks on every peer and only the shooter's
-## own peer pockets the chum.
+## bite reaches the client too: the server's shadow drawn to the float and diving on the bite, seen on the client, the
+## reel spinning on the client's copy of the rod and the rod's sounds at the float. A shot fish sinks on every peer and
+## only the shooter's own peer pockets the chum.
 
 const PORT: int = 47392
 const PLAYER_SCENE: PackedScene = preload("res://addons/3d_player_controller/scenes/player.tscn")
@@ -183,9 +183,9 @@ func _equip_rods(host_player: Player, client_copy: Player) -> Array[FishingRod]:
 	return [host_pickup.equipment_instance as FishingRod, client_rod]
 
 
-## M26: the rod sends every move of the bite to the other peers. The shadow the client sees near the float is drawn
-## to it and dives on the bite, the reel spins on the client's copy of the rod and stops when the line comes in, and
-## the rod's sound plays at the client's float.
+## M26: every move of the bite reaches the other peers. The rod sends the shadows' moves to the server, which owns the
+## shadows: the client sees the one near the float drawn to it and diving on the bite. The reel spins on the client's
+## copy of the rod and stops when the line comes in, and the rod's sound plays at the client's float.
 func test_the_shadows_the_reel_and_the_rods_sounds_reach_the_client() -> void:
 	var host_player: Player = server_root.get_node("Players/1")
 	var client_copy: Player = client_root.get_node("Players/1")
@@ -206,20 +206,22 @@ func test_the_shadows_the_reel_and_the_rods_sounds_reach_the_client() -> void:
 	# Both branches share one tree, so the absolute shooter path lands on the host's player; a real session's paths
 	# match on every peer, and the float there knows the client's copy of the caster
 	client_bobber.shooter = client_copy
+	var host_shadows: FishShadows = server_root.get_node("FishShadows")
 	var client_shadows: FishShadows = client_root.get_node("FishShadows")
-	var lured: MeshInstance3D = client_shadows.shadows[0]
-	client_shadows.park_shadows_for_test(lured, at)
+	host_shadows.park_shadows_for_test(host_shadows.shadows[0], at)
+	var lured: MeshInstance3D = client_shadows.shadows[0] # the client's copy of that shadow
 	host_rod._adopt_bobber(host_bobber)
 	host_rod.state = FishingRod.State.WAITING
 	host_rod._on_bobber_landed_in_water(server_root.get_node("Water"))
-	await wait_until(func() -> bool: return client_shadows.interested == lured, 2.0)
-	assert_eq(client_shadows.interested, lured, "The shadow by the float on the client takes an interest too")
+	assert_eq(host_shadows.interested, host_shadows.shadows[0], "The shadow by the float takes an interest")
+	await wait_until(func() -> bool: return lured.global_position.distance_to(at) < 0.6, 2.0)
+	assert_lt(lured.global_position.distance_to(at), 0.6, "and the client sees it beside the float")
 	host_rod.bite_timer.stop()
 	host_rod.nibble_timer.stop()
 	host_rod._on_bite_timer_timeout()
 	await wait_until(func() -> bool: return not lured.visible, 2.0)
-	assert_null(client_shadows.interested, "The bite sends it diving on the client")
-	assert_false(lured.visible, "under the float and out of sight")
+	assert_null(host_shadows.interested, "The bite sends it diving")
+	assert_false(lured.visible, "under the float and out of sight on the client")
 	host_rod.hook()
 	await wait_until(func() -> bool: return client_rod.animation_player.is_playing(), 2.0)
 	assert_eq(client_rod.animation_player.current_animation, String(FishingRod.REEL_ANIMATION), "The reel spins on the client's copy of the rod")
@@ -244,7 +246,6 @@ func test_a_shot_fish_sinks_everywhere_and_only_the_shooters_peer_pockets_the_ch
 	var client_shadows: FishShadows = client_root.get_node("FishShadows")
 	var at: Vector3 = POOL_AT + Vector3(-1.0, 0.0, 0.0)
 	host_shadows.park_shadows_for_test(host_shadows.shadows[0], at)
-	client_shadows.park_shadows_for_test(client_shadows.shadows[0], at)
 	watch_signals(client_shadows)
 	var bullet: Projectile = preload("res://addons/3d_player_controller/scenes/projectile/bullet.tscn").instantiate()
 	add_child_autofree(bullet)

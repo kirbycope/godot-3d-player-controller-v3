@@ -32,9 +32,11 @@ from addon_common import (
     load_lock,
     is_third_party,
     load_manifest,
+    load_pulled,
     mirror,
     run,
     save_lock,
+    save_pulled,
     sync_cache,
 )
 
@@ -59,6 +61,7 @@ def main(argv: list[str] | None = None) -> int:
         addons = [a for a in addons if a["name"] in wanted]
 
     lock = load_lock()
+    pulled_at = load_pulled()
     pushed = []
     failed = False  # something was refused or broke, so a push of this project has to wait for it
     differs = False
@@ -117,8 +120,9 @@ def main(argv: list[str] | None = None) -> int:
 
         # Copying this project's copy over a newer origin would revert whatever landed there since it
         # was pulled (gta or tcps pushing to controls, say) and publish the revert. So a push only
-        # ever goes on top of the very commit the lock says this copy came from.
-        pulled = lock.get(name, {}).get("commit", "")
+        # ever goes on top of the very commit this copy came from: the one this machine recorded
+        # (load_pulled), since a `git pull` of this project moves the lock but not the copy.
+        pulled = pulled_at.get(name) or lock.get(name, {}).get("commit", "")
         if pulled != upstream:
             print(f"{name:<28} BEHIND: origin/{branch} is at {upstream[:7]}, this copy was pulled at "
                   f"{pulled[:7] or 'no recorded commit'}")
@@ -179,6 +183,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"{'':<28} pushed {commit[:7]} to {branch}")
 
         pushed.append(name)
+        pulled_at[name] = commit  # addons/<name> here is exactly what was just committed
         lock[name] = {
             "repo": addon["repo"],
             "ref": branch,
@@ -195,6 +200,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if pushed:
         save_lock(lock)
+        save_pulled(pulled_at)
         print(f"{len(pushed)} addon(s) sent upstream: {', '.join(pushed)}")
         print("The lock file now records the new commits; commit tools/addons.lock.json with your changes.")
     else:

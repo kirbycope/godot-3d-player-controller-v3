@@ -84,7 +84,7 @@ func test_the_shipped_spells_load_with_their_effects_vfx_and_sounds() -> void:
 		for phase: Ability.Phase in Ability.Phase.values():
 			var scene: PackedScene = spell.get_vfx(phase)
 			if scene:
-				assert_not_null(scene.instantiate(), name + " VFX scene instantiates")
+				assert_not_null(autofree(scene.instantiate()), name + " VFX scene instantiates")
 
 
 func test_a_projectile_with_damage_over_time_keeps_ticking_after_the_hit() -> void:

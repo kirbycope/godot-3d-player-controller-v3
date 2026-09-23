@@ -382,6 +382,83 @@ class AddonRepositories(unittest.TestCase):
         self.assertEqual(code, 1, out)
         self.assertIn("FAILED", out)
 
+    def move_the_lock(self, commit: str) -> None:
+        """What `git pull` of this project does once another machine has pulled the addon and pushed."""
+        path = self.project / "tools" / "addons.lock.json"
+        lock = json.loads(path.read_text())
+        lock[self.NAME]["commit"] = commit
+        path.write_text(json.dumps(lock))
+
+    def pulled_record(self) -> str:
+        """The commit this machine recorded mirroring addons/widget from."""
+        return json.loads((self.project / ".addon_cache" / "pulled.json").read_text())[self.NAME]
+
+    def test_a_lock_moved_by_a_project_pull_is_not_an_edit_here(self) -> None:
+        # The lock is committed, so a `git pull` here moves it on while addons/ keeps the older copy.
+        # The guard used to diff that copy against the lock, call the upstream change an edit made
+        # here and stop, and only --force got past it, which would also have destroyed a real edit.
+        pulled = self.origin_head()
+        newer = self.commit_upstream("addons/widget/plugin.cfg", "[plugin]\nname=\"newer\"\n")
+        self.move_the_lock(newer)
+        self.assertEqual(self.pulled_record(), pulled, "this machine knows its copy is the older one")
+
+        code, out = self.call(pull_addons.main)
+
+        self.assertEqual(code, 0, out)
+        self.assertNotIn("STOPPED", out)
+        self.assertIn("newer", (self.vendored / "plugin.cfg").read_text())
+        self.assertEqual(self.pulled_record(), newer)
+
+    def test_an_edit_here_still_stops_a_pull_after_the_lock_moved(self) -> None:
+        self.edit_here()
+        self.move_the_lock(self.commit_upstream("addons/widget/theirs.gd", "extends Node\n"))
+
+        code, out = self.call(pull_addons.main)
+
+        self.assertEqual(code, 1, out)
+        self.assertIn("STOPPED: 1 file(s) edited here", out)
+        self.assertIn("edited here", (self.vendored / "plugin.cfg").read_text(), "the edit survives")
+
+    def test_a_recorded_commit_missing_from_the_cache_falls_back_to_the_lock(self) -> None:
+        (self.project / ".addon_cache" / "pulled.json").write_text(json.dumps({self.NAME: "0" * 40}))
+        self.commit_upstream("addons/widget/plugin.cfg", "[plugin]\nname=\"newer\"\n")
+
+        code, out = self.call(pull_addons.main)
+
+        self.assertEqual(code, 0, out)
+        self.assertIn("is not in .addon_cache/widget; comparing against the lock's", out)
+        self.assertIn("newer", (self.vendored / "plugin.cfg").read_text())
+
+    def test_a_push_records_its_commit_so_the_next_pull_diffs_against_it(self) -> None:
+        # Otherwise the next pull diffs against the older pull, and a later upstream change to the
+        # file pushed from here looks like an edit made here.
+        self.edit_here()
+        code, out = self.call(push_addons.main, "-m", "edited here")
+        self.assertEqual(code, 0, out)
+        self.assertEqual(self.pulled_record(), self.origin_head())
+        git(self.other, "pull", "--quiet", "origin", "main")
+        self.commit_upstream("addons/widget/plugin.cfg", "[plugin]\nname=\"theirs\"\n")
+
+        code, out = self.call(pull_addons.main)
+
+        self.assertEqual(code, 0, out)
+        self.assertNotIn("STOPPED", out)
+        self.assertIn("theirs", (self.vendored / "plugin.cfg").read_text())
+
+    def test_a_push_from_a_copy_older_than_a_moved_lock_is_refused(self) -> None:
+        # The lock names origin's head only because `git pull` brought it in; the copy here is older,
+        # and copying it over origin would delete their file and publish the deletion.
+        self.edit_here()
+        theirs = self.commit_upstream("addons/widget/theirs.gd", "extends Node\n")
+        self.move_the_lock(theirs)
+
+        code, out = self.call(push_addons.main, "-m", "edited here")
+
+        self.assertEqual(code, 1, out)
+        self.assertIn("BEHIND", out)
+        self.assertEqual(self.origin_head(), theirs, "nothing was pushed")
+        self.assertEqual(self.origin_file("addons/widget/theirs.gd"), "extends Node", "their work stands")
+
 
 if __name__ == "__main__":
     unittest.main()

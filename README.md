@@ -79,12 +79,14 @@ build in headless Chromium.
   lure and biome); lures (`resources/lures/`) are consumable items that go on the line. The catch
   screen holds the fish up Zelda style (the fish keeps turning on its own clock while the world behind it is frozen), the pause menu's Fish Index lists every species with its
   record. Every peer sees and hears the whole bite: the float goes through the `ProjectileSpawner`, the rod's
-  sounds play at the float with its splashes, the reel spins on every copy of the rod, and the shadows' moves at the
-  float (drawn in, nibbling, diving, scattering) are `FishShadows` RPCs, so each peer plays them on its own
-  shadows. Each shadow is an instance of `scenes/fish_shadow.tscn`: its `ScareArea` (the swimmer's scare, on no
-  collision layer, so neither the crosshair, a round nor a cast stops on it) and a `ShootArea` the size of the
-  shadow on the projectile layer, off while the shadow is hidden. Shooting a fish sinks it on every peer and puts
-  chum in the shooter's own bag, never in another peer's copy of them. A catch the bag has no room for still sets
+  sounds play at the float with its splashes and the reel spins on every copy of the rod. The shadows belong to the
+  server: it wanders them, plays the rod's moves at the float (drawn in, nibbling, diving, scattering, `FishShadows`
+  RPCs a rod on any peer sends it) and scares them off swimmers, and every peer sees the same shadows. Each shadow is
+  an instance of `scenes/fish_shadow.tscn`: its `ScareArea` (the swimmer's scare, on no collision layer, so neither
+  the crosshair, a round nor a cast stops on it), a `ShootArea` the size of the shadow on the projectile layer, off
+  while the shadow is hidden, and a `ShadowSynchronizer` carrying where it is, which way it faces, how far it has
+  sunk and whether it shows. A round fired at the fish a peer sees finds that fish on the server: it sinks on every
+  peer and puts chum in the shooter's own bag, never in another peer's copy of them. A catch the bag has no room for still sets
   the species' record but adds no length to the log.
 - **Enemies** (`enemy_swordsman.tscn`, `enemy_archer.tscn`, `enemy_rifleman.tscn`,
   `enemy_spellcaster.tscn`): a swordsman, an archer, a rifleman and a spellcaster east of the spawn.

@@ -1,10 +1,10 @@
 {
   "3d_player_controller": {
-    "commit": "8d09d5786373272bba287d92134cf4da6b6b321e",
-    "pulled": "2026-09-23T19:48:02Z",
+    "commit": "5ddd3fab2d5bde72e161a2b82b82e281f297c2fb",
+    "pulled": "2026-09-23T21:17:04Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "TalkingNpc marks its model editable, so an export keeps the head look-at modifier"
+    "subject": "Server derives thrown-item damage, flashlight state reaches late joiners, tests leave no orphans"
   },
   "GPUTrail": {
     "commit": "00a764775941c719847deeda8a31b4ebd8893895",
@@ -14,18 +14,18 @@
     "subject": "Set mask to null if it is not set"
   },
   "controls": {
-    "commit": "87f6e8b5e3b7e18596444fcc193564ba98e48700",
-    "pulled": "2026-09-23T02:44:13Z",
+    "commit": "b9ada80d697b9e7284f7d743f91b0c957837da83",
+    "pulled": "2026-09-23T21:17:07Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-controls.git",
-    "subject": "Targeting, the Player template, synchronizers over RPCs, and credits in CREDITS.md"
+    "subject": "Pull guard diffs against the commit this machine mirrored, not the moved lock"
   },
   "date_and_time": {
-    "commit": "cb063aa855f1d28d014d2bdb3322f0bb08591d4c",
-    "pulled": "2026-09-23T02:44:16Z",
+    "commit": "a4acb7f8e3ab6e0408c71357c95de567641eb1d6",
+    "pulled": "2026-09-23T21:17:10Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/date-and-time.git",
-    "subject": "Targeting, the Player template, synchronizers over RPCs, and credits in CREDITS.md"
+    "subject": "Pull guard diffs against the commit this machine mirrored, not the moved lock"
   },
   "dialogic": {
     "commit": "e301e1bb5e62e6de22c6b7748c4372d0570bb4a7",
@@ -35,11 +35,11 @@
     "subject": "Alpha 20 Preparations (#2787)"
   },
   "godot_doom_gdextension": {
-    "commit": "3062d75e910348c7a10a1b86b87073f1da0315a0",
-    "pulled": "2026-09-23T02:44:20Z",
+    "commit": "c5687819a41c5b8e7b245e7d314d734abaa0fc01",
+    "pulled": "2026-09-23T21:17:15Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-doom-gdextension.git",
-    "subject": "Take the player addon at its latest: the crosshair draws again"
+    "subject": "Pull guard diffs against the commit this machine mirrored, not the moved lock"
   },
   "godotsteam": {
     "archive": "https://codeberg.org/godotsteam/godotsteam/archive/baa0b1c2c16b822c9641f94f7d38558b21a3daf2.zip",
@@ -48,11 +48,11 @@
     "subject": "baa0b1c2c16b822c9641f94f7d38558b21a3daf2.zip"
   },
   "gta": {
-    "commit": "decaf9afd76bcc5fd6b6ecfb9de8ad8603524a42",
-    "pulled": "2026-09-23T02:44:17Z",
+    "commit": "9dd9e44e0b1c76a687c28053273bb6f740162bc1",
+    "pulled": "2026-09-23T21:17:12Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/gta.git",
-    "subject": "Take the player addon at its latest: the crosshair draws again"
+    "subject": "Pull guard diffs against the commit this machine mirrored, not the moved lock"
   },
   "gut": {
     "commit": "aeb5d4f3f7f0a6c9b5e178876d6c99b791fda605",
@@ -69,24 +69,24 @@
     "subject": "\u30d0\u30fc\u30b8\u30e7\u30f3\u6539\u8a02"
   },
   "radi_ot": {
-    "commit": "0880dd604d02cada5c4bd475f37458c18a6e5631",
-    "pulled": "2026-09-23T02:44:19Z",
+    "commit": "9cd1d0d20a24ae3ad9fc42d6fec6b7417bc85ac6",
+    "pulled": "2026-09-23T21:17:14Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/radi-ot.git",
-    "subject": "Targeting, the Player template, synchronizers over RPCs, and credits in CREDITS.md"
+    "subject": "The streamer's timeout Timer is a child from _init, so it is freed with the node even if it never enters the tree"
   },
   "tcps": {
-    "commit": "07c650c9525a1ff987cbf7fe1e8bed8853452959",
-    "pulled": "2026-09-23T02:44:18Z",
+    "commit": "d2859b3b57fc8d37406a21617ce82b30c1f104b7",
+    "pulled": "2026-09-23T21:17:13Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/tcps.git",
-    "subject": "Take the player addon at its latest: the crosshair draws again"
+    "subject": "Pull guard diffs against the commit this machine mirrored, not the moved lock"
   },
   "weather_fx": {
-    "commit": "37874344157fb24d48a78764e176f8aa28a0f148",
-    "pulled": "2026-09-23T02:44:32Z",
+    "commit": "2f3ff9fb4890ba9b5cf04e098e639fd07b9c5c70",
+    "pulled": "2026-09-23T21:17:10Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/weather-fx.git",
-    "subject": "Ambience for every biome from Gravity Sound's Adventure Environments"
+    "subject": "Pull guard diffs against the commit this machine mirrored, not the moved lock"
   }
 }

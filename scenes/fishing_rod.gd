@@ -10,9 +10,9 @@ extends Equipment
 ## (see [member Fish.bare_hook_chance]). A landed fish is an inventory [Item], so it goes into the Player's inventory. The float goes
 ## through the ProjectileSpawner when the scene has one, so every peer sees the float, its line, the dips and
 ## the catch; the rod's sounds ride the float's splashes, the reel spins through its thrash, and the shadows' moves at
-## the float go out as [FishShadows] RPCs, so every peer sees and hears the whole bite. The rod itself only runs on
-## its owner, and so does the bait: what is on the line, the pick it filters and its consumption are the owner's
-## alone, since nothing on a peer's copy shows the bait.
+## the float go to the server as [FishShadows] RPCs, which moves the shadows every peer sees, so every peer sees and
+## hears the whole bite. The rod itself only runs on its owner, and so does the bait: what is on the line, the pick
+## it filters and its consumption are the owner's alone, since nothing on a peer's copy shows the bait.
 
 signal line_cast ## The float has left the rod.
 signal bite(fish: Fish) ## The hook window is open.
@@ -141,7 +141,7 @@ func hook() -> void:
 func retract() -> void:
 	var lost: Fish = hooked_fish if state == State.BITE or state == State.REELING else null
 	if water and water.shadows:
-		water.shadows.release.rpc()
+		water.shadows.release.rpc_id(1)
 	_clear_line()
 	state = State.IDLE
 	player.controls.release_action_label(self)
@@ -244,7 +244,7 @@ func _on_bobber_landed_in_water(area: Area3D) -> void:
 	nibble_timer.start(randf_range(nibble_interval.x, nibble_interval.y))
 	if water.shadows:
 		# Only a shadow already close takes the bait; the species says how close, the bait can stretch it, a bare hook shrinks it
-		water.shadows.attract.rpc(bobber.global_position, hooked_fish.attract_range_for(lure))
+		water.shadows.attract.rpc_id(1, bobber.global_position, hooked_fish.attract_range_for(lure))
 
 
 func _on_nibble_timer_timeout() -> void:
@@ -253,7 +253,7 @@ func _on_nibble_timer_timeout() -> void:
 	bobber.plunge.rpc(0.04, 0.4)
 	bobber.splash.rpc(0.25, _sfx_path(nibble_sfx))
 	if water.shadows:
-		water.shadows.nibble.rpc(bobber.global_position)
+		water.shadows.nibble.rpc_id(1, bobber.global_position)
 	nibble_timer.start(randf_range(nibble_interval.x, nibble_interval.y))
 
 
@@ -267,7 +267,7 @@ func _on_bite_timer_timeout() -> void:
 	bobber.plunge.rpc(0.35, 0.8)
 	bobber.splash.rpc(1.0, _sfx_path(bite_sfx))
 	if water.shadows:
-		water.shadows.dive.rpc(bobber.global_position)
+		water.shadows.dive.rpc_id(1, bobber.global_position)
 	Input.start_joy_vibration(0, 0.5, 0.7, 0.3)
 	hook_timer.start(hook_window)
 	update_labels()
@@ -280,7 +280,7 @@ func _on_hook_timer_timeout() -> void:
 		return
 	bobber.splash.rpc(0.4, "")
 	if water.shadows:
-		water.shadows.scatter.rpc()
+		water.shadows.scatter.rpc_id(1)
 	retract()
 
 
