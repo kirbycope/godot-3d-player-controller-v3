@@ -1,10 +1,10 @@
 {
   "3d_player_controller": {
-    "commit": "d0f82d5be3e5afa61df0bb10c5c0a7de79b38835",
-    "pulled": "2026-09-23T19:22:24Z",
+    "commit": "8d09d5786373272bba287d92134cf4da6b6b321e",
+    "pulled": "2026-09-23T19:48:02Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Peer review fixes: multiplayer authority, input gates, saves and cleanups"
+    "subject": "TalkingNpc marks its model editable, so an export keeps the head look-at modifier"
   },
   "GPUTrail": {
     "commit": "00a764775941c719847deeda8a31b4ebd8893895",

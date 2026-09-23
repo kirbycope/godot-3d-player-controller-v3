@@ -7,7 +7,8 @@ the engine or the page logs. Screenshots of each step land in scratch/web_smoke/
     python tools/web_smoke_test.py [--port 8123] [--headed] [--timeout 180]
     python tools/web_smoke_test.py --url https://kirbycope.github.io/godot-3d-player-controller-v3/
 
-With --url it tests a deployed build instead of serving build/.
+With --url it tests a deployed build instead of serving build/. With --gpu it renders on this machine's GPU in a
+visible browser instead of SwiftShader, the software renderer it uses by default so it runs anywhere.
 
 Exit code 0 means the world loaded with no errors; 1 means it did not, and the log says why.
 """
@@ -77,6 +78,7 @@ def main() -> int:
 	parser.add_argument("--timeout", type=int, default=180, help="seconds to allow for the world to load")
 	parser.add_argument("--build", default=BUILD, help="the exported folder to serve (default build/)")
 	parser.add_argument("--url", help="test this deployed build instead of serving --build")
+	parser.add_argument("--gpu", action="store_true", help="render on this machine's GPU in a visible browser instead of SwiftShader")
 	args = parser.parse_args()
 	from playwright.sync_api import sync_playwright
 
@@ -90,13 +92,14 @@ def main() -> int:
 	loaded = False
 	try:
 		with sync_playwright() as p:
-			browser = p.chromium.launch(headless=not args.headed, args=["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader"])
+			swiftshader: list[str] = ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader"]
+			browser = p.chromium.launch(headless=not (args.headed or args.gpu), args=[] if args.gpu else swiftshader)
 			page = browser.new_page(viewport={"width": 1280, "height": 720})
 
 			def on_console(message) -> None:
 				text = f"[{message.type}] {message.text}"
 				console.append(text)
-				if any(ignored in message.text for ignored in IGNORED):
+				if any(text in message.text for text in IGNORED):
 					return
 				# The engine writes its stderr, warnings included, as console errors: sort them by what they say
 				if WARNING_PATTERN.search(message.text):
@@ -105,7 +108,7 @@ def main() -> int:
 					errors.append(text)
 
 			page.on("console", on_console)
-			page.on("pageerror", lambda exc: None if any(ignored in str(exc) for ignored in IGNORED) else errors.append(f"[pageerror] {exc}"))
+			page.on("pageerror", lambda exc: None if any(text in str(exc) for text in IGNORED) else errors.append(f"[pageerror] {exc}"))
 			page.on("crash", lambda: errors.append("[crash] the page crashed"))
 
 			print(f"Opening {url}")
@@ -119,7 +122,7 @@ def main() -> int:
 
 			# Click to start (the web build waits for a gesture before capturing input and audio); the click goes
 			# straight into the single-player world, there is no title screen to press through
-			canvas.click(position={"x": 640, "y": 360})
+			page.mouse.click(640, 360) # the mouse, not the locator: a locator click waits on what a visible browser never settles
 			page.wait_for_timeout(1500)
 			page.screenshot(path=os.path.join(OUT, "2_loading.png"), timeout=120_000)
 			print("Started; waiting for the world (World.gd prints \"World ready\" once the local player has spawned)")

@@ -230,9 +230,10 @@ build in headless Chromium.
 - **Torch and fire** (`Torch`): a throwable that ignites grass fields within its exported
   `ignite_radius` for `burn_duration` seconds (the fire arrow's ignite, on every peer through the
   spawner), spreads downwind and goes out in the pool. The flame and its light burn straight up however the
-  torch lies: both are top level in `torch.tscn`, and two `RemoteTransform3D` anchors carry only their position
-  (`FlameAnchor` at the head moves the flame, `LightAnchor` on the upright flame moves the light), so the script
-  does nothing per frame.
+  torch lies: the flame is top level in `torch.tscn`, and two `RemoteTransform3D` anchors carry only their
+  position (`FlameAnchor` at the head moves the flame, `LightAnchor` on the upright flame moves the light), so the
+  script does nothing per frame. The light stays an ordinary child of the torch, because a top-level shadowed
+  `OmniLight3D` in the scene makes the web build's Compatibility renderer log `Parameter "spec" is null`.
 - **The QA kit**: `STARTING_ITEMS` in `scenes/world.gd` hands every spawned player lures, ammunition,
   throwables and a dagger, topped up on each spawn. The weapons and rod around the spawn are
   walk-over pickups.

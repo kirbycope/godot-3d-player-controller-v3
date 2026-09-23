@@ -6,9 +6,11 @@ extends RigidBody3D
 
 ## A physics-driven throwable flaming torch that ignites grass fields upon impact.
 ## Can be picked up with Ultrahand / HeldObject and thrown across the environment.
-## Flame VFX is kept upright in world space (+Y up) regardless of torch rotation: the flame and its light are top
-## level in the scene, and RemoteTransform3D anchors carry only their position (FlameAnchor at the torch head moves
-## the flame, and LightAnchor on the upright flame moves the light 10 cm above it).
+## Flame VFX is kept upright in world space (+Y up) regardless of torch rotation: the flame is top level in the
+## scene, and RemoteTransform3D anchors carry only their position (FlameAnchor at the torch head moves the flame,
+## and LightAnchor on the upright flame moves the light 10 cm above it). The light stays an ordinary child: an
+## omni light has no facing, and a top-level shadowed OmniLight3D in the scene makes the web build's Compatibility
+## renderer log 'Parameter "spec" is null'.
 
 @export var is_lit: bool = true:
 	set(val):

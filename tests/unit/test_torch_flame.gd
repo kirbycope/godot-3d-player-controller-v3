@@ -1,7 +1,7 @@
 extends GutTest
 
-## Purpose: the torch's flame and light ride its head but always burn straight up. They are top level in the scene
-## and RemoteTransform3D anchors carry only their position, so nothing writes their transforms every frame; this
+## Purpose: the torch's flame and light ride its head but always burn straight up. The flame is top level in the
+## scene, the light an ordinary child, and RemoteTransform3D anchors carry only their position, so nothing writes their transforms every frame; this
 ## holds when the torch tips over and through a pickup, which reparents it onto a turned spring arm.
 
 const TORCH_SCENE: PackedScene = preload("res://scenes/torch.tscn")
@@ -32,7 +32,7 @@ func _assert_flame_on_the_head(context: String) -> void:
 func test_the_torch_does_no_per_frame_work() -> void:
 	assert_false(torch.is_processing(), "The anchors in the scene place the flame; the script has no _process")
 	assert_true(torch.fire_vfx.top_level, "The flame is top level in the scene")
-	assert_true(torch.omni_light.top_level, "and so is its light")
+	assert_false(torch.omni_light.top_level, "The light is not: a top-level shadowed omni light breaks the web renderer")
 
 
 func test_the_flame_follows_the_head_and_stays_upright() -> void:

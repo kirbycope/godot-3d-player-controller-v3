@@ -82,7 +82,6 @@ transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, 0, 0, 0.7, 0, 0.52, 0)
 script = ExtResource("3_ndh0a")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=987654327]
-top_level = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.62, 0)
 light_color = Color(1, 0.65, 0.25, 1)
 light_energy = 2.0
