@@ -1,10 +1,10 @@
 {
   "3d_player_controller": {
-    "commit": "5ddd3fab2d5bde72e161a2b82b82e281f297c2fb",
-    "pulled": "2026-09-23T21:17:04Z",
+    "commit": "602dd25129e1951828fa5b0d758b93a83aff9d7b",
+    "pulled": "2026-09-23T21:41:23Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Server derives thrown-item damage, flashlight state reaches late joiners, tests leave no orphans"
+    "subject": "Removal guard lets an upstream deletion through, and still stops on local files"
   },
   "GPUTrail": {
     "commit": "00a764775941c719847deeda8a31b4ebd8893895",
@@ -14,18 +14,18 @@
     "subject": "Set mask to null if it is not set"
   },
   "controls": {
-    "commit": "b9ada80d697b9e7284f7d743f91b0c957837da83",
-    "pulled": "2026-09-23T21:17:07Z",
+    "commit": "b01da76397b182e6f572056da8ecf1ffdd373210",
+    "pulled": "2026-09-23T21:41:26Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-controls.git",
-    "subject": "Pull guard diffs against the commit this machine mirrored, not the moved lock"
+    "subject": "Removal guard lets an upstream deletion through, and still stops on local files"
   },
   "date_and_time": {
-    "commit": "a4acb7f8e3ab6e0408c71357c95de567641eb1d6",
-    "pulled": "2026-09-23T21:17:10Z",
+    "commit": "918e7856f0974163c5ee8c19b9e344881bb192be",
+    "pulled": "2026-09-23T21:41:29Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/date-and-time.git",
-    "subject": "Pull guard diffs against the commit this machine mirrored, not the moved lock"
+    "subject": "Removal guard lets an upstream deletion through, and still stops on local files"
   },
   "dialogic": {
     "commit": "e301e1bb5e62e6de22c6b7748c4372d0570bb4a7",
@@ -35,11 +35,11 @@
     "subject": "Alpha 20 Preparations (#2787)"
   },
   "godot_doom_gdextension": {
-    "commit": "c5687819a41c5b8e7b245e7d314d734abaa0fc01",
-    "pulled": "2026-09-23T21:17:15Z",
+    "commit": "53e5325a00af88e71f9d2cf49ab75f3d170998cb",
+    "pulled": "2026-09-23T21:41:35Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-doom-gdextension.git",
-    "subject": "Pull guard diffs against the commit this machine mirrored, not the moved lock"
+    "subject": "Removal guard lets an upstream deletion through, and still stops on local files"
   },
   "godotsteam": {
     "archive": "https://codeberg.org/godotsteam/godotsteam/archive/baa0b1c2c16b822c9641f94f7d38558b21a3daf2.zip",
@@ -48,11 +48,11 @@
     "subject": "baa0b1c2c16b822c9641f94f7d38558b21a3daf2.zip"
   },
   "gta": {
-    "commit": "9dd9e44e0b1c76a687c28053273bb6f740162bc1",
-    "pulled": "2026-09-23T21:17:12Z",
+    "commit": "d9fad620f9d0226c43750cd4f0119fa7c399e984",
+    "pulled": "2026-09-23T21:41:32Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/gta.git",
-    "subject": "Pull guard diffs against the commit this machine mirrored, not the moved lock"
+    "subject": "Take the player controller at 5ddd3fa, with the pull guard's removal fix"
   },
   "gut": {
     "commit": "aeb5d4f3f7f0a6c9b5e178876d6c99b791fda605",
@@ -69,24 +69,24 @@
     "subject": "\u30d0\u30fc\u30b8\u30e7\u30f3\u6539\u8a02"
   },
   "radi_ot": {
-    "commit": "9cd1d0d20a24ae3ad9fc42d6fec6b7417bc85ac6",
-    "pulled": "2026-09-23T21:17:14Z",
+    "commit": "8378540397556642bd76bd842aa26ef93eaa58cc",
+    "pulled": "2026-09-23T21:41:34Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/radi-ot.git",
-    "subject": "The streamer's timeout Timer is a child from _init, so it is freed with the node even if it never enters the tree"
+    "subject": "Removal guard lets an upstream deletion through, and still stops on local files"
   },
   "tcps": {
-    "commit": "d2859b3b57fc8d37406a21617ce82b30c1f104b7",
-    "pulled": "2026-09-23T21:17:13Z",
+    "commit": "c4036fb4baa54949c51fcb4a565c72b548129d77",
+    "pulled": "2026-09-23T21:41:33Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/tcps.git",
-    "subject": "Pull guard diffs against the commit this machine mirrored, not the moved lock"
+    "subject": "Take the player controller at 5ddd3fa, with the pull guard's removal fix"
   },
   "weather_fx": {
-    "commit": "2f3ff9fb4890ba9b5cf04e098e639fd07b9c5c70",
-    "pulled": "2026-09-23T21:17:10Z",
+    "commit": "44cab7d716a8d21080a07ef0cc0163d554cafb99",
+    "pulled": "2026-09-23T21:41:29Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/weather-fx.git",
-    "subject": "Pull guard diffs against the commit this machine mirrored, not the moved lock"
+    "subject": "Removal guard lets an upstream deletion through, and still stops on local files"
   }
 }
