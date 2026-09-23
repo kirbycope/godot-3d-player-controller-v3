@@ -1,10 +1,10 @@
 {
   "3d_player_controller": {
-    "commit": "e832803c10ce91956475ba68b12ee8c0a97906b6",
-    "pulled": "2026-09-21T22:53:35Z",
+    "commit": "212b5b37df1fefeb6957b2dfb67bc1979231883e",
+    "pulled": "2026-09-23T00:24:45Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "First person rides the view with the hands, the bow draws on its own string, and the Souls roll dives"
+    "subject": "Stealth draws in two passes, so the body reads as one frosted shape"
   },
   "GPUTrail": {
     "commit": "00a764775941c719847deeda8a31b4ebd8893895",
