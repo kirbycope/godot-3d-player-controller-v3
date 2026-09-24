@@ -1,10 +1,10 @@
 {
   "3d_player_controller": {
-    "commit": "ed03a2e126919fca9106a57cd663ca70ab2d7b0a",
-    "pulled": "2026-09-23T21:50:41Z",
+    "commit": "ac04e733eac8fb28ac358c85004cc2d748a35ecb",
+    "pulled": "2026-09-24T21:03:52Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "A pull that changes nothing leaves addons.lock.json alone"
+    "subject": "The paraglider's wind textures import VRAM compressed, as the editor promoted them in use"
   },
   "GPUTrail": {
     "commit": "00a764775941c719847deeda8a31b4ebd8893895",

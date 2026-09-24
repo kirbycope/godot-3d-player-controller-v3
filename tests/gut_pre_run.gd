@@ -1,5 +1,5 @@
 extends GutHookScript
-## Runs before the suite: no inventory reads or writes user://inventory.tres while tests run, so a scene
+## Runs before the suite: no inventory reads or writes user://inventory.json while tests run, so a scene
 ## with `persist` on (the world player) neither loads the real save nor overwrites it.
 ##
 ## And the tests get their canvas. A headless window is 64 pixels square and cannot be resized, and the game
