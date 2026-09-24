@@ -10,7 +10,7 @@ extends GutHookScript
 ## The player's own files on this machine never decide what a test sees, and a test never writes over them: the
 ## run keeps its files in [constant GUT_DIR], which starts empty every run, so a record caught in one run is not
 ## standing in the next. The save game and the settings go there through the player controller's own static paths
-## ([member SaveGame.DEFAULT_SAVE_PATH], [member PlayerSettingsResource.SAVE_PATH]), set before any test reads
+## ([member SaveGame.DEFAULT_SAVE_PATH], [member SaveGame.DEFAULT_CLIENT_SAVE_PATH], [member PlayerSettingsResource.SAVE_PATH]), set before any test reads
 ## them, and every [FishingLog] that enters the tree on its default path is pointed there before its _ready loads.
 ## Nothing is moved aside, so a run that is killed half way leaves the player's files as they were.
 
@@ -25,6 +25,7 @@ func run() -> void:
 	for file: String in DirAccess.get_files_at(GUT_DIR):
 		DirAccess.remove_absolute(gut_dir.path_join(file))
 	SaveGame.DEFAULT_SAVE_PATH = GUT_DIR + SaveGame.DEFAULT_SAVE_PATH.get_file()
+	SaveGame.DEFAULT_CLIENT_SAVE_PATH = GUT_DIR + SaveGame.DEFAULT_CLIENT_SAVE_PATH.get_file()
 	PlayerSettingsResource.SAVE_PATH = GUT_DIR + PlayerSettingsResource.SAVE_PATH.get_file()
 	PlayerSettingsResource._cached = null # anything read before the run came from the player's own file
 	gut.get_tree().node_added.connect(_on_node_added)
