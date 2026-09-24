@@ -83,10 +83,10 @@
     "subject": "A pull that changes nothing leaves addons.lock.json alone"
   },
   "weather_fx": {
-    "commit": "ccf0107f53cdb3e003ffebfe5c3ff117c119d952",
+    "commit": "6fad4fb30d0385917337744938f28b896e81e8ec",
     "pulled": "2026-09-23T21:50:47Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/weather-fx.git",
-    "subject": "A pull that changes nothing leaves addons.lock.json alone"
+    "subject": "The wind textures import VRAM compressed, as the editor promoted them in use"
   }
 }
