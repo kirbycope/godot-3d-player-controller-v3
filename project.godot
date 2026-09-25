@@ -47,7 +47,7 @@ window/size/viewport_height=800
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/3d_player_controller/plugin.cfg", "res://addons/controls/plugin.cfg", "res://addons/date_and_time/plugin.cfg", "res://addons/dialogic/plugin.cfg", "res://addons/godotsteam/plugin.cfg", "res://addons/gta/plugin.cfg", "res://addons/gut/plugin.cfg", "res://addons/midi/plugin.cfg", "res://addons/radi_ot/plugin.cfg", "res://addons/tcps/plugin.cfg", "res://addons/weather_fx/plugin.cfg")
+enabled=PackedStringArray("res://addons/3d_player_controller/plugin.cfg", "res://addons/controls/plugin.cfg", "res://addons/date_and_time/plugin.cfg", "res://addons/dialogic/plugin.cfg", "res://addons/godotsteam/plugin.cfg", "res://addons/gta/plugin.cfg", "res://addons/gut/plugin.cfg", "res://addons/midi/plugin.cfg", "res://addons/radi_ot/plugin.cfg", "res://addons/snow_deformation/plugin.cfg", "res://addons/tcps/plugin.cfg", "res://addons/weather_fx/plugin.cfg")
 
 [importer_defaults]
 
@@ -181,6 +181,26 @@ weather_foliage_tint={
 weather_grass_tint={
 "type": "color",
 "value": Color(1, 1, 1, 1)
+}
+snow_deform_tex={
+"type": "sampler2D",
+"value": ""
+}
+snow_deform_origin={
+"type": "vec2",
+"value": Vector2(0, 0)
+}
+snow_deform_size={
+"type": "float",
+"value": 48.0
+}
+snow_deform_texel={
+"type": "float",
+"value": 0.046875
+}
+snow_depth={
+"type": "float",
+"value": 0.35
 }
 
 [steam]

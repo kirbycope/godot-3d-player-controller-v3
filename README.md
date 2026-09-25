@@ -20,6 +20,7 @@ features are documented**. This file covers only what belongs to the game projec
 | --- | --- | --- |
 | `addons/3d_player_controller` | [godot-3d-player-controller-addon](https://github.com/kirbycope/godot-3d-player-controller-addon) | The Player: locomotion state machine, camera, equipment and combat, projectiles, inventory and spell system, abilities, chat, throwing, toon shading, health, stamina, settings, Zelda and GTA control schemes, checkpoints and the death flow, the save game, the NPCs (`FollowerNpc`, `EnemyNpc`, `NpcCaster`, `TalkingNpc`), dialogue and quests, local split screen, Steam lobby UI and the multiplayer spawners |
 | `addons/controls` | [godot-controls](https://github.com/kirbycope/godot-controls) | On-screen input hints and the world-space `ActionPrompt` |
+| `addons/snow_deformation` | in this repository, not yet pulled (see below) | Deformable snow: footprints, hoof prints and blade gouges carved into a scrolling deformation texture by two compute passes |
 | `addons/weather_fx` | [weather-fx](https://github.com/kirbycope/weather-fx) | Biomes, precipitation, wind, wildfire, lightning, the sky and cloud driver, water shader and ripples |
 | `addons/date_and_time` | [date-and-time](https://github.com/kirbycope/date-and-time) | The in-game clock and calendar HUD |
 | `addons/gta` | [gta](https://github.com/kirbycope/gta) | Drivable vehicles with GTA V style handling |
@@ -31,6 +32,11 @@ features are documented**. This file covers only what belongs to the game projec
 The third-party addons (`dialogic`, `gut`, `midi`, `godotsteam`, `GPUTrail`) are other people's work.
 They are fetched by the same script, pinned to a release, and never pushed to. See
 [Pulled addons in CREDITS.md](CREDITS.md#pulled-addons) for each one's author, licence and upstream.
+
+`addons/snow_deformation` is the exception to the table's first column: it was written here and does
+not have a repository of its own yet, so it is neither pulled nor git-ignored like the others. Giving
+it one, adding it to `tools/addons.json` and adding `addons/snow_deformation/` to `.gitignore` is what
+makes it behave like the rest.
 
 ---
 
@@ -261,6 +267,42 @@ build in headless Chromium.
   `VFX_AirFlowUP.tscn`, hidden, which the Player shows on every peer while it rides a thermal.
 
 ---
+
+## The snow demo
+
+`scenes/snow_demo.tscn` is a separate scene from the world, and the only place the snow system is set
+up. Run it from the editor to get an arctic tundra in a blizzard: 35 cm of snow over flat ground, the
+Player, the horse, and a sword.
+
+Walk and the Player's feet cut prints with steep walls and raised rims. Run and the prints merge into
+a ploughed trench, which is what deep snow does to anything moving fast. Mount the horse and it cuts a
+far wider one on four hooves. Left click swings the sword through the snow in front of you and leaves
+one continuous gouge, however fast the blade is moving when it gets there.
+
+Three beach balls sit beside the start. Shove one and it ploughs a rounded trough through the drift
+with berms down both sides, because any moving physics body presses the snow the same way it presses a
+`GrassField`. The Player and the horse are left out of that, since their feet already describe the
+shape far better than a sphere would.
+
+Footsteps, hoofbeats and the crush of snow being shoved aside are Gravity Sound's Snow Sound Effects
+(see [CREDITS.md](CREDITS.md)). A step is heard on the frame a foot arrives in the snow rather than
+every frame it rests there, and a crush once per 0.6 m a body has actually ploughed, so a ball that has
+come to a stop is silent.
+
+- **F1** shows the deformation texture in the corner: red is the depression, green the berm, blue the
+  disturbed mask that drives the compressed-snow material.
+- **F2** wipes every track.
+- **F3** lets the falling snow fill tracks back in, at a rate that follows how hard Weather FX says it
+  is actually snowing. Clear the sky and the refill stops.
+
+Weather FX is set to the Arctic Tundra biome with Heavy Snow forced, and the time of day is 07:30, so
+the sun sits about 22 degrees up and rakes across the print walls. The snow addon knows nothing about
+Weather FX; tying the refill to the snowfall is the demo script's job, and either works without the
+other.
+
+The demo runs the deformation texture at 2048 over 48 m, which is 2.3 cm per texel, rather than the
+addon's 1024 default. A footprint is about 12 cm across, and at the default's 4.7 cm texels that is
+two and a half texels: enough for a trench, not for a crisp print. The cost is 64 MB of VRAM.
 
 ## Running and testing
 
