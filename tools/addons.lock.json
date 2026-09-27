@@ -83,11 +83,11 @@
     "subject": "Retake the preview with the current build"
   },
   "snow_deformation": {
-    "commit": "53016376aeeaa63a31577ed372de64a1819dce45",
+    "commit": "1fd29fbb539e91425e46a0b4b3beeee51ff4aae3",
     "pulled": "2026-09-27T17:39:53Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/snow-deformation.git",
-    "subject": "Snowball grows faster, ploughs without a berm, and cleared snow is not drawn"
+    "subject": "Texture import sidecars as the editor promoted them to VRAM Compressed, seen used in 3D"
   },
   "tcps": {
     "commit": "eb921f8f175f5011c76b7678913b7e09ee9c517a",
@@ -97,11 +97,11 @@
     "subject": "Pull the addons at their latest"
   },
   "weather_fx": {
-    "commit": "714d90bb06cf2ed5a4d215fdf47d26f82a6bfd62",
+    "commit": "eeba7e8355846af82c05f211926fc28265902675",
     "pulled": "2026-09-26T21:48:55Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/weather-fx.git",
-    "subject": "Campfire scene, and lightning drawn to metal"
+    "subject": "Texture import sidecars as the editor promoted them to VRAM Compressed, seen used in 3D"
   },
   "zylann.hterrain": {
     "commit": "7f574eb47fbd74cb1a79adc2cc9fb7f0694fccc3",
