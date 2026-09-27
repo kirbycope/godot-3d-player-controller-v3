@@ -43,6 +43,34 @@ func test_the_ground_is_an_hterrain_with_the_piazza_at_its_origin() -> void:
 	assert_eq(int(terrain.get("collision_layer")) & 8192, 8192, "on the Terrain layer")
 
 
+func test_the_town_stands_on_an_island_in_the_weather_addons_sea() -> void:
+	var water: MeshInstance3D = town.get_node("Sea/Water")
+	var sea_level: float = water.global_position.y
+	assert_almost_eq(sea_level, -6.0, 0.01, "The sea lies 6 m below the piazza")
+	assert_eq((water.mesh as QuadMesh).material.resource_path, "res://resources/pool_water_material.tres", "drawn with the weather addon's pond water")
+	assert_gt((water.mesh as QuadMesh).size.x, 8000.0, "and reaching past the terrain to the horizon")
+	var area: Area3D = town.get_node("Sea/SeaArea3D")
+	assert_true(area is Buoyancy, "The sea is a Buoyancy area")
+	assert_true(area.is_in_group("WATER"), "in the WATER group, so the Player, the horse and the rod know it")
+	assert_eq(area.get("water_mesh"), water)
+	assert_true(area.body_entered.is_connected(town._on_water_area_3d_body_entered), "and its body_entered reaches the level, wired in the scene")
+	assert_true(area.body_exited.is_connected(town._on_water_area_3d_body_exited))
+	var terrain: Node3D = town.get_node("Terrain")
+	var data: HTerrainData = terrain.get("_terrain_data")
+	var south: Callable = func(metres: float) -> float:
+		var p: Vector3 = terrain.to_local(Vector3(0.0, 0.0, metres)) / 2.0
+		return data.get_interpolated_height_at(Vector3(p.x, 0.0, p.z))
+	assert_almost_eq(south.call(0.0), 0.0, 0.05, "The town at the piazza's level")
+	assert_gt(south.call(700.0), sea_level, "the moat floor above the sea, so it stays dry")
+	assert_lt(south.call(1500.0), sea_level - 4.0, "and the countryside a seabed under it")
+	var player: Player = town.get_node("Player")
+	player.warp_to(Transform3D(Basis.IDENTITY, Vector3(0.0, -3.0, 1500.0)))
+	var in_the_sea: bool = await wait_until(func() -> bool: return player.current_water_area == area, 4.0)
+	assert_true(in_the_sea, "A Player out there is in the sea")
+	var swimming: bool = await wait_until(func() -> bool: return player.is_swimming, 3.0)
+	assert_true(swimming, "and swims")
+
+
 func test_the_three_gates_stand_where_openstreetmap_puts_them() -> void:
 	var gates: Node3D = town.get_node("Town/Gates")
 	assert_eq(gates.get_child_count(), 3)

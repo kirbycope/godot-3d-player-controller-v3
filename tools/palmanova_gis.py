@@ -12,7 +12,8 @@ Outputs, under assets/palmanova/gis/:
     (x east, z south, the way Godot's XZ plane lies with north at -Z).
   - height.f32: the terrain heightmap, RES x RES float32 little endian, METRES per pixel, row 0 at the north edge,
     with the works stamped on it: the rampart (9 m), its brick scarp, the dry moat (4 m deep) and the ravelins and
-    lunettes (6 m), read from the walls and embankments OpenStreetMap draws.
+    lunettes (6 m), read from the walls and embankments OpenStreetMap draws. Beyond the counterscarp the glacis runs
+    down to a seabed, so the town stands as an island in a sea at SEA_LEVEL with the lunettes as islets.
   - normal.png, splat.png, color.png: the HTerrain maps that go with it (grass, dirt, rock and brick by slope
     and place).
 
@@ -48,10 +49,13 @@ MOAT_DEPTH = 4.0
 MOAT_START = 12.0  # metres out from the wall line the moat floor begins
 MOAT_END = 70.0
 COUNTERSCARP_END = 80.0
-GLACIS_BLEND = 250.0  # beyond the counterscarp the ground eases into the DEM over this
+SEA_LEVEL = -6.0  # the town stands on an island: the sea's surface, below the piazza (the moat floor stays dry above it)
+SEABED = -12.0  # the flat bed the countryside becomes
+SHORE = 120.0  # metres beyond the counterscarp over which the glacis runs down to the seabed
 EMBANKMENT_HEIGHT = 6.0
 EMBANKMENT_TOP = 5.0  # half width of the crest either side of an embankment line
 EMBANKMENT_SLOPE = 9.0
+ISLET_SLOPE = 1.5  # metres out per metre down from an embankment's top to the seabed, so a lunette stands as an islet
 
 ROAD_WIDTHS = {
     "motorway": 12.0, "motorway_link": 7.0, "trunk": 10.0, "primary": 9.0, "secondary": 8.0, "tertiary": 7.0,
@@ -182,19 +186,20 @@ def stamp_works(base: np.ndarray, walls: list, embankments: list, closed_embankm
     h = np.where((s >= SCARP) & (s < MOAT_START), -MOAT_DEPTH * (s - SCARP) / (MOAT_START - SCARP), h)
     h = np.where((s >= MOAT_START) & (s < MOAT_END), -MOAT_DEPTH, h)
     h = np.where((s >= MOAT_END) & (s < COUNTERSCARP_END), -MOAT_DEPTH * (COUNTERSCARP_END - s) / (COUNTERSCARP_END - MOAT_END), h)
-    blend = np.clip((s - COUNTERSCARP_END) / GLACIS_BLEND, 0.0, 1.0)
-    h = np.where(s >= COUNTERSCARP_END, base * blend, h)
-    # Ravelins and lunettes: closed embankments are plateaus, open ones crests, both rising from whatever is below
+    # Beyond the counterscarp the glacis runs down to the seabed, with a little of the DEM's own relief kept on it
+    shore = np.clip((s - COUNTERSCARP_END) / SHORE, 0.0, 1.0)
+    h = np.where(s >= COUNTERSCARP_END, (1.0 - shore) * 0.0 + shore * (SEABED + base * 0.2), h)
+    # Ravelins and lunettes: closed embankments are plateaus, open ones crests, at their own height above the town,
+    # falling away at the islet slope, so the lunettes out in the water stand as islets and never sink with the bed
     plateau = fill_polygons(closed_embankments)
     plateau_distance = ndimage.distance_transform_edt(~plateau) * METRES
-    mound = np.where(plateau, EMBANKMENT_HEIGHT, EMBANKMENT_HEIGHT * np.clip(1.0 - plateau_distance / EMBANKMENT_SLOPE, 0.0, 1.0))
+    mound = np.where(plateau, EMBANKMENT_HEIGHT, EMBANKMENT_HEIGHT - plateau_distance / ISLET_SLOPE)
     crest_mask = draw_lines(embankments, 1)
     crest_distance = ndimage.distance_transform_edt(~crest_mask) * METRES
-    crest = EMBANKMENT_HEIGHT * np.clip(1.0 - np.maximum(crest_distance - EMBANKMENT_TOP, 0.0) / EMBANKMENT_SLOPE, 0.0, 1.0)
+    crest = EMBANKMENT_HEIGHT - np.maximum(crest_distance - EMBANKMENT_TOP, 0.0) / ISLET_SLOPE
     outside = s > SCARP + 2.0
-    lift = np.where(outside, np.maximum(mound, crest), 0.0)
-    floor = np.where(outside, h, 0.0)
-    h = np.where(outside & (lift > 0.0), np.maximum(h, floor + lift), h)
+    works = np.maximum(mound, crest)
+    h = np.where(outside, np.maximum(h, works), h)
     return h.astype(np.float32), s.astype(np.float32)
 
 
@@ -220,6 +225,7 @@ def splat_map(h: np.ndarray, s: np.ndarray) -> np.ndarray:
     brick = np.clip((slope - 30.0) / 15.0, 0.0, 1.0) * ((s > -3.0) & (s < SCARP + 3.0))
     rock = np.clip((slope - 35.0) / 15.0, 0.0, 1.0) * (brick == 0.0)
     dirt = np.clip(1.0 - np.abs(s - (MOAT_START + MOAT_END) * 0.5) / ((MOAT_END - MOAT_START) * 0.5), 0.0, 1.0) * (h < -MOAT_DEPTH + 0.5)
+    dirt = np.maximum(dirt, np.clip((SEA_LEVEL + 1.0 - h) / 3.0, 0.0, 1.0))  # the seabed and the strand are bare
     grass = np.clip(1.0 - brick - rock - dirt, 0.0, 1.0)
     weights = np.stack([grass, dirt, rock, brick], axis=-1)
     weights /= np.maximum(weights.sum(axis=-1, keepdims=True), 1e-6)
@@ -309,7 +315,7 @@ def main() -> int:
 
     plan = {
         "origin": {"lat": ORIGIN_LAT, "lon": ORIGIN_LON},
-        "terrain": {"resolution": RES, "metres_per_pixel": METRES},
+        "terrain": {"resolution": RES, "metres_per_pixel": METRES, "sea_level": SEA_LEVEL},
         "buildings": buildings, "roads": roads, "piazza": piazza, "gates": gates, "bastions": bastions,
     }
     with open(os.path.join(args.out, "plan.json"), "w", encoding="utf-8", newline="\n") as handle:

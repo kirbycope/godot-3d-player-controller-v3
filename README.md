@@ -340,10 +340,16 @@ The ground is an HTerrain (`addons/zylann.hterrain`, the plugin the snow demo us
 data under `assets/palmanova/terrain_data/`. The DEM is too coarse to carry the works, so `tools/palmanova_gis.py`
 stamps them on from the walls and embankments OpenStreetMap draws: a 9 m rampart with its brick scarp, a dry moat 4 m
 deep and up to 80 m wide, and 6 m ravelins and lunettes; inside the walls the town is flat at the piazza's level. The
-terrain is textured by slope and place (grass, dirt on the moat floor, rock on steep ground, brick on the scarp) from
-`assets/palmanova/textures/`. Every building inside the works is its own node under `Town/Buildings`, its footprint
-extruded with the walls and the roof as materials on the node; the villages outside are grouped by sector under
-`Town/Villages`; the streets are strips draped on the ground under `Town/Streets`, grouped by class. The three gates,
+town stands on an island: beyond the counterscarp the glacis runs down to a seabed 12 m below the piazza, and the
+weather addon's pond water (`resources/pool_water_material.tres`, its Gerstner wind waves and rain rings on one quad
+that reaches the horizon) lies 6 m below the piazza, so the moat above it stays dry, the lunettes stand as islets, and
+the villages and roads that would be under water are left out. The sea is a `Buoyancy` area in the `WATER` group
+(`Sea/SeaArea3D`), wired to the level's `_on_water_area_3d_body_entered` as the world's pool is, so the Player swims
+in it, the horse wades and anything that floats floats. The terrain is textured by slope and place (grass, dirt on
+the moat floor and the seabed, rock on steep ground, brick on the scarp) from `assets/palmanova/textures/`. Every
+building inside the works is its own node under `Town/Buildings`, its footprint extruded with the walls and the roof
+as materials on the node; what is left of the villages on the strand is grouped by sector under `Town/Villages`; the
+streets are strips draped on the ground under `Town/Streets`, grouped by class and cut at the water. The three gates,
 the nine bastions (Donato, Barbaro, Grimani, Savorgnan, Foscarini, Villachiara, Contarini, Garzoni, Monte, the
 town's own order counter-clockwise from Porta Cividale), the Piazza Grande and every named building carry a label.
 

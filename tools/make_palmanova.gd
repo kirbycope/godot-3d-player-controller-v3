@@ -28,6 +28,7 @@ const INSIDE_RADIUS: float = 760.0 ## Buildings within this are the town's own n
 const SECTOR_DEGREES: float = 30.0
 const ROAD_LIFT: float = 0.15
 const ROAD_STEP: float = 8.0
+const SEA_HALF: float = 6000.0 ## The water quad reaches well past the terrain, to the horizon under the fog.
 
 var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var _materials: Dictionary = {}
@@ -37,6 +38,7 @@ var _heights: PackedFloat32Array
 var _resolution: int
 var _metres: float
 var _half: float
+var _sea_level: float
 
 
 func _init() -> void:
@@ -49,9 +51,11 @@ func _init() -> void:
 	_write_terrain_data()
 	_root = Node3D.new()
 	_root.name = "Palmanova"
-	_root.editor_description = "Palmanova, the Venetian star fortress town of 1593, from OpenStreetMap and the Copernicus DEM by tools/palmanova_gis.py and tools/make_palmanova.gd, at one metre to the metre round the Piazza Grande. Run it from the editor; the Player starts on the piazza."
+	_root.set_script(load("res://scenes/palmanova.gd"))
+	_root.editor_description = "Palmanova, the Venetian star fortress town of 1593, from OpenStreetMap and the Copernicus DEM by tools/palmanova_gis.py and tools/make_palmanova.gd, at one metre to the metre round the Piazza Grande, on an island in the weather addon's sea. Run it from the editor; the Player starts on the piazza."
 	_build_environment()
 	_build_town()
+	_build_sea()
 	_build_scaffolding()
 	var packed: PackedScene = PackedScene.new()
 	var err: Error = packed.pack(_root)
@@ -93,6 +97,7 @@ func _read_plan() -> void:
 	_resolution = int(_plan["terrain"]["resolution"])
 	_metres = float(_plan["terrain"]["metres_per_pixel"])
 	_half = (_resolution - 1) * _metres * 0.5
+	_sea_level = float(_plan["terrain"].get("sea_level", -6.0))
 	_heights = FileAccess.get_file_as_bytes(GIS_DIR + "height.f32").to_float32_array()
 	assert(_heights.size() == _resolution * _resolution, "height.f32 does not match the plan's resolution")
 
@@ -442,6 +447,8 @@ func _build_town() -> void:
 			centre += p
 			base = minf(base, height_at(p.x, p.y))
 		centre /= outline.size()
+		if base < _sea_level + 0.5:
+			continue # under the sea now
 		var top: float = base + float(building["height"])
 		var mesh: ArrayMesh = extrude(outline, base - 0.4, top)
 		var kind: String = str(building["kind"])
@@ -477,11 +484,12 @@ func _build_town() -> void:
 		var kind: String = str(road["kind"])
 		var where: String = "Inside" if line[0].length() <= INSIDE_RADIUS else "Outside"
 		var key: String = where + kind.capitalize().replace(" ", "")
-		if not groups.has(key):
-			var st: SurfaceTool = SurfaceTool.new()
-			st.begin(Mesh.PRIMITIVE_TRIANGLES)
-			groups[key] = st
-		road_into(groups[key], line, float(road["width"]))
+		for run: PackedVector2Array in _above_water(line):
+			if not groups.has(key):
+				var st: SurfaceTool = SurfaceTool.new()
+				st.begin(Mesh.PRIMITIVE_TRIANGLES)
+				groups[key] = st
+			road_into(groups[key], run, float(road["width"]))
 	for key: String in groups:
 		var st: SurfaceTool = groups[key]
 		st.generate_normals()
@@ -490,14 +498,68 @@ func _build_town() -> void:
 	print("buildings inside %d, village sectors %d, street groups %d" % [inside, sectors.size(), groups.size()])
 
 
+## The stretches of [param line] that stay on land: a road running into the sea ends at the strand.
+func _above_water(line: PackedVector2Array) -> Array[PackedVector2Array]:
+	var runs: Array[PackedVector2Array] = []
+	var run: PackedVector2Array = PackedVector2Array()
+	for p: Vector2 in line:
+		if height_at(p.x, p.y) > _sea_level + 0.3:
+			run.append(p)
+		else:
+			if run.size() >= 2:
+				runs.append(run)
+			run = PackedVector2Array()
+	if run.size() >= 2:
+		runs.append(run)
+	return runs
+
+
+## The sea the island stands in: the weather addon's Gerstner water on one quad across the whole scene at the plan's
+## sea level, and a Buoyancy area over the bed (the WATER group, as the world's pool) whose body signals reach the
+## root, so a Player swims, the horse wades and anything that floats floats.
+func _build_sea() -> void:
+	var sea: Node3D = _group(_root, "Sea", "The sea round the island, %.0f m below the piazza: the weather addon's pond_water shader (wind waves, rain rings, foam) on one quad, and the Buoyancy area that makes it water for the Player, the horse and anything that floats. The moat stays dry above it." % -_sea_level)
+	var quad: QuadMesh = QuadMesh.new()
+	quad.size = Vector2(SEA_HALF * 2.0, SEA_HALF * 2.0)
+	quad.orientation = PlaneMesh.FACE_Y
+	quad.subdivide_width = 255
+	quad.subdivide_depth = 255
+	quad.material = load("res://resources/pool_water_material.tres")
+	var water: MeshInstance3D = MeshInstance3D.new()
+	water.name = "Water"
+	water.mesh = quad
+	water.position = Vector3(0.0, _sea_level, 0.0)
+	sea.add_child(water)
+	water.owner = _root
+	var area: Area3D = Area3D.new()
+	area.name = "SeaArea3D"
+	area.set_script(load("res://scenes/buoyancy.gd"))
+	area.add_to_group("WATER", true)
+	area.position = Vector3(0.0, _sea_level - 8.0, 0.0)
+	sea.add_child(area)
+	area.owner = _root
+	area.set("water_mesh", water)
+	var shape: CollisionShape3D = CollisionShape3D.new()
+	shape.name = "CollisionShape3D"
+	var box: BoxShape3D = BoxShape3D.new()
+	box.size = Vector3(SEA_HALF * 2.0, 16.0, SEA_HALF * 2.0)
+	shape.shape = box
+	area.add_child(shape)
+	shape.owner = _root
+	area.body_entered.connect(area._on_body_entered, CONNECT_PERSIST)
+	area.body_exited.connect(area._on_body_exited, CONNECT_PERSIST)
+	area.body_entered.connect(_root._on_water_area_3d_body_entered.bind(_root.get_path_to(area)), CONNECT_PERSIST)
+	area.body_exited.connect(_root._on_water_area_3d_body_exited.bind(_root.get_path_to(area)), CONNECT_PERSIST)
+
+
 # --- Environment, Player and HUD --------------------------------------------------------------------------------
 
 func _build_environment() -> void:
 	var sky_material: ProceduralSkyMaterial = ProceduralSkyMaterial.new()
 	sky_material.sky_top_color = Color(0.30, 0.50, 0.80)
 	sky_material.sky_horizon_color = Color(0.78, 0.82, 0.86)
-	sky_material.ground_bottom_color = Color(0.40, 0.45, 0.35)
-	sky_material.ground_horizon_color = Color(0.78, 0.82, 0.86)
+	sky_material.ground_bottom_color = Color(0.18, 0.36, 0.52) # the sea, below the horizon
+	sky_material.ground_horizon_color = Color(0.62, 0.76, 0.86)
 	var sky: Sky = Sky.new()
 	sky.sky_material = sky_material
 	var environment: Environment = Environment.new()
@@ -555,6 +617,9 @@ func _build_scaffolding() -> void:
 	weather.set("target_node", weather.get_path_to(player))
 	weather.set("sun_light", weather.get_path_to(_root.get_node("Sun")))
 	weather.set("world_environment", weather.get_path_to(_root.get_node("WorldEnvironment")))
+	var sea_area: Node = _root.get_node("Sea/SeaArea3D")
+	sea_area.set("weather", weather)
+	sea_area.set("clock", clock)
 	var horse: Node3D = (load("res://scenes/horse.tscn") as PackedScene).instantiate(PackedScene.GEN_EDIT_STATE_INSTANCE)
 	horse.name = "Horse"
 	horse.position = Vector3(30.0, height_at(30.0, 30.0), 30.0)
