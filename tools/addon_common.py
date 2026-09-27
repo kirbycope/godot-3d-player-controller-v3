@@ -69,7 +69,8 @@ def load_lock() -> dict:
 
 
 def save_lock(data: dict) -> None:
-    LOCKFILE.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    # LF on every platform: the lock is committed, and a CRLF write here is the warning git prints on it.
+    LOCKFILE.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n")
 
 
 def load_pulled() -> dict:
@@ -89,7 +90,7 @@ def load_pulled() -> dict:
 
 def save_pulled(data: dict) -> None:
     CACHE.mkdir(exist_ok=True)
-    (CACHE / "pulled.json").write_text(json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    (CACHE / "pulled.json").write_text(json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n")
 
 
 def has_commit(cache: Path, commit: str) -> bool:
@@ -100,6 +101,15 @@ def has_commit(cache: Path, commit: str) -> bool:
 def is_third_party(addon: dict) -> bool:
     """Whether the addon is somebody else's work: pulled and pinned like the rest, never pushed to."""
     return bool(addon.get("third_party", False))
+
+
+def is_generated(path: Path) -> bool:
+    """Whether a file is one Godot writes beside an addon rather than part of it: an .import for an
+    asset or a .uid for a script. The engine rewrites them when its version moves (4.8 adds import keys
+    4.7 lacked), so in a third-party addon, where an edit has nowhere to go, they are never an edit made
+    here: the pull overwrites or removes them without asking. A first-party addon keeps them guarded,
+    because a .uid committed there is what keeps its scene references stable across machines."""
+    return path.suffix in {".import", ".uid"}
 
 
 def resolve_ref(cache: Path, ref: str) -> str:
@@ -176,9 +186,22 @@ def sync_cache(addon: dict, fetch: bool = True) -> Path:
 
     if not (path / ".git").exists():
         print(f"  cloning {addon['repo']}")
-        run(["git", "clone", "--quiet", addon["repo"], str(path)])
+        run(["git", "clone", "--quiet", "--config", "core.autocrlf=false", "--config", "core.eol=lf",
+             addon["repo"], str(path)])
     elif fetch:
-        run(["git", "fetch", "--quiet", "--tags", "origin"], cwd=path)
+        run(["git", "-c", "core.autocrlf=false", "fetch", "--quiet", "--tags", "origin"], cwd=path)
+    # The clone must check out LF bytes whatever this machine's global git says, or every .tres of a
+    # third-party addon reads as an edit made here the moment Godot re-saves it. autocrlf=false covers
+    # a repository with no attributes; one that declares `* text=auto` (GPUTrail) still follows
+    # core.eol, whose default on Windows is CRLF, so that is pinned too. A cache set up before this rule
+    # still holds CRLF checkouts, which a checkout of the same commit leaves alone (even a forced
+    # checkout-index skips a file whose stat matches the index), so the index is emptied and the tree
+    # reset from HEAD once, which writes every file out again.
+    if run(["git", "config", "--get", "core.eol"], cwd=path, check=False) != "lf":
+        run(["git", "config", "core.autocrlf", "false"], cwd=path)
+        run(["git", "config", "core.eol", "lf"], cwd=path)
+        run(["git", "rm", "--cached", "--quiet", "-r", "."], cwd=path)
+        run(["git", "reset", "--quiet", "--hard"], cwd=path)
 
     return path
 

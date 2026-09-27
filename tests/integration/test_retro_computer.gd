@@ -121,16 +121,21 @@ func test_using_it_seats_the_player_and_starts_them_typing() -> void:
 			"The Player should be warped onto the seat marker")
 
 
+## The head is never idle: whenever nothing else claims it, it follows the camera's pitch through the Player's own
+## HeadLookTarget, so sitting down swaps that target for the screen and standing up hands it back.
 func test_the_head_turns_onto_the_screen_and_lets_go_again() -> void:
 	var modifier: LookAtModifier3D = player.head_look_at_modifier as LookAtModifier3D
-	assert_false(modifier.active, "Nothing should be driving the head before sitting down")
+	var ahead: Marker3D = player.head_look_target
+	assert_not_null(ahead, "The Player carries the HeadLookTarget the camera's pitch places")
+	assert_true(modifier.active, "The head follows the camera's pitch before sitting down")
+	assert_eq(modifier.get_node(modifier.target_node), ahead, "through the Player's own HeadLookTarget")
 	computer.equip(player)
 	assert_true(modifier.active, "Sitting down should point the head at the CRT")
 	assert_eq(modifier.get_node(modifier.target_node), computer.screen, "It should look at the screen itself")
 	assert_eq(modifier.bone_name, "Head", "The spine modifier is a separate one used for aiming")
 	computer.stop_using()
-	assert_false(modifier.active, "Getting up should release the head")
-	assert_eq(modifier.target_node, NodePath(""), "and clear the target with it")
+	assert_true(modifier.active, "Getting up should hand the head back to the camera's pitch")
+	assert_eq(modifier.get_node(modifier.target_node), ahead, "so it looks ahead through the HeadLookTarget again, not at the screen")
 
 
 func test_first_person_gets_a_square_view_and_third_person_the_shoulder_shot() -> void:

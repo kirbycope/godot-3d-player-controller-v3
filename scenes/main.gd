@@ -67,21 +67,29 @@ func single_player() -> void:
 
 
 ## New Game: the controls go back to their defaults (Zelda's layout, on-screen controls on Auto) before the world
-## loads, so a layout or HUD mode picked in an earlier game does not carry in; Continue keeps them.
+## loads, so a layout or HUD mode picked in an earlier game does not carry in; Continue keeps them. It takes the next
+## save number free, so it never writes over a game already on the list.
 func new_game() -> void:
 	var settings: PlayerSettingsResource = PlayerSettingsResource.load_or_create()
 	settings.reset_controls()
 	settings.save()
+	SaveGame.slot = SaveGame.next_free_slot()
 	single_player()
 
 
-## Continue: the world loads as for a new game, and its SaveGame reads the file once the Player is in.
-func continue_game() -> void:
+## Continue: save number [param slot] in the level it was taken in ([param scene_path]), or the world when that
+## level is gone; its SaveGame reads the file once the Player is in.
+func continue_game(slot: int, scene_path: String) -> void:
+	SaveGame.slot = slot
 	SaveGame.load_requested = true
-	single_player()
+	if not scene_path.is_empty() and ResourceLoader.exists(scene_path):
+		loading.load_scene(scene_path)
+	else:
+		single_player()
 
 
 func multi_player() -> void:
+	SaveGame.slot = 0 # A hosted game keeps to its own save, not a single-player one
 	title_screen.hide()
 	lobby_explorer.show()
 	lobby_explorer.refresh_lobbies()

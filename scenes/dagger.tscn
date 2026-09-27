@@ -13,6 +13,7 @@ can_attack = true
 display_name = "Dagger"
 description = "A short blade for the right hand. Equipped, hold Throw and let go to hurl it."
 equipment_type = 3
+is_metal = true
 icon = ExtResource("3_icon")
 is_throwable = true
 throw_damage = 10.0

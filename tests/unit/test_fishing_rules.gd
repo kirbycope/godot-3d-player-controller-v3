@@ -68,17 +68,19 @@ func test_fish_details_list_the_bag_with_a_star_on_the_record() -> void:
 
 func test_fishing_log_saves_and_loads() -> void:
 	var fishing_log: FishingLog = LOG_SCRIPT.new()
-	fishing_log.persist = true
-	fishing_log.save_path = "user://test_fishing_log.cfg"
 	add_child_autofree(fishing_log)
+	assert_true(fishing_log.is_in_group(SaveGame.GROUP), "The log is Saveable, so it lives in the numbered save")
 	fishing_log.record_catch(CARP, 33.0)
+	var state: Dictionary = fishing_log.save_state()
+	# A save is JSON: the state must survive to_plain and from_plain with nothing but plain values in it
+	state = SaveGame.from_plain(JSON.to_native(JSON.parse_string(JSON.stringify(JSON.from_native(SaveGame.to_plain(state))))))
 	var other: FishingLog = LOG_SCRIPT.new()
-	other.save_path = fishing_log.save_path
 	add_child_autofree(other)
-	other.load_log()
+	watch_signals(other)
+	other.load_state(state)
 	assert_eq(other.record_of(CARP), 33.0)
 	assert_eq(other.lengths_of(CARP), [33.0])
-	DirAccess.remove_absolute(fishing_log.save_path)
+	assert_signal_emitted(other, "changed", "A loaded log tells the index and the card")
 
 
 func test_conditions_describe_the_resource() -> void:

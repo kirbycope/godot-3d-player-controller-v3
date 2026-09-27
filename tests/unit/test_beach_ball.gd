@@ -201,3 +201,29 @@ func test_the_hiss_stops_when_the_air_does() -> void:
 
 	assert_almost_eq(ball.soft_twin.pressure_coefficient, 0.0, 0.001, "The air is out")
 	assert_false(ball.deflate_player.playing, "and the hiss went with it")
+
+
+## Air drag is what makes it a beach ball: a metre across and 0.2 kg, thrown as hard as the Player throws a ball
+## that light (13.5 m/s) it is spent within two metres, and it falls no faster than about 2.9 m/s.
+func test_the_air_stops_a_hurled_beach_ball_quickly() -> void:
+	var speed: float = 13.5
+	var travelled: float = 0.0
+	var dt: float = 1.0 / 60.0
+	while speed > 4.0:
+		travelled += speed * dt
+		speed -= BeachBall.drag_deceleration(speed, 0.5, 0.2) * dt
+	assert_lt(travelled, 2.0, "A hard throw is down to a drift inside two metres")
+	var terminal: float = sqrt(2.0 * 0.2 * 9.8 / (BeachBall.AIR_DENSITY * 0.47 * PI * 0.25))
+	assert_almost_eq(BeachBall.drag_deceleration(terminal, 0.5, 0.2), 9.8, 0.01, "and at %.1f m/s the air holds up its whole weight" % terminal)
+	assert_between(terminal, 2.7, 3.1, "so it floats down at about 2.9 m/s")
+
+
+func test_the_ball_slows_itself_in_flight() -> void:
+	var ball: BeachBall = BALL_SCENE.instantiate() as BeachBall
+	add_child_autofree(ball)
+	ball.gravity_scale = 0.0
+	await wait_physics_frames(1)
+	ball.linear_velocity = Vector3(13.5, 0.0, 0.0)
+	await wait_physics_frames(30)
+	assert_lt(ball.linear_velocity.length(), 4.0, "Half a second after a hard throw it is barely moving")
+

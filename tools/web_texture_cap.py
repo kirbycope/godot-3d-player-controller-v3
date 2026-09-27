@@ -36,11 +36,11 @@ def cap_project_file(project_file: Path, size: int) -> bool:
     """Set the importer default every future import inherits. Returns whether anything changed."""
     if not project_file.exists():
         return False
-    text: str = project_file.read_text()
+    text: str = project_file.read_text(encoding="utf-8")
     capped: str = PROJECT_SETTING.sub(lambda m: f"{m.group(1)}{size}", text)
     if capped == text:
         return False
-    project_file.write_text(capped)
+    project_file.write_text(capped, encoding="utf-8", newline="\n")
     return True
 
 
@@ -50,10 +50,14 @@ def cap_import_files(root: Path, size: int) -> int:
     for path in root.rglob("*.import"):
         if any(part in SKIP_DIRS for part in path.parts):
             continue
-        text: str = path.read_text()
+        # A terrain data directory (it holds a .hterrain file) is HTerrain's own: its maps are read at
+        # their full 513 px by the plugin, and a cap would resample them out from under it.
+        if any(path.parent.glob("*.hterrain")):
+            continue
+        text: str = path.read_text(encoding="utf-8")
         capped: str = IMPORT_SETTING.sub(lambda m: f"{m.group(1)}{size}", text)
         if capped != text:
-            path.write_text(capped)
+            path.write_text(capped, encoding="utf-8", newline="\n")
             changed += 1
     return changed
 

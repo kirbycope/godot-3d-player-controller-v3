@@ -4,8 +4,9 @@ extends GutTest
 ## so its synchronizer) to the carrier's peer and puts every copy on that Player's spring arm, so the server's copy
 ## rides along instead of writing its old position back; dropping it hands it back to the server and puts every
 ## copy back into the scene. The server arbitrates: of two Players picking it up at once only the first gets it,
-## and a carrier or thrower who drops out leaves it back in the scene, the server's. Two scene branches with their
-## own MultiplayerAPI talk over ENet on localhost, as test_horse_multiplayer does.
+## and a carrier or thrower who drops out leaves it back in the scene, the server's. A peer joining while it flies
+## from a throw is told whose it is. Two scene branches with their own MultiplayerAPI talk over ENet on localhost,
+## as test_horse_multiplayer does; a late joiner is a third.
 
 const PORT: int = 47399
 const PLAYER_SCENE: PackedScene = preload("res://addons/3d_player_controller/scenes/player.tscn")
@@ -221,4 +222,69 @@ func test_a_pick_up_while_somebody_else_has_it_is_refused() -> void:
 	assert_eq(host_buddy.get_multiplayer_authority(), 1, "nor take its authority")
 	for buddy: Node in [host_buddy, remote_buddy]:
 		if not server_root.is_ancestor_of(buddy) and not client_root.is_ancestor_of(buddy):
+			buddy.free()
+
+
+## H6: a peer joining while the client's throw is in the air. The thrower keeps the authority until it lands, and
+## rider-style hand-offs happen once, so the joiner's copy kept the server as authority and rejected the thrower's
+## every packet; now the server tells the joiner on peer_connected. A carried buddy sits under the carrier's arm on
+## the peers that saw the pick-up and under the world on the joiner, so nothing addressed to it lands there until
+## the drop; then the hand-back, sent from home, does. No prompt shows on a buddy in another peer's hands.
+func test_a_peer_joining_mid_throw_gets_the_throwers_authority_and_a_carried_one_catches_up_on_the_drop() -> void:
+	var client_id: int = client_api.get_unique_id()
+	var client_player: Player = await _client_player()
+	var host_player: Player = server_root.get_node("Players/1")
+	await wait_physics_frames(20)
+	var host_buddy: CharacterBody3D = server_root.get_node("LittleBuddy")
+	var remote_buddy: CharacterBody3D = client_root.get_node("LittleBuddy")
+	var home: Node = host_buddy.get_parent()
+	host_buddy.player = host_player
+	remote_buddy.player = client_player
+	remote_buddy.pick_up()
+	await wait_until(func() -> bool: return remote_buddy.is_held and host_buddy.get_multiplayer_authority() == client_id, 2.0)
+	assert_eq(host_buddy.carried_by, client_id, "The client carries it")
+	host_buddy.display_menu(host_player)
+	assert_false(host_buddy.action_prompt.visible, "No pick-up prompt on a buddy in another peer's hands")
+	remote_buddy.throw_with_direction(Vector3.UP, 3.0) # straight up and high, so it is still flying when the joiner arrives
+	await wait_until(func() -> bool: return host_buddy.get_parent() == home and host_buddy.carried_by == 0, 2.0)
+	assert_eq(host_buddy.get_multiplayer_authority(), client_id, "The thrower keeps it while it flies")
+	# A third peer joins now, with the buddy standing in its scene
+	var late_root := Node3D.new()
+	late_root.name = "LateBranch"
+	add_child(late_root)
+	var late_path: NodePath = late_root.get_path()
+	var late_api := SceneMultiplayer.new()
+	get_tree().set_multiplayer(late_api, late_path)
+	var late_peer := ENetMultiplayerPeer.new()
+	assert_eq(late_peer.create_client("127.0.0.1", PORT), OK)
+	late_api.multiplayer_peer = late_peer
+	_build_branch(late_root)
+	var late_buddy: CharacterBody3D = late_root.get_node("LittleBuddy")
+	late_buddy.collision_layer = 0
+	late_buddy.collision_mask = 0
+	await wait_until(func() -> bool: return late_api.get_peers().size() > 0, 3.0)
+	await wait_until(func() -> bool: return late_buddy.get_multiplayer_authority() == client_id, 2.0)
+	for copy: Node in late_root.get_node("Players").get_children():
+		(copy as Player).collision_layer = 0
+		(copy as Player).collision_mask = 0
+	assert_eq(late_buddy.get_multiplayer_authority(), client_id, "The joiner is told whose the flying buddy is")
+	assert_eq((late_buddy.get_node("BodySynchronizer") as MultiplayerSynchronizer).get_multiplayer_authority(), client_id, "synchronizer included, so the thrower's packets are taken")
+	remote_buddy._hand_to(1, -1) # what the landing does on the thrower's peer; the mirror here has no collision to land on
+	await wait_until(func() -> bool: return host_buddy.get_multiplayer_authority() == 1 and late_buddy.get_multiplayer_authority() == 1, 2.0)
+	assert_eq(host_buddy.get_multiplayer_authority(), 1, "The landing hands it back to the server")
+	assert_eq(late_buddy.get_multiplayer_authority(), 1, "on the joiner too")
+	# Carried again with the joiner present: the joiner's copy catches up when the carrier lets go
+	remote_buddy.pick_up()
+	await wait_until(func() -> bool: return remote_buddy.is_held and host_buddy.get_multiplayer_authority() == client_id, 2.0)
+	remote_buddy.drop()
+	await wait_until(func() -> bool: return host_buddy.get_parent() == home and host_buddy.get_multiplayer_authority() == 1, 2.0)
+	await wait_process_frames(5)
+	assert_eq(late_buddy.get_multiplayer_authority(), 1, "The drop reaches the joiner")
+	assert_eq(late_buddy.carried_by, 0)
+	assert_eq(late_buddy.get_parent(), late_root, "whose copy stands in its scene, the server's again")
+	late_root.free()
+	late_api.multiplayer_peer.close()
+	get_tree().set_multiplayer(null, late_path)
+	for buddy: Node in [host_buddy, remote_buddy]:
+		if is_instance_valid(buddy) and not server_root.is_ancestor_of(buddy) and not client_root.is_ancestor_of(buddy):
 			buddy.free()

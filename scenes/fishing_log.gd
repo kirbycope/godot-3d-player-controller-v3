@@ -2,20 +2,44 @@ class_name FishingLog
 extends Node
 ## What the Player has landed: the lengths of the fish still in the bag, oldest first, and the record length
 ## per species. Sits on the Player next to the inventory; the rod records catches, the inventory's use and
-## drop signals take lengths back out, and with [member persist] on it survives a restart in a ConfigFile.
+## drop signals take lengths back out, and it is Saveable, so a [SaveGame] keeps it in the numbered save with the
+## bag: a New Game starts with an empty log and Continue brings it back.
 
 signal changed ## A catch was logged or a fish left the bag.
-
-@export var persist: bool = false ## Save to [member save_path] on every change and load it on ready.
-@export var save_path: String = "user://fishing_log.cfg"
 
 var records: Dictionary[StringName, float] = {} ## Species id -> longest ever landed.
 var held: Dictionary[StringName, Array] = {} ## Species id -> lengths in the bag, oldest first.
 
 
 func _ready() -> void:
-	if persist:
-		load_log()
+	add_to_group(SaveGame.GROUP)
+
+
+## What a [SaveGame] keeps: the records and the lengths in the bag, keyed by species id.
+func save_state() -> Dictionary:
+	var state_held: Dictionary = {}
+	for id: StringName in held:
+		state_held[String(id)] = held[id].duplicate()
+	var state_records: Dictionary = {}
+	for id: StringName in records:
+		state_records[String(id)] = records[id]
+	return {"records": state_records, "held": state_held}
+
+
+## Puts a [method save_state] back, replacing whatever was logged.
+func load_state(state: Dictionary) -> void:
+	records.clear()
+	held.clear()
+	var saved_records: Dictionary = state.get("records", {})
+	for id: String in saved_records:
+		records[StringName(id)] = float(saved_records[id])
+	var saved_held: Dictionary = state.get("held", {})
+	for id: String in saved_held:
+		var lengths: Array = []
+		for length: Variant in saved_held[id]:
+			lengths.append(float(length))
+		held[StringName(id)] = lengths
+	changed.emit()
 
 
 ## A carried fish was dropped (the Inventory's item_dropped is connected here in the scene): it leaves the log's count.
@@ -75,27 +99,5 @@ func _on_item_gone(item: Item, count: int) -> void:
 
 
 func _changed() -> void:
-	if persist:
-		save_log()
 	changed.emit()
 
-
-func save_log() -> void:
-	var file: ConfigFile = ConfigFile.new()
-	for id: StringName in records:
-		file.set_value("records", id, records[id])
-	for id: StringName in held:
-		file.set_value("held", id, PackedFloat32Array(held[id]))
-	file.save(save_path)
-
-
-func load_log() -> void:
-	var file: ConfigFile = ConfigFile.new()
-	if file.load(save_path) != OK:
-		return
-	records.clear()
-	held.clear()
-	for key: String in file.get_section_keys("records") if file.has_section("records") else PackedStringArray():
-		records[StringName(key)] = float(file.get_value("records", key))
-	for key: String in file.get_section_keys("held") if file.has_section("held") else PackedStringArray():
-		held[StringName(key)] = Array(file.get_value("held", key))

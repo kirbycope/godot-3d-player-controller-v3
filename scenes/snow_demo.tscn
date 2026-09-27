@@ -1,16 +1,62 @@
-[gd_scene load_steps=19 format=3]
+[gd_scene format=3 uid="uid://c5kghsop08uty"]
 
-[ext_resource type="Script" path="res://scenes/snow_demo.gd" id="1_demo"]
-[ext_resource type="Script" path="res://addons/snow_deformation/snow_deformation.gd" id="2_snow"]
-[ext_resource type="Script" path="res://addons/snow_deformation/terrain_height_flat.gd" id="3_flat"]
-[ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/player.tscn" id="4_player"]
-[ext_resource type="Script" path="res://addons/snow_deformation/foot_stamper.gd" id="5_foot"]
-[ext_resource type="Script" path="res://addons/snow_deformation/blade_stamper.gd" id="6_blade"]
-[ext_resource type="PackedScene" path="res://addons/weather_fx/scenes/weather_fx.tscn" id="7_weather"]
+[ext_resource type="Script" uid="uid://f6wit6g1u0vj" path="res://scenes/snow_demo.gd" id="1_demo"]
+[ext_resource type="Script" uid="uid://5clfps35wlb6" path="res://addons/snow_deformation/snow_deformation.gd" id="2_snow"]
+[ext_resource type="PackedScene" uid="uid://ct7n8imyllhbo" path="res://addons/3d_player_controller/scenes/player.tscn" id="4_player"]
+[ext_resource type="Script" uid="uid://vhhfx0ivoj0e" path="res://addons/snow_deformation/foot_stamper.gd" id="5_foot"]
+[ext_resource type="PackedScene" uid="uid://do6j5qhjt8bsf" path="res://addons/weather_fx/scenes/weather_fx.tscn" id="7_weather"]
 [ext_resource type="PackedScene" path="res://scenes/horse.tscn" id="8_horse"]
-[ext_resource type="PackedScene" path="res://scenes/beach_ball.tscn" id="9_ball"]
-[ext_resource type="AudioStream" path="res://resources/snow_footsteps.tres" id="10_steps"]
-[ext_resource type="AudioStream" path="res://resources/snow_crush.tres" id="11_crush"]
+[ext_resource type="PackedScene" uid="uid://c4b8e2a1h7qaq" path="res://scenes/beach_ball.tscn" id="9_ball"]
+[ext_resource type="AudioStream" path="res://addons/snow_deformation/resources/snow_footsteps.tres" id="10_steps"]
+[ext_resource type="AudioStream" path="res://addons/snow_deformation/resources/snow_crush.tres" id="11_crush"]
+[ext_resource type="Script" uid="uid://d0u7oh1rirfy4" path="res://addons/3d_player_controller/scripts/equipment.gd" id="12_equipment"]
+[ext_resource type="PackedScene" uid="uid://b3tb2j1pwgw3u" path="res://assets/justcreate3d/weapons_lite/Weapon_01.fbx" id="13_7eovs"]
+[ext_resource type="PackedScene" uid="uid://br0tu61de4o65" path="res://assets/n_hance_studio/weapons/SK_Sword_1H_Newbie_01.fbx" id="13_sword"]
+[ext_resource type="Script" uid="uid://cdjlwlo8bl8d5" path="res://addons/3d_player_controller/scripts/firearm.gd" id="14_ad5ls"]
+[ext_resource type="Texture2D" uid="uid://cpraenxuyh3ib" path="res://addons/3d_player_controller/assets/game_icons/gladius.svg" id="14_sword_icon"]
+[ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/projectile/bullet.tscn" id="15_akpcc"]
+[ext_resource type="PackedScene" uid="uid://1eqwedxx6bid" path="res://assets/n_hance_studio/weapons/SK_Shield_Newbie_01.fbx" id="15_shield"]
+[ext_resource type="Texture2D" uid="uid://p600xet6ykq7" path="res://addons/3d_player_controller/assets/game_icons/pistol-gun.svg" id="16_5nvvt"]
+[ext_resource type="Texture2D" uid="uid://c4mtjnqxyv4f2" path="res://addons/3d_player_controller/assets/game_icons/shield.svg" id="16_shield_icon"]
+[ext_resource type="Resource" path="res://addons/3d_player_controller/resources/accuracy/pistol.tres" id="17_v0io4"]
+[ext_resource type="AudioStream" path="res://resources/audio/gun_draw.tres" id="18_yj0r2"]
+[ext_resource type="AudioStream" path="res://resources/audio/gun_holster.tres" id="19_yybmt"]
+[ext_resource type="Script" uid="uid://d046dc2e6l7mn" path="res://addons/3d_player_controller/scripts/muzzle_flash.gd" id="20_m4ri3"]
+[ext_resource type="PackedScene" uid="uid://calgbn1slkmss" path="res://assets/BinbunVFX/muzzle_flash/effects/short_flash/short_flash_01.tscn" id="21_frihg"]
+[ext_resource type="AudioStream" path="res://resources/audio/pistol_shot.tres" id="22_kwxd0"]
+[ext_resource type="AudioStream" path="res://resources/audio/pistol_reload.tres" id="23_28cfq"]
+[ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/vfx/laser_sight.tscn" id="24_ck02g"]
+[ext_resource type="PackedScene" uid="uid://bsybqxf7immya" path="res://assets/n_hance_studio/weapons/SK_Bow_Newbie_01.fbx" id="25_l6yje"]
+[ext_resource type="Script" uid="uid://7r16fm6kmk1p" path="res://addons/3d_player_controller/scripts/bow.gd" id="26_jsi77"]
+[ext_resource type="PackedScene" path="res://addons/3d_player_controller/scenes/projectile/arrow.tscn" id="27_o38g2"]
+[ext_resource type="Texture2D" uid="uid://dqhgd83i0432v" path="res://addons/3d_player_controller/assets/game_icons/bow-arrow.svg" id="28_17t54"]
+[ext_resource type="Resource" path="res://addons/3d_player_controller/resources/accuracy/bow.tres" id="29_ht37n"]
+[ext_resource type="AudioStream" path="res://addons/3d_player_controller/resources/audio/bow_take_out.tres" id="30_jphgq"]
+[ext_resource type="AudioStream" path="res://addons/3d_player_controller/resources/audio/bow_put_away.tres" id="31_v7ulo"]
+[ext_resource type="AudioStream" path="res://addons/3d_player_controller/resources/audio/bow_attack.tres" id="32_n2gsr"]
+[ext_resource type="Script" uid="uid://b03h8ijilon1x" path="res://addons/3d_player_controller/scripts/arrow.gd" id="33_aqadm"]
+[ext_resource type="AudioStream" uid="uid://bxuo1psaadb7n" path="res://addons/3d_player_controller/assets/pixabay/djartmusic-arrow-swish_03-306040.mp3" id="34_baf2w"]
+[ext_resource type="AudioStream" uid="uid://bo6duef7adfmo" path="res://assets/pixabay/freesound_community-bow-loading-38752.mp3" id="35_js2u8"]
+[ext_resource type="PackedScene" path="res://addons/3d_player_controller/inventory/scenes/item_pickup.tscn" id="36_07n03"]
+[ext_resource type="Resource" path="res://resources/items/pistol_magazine.tres" id="37_lt1np"]
+[ext_resource type="Resource" path="res://resources/items/arrow.tres" id="38_1knb5"]
+[ext_resource type="PackedScene" path="res://scenes/snowball.tscn" id="40_snowball"]
+[ext_resource type="Script" uid="uid://de0ju4sswa7g1" path="res://addons/zylann.hterrain/hterrain.gd" id="50_hterrain"]
+[ext_resource type="Resource" uid="uid://bju44ovx1vt0w" path="res://assets/zylann/hterrain_demo/terrain_data/data.hterrain" id="51_terrain_data"]
+[ext_resource type="Script" uid="uid://dwkifajvx0sag" path="res://addons/zylann.hterrain/hterrain_texture_set.gd" id="52_texture_set"]
+[ext_resource type="Texture2D" uid="uid://fnnrkbnei7w5" path="res://assets/zylann/hterrain_demo/textures/ground/slot0_albedo_bump.png" id="53_s0a"]
+[ext_resource type="Texture2D" uid="uid://icshqnbqv8hu" path="res://assets/zylann/hterrain_demo/textures/ground/slot1_albedo_bump.png" id="53_s1a"]
+[ext_resource type="Texture2D" uid="uid://clnefjkt6rlm3" path="res://assets/zylann/hterrain_demo/textures/ground/slot2_albedo_bump.png" id="53_s2a"]
+[ext_resource type="Texture2D" uid="uid://8bdqvcceyil" path="res://assets/zylann/hterrain_demo/textures/ground/slot3_albedo_bump.png" id="53_s3a"]
+[ext_resource type="Texture2D" uid="uid://cfvy2en5ho1kj" path="res://assets/zylann/hterrain_demo/textures/ground/slot0_normal_roughness.png" id="54_s0n"]
+[ext_resource type="Texture2D" uid="uid://cjviy64goqitn" path="res://assets/zylann/hterrain_demo/textures/ground/slot1_normal_roughness.png" id="54_s1n"]
+[ext_resource type="Texture2D" uid="uid://bxk21v1xg11pc" path="res://assets/zylann/hterrain_demo/textures/ground/slot2_normal_roughness.png" id="54_s2n"]
+[ext_resource type="Texture2D" uid="uid://synfa4mk2jix" path="res://assets/zylann/hterrain_demo/textures/ground/slot3_normal_roughness.png" id="54_s3n"]
+[ext_resource type="Script" uid="uid://citr0ak3aopoa" path="res://addons/snow_deformation/terrain_height_raycast.gd" id="55_raycast"]
+[ext_resource type="Script" uid="uid://b5icexjxoi6mg" path="res://addons/date_and_time/scripts/date_and_time.gd" id="56_dt"]
+[ext_resource type="PackedScene" path="res://addons/date_and_time/scenes/date_and_time_display.tscn" id="57_dtdisplay"]
+[ext_resource type="PackedScene" uid="uid://c7savegame0001" path="res://addons/3d_player_controller/scenes/ui/save_game.tscn" id="58_save_game"]
+[ext_resource type="PackedScene" path="res://addons/minimap/scenes/minimap.tscn" id="minimap_scene"]
 
 [sub_resource type="ProceduralSkyMaterial" id="SkyMaterial"]
 sky_top_color = Color(0.32, 0.45, 0.66, 1)
@@ -36,143 +82,580 @@ ssao_radius = 0.6
 ssao_intensity = 1.6
 ssao_power = 2.0
 ssao_detail = 1.0
-ssil_enabled = false
-sdfgi_enabled = false
 glow_enabled = true
 glow_intensity = 0.4
 glow_bloom = 0.05
+fog_density = 0.0
+fog_sky_affect = 0.3
+volumetric_fog_density = 0.0
 
-[sub_resource type="PlaneMesh" id="GroundMesh"]
-size = Vector2(400, 400)
+[sub_resource type="Resource" id="TerrainTextures"]
+script = ExtResource("52_texture_set")
+mode = 0
+textures = [[ExtResource("53_s0a"), ExtResource("53_s1a"), ExtResource("53_s2a"), ExtResource("53_s3a")], [ExtResource("54_s0n"), ExtResource("54_s1n"), ExtResource("54_s2n"), ExtResource("54_s3n")]]
 
-[sub_resource type="StandardMaterial3D" id="GroundMaterial"]
-albedo_color = Color(0.9, 0.92, 0.96, 1)
-roughness = 0.7
+[sub_resource type="StandardMaterial3D" id="IceMaterial"]
+albedo_color = Color(0.72, 0.8, 0.86, 1)
+metallic_specular = 0.9
+roughness = 0.12
 
-[sub_resource type="BoxShape3D" id="GroundShape"]
-size = Vector3(400, 1, 400)
+[sub_resource type="PlaneMesh" id="IceMesh"]
+size = Vector2(2048, 2048)
 
-[sub_resource type="BoxMesh" id="BladeMesh"]
-size = Vector3(0.05, 0.012, 1.1)
+[sub_resource type="Resource" id="TerrainGround"]
+script = ExtResource("55_raycast")
+collision_mask = 8192
 
-[sub_resource type="StandardMaterial3D" id="BladeMaterial"]
-albedo_color = Color(0.72, 0.75, 0.8, 1)
-metallic = 0.9
-metallic_specular = 0.8
-roughness = 0.25
+[sub_resource type="SphereShape3D" id="PickupShape"]
 
-[sub_resource type="Resource" id="FlatTerrain"]
-script = ExtResource("3_flat")
-terrain_y = 0.0
+[sub_resource type="BoxShape3D" id="SwordBladeShape"]
+size = Vector3(0.040100098, 0.14707032, 0.90000004)
 
-[node name="SnowDemo" type="Node3D" node_paths=PackedStringArray("snow", "player", "sword", "readout", "weather")]
+[sub_resource type="SphereShape3D" id="SphereShape3D_pickup"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_5pyta"]
+height = 0.667
+radius = 0.01
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_skopi"]
+albedo_color = Color(0.5882353, 0.29411766, 0, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_senyo"]
+material = SubResource("StandardMaterial3D_skopi")
+top_radius = 0.01
+bottom_radius = 0.01
+height = 0.667
+
+[sub_resource type="Animation" id="Animation_k63gy"]
+resource_name = "Pull_Loop"
+length = 0.4166666666666665
+loop_mode = 1
+tracks/0/type = "rotation_3d"
+tracks/0/imported = true
+tracks/0/enabled = true
+tracks/0/path = NodePath("Skeleton3D:Root")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0.01666657, 1, -5.885586e-05, 0, 0, 1)
+tracks/1/type = "position_3d"
+tracks/1/imported = true
+tracks/1/enabled = true
+tracks/1/path = NodePath("Skeleton3D:String")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = PackedFloat32Array(0.01666657, 1, -1.027588e-09, 0.7270281, 9.136567e-05)
+tracks/2/type = "rotation_3d"
+tracks/2/imported = true
+tracks/2/enabled = true
+tracks/2/path = NodePath("Skeleton3D:Arm_Low")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = PackedFloat32Array(0.01666657, 1, 0.21643963, 0, 0, 0.976296)
+tracks/3/type = "rotation_3d"
+tracks/3/imported = true
+tracks/3/enabled = true
+tracks/3/path = NodePath("Skeleton3D:Arm_Up")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = PackedFloat32Array(0.01666657, 1, -0.21643963, 0, 0, 0.976296)
+
+[sub_resource type="Animation" id="Animation_n6poy"]
+resource_name = "Pull_End"
+length = 0.625
+tracks/0/type = "rotation_3d"
+tracks/0/imported = true
+tracks/0/enabled = true
+tracks/0/path = NodePath("Skeleton3D:Root")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0.01666673, 1, -5.87227e-05, 0, 0, 1)
+tracks/1/type = "position_3d"
+tracks/1/imported = true
+tracks/1/enabled = true
+tracks/1/path = NodePath("Skeleton3D:String")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = PackedFloat32Array(0.01666673, 1, -1.027588e-09, 0.72615373, 9.126273e-05, 0.05000003, 1, -1.027588e-09, 0.71944475, 9.0472844e-05, 0.083333336, 1, -1.027588e-09, 0.70675623, 8.8978966e-05, 0.11666664, 1, -1.027588e-09, 0.68884885, 8.687064e-05, 0.14999993, 1, -1.027588e-09, 0.6664826, 8.4237356e-05, 0.18333323, 1, -1.027588e-09, 0.64041716, 8.116853e-05, 0.21666677, 1, -1.027588e-09, 0.61141187, 7.775359e-05, 0.2500001, 1, -1.027588e-09, 0.5802255, 7.4081865e-05, 0.2833334, 1, -1.027588e-09, 0.5476169, 7.0242684e-05, 0.35, 1, -1.027588e-09, 0.48116714, 6.241922e-05, 0.3833333, 1, -1.027588e-09, 0.448843, 5.861353e-05, 0.4166666, 1, -1.027588e-09, 0.41813073, 5.499762e-05, 0.4499999, 1, -1.027588e-09, 0.38978922, 5.166083e-05, 0.48333344, 1, -1.027588e-09, 0.36457753, 4.8692524e-05, 0.5166667, 1, -1.027588e-09, 0.34325475, 4.618209e-05, 0.55, 1, -1.027588e-09, 0.32658076, 4.4218978e-05, 0.5833333, 1, -1.027588e-09, 0.31531584, 4.2892694e-05, 0.6166666, 1, -1.027588e-09, 0.31022063, 4.2292817e-05)
+tracks/2/type = "rotation_3d"
+tracks/2/imported = true
+tracks/2/enabled = true
+tracks/2/path = NodePath("Skeleton3D:Arm_Low")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = PackedFloat32Array(0.01666673, 1, 0.21599305, 0, 0, 0.9763949, 0.05000003, 1, 0.2125648, 0, 0, 0.977147, 0.083333336, 1, 0.20607391, 0, 0, 0.9785364, 0.11666664, 1, 0.19689792, 0, 0, 0.980424, 0.14999993, 1, 0.18541299, 0, 0, 0.9826607, 0.18333323, 1, 0.17199661, 0, 0, 0.9850975, 0.21666677, 1, 0.15702951, 0, 0, 0.9875939, 0.2500001, 1, 0.14089677, 0, 0, 0.99002427, 0.2833334, 1, 0.12398821, 0, 0, 0.9922837, 0.35, 1, 0.089425616, 0, 0, 0.9959935, 0.3833333, 1, 0.07257115, 0, 0, 0.9973632, 0.4166666, 1, 0.056537878, 0, 0, 0.99840045, 0.4499999, 1, 0.0417292, 0, 0, 0.99912894, 0.48333344, 1, 0.028548047, 0, 0, 0.9995924, 0.5166667, 1, 0.017396146, 0, 0, 0.99984866, 0.55, 1, 0.00867401, 0, 0, 0.9999624, 0.5833333, 1, 0.002780911, 0, 0, 0.9999961, 0.6166666, 1, 0.00011538756, 0, 0, 1)
+tracks/3/type = "rotation_3d"
+tracks/3/imported = true
+tracks/3/enabled = true
+tracks/3/path = NodePath("Skeleton3D:Arm_Up")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = PackedFloat32Array(0.01666673, 1, -0.21599305, 0, 0, 0.9763949, 0.05000003, 1, -0.2125648, 0, 0, 0.977147, 0.083333336, 1, -0.20607391, 0, 0, 0.9785364, 0.11666664, 1, -0.19689792, 0, 0, 0.980424, 0.14999993, 1, -0.18541299, 0, 0, 0.9826607, 0.18333323, 1, -0.17199661, 0, 0, 0.9850975, 0.21666677, 1, -0.15702951, 0, 0, 0.9875939, 0.2500001, 1, -0.14089677, 0, 0, 0.99002427, 0.2833334, 1, -0.12398821, 0, 0, 0.9922837, 0.35, 1, -0.089425616, 0, 0, 0.9959935, 0.3833333, 1, -0.07257115, 0, 0, 0.9973632, 0.4166666, 1, -0.056537878, 0, 0, 0.99840045, 0.4499999, 1, -0.0417292, 0, 0, 0.99912894, 0.48333344, 1, -0.028548047, 0, 0, 0.9995924, 0.5166667, 1, -0.017396146, 0, 0, 0.99984866, 0.55, 1, -0.00867401, 0, 0, 0.9999624, 0.5833333, 1, -0.002780911, 0, 0, 0.9999961, 0.6166666, 1, -0.00011538756, 0, 0, 1)
+
+[sub_resource type="Animation" id="Animation_4tbit"]
+resource_name = "Pull_Start"
+length = 1.25
+tracks/0/type = "rotation_3d"
+tracks/0/imported = true
+tracks/0/enabled = true
+tracks/0/path = NodePath("Skeleton3D:Root")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0.016666671, 1, 6.657903e-08, 0, 0, 1)
+tracks/1/type = "position_3d"
+tracks/1/imported = true
+tracks/1/enabled = true
+tracks/1/path = NodePath("Skeleton3D:String")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = PackedFloat32Array(0.016666671, 1, -1.027588e-09, 0.31022063, 4.2292817e-05, 0.05, 1, -1.027588e-09, 0.31194943, 4.2496355e-05, 0.083333336, 1, -1.027588e-09, 0.31531584, 4.2892698e-05, 0.1166667, 1, -1.027588e-09, 0.32022467, 4.347064e-05, 0.14999999, 1, -1.027588e-09, 0.32658082, 4.4218978e-05, 0.18333335, 1, -1.027588e-09, 0.33428916, 4.5126526e-05, 0.21666665, 1, -1.027588e-09, 0.34325477, 4.618209e-05, 0.25000003, 1, -1.027588e-09, 0.3533825, 4.737448e-05, 0.28333333, 1, -1.027588e-09, 0.36457747, 4.869252e-05, 0.3166667, 1, -1.027588e-09, 0.37674472, 5.0125032e-05, 0.35, 1, -1.027588e-09, 0.38978922, 5.1660834e-05, 0.38333336, 1, -1.027588e-09, 0.40361625, 5.3288753e-05, 0.41666666, 1, -1.027588e-09, 0.4181308, 5.4997625e-05, 0.45000002, 1, -1.027588e-09, 0.433238, 5.6776273e-05, 0.48333332, 1, -1.027588e-09, 0.44884297, 5.861353e-05, 0.51666665, 1, -1.027588e-09, 0.46485108, 6.0498234e-05, 0.54999995, 1, -1.027588e-09, 0.4811672, 6.241922e-05, 0.68333334, 1, -1.027588e-09, 0.54761696, 7.0242684e-05, 0.71666664, 1, -1.027588e-09, 0.5640516, 7.217763e-05, 0.74999994, 1, -1.027588e-09, 0.5802256, 7.4081865e-05, 0.78333336, 1, -1.027588e-09, 0.59604394, 7.594424e-05, 0.81666666, 1, -1.027588e-09, 0.61141187, 7.775359e-05, 0.84999996, 1, -1.027588e-09, 0.6262346, 7.949875e-05, 0.88333327, 1, -1.027588e-09, 0.6404173, 8.116853e-05, 0.9166667, 1, -1.027588e-09, 0.6538649, 8.2751794e-05, 0.95, 1, -1.027588e-09, 0.6664826, 8.423734e-05, 0.9833333, 1, -1.027588e-09, 0.67817557, 8.5614025e-05, 1.0166667, 1, -1.027588e-09, 0.68884885, 8.687064e-05, 1.0500001, 1, -1.027588e-09, 0.69840735, 8.799601e-05, 1.0833334, 1, -1.027588e-09, 0.70675623, 8.8978966e-05, 1.1166667, 1, -1.027588e-09, 0.7138004, 8.980831e-05, 1.1500001, 1, -1.027588e-09, 0.71944475, 9.0472844e-05, 1.1833334, 1, -1.027588e-09, 0.7235942, 9.096139e-05, 1.2166667, 1, -1.027588e-09, 0.72615373, 9.126273e-05, 1.25, 1, -1.027588e-09, 0.7270281, 9.136567e-05)
+tracks/2/type = "rotation_3d"
+tracks/2/imported = true
+tracks/2/enabled = true
+tracks/2/path = NodePath("Skeleton3D:Arm_Low")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = PackedFloat32Array(0.016666671, 1, 0.000115387535, 0, 0, 1, 0.05, 1, 0.0010198037, 0, 0, 0.99999946, 0.083333336, 1, 0.0027809152, 0, 0, 0.9999961, 0.1166667, 1, 0.0053489176, 0, 0, 0.9999857, 0.14999999, 1, 0.008674017, 0, 0, 0.9999624, 0.18333335, 1, 0.012706388, 0, 0, 0.9999193, 0.21666665, 1, 0.017396146, 0, 0, 0.99984866, 0.25000003, 1, 0.022693362, 0, 0, 0.99974245, 0.28333333, 1, 0.028548034, 0, 0, 0.9995924, 0.3166667, 1, 0.034910046, 0, 0, 0.9993905, 0.35, 1, 0.04172922, 0, 0, 0.99912894, 0.38333336, 1, 0.04895529, 0, 0, 0.998801, 0.41666666, 1, 0.0565379, 0, 0, 0.99840045, 0.45000002, 1, 0.064426675, 0, 0, 0.9979224, 0.48333332, 1, 0.07257115, 0, 0, 0.9973632, 0.51666665, 1, 0.08092096, 0, 0, 0.9967205, 0.54999995, 1, 0.089425616, 0, 0, 0.9959935, 0.68333334, 1, 0.12398824, 0, 0, 0.9922837, 0.71666664, 1, 0.13251492, 0, 0, 0.991181, 0.74999994, 1, 0.14089677, 0, 0, 0.99002427, 0.78333336, 1, 0.14908461, 0, 0, 0.9888244, 0.81666666, 1, 0.15702951, 0, 0, 0.9875939, 0.84999996, 1, 0.16468297, 0, 0, 0.98634654, 0.88333327, 1, 0.17199661, 0, 0, 0.9850975, 0.9166667, 1, 0.17892253, 0, 0, 0.9838632, 0.95, 1, 0.18541299, 0, 0, 0.9826607, 0.9833333, 1, 0.19142056, 0, 0, 0.98150814, 1.0166667, 1, 0.19689792, 0, 0, 0.980424, 1.0500001, 1, 0.20179805, 0, 0, 0.97942716, 1.0833334, 1, 0.20607392, 0, 0, 0.9785364, 1.1166667, 1, 0.20967853, 0, 0, 0.9777704, 1.1500001, 1, 0.2125648, 0, 0, 0.977147, 1.1833334, 1, 0.21468548, 0, 0, 0.97668326, 1.2166667, 1, 0.21599305, 0, 0, 0.9763949, 1.25, 1, 0.21643963, 0, 0, 0.976296)
+tracks/3/type = "rotation_3d"
+tracks/3/imported = true
+tracks/3/enabled = true
+tracks/3/path = NodePath("Skeleton3D:Arm_Up")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = PackedFloat32Array(0.016666671, 1, -0.000115387535, 0, 0, 1, 0.05, 1, -0.0010198037, 0, 0, 0.99999946, 0.083333336, 1, -0.0027809152, 0, 0, 0.9999961, 0.1166667, 1, -0.0053489176, 0, 0, 0.9999857, 0.14999999, 1, -0.008674017, 0, 0, 0.9999624, 0.18333335, 1, -0.012706388, 0, 0, 0.9999193, 0.21666665, 1, -0.017396146, 0, 0, 0.99984866, 0.25000003, 1, -0.022693362, 0, 0, 0.99974245, 0.28333333, 1, -0.028548034, 0, 0, 0.9995924, 0.3166667, 1, -0.034910046, 0, 0, 0.9993905, 0.35, 1, -0.04172922, 0, 0, 0.99912894, 0.38333336, 1, -0.04895529, 0, 0, 0.998801, 0.41666666, 1, -0.0565379, 0, 0, 0.99840045, 0.45000002, 1, -0.064426675, 0, 0, 0.9979224, 0.48333332, 1, -0.07257115, 0, 0, 0.9973632, 0.51666665, 1, -0.08092096, 0, 0, 0.9967205, 0.54999995, 1, -0.089425616, 0, 0, 0.9959935, 0.68333334, 1, -0.12398824, 0, 0, 0.9922837, 0.71666664, 1, -0.13251492, 0, 0, 0.991181, 0.74999994, 1, -0.14089677, 0, 0, 0.99002427, 0.78333336, 1, -0.14908461, 0, 0, 0.9888244, 0.81666666, 1, -0.15702951, 0, 0, 0.9875939, 0.84999996, 1, -0.16468297, 0, 0, 0.98634654, 0.88333327, 1, -0.17199661, 0, 0, 0.9850975, 0.9166667, 1, -0.17892253, 0, 0, 0.9838632, 0.95, 1, -0.18541299, 0, 0, 0.9826607, 0.9833333, 1, -0.19142056, 0, 0, 0.98150814, 1.0166667, 1, -0.19689792, 0, 0, 0.980424, 1.0500001, 1, -0.20179805, 0, 0, 0.97942716, 1.0833334, 1, -0.20607392, 0, 0, 0.9785364, 1.1166667, 1, -0.20967853, 0, 0, 0.9777704, 1.1500001, 1, -0.2125648, 0, 0, 0.977147, 1.1833334, 1, -0.21468548, 0, 0, 0.97668326, 1.2166667, 1, -0.21599305, 0, 0, 0.9763949, 1.25, 1, -0.21643963, 0, 0, 0.976296)
+
+[sub_resource type="Animation" id="Animation_uxecg"]
+resource_name = "attack"
+length = 0.16666666666666652
+tracks/0/type = "rotation_3d"
+tracks/0/imported = true
+tracks/0/enabled = true
+tracks/0/path = NodePath("Skeleton3D:Root")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0.01666665, 1, -5.7191384e-05, 0, 0, 1)
+tracks/1/type = "position_3d"
+tracks/1/imported = true
+tracks/1/enabled = true
+tracks/1/path = NodePath("Skeleton3D:String")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = PackedFloat32Array(0.01666665, 1, -1.027588e-09, 0.6939137, 8.648417e-05, 0.049999952, 1, -1.027588e-09, 0.5029966, 6.0567952e-05, 0.083333254, 1, -1.027588e-09, 0.31000006, 4.2266845e-05, 0.116666555, 1, -1.027588e-09, 0.24724577, 4.1098498e-05, 0.1500001, 1, -1.027588e-09, 0.2873615, 4.185223e-05)
+tracks/2/type = "rotation_3d"
+tracks/2/imported = true
+tracks/2/enabled = true
+tracks/2/path = NodePath("Skeleton3D:Arm_Low")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = PackedFloat32Array(0.01666665, 1, 0.20354375, 0, 0, 0.97906584, 0.049999952, 1, 0.12234017, 0, 0, 0.9924882, 0.083333254, 1, 0.017177707, 0, 0, 0.9998525, 0.116666555, 1, -0.049698696, 0, 0, 0.9987643, 0.1500001, 1, -0.018718641, 0, 0, 0.99982476)
+tracks/3/type = "rotation_3d"
+tracks/3/imported = true
+tracks/3/enabled = true
+tracks/3/path = NodePath("Skeleton3D:Arm_Up")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = PackedFloat32Array(0.01666665, 1, -0.20354375, 0, 0, 0.97906584, 0.049999952, 1, -0.12234017, 0, 0, 0.9924882, 0.083333254, 1, -0.017177707, 0, 0, 0.9998525, 0.116666555, 1, 0.049698696, 0, 0, 0.9987643, 0.1500001, 1, 0.018718641, 0, 0, 0.99982476)
+
+[sub_resource type="Animation" id="Animation_blj5y"]
+resource_name = "idle"
+length = 0.375
+tracks/0/type = "rotation_3d"
+tracks/0/imported = true
+tracks/0/enabled = true
+tracks/0/path = NodePath("Skeleton3D:Root")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 6.657903e-08, 0, 0, 1)
+tracks/1/type = "position_3d"
+tracks/1/imported = true
+tracks/1/enabled = true
+tracks/1/path = NodePath("Skeleton3D:String")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = PackedFloat32Array(0, 1, -1.027588e-09, 0.31000006, 4.2266845e-05)
+tracks/2/type = "rotation_3d"
+tracks/2/imported = true
+tracks/2/enabled = true
+tracks/2/path = NodePath("Skeleton3D:Arm_Low")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1)
+tracks/3/type = "rotation_3d"
+tracks/3/imported = true
+tracks/3/enabled = true
+tracks/3/path = NodePath("Skeleton3D:Arm_Up")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1)
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_26xuy"]
+_data = {
+&"Pull": SubResource("Animation_k63gy"),
+&"Pull_End": SubResource("Animation_n6poy"),
+&"Pull_Start": SubResource("Animation_4tbit"),
+&"attack": SubResource("Animation_uxecg"),
+&"idle": SubResource("Animation_blj5y")
+}
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_bc84e"]
+animation = &"Pull"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_wukud"]
+animation = &"Pull_End"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_il2jm"]
+animation = &"Pull_Start"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_wjb0r"]
+animation = &"idle"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_mc2jv"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_bo7i5"]
+advance_mode = 2
+advance_expression = "player.is_drawing_arrow"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_4h6ng"]
+advance_mode = 2
+advance_expression = "player.is_aiming_bow"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_o3ebs"]
+advance_mode = 2
+advance_expression = "player.is_firing_arrow"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_k83mh"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_2f3dj"]
+xfade_time = 0.2
+advance_mode = 2
+advance_expression = "!player.is_aiming_bow and !player.is_drawing_arrow and !player.is_firing_arrow"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_yq6so"]
+xfade_time = 0.2
+advance_mode = 2
+advance_expression = "!player.is_aiming_bow and !player.is_drawing_arrow and !player.is_firing_arrow"
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_qktwf"]
+states/Pull/node = SubResource("AnimationNodeAnimation_bc84e")
+states/Pull/position = Vector2(685.3333, 99.99999)
+states/Pull_End/node = SubResource("AnimationNodeAnimation_wukud")
+states/Pull_End/position = Vector2(558.44446, 195.33333)
+states/Pull_Start/node = SubResource("AnimationNodeAnimation_il2jm")
+states/Pull_Start/position = Vector2(558.6667, 22.666668)
+states/idle/node = SubResource("AnimationNodeAnimation_wjb0r")
+states/idle/position = Vector2(422, 101.11111)
+transitions = ["Start", "idle", SubResource("AnimationNodeStateMachineTransition_mc2jv"), "idle", "Pull_Start", SubResource("AnimationNodeStateMachineTransition_bo7i5"), "Pull_Start", "Pull", SubResource("AnimationNodeStateMachineTransition_4h6ng"), "Pull", "Pull_End", SubResource("AnimationNodeStateMachineTransition_o3ebs"), "Pull_End", "idle", SubResource("AnimationNodeStateMachineTransition_k83mh"), "Pull", "idle", SubResource("AnimationNodeStateMachineTransition_2f3dj"), "Pull_Start", "idle", SubResource("AnimationNodeStateMachineTransition_yq6so")]
+graph_offset = Vector2(-129.74506, -113.10916)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_clock"]
+
+[node name="SnowDemo" type="Node3D" unique_id=1296063006 node_paths=PackedStringArray("snow", "readout", "weather", "starting_equipment")]
 script = ExtResource("1_demo")
 snow = NodePath("SnowDeformation")
-player = NodePath("Player")
-sword = NodePath("Player/Sword")
 readout = NodePath("HUD/Readout")
 weather = NodePath("WeatherFX")
+starting_equipment = NodePath("StartingEquipment")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1389034581]
 environment = SubResource("Environment")
 
-[node name="Sun" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.7071068, -0.14904977, 0.6910048, 0, 0.9776616, 0.2108932, -0.7071068, -0.14904977, 0.6910048, 0, 12, 0)
-light_energy = 1.4
+[node name="Sun" type="DirectionalLight3D" parent="." unique_id=763419652]
+transform = Transform3D(0.8660254, 0.19136602, -0.46181297, 0, 0.9239968, 0.3825784, 0.5, -0.33145568, 0.79988354, 0, 12, 0)
+light_color = Color(0.9, 0.95, 1, 1)
 light_angular_distance = 0.5
 shadow_enabled = true
 shadow_bias = 0.04
-shadow_normal_bias = 2.0
-shadow_blur = 1.0
-directional_shadow_mode = 2
 directional_shadow_split_1 = 0.04
 directional_shadow_split_2 = 0.12
 directional_shadow_split_3 = 0.35
 directional_shadow_fade_start = 0.9
 directional_shadow_max_distance = 60.0
 
-[node name="Ground" type="StaticBody3D" parent="."]
+[node name="Terrain" type="Node3D" parent="." unique_id=651263116]
+editor_description = "Zylann's HTerrain demo island (godot_hterrain_demo), carried from Godot 3 and retextured in snow and rock. Shifted so its flattest high ground, (176, 280) on the map, is this scene's origin. Its collision is on the Terrain layer too, which is all SnowDeformation's raycast ground looks at, so the snow lies on the hills and not on the Player or the props."
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -176, -23.734375, -280)
+script = ExtResource("50_hterrain")
+_terrain_data = ExtResource("51_terrain_data")
+chunk_size = 32
+collision_enabled = true
+collision_layer = 8193
+collision_mask = 1
+physics_material = null
+shader_type = "Classic4"
+custom_shader = null
+custom_globalmap_shader = null
+texture_set = SubResource("TerrainTextures")
+render_layers = 1
+cast_shadow = 1
+shader_params/u_ground_uv_scale_per_texture = Vector4(20, 20, 20, 20)
+shader_params/u_depth_blending = true
+shader_params/u_triplanar = false
+shader_params/u_tile_reduction = Vector4(0, 0, 0, 0)
+shader_params/u_globalmap_blend_start = 0.0
+shader_params/u_globalmap_blend_distance = 0.0
+shader_params/u_colormap_opacity_per_texture = Vector4(1, 1, 1, 1)
+shader_params/u_specular = 0.5
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
-mesh = SubResource("GroundMesh")
-material_override = SubResource("GroundMaterial")
+[node name="FrozenSea" type="MeshInstance3D" parent="." unique_id=723803308]
+editor_description = "The demo's sea, at the terrain's own sea level, frozen."
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 80, -23.734375, -24)
+material_override = SubResource("IceMaterial")
+mesh = SubResource("IceMesh")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
-shape = SubResource("GroundShape")
-
-[node name="SnowDeformation" type="Node3D" parent="."]
+[node name="SnowDeformation" type="Node3D" parent="." unique_id=1788435475]
 script = ExtResource("2_snow")
+wind_scale = 0.43
 resolution = 2048
-world_size = 48.0
-snow_depth = 0.35
-max_rim_height = 0.12
-terrain_height_provider = SubResource("FlatTerrain")
-refill_rate_geo = 0.0
-refill_rate_mask = 0.0
-noise_scale = 12.0
-noise_strength = 0.08
-max_stamps_per_frame = 128
+map_rect = Rect2(-176, -280, 512, 512)
+terrain_height_provider = SubResource("TerrainGround")
+surface_rings = 5
 press_sound = ExtResource("11_crush")
 press_volume_db = -5.0
-create_surface = true
-surface_size = 32.0
-surface_subdivisions = 256
-debug_overlay = false
 
-[node name="Player" parent="." instance=ExtResource("4_player")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+[node name="Player" parent="." unique_id=2077193242 instance=ExtResource("4_player")]
+enable_paraglider = true
+enable_shield_surfing = true
+enable_spyglass = true
 enable_stamina = true
 
-[node name="FootStamper" type="Node" parent="Player"]
+[node name="FootStamper" type="Node" parent="Player" unique_id=1351772426]
 script = ExtResource("5_foot")
 skeleton_path = NodePath("../PlayerModel/Armature/GeneralSkeleton")
-foot_bones = Array[StringName]([&"LeftFoot", &"RightFoot"])
-half_width = 0.06
-half_length = 0.14
-sole_offset = 0.08
-forward_offset = 0.03
-contact_margin = 0.02
-rim_factor = 0.35
 footstep_sound = ExtResource("10_steps")
 footstep_volume_db = -3.0
 
-[node name="Sword" type="Node3D" parent="Player"]
-transform = Transform3D(1, 0, 0, 0, 0.8191521, -0.5735765, 0, 0.5735765, 0.8191521, 0.35, 1.1, 0)
+[node name="StartingEquipment" type="Node3D" parent="." unique_id=241154468]
 
-[node name="Blade" type="MeshInstance3D" parent="Player/Sword"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.55)
-mesh = SubResource("BladeMesh")
-material_override = SubResource("BladeMaterial")
+[node name="Sword" parent="StartingEquipment" unique_id=1667502634 instance=ExtResource("13_sword")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 0)
+script = ExtResource("12_equipment")
+bone_attachment_bone_name = "RightHand"
+can_attack = true
+can_log = true
+equipment_type = 8
+is_metal = true
+icon = ExtResource("14_sword_icon")
+position_offset = Vector3(0, 0.1, 0.025)
+rotation_offset_degrees = Vector3(0, 90, 180)
 
-[node name="Base" type="Marker3D" parent="Player/Sword"]
+[node name="PlayerDetection" type="Area3D" parent="StartingEquipment/Sword" unique_id=729657848]
 
-[node name="Tip" type="Marker3D" parent="Player/Sword"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.1)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StartingEquipment/Sword/PlayerDetection" unique_id=1702229433]
+shape = SubResource("PickupShape")
 
-[node name="BladeStamper" type="Node" parent="Player/Sword"]
-script = ExtResource("6_blade")
-base_marker = NodePath("../Base")
-tip_marker = NodePath("../Tip")
-blade_radius = 0.03
-max_substeps = 16
-rim_factor = 0.3
+[node name="Hitbox" type="Area3D" parent="StartingEquipment/Sword" unique_id=355838592]
 
-[node name="WeatherFX" parent="." node_paths=PackedStringArray("sun_light", "world_environment", "target_node") instance=ExtResource("7_weather")]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StartingEquipment/Sword/Hitbox" unique_id=963237471]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00039672852, -0.009277344, 0.65)
+shape = SubResource("SwordBladeShape")
+
+[node name="WeaponBody" type="AnimatableBody3D" parent="StartingEquipment/Sword" unique_id=1093170323]
+collision_layer = 512
+collision_mask = 1024
+sync_to_physics = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StartingEquipment/Sword/WeaponBody" unique_id=68822549]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00039672852, -0.009277344, 0.65)
+shape = SubResource("SwordBladeShape")
+
+[node name="Shield" parent="StartingEquipment" unique_id=2067136240 instance=ExtResource("15_shield")]
+transform = Transform3D(-1, 8.742278e-08, 3.821371e-15, 0, -4.371139e-08, 1, 8.742278e-08, 1, 4.371139e-08, 0, 1, 0)
+script = ExtResource("12_equipment")
+bone_attachment_bone_name = "LeftLowerArm"
+display_name = "Shield"
+equipment_type = 10
+icon = ExtResource("16_shield_icon")
+position_offset = Vector3(-0.035, 0.1, 0)
+rotation_offset_degrees = Vector3(0, 180, 180)
+
+[node name="PlayerDetection" type="Area3D" parent="StartingEquipment/Shield" unique_id=1620000702]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StartingEquipment/Shield/PlayerDetection" unique_id=1462716674]
+shape = SubResource("PickupShape")
+
+[node name="Pistol" parent="StartingEquipment" unique_id=1674455333 node_paths=PackedStringArray("muzzle", "fire_timer", "laser_sight", "fire_sfx", "reload_sfx") instance=ExtResource("13_7eovs")]
+transform = Transform3D(1.9106855e-15, 4.371139e-08, 1, 1, -4.371139e-08, 0, 4.371139e-08, 1, -4.371139e-08, 0, 1, 0)
+script = ExtResource("14_ad5ls")
+projectile_scene = ExtResource("15_akpcc")
+muzzle = NodePath("Muzzle")
+fire_timer = NodePath("FireTimer")
+laser_sight = NodePath("LaserSight")
+fire_sfx = NodePath("FireAudio")
+reload_sfx = NodePath("ReloadAudio")
+bone_attachment_bone_name = "RightHand"
+can_attack = true
+can_shoot = true
+equipment_type = 5
+is_metal = true
+icon = ExtResource("16_5nvvt")
+is_exclusive = true
+projectile_speed = 80.0
+accuracy = ExtResource("17_v0io4")
+position_offset = Vector3(0, 0.09, 0.025)
+rotation_offset_degrees = Vector3(-10, 180, 80)
+equip_sfx = ExtResource("18_yj0r2")
+stow_sfx = ExtResource("19_yybmt")
+
+[node name="Muzzle" type="Marker3D" parent="StartingEquipment/Pistol" unique_id=271581943]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0.19, 0.08, 0)
+
+[node name="MuzzleFlash" type="Node3D" parent="StartingEquipment/Pistol/Muzzle" unique_id=128777478 node_paths=PackedStringArray("vfx", "animation_player")]
+transform = Transform3D(0, 0, 0.5, 0, 0.5, 0, -0.5, 0, 0, 0, 0, 0)
+script = ExtResource("20_m4ri3")
+vfx = NodePath("Flash")
+animation_player = NodePath("Flash/AnimationPlayer")
+
+[node name="Flash" parent="StartingEquipment/Pistol/Muzzle/MuzzleFlash" unique_id=319420775 instance=ExtResource("21_frihg")]
+visible = false
+autoplay = false
+
+[node name="Light" parent="StartingEquipment/Pistol/Muzzle/MuzzleFlash/Flash" index="3"]
+light_energy = 1.0
+base_energy = 1.0
+
+[node name="FireTimer" type="Timer" parent="StartingEquipment/Pistol" unique_id=41256008]
+one_shot = true
+
+[node name="FireAudio" type="AudioStreamPlayer3D" parent="StartingEquipment/Pistol" unique_id=1994930430]
+stream = ExtResource("22_kwxd0")
+
+[node name="ReloadAudio" type="AudioStreamPlayer3D" parent="StartingEquipment/Pistol" unique_id=195128305]
+stream = ExtResource("23_28cfq")
+
+[node name="LaserSight" parent="StartingEquipment/Pistol" unique_id=1387924823 instance=ExtResource("24_ck02g")]
+visible = false
+
+[node name="PlayerDetection" type="Area3D" parent="StartingEquipment/Pistol" unique_id=1008708349]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StartingEquipment/Pistol/PlayerDetection" unique_id=1055319558]
+shape = SubResource("SphereShape3D_pickup")
+
+[node name="Bow" parent="StartingEquipment" unique_id=1222899704 instance=ExtResource("25_l6yje")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 0)
+script = ExtResource("26_jsi77")
+arrow_scene = ExtResource("27_o38g2")
+bone_attachment_bone_name = "LeftHand"
+can_attack = true
+can_shoot = true
+equipment_type = 2
+icon = ExtResource("28_17t54")
+is_exclusive = true
+accuracy = ExtResource("29_ht37n")
+position_offset = Vector3(0, 0.1, 0.025)
+rotation_offset_degrees = Vector3(180, 90, 15)
+equip_sfx = ExtResource("30_jphgq")
+stow_sfx = ExtResource("31_v7ulo")
+attack_sfx = ExtResource("32_n2gsr")
+
+[node name="PlayerDetection" type="Area3D" parent="StartingEquipment/Bow" unique_id=326004096]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StartingEquipment/Bow/PlayerDetection" unique_id=1544112683]
+shape = SubResource("SphereShape3D_pickup")
+
+[node name="Arrow" type="RigidBody3D" parent="StartingEquipment/Bow" unique_id=1811199221]
+transform = Transform3D(1, 0, 0, 0, -1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 0.39999998, 0.099999964)
+visible = false
+linear_damp_mode = 1
+script = ExtResource("33_aqadm")
+is_template = true
+lifetime = 10.0
+sticks_on_hit = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StartingEquipment/Bow/Arrow" unique_id=1539438757]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.20000005, 4.7683716e-07)
+shape = SubResource("CylinderShape3D_5pyta")
+disabled = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StartingEquipment/Bow/Arrow" unique_id=1399478126]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.20000005, 0)
+mesh = SubResource("CylinderMesh_senyo")
+
+[node name="Swish" type="AudioStreamPlayer3D" parent="StartingEquipment/Bow/Arrow" unique_id=335887078]
+stream = ExtResource("34_baf2w")
+volume_db = -6.0
+max_db = -6.0
+
+[node name="AnimationPlayer2" type="AnimationPlayer" parent="StartingEquipment/Bow" unique_id=2231464]
+libraries/ = SubResource("AnimationLibrary_26xuy")
+
+[node name="AnimationTree2" type="AnimationTree" parent="StartingEquipment/Bow" unique_id=339113822]
+tree_root = SubResource("AnimationNodeStateMachine_qktwf")
+anim_player = NodePath("../AnimationPlayer2")
+
+[node name="StringNocked" type="Marker3D" parent="StartingEquipment/Bow" unique_id=1222899710]
+editor_description = "Where the string hand holds the string at rest, in the bow's space: the draw slides StringHand from here to StringDrawn (first person)."
+transform = Transform3D(0.49996012, -0.14458247, 0.85389453, -0.18469268, -0.9810846, -0.057979837, 0.84612566, -0.12872045, -0.5172065, 0.027397275, 0.42, 0.23907387)
+
+[node name="StringDrawn" type="Marker3D" parent="StartingEquipment/Bow" unique_id=1222899711]
+editor_description = "The string hand at full draw, read off the archery clip: 0.39 m back along the string from StringNocked."
+transform = Transform3D(0.49996012, -0.14458247, 0.85389453, -0.18469268, -0.9810846, -0.057979837, 0.84612566, -0.12872045, -0.5172065, 0.027397275, 0.8057726, 0.23907387)
+
+[node name="StringHand" type="Marker3D" parent="StartingEquipment/Bow" unique_id=1222899712]
+editor_description = "What the string hand is pulled onto in first person: the Bow slides it between StringNocked and StringDrawn with the draw, and the nocked arrow comes back with it."
+transform = Transform3D(0.49996012, -0.14458247, 0.85389453, -0.18469268, -0.9810846, -0.057979837, 0.84612566, -0.12872045, -0.5172065, 0.027397275, 0.42, 0.23907387)
+
+[node name="DrawElbow" type="Marker3D" parent="StartingEquipment/Bow" unique_id=1222899713]
+editor_description = "The pole aiming the drawing arm's elbow while the string hand is on the bow: back along the draw and out, the way an archer's elbow goes."
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.34, 1.38, 0.55)
+
+[node name="BowDrawArrow" type="AudioStreamPlayer3D" parent="StartingEquipment/Bow" unique_id=166312361]
+stream = ExtResource("35_js2u8")
+
+[node name="BowFireArrow" type="AudioStreamPlayer3D" parent="StartingEquipment/Bow" unique_id=215719619]
+stream = ExtResource("32_n2gsr")
+
+[node name="PistolMagazines" parent="StartingEquipment" unique_id=1944842671 instance=ExtResource("36_07n03")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+item = ExtResource("37_lt1np")
+count = 20
+auto_take = true
+
+[node name="Arrows" parent="StartingEquipment" unique_id=1536420138 instance=ExtResource("36_07n03")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+item = ExtResource("38_1knb5")
+count = 99
+auto_take = true
+
+[node name="Snowballs" type="Node3D" parent="." unique_id=1693776406]
+editor_description = "Football-sized snowballs by the start. Push one through the snow and it grows; pick one up and set it on another to stack a snowman."
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+
+[node name="Snowball1" parent="Snowballs" unique_id=1366874137 instance=ExtResource("40_snowball")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -1.8899918, -1.5)
+mass = 1.3938199
+
+[node name="Snowball2" parent="Snowballs" unique_id=1118461758 instance=ExtResource("40_snowball")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6, -1.4743743, -0.6)
+mass = 1.3938199
+
+[node name="Snowball3" parent="Snowballs" unique_id=771470972 instance=ExtResource("40_snowball")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.4, -0.9462478, -0.4)
+mass = 1.3938199
+
+[node name="DateAndTime" type="Node" parent="." unique_id=357912599]
+editor_description = "The clock WeatherFX runs on: a January morning at half past seven, so the low sun rakes across the tracks."
+script = ExtResource("56_dt")
+editor_time_enabled = false
+current_time = 7.5
+
+[node name="WeatherFX" parent="." unique_id=1379616542 node_paths=PackedStringArray("date_and_time_node", "target_node", "sun_light", "world_environment") instance=ExtResource("7_weather")]
 current_biome = 2
 force_weather = true
 manual_weather = 6
+date_and_time_node = NodePath("../DateAndTime")
 manual_time_of_day = 7.5
+target_node = NodePath("../Player")
 sun_light = NodePath("../Sun")
 world_environment = NodePath("../WorldEnvironment")
-target_node = NodePath("../Player")
 wind_direction = Vector3(0.8, 0, 0.6)
 wind_strength_multiplier = 2.0
 
-[node name="Horse" parent="." instance=ExtResource("8_horse")]
-transform = Transform3D(0.5, 0, -0.866, 0, 1, 0, 0.866, 0, 0.5, 4.5, 0, -3.5)
+[node name="Horse" parent="." unique_id=202459352 instance=ExtResource("8_horse")]
+transform = Transform3D(0.5, 0, -0.866, 0, 1, 0, 0.866, 0, 0.5, 4.5, 0.2656288, -3.5)
 
-[node name="HoofStamper" type="Node" parent="Horse"]
+[node name="HoofStamper" type="Node" parent="Horse" unique_id=532146084]
 script = ExtResource("5_foot")
 skeleton_path = NodePath("../Horse/Skeleton3D")
 foot_bones = Array[StringName]([&"Hand_L", &"Hand_R", &"Toe_L", &"Toe_R"])
@@ -186,20 +669,24 @@ footstep_sound = ExtResource("10_steps")
 footstep_volume_db = -1.0
 footstep_max_distance = 30.0
 
-[node name="PhysicsProps" type="Node3D" parent="."]
+[node name="PhysicsProps" type="Node3D" parent="." unique_id=885696227]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 
-[node name="BeachBall1" parent="PhysicsProps" instance=ExtResource("9_ball")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 1.2, 2.5)
+[node name="BeachBall1" parent="PhysicsProps" unique_id=527282041 instance=ExtResource("9_ball")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, -0.9374969, 2.5)
 
-[node name="BeachBall2" parent="PhysicsProps" instance=ExtResource("9_ball")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.6, 1.6, 1.4)
+[node name="BeachBall2" parent="PhysicsProps" unique_id=1173854989 instance=ExtResource("9_ball")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.6, -1.3374975, 1.4)
 
-[node name="BeachBall3" parent="PhysicsProps" instance=ExtResource("9_ball")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, 2.0, 3.4)
+[node name="BeachBall3" parent="PhysicsProps" unique_id=1249701657 instance=ExtResource("9_ball")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, -0.5437503, 3.4)
 
-[node name="HUD" type="CanvasLayer" parent="."]
+[node name="SaveGame" parent="." unique_id=411180822 instance=ExtResource("58_save_game")]
+editor_description = "Makes the snow demo a level that can be saved and continued: the pause menu's Save and Quit write it, with a preview, to the save number the title screen picked."
 
-[node name="Readout" type="Label" parent="HUD"]
+[node name="HUD" type="CanvasLayer" parent="." unique_id=309164468]
+
+[node name="Readout" type="Label" parent="HUD" unique_id=1986197973]
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -212,3 +699,49 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 0.7)
 theme_override_constants/outline_size = 6
 vertical_alignment = 2
+
+[node name="Clock" type="Control" parent="HUD" unique_id=1007103871]
+layout_mode = 3
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -110.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 64.0
+grow_horizontal = 0
+
+[node name="DateAndTimeDisplay" parent="HUD/Clock" unique_id=146158719 node_paths=PackedStringArray("date_and_time_node") instance=ExtResource("57_dtdisplay")]
+layout_mode = 0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_clock")
+date_and_time_node = NodePath("../../../DateAndTime")
+
+[node name="Minimap" parent="HUD" unique_id=766474755 node_paths=PackedStringArray("target", "facing") instance=ExtResource("minimap_scene")]
+editor_description = "The minimap addon, in the bottom right corner: the island, live, seen from above without light or shadow."
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -180.0
+offset_top = -180.0
+offset_right = -16.0
+offset_bottom = -16.0
+grow_horizontal = 0
+grow_vertical = 0
+target = NodePath("../../Player")
+facing = NodePath("../../Player/PlayerModel")
+facing_plus_z = true
+view_size = 60.0
+
+[connection signal="body_entered" from="StartingEquipment/Sword/PlayerDetection" to="StartingEquipment/Sword" method="_on_player_detection_body_entered"]
+[connection signal="body_entered" from="StartingEquipment/Shield/PlayerDetection" to="StartingEquipment/Shield" method="_on_player_detection_body_entered"]
+[connection signal="fired" from="StartingEquipment/Pistol" to="StartingEquipment/Pistol/Muzzle/MuzzleFlash" method="flash"]
+[connection signal="animation_finished" from="StartingEquipment/Pistol/Muzzle/MuzzleFlash/Flash/AnimationPlayer" to="StartingEquipment/Pistol/Muzzle/MuzzleFlash" method="_on_animation_finished"]
+[connection signal="body_entered" from="StartingEquipment/Pistol/PlayerDetection" to="StartingEquipment/Pistol" method="_on_player_detection_body_entered"]
+[connection signal="body_entered" from="StartingEquipment/Bow/PlayerDetection" to="StartingEquipment/Bow" method="_on_player_detection_body_entered"]
+[connection signal="body_entered" from="StartingEquipment/Bow/Arrow" to="StartingEquipment/Bow/Arrow" method="_on_body_entered"]
+[connection signal="wind_changed" from="WeatherFX" to="SnowDeformation" method="set_wind"]
+[connection signal="loaded" from="SaveGame" to="." method="_on_save_loaded"]
+
+[editable path="StartingEquipment/Pistol/Muzzle/MuzzleFlash/Flash"]

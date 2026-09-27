@@ -31,6 +31,20 @@ var locomotion_blend: float = 0.0: ## Replicated: 0 idle, 0.5 walk, 1 run; the s
 func _ready() -> void:
 	super()
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
+	multiplayer.peer_connected.connect(_on_peer_connected)
+
+
+## On the server: a peer joining while the buddy is thrown or carried is told whose arm it is on and whose it is, in
+## that order, as the horse tells a joiner its rider. It reaches a buddy in flight, which sits at its home path
+## everywhere, so the joiner takes the thrower's packets instead of rejecting them. A carried one is under the
+## carrier's arm here and under the world on the joiner, so these land nowhere there (see [method _return_to_scene]);
+## that copy stands still until the carrier lets go, when the drop's authority hand-back, sent from home, reaches it.
+func _on_peer_connected(peer_id: int) -> void:
+	if not multiplayer.is_server():
+		return
+	if carried_by != 0:
+		_carry_by.rpc_id(peer_id, carried_by)
+	_set_authority.rpc_id(peer_id, get_multiplayer_authority())
 
 
 func _physics_process(delta: float) -> void:
@@ -81,9 +95,9 @@ func sfx_footsteps_play() -> void:
 	pass
 
 
-## Called by [Camera] while the player looks at the buddy.
+## Called by [Camera] while the player looks at the buddy; none while it is on anyone's arm, this peer's or another's.
 func display_menu(_player: Player) -> void:
-	if is_held:
+	if is_held or carried_by != 0:
 		return
 	player = _player
 	action_prompt.show_for(player.controls)

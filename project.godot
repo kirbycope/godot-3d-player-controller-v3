@@ -36,6 +36,7 @@ directories/dch_directory={
 "guide": "res://resources/dialogues/guide.dch"
 }
 directories/dtl_directory={
+"campfire_rest": "res://resources/dialogues/campfire_rest.dtl",
 "qa_guide": "res://resources/dialogues/qa_guide.dtl"
 }
 layout/style_directory={}
@@ -47,7 +48,7 @@ window/size/viewport_height=800
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/3d_player_controller/plugin.cfg", "res://addons/controls/plugin.cfg", "res://addons/date_and_time/plugin.cfg", "res://addons/dialogic/plugin.cfg", "res://addons/godotsteam/plugin.cfg", "res://addons/gta/plugin.cfg", "res://addons/gut/plugin.cfg", "res://addons/midi/plugin.cfg", "res://addons/radi_ot/plugin.cfg", "res://addons/snow_deformation/plugin.cfg", "res://addons/tcps/plugin.cfg", "res://addons/weather_fx/plugin.cfg")
+enabled=PackedStringArray("res://addons/3d_player_controller/plugin.cfg", "res://addons/controls/plugin.cfg", "res://addons/date_and_time/plugin.cfg", "res://addons/dialogic/plugin.cfg", "res://addons/godotsteam/plugin.cfg", "res://addons/gta/plugin.cfg", "res://addons/gut/plugin.cfg", "res://addons/midi/plugin.cfg", "res://addons/radi_ot/plugin.cfg", "res://addons/snow_deformation/plugin.cfg", "res://addons/tcps/plugin.cfg", "res://addons/weather_fx/plugin.cfg", "res://addons/zylann.hterrain/plugin.cfg")
 
 [importer_defaults]
 
@@ -150,6 +151,7 @@ pointing/emulate_mouse_from_touch=false
 
 3d_physics/layer_10="Weapons"
 3d_physics/layer_11="Hittable"
+3d_physics/layer_14="Terrain"
 
 [physics]
 

@@ -1,10 +1,10 @@
 {
   "3d_player_controller": {
-    "commit": "388953bbbb50a28beb281d30221674431fb8e48a",
-    "pulled": "2026-09-24T21:29:14Z",
+    "commit": "1a5d7e59e7104561d2f9be2c14982c8332247be7",
+    "pulled": "2026-09-27T02:53:39Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "A host and a client each keep their own save"
+    "subject": "An NPC's knockback dies away whatever it is doing"
   },
   "GPUTrail": {
     "commit": "00a764775941c719847deeda8a31b4ebd8893895",
@@ -14,18 +14,18 @@
     "subject": "Set mask to null if it is not set"
   },
   "controls": {
-    "commit": "9d51a77dd7c9b94c94f4518e892c0e3b98a3ff4f",
-    "pulled": "2026-09-23T21:50:44Z",
+    "commit": "6e5d201a00759a3af635036b83e67101f818d7ad",
+    "pulled": "2026-09-27T00:14:01Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-controls.git",
-    "subject": "A pull that changes nothing leaves addons.lock.json alone"
+    "subject": "Retake the preview with the current build"
   },
   "date_and_time": {
-    "commit": "43aaf82704ba6e9a1ccba2ece5987d1f25e52106",
-    "pulled": "2026-09-23T21:50:48Z",
+    "commit": "d1172c27780c1ec5d8af06b15f79b8f510ac9b77",
+    "pulled": "2026-09-27T00:14:02Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/date-and-time.git",
-    "subject": "A pull that changes nothing leaves addons.lock.json alone"
+    "subject": "Retake the preview with the current build"
   },
   "dialogic": {
     "commit": "e301e1bb5e62e6de22c6b7748c4372d0570bb4a7",
@@ -35,11 +35,11 @@
     "subject": "Alpha 20 Preparations (#2787)"
   },
   "godot_doom_gdextension": {
-    "commit": "d784052dd970a404bc0f1807ef2c1be5292fa56c",
-    "pulled": "2026-09-23T21:50:54Z",
+    "commit": "9d823e3a3b10bf6e053b01d468000f66e4c29638",
+    "pulled": "2026-09-27T00:13:18Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-doom-gdextension.git",
-    "subject": "A pull that changes nothing leaves addons.lock.json alone"
+    "subject": "Pull the addons at their latest"
   },
   "godotsteam": {
     "archive": "https://codeberg.org/godotsteam/godotsteam/archive/baa0b1c2c16b822c9641f94f7d38558b21a3daf2.zip",
@@ -48,11 +48,11 @@
     "subject": "baa0b1c2c16b822c9641f94f7d38558b21a3daf2.zip"
   },
   "gta": {
-    "commit": "dc5017f6ec5d40fd5a3782f20f2141b2c1580f6a",
-    "pulled": "2026-09-23T21:50:50Z",
+    "commit": "2d07cbdc3e9037240dba5c0f57cb7ef7aa40006e",
+    "pulled": "2026-09-27T00:13:16Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/gta.git",
-    "subject": "A pull that changes nothing leaves addons.lock.json alone"
+    "subject": "Pull the addons at their latest"
   },
   "gut": {
     "commit": "aeb5d4f3f7f0a6c9b5e178876d6c99b791fda605",
@@ -68,25 +68,46 @@
     "repo": "https://bitbucket.org/arlez80/godot-midi-player-g4.git",
     "subject": "\u30d0\u30fc\u30b8\u30e7\u30f3\u6539\u8a02"
   },
+  "minimap": {
+    "commit": "77726022c1d731e834ee721044a36405d40a4a3c",
+    "pulled": "2026-09-27T00:12:49Z",
+    "ref": "main",
+    "repo": "https://github.com/kirbycope/minimap.git",
+    "subject": "README preview, 960x540"
+  },
   "radi_ot": {
-    "commit": "4d787006044cb18783b3d35019d04d4728be685e",
-    "pulled": "2026-09-23T21:50:53Z",
+    "commit": "a45bfe19137b880e10f183221d41bf754484a531",
+    "pulled": "2026-09-27T00:14:03Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/radi-ot.git",
-    "subject": "A pull that changes nothing leaves addons.lock.json alone"
+    "subject": "Retake the preview with the current build"
+  },
+  "snow_deformation": {
+    "commit": "b2f96c9ba099547bb75e63d29ca6904e6cd80d07",
+    "pulled": "2026-09-27T00:12:49Z",
+    "ref": "main",
+    "repo": "https://github.com/kirbycope/snow-deformation.git",
+    "subject": "README preview, 960x540"
   },
   "tcps": {
-    "commit": "07cc4afe7cec2b8a58a9077bc302d3074a2e86bc",
-    "pulled": "2026-09-23T21:50:52Z",
+    "commit": "eb921f8f175f5011c76b7678913b7e09ee9c517a",
+    "pulled": "2026-09-27T00:13:17Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/tcps.git",
-    "subject": "A pull that changes nothing leaves addons.lock.json alone"
+    "subject": "Pull the addons at their latest"
   },
   "weather_fx": {
-    "commit": "6fad4fb30d0385917337744938f28b896e81e8ec",
-    "pulled": "2026-09-23T21:50:47Z",
+    "commit": "714d90bb06cf2ed5a4d215fdf47d26f82a6bfd62",
+    "pulled": "2026-09-26T21:48:55Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/weather-fx.git",
-    "subject": "The wind textures import VRAM compressed, as the editor promoted them in use"
+    "subject": "Campfire scene, and lightning drawn to metal"
+  },
+  "zylann.hterrain": {
+    "commit": "7f574eb47fbd74cb1a79adc2cc9fb7f0694fccc3",
+    "pulled": "2026-09-25T17:30:20Z",
+    "ref": "7f574eb47fbd74cb1a79adc2cc9fb7f0694fccc3",
+    "repo": "https://github.com/Zylann/godot_heightmap_plugin.git",
+    "subject": "Don't try to paint details if layer index is invalid"
   }
 }

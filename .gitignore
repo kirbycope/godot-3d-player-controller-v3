@@ -27,11 +27,14 @@ addons/gta/
 addons/radi_ot/
 addons/tcps/
 addons/weather_fx/
+addons/snow_deformation/
+addons/minimap/
 addons/gut/
 addons/dialogic/
 addons/GPUTrail/
 addons/midi/
 addons/godotsteam/
+addons/zylann.hterrain/
 
 # The web export is built by .github/workflows/pages.yml and handed to Pages, never committed.
 build/

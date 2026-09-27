@@ -49,6 +49,7 @@ func test_action_reaches_out_presses_the_button_and_lets_go() -> void:
 	button.equip(player)
 	assert_true(button.is_pushing)
 	assert_true(player.is_emoting, "Action plays the ButtonPushing emote")
+	assert_eq(player.emote_spine_blend, 1.0, "on the upper body, through the Player's replicated property so puppets get it")
 	assert_true(player.right_hand_ik.active, "with the right hand reaching for the button")
 	await wait_until(func() -> bool: return button.has_pressed, 4.0)
 	assert_eq(button.animation_player.current_animation, "push", "The hand landing presses it")

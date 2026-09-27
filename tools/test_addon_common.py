@@ -32,6 +32,7 @@ import pull_addons  # noqa: E402
 import push_addons  # noqa: E402
 from addon_common import (  # noqa: E402
     _rmtree,
+    is_generated,
     is_replace_fragment,
     local_edits,
     mirror,
@@ -50,6 +51,16 @@ class ReplaceFragmentName(unittest.TestCase):
         for name in ["libpure_doom.windows.template_debug.x86_64.dll", "~backup.tmp", "notes.TMP",
                      "~$word.docx", "RF.TMP", "plugin.cfg"]:
             self.assertFalse(is_replace_fragment(name), name)
+
+
+class GeneratedSidecars(unittest.TestCase):
+    def test_godots_import_and_uid_sidecars_are_generated(self) -> None:
+        self.assertTrue(is_generated(Path("addons/gut/icon.png.import")))
+        self.assertTrue(is_generated(Path("addons/gut/gut.gd.uid")))
+
+    def test_the_addons_own_files_are_not(self) -> None:
+        for name in ["plugin.cfg", "scripts/player.gd", "animations/Running.tres", "scenes/demo.tscn", "shader.gdshader"]:
+            self.assertFalse(is_generated(Path("addons/widget") / name), name)
 
 
 class MirrorIgnoresFragments(unittest.TestCase):
@@ -522,6 +533,162 @@ class AddonRepositories(unittest.TestCase):
         self.assertIn("BEHIND", out)
         self.assertEqual(self.origin_head(), theirs, "nothing was pushed")
         self.assertEqual(self.origin_file("addons/widget/theirs.gd"), "extends Node", "their work stands")
+
+    # H8: a third-party addon is pulled and never pushed, so nothing in it is work to protect.
+
+    def make_third_party(self) -> None:
+        self.addons[0]["third_party"] = True
+        self.write_manifest()
+
+    def pull_with_script(self) -> Path:
+        """Pull a commit that has scripts/thing.gd and an .import upstream ships, so the copy here holds both."""
+        self.commit_upstream("addons/widget/scripts/thing.gd", "extends Node\n")
+        self.commit_upstream("addons/widget/icon.svg.import", "[remap]\n\nimporter=\"texture\"\n")
+        code, out = self.call(pull_addons.main)
+        self.assertEqual(code, 0, out)
+        return self.vendored / "scripts" / "thing.gd"
+
+    def test_a_third_party_addon_with_godots_sidecars_pulls_clean(self) -> None:
+        # Seen live on the Mac: every third-party addon STOPPED on .import and .uid files Godot 4.8 had
+        # written or rewritten beside it, and CLAUDE.md forbids patching those addons, so the edits had
+        # nowhere to go and every future pull stopped too.
+        script = self.pull_with_script()
+        self.make_third_party()
+        stray = script.with_name("thing.gd.uid")
+        stray.write_text("uid://b1234567890\n")
+        rewritten = self.vendored / "icon.svg.import"
+        rewritten.write_text("[remap]\n\nimporter=\"texture\"\ngenerator_parameters={}\n")
+
+        code, out = self.call(pull_addons.main, "--dry-run")
+        self.assertEqual(code, 0, out)
+        self.assertNotIn("WOULD STOP", out)
+        self.assertNotIn("DRIFT", out)
+
+        code, out = self.call(pull_addons.main)
+        self.assertEqual(code, 0, out)
+        self.assertNotIn("STOPPED", out)
+        self.assertNotIn("DRIFT", out)
+        self.assertFalse(stray.exists(), "the generated sidecar goes without a word")
+        self.assertNotIn("generator_parameters", rewritten.read_text(), "and the rewritten one is put back")
+
+    def test_a_third_party_edit_is_drift_and_is_reverted(self) -> None:
+        script = self.pull_with_script()
+        self.make_third_party()
+        script.write_text("extends Node\n# patched here\n")
+        added = script.with_name("mine.gd")
+        added.write_text("extends Node\n")
+
+        code, out = self.call(pull_addons.main, "--dry-run")
+        self.assertEqual(code, 0, "drift never stops a pull, so a dry run passes: " + out)
+        self.assertIn("THIRD PARTY DRIFT: 2 file(s), reverted by the pull", out)
+        self.assertIn("patched here", script.read_text(), "a dry run writes nothing")
+
+        code, out = self.call(pull_addons.main)
+        self.assertEqual(code, 0, out)
+        self.assertIn("THIRD PARTY DRIFT: 2 file(s), reverted by the pull", out)
+        self.assertNotIn("STOPPED", out)
+        self.assertEqual(script.read_text(), "extends Node\n")
+        self.assertFalse(added.exists())
+
+    def test_a_first_party_edit_still_stops_and_the_dry_run_says_so(self) -> None:
+        script = self.pull_with_script()
+        script.write_text("extends Node\n# tuned here\n")
+
+        code, out = self.call(pull_addons.main, "--dry-run")
+        self.assertEqual(code, 1, "the pre-push hook needs the dry run to fail where the pull would: " + out)
+        self.assertIn("WOULD STOP: 1 file(s) edited here", out)
+
+        code, out = self.call(pull_addons.main)
+        self.assertEqual(code, 1, out)
+        self.assertIn("STOPPED: 1 file(s) edited here", out)
+        self.assertIn("tuned here", script.read_text(), "the edit survives")
+
+    def test_a_first_party_sidecar_that_was_never_upstream_stops_the_dry_run_too(self) -> None:
+        # pull_addons.py used to skip this guard under --dry-run, so the hook reported clean while a real
+        # pull stopped.
+        script = self.pull_with_script()
+        generated = script.with_name("thing.gd.uid")
+        generated.write_text("uid://b1234567890\n")
+        self.move_the_lock(self.delete_upstream("addons/widget/scripts/thing.gd"))
+
+        code, out = self.call(pull_addons.main, "--dry-run")
+
+        self.assertEqual(code, 1, out)
+        self.assertIn("WOULD STOP: 1 local file(s) are not upstream", out)
+        self.assertTrue(generated.exists())
+
+    # M18: the guard cannot be quietly switched off, the cache checks out LF, and the lock is written LF.
+
+    def lose_the_recorded_commit(self) -> None:
+        """The commit this copy was pulled at is gone from the cache: rewritten history, a shallow clone."""
+        gone = "0" * 40
+        (self.project / ".addon_cache" / "pulled.json").write_text(json.dumps({self.NAME: gone}))
+        self.move_the_lock(gone)
+
+    def test_a_recorded_commit_the_cache_cannot_check_out_stops_the_pull(self) -> None:
+        # It used to set the edit list to empty and carry on, which is the guard silently off.
+        self.edit_here()
+        self.lose_the_recorded_commit()
+
+        code, out = self.call(pull_addons.main, "--dry-run")
+        self.assertEqual(code, 1, out)
+        self.assertIn("WOULD STOP: cannot check out 0000000", out)
+
+        code, out = self.call(pull_addons.main)
+        self.assertEqual(code, 1, out)
+        self.assertIn("STOPPED: cannot check out 0000000", out)
+        self.assertIn("edited here", (self.vendored / "plugin.cfg").read_text(), "the edit survives")
+
+        code, out = self.call(pull_addons.main, "--force")
+        self.assertEqual(code, 0, out)
+        self.assertIn("OVERWRITING", out)
+        self.assertNotIn("edited here", (self.vendored / "plugin.cfg").read_text())
+
+    def test_the_cache_checks_out_lf_whatever_the_machine_says(self) -> None:
+        # The clones inherited core.autocrlf=true, so a Godot re-save of a third-party .tres, LF like
+        # every file Godot writes, differed from the CRLF checkout and read as an edit made here.
+        self.commit_lf_resource()
+        config = self.base / "gitconfig"
+        config.write_text(config.read_text() + "[core]\n\tautocrlf = true\n\teol = crlf\n")
+        _rmtree(self.project / ".addon_cache")
+
+        code, out = self.call(pull_addons.main)
+
+        self.assertEqual(code, 0, out)
+        self.assertEqual(git(self.project / ".addon_cache" / self.NAME, "config", "--get", "core.autocrlf"), "false")
+        self.assertEqual((self.vendored / "animations" / "Running.tres").read_bytes(), b"[gd_resource]\nhips = 0.921\n")
+
+    def commit_lf_resource(self) -> None:
+        """Upstream commits an LF .tres and, like GPUTrail, declares `* text=auto`, which makes a checkout
+        follow core.eol (CRLF by default on Windows) however core.autocrlf is set."""
+        path = self.other / "addons" / "widget" / "animations" / "Running.tres"
+        path.parent.mkdir(parents=True)
+        path.write_bytes(b"[gd_resource]\nhips = 0.921\n")
+        (self.other / ".gitattributes").write_bytes(b"* text=auto\n")
+        git(self.other, "add", "-A")
+        git(self.other, "commit", "--quiet", "-m", "add Running.tres")
+        git(self.other, "push", "--quiet", "origin", "main")
+
+    def test_a_cache_cloned_before_the_rule_is_rewritten_lf_once(self) -> None:
+        # Setting the config alone leaves the CRLF files a checkout under the old setting wrote, since
+        # checking out the same commit again touches nothing; GPUTrail's two .tres read as drift that way.
+        self.commit_lf_resource()
+        cache = self.project / ".addon_cache" / self.NAME
+        git(cache, "config", "--unset", "core.autocrlf")
+        git(cache, "config", "--unset", "core.eol")
+        git(cache, "fetch", "--quiet", "origin")
+        git(cache, "-c", "core.autocrlf=true", "-c", "core.eol=crlf", "checkout", "--quiet", "--force", "origin/main")
+        self.assertIn(b"\r", (cache / "addons" / "widget" / "animations" / "Running.tres").read_bytes(), "the old state")
+
+        code, out = self.call(pull_addons.main)
+
+        self.assertEqual(code, 0, out)
+        self.assertNotIn(b"\r", (cache / "addons" / "widget" / "animations" / "Running.tres").read_bytes())
+        self.assertNotIn(b"\r", (self.vendored / "animations" / "Running.tres").read_bytes())
+
+    def test_the_lock_and_the_pulled_record_are_written_lf(self) -> None:
+        self.assertNotIn(b"\r", (self.project / "tools" / "addons.lock.json").read_bytes())
+        self.assertNotIn(b"\r", (self.project / ".addon_cache" / "pulled.json").read_bytes())
 
 
 if __name__ == "__main__":

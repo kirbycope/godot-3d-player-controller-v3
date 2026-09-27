@@ -24,6 +24,7 @@ from texture_import_policy import (  # noqa: E402
     fix_project_file,
     vendored_addons,
 )
+from web_texture_cap import cap_import_files as cap_web_import_files  # noqa: E402
 
 LOSSY_IMPORT = """[remap]
 
@@ -165,6 +166,55 @@ class TextureImportPolicyTests(unittest.TestCase):
         fix_project_file(project)
 
         self.assertEqual(fix_project_file(project), [])
+
+    def test_a_terrain_data_directory_keeps_only_its_promotion_rule(self) -> None:
+        # M20: HTerrain's maps must never be promoted to VRAM Compressed, but Lossless and full size are
+        # still the rule there. The exemption used to cover all three, so a Lossy map passed --check.
+        self.write("assets/terrain_data/data.hterrain", "")
+        path = self.write("assets/terrain_data/splat.png.import", LOSSY_IMPORT)
+
+        fixed, _ = fix_import_files(self.root, dry_run=True)
+        self.assertEqual(fixed, 1, "--check still reports the Lossy map")
+        self.assertEqual(path.read_text(), LOSSY_IMPORT)
+
+        fixed, _ = fix_import_files(self.root)
+        self.assertEqual(fixed, 1)
+        text = path.read_text()
+        self.assertIn("compress/mode=0", text)
+        self.assertIn("process/size_limit=0", text)
+        self.assertIn("detect_3d/compress_to=0", text, "the plugin's own setting is left alone")
+
+    def test_a_terrain_map_already_on_policy_is_not_reported(self) -> None:
+        self.write("assets/terrain_data/data.hterrain", "")
+        self.write("assets/terrain_data/normal.png.import", LOSSY_IMPORT.replace(
+            "compress/mode=1", "compress/mode=0").replace("process/size_limit=512", "process/size_limit=0"))
+
+        self.assertEqual(fix_import_files(self.root, dry_run=True), (0, 0))
+
+    def test_files_are_written_with_lf(self) -> None:
+        # Godot writes .import files and project.godot with LF; a CRLF write here shows up in every diff.
+        texture = self.write("assets/rock.png.import", LOSSY_IMPORT)
+        project = self.write("project.godot", FORCED_PROJECT)
+
+        fix_import_files(self.root)
+        fix_project_file(project)
+
+        self.assertNotIn(b"\r", texture.read_bytes())
+        self.assertNotIn(b"\r", project.read_bytes())
+
+    def test_the_web_cap_skips_a_terrain_data_directory(self) -> None:
+        # HTerrain reads its maps at their full 513 px; capped to 512 they would be resampled out from under it.
+        uncapped = LOSSY_IMPORT.replace("process/size_limit=512", "process/size_limit=0")
+        self.write("assets/terrain_data/data.hterrain", "")
+        terrain = self.write("assets/terrain_data/splat.png.import", uncapped)
+        rock = self.write("assets/rock.png.import", uncapped)
+
+        changed = cap_web_import_files(self.root, 512)
+
+        self.assertEqual(changed, 1)
+        self.assertIn("process/size_limit=512", rock.read_text())
+        self.assertIn("process/size_limit=0", terrain.read_text())
+        self.assertNotIn(b"\r", rock.read_bytes())
 
     def test_check_reports_without_writing(self) -> None:
         project = self.write("project.godot", FORCED_PROJECT)

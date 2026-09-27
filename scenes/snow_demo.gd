@@ -1,74 +1,41 @@
 # Copyright (c) 2026 Antigravity Contributors
 # SPDX-License-Identifier: MIT
 extends Node3D
-## Demo for the snow_deformation addon: walk to leave footprints, swing to gouge a trench.
+## Demo for the snow_deformation addon: walk to leave footprints, shove the balls to plough troughs.
 ##
 ## Everything structural is wired in snow_demo.tscn. This script only does the things a node cannot:
-## the scripted sword arc, the debug keys, and the readout.
+## the debug keys, the snowfall refill, the readout, and clearing the starting kit when a save comes back.
 
-## How long one swing takes. Short on purpose: a fast blade is what proves the sweep is substepped
-## rather than stamped once per frame.
-const SWING_SECONDS: float = 0.3
-## The arc, in degrees about the sword pivot's X axis. Starts raised, finishes just past straight down,
-## which carries the tip well below the snow's surface.
-const SWING_FROM: float = 80.0
-const SWING_TO: float = -95.0
-## Where the sword rests between swings.
-const SWORD_IDLE_ANGLE: float = 35.0
 ## Refill rates F3 turns on, at full precipitation: geometry in metres per second, mask in units per
 ## second. Scaled by how hard it is actually snowing, so a blizzard fills tracks in and a clear sky
 ## leaves them alone.
 const REFILL_GEO: float = 0.02
 const REFILL_MASK: float = 0.06
+## F4's waist-deep snow, the depth of Red Dead Redemption 2's opening: up to the mannequin's hips, so the legs
+## plough a trench rather than leave prints.
+const DEEP_SNOW: float = 0.95
 
 @export var snow: SnowDeformation
-@export var player: CharacterBody3D
-@export var sword: Node3D
 @export var readout: Label
 ## Optional. When present, F3's refill is driven by how hard it is snowing. The addon knows nothing
 ## about Weather FX; tying the two together is this demo's job, so either can be used without the other.
 @export var weather: Node
+## The sword, shield, pistol and bow at the spawn, which a fresh start takes on its first frame. A Continue brings
+## the save's own backpack, so the SaveGame's loaded (wired in the scene) frees them rather than leave a second
+## set floating where the Player spawns.
+@export var starting_equipment: Node3D
 
-## Seconds into the current swing, or -1 when the sword is at rest.
-var _swing_time: float = -1.0
-var _skeleton: Skeleton3D = null
-var _hand_bone: int = -1
 var _refilling: bool = false
+## The scene's own depth, which F4 goes back to.
+var _normal_depth: float = -1.0
 
 
-func _ready() -> void:
-	if player != null:
-		_skeleton = player.get_node_or_null("PlayerModel/Armature/GeneralSkeleton") as Skeleton3D
-		if _skeleton != null:
-			_hand_bone = _skeleton.find_bone(&"RightHand")
-	_rest_sword()
-
-
-func _process(delta: float) -> void:
-	_carry_sword()
+func _process(_delta: float) -> void:
 	_apply_refill()
-	if _swing_time >= 0.0:
-		_swing_time += delta
-		var t: float = _swing_time / SWING_SECONDS
-		if t >= 1.0:
-			_swing_time = -1.0
-			_rest_sword()
-		else:
-			# Eased so the blade is at its fastest through the bottom of the arc, which is where it is
-			# in the snow and where a naive once-per-frame stamp would leave gaps.
-			var eased: float = ease(t, 2.2)
-			sword.rotation.x = deg_to_rad(lerpf(SWING_FROM, SWING_TO, eased))
 	_update_readout()
 
 
-## _input rather than _unhandled_input: the player's HUD puts a crosshair Control over the screen, and
-## it consumes the mouse button before anything unhandled is reached.
-func _input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
-		var click: InputEventMouseButton = event as InputEventMouseButton
-		if click.pressed and click.button_index == MOUSE_BUTTON_LEFT and _swing_time < 0.0:
-			_swing_time = 0.0
-		return
+func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:
 		match (event as InputEventKey).keycode:
 			KEY_F1:
@@ -78,20 +45,18 @@ func _input(event: InputEvent) -> void:
 			KEY_F3:
 				_refilling = not _refilling
 				_apply_refill()
+			KEY_F4:
+				if _normal_depth < 0.0:
+					_normal_depth = snow.snow_depth
+				snow.snow_depth = _normal_depth if is_equal_approx(snow.snow_depth, DEEP_SNOW) else DEEP_SNOW
 
 
-## Keeps the sword in the player's right hand without inheriting the hand bone's own basis, so the arc
-## below stays in the player's frame and is the same every swing whatever the animation is doing.
-func _carry_sword() -> void:
-	if sword == null or _skeleton == null or _hand_bone < 0:
-		return
-	var hand: Vector3 = (_skeleton.global_transform * _skeleton.get_bone_global_pose(_hand_bone)).origin
-	sword.global_position = hand
-
-
-func _rest_sword() -> void:
-	if sword != null:
-		sword.rotation.x = deg_to_rad(SWORD_IDLE_ANGLE)
+## The SaveGame restored a slot (its loaded signal, wired in the scene): the backpack is the save's, so the
+## starting kit goes.
+func _on_save_loaded(_path: String) -> void:
+	if is_instance_valid(starting_equipment):
+		starting_equipment.queue_free()
+		starting_equipment = null
 
 
 ## How hard it is snowing, 0 to 1. Everything works without Weather FX in the scene; then it is simply
@@ -120,6 +85,7 @@ func _update_readout() -> void:
 		"%d x %d texels over %.0f m  (%.1f cm per texel)" % [snow.resolution, snow.resolution, snow.world_size, snow.world_size / float(snow.resolution) * 100.0],
 		"stamps this frame: %d    dropped: %d" % [snow.stamps_last_frame, snow.dropped_stamps],
 		"refill from snowfall: %s" % ("%.0f%%" % (_precipitation() * 100.0) if _refilling else "off"),
+		"snow depth: %.0f cm" % (snow.snow_depth * 100.0),
 		"",
-		"WASD walk    Left click swing    F1 overlay    F2 clear    F3 refill",
+		"F1 overlay    F2 clear    F3 refill    F4 waist-deep snow",
 	])

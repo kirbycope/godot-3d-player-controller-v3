@@ -1,0 +1,9 @@
+Rest until...
+- Morning
+	[signal arg="rest 6"]
+- Noon
+	[signal arg="rest 12"]
+- Night
+	[signal arg="rest 21"]
+- Keep going
+[end_timeline]

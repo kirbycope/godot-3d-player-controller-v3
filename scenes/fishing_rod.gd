@@ -22,6 +22,7 @@ signal fish_escaped(fish: Fish) ## The hook window closed, or the line was pulle
 signal lure_changed(lure: Item) ## Something else is on the line (null for a bare hook).
 
 enum State { IDLE, CASTING, WAITING, BITE, REELING }
+enum Sound { NONE, SPLASH, NIBBLE, BITE, REEL, CATCH } ## The rod's sounds, by number: what a float's splash names, so every peer plays its own copy of the stream.
 
 const FISHING_EMOTES: Array[String] = ["FishingIdle", "FishingCast", "FishingReel"]
 const LINE_STATES: Array[int] = [NodeStateMachine.States.STANDING, NodeStateMachine.States.SPRINTING, NodeStateMachine.States.CROUCHING, NodeStateMachine.States.NONE] ## States the line stays out through; anything else pulls it in.
@@ -132,7 +133,7 @@ func hook() -> void:
 	update_labels()
 	emote_state.start("FishingReel")
 	reel_timer.start(1.0 + hooked_length / 40.0)
-	bobber.splash.rpc(0.8, _sfx_path(reel_sfx))
+	bobber.splash.rpc(0.8, Sound.REEL)
 	bobber.thrash.rpc(reel_timer.wait_time)
 	fish_hooked.emit(hooked_fish)
 
@@ -218,17 +219,28 @@ func _on_spawner_spawned(node: Node) -> void:
 		float_node.retract.rpc()
 
 
-## A float that lands on dry ground just lies there until the player reels in; only water starts the bite.
+## A float that lands on dry ground just lies there until the player reels in; only water starts the bite. A float
+## the server despawns (the caster leaving, its lifetime, a retract from elsewhere) takes the line with it.
 func _adopt_bobber(float_node: Bobber) -> void:
 	bobber = float_node
 	bobber.landed_in_water.connect(_on_bobber_landed_in_water)
+	bobber.tree_exiting.connect(_on_bobber_exiting.bind(float_node))
+
+
+## The float this rod was waiting on left the tree: the line is in, whatever the rod was doing.
+func _on_bobber_exiting(float_node: Bobber) -> void:
+	if float_node != bobber:
+		return
+	bobber = null
+	if is_inside_tree() and is_instance_valid(player) and state != State.IDLE:
+		retract()
 
 
 ## Rolls what will bite and how soon; rain and a nearby shadow both shorten the wait.
 func _on_bobber_landed_in_water(area: Area3D) -> void:
 	water = area as Buoyancy
 	bobber.plunge.rpc(0.08, 0.5)
-	bobber.splash.rpc(0.6, _sfx_path(splash_sfx))
+	bobber.splash.rpc(0.6, Sound.SPLASH)
 	hooked_fish = water.pick_fish(lure) if water else null
 	if hooked_fish == null:
 		return
@@ -251,7 +263,7 @@ func _on_nibble_timer_timeout() -> void:
 	if state != State.WAITING or bite_timer.time_left < 0.6:
 		return
 	bobber.plunge.rpc(0.04, 0.4)
-	bobber.splash.rpc(0.25, _sfx_path(nibble_sfx))
+	bobber.splash.rpc(0.25, Sound.NIBBLE)
 	if water.shadows:
 		water.shadows.nibble.rpc_id(1, bobber.global_position)
 	nibble_timer.start(randf_range(nibble_interval.x, nibble_interval.y))
@@ -265,7 +277,7 @@ func _on_bite_timer_timeout() -> void:
 	hooked_length = hooked_fish.roll_length()
 	consume_lure()
 	bobber.plunge.rpc(0.35, 0.8)
-	bobber.splash.rpc(1.0, _sfx_path(bite_sfx))
+	bobber.splash.rpc(1.0, Sound.BITE)
 	if water.shadows:
 		water.shadows.dive.rpc_id(1, bobber.global_position)
 	Input.start_joy_vibration(0, 0.5, 0.7, 0.3)
@@ -278,7 +290,7 @@ func _on_bite_timer_timeout() -> void:
 func _on_hook_timer_timeout() -> void:
 	if state != State.BITE:
 		return
-	bobber.splash.rpc(0.4, "")
+	bobber.splash.rpc(0.4, Sound.NONE)
 	if water.shadows:
 		water.shadows.scatter.rpc_id(1)
 	retract()
@@ -289,9 +301,10 @@ func _on_reel_timer_timeout() -> void:
 		return
 	var fish: Fish = hooked_fish
 	var length: float = hooked_length
-	# Every peer watches the catch arc out of the water and hears it land; the card is the caster's alone
-	bobber.splash.rpc(1.0, _sfx_path(catch_sfx))
-	bobber.present_catch.rpc(fish.resource_path, length)
+	# Every peer watches the catch arc out of the water and hears it land; the card is the caster's alone. The catch
+	# goes by its number in the water's list, so no peer is ever told a file to load
+	bobber.splash.rpc(1.0, Sound.CATCH)
+	bobber.present_catch.rpc(water.fish.find(fish) if water else -1, length)
 	state = State.IDLE
 	_clear_line()
 	emote_state.start("FishingIdle")
@@ -403,9 +416,21 @@ func _on_item_used(item: Item, _count: int) -> void:
 	lure = item
 
 
-## Where [param stream] loads from on every peer, for a splash to play it at the float; empty for no sound.
-func _sfx_path(stream: AudioStream) -> String:
-	return stream.resource_path if stream else ""
+## The rod's stream for [param sound] (one of [enum Sound]), which a float's splash plays at the float on every peer
+## from that peer's own copy of the rod; null for NONE.
+func sound_stream(sound: int) -> AudioStream:
+	match sound:
+		Sound.SPLASH:
+			return splash_sfx
+		Sound.NIBBLE:
+			return nibble_sfx
+		Sound.BITE:
+			return bite_sfx
+		Sound.REEL:
+			return reel_sfx
+		Sound.CATCH:
+			return catch_sfx
+	return null
 
 
 ## Standing still has no signal, so it alone is polled: only with the line in, and the blend is written on a change.
@@ -430,7 +455,7 @@ func show_posture(shown: bool) -> void:
 	if not is_instance_valid(player):
 		return
 	_posture_shown = shown
-	player.animation_tree.set("parameters/EmoteSpineBlend2/blend_amount", 1.0 if shown else 0.0)
+	player.emote_spine_blend = 1.0 if shown else 0.0 # the Player's replicated property, so puppets get the blend too
 
 
 ## Whether the fishing posture belongs on the body right now.

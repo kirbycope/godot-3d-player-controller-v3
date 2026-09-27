@@ -36,9 +36,6 @@ func before_each() -> void:
 	root.add_child(floor_body)
 	player = WORLD_PLAYER.take()
 	player.name = "Player"
-	# Never touch the real saves from a test
-	player.get_node("Hud/Inventory").persist = false
-	player.get_node("FishingLog").persist = false
 	root.add_child(player)
 	await wait_physics_frames(2)
 
@@ -91,6 +88,7 @@ func test_the_fishing_posture_shows_only_when_still_or_with_the_line_out() -> vo
 	assert_eq(player.get_grounded_locomotion_state(), &"GreatSword/GreatSwordLocomotion", "The rod is carried like a two-handed sword")
 	assert_true(rod.wants_posture(), "Standing still, the fishing posture shows")
 	assert_eq(player.animation_tree.get("parameters/EmoteSpineBlend2/blend_amount"), 1.0)
+	assert_eq(player.emote_spine_blend, 1.0, "written through the Player's replicated property, so puppets get it")
 	var sender = InputSender.new(Input)
 	sender.set_auto_flush_input(true)
 	sender.action_down("move_up")

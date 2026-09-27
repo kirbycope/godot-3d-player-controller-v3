@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://addons/snow_deformation/scenes/snowball.tscn" id="1_snowball"]
+[ext_resource type="Script" path="res://addons/3d_player_controller/scripts/synced_body.gd" id="2_sync"]
+[ext_resource type="SceneReplicationConfig" path="res://addons/3d_player_controller/resources/replication/rigid_body_replication.tres" id="3_body"]
+[ext_resource type="SceneReplicationConfig" path="res://scenes/snowball_replication.tres" id="4_radius"]
+
+[node name="Snowball" instance=ExtResource("1_snowball")]
+editor_description = "The snow addon's snowball, networked the way the beach ball is: BodySynchronizer carries the rolling body, and SizeSynchronizer the radius it has grown to, which only the body's authority grows."
+collision_layer = 1025
+collision_mask = 4609
+
+[node name="BodySynchronizer" type="MultiplayerSynchronizer" parent="."]
+script = ExtResource("2_sync")
+replication_config = ExtResource("3_body")
+
+[node name="SizeSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = ExtResource("4_radius")

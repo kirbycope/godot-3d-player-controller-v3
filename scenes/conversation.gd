@@ -9,7 +9,10 @@ extends Node
 ## [code][signal arg="progress <objective id>"][/code] reports an objective (with a count after it if not 1).
 ## The Action button advances the text while the conversation runs and reads [member continue_label]; while a
 ## question is up it reads [member choice_label] and picks the focused choice (Dialogic focuses the first one, and
-## the d-pad or stick moves the focus). Start ends the conversation.
+## the d-pad or stick moves the focus). Start ends the conversation. Any other signal event is passed on as
+## [signal signal_received], for whatever this conversation belongs to (a campfire's rest menu).
+
+signal signal_received(words: PackedStringArray) ## A timeline's signal event this node does not handle itself, split into words.
 
 const DEFAULT_INPUT_ACTION: String = "dialogic_default_action" ## Dialogic's own action, back in force between conversations.
 const INPUT_ACTION_SETTING: String = "dialogic/text/input_action"
@@ -20,7 +23,7 @@ const INPUT_ACTION_SETTING: String = "dialogic/text/input_action"
 @export var choice_label: String = "Pick" ## What it reads while a question is up, when Action picks the focused choice; short, since the face label is narrow.
 @export var advance_action: StringName = &"action" ## The Player action that advances the text; Dialogic listens for it while talking.
 
-@export var npc: TalkingNpc ## The NPC this conversation belongs to; its talked_to is connected to [method _on_talked_to] in the scene.
+@export var npc: Node ## What this conversation belongs to: a [TalkingNpc], whose talked_to is connected to [method _on_talked_to] in the scene, or anything else with an [code]end_talk()[/code] to be told it is over.
 
 var player: Player ## Who is talking, while somebody is.
 var _choosing: bool = false ## A question is up: Action picks the focused choice instead of advancing.
@@ -84,6 +87,9 @@ func _on_signal_event(argument: Variant) -> void:
 	var words: PackedStringArray = (argument as String).split(" ", false)
 	if words.size() < 2:
 		return
+	if words[0] not in ["start_quest", "progress"]:
+		signal_received.emit(words)
+		return
 	var quest_log: QuestLog = player.quest_log
 	if quest_log == null:
 		return
@@ -130,8 +136,8 @@ func _on_timeline_ended() -> void:
 			was.controls.release_action_label(self)
 		if was.uses_mouse:
 			Input.mouse_mode = was.cursor_mode() # captured, or visible under a scheme that frees it
-	if npc:
-		npc.end_talk()
+	if npc and npc.has_method(&"end_talk"):
+		npc.call(&"end_talk")
 
 
 func _input(event: InputEvent) -> void:

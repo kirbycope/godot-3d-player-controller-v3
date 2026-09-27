@@ -20,7 +20,7 @@ features are documented**. This file covers only what belongs to the game projec
 | --- | --- | --- |
 | `addons/3d_player_controller` | [godot-3d-player-controller-addon](https://github.com/kirbycope/godot-3d-player-controller-addon) | The Player: locomotion state machine, camera, equipment and combat, projectiles, inventory and spell system, abilities, chat, throwing, toon shading, health, stamina, settings, Zelda and GTA control schemes, checkpoints and the death flow, the save game, the NPCs (`FollowerNpc`, `EnemyNpc`, `NpcCaster`, `TalkingNpc`), dialogue and quests, local split screen, Steam lobby UI and the multiplayer spawners |
 | `addons/controls` | [godot-controls](https://github.com/kirbycope/godot-controls) | On-screen input hints and the world-space `ActionPrompt` |
-| `addons/snow_deformation` | in this repository, not yet pulled (see below) | Deformable snow: footprints, hoof prints and blade gouges carved into a scrolling deformation texture by two compute passes |
+| `addons/snow_deformation` | [snow-deformation](https://github.com/kirbycope/snow-deformation) | Deformable snow: footprints, hoof prints and ploughed troughs carved into a scrolling deformation texture by two compute passes |
 | `addons/weather_fx` | [weather-fx](https://github.com/kirbycope/weather-fx) | Biomes, precipitation, wind, wildfire, lightning, the sky and cloud driver, water shader and ripples |
 | `addons/date_and_time` | [date-and-time](https://github.com/kirbycope/date-and-time) | The in-game clock and calendar HUD |
 | `addons/gta` | [gta](https://github.com/kirbycope/gta) | Drivable vehicles with GTA V style handling |
@@ -32,11 +32,6 @@ features are documented**. This file covers only what belongs to the game projec
 The third-party addons (`dialogic`, `gut`, `midi`, `godotsteam`, `GPUTrail`) are other people's work.
 They are fetched by the same script, pinned to a release, and never pushed to. See
 [Pulled addons in CREDITS.md](CREDITS.md#pulled-addons) for each one's author, licence and upstream.
-
-`addons/snow_deformation` is the exception to the table's first column: it was written here and does
-not have a repository of its own yet, so it is neither pulled nor git-ignored like the others. Giving
-it one, adding it to `tools/addons.json` and adding `addons/snow_deformation/` to `.gitignore` is what
-makes it behave like the rest.
 
 ---
 
@@ -68,7 +63,9 @@ The Web preset in `export_presets.cfg` exports selected resources and their depe
 build through `export_files`. That list also names everything a script loads by path at run time rather than
 through a scene: the item, control scheme and toon `.tres` files, the deflated beach ball, the quest screen,
 Dialogic's default layout, GPUTrail's defaults and `default_bus_layout.tres`. A `preload` in a script is not
-followed by the export, so a new one needs its target added there too. `include_filter` adds only scripts,
+followed by the export, so a new one needs its target added there too (`tests/unit/test_web_export.gd` fails
+when a `preload` of a `scenes/*.tscn` is in neither `export_files` nor an exported scene, or when the list names a
+file that is gone). `include_filter` adds only scripts,
 shaders, the GDExtensions, the DOOM `.wad`, the MIDI soundfont, and the keyboard glyph folder that
 `PlayerControls` picks icons from by name. After exporting, `python tools/pck_missing.py build/index.pck` lists
 anything a packed script or scene names that the pack lacks, and `python tools/web_smoke_test.py` loads the
@@ -87,7 +84,11 @@ build in headless Chromium.
   record. Every peer sees and hears the whole bite: the float goes through the `ProjectileSpawner`, the rod's
   sounds play at the float with its splashes and the reel spins on every copy of the rod. The shadows belong to the
   server: it wanders them, plays the rod's moves at the float (drawn in, nibbling, diving, scattering, `FishShadows`
-  RPCs a rod on any peer sends it) and scares them off swimmers, and every peer sees the same shadows. Each shadow is
+  RPCs a rod on any peer sends it) and scares them off swimmers, and every peer sees the same shadows. The float's
+  own moves (`Bobber.plunge`, `splash`, `thrash`, `present_catch`, `retract`) are answered only from the server or
+  the caster's peer, and none of them names a file: the catch is the fish's number in the water's `fish` list and
+  the sound one of `FishingRod.Sound`, each peer reading its own copy of the water and the rod. A float the server
+  despawns (its caster leaving, its lifetime) takes the rod's line in with it. Each shadow is
   an instance of `scenes/fish_shadow.tscn`: its `ScareArea` (the swimmer's scare, on no collision layer, so neither
   the crosshair, a round nor a cast stops on it), a `ShootArea` the size of the shadow on the projectile layer, off
   while the shadow is hidden, and a `ShadowSynchronizer` carrying where it is, which way it faces, how far it has
@@ -116,10 +117,12 @@ build in headless Chromium.
   pause menu.
 - **Checkpoint, kill zone and saving**: the beacon west of the spawn is the addon's `Checkpoint`; the
   `KillZone` fifty metres down is lethal, so falling off the map is a death, the death screen and a
-  respawn at the checkpoint. The `SaveGame` node writes `user://savegame.json` from the pause menu's
-  Save Game (and on every checkpoint), keeping the Player, the world's clock and weather (`world.gd` is
-  in the `Saveable` group), every tree's and ore's strikes and the enemies; Load Game reads it back, and
-  the title screen's Single-Player panel shows Continue while the file exists. The Player is spawned, so
+  respawn at the checkpoint. The `SaveGame` node writes the numbered save (see Saves below; a hosted game
+  keeps to `user://savegame.json`) from the pause menu's Save Game (and on every checkpoint), keeping the
+  Player with its bag and fishing log (`FishingLog` is in the `Saveable` group, and the world's `Inventory`
+  has no file of its own), the world's clock and weather (`world.gd` is in the group too), every tree's and
+  ore's strikes and the enemies; Load Game reads it back, and
+  the title screen's Single-Player panel shows Continue while a save exists. The Player is spawned, so
   `world.tscn` connects `PlayerSpawner.local_player_spawned` to `SaveGame.load_for_player`: Continue loads the file
   once this peer's Player is in, although the spawner, earlier in the tree, spawns it before the SaveGame is
   ready.
@@ -129,16 +132,21 @@ build in headless Chromium.
   Player, and the server takes it only from that Player's peer; the boss bar follows its `Health` through a
   connection in `duck.tscn`) and a "little buddy" that can be
   picked up and thrown: the carrier's peer owns it while it is in their hands, every peer sees it on
-  their arm, and its walk blend replicates. The server hands it out: a pick-up counts only once the server has put
-  it on that Player's arm, so of two Players reaching for it one gets it, and a carrier or thrower who leaves the
-  game leaves it back in the scene, the server's again.
+  their arm, and its walk blend and `carried_by` replicate. The server hands it out: a pick-up counts only once the
+  server has put it on that Player's arm, so of two Players reaching for it one gets it, a carrier or thrower who
+  leaves the game leaves it back in the scene, the server's again, and a peer joining while a throw is in the air
+  is told whose it is (`peer_connected` on the server). A carried buddy is under the carrier's arm on the peers that
+  saw the pick-up and under the world on a joiner, so nothing addressed to it lands there until the drop, when the
+  hand-back, sent from home, catches that copy up. No pick-up prompt shows on a buddy in anyone's hands.
 - **Horse** (`Horse`): a rideable on the player controller's `Riding` contract, with a whistle that
   summons the nearest one over the navmesh. The whistle is heard as well as answered: `WhistleAudio` on
   the world's Player template takes an `AudioStreamRandomizer` of the three AudioHero human whistles, so the same
   player never whistles identically twice, and `world.gd` plays it on `Player.whistled` before
   `Horse.summon_nearest` picks the horse. It swims, replicates, and hands its authority to the
   rider; a horse somebody else is riding refuses the prompt and the mount, and the server arbitrates the saddle, so
-  of two Players getting on at once the second is put back off with their own layout. Getting on puts up Breath
+  of two Players getting on at once the second is put back off with their own layout, and a peer joining mid-ride is
+  told the rider and the rider's authority by the server (`peer_connected`), so its copy takes the rider's packets
+  rather than rejecting them. Getting on puts up Breath
   of the Wild's horse layout (`resources/control_schemes/totk_horse.tres`, the horse's
   `riding_control_scheme`): A gallops, B gets off, X jumps and the rest of the pad is cleared, with
   the rider's own layout back on getting off, the way the skateboard swaps to Tony Hawk's. On the
@@ -158,7 +166,9 @@ build in headless Chromium.
   behind a curved-glass shader (`scenes/crt_screen.gdshader`). One Player at a time: a chair another
   peer's Player is already in is refused. Hands on the keyboard hold nothing: sitting down stows what was equipped and standing up puts it back in hand. Select/View still swaps perspective at the keyboard: the seat's view moves between the over-the-shoulder shot and square on to the screen, and the Player's own camera changes with it, so they stand up in the perspective they chose.
 - **Water and props**: the pool with `Buoyancy` on its area, floating the beach ball (a bump on what
-  it rolls into, never a weapon hit and never a chop; shoot it and it deflates, see below) and rocking the boat on the weather addon's
+  it rolls into, never a weapon hit and never a chop; shoot it and it deflates, see below; it carries real air
+  drag, half rho Cd A v squared, so a metre-wide 0.2 kg ball falls no faster than 2.9 m/s and a hard throw is spent
+  within two metres) and rocking the boat on the weather addon's
   Gerstner waves; a bowling alley, balloons to shoot (the ring spins on every peer), choppable trees
   and mineable ore, a push button, warp zones, a wooden sign and a moon with its own
   gravity. The boat, the trees, the ore and the sign answer a client's Action too. The boat's seat is the server's to
@@ -172,7 +182,9 @@ build in headless Chromium.
   `BodySynchronizer` on `tree_01.tscn`'s `RigidBody3D`. A round's hit on the ball, a balloon, a fish or the duck
   is counted by the server's copy of the round alone, a client's shot included, and the server sends the burst,
   the pop, the sinking fish or the quack to every peer. The push button goes down on every peer: the pusher's
-  peer sends the press, and a peer whose Player is not at the button is ignored. The sign reads for the local
+  peer sends the press, and a peer whose Player is not at the button is ignored; the push and the fishing posture
+  blend the upper body through `Player.emote_spine_blend`, the replicated property, never the tree parameter, though
+  the emote node itself is not replicated (see the addon). The sign reads for the local
   Player only, so another peer's Player walking up or away neither takes it over nor closes it.
 - **Shooting the beach ball deflates it** (`scenes/beach_ball.gd`, `scenes/beach_ball_deflated.tscn`): a round
   or an arrow arrives through `register_projectile_hit`, and the ball hands over to a `SoftBody3D` twin wearing
@@ -262,30 +274,90 @@ build in headless Chromium.
   `fire_arrow.tscn`, `ice_arrow.tscn`, `incendiary_round.tscn` and `bobber.tscn`, and the equipment that drops as
   its own scene, `dagger.tscn` and `fishing_rod.tscn` (the world's weapons drop as copies of their pickups and need
   no entry). A new projectile, ammunition or droppable equipment scene goes on that list too.
+- **Minimap**: the Breath of the Wild project's round minimap, now the `minimap` addon (`addons/minimap`, its own
+  repository), in the bottom right corner of the world and the snow demo. It draws the world itself, live, from above and
+  unshaded (the SubViewport's Unshaded draw mode: no light, no shadow, only the surfaces' colours), so every
+  synchronised or RPC'd thing is on the map as it moves. North is up; the arrow is the Player, turning with the model. `world.gd` hands it the local Player.
+- **Campfire** (`scenes/campfire_rest.tscn`, `scenes/campfire_rest.gd`): the weather addon's campfire, by the Guide. It warms the air around it and lifts a glider, goes out in the rain, and is lit again by a torch, a fire arrow or a fire spell. Lit, and with nothing hunting you, Action at it offers Rest: a Dialogic question (`resources/dialogues/campfire_rest.dtl`, through the Guide's own `Conversation` glue) asks until morning, noon or night, the screen fades, the clock jumps to that hour (tomorrow once it has passed) and the weather moves on a forecast cycle for every four hours skipped. The reach (2.5 m) covers the flames, where the fire's heat costs health, so the offer is withdrawn while the Player is being burned (`CampfireRest.is_burning`, off the Player's `BodyTemperature`) and comes back a step out; the timeline's signal, the fade (saved clear) and the world's clock are wired in the scenes. Anyone may rest in multiplayer, and the host skips the shared clock and weather for everyone.
+- **Temperature**: on in the world (`enable_temperature`, set by `world.gd`), off in the snow demo, which is for physics and snow. The cold of the mountains at night and the desert's midday heat cost health, as in Breath of the Wild, and standing at the campfire warms you. The Player wears nothing, so there is no clothing to help yet.
+- **Metal draws lightning**: the swords, axes, daggers, pistol and rifle are `is_metal`; held in a thunderstorm, the metal sparks and then the bolt comes down on you, unless you put it away in time. The bow, staff and shield are wooden.
+- **Spyglass**: the addon's Tears of the Kingdom telescope, on in the world and the snow demo (`enable_spyglass`). Middle-Mouse, or the right stick's click, raises it to the eye; the view goes first person through a round porthole at 4x, the wheel or the d-pad zooms from 2x to 12x, and pressing it again puts it away. In the snow demo it is how a trail is seen from across the valley.
 - **Paraglider and updrafts**: the glider is part of the addon's Player. What this project adds is the updraft
   aura: `UpdraftAura` under `PlayerSpawner/Player` in `world.tscn`, an instance of weather_fx's
   `VFX_AirFlowUP.tscn`, hidden, which the Player shows on every peer while it rides a thermal.
 
 ---
 
+## Saves
+
+Like Minecraft, a game is a numbered save that keeps its level. **New Game** takes the next save number free and
+starts the world; the pause menu's **Save Game** and **Quit** (which saves first) write it to
+`user://saves/slot_N.json`, with a 480x270 preview `slot_N.png` beside it, the frame on screen as the pause menu
+opened. **Continue** opens a list of every save, lowest number first: its preview, the level it was taken in and
+when (`scenes/save_slot_button.tscn` is one row, and the panel keeps its size and scrolls; reopening the list drops
+the old rows at once, so the new ones keep their `Save N` names and the first takes the focus). Picking one loads its
+own level, `scenes/world.tscn` or `scenes/snow_demo.tscn`, and puts the Player back where it stood, facing the way
+it faced, with the camera looking where it looked. The slots, previews and listing are the player controller's
+`SaveGame` (`SaveGame.slot`, `list_saves()`); the title screen and `main.gd` (`continue_game(slot, scene_path)`)
+are this project's. A hosted multiplayer game keeps to the SaveGame's own path, never a numbered save.
+
+A save is the whole game: the Player's bag (`Inventory.persist` is off on the world's Player, so it keeps no
+`user://inventory.json` of its own) and the fishing log (`scenes/fishing_log.gd` is a `Saveable` with
+`save_state` and `load_state`, its records and the lengths in the bag) are written into `slot_N.json` with the
+rest. So New Game in a fresh slot starts with the starting bag and an empty Fish Index, and Continue brings back
+the bag and the log of that save alone.
+
 ## The snow demo
 
-`scenes/snow_demo.tscn` is a separate scene from the world, and the only place the snow system is set
-up. Run it from the editor to get an arctic tundra in a blizzard: 35 cm of snow over flat ground, the
-Player, the horse, and a sword.
+`scenes/snow_demo.tscn` is a separate scene from the world, and the only place in this project the snow
+system is set up; the addon carries its own, simpler demo at `addons/snow_deformation/scenes/demo/`. Run it from the editor to get an arctic tundra in a blizzard: 35 cm of snow over flat ground, the
+Player with a sword, shield, pistol and bow, and the horse. The glider is on (`enable_paraglider`), and so is
+shield surfing (`enable_shield_surfing`): jump, hold Focus (ZL, right mouse) and press Action (A, E) in the air, or
+do the same off the glider, and the Player rides the shield down the hills on top of the snow, cutting a groove.
+
+The ground is an island: Zylann's HTerrain demo map (`godot_hterrain_demo`, made for Godot 3; the Godot 4 plugin
+loads its heightmap as it is) under `assets/zylann/hterrain_demo/`, retextured in ambientCG snow with the demo's
+own rock on the steep ground, and shifted so its flattest high ground is the scene's origin. HTerrain is a
+pulled third-party addon (`addons/zylann.hterrain`, pinned in `tools/addons.json`). Its collision sits on the
+`Terrain` physics layer (14) as well as layer 1, and the snow's `SnowTerrainHeightRaycast` looks at that layer
+alone, so the snow lies on the hills and not on top of the Player or the props; the snow addon bakes the
+ground under its window for the snow surface, so the same works for any terrain with collision. The
+`SnowDeformation`'s `map_rect` is the island's 512 m square, so the snow lies over all of it and keeps every
+track: walk a trail, climb a hill and it is still there across the valley, at the map texture's 25 cm where the
+fine window no longer reaches. Five `surface_rings` take the snow mesh to a kilometre round the Player. The old sea
+is frozen. `DateAndTime` runs the clock Weather FX follows, a January morning from half past seven, shown top
+right. HTerrain's data maps are never promoted to VRAM Compressed and are read at their full 513 px, which is
+why `tools/texture_import_policy.py` and its test skip only the promotion rule in a directory holding a
+`.hterrain` file (Lossless and full size still apply there) and `tools/web_texture_cap.py` skips such a
+directory altogether.
 
 Walk and the Player's feet cut prints with steep walls and raised rims. Run and the prints merge into
 a ploughed trench, which is what deep snow does to anything moving fast. Mount the horse and it cuts a
-far wider one on four hooves. Left click swings the sword through the snow in front of you and leaves
-one continuous gouge, however fast the blade is moving when it gets there.
+far wider one on four hooves. The Player starts with a sword and shield in hand, a pistol with 20
+magazines and a bow with 99 arrows: `StartingEquipment` in the scene holds those pickups from
+`world.tscn` and two auto-take ammunition stacks, placed where the Player spawns, so they are taken on
+the first frame. Continue brings the save's own backpack instead, so the `SaveGame`'s `loaded` (wired to
+`_on_save_loaded` in the scene) frees `StartingEquipment` rather than leave a second set floating at the spawn.
+Rounds and arrows leave craters where they land, since the snow sees anything on the
+projectile layer. Swing the sword low and the blade cuts an arc wherever it goes under
+the surface, because the snow presses the sword's own `WeaponBody` shape.
+
+Three football-sized snowballs sit beside the start too (`scenes/snowball.tscn`, the snow addon's
+`Snowball` networked like the beach ball, with a `SizeSynchronizer` carrying the radius it has grown to).
+Push one through the snow and it grows as it rolls; pick one up with the Action button and set it on
+another and it stays there, so a snowman can be stacked. They ride on the snow's packed floor, and a big one
+sinks into it under its own weight and ploughs, which is what stops it. The blizzard's wind (Weather FX's
+`wind_changed`, wired to the snow's `set_wind` in the scene) rolls them off downwind on their own: each grows
+to about 0.3 m across a few metres and stops. See the addon's README.
 
 Three beach balls sit beside the start. Shove one and it ploughs a rounded trough through the drift
 with berms down both sides, because any moving physics body presses the snow the same way it presses a
 `GrassField`. The Player and the horse are left out of that, since their feet already describe the
-shape far better than a sphere would.
+shape far better than a sphere would. The snow drags a ball to a stop, about 1.8 m after a hard kick, since a
+beach ball weighs next to nothing and the addon's `press_drag` does not scale with mass.
 
-Footsteps, hoofbeats and the crush of snow being shoved aside are Gravity Sound's Snow Sound Effects
-(see [CREDITS.md](CREDITS.md)). A step is heard on the frame a foot arrives in the snow rather than
+Footsteps, hoofbeats and the crush of snow being shoved aside are Gravity Sound's Snow Sound Effects,
+which ship with the snow addon (credited in its own `CREDITS.md`). A step is heard on the frame a foot arrives in the snow rather than
 every frame it rests there, and a crush once per 0.6 m a body has actually ploughed, so a ball that has
 come to a stop is silent.
 
@@ -294,6 +366,8 @@ come to a stop is silent.
 - **F2** wipes every track.
 - **F3** lets the falling snow fill tracks back in, at a rate that follows how hard Weather FX says it
   is actually snowing. Clear the sky and the refill stops.
+- **F4** switches to waist-deep snow, 95 cm, the depth of Red Dead Redemption 2's opening, and back: the legs
+  plough a trench as wide as the body at the top, with sloped walls, and the Player slows to a wade, 40% of a walk. Walking kicks clumps of snow forward from the feet at any depth.
 
 Weather FX is set to the Arctic Tundra biome with Heavy Snow forced, and the time of day is 07:30, so
 the sun sits about 22 degrees up and rakes across the print walls. The snow addon knows nothing about
@@ -320,6 +394,15 @@ a release tag or commit (GodotSteam, published only as an archive, to an `"archi
 unreachable repository, a ref that is not there), so CI stops at the fetch rather than testing a partial
 `addons/`.
 
+A pull never writes over work. It STOPS, exit 1, on a file edited in `addons/<name>/` since the last pull
+(push it first with `push_addons.py`, or `--force` to overwrite), on a local file that was never upstream
+(`--force` to delete it), and when the commit the copy was pulled at is gone from `.addon_cache/<name>`, so
+an edit here cannot be told from an upstream change (restore it, or `--force`). `--dry-run` reports each of
+these as `WOULD STOP` and exits 1 too, so a dry run says exactly what a real pull would do. It tells an
+edit here from an upstream change by the commit recorded in the git-ignored `.addon_cache/pulled.json`,
+and its clones check out LF whatever the machine's `core.autocrlf` says, so a Godot re-save is compared
+byte for byte against what upstream really holds.
+
 ### The third-party addons are pulled too, and only ever pulled
 
 None of them is developed here, so none is pushed to: `push_addons.py` skips a `third_party` entry, and a
@@ -328,6 +411,16 @@ and `dialogic` to a release tag, `midi` and `GPUTrail` to a commit (neither upst
 `godotsteam` to an archive of the commit on its `gdextension-plugin` branch that carries the 4.22.1 binaries,
 since that plugin is published as a zip rather than at a repository root. All five must credit their
 upstream rather than be republished as ours; they are credited in `CREDITS.md`.
+
+Every `ext_resource` uid in `scenes/*.tscn` must be the one its target declares (a scene's header, a script's
+`.uid` sidecar, an asset's `.import`); `tests/unit/test_scene_uids.gd` fails on any that is not, since a stale uid
+loads from this machine's uid cache and falls back to the path, with an error, on a fresh clone.
+
+Nothing in a third-party addon is work to protect, so the pull guard reads it differently. The `.import`
+and `.uid` sidecars Godot writes beside it are generated (a new engine build rewrites every one of them),
+so the pull overwrites or removes them without a word; anything else that differs from upstream, a `.gd`
+or a `.tres` patched here, is reported as `THIRD PARTY DRIFT: n file(s), reverted by the pull` and put back,
+never stopped on. A first-party addon keeps the full guard.
 
 ### Sending addon edits upstream, and the pre-push hook
 
@@ -376,28 +469,34 @@ still load. CI fails a run that reports no test cases at all, since GUT that can
 
 The run keeps off the player's own files. `tests/gut_pre_run.gd` empties `user://gut/` at the start of each
 run and points the save game and the settings there through the player controller's static paths
-(`SaveGame.DEFAULT_SAVE_PATH`, `PlayerSettingsResource.SAVE_PATH`), and every `FishingLog` still on its default
-path too. Nothing is moved aside, so a killed run leaves the player's files as they were. The tools have Python
+(`SaveGame.DEFAULT_SAVE_PATH`, `SaveGame.SAVES_DIR`, `PlayerSettingsResource.SAVE_PATH`). Nothing is moved aside,
+so a killed run leaves the player's files as they were. The tools have Python
 tests of their own:
 
 ```powershell
-python -m unittest tools/test_addon_common.py tools/test_texture_import_policy.py
+python -m unittest tools/test_addon_common.py tools/test_texture_import_policy.py tools/test_steam_test.py
 ```
 
 ### The two-machine Steam test
 
 `tests/steam` is not part of the suite above: it needs two signed-in Steam clients, so it runs on this PC and
 the Mac at once through `tools/steam_test.py`, never in CI. The host runs here and the client runs on the Mac
-over SSH (reached by IP, `--mac`, since the PC resolves the Mac's `.local` name only some of the time), both
-join one lobby that only this run's id can find, and both outputs stream here with a `[host]` or `[client]`
-prefix. The Mac's JUnit XML is copied back to `.steam_test/`, and the exit code is 1 when either side failed or
-did not report.
+over SSH as `Timothys-MacBook-Pro.local`; the PC's OpenSSH resolves that name only some of the time while
+Windows' own resolver keeps it, so when ssh cannot resolve it the runner takes the address `ping -4 -n 1`
+prints and carries on with that, and `--mac` overrides both. Both sides join one lobby that only this run's
+id can find, and both outputs stream here with a `[host]` or `[client]` prefix. The Mac's JUnit XML is copied
+back to `.steam_test/`, and the exit code is 1 when either side failed or did not report. A side whose XML
+never arrived (the host once crashed at exit after GUT had printed its summary) is still read: the runner
+takes the counts and the failed test names from GUT's `Totals` block in that side's console, says the XML
+was missing, and still exits 1 for it. A `STEAM TEST ABORT` line in either side's output is repeated in the
+summary.
 
 ```powershell
 python tools/steam_test.py                      # both sides
 python tools/steam_test.py --select test_07     # one scenario (GUT's -gselect)
 python tools/steam_test.py --role host          # one side by hand; pair it with --run-id on the other machine
 python tools/steam_test.py --windowed           # no --headless
+python tools/steam_test.py --mac 192.168.4.35   # the Mac by address, when its name will not resolve at all
 ```
 
 Before it launches anything it stops an earlier run still going on each machine it launches on (any Godot

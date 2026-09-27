@@ -14,6 +14,13 @@ The copies under addons/ are git-ignored, GUT and the other third-party addons i
 the manifest and the lock are committed, so a fresh clone runs this once before anything else.
 A third-party addon (`"third_party": true`) is pinned to a release tag or commit and never pushed
 to; one published only as a release archive names it with `"archive": <url>` instead of a repo.
+
+A pull STOPS, exit 1, rather than write over work: a file edited here since the last pull, a local
+file that was never upstream, or a recorded commit the cache no longer holds, so the two cannot be
+told apart. --dry-run reports the same as WOULD STOP and exits 1 too, which is what the pre-push
+hook relies on. A third-party addon has no work to protect: Godot's .import and .uid sidecars there
+are generated and go with the pull silently, and anything else that differs is reported as THIRD
+PARTY DRIFT and reverted.
 """
 
 from __future__ import annotations
@@ -26,6 +33,8 @@ from addon_common import (
     ROOT,
     addon_source,
     has_commit,
+    is_generated,
+    is_third_party,
     load_lock,
     load_manifest,
     load_pulled,
@@ -56,8 +65,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--force",
         action="store_true",
-        help="Overwrite files edited here and delete local files that are not upstream. Without it, "
-        "a pull that would destroy either stops so the work can be pushed first.",
+        help="Overwrite files edited here and delete local files that are not upstream, and go on when "
+        "the commit this copy was pulled at is missing from the cache. Without it, a pull that would "
+        "destroy either stops so the work can be pushed first.",
     )
     args = parser.parse_args(argv)
 
@@ -142,46 +152,75 @@ def main(argv: list[str] | None = None) -> int:
         # counting it would cry wolf over every addon whose lock has simply fallen behind.
         edited: list = []
         was_upstream: set = set()  # every file the copy's own commit had, for the removal guard below
+        stop = "WOULD STOP" if args.dry_run else "STOPPED"  # a dry run reports every stop and exits 1 on it
         if base and base != commit:
             # Deleting a file writes over it as surely as copying one in, so both are at risk.
             incoming = set(local_edits(origin, dest)) | set(removed)
             try:
                 run(["git", "checkout", "--quiet", "--force", base], cwd=cache)
-                edited = [p for p in local_edits(addon_source(cache, name), dest) if p in incoming]
-                was_upstream = payload_files(addon_source(cache, name), dest)
             except RuntimeError:
-                edited = []  # The recorded commit is gone; report nothing rather than block blindly.
-            finally:
+                # The recorded commit is gone (rewritten history, a shallow cache), so an edit made here
+                # cannot be told from an upstream change. Guessing either way loses work; only --force
+                # says the copy may go.
                 run(["git", "checkout", "--quiet", "--force", target], cwd=cache)
-                origin = addon_source(cache, name)
+                if args.force:
+                    print(f"{name:<28} {commit[:7]}  cannot check out {base[:7]}, the commit this copy was pulled "
+                          f"at; OVERWRITING the copy as --force asks")
+                else:
+                    print(f"{name:<28} {commit[:7]}  {stop}: cannot check out {base[:7]}, the commit this copy "
+                          f"was pulled at, so edits made here cannot be told from upstream changes")
+                    print(f"{'':<28} restore that commit in .addon_cache/{name}, or re-run with --force to overwrite")
+                    blocked = True
+                    continue
+            else:
+                try:
+                    edited = [p for p in local_edits(addon_source(cache, name), dest) if p in incoming]
+                    was_upstream = payload_files(addon_source(cache, name), dest)
+                finally:
+                    run(["git", "checkout", "--quiet", "--force", target], cwd=cache)
+                    origin = addon_source(cache, name)
         elif base:
             # Nothing new upstream, so anything mirror() would copy is an edit made here.
             edited = local_edits(origin, dest)
+
+        # A file the copy's own commit had and the incoming one lacks was deleted upstream, and goes
+        # quietly like any other upstream change; an edit made to it here is caught below. Only a file
+        # that was never upstream is at risk: work not pushed yet, or something generated beside the
+        # addon, a .uid or an .import, which a first-party addon keeps protected.
+        local_only = [p for p in removed if p not in was_upstream]
+
+        # Somebody else's addon is never edited here (CLAUDE.md: pull what upstream publishes), so
+        # nothing in it is work to protect. Godot's .import and .uid sidecars are generated and go
+        # with the pull without a word; anything else that differs is drift, named and reverted.
+        drift: list = []
+        if is_third_party(addon):
+            drift = sorted(p for p in edited + local_only if not is_generated(p))
+            edited = []
+            local_only = []
+        if drift:
+            print(f"{name:<28} {commit[:7]}  THIRD PARTY DRIFT: {len(drift)} file(s), reverted by the pull")
+            for path in drift[:10]:
+                print(f"{'':<28}   {path.relative_to(dest)}")
+            if len(drift) > 10:
+                print(f"{'':<28}   ... and {len(drift) - 10} more")
 
         if edited:
             noun = "file(s) edited here since the last pull"
             if args.force:
                 print(f"{name:<28} {commit[:7]}  OVERWRITING {len(edited)} {noun}")
-            elif args.dry_run:
-                print(f"{name:<28} {commit[:7]}  WOULD OVERWRITE {len(edited)} {noun}")
             else:
-                print(f"{name:<28} {commit[:7]}  STOPPED: {len(edited)} {noun}")
+                print(f"{name:<28} {commit[:7]}  {stop}: {len(edited)} {noun}")
             for path in edited[:10]:
                 print(f"{'':<28}   {path.relative_to(dest)}")
             if len(edited) > 10:
                 print(f"{'':<28}   ... and {len(edited) - 10} more")
-            if not (args.force or args.dry_run):
+            if not args.force:
                 print(f"{'':<28} push them first with tools/push_addons.py, or re-run with --force to overwrite")
                 blocked = True
                 continue
 
-        # A file the copy's own commit had and the incoming one lacks was deleted upstream, and goes
-        # quietly like any other upstream change; an edit made to it here was caught just above.
-        # Only a file that was never upstream is at risk: work not pushed yet, or something generated
-        # beside the addon, a .uid or an .import, which stays protected exactly as before.
-        local_only = [p for p in removed if p not in was_upstream]
-        if local_only and not (args.force or args.dry_run):
-            print(f"{name:<28} {commit[:7]}  STOPPED: {len(local_only)} local file(s) are not upstream")
+        if local_only and not args.force:
+            print(f"{name:<28} {commit[:7]}  {stop}: {len(local_only)} local file(s) are not upstream")
             for path in local_only[:10]:
                 print(f"{'':<28}   {path.relative_to(dest)}")
             if len(local_only) > 10:
@@ -239,7 +278,9 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.dry_run:
         print("Dry run, nothing was written.")
-        return 1 if failed else 0
+        if blocked:
+            print("A real pull would STOP on the addons marked WOULD STOP.")
+        return 1 if failed or blocked else 0
 
     save_lock(lock)
     save_pulled(pulled_at)

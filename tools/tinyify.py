@@ -15,8 +15,8 @@ Nothing here resizes. The 512 pixel cap belongs to the web build alone, where lo
 constraint, and tools/web_texture_cap.py applies it at import time in CI. Source images keep the
 resolution they shipped with so desktop builds get it.
 
-    python3 tools/tinyify.py                      # the whole repository
-    python3 tools/tinyify.py addons/x/assets      # one folder
+    python3 tools/tinyify.py                      # the whole repository, addons/ left alone
+    python3 tools/tinyify.py addons/x/assets      # one folder, walked even under addons/
 """
 
 import argparse
@@ -30,7 +30,9 @@ META_OPTIMIZED = "TINYIFY_OPTIMIZED"
 META_METHOD = "TINYIFY_METHOD"
 META_ORIGINAL_SIZE = "TINYIFY_ORIGINAL_SIZE"
 
-SKIP_DIRS = {".git", ".godot", ".addon_cache", "build", "__pycache__", "node_modules"}
+# addons/ is pulled from each addon's own repository and git-ignored here, so a bare run re-encoding
+# its PNGs would only trip the pull guard and the pre-push hook. Name addons/<name> to do that one.
+SKIP_DIRS = {".git", ".godot", ".addon_cache", "addons", "build", "__pycache__", "node_modules"}
 
 
 def get_pillow_modules():
@@ -114,7 +116,9 @@ def optimize_pngs(root_dir_path: Path) -> int:
 	skipped: int = 0
 
 	for png_path in sorted(root_dir_path.rglob("*.png")):
-		if any(part in SKIP_DIRS for part in png_path.parts):
+		# Skipped by the folders below the given root, so a root named explicitly, addons/x/assets say,
+		# is walked however it is called; a bare run from the repository root passes addons/ by.
+		if any(part in SKIP_DIRS for part in png_path.relative_to(root_dir_path).parts):
 			continue
 		if is_already_optimized(png_path):
 			skipped += 1

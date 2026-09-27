@@ -77,7 +77,7 @@ def fix_project_file(project_file: Path, dry_run: bool = False) -> list[str]:
     """Put the importer defaults back on policy. Returns what changed, by name."""
     if not project_file.exists():
         return []
-    text: str = project_file.read_text()
+    text: str = project_file.read_text(encoding="utf-8")
     changed: list[str] = []
 
     fixed: str = text
@@ -92,7 +92,7 @@ def fix_project_file(project_file: Path, dry_run: bool = False) -> list[str]:
         fixed = PROJECT_SIZE_LIMIT.sub(lambda m: f"{m.group(1)}0", fixed)
 
     if changed and not dry_run:
-        project_file.write_text(fixed)
+        project_file.write_text(fixed, encoding="utf-8", newline="\n")
     return changed
 
 
@@ -114,7 +114,11 @@ def fix_import_files(root: Path, dry_run: bool = False) -> tuple[int, int]:
             continue
         if any(path.resolve().is_relative_to(folder) for folder in vendored):
             continue
-        text: str = path.read_text()
+        # A terrain data directory (it holds a .hterrain file) is HTerrain's own: its splat, colour and
+        # normal maps must never be promoted to VRAM Compressed, or the blend smears. Lossless and full
+        # size are still the rule there, so only the promotion rewrite is skipped.
+        terrain: bool = any(path.parent.glob("*.hterrain"))
+        text: str = path.read_text(encoding="utf-8")
         mode: int | None = read_mode(text)
         if mode is None:
             continue
@@ -126,7 +130,8 @@ def fix_import_files(root: Path, dry_run: bool = False) -> tuple[int, int]:
             # Lossy, or one of the Basis Universal modes, goes back to lossless, and every lossless one
             # is left free to be promoted to VRAM compressed the first time the editor sees it in 3D.
             updated = IMPORT_COMPRESS.sub(lambda m: f"{m.group(1)}{LOSSLESS}", updated)
-            updated = IMPORT_DETECT_3D.sub(lambda m: f"{m.group(1)}1", updated)
+            if not terrain:
+                updated = IMPORT_DETECT_3D.sub(lambda m: f"{m.group(1)}1", updated)
 
         updated = IMPORT_SIZE_LIMIT.sub(lambda m: f"{m.group(1)}0", updated)
 
@@ -134,7 +139,7 @@ def fix_import_files(root: Path, dry_run: bool = False) -> tuple[int, int]:
             continue
         fixed += 1
         if not dry_run:
-            path.write_text(updated)
+            path.write_text(updated, encoding="utf-8", newline="\n")
 
     return fixed, vram
 

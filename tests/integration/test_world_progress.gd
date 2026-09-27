@@ -9,6 +9,7 @@ const WORLD_SCENE: PackedScene = preload("res://scenes/world.tscn")
 const TITLE_SCENE: PackedScene = preload("res://scenes/title_screen.tscn")
 const QA_QUEST: Quest = preload("res://resources/quests/qa_errand.tres")
 const CARP: Fish = preload("res://resources/fish/carp.tres")
+const APPLE: Item = preload("res://resources/items/apple.tres")
 const TEST_PATH: String = "user://gut/test_world_savegame.json"
 
 var world: Node
@@ -32,6 +33,7 @@ func after_each() -> void:
 	if FileAccess.file_exists(TEST_PATH):
 		DirAccess.remove_absolute(TEST_PATH)
 	SaveGame.load_requested = false
+	SaveGame.slot = 0
 
 
 func test_the_world_has_the_progression_kit() -> void:
@@ -43,6 +45,7 @@ func test_the_world_has_the_progression_kit() -> void:
 	assert_true((world.get_node("PlayerSpawner") as PlayerSpawner).local_player_spawned.is_connected(saver.load_for_player), "A requested load waits for the spawned Player, wired in the scene")
 	assert_true(world.is_in_group(SaveGame.GROUP), "The world saves its clock and weather")
 	assert_true(world.get_node("Enemies/Swordsman").is_in_group(SaveGame.GROUP))
+	assert_eq((world.get_node("CampfireRest") as CampfireRest).date_and_time, world.get_node("DateAndTime"), "The campfire's clock is set in the scene")
 
 
 func test_the_save_keeps_the_clock_the_weather_the_player_and_the_trees() -> void:
@@ -99,20 +102,26 @@ func test_the_guides_errand_counts_wood_and_fish() -> void:
 	fishing_log.record_catch(CARP, 30.0)
 	assert_true(quest_log.is_objective_done(QA_QUEST, &"catch_fish"), "Landing a fish is supper")
 	assert_true(quest_log.is_complete(QA_QUEST))
-	assert_eq(player.inventory.count_of(preload("res://resources/items/apple.tres")), 3 + 3, "Three apples on top of the QA kit's three")
+	assert_eq(player.inventory.count_of(APPLE), 3 + 3, "Three apples on top of the QA kit's three")
 
 
-## The run's own save path (tests/gut_pre_run.gd points SaveGame.DEFAULT_SAVE_PATH under user://gut/), so the
-## player's save is never touched.
-func test_continue_shows_only_with_a_save_and_requests_a_load() -> void:
-	assert_true(SaveGame.DEFAULT_SAVE_PATH.begins_with("user://gut/"), "The run saves in its own folder")
-	DirAccess.remove_absolute(SaveGame.DEFAULT_SAVE_PATH)
+## The run's own saves folder (tests/gut_pre_run.gd points SaveGame.SAVES_DIR under user://gut/), so the player's
+## saves are never touched.
+func _clear_saves() -> void:
+	for file: String in DirAccess.get_files_at(SaveGame.SAVES_DIR):
+		DirAccess.remove_absolute(SaveGame.SAVES_DIR.path_join(file))
+
+
+func test_continue_lists_the_saves_and_asks_for_the_one_picked() -> void:
+	assert_true(SaveGame.SAVES_DIR.begins_with("user://gut/"), "The run saves in its own folder")
+	_clear_saves()
 	var title: TitleScreen = TITLE_SCENE.instantiate()
 	add_child_autofree(title)
 	assert_false(title.button_continue.visible, "No save, no Continue")
 	title.free()
-	saver.save_path = SaveGame.DEFAULT_SAVE_PATH
-	saver.save_game()
+	SaveGame.slot = 2
+	assert_eq(saver.save_game(), OK)
+	SaveGame.slot = 0
 	title = TITLE_SCENE.instantiate()
 	add_child_autofree(title)
 	assert_true(title.button_continue.visible, "A save shows Continue")
@@ -120,10 +129,18 @@ func test_continue_shows_only_with_a_save_and_requests_a_load() -> void:
 	title.button_single_player.emit_signal("pressed")
 	assert_true(title.menu_single_player.visible, "Single-Player opens the New Game and Continue panel")
 	assert_true(title.button_continue.has_focus(), "With a save, Continue takes the focus in that panel")
-	watch_signals(title)
 	title._on_button_continue_pressed()
-	assert_signal_emitted(title, "continue_pressed")
-	DirAccess.remove_absolute(SaveGame.DEFAULT_SAVE_PATH)
+	assert_true(title.saves_panel.visible, "Continue opens the list of saves")
+	assert_eq(title.save_list.get_child_count(), 1, "one row per save")
+	var row: SaveSlotButton = title.save_list.get_child(0) as SaveSlotButton
+	assert_eq(row.slot, 2, "showing its number")
+	assert_true(row.level_label.text.begins_with("Save 2"), "on the row")
+	watch_signals(title)
+	row.emit_signal("pressed")
+	assert_signal_emitted_with_parameters(title, "continue_pressed", [2, row.scene_path]) # picking it asks for that save in its own level
+	title._on_button_saves_back_pressed()
+	assert_true(title.menu_single_player.visible, "and Back returns to New Game and Continue")
+	_clear_saves()
 
 
 ## H8: Continue loads the save into a fresh world, whose PlayerSpawner sits before the SaveGame and spawns the Player
@@ -143,3 +160,39 @@ func test_continue_loads_the_save_once_the_spawned_player_is_in() -> void:
 	assert_eq(clock.get_hour(), 21, "and the save is back in the world")
 	assert_eq(clock.get_minute(), 30)
 	DirAccess.remove_absolute(SaveGame.DEFAULT_SAVE_PATH)
+
+
+## H3: the bag and the fishing log live in the numbered save with the Player, not in files of their own, so a New
+## Game in a fresh slot starts with an empty log and the starting bag, and Continue brings both back.
+func test_a_new_game_starts_clean_and_continue_brings_the_log_and_the_bag_back() -> void:
+	_clear_saves()
+	var fishing_log: FishingLog = player.get_node("FishingLog")
+	assert_true(fishing_log.is_in_group(SaveGame.GROUP), "The log is Saveable")
+	assert_false((player.get_node("Hud/Inventory") as Inventory).persist, "The bag has no file of its own; the save carries it")
+	var starting_apples: int = player.inventory.count_of(APPLE)
+	assert_gt(starting_apples, 0, "The starting bag holds apples")
+	fishing_log.record_catch(CARP, 41.0)
+	player.inventory.remove_item(APPLE, 1)
+	SaveGame.slot = 1
+	assert_eq(saver.save_game(), OK)
+	world.free()
+	# New Game: main.gd takes the next free slot and loads the world with no load requested
+	SaveGame.slot = SaveGame.next_free_slot()
+	assert_eq(SaveGame.slot, 2, "New Game takes the next free slot")
+	var fresh: Node = WORLD_SCENE.instantiate()
+	add_child_autofree(fresh)
+	await wait_physics_frames(3)
+	var fresh_player: Player = fresh.get_node("PlayerSpawner/1")
+	assert_false((fresh_player.get_node("FishingLog") as FishingLog).has_caught(CARP), "A New Game starts with an empty log")
+	assert_eq(fresh_player.inventory.count_of(APPLE), starting_apples, "and the starting bag")
+	fresh.free()
+	# Continue: save 1 in its own level, loaded once the Player is in
+	SaveGame.slot = 1
+	SaveGame.load_requested = true
+	var continued: Node = WORLD_SCENE.instantiate()
+	add_child_autofree(continued)
+	await wait_physics_frames(3)
+	var continued_player: Player = continued.get_node("PlayerSpawner/1")
+	assert_eq((continued_player.get_node("FishingLog") as FishingLog).record_of(CARP), 41.0, "Continue brings the log back")
+	assert_eq(continued_player.inventory.count_of(APPLE), starting_apples - 1, "and the bag as it was")
+	_clear_saves()

@@ -133,6 +133,62 @@ text = "Back"
 position = Vector2(290, 29)
 shape = SubResource("RectangleShape2D_kxxiu")
 
+[node name="Panel_Saves" type="Panel" parent="."]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -410.0
+offset_top = -300.0
+offset_right = 410.0
+offset_bottom = 300.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel_Saves"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 16.0
+offset_right = -20.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 12
+
+[node name="Label_Title" type="Label" parent="Panel_Saves/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 28
+text = "Continue"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel_Saves/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="SaveList" type="VBoxContainer" parent="Panel_Saves/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_constants/separation = 10
+
+[node name="Button_SavesBack" type="Button" parent="Panel_Saves/VBoxContainer"]
+custom_minimum_size = Vector2(580, 58)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 24
+text = "Back"
+
+[node name="TouchScreenButton_SavesBack" type="TouchScreenButton" parent="Panel_Saves/VBoxContainer/Button_SavesBack"]
+position = Vector2(290, 29)
+shape = SubResource("RectangleShape2D_kxxiu")
+
 [node name="Label_Version" type="Label" parent="." unique_id=1067505784]
 anchors_preset = 2
 anchor_top = 1.0
@@ -217,3 +273,5 @@ visible = false
 [connection signal="pressed" from="ControlsSettings/Panel/VBoxContainer/BACK" to="Settings" method="show_menu"]
 [connection signal="pressed" from="ControlsSettings/Panel/VBoxContainer/BACK/BACKTouchScreenButton" to="ControlsSettings" method="hide"]
 [connection signal="pressed" from="ControlsSettings/Panel/VBoxContainer/BACK/BACKTouchScreenButton" to="Settings" method="show_menu"]
+[connection signal="pressed" from="Panel_Saves/VBoxContainer/Button_SavesBack" to="." method="_on_button_saves_back_pressed"]
+[connection signal="pressed" from="Panel_Saves/VBoxContainer/Button_SavesBack/TouchScreenButton_SavesBack" to="." method="_on_button_saves_back_pressed"]

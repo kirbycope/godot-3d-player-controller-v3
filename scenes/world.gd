@@ -121,8 +121,15 @@ func _grant_starting_equipment(target: Player, item: Item) -> void:
 ## Binds the world to the player this peer controls (connected in the scene to PlayerSpawner.local_player_spawned).
 func _on_local_player_spawned(local_player: Player) -> void:
 	player = local_player
+	# The minimap centres on this peer's Player, its arrow turning with the model (which looks along +Z)
+	var minimap: Minimap = get_node_or_null(^"HUD/Minimap") as Minimap
+	if minimap:
+		minimap.target = player
+		minimap.facing = player.player_model
 	player.enable_paraglider = true
+	player.enable_spyglass = true
 	player.enable_stamina = true
+	player.enable_temperature = true # cold and heat hurt here; the snow demo, a physics test level, leaves it off
 	# The buttons on screen, drawn in this world's own layout unless the player picked one in the settings, which
 	# the Player applied in its own _ready and which wins over the world's default
 	if control_scheme and PlayerSettingsResource.load_or_create().picked_scheme() == null:

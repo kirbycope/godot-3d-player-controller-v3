@@ -58,6 +58,8 @@ func test_no_texture_in_the_project_is_imported_as_lossy() -> void:
 func test_every_lossless_texture_is_promoted_once_seen_in_3d() -> void:
 	var never_promoted: PackedStringArray = []
 	for path: String in _import_files("res://"):
+		if _is_terrain_data(path.get_base_dir()):
+			continue
 		if _compress_mode(path) == LOSSLESS and _int_setting(path, "detect_3d/compress_to") != DETECT_3D_VRAM_COMPRESSED:
 			never_promoted.append(path)
 	assert_eq(
@@ -99,6 +101,16 @@ func _import_files(from: String) -> PackedStringArray:
 		name = directory.get_next()
 	directory.list_dir_end()
 	return found
+
+
+## A terrain data directory holds a .hterrain file. Its maps are HTerrain's own and must never be promoted to
+## VRAM Compressed, or the splat blend smears; the plugin writes that setting itself. Lossless and full size are
+## still the rule there, so only the promotion test passes such a directory by.
+func _is_terrain_data(folder: String) -> bool:
+	for file: String in DirAccess.get_files_at(folder):
+		if file.ends_with(".hterrain"):
+			return true
+	return false
 
 
 func _compress_mode(import_path: String) -> int:

@@ -16,6 +16,9 @@ func before_each() -> void:
 	await wait_physics_frames(3)
 	player = world.get_node("PlayerSpawner/1")
 	player.enable_stamina = true
+	# world.gd turns the cold and heat on for the local Player, and past a threshold the BodyTemperature costs
+	# health every second; this suite measures what the enemies do to the health, so the weather stays out of it
+	player.enable_temperature = false
 
 
 func _enemy(name: String) -> EnemyNpc:
@@ -219,7 +222,10 @@ func test_a_player_past_the_leash_resets_the_enemy_who_heals_at_its_post() -> vo
 	var swordsman: EnemyNpc = _enemy("Swordsman")
 	watch_signals(swordsman)
 	var home: Vector3 = swordsman.global_position
-	swordsman.take_hit(40.0, player.global_position)
+	# Wounded without a shove: take_hit would also knock it back, and an enemy's knockback only decays while it
+	# hunts (FollowerNpc._physics_process, which EnemyNpc reaches through super in that branch alone), so a shoved
+	# enemy sent home keeps pushing away from its post and never settles on it. This test is about the reset.
+	swordsman.health.damage(40.0, player.global_position)
 	_stand_near(swordsman, 3.0)
 	await wait_until(func() -> bool: return swordsman.target == player and swordsman.global_position.distance_to(home) > 0.5, 2.0) # off its post, closing in
 	assert_eq(swordsman.target, player)

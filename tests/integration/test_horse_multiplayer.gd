@@ -5,8 +5,9 @@ extends GutTest
 ## horse's BodySynchronizer carries its transform, pace and summon state back, so the client's copy arrives too and
 ## plays SummonAudio. Getting on hands the horse to the rider's peer and getting off hands it back. The server
 ## arbitrates the saddle: of two Players getting on at once only the first gets it, the other is put back off, and
-## the hand-off setters take orders from the server alone. Two scene branches with their own MultiplayerAPI talk over
-## ENet on localhost, as test_enemy_multiplayer does.
+## the hand-off setters take orders from the server alone. A peer joining mid-ride is told the rider and the
+## authority by the server. Two scene branches with their own MultiplayerAPI talk over ENet on localhost, as
+## test_enemy_multiplayer does; a late joiner is a third.
 
 const PORT: int = 47395
 const PLAYER_SCENE: PackedScene = preload("res://addons/3d_player_controller/scenes/player.tscn")
@@ -196,3 +197,46 @@ func test_two_riders_at_once_get_one_saddle_and_only_the_server_hands_it_out() -
 	host_player.dismount(true)
 	await wait_physics_frames(5)
 	assert_eq(host_horse.rider_peer, 0, "Getting off frees the saddle")
+
+
+## H5: a peer joining while the client rides. rider_peer replicates but authority cannot, so the server tells the
+## joiner both on peer_connected; otherwise the joiner's copy kept the server as authority and rejected the rider's
+## every BodySynchronizer packet until the dismount.
+func test_a_peer_joining_mid_ride_gets_the_rider_and_the_riders_authority() -> void:
+	var client_id: int = client_api.get_unique_id()
+	var client_player: Player = await _client_player()
+	await wait_physics_frames(20)
+	var host_horse: Horse = server_root.get_node("Horse")
+	var remote_horse: Horse = client_root.get_node("Horse")
+	client_player.mount(remote_horse)
+	await wait_until(func() -> bool: return host_horse.get_multiplayer_authority() == client_id, 2.0)
+	assert_eq(host_horse.rider_peer, client_id, "The client is up")
+	# A third peer joins now, with the horse already in its scene
+	var late_root := Node3D.new()
+	late_root.name = "LateBranch"
+	add_child(late_root)
+	var late_path: NodePath = late_root.get_path()
+	var late_api := SceneMultiplayer.new()
+	get_tree().set_multiplayer(late_api, late_path)
+	var late_peer := ENetMultiplayerPeer.new()
+	assert_eq(late_peer.create_client("127.0.0.1", PORT), OK)
+	late_api.multiplayer_peer = late_peer
+	_build_branch(late_root)
+	var late_horse: Horse = late_root.get_node("Horse")
+	late_horse.collision_layer = 0
+	late_horse.collision_mask = 0
+	await wait_until(func() -> bool: return late_api.get_peers().size() > 0, 3.0)
+	await wait_until(func() -> bool: return late_horse.get_multiplayer_authority() == client_id, 2.0)
+	for copy: Node in late_root.get_node("Players").get_children():
+		(copy as Player).collision_layer = 0
+		(copy as Player).collision_mask = 0
+	assert_eq(late_horse.rider_peer, client_id, "The joiner sees the rider up")
+	assert_eq(late_horse.get_multiplayer_authority(), client_id, "and the rider's peer driving the horse")
+	assert_eq((late_horse.get_node("BodySynchronizer") as MultiplayerSynchronizer).get_multiplayer_authority(), client_id, "synchronizer included, so the rider's packets are taken")
+	client_player.dismount()
+	await wait_until(func() -> bool: return late_horse.get_multiplayer_authority() == 1, 2.0)
+	assert_eq(late_horse.get_multiplayer_authority(), 1, "and the dismount reaches the joiner like everyone")
+	assert_eq(late_horse.rider_peer, 0)
+	late_root.free()
+	late_api.multiplayer_peer.close()
+	get_tree().set_multiplayer(null, late_path)

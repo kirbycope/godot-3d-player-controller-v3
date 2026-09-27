@@ -19,6 +19,9 @@ extends RigidBody3D
 
 signal deflated ## The air has started going out; the twin has taken over.
 
+const AIR_DENSITY: float = 1.225 ## kg/m3 at sea level.
+
+@export var drag_coefficient: float = 0.47 ## A sphere's. The air is what makes a beach ball a beach ball: a metre across and 0.2 kg, it falls no faster than 2.9 m/s, and a hard throw is spent within two metres.
 @export var deflate_seconds: float = 1.4 ## How long the air takes to go out: the twin's pressure falling to nothing.
 @export var inflated_pressure: float = 45.0 ## Enough to hold the shell round. Much above this and the pressure launches the twin: 150 threw it five metres.
 @export var deflated_stiffness: float = 0.05 ## What the shell softens to as it empties.
@@ -144,6 +147,22 @@ func _on_body_entered(body: Node) -> void:
 				node.call("register_hit", body)
 				break
 			node = node.get_parent()
+
+
+## Deceleration (m/s2) from air drag on a ball [param radius] across at [param speed]: half rho Cd A v squared, over
+## [param ball_mass]. Quadratic, so it barely touches a ball drifting and stops a hurled one quickly.
+static func drag_deceleration(speed: float, radius: float, ball_mass: float, cd: float = 0.47) -> float:
+	return 0.5 * AIR_DENSITY * cd * PI * radius * radius * speed * speed / maxf(ball_mass, 0.001)
+
+
+func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
+	var v: Vector3 = state.linear_velocity
+	var speed: float = v.length()
+	var sphere: SphereShape3D = collision_shape.shape as SphereShape3D if collision_shape else null
+	if speed < 0.01 or sphere == null:
+		return
+	var slowed: float = minf(drag_deceleration(speed, sphere.radius, mass, drag_coefficient) * state.step, speed)
+	state.linear_velocity = v * ((speed - slowed) / speed)
 
 
 ## Remembers the speed before a contact so the impact sound reflects it.

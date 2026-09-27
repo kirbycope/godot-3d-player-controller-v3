@@ -88,7 +88,7 @@ func start_push() -> void:
 	player.right_hand_ik.active = true
 	# Play the ButtonPushing emote on the upper body.
 	var emote_state: AnimationNodeStateMachinePlayback = player.animation_tree.get(Player.EMOTE_STATE_PLAYBACK_PATH)
-	player.animation_tree.set("parameters/EmoteSpineBlend2/blend_amount", 1.0)
+	player.emote_spine_blend = 1.0 # the Player's replicated property, so puppets get the blend too
 	emote_state.travel("ButtonPushing")
 	player.is_emoting = true
 	player.has_started_emoting = false

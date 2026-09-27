@@ -1,22 +1,30 @@
 #!/usr/bin/env python3
-"""
-wav_to_ogg.py
+"""Convert .wav files to .ogg (Ogg Vorbis) with ffmpeg and point the project at the new files.
 
-Recursively converts .wav audio files to .ogg (Ogg Vorbis) format using ffmpeg.
-Optionally replaces .wav with .ogg in-place, cleans up obsolete .import / .DS_Store files,
-and updates scene (.tscn), resource (.tres), and script (.gd) file references.
+    python tools/wav_to_ogg.py                      # every .wav under assets/, replaced in place
+    python tools/wav_to_ogg.py assets/sfx           # one folder
+    python tools/wav_to_ogg.py --dry-run            # list what would be converted
+    python tools/wav_to_ogg.py --sync-uids          # after a headless import, put the .ogg uids into the scenes
+
+A reference is rewritten only where the whole `res://` path of a converted file appears in a .tscn,
+.tres, .gd or .json file of the project; addons/ is never touched, since every addon there is pulled
+from its own repository. Godot mints a uid for an .ogg only when it imports it, so a fresh conversion
+leaves the old uid in the scenes (Godot falls back to the path and warns once); run the editor or
+`godot --headless --import` and then `--sync-uids` to copy each `.ogg.import`'s uid into them.
 """
 
 from __future__ import annotations
 
 import argparse
-import os
 import re
 import shutil
 import subprocess
 import sys
 from pathlib import Path
-from typing import Dict, List, Optional
+
+REFERENCE_EXTENSIONS = {".tscn", ".tres", ".gd", ".json"}
+SKIP_DIRS = {".git", ".godot", ".addon_cache", "addons", "build", "__pycache__"}
+EXT_RESOURCE = re.compile(r"\[ext_resource\s+type=\"[^\"]+\"\s+uid=\"([^\"]+)\"\s+path=\"(res://[^\"]+)\"")
 
 
 def get_ffmpeg_encoder() -> list[str]:
@@ -37,14 +45,14 @@ def get_ffmpeg_encoder() -> list[str]:
             return ["-c:a", "libvorbis"]
         elif "vorbis" in res.stdout:
             return ["-c:a", "vorbis", "-strict", "-2", "-ac", "2"]
-    except Exception:
+    except (OSError, subprocess.CalledProcessError):
         pass
 
     # Default fallback
     return ["-c:a", "vorbis", "-strict", "-2", "-ac", "2"]
 
 
-def format_size(bytes_val: int) -> str:
+def format_size(bytes_val: float) -> str:
     for unit in ["B", "KB", "MB", "GB"]:
         if bytes_val < 1024.0:
             return f"{bytes_val:.2f} {unit}"
@@ -52,64 +60,84 @@ def format_size(bytes_val: int) -> str:
     return f"{bytes_val:.2f} TB"
 
 
-def update_project_references(repo_root: Path, file_mapping: dict[str, str]):
+def reference_pattern(res_path: str) -> re.Pattern[str]:
+    """Matches the whole `res://` path and nothing longer.
+
+    Mapping by bare file name matched `hit.wav` inside `crit_hit.wav`; the whole path cannot. The
+    lookahead stops it short of a longer path that begins the same way (`hit.wav.import`).
     """
-    Updates occurrences of converted .wav paths to .ogg in .tscn, .tres, and .gd files,
-    and updates any resource UIDs if .import files are present.
-    file_mapping maps relative res:// path (or filename) from old to new.
+    return re.compile(re.escape(res_path) + r"(?![A-Za-z0-9_./-])")
+
+
+def imported_uid(repo_root: Path, res_path: str) -> str | None:
+    """The uid Godot wrote in the file's .import, or None until it has imported the file."""
+    local = repo_root / res_path.replace("res://", "")
+    import_path = local.with_name(local.name + ".import")
+    if not import_path.exists():
+        return None
+    match = re.search(r"^uid=\"([^\"]+)\"", import_path.read_text(encoding="utf-8"), re.MULTILINE)
+    return match.group(1) if match else None
+
+
+def update_project_references(repo_root: Path, file_mapping: dict[str, str], sync_paths: set[str]) -> int:
+    """Rewrite converted paths in the project's scenes, resources, scripts and JSON, and put the uid
+    Godot has minted for each path in sync_paths into the ext_resource lines that name it.
+
+    file_mapping is old `res://` path to new; sync_paths are `res://` .ogg paths whose .ogg.import
+    exists. Returns how many files changed.
     """
-    if not file_mapping:
-        return
+    if not file_mapping and not sync_paths:
+        return 0
 
-    extensions = {".tscn", ".tres", ".gd", ".json"}
-    modified_files = 0
-    uid_pattern = re.compile(r"\[ext_resource\s+type=\"[^\"]+\"\s+uid=\"([^\"]+)\"\s+path=\"(res://[^\"]+)\"")
+    patterns = [(reference_pattern(old), new) for old, new in file_mapping.items()]
+    uids = {path: uid for path in sync_paths if (uid := imported_uid(repo_root, path))}
+    modified = 0
 
-    for file_path in repo_root.rglob("*"):
-        if not file_path.is_file() or file_path.suffix not in extensions:
+    for file_path in sorted(repo_root.rglob("*")):
+        if not file_path.is_file() or file_path.suffix not in REFERENCE_EXTENSIONS:
             continue
-        # Skip .godot and .git directories
-        if ".godot" in file_path.parts or ".git" in file_path.parts:
+        if any(part in SKIP_DIRS for part in file_path.relative_to(repo_root).parts):
             continue
-
         try:
             content = file_path.read_text(encoding="utf-8")
-            changed = False
-            for old_str, new_str in file_mapping.items():
-                if old_str in content:
-                    content = content.replace(old_str, new_str)
-                    changed = True
+        except (OSError, UnicodeDecodeError) as error:
+            print(f"[Warning] Could not read '{file_path}': {error}")
+            continue
 
-            # Sync UIDs from .import files if present
-            if file_path.suffix in {".tscn", ".tres"}:
-                def uid_replacer(match):
-                    old_uid = match.group(1)
-                    res_path = match.group(2)
-                    local_path = repo_root / res_path.replace("res://", "")
-                    import_path = Path(str(local_path) + ".import")
-                    if import_path.exists():
-                        try:
-                            import_content = import_path.read_text(encoding="utf-8")
-                            m = re.search(r"uid=\"([^\"]+)\"", import_content)
-                            if m and m.group(1) != old_uid:
-                                return match.group(0).replace(old_uid, m.group(1))
-                        except Exception:
-                            pass
+        updated = content
+        for pattern, new in patterns:
+            updated = pattern.sub(new, updated)
+
+        if uids and file_path.suffix in {".tscn", ".tres"}:
+            def uid_replacer(match: re.Match[str]) -> str:
+                old_uid, res_path = match.group(1), match.group(2)
+                new_uid = uids.get(res_path)
+                if new_uid is None or new_uid == old_uid:
                     return match.group(0)
+                return match.group(0).replace(f'uid="{old_uid}"', f'uid="{new_uid}"')
 
-                new_content = uid_pattern.sub(uid_replacer, content)
-                if new_content != content:
-                    content = new_content
-                    changed = True
+            updated = EXT_RESOURCE.sub(uid_replacer, updated)
 
-            if changed:
-                file_path.write_text(content, encoding="utf-8")
-                print(f"[Reference Updated] {file_path.relative_to(repo_root)}")
-                modified_files += 1
-        except Exception as e:
-            print(f"[Warning] Could not process file '{file_path}': {e}")
+        if updated != content:
+            file_path.write_text(updated, encoding="utf-8", newline="\n")
+            print(f"[Reference Updated] {file_path.relative_to(repo_root)}")
+            modified += 1
 
-    print(f"Updated references in {modified_files} scene/resource/script file(s).")
+    print(f"Updated references in {modified} scene/resource/script file(s).")
+    return modified
+
+
+def res_path(repo_root: Path, path: Path) -> str:
+    return f"res://{path.relative_to(repo_root).as_posix()}"
+
+
+def sync_uids(src_dir_path: Path, repo_root: Path) -> None:
+    """Put the uid of every imported .ogg under src into the scenes that name it."""
+    src_dir_path = src_dir_path.resolve()
+    imported = {res_path(repo_root, ogg) for ogg in src_dir_path.rglob("*.ogg")
+                if ogg.with_name(ogg.name + ".import").exists()}
+    print(f"Found {len(imported)} imported .ogg file(s) under '{src_dir_path.relative_to(repo_root)}'.")
+    update_project_references(repo_root, {}, imported)
 
 
 def convert_wav_to_ogg(
@@ -120,7 +148,7 @@ def convert_wav_to_ogg(
     update_refs: bool = True,
     repo_root: Path | None = None,
     dry_run: bool = False,
-):
+) -> None:
     if not src_dir_path.exists():
         print(f"[Error] Source directory '{src_dir_path}' does not exist.")
         sys.exit(1)
@@ -130,7 +158,7 @@ def convert_wav_to_ogg(
         repo_root = Path(__file__).resolve().parent.parent
 
     encoder_args = get_ffmpeg_encoder()
-    wav_files = sorted(list(src_dir_path.rglob("*.wav")))
+    wav_files = sorted(src_dir_path.rglob("*.wav"))
 
     if not wav_files:
         print(f"No .wav files found in '{src_dir_path}'.")
@@ -146,7 +174,7 @@ def convert_wav_to_ogg(
 
     success_count = 0
     fail_count = 0
-    file_mapping = {}
+    file_mapping: dict[str, str] = {}
 
     for wav_file in wav_files:
         if in_place or dst_dir_path is None:
@@ -185,11 +213,8 @@ def convert_wav_to_ogg(
                 total_ogg_size += ogg_size
                 success_count += 1
 
-                # Record mapping for references
-                res_old = f"res://{rel_wav.as_posix()}"
-                res_new = f"res://{rel_ogg.as_posix()}"
-                file_mapping[res_old] = res_new
-                file_mapping[wav_file.name] = ogg_file.name
+                # Whole res:// paths only: a bare file name matched inside longer names.
+                file_mapping[res_path(repo_root, wav_file)] = res_path(repo_root, ogg_file)
 
                 if in_place:
                     wav_file.unlink()
@@ -213,7 +238,8 @@ def convert_wav_to_ogg(
 
     if update_refs and file_mapping and not dry_run:
         print("\nUpdating project references...")
-        update_project_references(repo_root, file_mapping)
+        # A uid is synced only for an .ogg Godot has already imported; a fresh conversion has none yet.
+        update_project_references(repo_root, file_mapping, set(file_mapping.values()))
 
     print("\n--- Summary ---")
     print(f"Successfully converted: {success_count} file(s)")
@@ -227,7 +253,7 @@ def convert_wav_to_ogg(
         print(f"Space saved:            {format_size(saved_bytes)} ({pct:.1f}% reduction)")
 
 
-def main():
+def main() -> None:
     repo_root = Path(__file__).resolve().parent.parent
 
     parser = argparse.ArgumentParser(
@@ -268,8 +294,17 @@ def main():
         action="store_true",
         help="List files that would be converted without making changes",
     )
+    parser.add_argument(
+        "--sync-uids",
+        action="store_true",
+        help="Convert nothing; copy the uid of every imported .ogg under src into the scenes that name it",
+    )
 
     args = parser.parse_args()
+
+    if args.sync_uids:
+        sync_uids(Path(args.src), repo_root)
+        return
 
     in_place = not args.no_in_place and args.dst is None
     update_refs = not args.no_update_refs

@@ -17,6 +17,16 @@
       "ref": "main"
     },
     {
+      "name": "snow_deformation",
+      "repo": "https://github.com/kirbycope/snow-deformation.git",
+      "ref": "main"
+    },
+    {
+      "name": "minimap",
+      "repo": "https://github.com/kirbycope/minimap.git",
+      "ref": "main"
+    },
+    {
       "name": "date_and_time",
       "repo": "https://github.com/kirbycope/date-and-time.git",
       "ref": "main"
@@ -68,6 +78,12 @@
     {
       "name": "godotsteam",
       "archive": "https://codeberg.org/godotsteam/godotsteam/archive/baa0b1c2c16b822c9641f94f7d38558b21a3daf2.zip",
+      "third_party": true
+    },
+    {
+      "name": "zylann.hterrain",
+      "repo": "https://github.com/Zylann/godot_heightmap_plugin.git",
+      "ref": "7f574eb47fbd74cb1a79adc2cc9fb7f0694fccc3",
       "third_party": true
     }
   ]

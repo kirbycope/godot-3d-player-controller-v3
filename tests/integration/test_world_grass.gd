@@ -22,8 +22,11 @@ func before_each() -> void:
 func _fields() -> Array[GrassField]:
 	var fields: Array[GrassField] = []
 	for node: Node in get_tree().get_nodes_in_group(&"GrassField"):
-		if world.is_ancestor_of(node):
-			fields.append(node as GrassField)
+		# The group is also the address of every fire's ignite_at and douse_at calls, so the Campfire under
+		# CampfireRest (addons/weather_fx/scripts/campfire.gd) joins it to catch and be put out without being a field
+		var field: GrassField = node as GrassField
+		if field and world.is_ancestor_of(field):
+			fields.append(field)
 	return fields
 
 

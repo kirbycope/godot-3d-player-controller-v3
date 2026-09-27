@@ -5,14 +5,16 @@ extends GutTest
 ## the line is the rod owner's alone: a peer's copy of the rod neither takes a used lure nor eats one. The rest of the
 ## bite reaches the client too: the server's shadow drawn to the float and diving on the bite, seen on the client, the
 ## reel spinning on the client's copy of the rod and the rod's sounds at the float. A shot fish sinks on every peer and
-## only the shooter's own peer pockets the chum.
+## only the shooter's own peer pockets the chum. The float takes its moves from the server and the caster's peer
+## alone, names its catch and its sounds by number rather than by file, and a float the server despawns takes the
+## rod's line in with it.
 
 const PORT: int = 47392
 const PLAYER_SCENE: PackedScene = preload("res://addons/3d_player_controller/scenes/player.tscn")
 const BOBBER_SCENE: PackedScene = preload("res://scenes/bobber.tscn")
 const ROD_SCENE: PackedScene = preload("res://scenes/fishing_rod.tscn")
 const WORM: Lure = preload("res://resources/lures/worm.tres")
-const CARP_PATH: String = "res://resources/fish/carp.tres"
+const CARP_INDEX: int = 0 ## The carp's place in the test water's fish list, which is what a catch is named by.
 const CARP: Fish = preload("res://resources/fish/carp.tres")
 const CHUM: Lure = preload("res://resources/lures/chum.tres")
 const REEL_SOUND: AudioStream = preload("res://assets/gravitysound/Animal SFX/Duck_1.ogg") ## Any clip stands in for the rod's reel sound.
@@ -113,8 +115,9 @@ func after_each() -> void:
 func test_host_float_appears_on_the_client_with_its_line_and_takes_rpcs() -> void:
 	var host_player: Player = server_root.get_node("Players/1")
 	var spawner: ProjectileSpawner = server_root.get_node("ProjectileSpawner")
-	var origin: Transform3D = Transform3D(Basis(), host_player.global_position + Vector3(0.0, 1.3, -0.5))
-	var host_bobber: Bobber = spawner.fire(BOBBER_SCENE, origin, Vector3(0.0, 0.6, -0.8).normalized(), 4.0, host_player)
+	# Dropped into the pool from just above it, so every peer's copy lands in the water whose fish a catch names
+	var origin: Transform3D = Transform3D(Basis(), POOL_AT + Vector3(0.0, 0.5, 0.0))
+	var host_bobber: Bobber = spawner.fire(BOBBER_SCENE, origin, Vector3.DOWN, 0.1, host_player)
 	assert_not_null(host_bobber, "The host keeps its own copy")
 	await wait_process_frames(20)
 	var client_projectiles: Node = client_root.get_node("Projectiles")
@@ -124,18 +127,64 @@ func test_host_float_appears_on_the_client_with_its_line_and_takes_rpcs() -> voi
 	# in a real session the paths match on every peer
 	assert_eq(String(client_bobber.shooter.name), "1", "The client's float knows the caster")
 	assert_eq((client_bobber.line.mesh as ImmediateMesh).get_surface_count(), 1, "The client draws the line from the caster's hand")
+	await wait_until(func() -> bool: return client_bobber.in_water, 3.0)
+	assert_true(client_bobber.in_water, "The client's copy landed in the pool on its own")
+	assert_eq(client_bobber.fish_at(CARP_INDEX), CARP, "and knows the water's fish by number")
 
 	host_bobber.plunge.rpc(0.3, 1.0)
 	await wait_process_frames(10)
 	assert_lt(client_bobber.float_mesh.position.y, -0.05, "The plunge reaches the client")
 
-	host_bobber.present_catch.rpc(CARP_PATH, 40.0)
+	host_bobber.present_catch.rpc(CARP_INDEX, 40.0)
 	await wait_process_frames(5)
 	assert_true(client_projectiles.get_children().any(func(n: Node) -> bool: return n is FishModel or n.name.ends_with("Model")), "The catch model shows on the client")
 
 	host_bobber.retract.rpc()
 	await wait_process_frames(20)
 	assert_false(is_instance_valid(client_bobber) and client_bobber.is_inside_tree(), "Retracting on the host despawns the float on the client")
+
+
+## H4: the float's moves are any_peer RPCs, since the caster may be a client, but only the server and the caster's
+## own peer are answered: a client reeling in, dipping or dressing the host's float is ignored on every peer.
+func test_a_peer_cannot_reel_in_or_dress_another_peers_float() -> void:
+	var host_player: Player = server_root.get_node("Players/1")
+	var spawner: ProjectileSpawner = server_root.get_node("ProjectileSpawner")
+	var host_bobber: Bobber = spawner.fire(BOBBER_SCENE, Transform3D(Basis(), POOL_AT + Vector3(0.0, 0.5, 0.0)), Vector3.DOWN, 0.1, host_player)
+	var client_projectiles: Node = client_root.get_node("Projectiles")
+	await wait_until(func() -> bool: return client_projectiles.get_child_count() == 1, 3.0)
+	var client_bobber: Bobber = client_projectiles.get_child(0)
+	await wait_until(func() -> bool: return client_bobber.in_water and host_bobber.in_water, 3.0)
+	var server_projectiles: Node = server_root.get_node("Projectiles")
+	client_bobber.plunge.rpc(0.3, 1.0)
+	client_bobber.present_catch.rpc(CARP_INDEX, 40.0)
+	client_bobber.retract.rpc()
+	await wait_process_frames(20)
+	assert_true(is_instance_valid(host_bobber) and host_bobber.is_inside_tree(), "The client's retract does not pull in the host's float")
+	assert_true(is_instance_valid(client_bobber) and client_bobber.is_inside_tree(), "not even its own copy of it")
+	assert_almost_eq(host_bobber.float_mesh.position.y, 0.0, 0.01, "nor dip it")
+	assert_false(server_projectiles.get_children().any(func(n: Node) -> bool: return n is FishModel or n.name.ends_with("Model")), "nor make it show a catch")
+	host_bobber.retract.rpc()
+	var no_float_left := func() -> bool: return not client_projectiles.get_children().any(func(n: Node) -> bool: return n is Bobber)
+	await wait_until(no_float_left, 3.0)
+	assert_true(no_float_left.call(), "The caster's own retract still does")
+
+
+## H4: a float the server despawns (its caster leaving, its lifetime, a retract from elsewhere) takes the line with
+## it: the rod hears its float leave the tree and goes back to Cast rather than waiting on a freed float.
+func test_a_despawned_float_reels_the_rods_line_in() -> void:
+	var host_player: Player = server_root.get_node("Players/1")
+	var client_copy: Player = client_root.get_node("Players/1")
+	var rods: Array[FishingRod] = await _equip_rods(host_player, client_copy)
+	var host_rod: FishingRod = rods[0]
+	var spawner: ProjectileSpawner = server_root.get_node("ProjectileSpawner")
+	var host_bobber: Bobber = spawner.fire(BOBBER_SCENE, Transform3D(Basis(), POOL_AT + Vector3(0.0, 0.5, 0.0)), Vector3.DOWN, 0.1, host_player, host_rod)
+	host_rod._adopt_bobber(host_bobber)
+	host_rod.state = FishingRod.State.WAITING
+	assert_true(host_bobber.tree_exiting.is_connected(host_rod._on_bobber_exiting), "The rod watches its float leave")
+	host_bobber.queue_free() # what the server's despawn does, from a retract the rod never sent
+	await wait_process_frames(5)
+	assert_null(host_rod.bobber, "The rod let go of the freed float")
+	assert_eq(host_rod.state, FishingRod.State.IDLE, "and the line is in")
 
 
 func test_only_the_rods_owner_puts_bait_on_the_line_or_eats_it() -> void:
@@ -195,6 +244,7 @@ func test_the_shadows_the_reel_and_the_rods_sounds_reach_the_client() -> void:
 	assert_not_null(client_rod, "The client's copy of the host's player carries the rod")
 	host_rod.lure = WORM # a metre of reach for the shadows
 	host_rod.reel_sfx = REEL_SOUND
+	client_rod.reel_sfx = REEL_SOUND # every peer's copy of the rod carries the same streams; a splash names one by number
 	var spawner: ProjectileSpawner = server_root.get_node("ProjectileSpawner")
 	var at: Vector3 = POOL_AT + Vector3(1.0, 0.02, 1.0)
 	var host_bobber: Bobber = spawner.fire(BOBBER_SCENE, Transform3D(Basis(), at), Vector3.DOWN, 0.1, host_player, host_rod)

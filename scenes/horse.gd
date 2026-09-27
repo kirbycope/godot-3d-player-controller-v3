@@ -98,6 +98,17 @@ func _ready() -> void:
 	add_to_group("horses")
 	navigation_agent.target_desired_distance = arrive_distance
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
+	multiplayer.peer_connected.connect(_on_peer_connected)
+
+
+## On the server: a peer joining mid-ride is told who is up and whose the horse is, the way a spent pickup tells a
+## joiner it is gone. rider_peer replicates but authority cannot, and without this the joiner's copy kept the server
+## as authority and rejected the rider's every packet until the dismount.
+func _on_peer_connected(peer_id: int) -> void:
+	if not multiplayer.is_server():
+		return
+	_set_rider.rpc_id(peer_id, rider_peer)
+	_set_authority.rpc_id(peer_id, get_multiplayer_authority())
 
 
 func _input(event: InputEvent) -> void:

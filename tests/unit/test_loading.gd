@@ -18,6 +18,30 @@ func _touch(control: Control) -> void:
 		get_viewport().push_input(touch, true)
 
 
+## M9: reopening Continue rebuilds the rows. Rows freed with queue_free are still children until the end of the
+## frame, so the second visit renamed the new rows (Save1 became Save2) and focused a row about to die.
+func test_reopening_continue_keeps_the_row_names_and_focuses_the_first() -> void:
+	assert_true(SaveGame.SAVES_DIR.begins_with("user://gut/"), "The run saves in its own folder")
+	var saver: SaveGame = (load("res://addons/3d_player_controller/scenes/ui/save_game.tscn") as PackedScene).instantiate() as SaveGame
+	add_child_autofree(saver)
+	SaveGame.slot = 1
+	assert_eq(saver.save_game(), OK)
+	SaveGame.slot = 0
+	var title_screen: TitleScreen = TITLE_SCREEN_SCENE.instantiate()
+	add_child_autofree(title_screen)
+	title_screen.show_saves()
+	title_screen.show_single_player_menu()
+	title_screen.show_saves() # the second visit, in the same frame the first rows were freed in
+	assert_eq(title_screen.save_list.get_child_count(), 1, "One row per save, the old rows gone at once")
+	var row: Control = title_screen.save_list.get_child(0) as Control
+	assert_eq(String(row.name), "Save1", "and the new row keeps its name")
+	await wait_process_frames(2)
+	assert_true(row.has_focus(), "and takes the focus for a controller")
+	SaveGame.slot = 1
+	saver.delete_save()
+	SaveGame.slot = 0
+
+
 ## The loading screen's own scene is saved shown, so it can be seen in its own tab; main.tscn hides its instance.
 func test_loading_node_initial_state() -> void:
 	var main: Node = MAIN_SCENE.instantiate()

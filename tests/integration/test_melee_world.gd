@@ -1,7 +1,8 @@
 extends GutTest
 
 ## Purpose: In world.tscn every melee weapon carries a WeaponBody on the Weapons layer, the toys it should knock about
-## are Hittable and mask Weapons, and a melee hit on an enemy plays its reaction animation without moving it.
+## are Hittable and mask Weapons, and a melee hit on an enemy plays its reaction animation and shoves it back a step
+## (the enemy's own knockback, EnemyNpc.take_hit through knock_back; HitDetection adds none of its own).
 
 const WORLD_SCENE: PackedScene = preload("res://scenes/world.tscn")
 const WEAPONS_LAYER: int = HitDetection.WEAPONS_LAYER
@@ -52,16 +53,23 @@ func test_the_toys_are_hittable_and_mask_weapons() -> void:
 	assert_false((world.get_node("Enemies/Swordsman") as CharacterBody3D).get_collision_layer_value(HITTABLE_LAYER), "Nor are NPCs")
 
 
-func test_a_melee_hit_on_an_enemy_plays_its_reaction_and_does_not_move_it() -> void:
+func test_a_melee_hit_on_an_enemy_plays_its_reaction_and_shoves_it_back_a_step() -> void:
 	var swordsman: EnemyNpc = world.get_node("Enemies/Swordsman")
 	var hit_detection: HitDetection = player.get_node("HitDetection")
 	player.warp_to(Transform3D(Basis(), swordsman.global_position + Vector3(0.0, 0.0, 1.0)))
 	await wait_physics_frames(2)
 	var before: Vector3 = swordsman.global_position
+	var away: Vector3 = player.global_position.direction_to(before).slide(swordsman.up_direction).normalized()
 	hit_detection._on_locomotion_node_changed("ShortHeadJab")
 	hit_detection._on_hitbox_body_entered(swordsman, hit_detection.right_hand_hitbox, null)
 	assert_true(REACTIONS.has(swordsman.anim_state), "The hit plays a reaction animation, got " + swordsman.anim_state)
-	assert_eq(swordsman.knockback_velocity, Vector3.ZERO, "with no knockback velocity")
-	await wait_physics_frames(5)
-	assert_eq(swordsman.knockback_velocity, Vector3.ZERO, "and none arrives later")
-	assert_lt(swordsman.global_position.distance_to(before), 0.3, "The enemy stays where it stood")
+	# The shove is the enemy's own: take_hit calls knock_back at its hit_knockback speed, straight away from the striker
+	assert_almost_eq(swordsman.knockback_velocity.length(), swordsman.hit_knockback, 0.01, "The hit shoves it at its hit_knockback speed")
+	assert_gt(swordsman.knockback_velocity.normalized().dot(away), 0.99, "straight away from the striker")
+	await wait_until(func() -> bool: return swordsman.knockback_velocity == Vector3.ZERO, 1.5)
+	assert_eq(swordsman.knockback_velocity, Vector3.ZERO, "The shove dies away at knockback_damping")
+	var moved: Vector3 = (swordsman.global_position - before).slide(swordsman.up_direction)
+	# How far it ends up is the shove plus whatever travel the reaction clip's root motion carries, so only the
+	# direction is asserted
+	assert_gt(moved.length(), 0.1, "carrying the enemy back")
+	assert_gt(moved.normalized().dot(away), 0.9, "away from the striker")

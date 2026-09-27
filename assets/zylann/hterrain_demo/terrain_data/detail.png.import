@@ -1,0 +1,14 @@
+[remap]
+
+importer="image"
+type="Image"
+uid="uid://672oq4c2rxem"
+path="res://.godot/imported/detail.png-41fcb9be0801afdb60dd941421da909e.image"
+
+[deps]
+
+source_file="res://assets/zylann/hterrain_demo/terrain_data/detail.png"
+dest_files=["res://.godot/imported/detail.png-41fcb9be0801afdb60dd941421da909e.image"]
+
+[params]
+

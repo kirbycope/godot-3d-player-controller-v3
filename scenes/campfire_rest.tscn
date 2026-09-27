@@ -1,0 +1,55 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/campfire_rest.gd" id="1_rest"]
+[ext_resource type="PackedScene" path="res://addons/weather_fx/scenes/campfire.tscn" id="2_fire"]
+[ext_resource type="PackedScene" uid="uid://dokp6v1sufknx" path="res://addons/controls/action_prompt.tscn" id="3_prompt"]
+[ext_resource type="Script" uid="uid://c4myfm4eswcy7" path="res://addons/3d_player_controller/scripts/interaction_reach.gd" id="4_reach"]
+[ext_resource type="Script" uid="uid://bcygqwd668lug" path="res://scenes/conversation.gd" id="5_conversation"]
+[ext_resource type="Resource" path="res://resources/dialogues/campfire_rest.dtl" id="6_timeline"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_reach"]
+radius = 2.5
+
+[node name="CampfireRest" type="Node3D" node_paths=PackedStringArray("campfire")]
+editor_description = "A campfire to rest at, as in Breath of the Wild: lit and with nothing hunting the Player, Action offers a rest until morning, noon or night, and the host skips the clock and the weather for everyone while the screen fades."
+script = ExtResource("1_rest")
+campfire = NodePath("Campfire")
+
+[node name="Campfire" parent="." instance=ExtResource("2_fire")]
+
+[node name="ActionPrompt" parent="." instance=ExtResource("3_prompt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
+
+[node name="Reach" type="Area3D" parent="."]
+editor_description = "Arm's length: the rest is offered only standing at the fire."
+collision_layer = 0
+script = ExtResource("4_reach")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Reach"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("SphereShape3D_reach")
+
+[node name="Conversation" type="Node" parent="." node_paths=PackedStringArray("npc")]
+editor_description = "Asks how long to rest, through Dialogic: the rest timeline's signals come back to CampfireRest."
+script = ExtResource("5_conversation")
+timeline = ExtResource("6_timeline")
+continue_label = "Rest"
+npc = NodePath("..")
+
+[node name="FadeLayer" type="CanvasLayer" parent="."]
+layer = 60
+
+[node name="Fade" type="ColorRect" parent="FadeLayer"]
+editor_description = "The screen going dark while the hours pass."
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+modulate = Color(1, 1, 1, 0)
+color = Color(0, 0, 0, 1)
+
+[connection signal="signal_received" from="Conversation" to="." method="_on_signal_received"]
+[connection signal="body_entered" from="Reach" to="Reach" method="_on_body_entered"]
+[connection signal="body_exited" from="Reach" to="Reach" method="_on_body_exited"]
