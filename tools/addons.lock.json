@@ -1,10 +1,10 @@
 {
   "3d_player_controller": {
-    "commit": "0681c7fd1dbb9b9b8fbb6fab53940f3942c7cefc",
-    "pulled": "2026-09-27T05:01:29Z",
+    "commit": "fb4405f26892deeb57c46fe1bf6c1bbf9a5411a9",
+    "pulled": "2026-09-27T17:39:51Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "Chat: /whereami, /heal, /respawn and /clear"
+    "subject": "Big held bodies held clear of the Player, faster snow surfing, hop on the jump clip"
   },
   "GPUTrail": {
     "commit": "00a764775941c719847deeda8a31b4ebd8893895",
@@ -83,11 +83,11 @@
     "subject": "Retake the preview with the current build"
   },
   "snow_deformation": {
-    "commit": "b2f96c9ba099547bb75e63d29ca6904e6cd80d07",
-    "pulled": "2026-09-27T00:12:49Z",
+    "commit": "53016376aeeaa63a31577ed372de64a1819dce45",
+    "pulled": "2026-09-27T17:39:53Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/snow-deformation.git",
-    "subject": "README preview, 960x540"
+    "subject": "Snowball grows faster, ploughs without a berm, and cleared snow is not drawn"
   },
   "tcps": {
     "commit": "eb921f8f175f5011c76b7678913b7e09ee9c517a",
