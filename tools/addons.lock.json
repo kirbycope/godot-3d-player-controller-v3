@@ -1,10 +1,10 @@
 {
   "3d_player_controller": {
-    "commit": "1a5d7e59e7104561d2f9be2c14982c8332247be7",
-    "pulled": "2026-09-27T02:53:39Z",
+    "commit": "0681c7fd1dbb9b9b8fbb6fab53940f3942c7cefc",
+    "pulled": "2026-09-27T05:01:29Z",
     "ref": "main",
     "repo": "https://github.com/kirbycope/godot-3d-player-controller-addon.git",
-    "subject": "An NPC's knockback dies away whatever it is doing"
+    "subject": "Chat: /whereami, /heal, /respawn and /clear"
   },
   "GPUTrail": {
     "commit": "00a764775941c719847deeda8a31b4ebd8893895",

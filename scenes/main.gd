@@ -15,10 +15,12 @@ const EXTRA_CONTROL_SCHEMES: Array[ControlScheme] = [
 ]
 
 
-## Registers the extra layouts before any child is ready, so the title's Controls settings page lists them too.
+## Registers the extra layouts before any child is ready, so the title's Controls settings page lists them too, and
+## the game's chat commands (/level, /time, /weather), which every level's Player then carries.
 func _enter_tree() -> void:
 	for scheme: ControlScheme in EXTRA_CONTROL_SCHEMES:
 		PlayerControls.register_scheme(scheme)
+	GameCommands.register()
 
 
 ## Called when the node enters the scene tree for the first time.

@@ -307,6 +307,58 @@ A save is the whole game: the Player's bag (`Inventory.persist` is off on the wo
 rest. So New Game in a fresh slot starts with the starting bag and an empty Fish Index, and Continue brings back
 the bag and the log of that save alone.
 
+## Chat commands: /level, /time, /weather and the chat's own
+
+Open the chat (Enter) in any level and type a "/" command; `/help` lists them all. The player controller's chat brings
+`/help`, `/teleport x y z`, `/whereami`, `/heal`, `/respawn` and `/clear`; this game adds three of its own, registered
+with the chat by `scenes/main.gd` before any Player exists (`ChatWindow.register_command`, the same shape as the extra
+control schemes), so every level's Player carries them:
+
+- `/level` lists the levels (`world`, `snow`, `palmanova`) and `/level palmanova` goes there behind the loading
+  screen; the numbered save stays the one in play, so a Save Game afterwards keeps the new level and Continue comes
+  back to it. It is for a game with nobody else in it: with other peers in the session it answers that they would be
+  left behind and does nothing, since only the world carries the spawners a joined Player needs. `scenes/levels.gd`,
+  with `LEVELS` at its top as the list to extend.
+- `/time` reads the level's clock and `/time 18:30` sets it, on the 24 hour clock.
+- `/weather` lists the skies and `/weather storm` forces one (`clear`, `cloudy`, `rain`, `downpour`, `storm`, `snow`,
+  `blizzard`); `/weather auto` lets the forecast run again.
+
+The clock and the weather are the host's in a session, replicated from it, so with other peers in the game only the
+host may set them and a client is told so. `scenes/game_commands.gd` holds the two and the registration;
+`tests/unit/test_levels.gd` and `tests/unit/test_game_commands.gd` cover the listing, the parsing, the host rule and
+the registration.
+
+## Palmanova
+
+`scenes/palmanova.tscn` is the Venetian star fortress town of Palmanova (Friuli, founded 7 October 1593) as the open
+data has it, at one metre to the metre round the Piazza Grande: OpenStreetMap's building footprints with the height
+it records for each, its streets, its city walls and the embankments of the ravelins and lunettes, and the Copernicus
+30 m DEM for the lie of the land. Run it from the editor; the Player starts on the piazza with the glider, the
+spyglass and stamina on, the horse waits nearby, and the level saves and continues like the world and the snow demo.
+
+The ground is an HTerrain (`addons/zylann.hterrain`, the plugin the snow demo uses) of 2049 x 2049 cells at 2 m, its
+data under `assets/palmanova/terrain_data/`. The DEM is too coarse to carry the works, so `tools/palmanova_gis.py`
+stamps them on from the walls and embankments OpenStreetMap draws: a 9 m rampart with its brick scarp, a dry moat 4 m
+deep and up to 80 m wide, and 6 m ravelins and lunettes; inside the walls the town is flat at the piazza's level. The
+terrain is textured by slope and place (grass, dirt on the moat floor, rock on steep ground, brick on the scarp) from
+`assets/palmanova/textures/`. Every building inside the works is its own node under `Town/Buildings`, its footprint
+extruded with the walls and the roof as materials on the node; the villages outside are grouped by sector under
+`Town/Villages`; the streets are strips draped on the ground under `Town/Streets`, grouped by class. The three gates,
+the nine bastions (Donato, Barbaro, Grimani, Savorgnan, Foscarini, Villachiara, Contarini, Garzoni, Monte, the
+town's own order counter-clockwise from Porta Cividale), the Piazza Grande and every named building carry a label.
+
+To rebuild it, fetch the data once (the Overpass API query and the DEM tile are named in `tools/palmanova_gis.py`),
+then run the two steps; the Python one writes `assets/palmanova/gis/` and the Godot one the scene and its meshes:
+
+```powershell
+python tools/palmanova_gis.py --osm <overpass.json> --dem <Copernicus_DSM_COG_10_N45_00_E013_00_DEM.tif>
+& 'C:\Godot\godot.exe' --headless --path . --import
+& 'C:\Godot\godot.exe' --headless --path . -s tools/make_palmanova.gd
+```
+
+The data's licences are in `CREDITS.md`. `tests/integration/test_palmanova.gd` checks the terrain, the gates, the
+bastions, the piazza, the buildings and the Player's footing.
+
 ## The snow demo
 
 `scenes/snow_demo.tscn` is a separate scene from the world, and the only place in this project the snow
