@@ -662,7 +662,9 @@ func _build_scaffolding() -> void:
 	minimap.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	hud.add_child(minimap)
 	minimap.owner = _root
-	minimap.set("target", minimap.get_path_to(player))
-	minimap.set("facing", minimap.get_path_to(player.get_node("PlayerModel")))
+	# The nodes themselves, which the pack writes as node_paths; a NodePath handed to a Node3D export is dropped
+	# silently, which left the map standing at the origin however far the Player rode
+	minimap.set("target", player)
+	minimap.set("facing", player.get_node("PlayerModel"))
 	minimap.set("facing_plus_z", true)
 	minimap.set("view_size", 260.0)

@@ -136,3 +136,7 @@ func test_the_player_starts_on_the_piazza_on_solid_ground() -> void:
 	if not hit.is_empty():
 		assert_almost_eq((hit["position"] as Vector3).y, 0.0, 0.3, "at the piazza's level")
 	assert_gt(player.global_position.y, -0.5, "and they have not fallen through")
+	var minimap: Minimap = town.get_node("HUD/Minimap")
+	assert_eq(minimap.target, player, "The minimap is centred on the Player, wired in the scene")
+	assert_eq(minimap.facing, player.player_model, "and its arrow turns with the model")
+	assert_true(minimap.facing_plus_z, "which looks along +Z")

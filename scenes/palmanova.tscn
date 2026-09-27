@@ -8699,8 +8699,8 @@ grow_horizontal = 0
 layout_mode = 0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_h258n")
 
-[node name="Minimap" parent="HUD" unique_id=1709897418 instance=ExtResource("612_65ymm")]
-editor_description = "The minimap addon, bottom right: the star seen from above, live."
+[node name="Minimap" parent="HUD" unique_id=1709897418 node_paths=PackedStringArray("target", "facing") instance=ExtResource("612_65ymm")]
+editor_description = "The minimap addon, bottom right: the star seen from above, live, centred on the Player and turning with the model."
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
@@ -8712,6 +8712,8 @@ offset_right = -16.0
 offset_bottom = -16.0
 grow_horizontal = 0
 grow_vertical = 0
+target = NodePath("../../Player")
+facing = NodePath("../../Player/PlayerModel")
 facing_plus_z = true
 hide_groups = PackedStringArray()
 keep_scripts = PackedStringArray()
