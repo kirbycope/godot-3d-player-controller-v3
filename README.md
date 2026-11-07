@@ -1,3 +1,11 @@
+# DEPRECATION #
+
+Use the [addon](https://github.com/kirbycope/godot-3d-player-controller-addon) instead.
+
+----
+
+<details>
+
 ![Preview](godot-3d-player-controller-v3.png)
 
 # godot-3d-player-controller-v3
@@ -589,3 +597,5 @@ there to exercise an addon in the QA world.
 ---
 
 Third-party assets are credited in [CREDITS.md](CREDITS.md).
+
+</details>
